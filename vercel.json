@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/refresh-gold-price",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/expire-reservations",
+      "schedule": "* * * * *"
+    }
+  ]
+}

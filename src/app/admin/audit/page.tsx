@@ -1,0 +1,41 @@
+import { getServiceSupabase } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminAuditPage() {
+  const admin = getServiceSupabase();
+  const { data } = await admin
+    .from("audit_logs")
+    .select("id, action, entity_type, entity_id, actor_role, actor_user_id, ip_address, created_at, new_value")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  return (
+    <div className="card overflow-hidden">
+      <table className="w-full text-sm">
+        <thead className="bg-bone-soft text-ink-muted">
+          <tr>
+            <th className="px-4 py-2 text-left">When</th>
+            <th className="px-4 py-2 text-left">Actor</th>
+            <th className="px-4 py-2 text-left">Action</th>
+            <th className="px-4 py-2 text-left">Entity</th>
+            <th className="px-4 py-2 text-left">IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(data ?? []).map((e) => (
+            <tr key={e.id} className="border-t border-bone-deep">
+              <td className="px-4 py-2 text-ink-muted">{new Date(e.created_at).toLocaleString()}</td>
+              <td className="px-4 py-2">{e.actor_role ?? "system"}</td>
+              <td className="px-4 py-2 font-mono text-xs">{e.action}</td>
+              <td className="px-4 py-2 text-ink-muted">{e.entity_type}/{e.entity_id ?? ""}</td>
+              <td className="px-4 py-2 text-ink-muted">{e.ip_address ?? "—"}</td>
+            </tr>
+          ))}
+          {(data ?? []).length === 0 && (
+            <tr><td colSpan={5} className="px-4 py-6 text-center text-ink-muted">No audit events.</td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
