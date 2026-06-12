@@ -1,3 +1,8 @@
+// Shared with the service worker — the panel used to carry its own weaker
+// duplicate parser (ISO-only dates, no weekend skip), so clicking "Continue"
+// mid-stream produced different due dates than waiting for completion.
+import { parseActivitiesFromPlan, verifyActivityReferences } from '../lib/ollama.js';
+
 // ---- State ----
 const STATE = {
   IDLE: 'idle',
@@ -58,7 +63,14 @@ const initialState = {
   quickBriefLoading: false,
   quickBriefError: null,
   projectInfo: null,        // { activeProjects: [...] }
-  analyzingStartMs: null
+  analyzingStartMs: null,
+  referenceChecks: [],      // [{verified: true|false|null, reference}] per activity
+  coverage: null,           // data-coverage flags from the worker
+  generatedAt: null,        // plan timestamp — stale restored plans must say so
+  portfolioGeneratedAt: null,
+  activityFeedback: {},     // { index: 'up' | 'down' } — feeds the memory layer
+  memoryKey: null,
+  ollamaUrl: ''             // configured URL, for honest error messages
 };
 
 let appState = { ...initialState };
@@ -118,8 +130,9 @@ function updatePhaseBar(currentPhaseName) {
 // ---- Transitions ----
 function transition(newPhase, updates = {}) {
   appState = { ...appState, ...updates, phase: newPhase };
-  const phaseName = PHASE_MAP[newPhase];
-  if (phaseName) updatePhaseBar(phaseName);
+  // Always update — a null phase must CLEAR the bar (it used to stay
+  // highlighted on Settings/Error/Feedback screens)
+  updatePhaseBar(PHASE_MAP[newPhase] ?? null);
   render();
 }
 
@@ -149,10 +162,11 @@ function render() {
 function renderIdle() {
   updatePhaseBar(null);
   const ollamaWarning = appState.ollamaStatus === false
-    ? `<div class="warning-banner">Local Ollama server unreachable (10.100.255.200) — <a href="#" id="setup-link">open Settings</a></div>`
+    ? `<div class="warning-banner">Local Ollama server unreachable (${esc(appState.ollamaUrl || 'not configured')}) — <a href="#" id="setup-link">open Settings</a></div>`
     : '';
   contentEl.innerHTML = `
     <div class="idle-screen screen">
+      ${errorBanner()}
       ${ollamaWarning}
       <div class="idle-icon">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
@@ -166,6 +180,7 @@ function renderIdle() {
     </div>`;
   document.getElementById('open-settings-idle')?.addEventListener('click', () => transition(STATE.SETTINGS));
   document.getElementById('setup-link')?.addEventListener('click', (e) => { e.preventDefault(); transition(STATE.SETTINGS); });
+  bindErrorBanner();
 }
 
 function renderExtracting() {
@@ -254,12 +269,15 @@ function renderExtracted() {
       </div>
       ${utilizationHtml}
       ${briefHtml}
+      ${(!d.notesContent && (d.chatHistory || []).length < 3)
+        ? `<div class="warning-banner">Low data on this account (no notes, little chatter) — expect a thin, generic plan.</div>`
+        : ''}
       <div class="deep-search-row">
         <label class="toggle-label" for="deep-search-toggle">
           <input type="checkbox" id="deep-search-toggle" ${appState.deepSearch ? 'checked' : ''}>
           <span>Deep Search</span>
         </label>
-        <span class="toggle-hint">Loads full chatter history (slower)</span>
+        <span class="toggle-hint">Adds website research + tasks/timesheets (slower)</span>
       </div>
       <button class="btn btn-primary btn-full" id="start-research-btn">
         Start Research →
@@ -326,26 +344,40 @@ function renderResearching() {
   contentEl.innerHTML = `<div class="loading-screen screen">${rows}</div>`;
 }
 
-function parseActivitiesLocal(planText) {
-  const activities = [];
-  const chunks = (planText || '').split(/(?=###\s+Activity\s+\d+)/i).filter(c => /###\s+Activity\s+\d+/i.test(c));
-  for (const chunk of chunks) {
-    const h = chunk.match(/###\s+Activity\s+\d+[:\s*]*\*{0,2}(Phone\s*Call|Email|Meeting)\*{0,2}\s*[—–\-]+\s*(.+)/i);
-    if (!h) continue;
-    const activityType = /phone/i.test(h[1]) ? 'Phone Call' : /email/i.test(h[1]) ? 'Email' : 'Meeting';
-    const summary = h[2].replace(/\*+/g, '').trim().slice(0, 60);
-    const dueMatch = chunk.match(/\*{0,2}Due(?:\s*[Dd]ate)?\*{0,2}:\s*([^\n]+)/i);
-    const rawDate = dueMatch?.[1]?.trim() || '';
-    // Ensure ISO format (YYYY-MM-DD) — fall back to +3/7/14 days from today
-    const isoMatch = rawDate.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-    const dueDate = isoMatch
-      ? `${isoMatch[1]}-${String(+isoMatch[2]).padStart(2,'0')}-${String(+isoMatch[3]).padStart(2,'0')}`
-      : (() => { const d = new Date(); d.setDate(d.getDate() + ([3,7,14][activities.length] ?? 7)); return d.toISOString().split('T')[0]; })();
-    const notesMatch = chunk.match(/\*{0,2}Notes?\*{0,2}:\s*([\s\S]+)/i);
-    const notes = notesMatch ? notesMatch[1].trim() : '';
-    activities.push({ activityType, summary, dueDate, notes });
+function planLooksComplete(planText) {
+  return (planText || '').includes('## Recommended Activities') &&
+    parseActivitiesFromPlan(planText || '').length >= 1;
+}
+
+// Scoped streaming update — touches ONLY the plan box + footer buttons.
+// The old code rebuilt the entire screen ~7×/sec, resetting scroll position
+// and text selection for the whole multi-minute generation.
+function updateStreamingPlan() {
+  if (appState.phase !== STATE.ANALYZING) return;
+  const box = document.getElementById('streaming-plan');
+  if (!box) { renderAnalyzing(); return; }
+
+  const elapsedMs = appState.analyzingStartMs ? Date.now() - appState.analyzingStartMs : 0;
+  const isStalled = elapsedMs > 120000 && !appState.planText?.trim();
+
+  const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+  box.innerHTML = renderMarkdown(
+    appState.planText || (isStalled ? 'No response yet — the model may be slow or overloaded.' : 'Generating plan…')
+  );
+  if (atBottom) box.scrollTop = box.scrollHeight; // follow the tail only if the user was already there
+
+  const complete = planLooksComplete(appState.planText);
+  box.classList.toggle('cursor-blink', !complete);
+  const continueBtn = document.getElementById('plan-continue-btn');
+  if (continueBtn) continueBtn.style.display = complete ? '' : 'none';
+  const retryBtn = document.getElementById('retry-analysis-btn');
+  if (retryBtn) retryBtn.style.display = isStalled ? '' : 'none';
+
+  const elapsedEl = document.getElementById('analyze-elapsed');
+  if (elapsedEl && appState.analyzingStartMs) {
+    const s = Math.floor(elapsedMs / 1000);
+    elapsedEl.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   }
-  return activities;
 }
 
 function renderAnalyzing() {
@@ -353,38 +385,33 @@ function renderAnalyzing() {
     ? renderProfileChips(appState.companyProfile)
     : '';
 
-  const planComplete = appState.planText.includes('## Recommended Activities') &&
-    appState.planText.split('### Activity').length >= 4;
-
-  const elapsedMs = appState.analyzingStartMs ? Date.now() - appState.analyzingStartMs : 0;
-  const isStalled = elapsedMs > 120000 && !appState.planText?.trim();
-
-  // Schedule a re-render at the 2-minute mark to surface the retry button
-  if (appState.analyzingStartMs && elapsedMs < 120000 && !appState.planText?.trim()) {
-    const msUntilRetry = 120000 - elapsedMs + 500;
-    clearTimeout(appState._stalledTimer);
-    appState._stalledTimer = setTimeout(() => {
-      if (appState.phase === STATE.ANALYZING && !appState.planText?.trim()) renderAnalyzing();
-    }, msUntilRetry);
-  }
-
   contentEl.innerHTML = `
     <div class="screen">
       ${profileSection}
       <div class="summary-section">
-        <div class="label">Action Plan</div>
-        <div class="plan-box ${planComplete ? '' : 'cursor-blink'}" id="streaming-plan">
-          ${renderMarkdown(appState.planText || (isStalled ? 'No response yet — the model may be slow or overloaded.' : 'Generating plan…'))}
-        </div>
+        <div class="label">Action Plan <span class="elapsed-badge" id="analyze-elapsed"></span></div>
+        <div class="plan-box cursor-blink" id="streaming-plan"></div>
       </div>
-      ${planComplete ? `<button class="btn btn-primary btn-full" id="plan-continue-btn">Continue to Review →</button>` : ''}
-      ${isStalled ? `<button class="btn btn-secondary btn-full" id="retry-analysis-btn" style="margin-top:8px">↺ Retry plan generation</button>` : ''}
+      <button class="btn btn-primary btn-full" id="plan-continue-btn" style="display:none">Continue to Review →</button>
+      <button class="btn btn-secondary btn-full" id="retry-analysis-btn" style="display:none;margin-top:8px">↺ Retry plan generation</button>
+      <button class="btn btn-secondary btn-full btn-sm" id="cancel-analysis-btn" style="margin-top:8px">✕ Cancel</button>
     </div>`;
 
+  // Per-second elapsed/stall refresh — scoped, no full re-render
+  clearInterval(appState._elapsedTimer);
+  appState._elapsedTimer = setInterval(() => {
+    if (appState.phase !== STATE.ANALYZING) { clearInterval(appState._elapsedTimer); return; }
+    updateStreamingPlan();
+  }, 1000);
+
   document.getElementById('plan-continue-btn')?.addEventListener('click', () => {
+    // Same parser as the worker (weekend-skip, 90-day clamp, JSON-first) —
+    // the panel used to apply a weaker duplicate here
     transition(STATE.REVIEW, {
       planText: appState.planText,
-      activities: parseActivitiesLocal(appState.planText),
+      activities: parseActivitiesFromPlan(appState.planText),
+      referenceChecks: verifyActivityReferences(parseActivitiesFromPlan(appState.planText), appState.odooData, appState.researchData),
+      generatedAt: Date.now(),
       error: null
     });
   });
@@ -399,6 +426,32 @@ function renderAnalyzing() {
     });
     renderAnalyzing();
   });
+
+  document.getElementById('cancel-analysis-btn')?.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'CANCEL_ANALYSIS' });
+    transition(STATE.EXTRACTED, { planText: '', analyzingStartMs: null });
+  });
+
+  updateStreamingPlan();
+}
+
+function coverageChips() {
+  const c = appState.coverage;
+  if (!c) return '';
+  const label = { notes: 'Notes', chatter: 'Chatter', salesHistory: 'Sales history', utilization: 'Utilization',
+    invoices: 'Invoices', contacts: 'Contacts', tickets: 'Helpdesk', mrrTrend: 'MRR trend', website: 'Web research', deepIntel: 'Deep intel' };
+  const chips = Object.entries(c)
+    .map(([k, v]) => `<span class="chip ${v ? 'chip-cov-on' : 'chip-cov-off'}" title="${v ? 'Included in this analysis' : 'NOT available for this analysis'}">${v ? '✓' : '✗'} ${esc(label[k] || k)}</span>`)
+    .join('');
+  return `<div class="profile-chips coverage-chips">${chips}</div>`;
+}
+
+function generatedAtBanner() {
+  if (!appState.generatedAt) return '';
+  const ageMs = Date.now() - appState.generatedAt;
+  const stale = ageMs > 36 * 3600 * 1000;
+  const when = new Date(appState.generatedAt).toLocaleString();
+  return `<div class="generated-at ${stale ? 'stale' : ''}">Plan generated ${esc(when)}${stale ? ' — ⚠ may be stale, consider re-running' : ''}</div>`;
 }
 
 function renderReview() {
@@ -411,9 +464,13 @@ function renderReview() {
   contentEl.innerHTML = `
     <div class="screen">
       ${errorBanner()}
+      ${generatedAtBanner()}
       ${profileSection}
+      ${coverageChips()}
       <div class="summary-section">
-        <div class="label">Plan Summary</div>
+        <div class="label">Plan Summary
+          <button class="btn btn-secondary btn-sm" id="copy-plan-btn" style="float:right">📋 Copy plan</button>
+        </div>
         <div class="plan-box" style="max-height:200px">${renderMarkdown(appState.planText)}</div>
       </div>
       <div class="activities-section">
@@ -425,24 +482,41 @@ function renderReview() {
         <button class="btn btn-success btn-full" id="create-activities-btn" ${appState.activities.length === 0 ? 'disabled' : ''}>
           ✓ Create ${appState.activities.length} Activit${appState.activities.length === 1 ? 'y' : 'ies'} in Odoo
         </button>
+        <div class="footer-hint">Creating also copies the full plan to your clipboard.</div>
         <button class="btn btn-secondary btn-full btn-sm" id="restart-btn">↩ Start Over</button>
       </div>
     </div>`;
 
+  document.getElementById('copy-plan-btn')?.addEventListener('click', async (e) => {
+    try { await navigator.clipboard.writeText(appState.planText); e.target.textContent = '✅ Copied'; } catch {}
+  });
   document.getElementById('add-activity-btn')?.addEventListener('click', addBlankActivity);
   document.getElementById('create-activities-btn')?.addEventListener('click', createActivities);
   document.getElementById('restart-btn')?.addEventListener('click', restart);
   bindActivityCardEvents();
+  bindErrorBanner();
 }
 
 function renderActivityCard(act, index) {
   const badgeClass = act.activityType === 'Phone Call' ? 'badge-call' :
                      act.activityType === 'Email' ? 'badge-email' : 'badge-meeting';
+  const refCheck = appState.referenceChecks?.[index];
+  const refBadge = refCheck?.verified === false
+    ? `<span class="ref-badge ref-bad" title="The 'Reference:' in the notes was NOT found in the account data — possible hallucination, verify before calling">⚠ reference not found in data</span>`
+    : refCheck?.verified === true
+      ? `<span class="ref-badge ref-ok" title="The cited reference appears in the account data">✓ grounded</span>`
+      : '';
+  const fb = appState.activityFeedback[index];
   return `
     <div class="activity-card" data-index="${index}">
       <div class="activity-card-header">
-        <span class="activity-type-badge ${badgeClass}">${esc(act.activityType)}</span>
+        <select class="activity-type-select ${badgeClass}" data-index="${index}" title="Activity type">
+          ${['Phone Call', 'Email', 'Meeting'].map(t => `<option value="${t}" ${act.activityType === t ? 'selected' : ''}>${t}</option>`).join('')}
+        </select>
+        ${refBadge}
         <div class="activity-card-actions">
+          <button class="btn-icon fb-up ${fb === 'up' ? 'active' : ''}" data-index="${index}" title="Good suggestion — the AI learns from this">👍</button>
+          <button class="btn-icon fb-down ${fb === 'down' ? 'active' : ''}" data-index="${index}" title="Bad suggestion — the AI avoids this pattern next time">👎</button>
           <button class="btn-icon danger remove-activity" data-index="${index}" title="Remove">✕</button>
         </div>
       </div>
@@ -455,8 +529,10 @@ function renderActivityCard(act, index) {
         <label>Due Date</label>
         <input type="date" class="activity-date" data-index="${index}" value="${esc(act.dueDate || '')}">
       </div>
-      <div class="activity-notes" data-index="${index}" title="Click to expand notes">
-        📝 ${esc((act.notes || '').slice(0, 120))}${act.notes?.length > 120 ? '…' : ''}
+      ${act.with ? `<div class="activity-with">👤 ${esc(act.with)}</div>` : ''}
+      <div class="activity-field">
+        <label>Notes — written into Odoo exactly as below</label>
+        <textarea class="activity-notes-edit" data-index="${index}" rows="4">${esc(act.notes || '')}</textarea>
       </div>
     </div>`;
 }
@@ -466,6 +542,8 @@ function bindActivityCardEvents() {
     btn.addEventListener('click', () => {
       const i = parseInt(btn.dataset.index);
       appState.activities.splice(i, 1);
+      appState.referenceChecks?.splice?.(i, 1);
+      delete appState.activityFeedback[i];
       transition(STATE.REVIEW);
     });
   });
@@ -483,6 +561,29 @@ function bindActivityCardEvents() {
       appState.activities[i].dueDate = input.value;
     });
   });
+
+  // Notes are what actually gets written into Odoo — they must be editable
+  document.querySelectorAll('.activity-notes-edit').forEach(ta => {
+    ta.addEventListener('input', () => {
+      const i = parseInt(ta.dataset.index);
+      appState.activities[i].notes = ta.value;
+    });
+  });
+
+  document.querySelectorAll('.activity-type-select').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const i = parseInt(sel.dataset.index);
+      appState.activities[i].activityType = sel.value;
+    });
+  });
+
+  // 👍/👎 — the per-activity signal the memory layer learns from
+  const setFb = (i, verdict) => {
+    appState.activityFeedback[i] = appState.activityFeedback[i] === verdict ? undefined : verdict;
+    transition(STATE.REVIEW);
+  };
+  document.querySelectorAll('.fb-up').forEach(b => b.addEventListener('click', () => setFb(parseInt(b.dataset.index), 'up')));
+  document.querySelectorAll('.fb-down').forEach(b => b.addEventListener('click', () => setFb(parseInt(b.dataset.index), 'down')));
 }
 
 function renderExecuting() {
@@ -514,20 +615,27 @@ function renderComplete() {
   const failed = total - succeeded;
   const sysError = appState.activityError;
 
+  // esc() on summary/error — both can carry LLM-derived text, and this list
+  // was the one innerHTML sink that rendered it unescaped
   const failedDetails = appState.executionResults
     .filter(r => !r?.success)
-    .map(r => `<li>${r.summary}: ${r.error || 'unknown error'}</li>`)
+    .map(r => `<li>${esc(r.summary)}: ${esc(r.error || 'unknown error')}</li>`)
     .join('');
 
   contentEl.innerHTML = `
     <div class="complete-screen screen">
       <div class="complete-icon">${sysError ? '⚠️' : failed === 0 ? '🎉' : '⚠️'}</div>
       <h2>${succeeded} of ${total} ${total === 1 ? 'activity' : 'activities'} created</h2>
-      ${sysError ? `<p style="color:var(--danger);font-size:12px">Error: ${sysError}</p>` : ''}
+      ${sysError ? `<p style="color:var(--danger);font-size:12px">Error: ${esc(sysError)}</p>` : ''}
       ${failedDetails ? `<ul style="color:var(--danger);font-size:11px;text-align:left">${failedDetails}</ul>` : ''}
       ${!sysError && failed === 0 ? '<p>Activities are now visible in the Odoo chatter.</p>' : ''}
+      <p class="memory-note">🧠 This review was saved to account memory — the next analysis of this customer will know what was proposed, what you changed, and what you rated.</p>
+      <button class="btn btn-secondary btn-sm" id="copy-plan-complete-btn">📋 Copy plan</button>
       <button class="btn btn-primary btn-sm" id="restart-complete-btn">↩ Start New Analysis</button>
     </div>`;
+  document.getElementById('copy-plan-complete-btn')?.addEventListener('click', async (e) => {
+    try { await navigator.clipboard.writeText(appState.planText || ''); e.target.textContent = '✅ Copied'; } catch {}
+  });
   document.getElementById('restart-complete-btn')?.addEventListener('click', restart);
 }
 
@@ -597,39 +705,36 @@ function renderSettings() {
     transition(appState.prevPhase || STATE.IDLE);
   });
 
+  // Test probes the URL in the field WITHOUT saving — a failed experiment no
+  // longer overwrites a working configuration.
   document.getElementById('test-llm-btn')?.addEventListener('click', () => {
     const statusEl = document.getElementById('llm-status');
     statusEl.textContent = 'Testing…';
-    const payload = {
-      ollamaUrl:       document.getElementById('ollama-url').value.trim(),
-      ollamaModel:     document.getElementById('ollama-model-smart').value.trim(),
-      ollamaModelFast: document.getElementById('ollama-model-fast').value.trim()
-    };
-    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload }, () => {
-      chrome.runtime.sendMessage({ type: 'CHECK_OLLAMA' }, (res) => {
-        if (res?.data?.available) {
-          const models = res.data.models || [];
-          const onServer = (name) => !models.length || models.some(m => m === name || m.startsWith(name + ':'));
-          const lines = [];
-          for (const [label, name] of [['Smart', payload.ollamaModel], ['Fast', payload.ollamaModelFast]]) {
-            lines.push(onServer(name)
-              ? `<span style="color:var(--success)">✓ ${label}: ${esc(name)}</span>`
-              : `<span style="color:var(--warning)">⚠ ${label}: "${esc(name)}" not on server</span>`);
-          }
-          if (lines.some(l => l.includes('⚠'))) {
-            lines.push(`<span style="color:var(--text-muted)">Available: ${esc(models.slice(0, 6).join(', '))}</span>`);
-          }
-          statusEl.innerHTML = lines.join('<br>');
-          appState.ollamaStatus = true;
-        } else {
-          statusEl.innerHTML = `<span style="color:var(--danger)">✕ Could not reach server</span> — check the URL and that the Ollama service is running`;
-          appState.ollamaStatus = false;
+    const url = document.getElementById('ollama-url').value.trim();
+    const smart = document.getElementById('ollama-model-smart').value.trim();
+    const fast = document.getElementById('ollama-model-fast').value.trim();
+    chrome.runtime.sendMessage({ type: 'CHECK_OLLAMA_URL', payload: { url } }, (res) => {
+      if (res?.data?.available) {
+        const models = res.data.models || [];
+        const onServer = (name) => !models.length || models.some(m => m === name || m.startsWith(name + ':'));
+        const lines = [`<span style="color:var(--success)">✓ Server reachable (not saved yet — click Save)</span>`];
+        for (const [label, name] of [['Smart', smart], ['Fast', fast]]) {
+          lines.push(onServer(name)
+            ? `<span style="color:var(--success)">✓ ${label}: ${esc(name)}</span>`
+            : `<span style="color:var(--warning)">⚠ ${label}: "${esc(name)}" not on server</span>`);
         }
-      });
+        if (lines.some(l => l.includes('⚠'))) {
+          lines.push(`<span style="color:var(--text-muted)">Available: ${esc(models.slice(0, 6).join(', '))}</span>`);
+        }
+        statusEl.innerHTML = lines.join('<br>');
+      } else {
+        statusEl.innerHTML = `<span style="color:var(--danger)">✕ Could not reach server</span> — check the URL and that the Ollama service is running`;
+      }
     });
   });
 
   document.getElementById('save-settings-btn')?.addEventListener('click', () => {
+    const statusEl = document.getElementById('llm-status');
     const payload = {
       ollamaUrl:       document.getElementById('ollama-url').value.trim(),
       ollamaModel:     document.getElementById('ollama-model-smart').value.trim(),
@@ -637,7 +742,13 @@ function renderSettings() {
       deepSearch:      appState.deepSearch,
       feedbackFormUrl: document.getElementById('feedback-url').value.trim()
     };
-    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload }, () => {
+    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload }, (res) => {
+      if (res && res.success === false) {
+        // e.g. the intranet allowlist rejected a public host
+        statusEl.innerHTML = `<span style="color:var(--danger)">✕ Not saved: ${esc(res.error || 'rejected')}</span>`;
+        return;
+      }
+      appState.ollamaUrl = payload.ollamaUrl;
       const el = document.getElementById('settings-saved');
       if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2000); }
     });
@@ -660,10 +771,13 @@ function renderFeedback() {
       </div>
 
       <div class="feedback-context">
-        <div class="label">Auto-attached context</div>
+        <div class="label">Context</div>
         Screen: <strong>${esc(phaseLabel)}</strong><br>
-        Customer: <strong>${esc(customerCtx)}</strong><br>
         Version: <strong id="fb-version">…</strong>
+        <label class="toggle-label" style="margin-top:6px;display:flex;gap:6px">
+          <input type="checkbox" id="fb-include-customer">
+          <span>Attach customer context (${esc(customerCtx)}) — sent to the Google Form</span>
+        </label>
       </div>
 
       <div class="form-group">
@@ -749,42 +863,43 @@ function renderFeedback() {
     statusEl.textContent = '';
 
     try {
-      // Build a pre-filled Google Form URL.
-      // The admin pastes the form's /viewform URL into Settings; we open it pre-filled
-      // and the user clicks Submit on Google's page (avoids needing entry.XXX field IDs).
-      const params = new URLSearchParams({
-        'usp': 'pp_url',
-        'entry.name':     name,
-        'entry.category': category,
-        'entry.severity': severity,
-        'entry.message':  message,
-        'entry.phase':    phaseLabel,
-        'entry.customer': customerCtx,
-        'entry.version':  chrome.runtime.getManifest()?.version || ''
-      });
-      // If the admin URL has explicit entry.XXX field IDs we just use those.
-      // Otherwise we open a generic prefill — user submits manually.
+      const includeCustomer = document.getElementById('fb-include-customer')?.checked;
+      const version = chrome.runtime.getManifest()?.version || '';
+      const structured =
+        `Name: ${name}\nCategory: ${category}\nSeverity: ${severity}\nScreen: ${phaseLabel}\nVersion: ${version}` +
+        (includeCustomer ? `\nCustomer: ${customerCtx}` : '') +
+        `\n\n${message}`;
+
+      // Google Forms prefill ONLY works with real numeric entry IDs
+      // (entry.123456=...). The old code invented keys like "entry.name", so
+      // forms opened blank while the panel claimed success and wiped the text.
+      // Honest behavior: substitute {placeholders} when the admin provided
+      // them; otherwise open the bare form and put everything on the clipboard.
       let url = appState._feedbackFormUrl;
-      if (url.includes('entry.')) {
-        // URL already has entry mappings — substitute placeholders
+      let prefilled = false;
+      if (/entry\.\d+/.test(url) && url.includes('{')) {
         const placeholders = {
           '{name}': encodeURIComponent(name),
           '{category}': encodeURIComponent(category),
           '{severity}': encodeURIComponent(severity),
           '{message}': encodeURIComponent(message),
           '{phase}':    encodeURIComponent(phaseLabel),
-          '{customer}': encodeURIComponent(customerCtx),
-          '{version}':  encodeURIComponent(chrome.runtime.getManifest()?.version || '')
+          '{customer}': encodeURIComponent(includeCustomer ? customerCtx : ''),
+          '{version}':  encodeURIComponent(version)
         };
         for (const [k, v] of Object.entries(placeholders)) url = url.split(k).join(v);
-      } else {
-        url = url.replace(/\/viewform.*$/, '/viewform') + '?' + params.toString();
+        prefilled = true;
       }
+
+      try { await navigator.clipboard.writeText(structured); } catch (_) {}
       chrome.tabs.create({ url, active: true });
 
       statusEl.className = 'feedback-status success';
-      statusEl.textContent = '✓ Form opened in a new tab — review and click Submit there.';
-      document.getElementById('fb-message').value = '';
+      statusEl.textContent = prefilled
+        ? '✓ Form opened pre-filled — review and click Submit there. (Also copied to clipboard.)'
+        : '✓ Form opened. Your feedback is on the clipboard — paste it into the form, then Submit. Your text stays here until you leave this screen.';
+      // Deliberately NOT clearing the textarea — losing pilot feedback silently
+      // was the bug this replaces.
     } catch (err) {
       statusEl.className = 'feedback-status error';
       statusEl.textContent = '✕ ' + err.message;
@@ -796,23 +911,22 @@ function renderFeedback() {
 }
 
 function renderError() {
-  const canRetryAnalysis = appState.researchData && appState.odooData &&
-    (appState.error || '').toLowerCase().includes('restart');
+  const canRetryAnalysis = appState.researchData && appState.odooData;
   contentEl.innerHTML = `
     <div class="screen">
       <div class="error-banner">
         <span>${esc(appState.error || 'An unexpected error occurred.')}</span>
-        <button onclick="restart()">✕</button>
+        <button class="error-banner-dismiss" title="Dismiss">✕</button>
       </div>
       ${canRetryAnalysis ? `<button class="btn btn-primary btn-full btn-sm" id="retry-analysis-err-btn" style="margin-bottom:6px">↺ Retry Plan Generation</button>` : ''}
       <button class="btn btn-secondary btn-full btn-sm" id="restart-err-btn">↩ Start Over</button>
     </div>`;
+  document.querySelector('.error-banner-dismiss')?.addEventListener('click', restart);
   document.getElementById('restart-err-btn')?.addEventListener('click', restart);
   document.getElementById('retry-analysis-err-btn')?.addEventListener('click', () => {
-    appState.analyzingStartMs = Date.now();
-    appState.planText = '';
-    appState.error = null;
-    transition(STATE.ANALYZING, { planText: '', analyzingStartMs: Date.now() });
+    // The worker supersedes/aborts any previous stream on START_ANALYSIS, so
+    // retry can't double-stream into the panel anymore.
+    transition(STATE.ANALYZING, { planText: '', error: null, analyzingStartMs: Date.now() });
     startSWKeepalive();
     chrome.runtime.sendMessage({
       type: 'START_ANALYSIS',
@@ -837,10 +951,19 @@ function renderProfileChips(profile) {
 
 function errorBanner() {
   if (!appState.error) return '';
+  // No inline onclick — the side panel's CSP blocks inline handlers, so the
+  // old dismiss button was dead. Renderers call bindErrorBanner() after paint.
   return `<div class="error-banner">
     <span>${esc(appState.error)}</span>
-    <button onclick="appState.error=null;render()">✕</button>
+    <button class="error-banner-dismiss" title="Dismiss">✕</button>
   </div>`;
+}
+
+function bindErrorBanner() {
+  document.querySelector('.error-banner-dismiss')?.addEventListener('click', () => {
+    appState.error = null;
+    render();
+  });
 }
 
 function renderMarkdown(text) {
@@ -864,6 +987,8 @@ function esc(str) {
 
 async function startResearch() {
   transition(STATE.RESEARCHING, { researchProgress: {} });
+  ensureSWPort();
+  startSWKeepalive(); // research is a long operation too — it was unprotected before
   chrome.runtime.sendMessage({
     type: 'START_RESEARCH',
     payload: { tabId: appState.currentTabId, customerName: appState.odooData.customerName, deepSearch: appState.deepSearch }
@@ -882,15 +1007,25 @@ async function createActivities() {
   const activities = appState.activities.filter(a => a.summary.trim());
   if (!activities.length) return;
 
-  // Copy the full action plan to clipboard so the user can paste it wherever needed
+  // Copy the full action plan to clipboard so the user can paste it wherever
+  // needed (the Review screen discloses this next to the Create button)
   if (appState.planText) {
     try { await navigator.clipboard.writeText(appState.planText); } catch (_) {}
   }
 
+  // Feedback indexes must follow the filtered list
+  const feedback = {};
+  let j = 0;
+  appState.activities.forEach((a, i) => {
+    if (!a.summary.trim()) return;
+    if (appState.activityFeedback[i]) feedback[j] = appState.activityFeedback[i];
+    j++;
+  });
+
   transition(STATE.EXECUTING, { executionResults: [] });
   chrome.runtime.sendMessage({
     type: 'CREATE_ACTIVITIES',
-    payload: { tabId: appState.currentTabId, activities }
+    payload: { tabId: appState.currentTabId, activities, feedback }
   });
 }
 
@@ -904,11 +1039,29 @@ function renderDashboard() {
       <h2>Portfolio Scanner</h2>
       <p>You're on your CSM Dashboard.<br>Scan all your accounts at once — chatter, renewals, and open issues — to get an AI-prioritized action list.</p>
       <button class="btn btn-primary btn-full" id="scan-portfolio-btn">🔍 Scan Portfolio</button>
+      <div id="last-portfolio-slot"></div>
       <p class="portfolio-hint">Analyzes chatter from all active subscriptions</p>
     </div>`;
   document.getElementById('scan-portfolio-btn')?.addEventListener('click', () => {
     transition(STATE.PORTFOLIO_SCANNING, { portfolioProgress: {}, portfolioText: '', portfolioCount: 0 });
     chrome.runtime.sendMessage({ type: 'SCAN_PORTFOLIO', payload: { tabId: appState.currentTabId } });
+  });
+
+  // A scan costs minutes of GPU time — offer the persisted last report
+  chrome.runtime.sendMessage({ type: 'GET_PORTFOLIO_RESULT' }, (res) => {
+    const saved = res?.data;
+    if (!saved?.planText) return;
+    const slot = document.getElementById('last-portfolio-slot');
+    if (!slot) return;
+    const when = new Date(saved.generatedAt).toLocaleString();
+    slot.innerHTML = `<button class="btn btn-secondary btn-full btn-sm" id="open-last-portfolio">📄 View last report (${esc(when)})</button>`;
+    document.getElementById('open-last-portfolio')?.addEventListener('click', () => {
+      transition(STATE.PORTFOLIO_COMPLETE, {
+        portfolioText: saved.planText,
+        portfolioCount: saved.profileCount || 0,
+        portfolioGeneratedAt: saved.generatedAt
+      });
+    });
   });
 }
 
@@ -943,6 +1096,7 @@ function renderPortfolioScanning() {
 function renderPortfolioComplete() {
   updatePhaseBar(null);
   const count = appState.portfolioCount;
+  const when = appState.portfolioGeneratedAt ? new Date(appState.portfolioGeneratedAt).toLocaleString() : null;
   contentEl.innerHTML = `
     <div class="portfolio-complete screen">
       <div class="portfolio-complete-header">
@@ -950,6 +1104,7 @@ function renderPortfolioComplete() {
         <button class="btn btn-secondary btn-sm" id="portfolio-copy-btn">📋 Copy Report</button>
         <button class="btn btn-secondary btn-sm" id="portfolio-rescan-btn">↺ Rescan</button>
       </div>
+      ${when ? `<div class="generated-at">Report generated ${esc(when)}</div>` : ''}
       <div class="portfolio-result markdown-body">${renderMarkdown(appState.portfolioText)}</div>
     </div>`;
 
@@ -1024,11 +1179,12 @@ chrome.runtime.onMessage.addListener((msg) => {
     case 'ANALYSIS_PROGRESS':
       if (msg.payload.step === 'profile' && msg.payload.companyProfile) {
         appState.companyProfile = msg.payload.companyProfile;
+        if (appState.phase === STATE.ANALYZING) renderAnalyzing(); // chips appear — full repaint once
       }
       if (msg.payload.accumulated !== undefined) {
         appState.planText = msg.payload.accumulated;
+        updateStreamingPlan(); // scoped — only the plan box repaints
       }
-      if (appState.phase === STATE.ANALYZING) renderAnalyzing();
       break;
 
     case 'ANALYSIS_COMPLETE':
@@ -1038,6 +1194,9 @@ chrome.runtime.onMessage.addListener((msg) => {
           companyProfile: msg.payload.companyProfile,
           planText: msg.payload.planText,
           activities: msg.payload.activities,
+          referenceChecks: msg.payload.referenceChecks || [],
+          coverage: msg.payload.coverage || null,
+          generatedAt: msg.payload.generatedAt || Date.now(),
           error: null
         });
       } else {
@@ -1106,7 +1265,8 @@ chrome.runtime.onMessage.addListener((msg) => {
       if (msg.payload.success) {
         transition(STATE.PORTFOLIO_COMPLETE, {
           portfolioText: msg.payload.planText,
-          portfolioCount: msg.payload.profileCount || appState.portfolioCount
+          portfolioCount: msg.payload.profileCount || appState.portfolioCount,
+          portfolioGeneratedAt: msg.payload.generatedAt || Date.now()
         });
       } else {
         transition(STATE.ERROR, { error: msg.payload.error || 'Portfolio scan failed' });
@@ -1167,8 +1327,11 @@ async function triggerExtraction(tabId) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load persisted deep search setting
-  chrome.storage.sync.get(['deepSearch'], (r) => { appState.deepSearch = !!r.deepSearch; });
+  // Load persisted deep search setting + configured server URL (for honest error text)
+  chrome.storage.sync.get(['deepSearch', 'ollamaUrl'], (r) => {
+    appState.deepSearch = !!r.deepSearch;
+    appState.ollamaUrl = r.ollamaUrl || 'http://10.100.255.200:11434';
+  });
 
   // Background Ollama health check
   chrome.runtime.sendMessage({ type: 'CHECK_OLLAMA' }, (res) => {
@@ -1190,7 +1353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.runtime.sendMessage({ type: 'GET_SESSION', payload: { tabId: tab.id } }, r)
   );
 
-  if (savedSession?.data?.activities?.length) {
+  if (savedSession?.data?.activities?.length || savedSession?.data?.partialPlanText) {
     const s = savedSession.data;
     // Validate the session belongs to the current URL before restoring
     // (prevents showing previous subscription's plan after in-tab navigation)
@@ -1201,13 +1364,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       urlMatch = savedPath && currentPath && savedPath === currentPath;
     } catch { /* bad URL — don't restore */ }
 
-    if (urlMatch) {
+    if (urlMatch && s.activities?.length) {
       transition(STATE.REVIEW, {
         odooData: s.odooData,
         researchData: s.researchData,
         companyProfile: s.companyProfile,
         planText: s.planText,
-        activities: s.activities
+        activities: s.activities,
+        referenceChecks: s.referenceChecks || [],
+        coverage: s.coverage || null,
+        generatedAt: s.generatedAt || null,   // the banner marks stale plans — they used to look fresh
+        memoryKey: s.memoryKey || null
+      });
+      return;
+    }
+    if (urlMatch && s.partialPlanText) {
+      // The worker persists streamed text every ~3s — a plan interrupted by a
+      // closed panel is recoverable instead of silently discarded
+      transition(STATE.REVIEW, {
+        odooData: s.odooData,
+        researchData: s.researchData,
+        companyProfile: s.companyProfile,
+        planText: s.partialPlanText,
+        activities: parseActivitiesFromPlan(s.partialPlanText),
+        generatedAt: s.partialPlanAt || null,
+        error: 'Recovered a partially generated plan (the panel was closed mid-generation). Review carefully or Start Over to regenerate.'
       });
       return;
     }
@@ -1224,8 +1405,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ── Reschedule screen ────────────────────────────────────────────────────────
+// Bulk-writes due dates in Odoo, so it is preview-first: a dry run shows
+// exactly which activities move where, and nothing is written until the user
+// confirms that list. (The old version wrote immediately, with copy that
+// claimed "Call activities" while actually moving every type.)
 
-let _rescheduleBackFn = null;
+let _rescheduleOpts = null;
+
+function rescheduleBack() {
+  // Re-render the real app state — the old innerHTML-snapshot restore brought
+  // back dead markup with no event listeners
+  updatePhaseBar(PHASE_MAP[appState.phase] ?? null);
+  render();
+}
 
 function renderRescheduleScreen(state = 'idle') {
   const content = document.getElementById('content');
@@ -1236,7 +1428,7 @@ function renderRescheduleScreen(state = 'idle') {
         <div class="loading-screen">
           <div class="loading-row">
             <div class="loading-icon"><div class="spinner"></div></div>
-            <span class="loading-label active">Rescheduling activities...</span>
+            <span class="loading-label active">Working…</span>
           </div>
         </div>
       </div>`;
@@ -1247,7 +1439,7 @@ function renderRescheduleScreen(state = 'idle') {
     <div class="reschedule-screen screen">
       <div class="reschedule-hero">
         <h2>Reschedule Overdue Activities</h2>
-        <p>Finds all overdue Call activities and distributes them into upcoming weekdays, starting tomorrow.</p>
+        <p>Finds your overdue activities and distributes them into upcoming weekdays, starting tomorrow. Nothing is changed until you confirm the preview.</p>
       </div>
       <div class="reschedule-config">
         <div class="reschedule-config-row">
@@ -1256,6 +1448,13 @@ function renderRescheduleScreen(state = 'idle') {
         </div>
         <div><strong>Starts:</strong> Tomorrow (weekdays only)</div>
         <div class="reschedule-config-row">
+          <strong>Types:</strong>
+          <select id="types-select" class="reschedule-select">
+            <option value="calls">Call activities only</option>
+            <option value="all">All activity types</option>
+          </select>
+        </div>
+        <div class="reschedule-config-row">
           <strong>Scope:</strong>
           <select id="scope-select" class="reschedule-select">
             <option value="include_today">Overdue + Today</option>
@@ -1263,12 +1462,38 @@ function renderRescheduleScreen(state = 'idle') {
           </select>
         </div>
       </div>
-      <button id="run-reschedule-btn" class="btn btn-primary" style="width:100%">Reschedule Now</button>
+      <button id="run-reschedule-btn" class="btn btn-primary" style="width:100%">Preview Reschedule</button>
       <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px">Back</button>
     </div>`;
 
-  document.getElementById('run-reschedule-btn').addEventListener('click', runReschedule);
-  document.getElementById('reschedule-back-btn').addEventListener('click', () => _rescheduleBackFn?.());
+  document.getElementById('run-reschedule-btn').addEventListener('click', () => runReschedule(true));
+  document.getElementById('reschedule-back-btn').addEventListener('click', rescheduleBack);
+}
+
+function renderReschedulePreview(result) {
+  const content = document.getElementById('content');
+  const fmt = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const days = (result.preview || []).map(day => `
+    <div class="reschedule-day">
+      <div class="reschedule-day-head">${esc(fmt(day.date))} — ${day.activities.length} activit${day.activities.length === 1 ? 'y' : 'ies'}</div>
+      ${day.activities.slice(0, 30).map(a =>
+        `<div class="reschedule-day-row">• [${esc(a.type)}] ${esc(a.summary)}${a.record ? ` — ${esc(a.record)}` : ''} <span class="muted">(was ${esc(a.from)})</span></div>`
+      ).join('')}
+    </div>`).join('');
+
+  content.innerHTML = `
+    <div class="reschedule-screen screen">
+      <div class="reschedule-hero">
+        <h2>Preview — nothing changed yet</h2>
+        <p><strong>${result.count}</strong> activit${result.count === 1 ? 'y' : 'ies'} will move across <strong>${result.days}</strong> day${result.days > 1 ? 's' : ''}:</p>
+      </div>
+      <div class="reschedule-preview">${days}</div>
+      <button id="confirm-reschedule-btn" class="btn btn-success" style="width:100%">✓ Confirm — move ${result.count} activit${result.count === 1 ? 'y' : 'ies'}</button>
+      <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px">Cancel</button>
+    </div>`;
+
+  document.getElementById('confirm-reschedule-btn').addEventListener('click', () => runReschedule(false));
+  document.getElementById('reschedule-back-btn').addEventListener('click', () => renderRescheduleScreen('idle'));
 }
 
 function renderRescheduleResult(result) {
@@ -1276,7 +1501,7 @@ function renderRescheduleResult(result) {
   if (result.count === 0) {
     content.innerHTML = `
       <div class="reschedule-screen screen">
-        <div class="reschedule-empty">✓ No overdue activities — you're all caught up!</div>
+        <div class="reschedule-empty">✓ No overdue activities matching the filter — you're all caught up!</div>
         <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px;margin-top:8px">Back</button>
       </div>`;
   } else {
@@ -1294,24 +1519,30 @@ function renderRescheduleResult(result) {
         <button id="reschedule-again-btn" class="btn btn-primary" style="width:100%">Run Again</button>
         <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px">Back</button>
       </div>`;
-    document.getElementById('reschedule-again-btn').addEventListener('click', runReschedule);
+    document.getElementById('reschedule-again-btn').addEventListener('click', () => renderRescheduleScreen('idle'));
   }
-  document.getElementById('reschedule-back-btn').addEventListener('click', () => _rescheduleBackFn?.());
+  document.getElementById('reschedule-back-btn').addEventListener('click', rescheduleBack);
 }
 
 function renderRescheduleError(message) {
   const content = document.getElementById('content');
   content.innerHTML = `
     <div class="reschedule-screen screen">
-      <div class="reschedule-error"><strong>Error:</strong> ${message}</div>
+      <div class="reschedule-error"><strong>Error:</strong> ${esc(message)}</div>
       <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px;margin-top:12px">Back</button>
     </div>`;
   document.getElementById('reschedule-back-btn').addEventListener('click', () => renderRescheduleScreen('idle'));
 }
 
-async function runReschedule() {
-  const maxPerDay = Math.max(1, parseInt(document.getElementById('max-per-day-input')?.value) || 18);
-  const includeToday = document.getElementById('scope-select')?.value !== 'overdue_only';
+async function runReschedule(dryRun) {
+  if (dryRun) {
+    _rescheduleOpts = {
+      maxPerDay: Math.max(1, parseInt(document.getElementById('max-per-day-input')?.value) || 18),
+      includeToday: document.getElementById('scope-select')?.value !== 'overdue_only',
+      callsOnly: document.getElementById('types-select')?.value !== 'all'
+    };
+  }
+  const opts = _rescheduleOpts || { maxPerDay: 18, includeToday: true, callsOnly: true };
   renderRescheduleScreen('loading');
 
   let baseUrl;
@@ -1325,18 +1556,17 @@ async function runReschedule() {
   }
 
   chrome.runtime.sendMessage(
-    { type: 'RESCHEDULE_ACTIVITIES', payload: { baseUrl, maxPerDay, includeToday } },
+    { type: 'RESCHEDULE_ACTIVITIES', payload: { baseUrl, ...opts, dryRun } },
     (response) => {
       if (chrome.runtime.lastError) { renderRescheduleError(chrome.runtime.lastError.message); return; }
       if (!response.success) { renderRescheduleError(response.error); return; }
-      renderRescheduleResult(response.data);
+      if (response.data.count === 0) { renderRescheduleResult(response.data); return; }
+      if (dryRun) renderReschedulePreview(response.data);
+      else renderRescheduleResult(response.data);
     }
   );
 }
 
 document.getElementById('logo').addEventListener('dblclick', () => {
-  const content = document.getElementById('content');
-  const snapshot = content.innerHTML;
-  _rescheduleBackFn = () => { content.innerHTML = snapshot; };
   renderRescheduleScreen('idle');
 });

@@ -2002,6 +2002,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           sendResponse({ success: true, data: await getPortfolioResult() });
           break;
         }
+        case 'CHECK_OLLAMA_URL': {
+          // Probe a candidate URL WITHOUT saving it — "Test Connection" used to
+          // silently overwrite working settings before testing.
+          const TEST_RULE_ID = 1002;
+          try {
+            const base = String(msg.payload.url || '').replace(/\/$/, '');
+            // Temporary Origin-strip rule for the candidate host (the permanent
+            // rule 1001 only covers the currently-saved URL)
+            try {
+              await chrome.declarativeNetRequest.updateDynamicRules({
+                removeRuleIds: [TEST_RULE_ID],
+                addRules: [{
+                  id: TEST_RULE_ID, priority: 1,
+                  action: { type: 'modifyHeaders', requestHeaders: [{ header: 'origin', operation: 'remove' }] },
+                  condition: { urlFilter: `||${new URL(base).hostname}`, resourceTypes: ['xmlhttprequest'] }
+                }]
+              });
+            } catch { /* best effort */ }
+            const r = await fetch(`${base}/api/tags`, { signal: AbortSignal.timeout(5000) });
+            const j = r.ok ? await r.json() : null;
+            sendResponse({ success: true, data: { available: !!r.ok, models: (j?.models || []).map(m => m.name).filter(Boolean) } });
+          } catch {
+            sendResponse({ success: true, data: { available: false, models: [] } });
+          } finally {
+            chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: [TEST_RULE_ID] }).catch(() => {});
+          }
+          break;
+        }
         case 'CREATE_ACTIVITIES': {
           runActivityCreation(msg.payload);
           sendResponse({ success: true });
