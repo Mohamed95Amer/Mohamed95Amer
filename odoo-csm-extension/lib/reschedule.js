@@ -39,14 +39,18 @@ async function getSessionUid(baseUrl) {
   return uid;
 }
 
-async function fetchOverdueActivities(baseUrl, uid, includeToday = true) {
+async function fetchOverdueActivities(baseUrl, uid, includeToday = true, callsOnly = true) {
   const today = toISODate(new Date());
   const op = includeToday ? '<=' : '<';
+  const domain = [['user_id', '=', uid], ['date_deadline', op, today]];
+  // The UI promises "Call activities" — without this filter the old version
+  // silently rewrote deadlines on EVERY overdue activity type (up to 500).
+  if (callsOnly) domain.push(['activity_type_id.name', 'ilike', 'call']);
   return rpc(baseUrl, {
     model: 'mail.activity',
     method: 'search_read',
-    args: [[['user_id', '=', uid], ['date_deadline', op, today]]],
-    kwargs: { fields: ['id', 'date_deadline'], order: 'date_deadline asc', limit: 500 }
+    args: [domain],
+    kwargs: { fields: ['id', 'date_deadline', 'summary', 'activity_type_id', 'res_name'], order: 'date_deadline asc', limit: 500 }
   });
 }
 
@@ -105,12 +109,17 @@ async function applyPlan(baseUrl, plan) {
   }
 }
 
-export async function rescheduleOverdueActivities(baseUrl, maxPerDay = 18, includeToday = true) {
+// options: { maxPerDay, includeToday, callsOnly, dryRun }
+// dryRun returns the full plan (which activities land on which day) WITHOUT
+// writing — the panel shows this as a preview the user must confirm. A bulk
+// write into Odoo with no preview/undo was the audit's top destructive finding.
+export async function rescheduleOverdueActivities(baseUrl, options = {}) {
+  const { maxPerDay = 18, includeToday = true, callsOnly = true, dryRun = false } = options;
   const uid = await getSessionUid(baseUrl);
 
-  const overdue = await fetchOverdueActivities(baseUrl, uid, includeToday);
+  const overdue = await fetchOverdueActivities(baseUrl, uid, includeToday, callsOnly);
   if (overdue.length === 0) {
-    return { count: 0, days: 0, firstDate: null, lastDate: null };
+    return { count: 0, days: 0, firstDate: null, lastDate: null, preview: [] };
   }
 
   const overdueIds = overdue.map(a => a.id);
@@ -118,12 +127,26 @@ export async function rescheduleOverdueActivities(baseUrl, maxPerDay = 18, inclu
   const dayCountMap = buildDayCountMap(future);
   const plan = buildDistributionPlan(overdueIds, dayCountMap, maxPerDay);
 
-  await applyPlan(baseUrl, plan);
+  const byId = Object.fromEntries(overdue.map(a => [a.id, a]));
+  const preview = plan.map(({ date, ids }) => ({
+    date,
+    activities: ids.map(id => ({
+      id,
+      summary: byId[id]?.summary || '(no summary)',
+      type: byId[id]?.activity_type_id?.[1] || '?',
+      record: byId[id]?.res_name || '',
+      from: byId[id]?.date_deadline || ''
+    }))
+  }));
+
+  if (!dryRun) await applyPlan(baseUrl, plan);
 
   return {
     count: overdueIds.length,
     days: plan.length,
     firstDate: plan[0].date,
-    lastDate: plan[plan.length - 1].date
+    lastDate: plan[plan.length - 1].date,
+    preview,
+    applied: !dryRun
   };
 }

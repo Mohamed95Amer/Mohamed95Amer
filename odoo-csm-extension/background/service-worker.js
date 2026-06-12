@@ -2,19 +2,46 @@ import {
   ollamaAvailable,
   ollamaChat,
   ollamaModels,
+  prewarmModel,
   buildResearchPrompt,
   buildActionPlanPrompt,
   buildPortfolioPrompt,
   buildQuickBriefPrompt,
   parseActivitiesFromPlan,
+  verifyActivityReferences,
+  computeDataCoverage,
+  chunkProfiles,
+  computePortfolioStats,
   extractJsonObject,
   RESEARCH_SYSTEM_PROMPT,
   ACTION_PLAN_SYSTEM_PROMPT,
   PORTFOLIO_SYSTEM_PROMPT,
   QUICK_BRIEF_SYSTEM_PROMPT
 } from '../lib/ollama.js';
-import { getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState } from '../lib/storage.js';
+import {
+  getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState,
+  savePortfolioResult, getPortfolioResult
+} from '../lib/storage.js';
+import { partnerKeyFor, getAccountMemory, recordReview, setLatestFeedback, buildMemoryBlock, buildLikedExamplesBlock } from '../lib/memory.js';
 import { rescheduleOverdueActivities } from '../lib/reschedule.js';
+
+// ── SW self-keepalive ────────────────────────────────────────────────────────
+// The panel's 20s ping only works while the panel is open, and an idle Port or
+// a streaming fetch does NOT reset Chrome's 30s idle timer. While any long
+// operation is in flight, ping a trivial chrome.* API ourselves so minutes of
+// LLM work survive a closed panel.
+let _busyCount = 0;
+let _selfKeepalive = null;
+function beginLongWork() {
+  _busyCount++;
+  if (!_selfKeepalive) {
+    _selfKeepalive = setInterval(() => chrome.runtime.getPlatformInfo(() => {}), 20000);
+  }
+}
+function endLongWork() {
+  _busyCount = Math.max(0, _busyCount - 1);
+  if (_busyCount === 0 && _selfKeepalive) { clearInterval(_selfKeepalive); _selfKeepalive = null; }
+}
 
 // ── Ollama Origin fix ────────────────────────────────────────────────────────
 // Ollama rejects requests whose Origin isn't in its allowlist (403). Chrome
@@ -81,13 +108,54 @@ async function fetchCompanyWebsite(companyName) {
       if (googleTab.resolver) { googleTab.resolver({ url: null }); googleTab.resolver = null; }
       if (googleTab.id !== null) { chrome.tabs.remove(googleTab.id).catch(() => {}); googleTab.id = null; }
     }, 10000);
+
+    // The extractor is injected ONLY into this extension-created tab.
+    // (It used to be a manifest content_script running — and waking the
+    // service worker — on every Google search the user ever made.)
+    waitForTabLoad(tab.id, 8000).then(() =>
+      chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['content/google-extractor.js'] })
+    ).catch(() => {
+      if (googleTab.resolver) { googleTab.resolver({ url: null }); googleTab.resolver = null; }
+    });
   });
 
   return result.url || null;
 }
 
+// SERP results are attacker-influenced — never let them point the browser at
+// intranet/loopback hosts (SSRF via search result).
+function isPublicHttpUrl(url) {
+  try {
+    const u = new URL(url);
+    if (!/^https?:$/.test(u.protocol)) return false;
+    const h = u.hostname;
+    if (h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || !h.includes('.')) return false;
+    if (/^10\.|^192\.168\.|^172\.(1[6-9]|2\d|3[01])\.|^169\.254\./.test(h)) return false;
+    if (/\.(local|internal|lan|corp|intranet)$/i.test(h)) return false;
+    return true;
+  } catch { return false; }
+}
+
 async function fetchCompanyWebsiteContent(url) {
-  if (!url) return '';
+  if (!url || !isPublicHttpUrl(url)) return '';
+
+  // Fast path: a plain fetch covers most marketing sites without spinning up a
+  // rendered tab (saves ~8-10s). Tab fallback handles JS-rendered pages.
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000), credentials: 'omit' });
+    if (res.ok && /text\/html/i.test(res.headers.get('content-type') || '')) {
+      const html = await res.text();
+      const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || '';
+      const metaDesc = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)/i)?.[1] || '';
+      const bodyText = html
+        .replace(/<(script|style|noscript|nav|footer|header|aside)[\s\S]*?<\/\1>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&[a-z#0-9]+;/gi, ' ')
+        .replace(/\s+/g, ' ').trim().slice(0, 3000);
+      if (bodyText.length > 300) return `Title: ${title}\nDescription: ${metaDesc}\n\n${bodyText}`;
+    }
+  } catch { /* fall through to the rendered-tab path */ }
+
   let tab;
   try {
     tab = await chrome.tabs.create({ url, active: false });
@@ -186,12 +254,16 @@ async function extractOdooPageData() {
     if (name) products.push({ name, qty, unitPrice: price });
   });
 
-  // Click Notes tab first — Odoo renders internal_note_display only after tab activation
+  // Click Notes tab first — Odoo renders internal_note_display only after tab activation.
+  // Poll for the field instead of a fixed sleep (usually renders in <150ms).
   const notesTab = [...document.querySelectorAll('.o_notebook .nav-link, .nav-tabs .nav-link')]
     .find(t => /^notes?$/i.test(t.textContent.trim()));
   if (notesTab) {
     notesTab.click();
-    await new Promise(r => setTimeout(r, 600));
+    for (let i = 0; i < 12; i++) {
+      if (document.querySelector('div[name="internal_note_display"]')) break;
+      await new Promise(r => setTimeout(r, 50));
+    }
   }
   // internal_note_display is the CSM internal notes field (visible only after tab click)
   const notesContent = (
@@ -280,9 +352,15 @@ async function extractOdooPageData() {
         return j.result;
       };
 
-      const recs = await rpc('sale.order', 'read',
-        [[id], ['name', 'partner_id', 'recurrence_id', 'recurring_monthly', 'currency_id',
-                'next_invoice_date', 'end_date', 'user_id', 'subscription_state']], {});
+      // Header read and order-lines read are independent — fire them together
+      const [recs, lines] = await Promise.all([
+        rpc('sale.order', 'read',
+          [[id], ['name', 'partner_id', 'commercial_partner_id', 'recurrence_id', 'recurring_monthly',
+                  'currency_id', 'next_invoice_date', 'end_date', 'user_id', 'subscription_state']], {}),
+        rpc('sale.order.line', 'search_read',
+          [[['order_id', '=', id], ['display_type', '=', false]]],
+          { fields: ['product_id', 'product_uom_qty', 'price_unit'], limit: 30 })
+      ]);
       const rec = recs?.[0];
       if (rec) {
         if (rec.partner_id?.[1]) data.customerName = rec.partner_id[1];
@@ -292,8 +370,15 @@ async function extractOdooPageData() {
         if (rec.currency_id?.[1]) data.currency = rec.currency_id[1];
         if (rec.user_id?.[1]) data.assignedSalesperson = rec.user_id[1];
         if (rec.subscription_state) data.subscriptionState = String(rec.subscription_state).replace(/^\d+_/, '');
+        // Resolved once here, passed to every collector — replaces 4 duplicate
+        // partner-lookup round-trips downstream
+        data.partnerId = rec.commercial_partner_id?.[0] || rec.partner_id?.[0] || null;
 
-        const isoRenewal = rec.next_invoice_date || rec.end_date;
+        // end_date = the contract decision point; next_invoice_date = next
+        // billing cycle. Keep both — monthly invoicing is not a "renewal".
+        data.nextInvoiceDate = rec.next_invoice_date || null;
+        data.contractEndDate = rec.end_date || null;
+        const isoRenewal = rec.end_date || rec.next_invoice_date;
         if (isoRenewal) {
           data.renewalDate = isoRenewal;
           const parts = isoRenewal.match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -304,9 +389,6 @@ async function extractOdooPageData() {
           }
         }
 
-        const lines = await rpc('sale.order.line', 'search_read',
-          [[['order_id', '=', id], ['display_type', '=', false]]],
-          { fields: ['product_id', 'product_uom_qty', 'price_unit'], limit: 30 });
         if (Array.isArray(lines) && lines.length) {
           data.products = lines
             .filter(l => l.product_id?.[1])
@@ -341,7 +423,7 @@ async function extractDbUtilization() {
   );
   if (!dbTab) return { error: 'Databases tab not found' };
   dbTab.click();
-  await delay(2000);
+  // No fixed sleep — the row poll below waits exactly as long as needed
 
   // Find first database row
   const dbRow = await poll(() =>
@@ -355,7 +437,7 @@ async function extractDbUtilization() {
   // Click first data cell (not the row itself) to reliably open inline dialog
   const firstCell = dbRow.querySelector('td.o_data_cell');
   (firstCell || dbRow).click();
-  await delay(800);
+  await delay(150); // dialog poll below covers the rest
 
   // Poll for dialog to appear (up to 6s)
   const dialog = await poll(() => {
@@ -369,7 +451,7 @@ async function extractDbUtilization() {
     .find(t => /updates?/i.test(t.textContent));
   if (!updTab) return { error: 'Updates tab not found in dialog' };
   updTab.click();
-  await delay(800);
+  await delay(150); // rows poll below covers the rest
 
   // Poll for table rows to appear
   const rows = await poll(() => {
@@ -398,8 +480,10 @@ async function extractDbUtilization() {
     .find(t => /installed|apps/i.test(t.textContent));
   if (appsTab) {
     appsTab.click();
-    await delay(1000);
-    const appEls = dialog.querySelectorAll('.o_data_row td:first-child, .o_kanban_record .o_module_name, .o_data_row .o_data_cell:first-child');
+    const appEls = await poll(() => {
+      const els = dialog.querySelectorAll('.o_data_row td:first-child, .o_kanban_record .o_module_name, .o_data_row .o_data_cell:first-child');
+      return els.length ? els : null;
+    }, 6, 200) || [];
     installedModules = [...appEls].map(el => el.innerText.trim()).filter(Boolean).slice(0, 80);
   }
 
@@ -445,8 +529,49 @@ async function extractDbUtilizationFromTab(tabId) {
   }
 }
 
-// ── Chatter scroll ───────────────────────────────────────────────────────────
+// ── Chatter ──────────────────────────────────────────────────────────────────
 
+// One mail.message RPC replaces the old scroll-and-click loop (9-50s of fixed
+// sleeps that also mounted the full history into the live page DOM). Returns
+// ISO dates, which also fixes the NaN date parsing in buildKeySignals.
+async function fetchChatterRpc(tabId, soId) {
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      args: [soId || 0],
+      func: async (knownId) => {
+        const rpc = async (model, method, args, kwargs) => {
+          const r = await fetch('/web/dataset/call_kw', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
+          });
+          const j = await r.json();
+          return Array.isArray(j.result) ? j.result : [];
+        };
+        const id = knownId || parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || '0');
+        if (!id) return null;
+
+        const msgs = await rpc('mail.message', 'search_read',
+          [[['model', '=', 'sale.order'], ['res_id', '=', id],
+            ['message_type', 'in', ['comment', 'email']]]],
+          { fields: ['author_id', 'date', 'body', 'subtype_id'], limit: 300, order: 'date desc' });
+
+        return msgs.map(m => ({
+          author: m.author_id?.[1] || '',
+          date: m.date || '',
+          body: (m.body || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 600),
+          type: /note/i.test(m.subtype_id?.[1] || '') ? 'log_note' : 'message'
+        })).filter(m => m.body);
+      }
+    });
+    return results?.[0]?.result;
+  } catch {
+    return null;
+  }
+}
+
+// Legacy fallback only — used when the mail.message RPC fails (e.g. ACL quirk).
 async function scrollAndExtractChatter(tabId, deepSearch = false) {
   try {
     const results = await chrome.scripting.executeScript({
@@ -530,11 +655,12 @@ async function waitForTabLoad(tabId, timeoutMs = 10000) {
 // so it works identically whether the customer bought implementation with us,
 // self-implemented, or came from a reseller with a broken renewal chain.
 // Replaces the old tab-automation approach (5 hidden tabs × ~20s → ~2s total).
-async function fetchSalesHistory(tabId) {
+async function fetchSalesHistory(tabId, knownPartnerId = 0) {
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId },
-      func: async () => {
+      args: [knownPartnerId || 0],
+      func: async (knownPid) => {
         const rpc = async (model, method, args, kwargs) => {
           const r = await fetch('/web/dataset/call_kw', {
             method: 'POST',
@@ -550,8 +676,8 @@ async function fetchSalesHistory(tabId) {
         // commercial_partner_id anchors at company level even when the order
         // is on a child contact.
         const currentId = parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || '0');
-        let partnerId = 0;
-        if (currentId) {
+        let partnerId = knownPid; // resolved once during extraction — no extra round-trip
+        if (!partnerId && currentId) {
           const so = await rpc('sale.order', 'read', [[currentId], ['partner_id', 'commercial_partner_id']], {});
           partnerId = so?.[0]?.commercial_partner_id?.[0] || so?.[0]?.partner_id?.[0] || 0;
         }
@@ -595,11 +721,12 @@ async function fetchSalesHistory(tabId) {
 // Partner-level "Customer 360" — the data behind the contact form's smart buttons,
 // read directly via RPC: CRM opportunities (presales story), invoices (payment
 // behavior), and child contacts (departed-champion detection).
-async function fetchPartnerIntel(tabId) {
+async function fetchPartnerIntel(tabId, knownPartnerId = 0) {
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId },
-      func: async () => {
+      args: [knownPartnerId || 0],
+      func: async (knownPid) => {
         const rpc = async (model, method, args, kwargs) => {
           const r = await fetch('/web/dataset/call_kw', {
             method: 'POST',
@@ -611,8 +738,8 @@ async function fetchPartnerIntel(tabId) {
         };
 
         const soIdFromUrl = parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || '0');
-        let partnerId = 0;
-        if (soIdFromUrl) {
+        let partnerId = knownPid;
+        if (!partnerId && soIdFromUrl) {
           const so = await rpc('sale.order', 'read', [[soIdFromUrl], ['partner_id', 'commercial_partner_id']], {});
           partnerId = so?.[0]?.commercial_partner_id?.[0] || so?.[0]?.partner_id?.[0] || 0;
         }
@@ -621,6 +748,28 @@ async function fetchPartnerIntel(tabId) {
           partnerId = parseInt(link?.getAttribute('data-id') || link?.getAttribute('href')?.match(/\/(\d+)(?:\?|$)/)?.[1] || '0');
         }
         if (!partnerId) return null;
+
+        // System-of-record signals the playbook references but the model never
+        // saw before: open helpdesk tickets + contract-value change events.
+        // Both models may be absent on a given database — return null (vs [])
+        // so "no data" and "module not installed" stay distinguishable.
+        const rpcOrNull = async (model, method, args, kwargs) => {
+          try {
+            const r = await fetch('/web/dataset/call_kw', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
+            });
+            const j = await r.json();
+            if (j.error) return null;
+            return Array.isArray(j.result) ? j.result : null;
+          } catch { return null; }
+        };
+        const ticketsTask = rpcOrNull('helpdesk.ticket', 'search_read',
+          [[['partner_id', 'child_of', partnerId], ['stage_id.fold', '=', false]]],
+          { fields: ['name', 'create_date', 'priority'], limit: 10, order: 'create_date desc' });
+        const orderLogTask = rpcOrNull('sale.order.log', 'search_read',
+          [[['order_id.partner_id', 'child_of', partnerId]]],
+          { fields: ['event_type', 'event_date', 'amount_signed', 'recurring_monthly'], limit: 12, order: 'event_date desc' });
 
         const [leads, invoices, contacts] = await Promise.all([
           // '|' active/inactive includes Lost opportunities (archived in Odoo)
@@ -636,6 +785,7 @@ async function fetchPartnerIntel(tabId) {
             [['|', ['active', '=', true], ['active', '=', false], ['parent_id', '=', partnerId]]],
             { fields: ['name', 'function', 'email', 'active'], limit: 12 })
         ]);
+        const [ticketRows, orderLogRows] = await Promise.all([ticketsTask, orderLogTask]);
 
         const todayIso = new Date().toISOString().slice(0, 10);
         const overdueCount = invoices.filter(i =>
@@ -649,8 +799,34 @@ async function fetchPartnerIntel(tabId) {
           .filter(c => c.active === false || /\bleft\b|former|no longer|departed|resigned/i.test(`${c.name} ${c.function || ''}`))
           .map(c => `${c.name}${c.function ? ` (${c.function})` : ''}`);
 
+        // Open-ticket summary (null = Helpdesk module not readable on this db)
+        let tickets = null;
+        if (ticketRows !== null) {
+          const today = Date.now();
+          const ages = ticketRows.map(t => t.create_date ? Math.round((today - new Date(t.create_date)) / 86400000) : null).filter(d => d != null);
+          tickets = {
+            openCount: ticketRows.length,
+            oldestDays: ages.length ? Math.max(...ages) : null,
+            recent: ticketRows.slice(0, 3).map(t => (t.name || '').slice(0, 80))
+          };
+        }
+
+        // Contract-value trend from subscription event log (upsell/downsell/churn)
+        let mrrTrend = null;
+        if (orderLogRows !== null) {
+          mrrTrend = {
+            events: orderLogRows.slice(0, 6).map(l => ({
+              date: (l.event_date || '').slice(0, 10),
+              type: String(l.event_type || '').replace(/^\d+_/, ''),
+              delta: l.amount_signed != null ? (l.amount_signed > 0 ? `+${l.amount_signed}` : String(l.amount_signed)) : '?'
+            }))
+          };
+        }
+
         return {
           opportunities: leads,
+          tickets,
+          mrrTrend,
           invoices: {
             count: invoices.length,
             overdueCount,
@@ -676,11 +852,12 @@ async function fetchPartnerIntel(tabId) {
 
 // ── Deep Intel: Sales History, Tasks, Timesheets via Odoo JSON-RPC ──────────
 
-async function extractDeepIntel(tabId) {
+async function extractDeepIntel(tabId, knownPartnerId = 0) {
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId },
-      func: async () => {
+      args: [knownPartnerId || 0],
+      func: async (knownPid) => {
         async function rpc(model, method, domain, fields, limit = 25) {
           try {
             const r = await fetch('/web/dataset/call_kw', {
@@ -698,8 +875,8 @@ async function extractDeepIntel(tabId) {
 
         // Resolve partner via RPC from the order id in the URL (DOM link is fallback)
         const urlId = parseInt(window.location.pathname.match(/\/(\d+)$/)?.[1] || '0');
-        let partnerId = 0;
-        if (urlId) {
+        let partnerId = knownPid;
+        if (!partnerId && urlId) {
           try {
             const resp = await fetch('/web/dataset/call_kw', {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -770,19 +947,20 @@ async function extractDeepIntel(tabId) {
 
 // Lightweight project info — runs always (cheap RPC, doesn't require deep search).
 // Returns active projects + hours remaining so the Quick Brief can show "Has a project? Yes — 125h / 1h remaining"
-async function fetchProjectInfo(tabId) {
+async function fetchProjectInfo(tabId, knownPartnerId = 0) {
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId },
-      func: async () => {
+      args: [knownPartnerId || 0],
+      func: async (knownPid) => {
         const rpc = (model, method, args, kwargs) => fetch('/web/dataset/call_kw', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
         }).then(r => r.json()).then(d => Array.isArray(d.result) ? d.result : []);
 
         const soId = parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || '0');
-        let partnerId = 0;
-        if (soId) {
+        let partnerId = knownPid;
+        if (!partnerId && soId) {
           const so = await rpc('sale.order', 'read', [[soId], ['partner_id', 'commercial_partner_id']], {});
           partnerId = so?.[0]?.commercial_partner_id?.[0] || so?.[0]?.partner_id?.[0] || 0;
         }
@@ -822,6 +1000,7 @@ async function fetchProjectInfo(tabId) {
 }
 
 async function runQuickBrief({ tabId }) {
+  beginLongWork();
   try {
     broadcast('QUICK_BRIEF_PROGRESS', { status: 'running' });
 
@@ -833,7 +1012,7 @@ async function runQuickBrief({ tabId }) {
     }
 
     // Fetch project info (lightweight RPC — runs always, fast)
-    const projectInfo = await fetchProjectInfo(tabId);
+    const projectInfo = await fetchProjectInfo(tabId, odooData.partnerId || 0);
 
     const prompt = buildQuickBriefPrompt(odooData, projectInfo);
     const messages = [
@@ -867,188 +1046,265 @@ async function runQuickBrief({ tabId }) {
     broadcast('QUICK_BRIEF_COMPLETE', { success: true, brief, projectInfo });
   } catch (err) {
     broadcast('QUICK_BRIEF_COMPLETE', { success: false, error: err.message });
+  } finally {
+    endLongWork();
   }
 }
 
 async function runResearch(payload) {
   const { tabId, customerName, deepSearch = false } = payload;
+  beginLongWork(); // survive panel close / SW idle reaping for the whole phase
+  try {
+    const session0 = await getSessionState(tabId) || {};
+    const partnerId = session0.odooData?.partnerId || 0;
+    const soId = parseInt(session0.odooData?.soId || '0', 10) || 0;
 
-  // Step 1: Scroll chatter (sequential — needed before analysis)
-  await broadcast('RESEARCH_PROGRESS', { step: 'chatter', status: 'running' });
-  const fullChatHistory = await scrollAndExtractChatter(tabId, deepSearch);
-  await broadcast('RESEARCH_PROGRESS', { step: 'chatter', status: 'done', count: fullChatHistory.length });
+    // Warm the heavyweight plan model NOW so its 30-120s cold load overlaps
+    // data collection instead of stalling the Analyze phase.
+    prewarmModel('analysis');
 
-  const session = await getSessionState(tabId) || {};
-  if (session.odooData) {
-    session.odooData.chatHistory = fullChatHistory;
-    await saveSessionState(tabId, session);
+    // All collectors are independent — fire simultaneously. Each one catches
+    // its own errors and returns a safe default, so Promise.all cannot reject.
+
+    // Current order's chatter: one mail.message RPC (~0.4s). The old
+    // scroll-and-click path (9-50s of fixed sleeps) remains as fallback only.
+    const chatterTask = (async () => {
+      await broadcast('RESEARCH_PROGRESS', { step: 'chatter', status: 'running' });
+      let history = await fetchChatterRpc(tabId, soId);
+      if (!Array.isArray(history)) history = await scrollAndExtractChatter(tabId, deepSearch);
+      await broadcast('RESEARCH_PROGRESS', { step: 'chatter', status: 'done', count: history.length });
+      return history;
+    })();
+
+    // Sales history via RPC — all company orders + their chatter, no tabs
+    const salesHistoryTask = (async () => {
+      await broadcast('RESEARCH_PROGRESS', { step: 'sales_history', status: 'running' });
+      const result = await fetchSalesHistory(tabId, partnerId);
+      await broadcast('RESEARCH_PROGRESS', {
+        step: 'sales_history',
+        status: (result.messages.length || result.orders.length) ? 'done' : 'not_found',
+        count: result.messages.length
+      });
+      return result;
+    })();
+
+    // Customer 360 — opportunities, invoices, contacts, tickets, MRR trend
+    const partnerIntelTask = (async () => {
+      await broadcast('RESEARCH_PROGRESS', { step: 'partner_intel', status: 'running' });
+      const intel = await fetchPartnerIntel(tabId, partnerId);
+      await broadcast('RESEARCH_PROGRESS', {
+        step: 'partner_intel',
+        status: intel ? 'done' : 'not_found',
+        counts: intel ? {
+          opps: intel.opportunities?.length || 0,
+          invoices: intel.invoices?.count || 0,
+          contacts: intel.contacts?.total || 0
+        } : null
+      });
+      return intel;
+    })();
+
+    // Company website via Google (Deep Search only)
+    const websiteTask = deepSearch ? (async () => {
+      await broadcast('RESEARCH_PROGRESS', { step: 'google_search', status: 'running' });
+      const websiteUrl = await fetchCompanyWebsite(customerName);
+      await broadcast('RESEARCH_PROGRESS', { step: 'google_search', status: websiteUrl ? 'done' : 'not_found' });
+      return websiteUrl ? await fetchCompanyWebsiteContent(websiteUrl) : '';
+    })() : Promise.resolve('');
+
+    // Tasks & Timesheets via Odoo RPC (Deep Search only)
+    const deepIntelTask = deepSearch ? (async () => {
+      await broadcast('RESEARCH_PROGRESS', { step: 'deep_intel', status: 'running' });
+      const intel = await extractDeepIntel(tabId, partnerId);
+      await broadcast('RESEARCH_PROGRESS', {
+        step: 'deep_intel',
+        status: intel ? 'done' : 'not_found',
+        counts: intel ? {
+          orders: intel.salesOrders?.length || 0,
+          tasks: intel.tasks?.length || 0,
+          hours: intel.timesheets?.totalHours || 0
+        } : null
+      });
+      return intel;
+    })() : Promise.resolve(null);
+
+    const [
+      fullChatHistory,
+      { orders: previousOrders, messages: salesHistoryMessages },
+      partnerIntel,
+      websiteText,
+      deepIntel
+    ] = await Promise.all([chatterTask, salesHistoryTask, partnerIntelTask, websiteTask, deepIntelTask]);
+
+    const researchData = {
+      websiteText,
+      chatHistory: fullChatHistory,
+      salesHistory: salesHistoryMessages,
+      previousOrders,
+      partnerIntel,
+      deepIntel
+    };
+
+    // Persist and update odooData with chatter + sales history
+    const updated = await getSessionState(tabId) || {};
+    if (updated.odooData) {
+      updated.odooData.chatHistory = fullChatHistory;
+      updated.odooData.salesHistory = salesHistoryMessages;
+    }
+    await saveSessionState(tabId, { ...updated, researchData });
+
+    await broadcast('RESEARCH_COMPLETE', { researchData });
+  } finally {
+    endLongWork();
   }
-
-  // Steps 2–4: independent collectors — fire simultaneously. Each one catches
-  // its own errors and returns a safe default, so Promise.all cannot reject.
-
-  // Sales history via RPC — all company orders + their chatter, no tabs
-  const salesHistoryTask = (async () => {
-    await broadcast('RESEARCH_PROGRESS', { step: 'sales_history', status: 'running' });
-    const result = await fetchSalesHistory(tabId);
-    await broadcast('RESEARCH_PROGRESS', {
-      step: 'sales_history',
-      status: (result.messages.length || result.orders.length) ? 'done' : 'not_found',
-      count: result.messages.length
-    });
-    return result;
-  })();
-
-  // Customer 360 — opportunities, invoices, contacts (cheap RPC, runs always)
-  const partnerIntelTask = (async () => {
-    await broadcast('RESEARCH_PROGRESS', { step: 'partner_intel', status: 'running' });
-    const intel = await fetchPartnerIntel(tabId);
-    await broadcast('RESEARCH_PROGRESS', {
-      step: 'partner_intel',
-      status: intel ? 'done' : 'not_found',
-      counts: intel ? {
-        opps: intel.opportunities?.length || 0,
-        invoices: intel.invoices?.count || 0,
-        contacts: intel.contacts?.total || 0
-      } : null
-    });
-    return intel;
-  })();
-
-  // Company website via Google (Deep Search only)
-  const websiteTask = deepSearch ? (async () => {
-    await broadcast('RESEARCH_PROGRESS', { step: 'google_search', status: 'running' });
-    const websiteUrl = await fetchCompanyWebsite(customerName);
-    await broadcast('RESEARCH_PROGRESS', { step: 'google_search', status: websiteUrl ? 'done' : 'not_found' });
-    return websiteUrl ? await fetchCompanyWebsiteContent(websiteUrl) : '';
-  })() : Promise.resolve('');
-
-  // Tasks & Timesheets via Odoo RPC (Deep Search only)
-  const deepIntelTask = deepSearch ? (async () => {
-    await broadcast('RESEARCH_PROGRESS', { step: 'deep_intel', status: 'running' });
-    const intel = await extractDeepIntel(tabId);
-    await broadcast('RESEARCH_PROGRESS', {
-      step: 'deep_intel',
-      status: intel ? 'done' : 'not_found',
-      counts: intel ? {
-        orders: intel.salesOrders?.length || 0,
-        tasks: intel.tasks?.length || 0,
-        hours: intel.timesheets?.totalHours || 0
-      } : null
-    });
-    return intel;
-  })() : Promise.resolve(null);
-
-  const [
-    { orders: previousOrders, messages: salesHistoryMessages },
-    partnerIntel,
-    websiteText,
-    deepIntel
-  ] = await Promise.all([salesHistoryTask, partnerIntelTask, websiteTask, deepIntelTask]);
-
-  const researchData = {
-    websiteText,
-    chatHistory: fullChatHistory,
-    salesHistory: salesHistoryMessages,
-    previousOrders,
-    partnerIntel,
-    deepIntel
-  };
-
-  // Persist and update odooData with sales history
-  const updated = await getSessionState(tabId) || {};
-  if (updated.odooData) updated.odooData.salesHistory = salesHistoryMessages;
-  await saveSessionState(tabId, { ...updated, researchData });
-
-  await broadcast('RESEARCH_COMPLETE', { researchData });
 }
 
 // ── Analysis phase ───────────────────────────────────────────────────────────
 
+// Cancellation: each START_ANALYSIS supersedes the previous run. The old
+// stream is aborted (a Retry no longer double-streams into the same panel),
+// and a stale run's broadcasts are suppressed by the runId check.
+let _analysisRunSeq = 0;
+let _analysisAbort = null;
+
+function cancelAnalysis() {
+  _analysisRunSeq++;
+  if (_analysisAbort) { _analysisAbort.abort(); _analysisAbort = null; }
+}
+
 async function runAnalysis(payload) {
   const { tabId, odooData, researchData } = payload;
 
-  const running = await ollamaAvailable();
-  if (!running) {
-    await broadcast('ANALYSIS_COMPLETE', {
-      success: false,
-      error: 'Local Ollama server unreachable. Check the server URL in Settings (⚙) or contact IT.'
-    });
-    return;
-  }
+  cancelAnalysis();
+  const runId = _analysisRunSeq;
+  const controller = new AbortController();
+  _analysisAbort = controller;
+  const isStale = () => runId !== _analysisRunSeq;
 
-  await broadcast('ANALYSIS_PROGRESS', { step: 'profile', status: 'running' });
-
-  let companyProfile = {};
+  beginLongWork();
   try {
-    const profileJson = await ollamaChat(
-      [
-        { role: 'system', content: RESEARCH_SYSTEM_PROMPT },
-        { role: 'user', content: buildResearchPrompt(odooData.customerName, researchData.websiteText) }
-      ],
-      'quick_brief',
-      () => {}
-    );
-    companyProfile = extractJsonObject(profileJson)
-      || { summary: 'Web research not available — proceeding with subscription data only.' };
-  } catch {
-    companyProfile = { summary: 'Web research not available — proceeding with subscription data only.' };
-  }
+    const running = await ollamaAvailable();
+    if (!running) {
+      await broadcast('ANALYSIS_COMPLETE', {
+        success: false,
+        error: 'Local Ollama server unreachable. Check the server URL in Settings (⚙) or contact IT.'
+      });
+      return;
+    }
 
-  await broadcast('ANALYSIS_PROGRESS', { step: 'profile', status: 'done', companyProfile });
-
-  // Reload session to get dbInfo / installedModules added by enrichment
-  const latestSession = await getSessionState(tabId) || {};
-  const latestOdooData = latestSession.odooData || odooData;
-
-  // Use full chat history and sales history from research phase
-  const enrichedOdooData = {
-    ...latestOdooData,
-    chatHistory: researchData.chatHistory?.length ? researchData.chatHistory : latestOdooData.chatHistory,
-    salesHistory: researchData.salesHistory || []
-  };
-
-  let planText = '';
-  // Streaming emits per-token deltas — throttle broadcasts so the panel
-  // repaints smoothly instead of re-rendering hundreds of times per second
-  let lastPlanBroadcast = 0;
-  try {
-    await ollamaChat(
-      [
-        { role: 'system', content: ACTION_PLAN_SYSTEM_PROMPT },
-        { role: 'user', content: buildActionPlanPrompt(enrichedOdooData, companyProfile, researchData) }
-      ],
-      'analysis',
-      (chunk, accumulated) => {
-        planText = accumulated;
-        const now = Date.now();
-        if (now - lastPlanBroadcast >= 150) {
-          lastPlanBroadcast = now;
-          broadcast('ANALYSIS_PROGRESS', { step: 'plan', chunk, accumulated });
-        }
+    // Company profile: ONLY when there is real website text to analyze.
+    // With Deep Search off the old code asked the model to invent a profile
+    // from the bare company name and labeled the fabrication "Web Research".
+    let companyProfile = { summary: 'No web research performed (Deep Search off).' };
+    if ((researchData.websiteText || '').trim()) {
+      await broadcast('ANALYSIS_PROGRESS', { step: 'profile', status: 'running' });
+      try {
+        const profileJson = await ollamaChat(
+          [
+            { role: 'system', content: RESEARCH_SYSTEM_PROMPT },
+            { role: 'user', content: buildResearchPrompt(odooData.customerName, researchData.websiteText) }
+          ],
+          'quick_brief',
+          () => {},
+          controller.signal
+        );
+        companyProfile = extractJsonObject(profileJson)
+          || { summary: 'Web research not available — proceeding with subscription data only.' };
+      } catch (err) {
+        if (err.message === 'CANCELLED' || isStale()) return;
+        companyProfile = { summary: 'Web research not available — proceeding with subscription data only.' };
       }
-    );
-  } catch (err) {
-    await broadcast('ANALYSIS_COMPLETE', { success: false, error: `Plan generation failed: ${err.message}`, companyProfile, planText: '', activities: [] });
-    return;
+    }
+    if (isStale()) return;
+
+    await broadcast('ANALYSIS_PROGRESS', { step: 'profile', status: 'done', companyProfile });
+
+    // Reload session to get dbInfo / installedModules added by enrichment
+    const latestSession = await getSessionState(tabId) || {};
+    const latestOdooData = latestSession.odooData || odooData;
+
+    // Use full chat history and sales history from research phase
+    const enrichedOdooData = {
+      ...latestOdooData,
+      chatHistory: researchData.chatHistory?.length ? researchData.chatHistory : latestOdooData.chatHistory,
+      salesHistory: researchData.salesHistory || []
+    };
+
+    // Learning layer: prior reviews of this account + the CSM's 👍 examples
+    const pKey = partnerKeyFor(enrichedOdooData);
+    const memory = await getAccountMemory(pKey);
+    const memoryBlock = buildMemoryBlock(memory, enrichedOdooData);
+    const likedExamplesBlock = await buildLikedExamplesBlock(2);
+
+    let planText = '';
+    // Streaming emits per-token deltas — throttle broadcasts so the panel
+    // repaints smoothly instead of re-rendering hundreds of times per second.
+    // Partial text is ALSO persisted every ~3s: closing the panel mid-stream
+    // no longer discards minutes of completed GPU work.
+    let lastPlanBroadcast = 0;
+    let lastPlanPersist = 0;
+    try {
+      await ollamaChat(
+        [
+          { role: 'system', content: ACTION_PLAN_SYSTEM_PROMPT },
+          { role: 'user', content: buildActionPlanPrompt(enrichedOdooData, companyProfile, researchData, { memoryBlock, likedExamplesBlock }) }
+        ],
+        'analysis',
+        (chunk, accumulated) => {
+          if (isStale()) return;
+          planText = accumulated;
+          const now = Date.now();
+          if (now - lastPlanBroadcast >= 150) {
+            lastPlanBroadcast = now;
+            broadcast('ANALYSIS_PROGRESS', { step: 'plan', chunk, accumulated });
+          }
+          if (now - lastPlanPersist >= 3000) {
+            lastPlanPersist = now;
+            getSessionState(tabId).then(s =>
+              saveSessionState(tabId, { ...(s || {}), partialPlanText: accumulated, partialPlanAt: Date.now() })
+            ).catch(() => {});
+          }
+        },
+        controller.signal
+      );
+    } catch (err) {
+      if (err.message === 'CANCELLED' || isStale()) return;
+      await broadcast('ANALYSIS_COMPLETE', { success: false, error: `Plan generation failed: ${err.message}`, companyProfile, planText: '', activities: [] });
+      return;
+    }
+    if (isStale()) return;
+
+    if (!planText || planText.trim().length < 50) {
+      await broadcast('ANALYSIS_COMPLETE', { success: false, error: 'The model returned an empty response. Check the model name in Settings and that the Ollama server is healthy.', companyProfile, planText: '', activities: [] });
+      return;
+    }
+
+    const activities = parseActivitiesFromPlan(planText);
+    // Code-side grounding check on each activity's "Reference:" line
+    const referenceChecks = verifyActivityReferences(activities, enrichedOdooData, researchData);
+    const coverage = computeDataCoverage(enrichedOdooData, researchData);
+    const generatedAt = Date.now();
+
+    const session = await getSessionState(tabId) || {};
+    delete session.partialPlanText;
+    delete session.partialPlanAt;
+    await saveSessionState(tabId, {
+      ...session, companyProfile, planText, activities, referenceChecks, coverage, generatedAt,
+      healthTier: enrichedOdooData.healthTierNow || null   // set by buildKeySignals — persisted for the memory layer
+    });
+
+    await broadcast('ANALYSIS_COMPLETE', { success: true, companyProfile, planText, activities, referenceChecks, coverage, generatedAt });
+  } finally {
+    if (_analysisAbort === controller) _analysisAbort = null;
+    endLongWork();
   }
-
-  if (!planText || planText.trim().length < 50) {
-    await broadcast('ANALYSIS_COMPLETE', { success: false, error: 'The model returned an empty response. Check the model name in Settings and that the Ollama server is healthy.', companyProfile, planText: '', activities: [] });
-    return;
-  }
-
-  const activities = parseActivitiesFromPlan(planText);
-  const session = await getSessionState(tabId) || {};
-  await saveSessionState(tabId, { ...session, companyProfile, planText, activities });
-
-  await broadcast('ANALYSIS_COMPLETE', { success: true, companyProfile, planText, activities });
 }
 
 // ── Activity creation ────────────────────────────────────────────────────────
 
-async function runActivityCreation(payload) {
-  const { tabId, activities } = payload;
+// Legacy UI-automation creator — kept ONLY as fallback for databases where the
+// mail.activity RPC create is denied. ~8s of choreographed clicking per activity.
+async function createActivitiesViaUi(tabId, activities) {
   try {
     // Self-contained: all helpers inlined so executeScript needs no globals
     const results = await chrome.scripting.executeScript({
@@ -1316,13 +1572,149 @@ async function runActivityCreation(payload) {
       },
       args: [activities]
     });
-    const creationResults = results?.[0]?.result || [];
-    for (const r of creationResults) await broadcast('ACTIVITY_PROGRESS', r);
+    return results?.[0]?.result || [];
+  } catch (err) {
+    return activities.map(a => ({ success: false, summary: a.summary, error: err.message }));
+  }
+}
+
+// Resolve the RPC context once: sale.order's ir.model id + activity-type ids.
+async function resolveActivityRpcContext(tabId) {
+  const results = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: async () => {
+      const rpc = async (model, method, args, kwargs) => {
+        const r = await fetch('/web/dataset/call_kw', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
+        });
+        const j = await r.json();
+        if (j.error) throw new Error(j.error.data?.message || j.error.message || 'RPC error');
+        return j.result;
+      };
+      const soId = parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || '0');
+      const [models, types] = await Promise.all([
+        rpc('ir.model', 'search_read', [[['model', '=', 'sale.order']]], { fields: ['id'], limit: 1 }),
+        rpc('mail.activity.type', 'search_read', [[]], { fields: ['id', 'name'], limit: 40 })
+      ]);
+      return { soId, resModelId: models?.[0]?.id || null, types: types || [] };
+    }
+  });
+  return results?.[0]?.result || null;
+}
+
+function pickActivityTypeId(types, activityType) {
+  const want = activityType === 'Phone Call' ? /call|phone/i
+    : activityType === 'Email' ? /e-?mail/i
+    : /meeting/i;
+  const hit = types.find(t => want.test(t.name)) || types.find(t => /to.?do/i.test(t.name)) || types[0];
+  return hit?.id || null;
+}
+
+async function createActivityViaRpc(tabId, ctx, activity) {
+  const results = await chrome.scripting.executeScript({
+    target: { tabId },
+    args: [{
+      resModelId: ctx.resModelId,
+      soId: ctx.soId,
+      typeId: pickActivityTypeId(ctx.types, activity.activityType),
+      summary: (activity.summary || '').slice(0, 60),
+      dueDate: activity.dueDate,
+      // Plain text → simple HTML for the note field; angle brackets escaped
+      noteHtml: String(activity.notes || '')
+        .replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1')
+        .split('\n').filter(Boolean)
+        .map(l => `<p>${l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/^[\s\-•]+/, '• ')}</p>`)
+        .join('')
+    }],
+    func: async (p) => {
+      if (!p.resModelId || !p.soId || !p.typeId) return { rpcFailed: true, error: 'RPC context incomplete' };
+      try {
+        const r = await fetch('/web/dataset/call_kw', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0', method: 'call', id: Date.now(),
+            params: {
+              model: 'mail.activity', method: 'create',
+              args: [{
+                res_model_id: p.resModelId,
+                res_id: p.soId,
+                activity_type_id: p.typeId,
+                summary: p.summary,
+                date_deadline: p.dueDate,
+                note: p.noteHtml
+              }],
+              kwargs: {}
+            }
+          })
+        });
+        const j = await r.json();
+        if (j.error) return { rpcFailed: true, error: j.error.data?.message || j.error.message || 'RPC error' };
+        return { success: true };
+      } catch (err) {
+        return { rpcFailed: true, error: err.message };
+      }
+    }
+  });
+  return results?.[0]?.result || { rpcFailed: true, error: 'No result from page' };
+}
+
+async function runActivityCreation(payload) {
+  const { tabId, activities, feedback = {} } = payload;
+  beginLongWork();
+  try {
+    // RPC-first: <1s per activity, immune to Odoo UI redesigns, no page hijack.
+    let ctx = null;
+    try { ctx = await resolveActivityRpcContext(tabId); } catch { ctx = null; }
+
+    const creationResults = [];
+    for (const activity of activities) {
+      let result;
+      if (ctx?.resModelId && ctx?.soId && ctx.types?.length) {
+        const rpcRes = await createActivityViaRpc(tabId, ctx, activity);
+        result = rpcRes.success
+          ? { success: true, summary: activity.summary }
+          : (await createActivitiesViaUi(tabId, [activity]))[0]
+            || { success: false, summary: activity.summary, error: rpcRes.error };
+      } else {
+        result = (await createActivitiesViaUi(tabId, [activity]))[0]
+          || { success: false, summary: activity.summary, error: 'Creation failed' };
+      }
+      creationResults.push(result);
+      // Real-time per-activity progress (the old code batched all results at the end)
+      await broadcast('ACTIVITY_PROGRESS', result);
+    }
+
+    // Learning layer: persist this review to per-account memory BEFORE marking
+    // the session executed. Proposed (AI) vs final (CSM-edited) is the signal.
+    try {
+      const session = await getSessionState(tabId) || {};
+      const od = session.odooData || {};
+      const pKey = partnerKeyFor(od);
+      if (pKey) {
+        await recordReview(pKey, od.customerName, {
+          soNumber: od.soNumber,
+          healthTier: session.healthTier || od.healthTierNow || null,
+          daysUntilRenewal: od.daysUntilRenewal ?? null,
+          utilization: od.dbInfo?.utilization ?? null,
+          recurringAmount: od.recurringAmount || null,
+          planText: session.planText || '',
+          proposedActivities: session.activities || [],
+          finalActivities: activities,
+          feedback,
+          created: creationResults.some(r => r.success)
+        });
+      }
+      // Keep the session (plan stays reviewable/copyable) — just mark it done.
+      await saveSessionState(tabId, { ...session, executedAt: Date.now(), executionResults: creationResults, memoryKey: pKey });
+    } catch { /* memory write is best-effort */ }
+
     await broadcast('ACTIVITY_COMPLETE', { results: creationResults });
-    await clearSessionState(tabId);
   } catch (err) {
     // Surface error so panel can show it
     await broadcast('ACTIVITY_COMPLETE', { success: false, error: err.message, results: [] });
+  } finally {
+    endLongWork();
   }
 }
 
@@ -1335,6 +1727,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 // ── Portfolio Scanner ─────────────────────────────────────────────────────────
 
 async function runPortfolioScan({ tabId }) {
+  beginLongWork();
   try {
     broadcast('PORTFOLIO_PROGRESS', { step: 'fetch_subs', status: 'running', label: 'Fetching subscriptions…' });
 
@@ -1375,14 +1768,17 @@ async function runPortfolioScan({ tabId }) {
     broadcast('PORTFOLIO_PROGRESS', { step: 'fetch_subs', status: 'done', label: `${subs.length} accounts loaded`, count: subs.length });
     broadcast('PORTFOLIO_PROGRESS', { step: 'fetch_msgs', status: 'running', label: 'Loading chatter history…' });
 
-    // Step 2: Fetch chatter messages in batches of 40
+    // Step 2: Fetch chatter for ALL accounts, batches fired in parallel.
+    // (The old loop was sequential and hard-capped at 120 subs — accounts
+    // 121-150 silently presented as "no chatter" and got flagged "no
+    // relationship built" by the prompt: a fabricated signal.)
     const allIds = subs.map(s => s.id);
-    let allMessages = [];
     const batchSize = 40;
+    const batches = [];
+    for (let i = 0; i < allIds.length; i += batchSize) batches.push(allIds.slice(i, i + batchSize));
 
-    for (let i = 0; i < Math.min(allIds.length, 120); i += batchSize) {
-      const batchIds = allIds.slice(i, i + batchSize);
-      const msgsResult = await chrome.scripting.executeScript({
+    const batchResults = await Promise.all(batches.map(batchIds =>
+      chrome.scripting.executeScript({
         target: { tabId },
         func: async (ids) => {
           const resp = await fetch('/web/dataset/call_kw', {
@@ -1397,11 +1793,9 @@ async function runPortfolioScan({ tabId }) {
           return data.result || [];
         },
         args: [batchIds]
-      });
-      allMessages = allMessages.concat(msgsResult?.[0]?.result || []);
-      broadcast('PORTFOLIO_PROGRESS', { step: 'fetch_msgs', status: 'running',
-        label: `Loading chatter… (${allMessages.length} messages)` });
-    }
+      }).then(r => r?.[0]?.result || []).catch(() => [])
+    ));
+    const allMessages = batchResults.flat();
 
     broadcast('PORTFOLIO_PROGRESS', { step: 'fetch_msgs', status: 'done', label: `${allMessages.length} messages loaded` });
 
@@ -1440,31 +1834,81 @@ async function runPortfolioScan({ tabId }) {
       };
     });
 
-    // Step 4: AI analysis
-    broadcast('PORTFOLIO_PROGRESS', { step: 'analyze', status: 'running', label: 'AI analyzing portfolio…' });
+    // Step 4: AI analysis — CHUNKED. A 150-account prompt is ~60-75K tokens
+    // and cannot fit the 16K context; the old single call silently trimmed
+    // most of the book while reporting full coverage. ~20 accounts per call,
+    // tiers merged in code, Summary Stats computed deterministically.
+    const chunks = chunkProfiles(profiles);
+    const tierMap = {};
+    const tierTexts = { 1: [], 2: [], 3: [], 4: [] };
 
-    const prompt = buildPortfolioPrompt(profiles);
-    const messages = [
-      { role: 'system', content: PORTFOLIO_SYSTEM_PROMPT },
-      { role: 'user', content: prompt }
-    ];
+    for (let c = 0; c < chunks.length; c++) {
+      broadcast('PORTFOLIO_PROGRESS', { step: 'analyze', status: 'running',
+        label: `AI analyzing… (batch ${c + 1} of ${chunks.length})` });
 
-    let fullText = '';
-    let lastPortfolioBroadcast = 0;
-    await ollamaChat(messages, 'portfolio', (chunk, accumulated) => {
-      fullText = accumulated;
-      const now = Date.now();
-      if (now - lastPortfolioBroadcast >= 150) {
-        lastPortfolioBroadcast = now;
-        broadcast('PORTFOLIO_PROGRESS', { step: 'analyze', status: 'running',
-          label: 'AI analyzing…', accumulated });
+      const prompt = buildPortfolioPrompt(chunks[c], { index: c, count: chunks.length });
+      let chunkText = '';
+      let lastPortfolioBroadcast = 0;
+      await ollamaChat(
+        [{ role: 'system', content: PORTFOLIO_SYSTEM_PROMPT }, { role: 'user', content: prompt }],
+        'portfolio',
+        (chunk, accumulated) => {
+          chunkText = accumulated;
+          const now = Date.now();
+          if (now - lastPortfolioBroadcast >= 150) {
+            lastPortfolioBroadcast = now;
+            broadcast('PORTFOLIO_PROGRESS', { step: 'analyze', status: 'running',
+              label: `AI analyzing… (batch ${c + 1} of ${chunks.length})`, accumulated });
+          }
+        }
+      );
+
+      // Tier assignments from the chunk's trailing json block
+      const tierObj = extractJsonObject(chunkText, ['tiers']);
+      for (const [so, tier] of Object.entries(tierObj?.tiers || {})) {
+        const t = parseInt(tier, 10);
+        if (t >= 1 && t <= 4) tierMap[so] = t;
       }
-    });
 
-    broadcast('PORTFOLIO_COMPLETE', { success: true, planText: fullText, profileCount: profiles.length });
+      // Split the chunk's markdown into its tier sections and merge across chunks
+      const body = chunkText.replace(/```[\s\S]*?```/g, '');
+      const sections = body.split(/^(?=##\s*TIER\s*\d)/im);
+      for (const sec of sections) {
+        const m = sec.match(/^##\s*TIER\s*(\d)/i);
+        if (!m) continue;
+        const t = parseInt(m[1], 10);
+        if (tierTexts[t]) tierTexts[t].push(sec.replace(/^##\s*TIER\s*\d[^\n]*\n?(\([^\n]*\)\n?)?/i, '').trim());
+      }
+    }
+
+    const stats = computePortfolioStats(profiles, tierMap);
+    const tierHeaders = {
+      1: '## TIER 1 — Act Today', 2: '## TIER 2 — This Week',
+      3: '## TIER 3 — Next 30 Days', 4: '## TIER 4 — Upsell Pipeline'
+    };
+    const merged = [1, 2, 3, 4]
+      .filter(t => tierTexts[t].some(s => s.trim()))
+      .map(t => `${tierHeaders[t]}\n${tierTexts[t].filter(Boolean).join('\n')}`)
+      .join('\n\n');
+
+    const statsText = `## Summary Stats (computed from data, not by the AI)
+- Total accounts analyzed: ${stats.total}${stats.unassigned ? ` (${stats.unassigned} not tier-assigned by the model)` : ''}
+- Tier 1 (act today): ${stats.tier1} · Tier 2 (this week): ${stats.tier2} · Tier 3: ${stats.tier3} · Tier 4 (upsell): ${stats.tier4}
+- Total MRR at risk (Tier 1+2): $${stats.mrrAtRisk.toLocaleString()}
+${stats.topUpsell ? `- Top upsell opportunity by value: ${stats.topUpsell}` : ''}`;
+
+    const fullText = `${merged}\n\n${statsText}`.trim();
+    const generatedAt = Date.now();
+
+    // Persist — a multi-minute scan must survive closing the panel
+    await savePortfolioResult({ planText: fullText, profileCount: profiles.length, stats });
+
+    broadcast('PORTFOLIO_COMPLETE', { success: true, planText: fullText, profileCount: profiles.length, stats, generatedAt });
 
   } catch (err) {
     broadcast('PORTFOLIO_COMPLETE', { success: false, error: err.message });
+  } finally {
+    endLongWork();
   }
 }
 
@@ -1501,9 +1945,32 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
 // ── Message router ───────────────────────────────────────────────────────────
 
+// Only the extension's own side-panel page may trigger script injection or
+// Odoo writes. Content scripts (which run inside web-page processes) are
+// limited to their reporting message. Defense-in-depth: nothing external can
+// reach this listener today (no externally_connectable), but this caps the
+// blast radius if that ever changes.
+const PANEL_ONLY_TYPES = new Set([
+  'EXTRACT_PAGE_DATA', 'START_RESEARCH', 'START_ANALYSIS', 'CANCEL_ANALYSIS',
+  'CREATE_ACTIVITIES', 'SAVE_SETTINGS', 'START_QUICK_BRIEF', 'SCAN_PORTFOLIO',
+  'RESCHEDULE_ACTIVITIES', 'SET_ACTIVITY_FEEDBACK'
+]);
+
+function senderAllowed(msg, sender) {
+  if (sender.id !== chrome.runtime.id) return false;
+  if (PANEL_ONLY_TYPES.has(msg.type)) {
+    return (sender.url || '').startsWith(chrome.runtime.getURL('sidepanel/'));
+  }
+  return true;
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   (async () => {
     try {
+      if (!senderAllowed(msg, sender)) {
+        sendResponse({ success: false, error: 'Sender not allowed' });
+        return;
+      }
       switch (msg.type) {
         case 'EXTRACT_PAGE_DATA': {
           const result = await extractFromOdooTab(msg.payload.tabId);
@@ -1518,6 +1985,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         case 'START_ANALYSIS': {
           runAnalysis(msg.payload);
           sendResponse({ success: true });
+          break;
+        }
+        case 'CANCEL_ANALYSIS': {
+          cancelAnalysis();
+          sendResponse({ success: true });
+          break;
+        }
+        case 'SET_ACTIVITY_FEEDBACK': {
+          // 👍/👎 given on the Complete screen, after the memory entry exists
+          await setLatestFeedback(msg.payload.memoryKey, msg.payload.feedback || {});
+          sendResponse({ success: true });
+          break;
+        }
+        case 'GET_PORTFOLIO_RESULT': {
+          sendResponse({ success: true, data: await getPortfolioResult() });
           break;
         }
         case 'CREATE_ACTIVITIES': {
@@ -1542,9 +2024,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           break;
         }
         case 'CHECK_OLLAMA': {
-          const available = await ollamaAvailable();
-          const models = available ? await ollamaModels() : [];
-          sendResponse({ success: true, data: { available, models } });
+          // Health ping and model list in parallel (was sequential)
+          const [available, models] = await Promise.all([ollamaAvailable(), ollamaModels()]);
+          sendResponse({ success: true, data: { available, models: available ? models : [] } });
           break;
         }
         case 'GOOGLE_SEARCH_RESULT': {
@@ -1564,7 +2046,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         }
         case 'RESCHEDULE_ACTIVITIES': {
           try {
-            const result = await rescheduleOverdueActivities(msg.payload.baseUrl, msg.payload.maxPerDay, msg.payload.includeToday ?? true);
+            const result = await rescheduleOverdueActivities(msg.payload.baseUrl, {
+              maxPerDay: msg.payload.maxPerDay,
+              includeToday: msg.payload.includeToday ?? true,
+              callsOnly: msg.payload.callsOnly ?? true,
+              dryRun: msg.payload.dryRun ?? false
+            });
             sendResponse({ success: true, data: result });
           } catch (err) {
             sendResponse({ success: false, error: err.message });
