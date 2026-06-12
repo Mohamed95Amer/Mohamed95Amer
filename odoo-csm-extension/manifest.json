@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "Odoo CSM Copilot",
+  "version": "1.2.0",
+  "description": "AI-powered Customer Success Manager assistant for Odoo — local Ollama AI, automated activity creation.",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "tabs",
+    "scripting",
+    "activeTab",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "*://*.odoo.com/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "*://www.google.com/*",
+    "http://10.100.255.200/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.google.com/search*"],
+      "js": ["content/google-extractor.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "CSM Copilot",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
