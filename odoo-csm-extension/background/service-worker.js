@@ -7,6 +7,7 @@ import {
   buildActionPlanPrompt,
   buildPortfolioPrompt,
   buildQuickBriefPrompt,
+  buildKeySignals,
   parseActivitiesFromPlan,
   verifyActivityReferences,
   computeDataCoverage,
@@ -1230,7 +1231,10 @@ async function runAnalysis(payload) {
       salesHistory: researchData.salesHistory || []
     };
 
-    // Learning layer: prior reviews of this account + the CSM's 👍 examples
+    // Learning layer: prior reviews of this account + the CSM's 👍 examples.
+    // Compute Key Signals FIRST — its side effect sets enrichedOdooData.healthTierNow,
+    // which the memory block's "What Changed Since Last Review" health diff reads.
+    const keySignals = buildKeySignals(enrichedOdooData, researchData);
     const pKey = partnerKeyFor(enrichedOdooData);
     const memory = await getAccountMemory(pKey);
     const memoryBlock = buildMemoryBlock(memory, enrichedOdooData);
@@ -1247,7 +1251,7 @@ async function runAnalysis(payload) {
       await ollamaChat(
         [
           { role: 'system', content: ACTION_PLAN_SYSTEM_PROMPT },
-          { role: 'user', content: buildActionPlanPrompt(enrichedOdooData, companyProfile, researchData, { memoryBlock, likedExamplesBlock }) }
+          { role: 'user', content: buildActionPlanPrompt(enrichedOdooData, companyProfile, researchData, { memoryBlock, likedExamplesBlock, keySignals }) }
         ],
         'analysis',
         (chunk, accumulated) => {
@@ -1953,7 +1957,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 const PANEL_ONLY_TYPES = new Set([
   'EXTRACT_PAGE_DATA', 'START_RESEARCH', 'START_ANALYSIS', 'CANCEL_ANALYSIS',
   'CREATE_ACTIVITIES', 'SAVE_SETTINGS', 'START_QUICK_BRIEF', 'SCAN_PORTFOLIO',
-  'RESCHEDULE_ACTIVITIES', 'SET_ACTIVITY_FEEDBACK'
+  'RESCHEDULE_ACTIVITIES', 'SET_ACTIVITY_FEEDBACK',
+  // does a fetch + installs a DNR origin-strip rule for an arbitrary URL — a
+  // content script must not be able to probe intranet hosts through the SW
+  'CHECK_OLLAMA_URL'
 ]);
 
 function senderAllowed(msg, sender) {
@@ -2078,7 +2085,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
               maxPerDay: msg.payload.maxPerDay,
               includeToday: msg.payload.includeToday ?? true,
               callsOnly: msg.payload.callsOnly ?? true,
-              dryRun: msg.payload.dryRun ?? false
+              dryRun: msg.payload.dryRun ?? false,
+              confirmPlan: msg.payload.confirmPlan ?? null
             });
             sendResponse({ success: true, data: result });
           } catch (err) {

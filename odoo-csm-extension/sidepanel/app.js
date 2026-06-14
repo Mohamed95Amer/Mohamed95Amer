@@ -1411,6 +1411,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // claimed "Call activities" while actually moving every type.)
 
 let _rescheduleOpts = null;
+let _reschedulePlan = null;  // concrete {date, ids}[] captured from the preview
 
 function rescheduleBack() {
   // Re-render the real app state — the old innerHTML-snapshot restore brought
@@ -1492,6 +1493,9 @@ function renderReschedulePreview(result) {
       <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px">Cancel</button>
     </div>`;
 
+  // Capture the EXACT plan the user is approving so confirm applies it verbatim
+  // (not a freshly recomputed one)
+  _reschedulePlan = result.plan || null;
   document.getElementById('confirm-reschedule-btn').addEventListener('click', () => runReschedule(false));
   document.getElementById('reschedule-back-btn').addEventListener('click', () => renderRescheduleScreen('idle'));
 }
@@ -1515,6 +1519,7 @@ function renderRescheduleResult(result) {
           <div class="result-count">${result.count}</div>
           <div class="result-label">activities rescheduled</div>
           <div class="result-detail">Across ${result.days} day${result.days > 1 ? 's' : ''}: ${dateRange}</div>
+          ${result.skipped ? `<div class="result-detail muted">${result.skipped} skipped — changed in Odoo since the preview</div>` : ''}
         </div>
         <button id="reschedule-again-btn" class="btn btn-primary" style="width:100%">Run Again</button>
         <button id="reschedule-back-btn" class="btn btn-secondary" style="width:100%;font-size:12px">Back</button>
@@ -1555,8 +1560,10 @@ async function runReschedule(dryRun) {
     return;
   }
 
+  // Confirm applies the exact previewed plan (verbatim); dry run computes a fresh one
+  const confirmPlan = !dryRun ? _reschedulePlan : null;
   chrome.runtime.sendMessage(
-    { type: 'RESCHEDULE_ACTIVITIES', payload: { baseUrl, ...opts, dryRun } },
+    { type: 'RESCHEDULE_ACTIVITIES', payload: { baseUrl, ...opts, dryRun, confirmPlan } },
     (response) => {
       if (chrome.runtime.lastError) { renderRescheduleError(chrome.runtime.lastError.message); return; }
       if (!response.success) { renderRescheduleError(response.error); return; }

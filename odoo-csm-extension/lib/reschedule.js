@@ -109,17 +109,42 @@ async function applyPlan(baseUrl, plan) {
   }
 }
 
-// options: { maxPerDay, includeToday, callsOnly, dryRun }
+// options: { maxPerDay, includeToday, callsOnly, dryRun, confirmPlan }
 // dryRun returns the full plan (which activities land on which day) WITHOUT
 // writing — the panel shows this as a preview the user must confirm. A bulk
 // write into Odoo with no preview/undo was the audit's top destructive finding.
+// confirmPlan ([{date, ids}]) applies the EXACT previewed plan: the user gets
+// what they approved, not a freshly recomputed plan that may differ.
 export async function rescheduleOverdueActivities(baseUrl, options = {}) {
-  const { maxPerDay = 18, includeToday = true, callsOnly = true, dryRun = false } = options;
+  const { maxPerDay = 18, includeToday = true, callsOnly = true, dryRun = false, confirmPlan = null } = options;
   const uid = await getSessionUid(baseUrl);
+
+  // Confirm path — apply the approved plan verbatim, but only for activities
+  // still overdue right now (one re-fetch guards the preview→confirm window:
+  // anything completed/rescheduled in between is skipped, not blindly moved).
+  if (confirmPlan && !dryRun) {
+    const stillOverdue = new Set(
+      (await fetchOverdueActivities(baseUrl, uid, includeToday, callsOnly)).map(a => a.id)
+    );
+    const plan = confirmPlan
+      .map(({ date, ids }) => ({ date, ids: (ids || []).filter(id => stillOverdue.has(id)) }))
+      .filter(d => d.ids.length);
+    const requested = confirmPlan.reduce((n, d) => n + (d.ids?.length || 0), 0);
+    const moved = plan.reduce((n, d) => n + d.ids.length, 0);
+    await applyPlan(baseUrl, plan);
+    return {
+      count: moved,
+      skipped: requested - moved,
+      days: plan.length,
+      firstDate: plan[0]?.date || null,
+      lastDate: plan[plan.length - 1]?.date || null,
+      applied: true
+    };
+  }
 
   const overdue = await fetchOverdueActivities(baseUrl, uid, includeToday, callsOnly);
   if (overdue.length === 0) {
-    return { count: 0, days: 0, firstDate: null, lastDate: null, preview: [] };
+    return { count: 0, days: 0, firstDate: null, lastDate: null, preview: [], plan: [] };
   }
 
   const overdueIds = overdue.map(a => a.id);
@@ -144,9 +169,10 @@ export async function rescheduleOverdueActivities(baseUrl, options = {}) {
   return {
     count: overdueIds.length,
     days: plan.length,
-    firstDate: plan[0].date,
-    lastDate: plan[plan.length - 1].date,
+    firstDate: plan[0]?.date || null,
+    lastDate: plan[plan.length - 1]?.date || null,
     preview,
+    plan,          // concrete {date, ids} so the panel can confirm this exact plan
     applied: !dryRun
   };
 }

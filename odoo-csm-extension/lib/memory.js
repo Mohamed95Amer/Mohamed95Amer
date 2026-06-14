@@ -82,19 +82,28 @@ export async function setLatestFeedback(partnerKey, feedback) {
 
 function describeEditDelta(proposed, final, feedback = {}) {
   const lines = [];
-  const finalBySummary = new Map((final || []).map(a => [a.summary, a]));
-  (proposed || []).forEach((p, i) => {
-    const fb = feedback[i] === 'up' ? ' [CSM rated 👍]' : feedback[i] === 'down' ? ' [CSM rated 👎 — avoid this pattern]' : '';
-    const kept = finalBySummary.get(p.summary);
-    if (!kept && !(final || []).some(f => f.notes === p.notes)) {
-      lines.push(`  - PROPOSED but DELETED by CSM: ${p.activityType} — "${p.summary}"${fb}`);
+  const finalList = final || [];
+  const finalBySummary = new Map(finalList.map(a => [a.summary, a]));
+  // feedback is keyed to the FINAL (CSM-edited / created) activity indices — the
+  // same convention buildLikedExamplesBlock uses. Look it up by each final
+  // activity's position, NOT by the proposed index (the two lists diverge
+  // whenever the CSM deletes or blanks an activity before creating).
+  const fbFor = (act) => {
+    const i = act ? finalList.indexOf(act) : -1;
+    return feedback[i] === 'up' ? ' [CSM rated 👍]'
+         : feedback[i] === 'down' ? ' [CSM rated 👎 — avoid this pattern]' : '';
+  };
+  (proposed || []).forEach((p) => {
+    const kept = finalBySummary.get(p.summary) || finalList.find(f => f.notes === p.notes);
+    if (!kept) {
+      lines.push(`  - PROPOSED but DELETED by CSM: ${p.activityType} — "${p.summary}"`);
     } else {
-      lines.push(`  - CREATED: ${p.activityType} — "${p.summary}" (due ${p.dueDate})${fb}`);
+      lines.push(`  - CREATED: ${p.activityType} — "${p.summary}" (due ${kept.dueDate})${fbFor(kept)}`);
     }
   });
-  for (const f of final || []) {
+  for (const f of finalList) {
     if (!(proposed || []).some(p => p.summary === f.summary)) {
-      lines.push(`  - ADDED manually by CSM: ${f.activityType} — "${f.summary}" (the AI missed this need)`);
+      lines.push(`  - ADDED manually by CSM: ${f.activityType} — "${f.summary}" (the AI missed this need)${fbFor(f)}`);
     }
   }
   return lines;

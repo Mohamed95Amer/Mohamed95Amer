@@ -725,7 +725,10 @@ function buildPartnerIntelBlock(researchData, currency = '') {
   return lines.join('\n');
 }
 
-function buildKeySignals(odooData, researchData) {
+// Exported so the worker can run it BEFORE assembling the memory block — the
+// side effect of setting odooData.healthTierNow is what the "What Changed Since
+// Last Review" health diff reads (it would otherwise be undefined at that point).
+export function buildKeySignals(odooData, researchData) {
   // Last contact — find most recent chatter message with meaningful content
   const allMsgs = [...(odooData.chatHistory || []), ...(odooData.salesHistory || [])];
   const lastMsg = allMsgs.filter(m => (m.body || '').length > 10)[0];
@@ -1022,7 +1025,9 @@ ${odooData.installedModules.join(', ')}
 
   const coverage = computeDataCoverage(odooData, researchData);
 
-  return `${buildKeySignals(odooData, researchData)}
+  // Reuse the worker's pre-computed signals when provided (it runs buildKeySignals
+  // first to populate healthTierNow before the memory block); otherwise compute here.
+  return `${extras.keySignals || buildKeySignals(odooData, researchData)}
 
 ## Data Coverage (pre-computed)
 ${coverageLine(coverage)}
