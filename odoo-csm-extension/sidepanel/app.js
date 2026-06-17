@@ -70,7 +70,9 @@ const initialState = {
   portfolioGeneratedAt: null,
   activityFeedback: {},     // { index: 'up' | 'down' } — feeds the memory layer
   memoryKey: null,
-  ollamaUrl: ''             // configured URL, for honest error messages
+  ollamaUrl: '',            // configured URL, for honest error messages
+  analyzeModel: null,       // { model, degraded, preferred, phase, reason }
+  drafts: {}                // { activityIndex: { loading, text, error } }
 };
 
 let appState = { ...initialState };
@@ -121,6 +123,9 @@ function updatePhaseBar(currentPhaseName) {
     dot.classList.remove('active', 'done');
     if (i < current) dot.classList.add('done');
     else if (i === current) dot.classList.add('active');
+    // a11y: expose the active step to screen readers
+    if (i === current) dot.setAttribute('aria-current', 'step');
+    else dot.removeAttribute('aria-current');
   });
   phaseConnectors.forEach((c, i) => {
     c.classList.toggle('done', i < current);
@@ -269,6 +274,7 @@ function renderExtracted() {
       </div>
       ${utilizationHtml}
       ${briefHtml}
+      <div id="account-memory-slot"></div>
       ${(!d.notesContent && (d.chatHistory || []).length < 3)
         ? `<div class="warning-banner">Low data on this account (no notes, little chatter) — expect a thin, generic plan.</div>`
         : ''}
@@ -288,6 +294,29 @@ function renderExtracted() {
     chrome.storage.sync.set({ deepSearch: appState.deepSearch });
   });
   document.getElementById('start-research-btn')?.addEventListener('click', startResearch);
+
+  // Surface prior reviews of this account (the learning layer, made visible)
+  chrome.runtime.sendMessage({ type: 'GET_ACCOUNT_MEMORY', payload: { tabId: appState.currentTabId } }, (res) => {
+    const mem = res?.data;
+    const slot = document.getElementById('account-memory-slot');
+    if (!slot || !mem?.entries?.length) return;
+    const e = mem.entries[0];
+    const when = (e.date || '').slice(0, 10);
+    const created = (e.finalActivities || []).length;
+    const upCount = Object.values(e.feedback || {}).filter(v => v === 'up').length;
+    const outcomes = (e.outcomes || []);
+    const done = outcomes.filter(o => o.state === 'done').length;
+    const overdue = outcomes.filter(o => o.state === 'overdue').length;
+    const outcomeStr = outcomes.length
+      ? ` · ${done} completed${overdue ? `, ${overdue} still overdue` : ''}`
+      : '';
+    slot.innerHTML = `
+      <div class="memory-panel">
+        <div class="memory-panel-head">🧠 Prior review — ${esc(when)}</div>
+        <div class="memory-panel-row">Created ${created} activit${created === 1 ? 'y' : 'ies'}${upCount ? ` · ${upCount} rated 👍` : ''}${outcomeStr}</div>
+        <div class="memory-panel-row muted">Health then: ${esc(e.healthTier || 'unknown')}. The AI uses this history to avoid repeating itself.</div>
+      </div>`;
+  });
 
   // Quick Brief buttons
   const triggerBrief = () => {
@@ -344,6 +373,18 @@ function renderResearching() {
   contentEl.innerHTML = `<div class="loading-screen screen">${rows}</div>`;
 }
 
+function modelIndicatorHtml() {
+  const m = appState.analyzeModel;
+  if (!m) return '';
+  if (m.degraded) {
+    const why = m.phase === 'fallback'
+      ? `${esc(m.reason || 'primary model failed')} — using a faster model`
+      : `preferred model "${esc(m.preferred || '')}" not on the server`;
+    return `<div class="warning-banner">⚠ Reduced plan quality: ${why}. Running <strong>${esc(m.model)}</strong>.</div>`;
+  }
+  return `<div class="model-chip">Generating with <strong>${esc(m.model)}</strong></div>`;
+}
+
 function planLooksComplete(planText) {
   return (planText || '').includes('## Recommended Activities') &&
     parseActivitiesFromPlan(planText || '').length >= 1;
@@ -388,9 +429,10 @@ function renderAnalyzing() {
   contentEl.innerHTML = `
     <div class="screen">
       ${profileSection}
+      <div id="model-indicator">${modelIndicatorHtml()}</div>
       <div class="summary-section">
         <div class="label">Action Plan <span class="elapsed-badge" id="analyze-elapsed"></span></div>
-        <div class="plan-box cursor-blink" id="streaming-plan"></div>
+        <div class="plan-box cursor-blink" id="streaming-plan" aria-live="polite" aria-atomic="false"></div>
       </div>
       <button class="btn btn-primary btn-full" id="plan-continue-btn" style="display:none">Continue to Review →</button>
       <button class="btn btn-secondary btn-full" id="retry-analysis-btn" style="display:none;margin-top:8px">↺ Retry plan generation</button>
@@ -441,7 +483,10 @@ function coverageChips() {
   const label = { notes: 'Notes', chatter: 'Chatter', salesHistory: 'Sales history', utilization: 'Utilization',
     invoices: 'Invoices', contacts: 'Contacts', tickets: 'Helpdesk', mrrTrend: 'MRR trend', website: 'Web research', deepIntel: 'Deep intel' };
   const chips = Object.entries(c)
-    .map(([k, v]) => `<span class="chip ${v ? 'chip-cov-on' : 'chip-cov-off'}" title="${v ? 'Included in this analysis' : 'NOT available for this analysis'}">${v ? '✓' : '✗'} ${esc(label[k] || k)}</span>`)
+    .map(([k, v]) => {
+      if (v === 'error') return `<span class="chip chip-cov-err" title="Read FAILED (ACL or Odoo field change) — not the same as 'no data'">⚠ ${esc(label[k] || k)}</span>`;
+      return `<span class="chip ${v ? 'chip-cov-on' : 'chip-cov-off'}" title="${v ? 'Included in this analysis' : 'NOT available for this analysis'}">${v ? '✓' : '✗'} ${esc(label[k] || k)}</span>`;
+    })
     .join('');
   return `<div class="profile-chips coverage-chips">${chips}</div>`;
 }
@@ -515,9 +560,9 @@ function renderActivityCard(act, index) {
         </select>
         ${refBadge}
         <div class="activity-card-actions">
-          <button class="btn-icon fb-up ${fb === 'up' ? 'active' : ''}" data-index="${index}" title="Good suggestion — the AI learns from this">👍</button>
-          <button class="btn-icon fb-down ${fb === 'down' ? 'active' : ''}" data-index="${index}" title="Bad suggestion — the AI avoids this pattern next time">👎</button>
-          <button class="btn-icon danger remove-activity" data-index="${index}" title="Remove">✕</button>
+          <button class="btn-icon fb-up ${fb === 'up' ? 'active' : ''}" data-index="${index}" aria-pressed="${fb === 'up'}" aria-label="Good suggestion — the AI learns from this" title="Good suggestion — the AI learns from this">👍</button>
+          <button class="btn-icon fb-down ${fb === 'down' ? 'active' : ''}" data-index="${index}" aria-pressed="${fb === 'down'}" aria-label="Bad suggestion — the AI avoids this pattern next time" title="Bad suggestion — the AI avoids this pattern next time">👎</button>
+          <button class="btn-icon danger remove-activity" data-index="${index}" aria-label="Remove activity" title="Remove">✕</button>
         </div>
       </div>
       <div class="activity-field">
@@ -534,7 +579,29 @@ function renderActivityCard(act, index) {
         <label>Notes — written into Odoo exactly as below</label>
         <textarea class="activity-notes-edit" data-index="${index}" rows="4">${esc(act.notes || '')}</textarea>
       </div>
+      <button class="btn btn-secondary btn-sm draft-msg-btn" data-index="${index}">✍ Draft ${act.activityType === 'Phone Call' ? 'call notes' : act.activityType === 'Email' ? 'email' : 'meeting invite'}</button>
+      <div class="draft-box" data-index="${index}">${draftBoxHtml(index)}</div>
     </div>`;
+}
+
+function draftBoxHtml(index) {
+  const d = appState.drafts[index];
+  if (!d) return '';
+  if (d.loading) return `<div class="draft-loading"><span class="spinner"></span> Drafting…${d.text ? `<div class="draft-text">${esc(d.text)}</div>` : ''}</div>`;
+  if (d.error) return `<div class="draft-error">Draft failed — ${esc(d.error)}</div>`;
+  if (d.text) return `<div class="draft-result"><div class="draft-text">${esc(d.text)}</div><button class="btn btn-secondary btn-sm draft-copy-btn" data-index="${index}">📋 Copy draft</button></div>`;
+  return '';
+}
+
+function refreshDraftBox(index) {
+  const box = document.querySelector(`.draft-box[data-index="${index}"]`);
+  if (box) { box.innerHTML = draftBoxHtml(index); bindDraftCopy(index); }
+}
+
+function bindDraftCopy(index) {
+  document.querySelector(`.draft-copy-btn[data-index="${index}"]`)?.addEventListener('click', async (e) => {
+    try { await navigator.clipboard.writeText(appState.drafts[index]?.text || ''); e.target.textContent = '✅ Copied'; } catch {}
+  });
 }
 
 function bindActivityCardEvents() {
@@ -584,6 +651,15 @@ function bindActivityCardEvents() {
   };
   document.querySelectorAll('.fb-up').forEach(b => b.addEventListener('click', () => setFb(parseInt(b.dataset.index), 'up')));
   document.querySelectorAll('.fb-down').forEach(b => b.addEventListener('click', () => setFb(parseInt(b.dataset.index), 'down')));
+
+  // Draft a ready-to-send message for one activity (in the customer's language)
+  document.querySelectorAll('.draft-msg-btn').forEach(b => b.addEventListener('click', () => {
+    const i = parseInt(b.dataset.index);
+    appState.drafts[i] = { loading: true, text: '' };
+    refreshDraftBox(i);
+    chrome.runtime.sendMessage({ type: 'DRAFT_MESSAGE', payload: { tabId: appState.currentTabId, index: i, activity: appState.activities[i] } });
+  }));
+  Object.keys(appState.drafts).forEach(i => bindDraftCopy(parseInt(i)));
 }
 
 function renderExecuting() {
@@ -688,8 +764,37 @@ function renderSettings() {
         <span class="form-hint">Google Form URL where pilot feedback is collected. Each submission appears in the linked Sheet.</span>
       </div>
 
+      <hr style="border:none;border-top:1px solid var(--border-solid);margin:14px 0 4px">
+      <h2 style="font-size:14px">Diagnostics</h2>
+      <span class="form-hint">A local-only log of recent runs (model used, timings, errors). If something breaks, copy this into your feedback so it can be debugged.</span>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-secondary btn-sm" id="copy-diag-btn" style="flex:1">📋 Copy diagnostics</button>
+        <button class="btn btn-secondary btn-sm" id="clear-diag-btn" style="flex:1">Clear</button>
+      </div>
+      <div id="diag-status" style="margin-top:6px;font-size:12px"></div>
+
       <div id="settings-saved" class="settings-saved" style="display:none">✓ Saved</div>
     </div>`;
+
+  document.getElementById('copy-diag-btn')?.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'GET_DIAGNOSTICS' }, async (res) => {
+      const st = document.getElementById('diag-status');
+      try {
+        const { formatDiagnostics } = await import('../lib/log.js');
+        const text = formatDiagnostics(res?.data?.events || [], res?.data?.meta || {});
+        await navigator.clipboard.writeText(text);
+        if (st) st.innerHTML = `<span style="color:var(--success)">✓ Copied ${res?.data?.events?.length || 0} events to clipboard</span>`;
+      } catch (e) {
+        if (st) st.innerHTML = `<span style="color:var(--danger)">Could not copy: ${esc(e.message)}</span>`;
+      }
+    });
+  });
+  document.getElementById('clear-diag-btn')?.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'CLEAR_DIAGNOSTICS' }, () => {
+      const st = document.getElementById('diag-status');
+      if (st) st.textContent = 'Diagnostics cleared.';
+    });
+  });
 
   // Populate saved values
   chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (res) => {
@@ -733,7 +838,7 @@ function renderSettings() {
     });
   });
 
-  document.getElementById('save-settings-btn')?.addEventListener('click', () => {
+  document.getElementById('save-settings-btn')?.addEventListener('click', async () => {
     const statusEl = document.getElementById('llm-status');
     const payload = {
       ollamaUrl:       document.getElementById('ollama-url').value.trim(),
@@ -742,6 +847,22 @@ function renderSettings() {
       deepSearch:      appState.deepSearch,
       feedbackFormUrl: document.getElementById('feedback-url').value.trim()
     };
+
+    // If the server URL isn't already covered by a granted host permission,
+    // request it now (this click is the required user gesture). Without this a
+    // CSM could set a valid intranet IP that passes the allowlist but then
+    // silently fails every fetch because the manifest never granted that host.
+    try {
+      const origin = new URL(payload.ollamaUrl).origin + '/*';
+      const already = await chrome.permissions.contains({ origins: [origin] }).catch(() => true);
+      if (!already) {
+        const granted = await chrome.permissions.request({ origins: [origin] }).catch(() => false);
+        if (!granted) {
+          statusEl.innerHTML = `<span style="color:var(--warning)">⚠ Saved, but host permission for ${esc(new URL(payload.ollamaUrl).host)} was not granted — the extension can't reach it until you allow it.</span>`;
+        }
+      }
+    } catch { /* invalid URL handled by the worker-side validator below */ }
+
     chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload }, (res) => {
       if (res && res.success === false) {
         // e.g. the intranet allowlist rejected a public host
@@ -1172,8 +1293,30 @@ chrome.runtime.onMessage.addListener((msg) => {
         type: 'START_ANALYSIS',
         payload: { tabId: appState.currentTabId, odooData: appState.odooData, researchData: appState.researchData }
       });
-      transition(STATE.ANALYZING, { planText: '', companyProfile: null, analyzingStartMs: Date.now() });
+      transition(STATE.ANALYZING, { planText: '', companyProfile: null, analyzingStartMs: Date.now(), analyzeModel: null });
       startSWKeepalive();
+      break;
+
+    case 'ANALYSIS_MODEL':
+      appState.analyzeModel = msg.payload;
+      if (appState.phase === STATE.ANALYZING) {
+        const el = document.getElementById('model-indicator');
+        if (el) el.innerHTML = modelIndicatorHtml();
+      }
+      break;
+
+    case 'DRAFT_PROGRESS':
+      if (appState.drafts[msg.payload.index]) {
+        appState.drafts[msg.payload.index] = { loading: true, text: msg.payload.accumulated || appState.drafts[msg.payload.index].text || '' };
+        if (appState.phase === STATE.REVIEW) refreshDraftBox(msg.payload.index);
+      }
+      break;
+
+    case 'DRAFT_COMPLETE':
+      appState.drafts[msg.payload.index] = msg.payload.success
+        ? { loading: false, text: msg.payload.text }
+        : { loading: false, error: msg.payload.error };
+      if (appState.phase === STATE.REVIEW) refreshDraftBox(msg.payload.index);
       break;
 
     case 'ANALYSIS_PROGRESS':

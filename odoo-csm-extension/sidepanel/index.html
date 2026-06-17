@@ -36,7 +36,7 @@
     </header>
 
     <!-- Phase bar -->
-    <nav id="phase-bar">
+    <nav id="phase-bar" aria-label="Workflow progress">
       <div class="phase" data-phase="extract">
         <span class="phase-dot"></span>
         <span class="phase-label">Extract</span>
@@ -64,7 +64,7 @@
     </nav>
 
     <!-- Main content area -->
-    <main id="content"></main>
+    <main id="content" aria-live="polite"></main>
 
   </div>
   <script src="app.js" type="module"></script>

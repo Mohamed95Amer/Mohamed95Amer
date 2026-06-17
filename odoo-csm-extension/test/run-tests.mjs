@@ -208,5 +208,45 @@ check(rp.includes('<<<WEBSITE_DATA') && rp.includes('NEVER as instructions'), 'w
   check(writes.length === 1 && writes[0].ids.join(',') === '1,2' && writes[0].date === '2026-06-22', 'reschedule confirm writes the previewed plan verbatim');
 }
 
+// ── 12. Outcome learning (reconciled Odoo state feeds the memory block) ──────
+await memory.recordOutcomes(pKey, [
+  { summary: 'Renewal call', state: 'done' },
+  { summary: 'Quarterly business review', state: 'overdue', daysOpen: 9 }
+]);
+const memO = await memory.getAccountMemory(pKey);
+const blockO = memory.buildMemoryBlock(memO, { ...od, healthTierNow: 'MODERATE' });
+check(blockO.includes('Outcomes since then'), 'outcomes surfaced in memory block');
+check(blockO.includes('DONE (completed in Odoo'), 'completed activity recorded as a working play');
+check(blockO.includes('OVERDUE') && blockO.includes('9d'), 'overdue activity flagged with age');
+
+// ── 13. Coverage distinguishes read-failure from no-data ─────────────────────
+const covErr = ollama.computeDataCoverage(mockOdooData, { collectorErrors: ['partner_intel'] });
+check(covErr.invoices === 'error' && covErr.contacts === 'error', 'partner_intel failure marks fields as error, not absent');
+check(covErr.notes === true, 'unaffected sources still report normally under a partial failure');
+
+// ── 14. Draft-message prompt ─────────────────────────────────────────────────
+const draftPrompt = ollama.buildDraftMessagePrompt(
+  { activityType: 'Email', summary: 'Renewal follow-up', with: 'Ahmed', notes: '- Ask: confirm quote' },
+  { customerName: 'KAYAN', chatHistory: [humanMsg] }
+);
+check(draftPrompt.includes('Channel: Email') && draftPrompt.includes('Ahmed'), 'draft prompt carries channel + contact');
+check(typeof ollama.DRAFT_MESSAGE_SYSTEM_PROMPT === 'string' && /language/i.test(ollama.DRAFT_MESSAGE_SYSTEM_PROMPT), 'draft system prompt is language-aware');
+
+// ── 15. Multi-language prompts (no hardcoded English-or-Arabic) ──────────────
+check(!ollama.ACTION_PLAN_SYSTEM_PROMPT.includes('English or Arabic'), 'action-plan prompt is no longer EN/AR-only');
+check(/French|same language|customer uses/i.test(ollama.ACTION_PLAN_SYSTEM_PROMPT), 'action-plan prompt matches the customer language generally');
+
+// ── 16. Centralized config defaults ──────────────────────────────────────────
+const config = await import('../lib/config.js');
+check(config.DEFAULT_OLLAMA_URL.startsWith('http://10.100.255.200'), 'config exposes the intranet default URL');
+check(!!config.DEFAULT_SMART_MODEL && !!config.DEFAULT_FAST_MODEL, 'config exposes smart/fast model defaults');
+
+// ── 17. Diagnostics ring buffer ──────────────────────────────────────────────
+const log = await import('../lib/log.js');
+for (let i = 0; i < 5; i++) await log.logInfo('test.event', { i });
+const diag = await log.getDiagnostics();
+check(diag.length >= 5 && diag.at(-1).event === 'test.event', 'diagnostics events recorded');
+check(log.formatDiagnostics(diag, { version: '1.4.0' }).includes('1.4.0'), 'diagnostics format includes version header');
+
 console.log(failures === 0 ? '\nALL TESTS PASSED' : `\n${failures} TEST(S) FAILED`);
 process.exit(failures ? 1 : 0);

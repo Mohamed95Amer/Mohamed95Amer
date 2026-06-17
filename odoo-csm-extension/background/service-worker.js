@@ -14,17 +14,23 @@ import {
   chunkProfiles,
   computePortfolioStats,
   extractJsonObject,
+  buildDraftMessagePrompt,
   RESEARCH_SYSTEM_PROMPT,
   ACTION_PLAN_SYSTEM_PROMPT,
   PORTFOLIO_SYSTEM_PROMPT,
-  QUICK_BRIEF_SYSTEM_PROMPT
+  QUICK_BRIEF_SYSTEM_PROMPT,
+  DRAFT_MESSAGE_SYSTEM_PROMPT
 } from '../lib/ollama.js';
 import {
   getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState,
   savePortfolioResult, getPortfolioResult
 } from '../lib/storage.js';
-import { partnerKeyFor, getAccountMemory, recordReview, setLatestFeedback, buildMemoryBlock, buildLikedExamplesBlock } from '../lib/memory.js';
+import {
+  partnerKeyFor, getAccountMemory, recordReview, setLatestFeedback,
+  buildMemoryBlock, buildLikedExamplesBlock, recordOutcomes, getLastCreatedReview
+} from '../lib/memory.js';
 import { rescheduleOverdueActivities } from '../lib/reschedule.js';
+import { logInfo, logWarn, logError, getDiagnostics, clearDiagnostics } from '../lib/log.js';
 
 // ── SW self-keepalive ────────────────────────────────────────────────────────
 // The panel's 20s ping only works while the panel is open, and an idle Port or
@@ -501,12 +507,72 @@ async function extractFromOdooTab(tabId) {
     const data = results?.[0]?.result;
     if (!data) throw new Error('Could not read page — make sure you are on a Sales Order/Subscription page');
     await saveSessionState(tabId, { odooData: data });
+    logInfo('extract.ok', { so: data.soNumber, partner: data.partnerId || null });
     // Kick off DB utilization in background — broadcasts enrichment when done
     extractDbUtilizationFromTab(tabId).catch(() => {});
+    // Reconcile what happened to the last review's activities (outcome learning)
+    reconcilePriorOutcomes(tabId, data).catch(() => {});
     return { success: true, data };
   } catch (err) {
+    logError('extract.fail', { error: err.message });
     return { success: false, error: err.message };
   }
+}
+
+// Outcome learning: check whether the activities created in the most recent
+// review still exist as open mail.activity records on this SO. Gone = completed
+// (Odoo deletes an activity when it's marked done); still present & overdue =
+// the CSM didn't act. Stored into account memory and surfaced next analysis.
+async function reconcilePriorOutcomes(tabId, odooData) {
+  const pKey = partnerKeyFor(odooData);
+  if (!pKey) return;
+  const last = await getLastCreatedReview(pKey);
+  if (!last?.finalActivities?.length) return;
+
+  const soId = parseInt(odooData.soId || '0', 10);
+  if (!soId) return;
+
+  let openActs;
+  try {
+    const res = await chrome.scripting.executeScript({
+      target: { tabId },
+      args: [soId],
+      func: async (id) => {
+        const r = await fetch('/web/dataset/call_kw', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: {
+            model: 'mail.activity', method: 'search_read',
+            args: [[['res_model', '=', 'sale.order'], ['res_id', '=', id]]],
+            kwargs: { fields: ['summary', 'date_deadline'], limit: 50 }
+          }})
+        });
+        const j = await r.json();
+        if (j.error) return null;
+        return Array.isArray(j.result) ? j.result : [];
+      }
+    });
+    openActs = res?.[0]?.result;
+  } catch { openActs = null; }
+  if (openActs == null) return; // RPC failed — don't record misleading outcomes
+
+  const norm = (s) => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const openBySummary = new Map(openActs.map(a => [norm(a.summary), a]));
+  const todayIso = new Date().toISOString().slice(0, 10);
+
+  const outcomes = last.finalActivities.map(act => {
+    const open = openBySummary.get(norm(act.summary));
+    if (!open) return { summary: act.summary, state: 'done' };
+    const overdue = open.date_deadline && open.date_deadline < todayIso;
+    const daysOpen = open.date_deadline
+      ? Math.round((Date.now() - new Date(open.date_deadline)) / 86400000) : null;
+    return { summary: act.summary, state: overdue ? 'overdue' : 'open', daysOpen: overdue ? daysOpen : null };
+  });
+
+  await recordOutcomes(pKey, outcomes);
+  logInfo('outcomes.reconciled', {
+    done: outcomes.filter(o => o.state === 'done').length,
+    overdue: outcomes.filter(o => o.state === 'overdue').length
+  });
 }
 
 async function extractDbUtilizationFromTab(tabId) {
@@ -728,6 +794,7 @@ async function fetchPartnerIntel(tabId, knownPartnerId = 0) {
       target: { tabId },
       args: [knownPartnerId || 0],
       func: async (knownPid) => {
+       try {
         const rpc = async (model, method, args, kwargs) => {
           const r = await fetch('/web/dataset/call_kw', {
             method: 'POST',
@@ -735,6 +802,9 @@ async function fetchPartnerIntel(tabId, knownPartnerId = 0) {
             body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
           });
           const j = await r.json();
+          // Surface a real RPC failure (ACL, field rename on an Odoo upgrade)
+          // distinctly from an empty result so the UI can say "read failed".
+          if (j.error) throw new Error(j.error.data?.message || j.error.message || 'RPC error');
           return Array.isArray(j.result) ? j.result : [];
         };
 
@@ -843,11 +913,14 @@ async function fetchPartnerIntel(tabId, knownPartnerId = 0) {
               .map(c => ({ name: c.name, function: c.function || '', email: c.email || '' }))
           }
         };
+       } catch (e) {
+        return { __error: String(e && e.message || e) };  // RPC read failed (vs no data)
+       }
       }
     });
     return results?.[0]?.result || null;
-  } catch {
-    return null;
+  } catch (e) {
+    return { __error: String(e && e.message || e) };
   }
 }
 
@@ -1090,9 +1163,16 @@ async function runResearch(payload) {
     })();
 
     // Customer 360 — opportunities, invoices, contacts, tickets, MRR trend
+    const collectorErrors = [];
     const partnerIntelTask = (async () => {
       await broadcast('RESEARCH_PROGRESS', { step: 'partner_intel', status: 'running' });
       const intel = await fetchPartnerIntel(tabId, partnerId);
+      if (intel?.__error) {
+        collectorErrors.push('partner_intel');
+        logWarn('collector.partner_intel.error', { error: intel.__error });
+        await broadcast('RESEARCH_PROGRESS', { step: 'partner_intel', status: 'error' });
+        return null;
+      }
       await broadcast('RESEARCH_PROGRESS', {
         step: 'partner_intel',
         status: intel ? 'done' : 'not_found',
@@ -1143,7 +1223,8 @@ async function runResearch(payload) {
       salesHistory: salesHistoryMessages,
       previousOrders,
       partnerIntel,
-      deepIntel
+      deepIntel,
+      collectorErrors   // which collectors hit an RPC read error (vs no data)
     };
 
     // Persist and update odooData with chatter + sales history
@@ -1241,12 +1322,25 @@ async function runAnalysis(payload) {
     const likedExamplesBlock = await buildLikedExamplesBlock(2);
 
     let planText = '';
+    const planStart = Date.now();
     // Streaming emits per-token deltas — throttle broadcasts so the panel
     // repaints smoothly instead of re-rendering hundreds of times per second.
     // Partial text is ALSO persisted every ~3s: closing the panel mid-stream
     // no longer discards minutes of completed GPU work.
     let lastPlanBroadcast = 0;
     let lastPlanPersist = 0;
+    // Report which model is actually running so the panel can show it and warn
+    // on a silent quality downgrade (preferred smart model missing, or a stall
+    // forced the fast fallback).
+    const onModel = (info) => {
+      if (isStale()) return;
+      if (info.degraded) {
+        logWarn('model.degraded', { phase: info.phase, using: info.model, preferred: info.preferred, reason: info.reason });
+      } else {
+        logInfo('model.selected', { model: info.model });
+      }
+      broadcast('ANALYSIS_MODEL', info);
+    };
     try {
       await ollamaChat(
         [
@@ -1269,10 +1363,12 @@ async function runAnalysis(payload) {
             ).catch(() => {});
           }
         },
-        controller.signal
+        controller.signal,
+        onModel
       );
     } catch (err) {
       if (err.message === 'CANCELLED' || isStale()) return;
+      logError('analysis.fail', { error: err.message, ms: Date.now() - planStart });
       await broadcast('ANALYSIS_COMPLETE', { success: false, error: `Plan generation failed: ${err.message}`, companyProfile, planText: '', activities: [] });
       return;
     }
@@ -1297,9 +1393,43 @@ async function runAnalysis(payload) {
       healthTier: enrichedOdooData.healthTierNow || null   // set by buildKeySignals — persisted for the memory layer
     });
 
+    const unverified = referenceChecks.filter(c => c?.verified === false).length;
+    logInfo('analysis.ok', {
+      ms: Date.now() - planStart, activities: activities.length,
+      unverifiedRefs: unverified, parsedFromJson: /```json/.test(planText)
+    });
+    if (!activities.length) logWarn('analysis.no_activities_parsed', {});
+
     await broadcast('ANALYSIS_COMPLETE', { success: true, companyProfile, planText, activities, referenceChecks, coverage, generatedAt });
   } finally {
     if (_analysisAbort === controller) _analysisAbort = null;
+    endLongWork();
+  }
+}
+
+// ── Draft message generation (per-activity, on demand) ──────────────────────
+
+async function runDraftMessage({ tabId, index, activity }) {
+  beginLongWork();
+  try {
+    broadcast('DRAFT_PROGRESS', { index, status: 'running' });
+    const session = await getSessionState(tabId) || {};
+    const odooData = session.odooData || {};
+    let text = '';
+    await ollamaChat(
+      [
+        { role: 'system', content: DRAFT_MESSAGE_SYSTEM_PROMPT },
+        { role: 'user', content: buildDraftMessagePrompt(activity, odooData) }
+      ],
+      'quick_brief',
+      (_chunk, accumulated) => { text = accumulated; broadcast('DRAFT_PROGRESS', { index, status: 'running', accumulated }); }
+    );
+    logInfo('draft.ok', { index, chars: text.length });
+    broadcast('DRAFT_COMPLETE', { index, success: true, text });
+  } catch (err) {
+    logError('draft.fail', { error: err.message });
+    broadcast('DRAFT_COMPLETE', { index, success: false, error: err.message });
+  } finally {
     endLongWork();
   }
 }
@@ -1957,7 +2087,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 const PANEL_ONLY_TYPES = new Set([
   'EXTRACT_PAGE_DATA', 'START_RESEARCH', 'START_ANALYSIS', 'CANCEL_ANALYSIS',
   'CREATE_ACTIVITIES', 'SAVE_SETTINGS', 'START_QUICK_BRIEF', 'SCAN_PORTFOLIO',
-  'RESCHEDULE_ACTIVITIES', 'SET_ACTIVITY_FEEDBACK',
+  'RESCHEDULE_ACTIVITIES', 'SET_ACTIVITY_FEEDBACK', 'DRAFT_MESSAGE',
   // does a fetch + installs a DNR origin-strip rule for an arbitrary URL — a
   // content script must not be able to probe intranet hosts through the SW
   'CHECK_OLLAMA_URL'
@@ -2007,6 +2137,36 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         }
         case 'GET_PORTFOLIO_RESULT': {
           sendResponse({ success: true, data: await getPortfolioResult() });
+          break;
+        }
+        case 'GET_ACCOUNT_MEMORY': {
+          // Surface prior reviews in the UI (the learning layer was invisible)
+          const session = await getSessionState(msg.payload.tabId) || {};
+          const pKey = session.odooData ? partnerKeyFor(session.odooData) : null;
+          const mem = pKey ? await getAccountMemory(pKey) : null;
+          sendResponse({ success: true, data: mem });
+          break;
+        }
+        case 'GET_DIAGNOSTICS': {
+          const [events, settings] = await Promise.all([getDiagnostics(), getSettings()]);
+          sendResponse({ success: true, data: {
+            events,
+            meta: {
+              version: chrome.runtime.getManifest()?.version,
+              smartModel: settings.ollamaModel, fastModel: settings.ollamaModelFast,
+              ollamaUrl: settings.ollamaUrl
+            }
+          }});
+          break;
+        }
+        case 'CLEAR_DIAGNOSTICS': {
+          await clearDiagnostics();
+          sendResponse({ success: true });
+          break;
+        }
+        case 'DRAFT_MESSAGE': {
+          runDraftMessage(msg.payload);
+          sendResponse({ success: true });
           break;
         }
         case 'CHECK_OLLAMA_URL': {

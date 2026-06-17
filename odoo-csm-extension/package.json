@@ -1,0 +1,14 @@
+{
+  "name": "odoo-csm-copilot",
+  "version": "1.4.0",
+  "private": true,
+  "type": "module",
+  "description": "AI-powered Customer Success Manager assistant for Odoo (local Ollama). Unpacked Chrome MV3 extension.",
+  "scripts": {
+    "test": "node test/run-tests.mjs",
+    "check": "node test/check-syntax.mjs",
+    "validate-manifest": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json','utf8'));console.log('manifest.json OK')\"",
+    "ci": "npm run validate-manifest && npm run check && npm test",
+    "package": "node test/package.mjs"
+  }
+}

@@ -24,6 +24,8 @@
 const MAX_ENTRIES_PER_ACCOUNT = 5;
 const MAX_ACCOUNTS = 60;
 const MAX_PLAN_CHARS = 6000;
+const LIKED_INDEX_KEY = 'csm_liked_examples';
+const MAX_LIKED = 10;
 
 export function partnerKeyFor(odooData) {
   if (odooData?.partnerId) return `p${odooData.partnerId}`;
@@ -68,6 +70,7 @@ export async function recordReview(partnerKey, customerName, entry) {
   }
 
   await chrome.storage.local.set({ [key]: mem, csm_memory_index: index });
+  await indexLikedExamples(mem.entries[0]);
 }
 
 // Update 👍/👎 feedback on the most recent entry's activities after the fact
@@ -76,6 +79,49 @@ export async function setLatestFeedback(partnerKey, feedback) {
   if (!mem?.entries?.length) return;
   mem.entries[0].feedback = { ...(mem.entries[0].feedback || {}), ...feedback };
   await chrome.storage.local.set({ [`csm_memory_${partnerKey}`]: mem });
+  await indexLikedExamples(mem.entries[0]);
+}
+
+// Maintain a small flat index of 👍'd activities so buildLikedExamplesBlock is
+// an O(1) read instead of scanning ~15 account blobs on every analysis.
+async function indexLikedExamples(entry) {
+  if (!entry) return;
+  const list = entry.finalActivities || entry.proposedActivities || [];
+  const liked = [];
+  for (const [i, verdict] of Object.entries(entry.feedback || {})) {
+    const act = list[i];
+    if (verdict === 'up' && act?.summary && act?.notes) {
+      liked.push({ activityType: act.activityType, summary: act.summary, notes: act.notes });
+    }
+  }
+  if (!liked.length) return;
+  const r = await chrome.storage.local.get(LIKED_INDEX_KEY);
+  const existing = r[LIKED_INDEX_KEY] || [];
+  // newest first, de-duped by summary, capped
+  const merged = [...liked, ...existing]
+    .filter((a, i, arr) => arr.findIndex(b => b.summary === a.summary) === i)
+    .slice(0, MAX_LIKED);
+  await chrome.storage.local.set({ [LIKED_INDEX_KEY]: merged });
+}
+
+// Record what actually happened to a prior review's created activities, found
+// by reconciling against live Odoo state (see reconcilePriorOutcomes in the SW).
+// outcomes: [{ summary, state: 'done' | 'open' | 'overdue', daysOpen? }]
+export async function recordOutcomes(partnerKey, outcomes) {
+  if (!partnerKey || !outcomes?.length) return;
+  const mem = await getAccountMemory(partnerKey);
+  if (!mem?.entries?.length) return;
+  // Attach to the most recent entry whose activities were created
+  const entry = mem.entries.find(e => e.created) || mem.entries[0];
+  entry.outcomes = outcomes;
+  entry.outcomesAt = Date.now();
+  await chrome.storage.local.set({ [`csm_memory_${partnerKey}`]: mem });
+}
+
+// Find the most recent created review (for outcome reconciliation in the SW).
+export async function getLastCreatedReview(partnerKey) {
+  const mem = await getAccountMemory(partnerKey);
+  return mem?.entries?.find(e => e.created && e.finalActivities?.length) || null;
 }
 
 // ── Prompt-injection builders ────────────────────────────────────────────────
@@ -141,6 +187,16 @@ export function buildMemoryBlock(memory, odooData) {
     lines.push(`\n### Review on ${when} (${e.soNumber || ''}, health then: ${e.healthTier || 'unknown'})`);
     const delta = describeEditDelta(e.proposedActivities, e.finalActivities, e.feedback);
     if (delta.length) lines.push(...delta);
+    // Outcomes reconciled from live Odoo — the strongest learning signal
+    if (e.outcomes?.length) {
+      lines.push('  Outcomes since then:');
+      for (const o of e.outcomes) {
+        const tag = o.state === 'done' ? 'DONE (completed in Odoo — this play worked)'
+          : o.state === 'overdue' ? `STILL OPEN & OVERDUE${o.daysOpen != null ? ` (${o.daysOpen}d)` : ''} — the CSM hasn't acted; reconsider whether it was the right call`
+          : 'still open';
+        lines.push(`    • "${o.summary}" → ${tag}`);
+      }
+    }
   }
   const changes = buildChangeSinceLastReview(memory.entries[0], odooData);
   if (changes) {
@@ -156,26 +212,10 @@ export function buildMemoryBlock(memory, odooData) {
 }
 
 // Cross-account 👍 examples — few-shot style guidance ("learns your style").
+// O(1) read from the flat liked-examples index (maintained by indexLikedExamples).
 export async function buildLikedExamplesBlock(limit = 2) {
-  const index = await getIndex();
-  const keys = Object.keys(index).sort((a, b) => index[b].lastUpdated - index[a].lastUpdated).slice(0, 15);
-  if (!keys.length) return '';
-  const stores = await chrome.storage.local.get(keys.map(k => `csm_memory_${k}`));
-  const liked = [];
-  for (const k of keys) {
-    const mem = stores[`csm_memory_${k}`];
-    for (const e of mem?.entries || []) {
-      for (const [i, verdict] of Object.entries(e.feedback || {})) {
-        const act = (e.finalActivities || e.proposedActivities || [])[i];
-        if (verdict === 'up' && act?.summary && act?.notes) {
-          liked.push(act);
-          if (liked.length >= limit) break;
-        }
-      }
-      if (liked.length >= limit) break;
-    }
-    if (liked.length >= limit) break;
-  }
+  const r = await chrome.storage.local.get(LIKED_INDEX_KEY);
+  const liked = (r[LIKED_INDEX_KEY] || []).slice(0, limit);
   if (!liked.length) return '';
   const lines = ['\n## Activities This CSM Previously Rated 👍 (match this style and specificity)'];
   for (const a of liked) {

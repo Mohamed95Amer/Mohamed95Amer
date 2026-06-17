@@ -1,3 +1,5 @@
+import { DEFAULT_OLLAMA_URL, DEFAULT_SMART_MODEL, DEFAULT_FAST_MODEL } from './config.js';
+
 // Endpoint allowlist — every prompt carries customer PII and financials, so the
 // Ollama URL must stay on the intranet. A typo'd (or storage.sync-propagated)
 // public host would silently bulk-exfiltrate the book of business.
@@ -21,9 +23,9 @@ export function validateOllamaUrl(url) {
 
 export async function getSettings() {
   const defaults = {
-    ollamaUrl:        'http://10.100.255.200:11434',
-    ollamaModel:      'qwen3.6:latest',   // smart tier — action plans, portfolio analysis
-    ollamaModelFast:  'llama3.2:latest',  // fast tier — quick briefs, JSON extraction
+    ollamaUrl:        DEFAULT_OLLAMA_URL,
+    ollamaModel:      DEFAULT_SMART_MODEL,   // smart tier — action plans, portfolio analysis
+    ollamaModelFast:  DEFAULT_FAST_MODEL,    // fast tier — quick briefs, JSON extraction
     deepSearch:       false,
     feedbackFormUrl:  '',
     feedbackUserName: ''
@@ -40,9 +42,9 @@ export async function saveSettings({ ollamaUrl, ollamaModel, ollamaModelFast, de
     const v = validateOllamaUrl(ollamaUrl);
     if (!v.ok) throw new Error(`Ollama URL rejected: ${v.reason}`);
   }
-  if (ollamaUrl        !== undefined) toSet.ollamaUrl        = ollamaUrl       || 'http://10.100.255.200:11434';
-  if (ollamaModel      !== undefined) toSet.ollamaModel      = ollamaModel     || 'qwen3.6:latest';
-  if (ollamaModelFast  !== undefined) toSet.ollamaModelFast  = ollamaModelFast || 'llama3.2:latest';
+  if (ollamaUrl        !== undefined) toSet.ollamaUrl        = ollamaUrl       || DEFAULT_OLLAMA_URL;
+  if (ollamaModel      !== undefined) toSet.ollamaModel      = ollamaModel     || DEFAULT_SMART_MODEL;
+  if (ollamaModelFast  !== undefined) toSet.ollamaModelFast  = ollamaModelFast || DEFAULT_FAST_MODEL;
   if (deepSearch       !== undefined) toSet.deepSearch       = !!deepSearch;
   if (feedbackFormUrl  !== undefined) toSet.feedbackFormUrl  = feedbackFormUrl  || '';
   if (feedbackUserName !== undefined) toSet.feedbackUserName = feedbackUserName || '';

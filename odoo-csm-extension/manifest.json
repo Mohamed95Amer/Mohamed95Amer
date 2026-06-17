@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Odoo CSM Copilot",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "AI-powered Customer Success Manager assistant for Odoo — local Ollama AI, automated activity creation.",
   "permissions": [
     "sidePanel",
@@ -16,6 +16,10 @@
     "http://127.0.0.1/*",
     "*://www.google.com/*",
     "http://10.100.255.200/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
   ],
   "background": {
     "service_worker": "background/service-worker.js",

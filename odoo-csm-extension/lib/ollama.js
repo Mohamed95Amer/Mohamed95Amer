@@ -1,11 +1,13 @@
 // Local Ollama — OpenAI-compatible endpoint on the company network.
 // No API key required. URL and model name stored in chrome.storage.sync.
 
+import { DEFAULT_OLLAMA_URL, DEFAULT_SMART_MODEL, DEFAULT_FAST_MODEL } from './config.js';
+
 async function getLlmSettings() {
   const {
-    ollamaUrl       = 'http://10.100.255.200:11434',
-    ollamaModel     = 'qwen3.6:latest',
-    ollamaModelFast = 'llama3.2:latest'
+    ollamaUrl       = DEFAULT_OLLAMA_URL,
+    ollamaModel     = DEFAULT_SMART_MODEL,
+    ollamaModelFast = DEFAULT_FAST_MODEL
   } = await chrome.storage.sync.get(['ollamaUrl', 'ollamaModel', 'ollamaModelFast']);
   const base = ollamaUrl.replace(/\/$/, '');
   return { ollamaUrl: base, ollamaModel, ollamaModelFast };
@@ -87,8 +89,8 @@ export function pickModelForTask(taskType, available, settings = {}) {
                 || available.find(m => m.startsWith('llama3.2'));
   if (degraded) return degraded;
 
-  if (taskType === 'analysis' || taskType === 'smart') return settings.ollamaModel || 'llama3.2:latest';
-  return settings.ollamaModelFast || settings.ollamaModel || 'llama3.2:latest';
+  if (taskType === 'analysis' || taskType === 'smart') return settings.ollamaModel || DEFAULT_FAST_MODEL;
+  return settings.ollamaModelFast || settings.ollamaModel || DEFAULT_FAST_MODEL;
 }
 
 // Parse one streamed line. Primary format is Ollama native NDJSON
@@ -303,13 +305,20 @@ async function streamOllamaChat({ ollamaUrl, model, messages, route, caps, onChu
 // Streams deltas to onChunk(delta, accumulated) in realtime. If the heavyweight
 // analysis model fails or stalls, gracefully degrades to the fast coder model
 // so the user is never left hanging on slow internal hardware.
-export async function ollamaChat(messages, taskType, onChunk, signal) {
+// onModel({ model, taskType, degraded, preferred, phase, reason }) is called
+// when a model is selected — lets the UI surface "running with X" and warn when
+// the preferred (smart) model isn't on the server or a stall forced a fallback.
+export async function ollamaChat(messages, taskType, onChunk, signal, onModel) {
   const settings = await getLlmSettings();
   const { ollamaUrl } = settings;
   const route = TASK_ROUTES[taskType] || TASK_ROUTES.analysis;
   const caps = await getModelCaps(ollamaUrl);
   const available = Object.keys(caps);
   const model = pickModelForTask(taskType, available, settings);
+  const preferred = route.preferred?.[0] || null;
+  // Degraded = the top-preferred model for this task isn't what we're running
+  const degraded = !!preferred && model !== preferred && !model.startsWith((preferred.split(':')[0]) + ':') && model.split(':')[0] !== preferred.split(':')[0];
+  onModel?.({ model, taskType, degraded, preferred, phase: 'primary' });
 
   try {
     return await streamOllamaChat({ ollamaUrl, model, messages, route, caps, onChunk, signal });
@@ -321,6 +330,7 @@ export async function ollamaChat(messages, taskType, onChunk, signal) {
       // 36B model is overloaded, cold, or missing
       const fallbackModel = pickModelForTask('quick_brief', available, settings);
       if (fallbackModel && fallbackModel !== model) {
+        onModel?.({ model: fallbackModel, taskType, degraded: true, preferred, phase: 'fallback', reason: `"${model}" stalled or failed` });
         return await streamOllamaChat({ ollamaUrl, model: fallbackModel, messages, route, caps, onChunk, signal });
       }
     }
@@ -525,7 +535,7 @@ DATA SOURCES: "Internal CSM Notes" = private notes. "[LOG NOTE]" = internal logs
 
 COMPETITOR RISK: Flag immediately in Risk Flags if any ERP competitor mentioned (SAP, Oracle, Microsoft Dynamics, Zoho, ERPNext).
 
-TONE: Warm, consultative, and respectful — not transactional or pushy. Match the customer's communication language (English or Arabic) based on their chatter.
+TONE: Warm, consultative, and respectful — not transactional or pushy. Write the plan in the same language the customer uses in their chatter (e.g. English, Arabic, French) — if mixed or unclear, default to English.
 
 ## OUTPUT FORMAT (follow exactly)
 
@@ -571,11 +581,43 @@ Notes:
 - Success: Pack extension decision confirmed (yes/no) and logged on the SO
 
 ## MACHINE-READABLE PLAN (REQUIRED — last thing in your answer)
-After the activities, output this exact fenced JSON block so the extension can create the activities reliably (even when the plan prose is in Arabic). Use the same content as the markdown activities:
+After the activities, output this exact fenced JSON block so the extension can create the activities reliably (even when the plan prose is in a non-English language). Use the same content as the markdown activities:
 
 \`\`\`json
 {"activities":[{"activityType":"Phone Call|Email|Meeting","summary":"≤60 chars","dueDate":"YYYY-MM-DD","with":"contact or unknown","notes":"- Trigger: ...\\n- Ask: ...\\n- Reference: ...\\n- Success: ..."}]}
 \`\`\``;
+
+export const DRAFT_MESSAGE_SYSTEM_PROMPT = `You are a Customer Success Manager at Odoo drafting a short, ready-to-send customer message for ONE planned activity.
+
+STRICT RULES:
+- Ground every claim in the provided account data — never invent facts, names, dates, or numbers.
+- Write in the SAME language the customer uses in their chatter (English, Arabic, French, etc.); default to English if unclear.
+- Match the channel: for a Phone Call, write 3-5 talking-point bullets to open the call; for an Email, write a complete short email (subject + body); for a Meeting, write a brief meeting-request email with a proposed purpose.
+- Warm, consultative, concise. No placeholders like [Name] unless the contact is genuinely unknown — use the real contact name if provided.
+- Open with the specific Reference point from the activity. End with one clear call to action (the Ask).
+- Output ONLY the draft itself — no preamble, no explanation, no markdown headers.`;
+
+export function buildDraftMessagePrompt(activity, odooData) {
+  const recentChatter = (odooData?.chatHistory || [])
+    .filter(m => !isAutomatedNotification(m))
+    .filter(m => (m.body || '').length > 20)
+    .slice(0, 6)
+    .map(m => `[${(m.date || '').slice(0, 10)}] ${m.author}: ${(m.body || '').slice(0, 200).replace(/\n/g, ' ')}`)
+    .join('\n') || '(no recent chatter)';
+
+  return `Customer: ${odooData?.customerName || 'Unknown'}
+Contact for this activity: ${activity.with || 'unknown — address generically'}
+Channel: ${activity.activityType}
+Activity summary: ${activity.summary}
+
+## Activity details (Trigger / Ask / Reference / Success)
+${activity.notes || '(none)'}
+
+## Recent customer chatter (for tone + language matching)
+${recentChatter}
+
+Write the ${activity.activityType} draft now.`;
+}
 
 export function buildResearchPrompt(companyName, websiteText) {
   return `Company name: ${companyName}
@@ -932,15 +974,19 @@ export function isAutomatedNotification(msg) {
 // Review UI so a thin plan can't masquerade as a fully-researched one.
 export function computeDataCoverage(odooData, researchData) {
   const pi = researchData?.partnerIntel;
+  // A failed read (ACL / Odoo field rename) is reported as 'error', distinct from
+  // false ("no such data") — so a thin plan after an upgrade is diagnosable.
+  const partnerFailed = (researchData?.collectorErrors || []).includes('partner_intel');
+  const piField = (present) => partnerFailed ? 'error' : present;
   return {
     notes:       !!(odooData?.notesContent || '').trim(),
     chatter:     (odooData?.chatHistory || []).length > 0,
     salesHistory:(odooData?.salesHistory || researchData?.salesHistory || []).length > 0,
     utilization: odooData?.dbInfo?.utilization != null,
-    invoices:    !!pi?.invoices,
-    contacts:    !!pi?.contacts?.total,
-    tickets:     pi?.tickets != null,
-    mrrTrend:    pi?.mrrTrend != null,
+    invoices:    piField(!!pi?.invoices),
+    contacts:    piField(!!pi?.contacts?.total),
+    tickets:     piField(pi?.tickets != null),
+    mrrTrend:    piField(pi?.mrrTrend != null),
     website:     !!(researchData?.websiteText || '').trim(),
     deepIntel:   !!researchData?.deepIntel
   };
@@ -949,9 +995,14 @@ export function computeDataCoverage(odooData, researchData) {
 function coverageLine(coverage) {
   const label = { notes: 'Notes', chatter: 'Chatter', salesHistory: 'Sales history', utilization: 'Utilization',
     invoices: 'Invoices', contacts: 'Contacts', tickets: 'Helpdesk', mrrTrend: 'MRR trend', website: 'Web research', deepIntel: 'Deep intel' };
-  const have = [], missing = [];
-  for (const [k, v] of Object.entries(coverage)) (v ? have : missing).push(label[k] || k);
-  return `Analyzed: ${have.join(', ') || 'nothing'}. NOT available: ${missing.join(', ') || 'none'} — never invent content for missing sources.`;
+  const have = [], missing = [], failed = [];
+  for (const [k, v] of Object.entries(coverage)) {
+    if (v === 'error') failed.push(label[k] || k);
+    else (v ? have : missing).push(label[k] || k);
+  }
+  let s = `Analyzed: ${have.join(', ') || 'nothing'}. NOT available: ${missing.join(', ') || 'none'} — never invent content for missing sources.`;
+  if (failed.length) s += ` READ FAILED (do not assume absent): ${failed.join(', ')}.`;
+  return s;
 }
 
 // extras: { memoryBlock, likedExamplesBlock } — see lib/memory.js
@@ -1252,7 +1303,7 @@ PRIORITIZATION RULES:
 - Accounts with NO chatter history → flag as "no relationship built — cold first contact"
 - Sort within each tier: highest monthly value first
 - TIMELINE AWARENESS: Read chatter as a timeline. If an issue was raised and later resolved/fixed/closed in newer messages → it's RESOLVED. Only flag issues as open if the most recent message about that topic confirms it's still pending.
-- Tone: warm and consultative. Match customer language (English or Arabic) based on their chatter.`;
+- Tone: warm and consultative. Match the customer's communication language as seen in their chatter (English, Arabic, French, etc.); default to English if unclear.`;
 
 // 150 accounts ≈ 60-75K tokens — they cannot fit MAX_CTX (the old single-call
 // version silently tail-trimmed most of the portfolio while the report claimed
