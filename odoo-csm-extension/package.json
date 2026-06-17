@@ -9,6 +9,7 @@
     "check": "node test/check-syntax.mjs",
     "validate-manifest": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json','utf8'));console.log('manifest.json OK')\"",
     "ci": "npm run validate-manifest && npm run check && npm test",
+    "smoke": "node test/render-smoke.mjs",
     "package": "node test/package.mjs"
   }
 }
