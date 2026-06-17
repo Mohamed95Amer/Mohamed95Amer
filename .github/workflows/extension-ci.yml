@@ -1,0 +1,27 @@
+name: Extension CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths: ["odoo-csm-extension/**"]
+  pull_request:
+    paths: ["odoo-csm-extension/**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: odoo-csm-extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      # No dependencies — the suite runs on the Node stdlib only.
+      - name: Validate manifest.json
+        run: npm run validate-manifest
+      - name: Syntax-check all JS (catches injected-func breakage)
+        run: npm run check
+      - name: Run unit tests
+        run: npm test
