@@ -10,7 +10,7 @@ Nationality: Egyptian • Visa Status: UAE Residence / Employment Visa • Langu
 
 ## PROFESSIONAL SUMMARY
 
-Senior Customer Success and Account Management professional with 5+ years in B2B SaaS and ERP across the UAE and GCC. Currently manage a portfolio of 160+ key accounts at Odoo, owning retention, renewals, and account expansion — reaching 178% of target in Q1. My career spans the full commercial cycle (SDR → BDR → Account Management → Senior Customer Success), combining a sales-trained commercial instinct with consultative account management to drive ERP adoption, protect renewals, and convert satisfied clients into long-term advocates and referral sources.
+Senior Customer Success and Account Management professional with 5+ years in B2B SaaS and ERP, managing a 160+ key-account portfolio across the UAE and GCC at Odoo — owning retention, renewals, and account expansion, and reaching 178% of target in Q1. Progressed across the full commercial cycle (SDR → BDR → Account Manager → Senior Customer Success), pairing a sales-trained commercial instinct with consultative account management to drive ERP adoption, protect renewals, and turn satisfied clients into long-term advocates and referral sources. Arabic–English bilingual with strong regional fluency across Gulf markets.
 
 ---
 
@@ -55,7 +55,6 @@ Senior Customer Success and Account Management professional with 5+ years in B2B
 - Built and qualified a healthy sales pipeline by sourcing new business through targeted cold outreach (calls and email) to decision-makers across **9 industries**, including Construction and Retail.
 - Managed the full pre-sales cycle — discovery, needs analysis, and tailored solution demos — to advance qualified opportunities toward close.
 - Customized product solutions to client needs, improving satisfaction and laying the groundwork for long-term relationships, all tracked in CRM.
-- Consistently fed the regional pipeline that supported new-business growth.
 
 ---
 
