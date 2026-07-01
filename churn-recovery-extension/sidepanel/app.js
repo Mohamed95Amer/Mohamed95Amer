@@ -9,6 +9,7 @@ const STATE = {
   EMAIL_INPUT:  'email_input',
   EMAIL_DRAFT:  'email_draft',
   SETTINGS:     'settings',
+  LEARNINGS:    'learnings',
   ERROR:        'error'
 };
 
@@ -25,6 +26,10 @@ const initialState = {
   activeTab: 'plan',
   emailText: '',
   emailStreaming: false,
+  learningsApplied: 0,
+  learnings: [],
+  teachStatus: '',
+  _rating: null,
 };
 
 let appState = { ...initialState };
@@ -51,6 +56,7 @@ function render() {
     case STATE.EMAIL_INPUT: renderEmailInput();  break;
     case STATE.EMAIL_DRAFT: renderEmailDraft();  break;
     case STATE.SETTINGS:    renderSettings();    break;
+    case STATE.LEARNINGS:   renderLearnings();   break;
     case STATE.ERROR:       renderError();       break;
   }
 }
@@ -220,8 +226,12 @@ function renderComplete() {
       ${activeTab === 'steps' ? renderStepsTab() : ''}
     </div>
 
+    ${renderTeachPanel(category, potential)}
+
     <button class="btn btn-email" id="draft-email-btn">✉ Draft Recovery Email</button>
     <button class="btn btn-secondary btn-sm" id="restart-btn">↩ Start New Analysis</button>`;
+
+  wireTeachPanel({ category, potential });
 
   document.getElementById('tab-plan')?.addEventListener('click', () => {
     appState.activeTab = 'plan'; render();
@@ -239,6 +249,131 @@ function renderComplete() {
   document.getElementById('copy-plan-btn')?.addEventListener('click', () => copyText(planPart, 'copy-plan-btn'));
   document.getElementById('copy-pitch-btn')?.addEventListener('click', () => copyText(pitchPart, 'copy-pitch-btn'));
   document.getElementById('copy-all-btn')?.addEventListener('click', () => copyText(appState.planText, 'copy-all-btn'));
+}
+
+// ── Teach & Correct panel (the learning loop) ─────────────────────────────────
+function renderTeachPanel(category, potential) {
+  const applied = appState.learningsApplied || 0;
+  const rating  = appState._rating;
+  const status  = appState.teachStatus || '';
+  return `
+    <div class="teach-panel">
+      <div class="teach-header">
+        <span class="teach-title">🎓 Teach &amp; Correct</span>
+        <span class="learn-count" id="view-learnings">${applied ? `${applied} learning${applied > 1 ? 's' : ''} applied` : 'Manage learnings'}</span>
+      </div>
+      <div class="rating-row">
+        <span class="rating-q">Was this accurate?</span>
+        <button class="rate-btn ${rating === 'up'   ? 'active' : ''}" data-rate="up"   title="Accurate">👍</button>
+        <button class="rate-btn ${rating === 'down' ? 'active' : ''}" data-rate="down" title="Off the mark">👎</button>
+      </div>
+      <textarea id="correction-input" class="teach-textarea" rows="3"
+        placeholder="What should change? e.g. 'The real reason was price, not slow support' or 'Be less formal and keep the pitch shorter'">${esc(appState._correctionDraft || '')}</textarea>
+      <div class="teach-actions">
+        <button class="btn btn-secondary btn-sm" id="regenerate-analysis-btn" title="Re-run on this account with your fix">↻ Correct &amp; Regenerate</button>
+        <button class="btn btn-primary btn-sm" id="save-learning-btn" title="Remember this for future accounts">💾 Save as Learning</button>
+      </div>
+      ${status ? `<div class="teach-status ${status.startsWith('✓') ? 'ok' : ''}">${esc(status)}</div>` : ''}
+      <div class="teach-hint">Regenerate fixes <em>this</em> account now. Save as Learning improves <em>every future</em> account.</div>
+    </div>`;
+}
+
+function wireTeachPanel(ctx) {
+  const ta = () => document.getElementById('correction-input');
+  const account = () => appState.odooData?.customerName || appState.odooData?.soNumber || '';
+
+  document.querySelectorAll('.rate-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const r = btn.dataset.rate;
+      appState._rating = appState._rating === r ? null : r;
+      chrome.runtime.sendMessage({
+        type: 'SUBMIT_FEEDBACK',
+        payload: { rating: appState._rating, text: ta()?.value?.trim() || '', saveAsLearning: false, account: account(), context: ctx }
+      });
+      document.querySelectorAll('.rate-btn').forEach(b => b.classList.toggle('active', b.dataset.rate === appState._rating));
+    });
+  });
+
+  document.getElementById('view-learnings')?.addEventListener('click', openLearnings);
+
+  ta()?.addEventListener('input', (e) => { appState._correctionDraft = e.target.value; });
+
+  document.getElementById('regenerate-analysis-btn')?.addEventListener('click', () => {
+    const text = ta()?.value?.trim();
+    if (!text) { ta()?.focus(); return; }
+    appState._correctionDraft = '';
+    appState.loadingProgress = { chatter: 'done', sales: 'done' };
+    transition(STATE.LOADING, { planText: '', steps: [], teachStatus: '' });
+    chrome.runtime.sendMessage({ type: 'REGENERATE_ANALYSIS', payload: { tabId: appState.currentTabId, correction: text } });
+  });
+
+  document.getElementById('save-learning-btn')?.addEventListener('click', () => {
+    const text = ta()?.value?.trim();
+    if (!text) { ta()?.focus(); return; }
+    const btn = document.getElementById('save-learning-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+    chrome.runtime.sendMessage({
+      type: 'SUBMIT_FEEDBACK',
+      payload: { rating: appState._rating, text, saveAsLearning: true, account: account(), context: ctx }
+    }, (res) => {
+      if (res?.success) {
+        appState.learnings = res.learnings || [];
+        appState.learningsApplied = (res.learnings || []).length;
+        appState._correctionDraft = '';
+        appState.teachStatus = '✓ Learned — future analyses will apply this.';
+      } else {
+        appState.teachStatus = 'Could not save — try again.';
+      }
+      if (appState.phase === STATE.COMPLETE) render();
+    });
+  });
+}
+
+function openLearnings() {
+  chrome.runtime.sendMessage({ type: 'GET_LEARNINGS' }, (res) => {
+    appState.learnings = res?.data || [];
+    appState.learningsApplied = (res?.data || []).length;
+    transition(STATE.LEARNINGS, { prevPhase: appState.phase });
+  });
+}
+
+function renderLearnings() {
+  const list = appState.learnings || [];
+  const items = list.length
+    ? list.map(l => `
+        <div class="learn-card">
+          <div class="learn-text">${esc(l.text)}</div>
+          <div class="learn-meta">
+            <span>${esc(l.sourceAccount || 'manual')}${l.createdAt ? ' · ' + esc(String(l.createdAt).slice(0, 10)) : ''}</span>
+            <button class="learn-del" data-id="${esc(l.id)}" title="Forget this rule">✕</button>
+          </div>
+        </div>`).join('')
+    : `<div class="result-card" style="color:var(--text-muted);text-align:center;padding:24px">
+         Nothing learned yet.<br>Correct an analysis and hit "Save as Learning".
+       </div>`;
+
+  contentEl.innerHTML = `
+    <div class="settings-screen">
+      <button class="settings-back" id="learnings-back-btn">← Back</button>
+      <h2>Learned Rules (${list.length})</h2>
+      <div class="settings-box">
+        Distilled from your corrections and injected into <strong>every</strong> future analysis and email. Remove any that no longer apply.
+      </div>
+      <div class="learn-list">${items}</div>
+    </div>`;
+
+  document.getElementById('learnings-back-btn')?.addEventListener('click', () => {
+    transition(appState.prevPhase || STATE.COMPLETE);
+  });
+  document.querySelectorAll('.learn-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chrome.runtime.sendMessage({ type: 'DELETE_LEARNING', payload: { id: btn.dataset.id } }, (res) => {
+        appState.learnings = res?.data || [];
+        appState.learningsApplied = (res?.data || []).length;
+        render();
+      });
+    });
+  });
 }
 
 function renderPlanTab(planPart) {
@@ -402,15 +537,29 @@ function renderEmailDraft() {
       </div>
 
       ${!isStreaming ? `
+      <div class="email-refine">
+        <textarea id="email-refine-input" class="teach-textarea" rows="2"
+          placeholder="Refine this email: e.g. 'shorter and warmer', 'mention the July discount', 'drop the data-deletion line'"></textarea>
+        <button class="btn btn-secondary btn-sm" id="refine-email-btn">↻ Refine Email</button>
+      </div>
       <div class="email-actions">
         <button class="btn btn-primary" id="copy-full-email-btn">📋 Copy Full Email</button>
-        <button class="btn btn-secondary btn-sm" id="regenerate-btn">↺ Edit &amp; Regenerate</button>
+        <button class="btn btn-secondary btn-sm" id="regenerate-btn">↺ Edit Note &amp; Redo</button>
         <button class="btn btn-secondary btn-sm" id="back-to-analysis-btn">← Back to Analysis</button>
       </div>` : ''}
     </div>`;
 
   document.getElementById('email-result-back-btn')?.addEventListener('click', () => {
     transition(STATE.EMAIL_INPUT);
+  });
+  document.getElementById('refine-email-btn')?.addEventListener('click', () => {
+    const refine = document.getElementById('email-refine-input')?.value?.trim();
+    if (!refine) { document.getElementById('email-refine-input')?.focus(); return; }
+    transition(STATE.EMAIL_DRAFT, { emailText: '', emailStreaming: true });
+    chrome.runtime.sendMessage({
+      type: 'DRAFT_EMAIL',
+      payload: { tabId: appState.currentTabId, userNote: appState._emailNote || '', correction: refine }
+    });
   });
   document.getElementById('copy-subject-btn')?.addEventListener('click', () => copyText(subject, 'copy-subject-btn'));
   document.getElementById('copy-body-btn')?.addEventListener('click', () => copyText(body, 'copy-body-btn'));
@@ -612,6 +761,10 @@ chrome.runtime.onMessage.addListener((msg) => {
         transition(STATE.COMPLETE, {
           planText: msg.payload.planText,
           steps: msg.payload.steps || [],
+          learningsApplied: msg.payload.learningsApplied ?? appState.learningsApplied,
+          teachStatus: '',
+          _rating: null,
+          _correctionDraft: '',
           error: null,
           activeTab: 'plan'
         });
@@ -688,6 +841,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!tab) { transition(STATE.IDLE); return; }
 
   appState.currentTabId = tab.id;
+
+  // Load learned rules so the "N learnings applied" count is accurate on restore.
+  const learnRes = await new Promise(r => chrome.runtime.sendMessage({ type: 'GET_LEARNINGS' }, r));
+  appState.learnings = learnRes?.data || [];
+  appState.learningsApplied = appState.learnings.length;
 
   const isOdoo = /odoo\.com|localhost|127\.0\.0\.1/.test(tab.url || '');
   const isSO   = /sale\.order|\/sales\/|\/subscriptions\/|[#&]model=sale/.test(tab.url || '');

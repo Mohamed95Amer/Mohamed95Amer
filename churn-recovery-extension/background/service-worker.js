@@ -1,6 +1,13 @@
 import { geminiAvailable, geminiChat, hasGeminiKey } from '../lib/gemini.js';
-import { getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState } from '../lib/storage.js';
-import { CHURN_SYSTEM_PROMPT, buildChurnPrompt, parseStepsFromPlan, EMAIL_SYSTEM_PROMPT, buildEmailPrompt } from '../lib/prompts.js';
+import {
+  getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState,
+  getLearnings, addLearning, deleteLearning, getFeedbackLog, addFeedback
+} from '../lib/storage.js';
+import {
+  CHURN_SYSTEM_PROMPT, buildChurnPrompt, parseStepsFromPlan,
+  EMAIL_SYSTEM_PROMPT, buildEmailPrompt,
+  DISTILL_SYSTEM_PROMPT, buildDistillPrompt
+} from '../lib/prompts.js';
 
 const SCRAPER_FILE = 'content/odoo-scraper.js';
 
@@ -155,14 +162,26 @@ async function runAnalysis(payload) {
   const enrichedData = { ...odooData, chatHistory: fullChat, salesHistory };
   await saveSessionState(tabId, { ...session, odooData: enrichedData });
 
-  // Step 3: AI analysis (streaming)
-  await broadcast('ANALYSIS_PROGRESS', { step: 'ai', status: 'running', label: 'AI analyzing churn signals…' });
+  // Step 3: AI analysis (streaming) — with any learned rules injected.
+  await generatePlan(tabId, enrichedData, session, '');
+}
+
+// Runs (or re-runs) the AI diagnosis over already-scraped data. Shared by the
+// full analysis and the "correct & regenerate" loop. `correction` is a free-text
+// instruction from the CSM for THIS account; learnings are the cross-account rules.
+async function generatePlan(tabId, enrichedData, session, correction = '') {
+  const learnings = await getLearnings();
+  await broadcast('ANALYSIS_PROGRESS', {
+    step: 'ai', status: 'running',
+    label: correction ? 'Re-analyzing with your correction…' : 'AI analyzing churn signals…'
+  });
+
   let planText = '';
   try {
     await geminiChat(
       [
         { role: 'system', content: CHURN_SYSTEM_PROMPT },
-        { role: 'user', content: buildChurnPrompt(enrichedData) }
+        { role: 'user', content: buildChurnPrompt(enrichedData, { learnings, correction }) }
       ],
       (chunk, accumulated) => {
         planText = accumulated;
@@ -181,12 +200,78 @@ async function runAnalysis(payload) {
 
   const steps = parseStepsFromPlan(planText);
   await saveSessionState(tabId, { ...session, odooData: enrichedData, planText, steps });
-  await broadcast('ANALYSIS_COMPLETE', { success: true, planText, steps });
+  await broadcast('ANALYSIS_COMPLETE', { success: true, planText, steps, learningsApplied: learnings.length });
+}
+
+// ── Correct & regenerate ────────────────────────────────────────────────────────
+// Re-runs the AI on the SAME scraped data with the CSM's correction — no re-scrape,
+// so it's fast. This is the per-account self-correction loop.
+async function regenerateAnalysis(payload) {
+  const { tabId, correction } = payload;
+  const gate = await aiGateError();
+  if (gate) { await broadcast('ANALYSIS_COMPLETE', { success: false, error: gate }); return; }
+
+  const session = await getSessionState(tabId) || {};
+  const enrichedData = session.odooData;
+  if (!enrichedData || !Object.keys(enrichedData).length) {
+    await broadcast('ANALYSIS_COMPLETE', { success: false, error: 'No prior analysis to refine — run a full analysis first.' });
+    return;
+  }
+  await generatePlan(tabId, enrichedData, session, (correction || '').trim());
+}
+
+// ── Feedback + learning ─────────────────────────────────────────────────────────
+// Distills a raw correction into ONE reusable, account-agnostic rule via a small
+// AI call. Falls back to storing the raw text if AI is unavailable.
+async function distillLearning(text, context) {
+  const raw = (text || '').trim();
+  if (await aiGateError()) return raw.slice(0, 220);
+  try {
+    let out = '';
+    await geminiChat(
+      [
+        { role: 'system', content: DISTILL_SYSTEM_PROMPT },
+        { role: 'user', content: buildDistillPrompt(raw, context) }
+      ],
+      (chunk, accumulated) => { out = accumulated; }
+    );
+    const cleaned = (out || raw).trim().replace(/^["'\s]+|["'\s]+$/g, '');
+    return cleaned.slice(0, 240) || raw.slice(0, 220);
+  } catch {
+    return raw.slice(0, 220);
+  }
+}
+
+async function submitFeedback(payload) {
+  const { rating = null, text = '', saveAsLearning = false, account = '', context = {} } = payload;
+
+  // Always log the raw feedback (thumbs + free text) for later review.
+  await addFeedback({
+    id: `fb_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    account, rating,
+    text: text.trim(),
+    context
+  });
+
+  let learnings = await getLearnings();
+  let learningText = '';
+  if (saveAsLearning && text.trim()) {
+    learningText = await distillLearning(text, context);
+    learnings = await addLearning({
+      id: `ln_${Date.now()}`,
+      text: learningText,
+      createdAt: new Date().toISOString(),
+      sourceAccount: account,
+      raw: text.trim().slice(0, 500)
+    });
+  }
+  return { success: true, learnings, learningText };
 }
 
 // ── Email draft ───────────────────────────────────────────────────────────────
 async function runEmailDraft(payload) {
-  const { tabId, userNote } = payload;
+  const { tabId, userNote, correction = '' } = payload;
 
   const gate = await aiGateError();
   if (gate) { await broadcast('EMAIL_DRAFT_COMPLETE', { success: false, error: gate }); return; }
@@ -196,13 +281,14 @@ async function runEmailDraft(payload) {
   const planText = session.planText || '';
   const settings = await getSettings();
   const signature = settings.emailSignature || '';
+  const learnings = await getLearnings();
 
   let emailText = '';
   try {
     await geminiChat(
       [
         { role: 'system', content: EMAIL_SYSTEM_PROMPT },
-        { role: 'user',   content: buildEmailPrompt(odooData, planText, userNote, signature) }
+        { role: 'user',   content: buildEmailPrompt(odooData, planText, userNote, signature, { learnings, correction: correction.trim() }) }
       ],
       (chunk, accumulated) => {
         emailText = accumulated;
@@ -256,6 +342,31 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         case 'START_ANALYSIS': {
           runAnalysis(msg.payload);
           sendResponse({ success: true });
+          break;
+        }
+        case 'REGENERATE_ANALYSIS': {
+          regenerateAnalysis(msg.payload);
+          sendResponse({ success: true });
+          break;
+        }
+        case 'SUBMIT_FEEDBACK': {
+          const result = await submitFeedback(msg.payload);
+          sendResponse(result);
+          break;
+        }
+        case 'GET_LEARNINGS': {
+          const learnings = await getLearnings();
+          sendResponse({ success: true, data: learnings });
+          break;
+        }
+        case 'DELETE_LEARNING': {
+          const learnings = await deleteLearning(msg.payload.id);
+          sendResponse({ success: true, data: learnings });
+          break;
+        }
+        case 'GET_FEEDBACK_LOG': {
+          const log = await getFeedbackLog();
+          sendResponse({ success: true, data: log });
           break;
         }
         case 'GET_SETTINGS': {

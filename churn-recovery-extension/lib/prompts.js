@@ -97,7 +97,30 @@ function isAutomatedNotification(msg) {
   return false;
 }
 
-export function buildChurnPrompt(odooData) {
+// ── Learning memory injection ───────────────────────────────────────────────────
+// Renders the accumulated playbook of CSM corrections so every analysis benefits
+// from lessons taught on previous accounts.
+export function buildLearningsBlock(learnings) {
+  if (!learnings?.length) return '';
+  const lines = learnings.map((l, i) => `${i + 1}. ${l.text}`).join('\n');
+  return `
+
+## Lessons From Past Corrections (a senior CSM reviewed earlier analyses and taught you these — apply them where relevant)
+${lines}`;
+}
+
+// A per-run correction the CSM typed for THIS account ("re-analyze, but the real
+// reason was price, not support"). Highest priority — overrides prior conclusions.
+function buildCorrectionBlock(correction) {
+  if (!correction || !correction.trim()) return '';
+  return `
+
+## Direct Correction For This Account (highest priority — follow it exactly, even if it contradicts the raw data's surface reading)
+${correction.trim()}`;
+}
+
+export function buildChurnPrompt(odooData, opts = {}) {
+  const { learnings = [], correction = '' } = opts;
   const products = odooData.products?.length
     ? odooData.products.map(p => `  - ${p.name} × ${p.qty} @ ${p.unitPrice}`).join('\n')
     : '  - (no products listed)';
@@ -150,8 +173,30 @@ ${today}
 - Step 1: ${daysFromNow(2)}
 - Step 2: ${daysFromNow(5)}
 - Step 3: ${daysFromNow(10)}
+${buildLearningsBlock(learnings)}${buildCorrectionBlock(correction)}
 
 Analyze all the data above. Identify the real reason this client churned, assess recovery potential, and produce the full recovery plan and pitch script following the format in your instructions.`;
+}
+
+// ── Distillation: turn a raw correction into a reusable, account-agnostic rule ────
+export const DISTILL_SYSTEM_PROMPT = `You convert a Customer Success Manager's correction of a churn analysis into ONE concise, reusable guideline that will improve FUTURE analyses of OTHER accounts.
+
+Rules:
+- Output a single imperative sentence, max 220 characters.
+- Generalize: never name this specific customer, person, or order. Make it apply broadly.
+- If the correction is about tone or formatting, phrase it as a style rule.
+- If it is about interpretation (e.g. how to read a signal), phrase it as an analysis rule.
+- Output ONLY the guideline sentence. No preamble, no quotes, no markdown.`;
+
+export function buildDistillPrompt(correctionText, context = {}) {
+  return `The earlier analysis concluded:
+- Churn Category: ${context.category || 'N/A'}
+- Recovery Potential: ${context.potential || 'N/A'}
+
+The CSM's correction / feedback about that analysis:
+"${(correctionText || '').trim()}"
+
+Write the one-sentence reusable guideline now.`;
 }
 
 function sanitizeDueDate(dateStr, index) {
@@ -240,7 +285,8 @@ If the CSM note describes a partial attempt (voicemail left, email sent with no 
 → Add one new, specific reason to respond
 → Keep it very short — 3 paragraphs max`;
 
-export function buildEmailPrompt(odooData, planText, userNote, signature) {
+export function buildEmailPrompt(odooData, planText, userNote, signature, opts = {}) {
+  const { learnings = [], correction = '' } = opts;
   // Extract first name from customerName
   const fullName = (odooData.customerName || '').trim();
   const firstName = fullName.split(/[\s,]+/)[0] || fullName;
@@ -294,6 +340,7 @@ ${userNote}
 
 ## Email Signature (use exactly as written, no changes)
 ${signature || 'Best regards,\n[Your Name]'}
+${buildLearningsBlock(learnings)}${buildCorrectionBlock(correction)}
 
 Write the email now. Start with SUBJECT: on the first line.`;
 }

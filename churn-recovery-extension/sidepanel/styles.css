@@ -425,3 +425,63 @@ html, body {
   accent-color: var(--warning);
   cursor: pointer;
 }
+
+/* Teach & Correct panel (learning loop) */
+.teach-panel {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.teach-header { display: flex; align-items: center; justify-content: space-between; }
+.teach-title { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.learn-count {
+  font-size: 11px; color: var(--text-muted); cursor: pointer;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.learn-count:hover { color: var(--text); }
+.rating-row { display: flex; align-items: center; gap: 8px; }
+.rating-q { font-size: 11.5px; color: var(--text-muted); }
+.rate-btn {
+  background: transparent; border: 1px solid var(--border2); border-radius: 6px;
+  padding: 3px 8px; cursor: pointer; font-size: 13px; line-height: 1; width: auto;
+  filter: grayscale(0.5); opacity: 0.7;
+}
+.rate-btn:hover { opacity: 1; }
+.rate-btn.active { border-color: var(--accent, #6366f1); background: rgba(99,102,241,0.15); filter: none; opacity: 1; }
+.teach-textarea {
+  width: 100%; box-sizing: border-box; resize: vertical;
+  background: var(--surface); border: 1px solid var(--border2); border-radius: 7px;
+  color: var(--text); font-size: 12.5px; padding: 8px 10px; font-family: inherit;
+}
+.teach-textarea:focus { outline: none; border-color: var(--accent, #6366f1); }
+.teach-actions { display: flex; gap: 6px; }
+.teach-actions .btn { flex: 1; }
+.teach-status { font-size: 11.5px; color: var(--danger); }
+.teach-status.ok { color: var(--success); }
+.teach-hint { font-size: 10.5px; color: var(--text-muted); line-height: 1.4; }
+.teach-hint em { color: var(--text); font-style: normal; font-weight: 600; }
+
+/* Email refine */
+.email-refine { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+
+/* Learned rules screen */
+.learn-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.learn-card {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 9px 11px;
+}
+.learn-text { font-size: 12.5px; color: var(--text); line-height: 1.45; }
+.learn-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 6px; font-size: 10.5px; color: var(--text-muted);
+}
+.learn-del {
+  background: transparent; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 13px; width: auto; padding: 0 4px;
+}
+.learn-del:hover { color: var(--danger); }

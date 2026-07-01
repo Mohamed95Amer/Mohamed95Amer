@@ -26,6 +26,24 @@ the **chatter and internal CSM notes** — to Google Gemini for processing.
   their products — use a paid/enterprise tier or a data-processing agreement if
   you handle regulated customer data (e.g. KSA PDPL).
 
+## Learning loop (gets better on every account)
+
+The tool improves itself from your corrections — no fine-tuning, no backend:
+
+- **Correct & Regenerate** — on a result, type what's wrong (e.g. *"the real reason
+  was price, not slow support"*) and it re-runs the AI on the **same** scraped data
+  instantly (no re-scrape). Fixes *this* account.
+- **Save as Learning** — distills your correction into one reusable, account-agnostic
+  rule (via a small AI call) and stores it in `chrome.storage.local`. Every future
+  analysis **and** email injects these rules, so each account you run makes the next
+  one sharper.
+- **👍/👎 + free-text feedback** — logged per account for later review.
+- **Refine Email** — a feedback box on the drafted email (e.g. *"shorter and warmer"*)
+  regenerates with your instruction.
+- **Learned Rules screen** — view and delete anything it has learned.
+
+Learnings live device-only and are capped (60 rules / 300 feedback entries).
+
 ## Architecture
 
 ```

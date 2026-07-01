@@ -47,6 +47,46 @@ export async function saveSettings(data) {
   return chrome.storage.local.set(patch);
 }
 
+// ── Learning memory ────────────────────────────────────────────────────────────
+// The extension "learns" by accumulating a small playbook of distilled rules from
+// the CSM's corrections. Every future analysis/email injects these, so each
+// account the tool is run on makes the next one better. Stored device-only.
+const LEARNINGS_KEY = 'churn_learnings';
+const FEEDBACK_KEY   = 'churn_feedback_log';
+const MAX_LEARNINGS  = 60;
+const MAX_FEEDBACK   = 300;
+
+export async function getLearnings() {
+  const r = await chrome.storage.local.get([LEARNINGS_KEY]);
+  return r[LEARNINGS_KEY] || [];
+}
+
+export async function addLearning(learning) {
+  const list = await getLearnings();
+  list.unshift(learning);
+  const trimmed = list.slice(0, MAX_LEARNINGS);
+  await chrome.storage.local.set({ [LEARNINGS_KEY]: trimmed });
+  return trimmed;
+}
+
+export async function deleteLearning(id) {
+  const list = (await getLearnings()).filter(l => l.id !== id);
+  await chrome.storage.local.set({ [LEARNINGS_KEY]: list });
+  return list;
+}
+
+export async function getFeedbackLog() {
+  const r = await chrome.storage.local.get([FEEDBACK_KEY]);
+  return r[FEEDBACK_KEY] || [];
+}
+
+export async function addFeedback(entry) {
+  const list = await getFeedbackLog();
+  list.unshift(entry);
+  await chrome.storage.local.set({ [FEEDBACK_KEY]: list.slice(0, MAX_FEEDBACK) });
+}
+
+// ── Per-tab session ────────────────────────────────────────────────────────────
 export async function getSessionState(tabId) {
   return new Promise(resolve =>
     chrome.storage.session.get([SESSION_PREFIX + tabId], (r) => resolve(r[SESSION_PREFIX + tabId] || null))
