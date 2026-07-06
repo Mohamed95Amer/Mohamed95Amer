@@ -109,6 +109,27 @@ export function buildLearningsBlock(learnings) {
 ${lines}`;
 }
 
+// Renders captured success stories (real retention wins) as proven plays the
+// model should pattern-match the current account against. Capped to the 8 most
+// recent to keep the prompt bounded; the category tag lets the model judge relevance.
+export function buildPlaybookBlock(stories) {
+  if (!stories?.length) return '';
+  const cases = stories.slice(0, 8).map((s, i) => {
+    const parts = [
+      `Case ${i + 1} [${s.churnCategory || 'Unknown'}]`,
+      s.situation ? `Situation: ${s.situation}` : '',
+      s.actions   ? `What worked: ${s.actions}` : '',
+      s.outcome   ? `Outcome: ${s.outcome}` : '',
+      s.keyLesson ? `Lesson: ${s.keyLesson}` : ''
+    ].filter(Boolean);
+    return `- ${parts.join(' | ')}`;
+  }).join('\n');
+  return `
+
+## Proven Recovery Playbook (real accounts this team won back — pattern-match the current account against these and reuse the winning moves where the situation is similar)
+${cases}`;
+}
+
 // A per-run correction the CSM typed for THIS account ("re-analyze, but the real
 // reason was price, not support"). Highest priority — overrides prior conclusions.
 function buildCorrectionBlock(correction) {
@@ -120,7 +141,7 @@ ${correction.trim()}`;
 }
 
 export function buildChurnPrompt(odooData, opts = {}) {
-  const { learnings = [], correction = '' } = opts;
+  const { learnings = [], correction = '', playbook = [] } = opts;
   const products = odooData.products?.length
     ? odooData.products.map(p => `  - ${p.name} × ${p.qty} @ ${p.unitPrice}`).join('\n')
     : '  - (no products listed)';
@@ -173,9 +194,27 @@ ${today}
 - Step 1: ${daysFromNow(2)}
 - Step 2: ${daysFromNow(5)}
 - Step 3: ${daysFromNow(10)}
-${buildLearningsBlock(learnings)}${buildCorrectionBlock(correction)}
+${buildPlaybookBlock(playbook)}${buildLearningsBlock(learnings)}${buildCorrectionBlock(correction)}
 
-Analyze all the data above. Identify the real reason this client churned, assess recovery potential, and produce the full recovery plan and pitch script following the format in your instructions.`;
+Analyze all the data above. Identify the real reason this client churned, assess recovery potential, and produce the full recovery plan and pitch script following the format in your instructions. If a Proven Recovery Playbook case closely matches this account's situation, explicitly adapt its winning moves into the action plan and say which case inspired it.`;
+}
+
+// ── Success-story distillation ───────────────────────────────────────────────────
+export const PLAYBOOK_DISTILL_SYSTEM_PROMPT = `You convert a Customer Success Manager's account-recovery success story into ONE concise, reusable lesson explaining WHY the win worked, so it can guide future recoveries of OTHER accounts.
+
+Rules:
+- Output a single sentence, max 240 characters.
+- Generalize: never name the specific customer, person, or order.
+- Focus on the causal move: what action/offer/timing/relationship tactic actually flipped the account.
+- Output ONLY the lesson sentence. No preamble, no quotes, no markdown.`;
+
+export function buildStoryDistillPrompt(story) {
+  return `Churn category: ${story.churnCategory || 'Unknown'}
+Situation (why they churned): ${story.situation || 'N/A'}
+What the CSM did (the steps that worked): ${story.actions || 'N/A'}
+Outcome: ${story.outcome || 'N/A'}
+
+Write the one-sentence lesson (why this win worked) now.`;
 }
 
 // ── Distillation: turn a raw correction into a reusable, account-agnostic rule ────
@@ -286,7 +325,7 @@ If the CSM note describes a partial attempt (voicemail left, email sent with no 
 → Keep it very short — 3 paragraphs max`;
 
 export function buildEmailPrompt(odooData, planText, userNote, signature, opts = {}) {
-  const { learnings = [], correction = '' } = opts;
+  const { learnings = [], correction = '', playbook = [] } = opts;
   // Extract first name from customerName
   const fullName = (odooData.customerName || '').trim();
   const firstName = fullName.split(/[\s,]+/)[0] || fullName;
@@ -340,7 +379,7 @@ ${userNote}
 
 ## Email Signature (use exactly as written, no changes)
 ${signature || 'Best regards,\n[Your Name]'}
-${buildLearningsBlock(learnings)}${buildCorrectionBlock(correction)}
+${buildPlaybookBlock(playbook)}${buildLearningsBlock(learnings)}${buildCorrectionBlock(correction)}
 
 Write the email now. Start with SUBJECT: on the first line.`;
 }

@@ -1,12 +1,14 @@
-import { geminiAvailable, geminiChat, hasGeminiKey } from '../lib/gemini.js';
+import { aiAvailable, aiChat, hasAiKey, providerLabel } from '../lib/ai.js';
 import {
   getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState,
-  getLearnings, addLearning, deleteLearning, getFeedbackLog, addFeedback
+  getLearnings, addLearning, deleteLearning, getFeedbackLog, addFeedback,
+  getPlaybook, addPlaybookStory, deletePlaybookStory
 } from '../lib/storage.js';
 import {
   CHURN_SYSTEM_PROMPT, buildChurnPrompt, parseStepsFromPlan,
   EMAIL_SYSTEM_PROMPT, buildEmailPrompt,
-  DISTILL_SYSTEM_PROMPT, buildDistillPrompt
+  DISTILL_SYSTEM_PROMPT, buildDistillPrompt,
+  PLAYBOOK_DISTILL_SYSTEM_PROMPT, buildStoryDistillPrompt
 } from '../lib/prompts.js';
 
 const SCRAPER_FILE = 'content/odoo-scraper.js';
@@ -121,14 +123,15 @@ async function fetchSalesHistory(tabId, fallbackUrl) {
 // ── AI gate ────────────────────────────────────────────────────────────────────
 // Returns a user-facing error string if AI use is blocked (no key / no consent),
 // or null if it's cleared to run. Consent is required because record data — incl.
-// internal CSM notes — leaves the browser for the AI provider (Google Gemini).
+// internal CSM notes — leaves the browser for the selected AI provider.
 async function aiGateError() {
-  if (!(await hasGeminiKey())) {
-    return 'Gemini API key not set — open Settings (⚙) to add your key from aistudio.google.com/apikey';
+  const label = await providerLabel();
+  if (!(await hasAiKey())) {
+    return `${label} API key not set — open Settings (⚙) to add your key.`;
   }
   const { aiConsent } = await getSettings();
   if (!aiConsent) {
-    return 'Consent required — this sends the subscription record (including internal notes) to Google Gemini. Open Settings (⚙) and accept to continue.';
+    return `Consent required — this sends the subscription record (including internal notes) to ${label}. Open Settings (⚙) and accept to continue.`;
   }
   return null;
 }
@@ -171,6 +174,7 @@ async function runAnalysis(payload) {
 // instruction from the CSM for THIS account; learnings are the cross-account rules.
 async function generatePlan(tabId, enrichedData, session, correction = '') {
   const learnings = await getLearnings();
+  const playbook  = await getPlaybook();
   await broadcast('ANALYSIS_PROGRESS', {
     step: 'ai', status: 'running',
     label: correction ? 'Re-analyzing with your correction…' : 'AI analyzing churn signals…'
@@ -178,10 +182,10 @@ async function generatePlan(tabId, enrichedData, session, correction = '') {
 
   let planText = '';
   try {
-    await geminiChat(
+    await aiChat(
       [
         { role: 'system', content: CHURN_SYSTEM_PROMPT },
-        { role: 'user', content: buildChurnPrompt(enrichedData, { learnings, correction }) }
+        { role: 'user', content: buildChurnPrompt(enrichedData, { learnings, correction, playbook }) }
       ],
       (chunk, accumulated) => {
         planText = accumulated;
@@ -194,13 +198,17 @@ async function generatePlan(tabId, enrichedData, session, correction = '') {
   }
 
   if (!planText || planText.trim().length < 50) {
-    await broadcast('ANALYSIS_COMPLETE', { success: false, error: 'Gemini returned an empty response — check your API key in Settings.' });
+    await broadcast('ANALYSIS_COMPLETE', { success: false, error: 'The AI returned an empty response — check your API key in Settings.' });
     return;
   }
 
   const steps = parseStepsFromPlan(planText);
   await saveSessionState(tabId, { ...session, odooData: enrichedData, planText, steps });
-  await broadcast('ANALYSIS_COMPLETE', { success: true, planText, steps, learningsApplied: learnings.length });
+  await broadcast('ANALYSIS_COMPLETE', {
+    success: true, planText, steps,
+    learningsApplied: learnings.length,
+    playbookApplied: playbook.length
+  });
 }
 
 // ── Correct & regenerate ────────────────────────────────────────────────────────
@@ -228,7 +236,7 @@ async function distillLearning(text, context) {
   if (await aiGateError()) return raw.slice(0, 220);
   try {
     let out = '';
-    await geminiChat(
+    await aiChat(
       [
         { role: 'system', content: DISTILL_SYSTEM_PROMPT },
         { role: 'user', content: buildDistillPrompt(raw, context) }
@@ -269,6 +277,46 @@ async function submitFeedback(payload) {
   return { success: true, learnings, learningText };
 }
 
+// ── Success-story playbook ──────────────────────────────────────────────────────
+// Distills a retention win into a one-line "why it worked" lesson. Falls back to
+// no lesson (the story itself is still stored) if AI is unavailable.
+async function distillStory(story) {
+  if (await aiGateError()) return '';
+  try {
+    let out = '';
+    await aiChat(
+      [
+        { role: 'system', content: PLAYBOOK_DISTILL_SYSTEM_PROMPT },
+        { role: 'user', content: buildStoryDistillPrompt(story) }
+      ],
+      (chunk, accumulated) => { out = accumulated; }
+    );
+    return (out || '').trim().replace(/^["'\s]+|["'\s]+$/g, '').slice(0, 260);
+  } catch {
+    return '';
+  }
+}
+
+async function saveSuccessStory(payload) {
+  const story = {
+    id: `ps_${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    accountName:   (payload.accountName || '').trim().slice(0, 120),
+    churnCategory: (payload.churnCategory || 'Unknown').trim().slice(0, 40),
+    situation:     (payload.situation || '').trim().slice(0, 600),
+    actions:       (payload.actions || '').trim().slice(0, 900),
+    outcome:       (payload.outcome || '').trim().slice(0, 600),
+    keyLesson:     '',
+    raw: [payload.situation, payload.actions, payload.outcome].filter(Boolean).join('\n').slice(0, 1500)
+  };
+  if (!story.situation && !story.actions) {
+    return { success: false, error: 'Tell me at least the situation or what you did — that is the play.' };
+  }
+  story.keyLesson = await distillStory(story);
+  const playbook = await addPlaybookStory(story);
+  return { success: true, playbook, story };
+}
+
 // ── Email draft ───────────────────────────────────────────────────────────────
 async function runEmailDraft(payload) {
   const { tabId, userNote, correction = '' } = payload;
@@ -282,13 +330,14 @@ async function runEmailDraft(payload) {
   const settings = await getSettings();
   const signature = settings.emailSignature || '';
   const learnings = await getLearnings();
+  const playbook  = await getPlaybook();
 
   let emailText = '';
   try {
-    await geminiChat(
+    await aiChat(
       [
         { role: 'system', content: EMAIL_SYSTEM_PROMPT },
-        { role: 'user',   content: buildEmailPrompt(odooData, planText, userNote, signature, { learnings, correction: correction.trim() }) }
+        { role: 'user',   content: buildEmailPrompt(odooData, planText, userNote, signature, { learnings, correction: correction.trim(), playbook }) }
       ],
       (chunk, accumulated) => {
         emailText = accumulated;
@@ -301,7 +350,7 @@ async function runEmailDraft(payload) {
   }
 
   if (!emailText || emailText.trim().length < 30) {
-    await broadcast('EMAIL_DRAFT_COMPLETE', { success: false, error: 'Gemini returned an empty response.' });
+    await broadcast('EMAIL_DRAFT_COMPLETE', { success: false, error: 'The AI returned an empty response.' });
     return;
   }
 
@@ -369,6 +418,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           sendResponse({ success: true, data: log });
           break;
         }
+        case 'SAVE_SUCCESS_STORY': {
+          const result = await saveSuccessStory(msg.payload);
+          sendResponse(result);
+          break;
+        }
+        case 'GET_PLAYBOOK': {
+          const playbook = await getPlaybook();
+          sendResponse({ success: true, data: playbook });
+          break;
+        }
+        case 'DELETE_STORY': {
+          const playbook = await deletePlaybookStory(msg.payload.id);
+          sendResponse({ success: true, data: playbook });
+          break;
+        }
         case 'GET_SETTINGS': {
           const s = await getSettings();
           sendResponse({ success: true, data: s });
@@ -380,7 +444,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           break;
         }
         case 'CHECK_GEMINI': {
-          const available = await geminiAvailable();
+          const available = await aiAvailable();
           sendResponse({ success: true, data: { available } });
           break;
         }

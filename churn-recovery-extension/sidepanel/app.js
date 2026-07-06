@@ -10,6 +10,7 @@ const STATE = {
   EMAIL_DRAFT:  'email_draft',
   SETTINGS:     'settings',
   LEARNINGS:    'learnings',
+  STORY_INPUT:  'story_input',
   ERROR:        'error'
 };
 
@@ -28,6 +29,9 @@ const initialState = {
   emailStreaming: false,
   learningsApplied: 0,
   learnings: [],
+  playbook: [],
+  playbookApplied: 0,
+  learnTab: 'rules',
   teachStatus: '',
   _rating: null,
 };
@@ -57,6 +61,7 @@ function render() {
     case STATE.EMAIL_DRAFT: renderEmailDraft();  break;
     case STATE.SETTINGS:    renderSettings();    break;
     case STATE.LEARNINGS:   renderLearnings();   break;
+    case STATE.STORY_INPUT: renderStoryInput();  break;
     case STATE.ERROR:       renderError();       break;
   }
 }
@@ -65,7 +70,7 @@ function render() {
 
 function renderIdle() {
   const warn = appState.geminiStatus === false
-    ? `<div class="warning-banner">Gemini API key not configured — <a href="#" id="setup-link">open Settings</a></div>`
+    ? `<div class="warning-banner">AI API key not configured — <a href="#" id="setup-link">open Settings</a></div>`
     : '';
   contentEl.innerHTML = `
     <div class="idle-screen">
@@ -78,9 +83,13 @@ function renderIdle() {
       </div>
       <h2>Churn Recovery Copilot</h2>
       <p>Open a churned or cancelled subscription page in Odoo to get started.</p>
-      <button class="btn btn-secondary btn-sm" style="width:auto" id="open-settings-idle">⚙ Settings</button>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-secondary btn-sm" style="width:auto" id="open-settings-idle">⚙ Settings</button>
+        <button class="btn btn-secondary btn-sm" style="width:auto" id="open-learnings-idle">🎓 Learning Center</button>
+      </div>
     </div>`;
   document.getElementById('open-settings-idle')?.addEventListener('click', () => transition(STATE.SETTINGS, { prevPhase: STATE.IDLE }));
+  document.getElementById('open-learnings-idle')?.addEventListener('click', openLearnings);
   document.getElementById('setup-link')?.addEventListener('click', (e) => { e.preventDefault(); transition(STATE.SETTINGS, { prevPhase: STATE.IDLE }); });
 }
 
@@ -253,14 +262,19 @@ function renderComplete() {
 
 // ── Teach & Correct panel (the learning loop) ─────────────────────────────────
 function renderTeachPanel(category, potential) {
-  const applied = appState.learningsApplied || 0;
+  const rules = appState.learningsApplied || 0;
+  const plays = appState.playbookApplied || 0;
+  const counts = (rules || plays)
+    ? [rules ? `${rules} rule${rules > 1 ? 's' : ''}` : '', plays ? `${plays} play${plays > 1 ? 's' : ''}` : '']
+        .filter(Boolean).join(' · ') + ' applied'
+    : 'Learning Center';
   const rating  = appState._rating;
   const status  = appState.teachStatus || '';
   return `
     <div class="teach-panel">
       <div class="teach-header">
         <span class="teach-title">🎓 Teach &amp; Correct</span>
-        <span class="learn-count" id="view-learnings">${applied ? `${applied} learning${applied > 1 ? 's' : ''} applied` : 'Manage learnings'}</span>
+        <span class="learn-count" id="view-learnings">${counts}</span>
       </div>
       <div class="rating-row">
         <span class="rating-q">Was this accurate?</span>
@@ -273,8 +287,9 @@ function renderTeachPanel(category, potential) {
         <button class="btn btn-secondary btn-sm" id="regenerate-analysis-btn" title="Re-run on this account with your fix">↻ Correct &amp; Regenerate</button>
         <button class="btn btn-primary btn-sm" id="save-learning-btn" title="Remember this for future accounts">💾 Save as Learning</button>
       </div>
+      <button class="btn btn-story btn-sm" id="save-story-btn" title="This account was won back — capture the winning steps as a playbook case">🏆 Save Success Story</button>
       ${status ? `<div class="teach-status ${status.startsWith('✓') ? 'ok' : ''}">${esc(status)}</div>` : ''}
-      <div class="teach-hint">Regenerate fixes <em>this</em> account now. Save as Learning improves <em>every future</em> account.</div>
+      <div class="teach-hint">Regenerate fixes <em>this</em> account now. Save as Learning improves <em>every future</em> account. Success Stories become proven plays the AI reuses.</div>
     </div>`;
 }
 
@@ -295,6 +310,16 @@ function wireTeachPanel(ctx) {
   });
 
   document.getElementById('view-learnings')?.addEventListener('click', openLearnings);
+
+  document.getElementById('save-story-btn')?.addEventListener('click', () => {
+    // Pre-fill the story form from the current analysis.
+    appState._storyDraft = {
+      accountName: account(),
+      churnCategory: (ctx.category || '').replace(/^\W+/, '').trim(),
+      situation: '', actions: '', outcome: ''
+    };
+    transition(STATE.STORY_INPUT, { prevPhase: STATE.COMPLETE });
+  });
 
   ta()?.addEventListener('input', (e) => { appState._correctionDraft = e.target.value; });
 
@@ -330,48 +355,181 @@ function wireTeachPanel(ctx) {
 }
 
 function openLearnings() {
+  const from = appState.phase;
   chrome.runtime.sendMessage({ type: 'GET_LEARNINGS' }, (res) => {
     appState.learnings = res?.data || [];
     appState.learningsApplied = (res?.data || []).length;
-    transition(STATE.LEARNINGS, { prevPhase: appState.phase });
+    chrome.runtime.sendMessage({ type: 'GET_PLAYBOOK' }, (res2) => {
+      appState.playbook = res2?.data || [];
+      appState.playbookApplied = (res2?.data || []).length;
+      transition(STATE.LEARNINGS, { prevPhase: from });
+    });
   });
 }
 
 function renderLearnings() {
-  const list = appState.learnings || [];
-  const items = list.length
-    ? list.map(l => `
+  const rules = appState.learnings || [];
+  const plays = appState.playbook || [];
+  const tab = appState.learnTab || 'rules';
+
+  const ruleItems = rules.length
+    ? rules.map(l => `
         <div class="learn-card">
           <div class="learn-text">${esc(l.text)}</div>
           <div class="learn-meta">
             <span>${esc(l.sourceAccount || 'manual')}${l.createdAt ? ' · ' + esc(String(l.createdAt).slice(0, 10)) : ''}</span>
-            <button class="learn-del" data-id="${esc(l.id)}" title="Forget this rule">✕</button>
+            <button class="learn-del" data-kind="rule" data-id="${esc(l.id)}" title="Forget this rule">✕</button>
           </div>
         </div>`).join('')
     : `<div class="result-card" style="color:var(--text-muted);text-align:center;padding:24px">
-         Nothing learned yet.<br>Correct an analysis and hit "Save as Learning".
+         No rules yet.<br>Correct an analysis and hit "Save as Learning".
+       </div>`;
+
+  const playItems = plays.length
+    ? plays.map(s => `
+        <div class="learn-card play-card">
+          <div class="play-head">
+            <span class="badge badge-churn">${esc(s.churnCategory || 'Unknown')}</span>
+            <strong class="play-account">${esc(s.accountName || 'Unnamed account')}</strong>
+          </div>
+          ${s.situation ? `<div class="play-row"><span class="play-label">Situation</span>${esc(s.situation)}</div>` : ''}
+          ${s.actions   ? `<div class="play-row"><span class="play-label">What worked</span>${esc(s.actions)}</div>` : ''}
+          ${s.outcome   ? `<div class="play-row"><span class="play-label">Outcome</span>${esc(s.outcome)}</div>` : ''}
+          ${s.keyLesson ? `<div class="play-lesson">💡 ${esc(s.keyLesson)}</div>` : ''}
+          <div class="learn-meta">
+            <span>${s.createdAt ? esc(String(s.createdAt).slice(0, 10)) : ''}</span>
+            <button class="learn-del" data-kind="play" data-id="${esc(s.id)}" title="Remove this play">✕</button>
+          </div>
+        </div>`).join('')
+    : `<div class="result-card" style="color:var(--text-muted);text-align:center;padding:24px">
+         No plays yet.<br>Add a real retention win — the AI will reuse its moves.
        </div>`;
 
   contentEl.innerHTML = `
     <div class="settings-screen">
       <button class="settings-back" id="learnings-back-btn">← Back</button>
-      <h2>Learned Rules (${list.length})</h2>
+      <h2>🎓 Learning Center</h2>
       <div class="settings-box">
-        Distilled from your corrections and injected into <strong>every</strong> future analysis and email. Remove any that no longer apply.
+        Everything here is injected into <strong>every</strong> future analysis and email.
+        <strong>Rules</strong> come from your corrections; <strong>Playbook</strong> holds real wins the AI pattern-matches against.
       </div>
-      <div class="learn-list">${items}</div>
+      <div class="tab-bar">
+        <button class="tab-btn ${tab === 'rules' ? 'active' : ''}" id="learn-tab-rules">📏 Rules (${rules.length})</button>
+        <button class="tab-btn ${tab === 'plays' ? 'active' : ''}" id="learn-tab-plays">🏆 Playbook (${plays.length})</button>
+      </div>
+      ${tab === 'plays' ? `<button class="btn btn-story btn-sm" id="add-story-btn">➕ Add Success Story</button>` : ''}
+      <div class="learn-list">${tab === 'rules' ? ruleItems : playItems}</div>
     </div>`;
 
   document.getElementById('learnings-back-btn')?.addEventListener('click', () => {
     transition(appState.prevPhase || STATE.COMPLETE);
   });
+  document.getElementById('learn-tab-rules')?.addEventListener('click', () => { appState.learnTab = 'rules'; render(); });
+  document.getElementById('learn-tab-plays')?.addEventListener('click', () => { appState.learnTab = 'plays'; render(); });
+  document.getElementById('add-story-btn')?.addEventListener('click', () => {
+    appState._storyDraft = { accountName: '', churnCategory: '', situation: '', actions: '', outcome: '' };
+    transition(STATE.STORY_INPUT, { prevPhase: STATE.LEARNINGS });
+  });
   document.querySelectorAll('.learn-del').forEach(btn => {
     btn.addEventListener('click', () => {
-      chrome.runtime.sendMessage({ type: 'DELETE_LEARNING', payload: { id: btn.dataset.id } }, (res) => {
-        appState.learnings = res?.data || [];
-        appState.learningsApplied = (res?.data || []).length;
-        render();
-      });
+      const isPlay = btn.dataset.kind === 'play';
+      chrome.runtime.sendMessage(
+        { type: isPlay ? 'DELETE_STORY' : 'DELETE_LEARNING', payload: { id: btn.dataset.id } },
+        (res) => {
+          if (isPlay) {
+            appState.playbook = res?.data || [];
+            appState.playbookApplied = appState.playbook.length;
+          } else {
+            appState.learnings = res?.data || [];
+            appState.learningsApplied = appState.learnings.length;
+          }
+          render();
+        }
+      );
+    });
+  });
+}
+
+// ── Success story capture form ─────────────────────────────────────────────────
+const CHURN_CATEGORIES = ['Price', 'Product Fit', 'Support Issues', 'Competition', 'Budget Cuts', 'Low Adoption', 'Relationship', 'Unknown'];
+
+function renderStoryInput() {
+  const d = appState._storyDraft || {};
+  const catOptions = CHURN_CATEGORIES.map(c =>
+    `<option value="${esc(c)}" ${new RegExp(c, 'i').test(d.churnCategory || '') ? 'selected' : ''}>${esc(c)}</option>`
+  ).join('');
+
+  contentEl.innerHTML = `
+    <div class="settings-screen">
+      <button class="settings-back" id="story-back-btn">← Back</button>
+      <h2>🏆 Add Success Story</h2>
+      <div class="settings-box">
+        Capture a real retention win. The AI distills <strong>why it worked</strong> and reuses the moves on similar accounts.
+      </div>
+
+      <div class="form-group">
+        <label>Account name</label>
+        <input type="text" id="story-account" placeholder="e.g. Al Amal Trading Co." value="${esc(d.accountName || '')}">
+      </div>
+
+      <div class="form-group">
+        <label>Why did they churn?</label>
+        <select id="story-category">${catOptions}</select>
+      </div>
+
+      <div class="form-group">
+        <label>The situation</label>
+        <textarea id="story-situation" class="teach-textarea" rows="3"
+          placeholder="Context of the churn — e.g. 'Cancelled after a billing dispute; felt support was slow and got a cheaper quote from a competitor.'">${esc(d.situation || '')}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>What you did that worked (the steps)</label>
+        <textarea id="story-actions" class="teach-textarea" rows="4"
+          placeholder="The winning moves — e.g. 'Called the owner directly (not the accountant), apologized for the billing mess, offered a 3-month bridge at the old price, and set up a monthly check-in call.'">${esc(d.actions || '')}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>The outcome</label>
+        <textarea id="story-outcome" class="teach-textarea" rows="2"
+          placeholder="e.g. 'Renewed for 12 months within 2 weeks, later upgraded to the annual plan.'">${esc(d.outcome || '')}</textarea>
+      </div>
+
+      <button class="btn btn-primary" id="story-save-btn">💾 Save to Playbook</button>
+      <div id="story-status" class="teach-status" style="min-height:16px"></div>
+    </div>`;
+
+  document.getElementById('story-back-btn')?.addEventListener('click', () => {
+    transition(appState.prevPhase || STATE.COMPLETE);
+  });
+
+  document.getElementById('story-save-btn')?.addEventListener('click', () => {
+    const payload = {
+      accountName:   document.getElementById('story-account')?.value || '',
+      churnCategory: document.getElementById('story-category')?.value || 'Unknown',
+      situation:     document.getElementById('story-situation')?.value || '',
+      actions:       document.getElementById('story-actions')?.value || '',
+      outcome:       document.getElementById('story-outcome')?.value || ''
+    };
+    if (!payload.situation.trim() && !payload.actions.trim()) {
+      document.getElementById('story-status').textContent = 'Fill in at least the situation or the steps — that is the play.';
+      document.getElementById('story-situation')?.focus();
+      return;
+    }
+    const btn = document.getElementById('story-save-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Distilling & saving…'; }
+    chrome.runtime.sendMessage({ type: 'SAVE_SUCCESS_STORY', payload }, (res) => {
+      if (res?.success) {
+        appState.playbook = res.playbook || [];
+        appState.playbookApplied = appState.playbook.length;
+        appState._storyDraft = null;
+        appState.learnTab = 'plays';
+        transition(STATE.LEARNINGS, { prevPhase: appState.prevPhase === STATE.LEARNINGS ? STATE.IDLE : appState.prevPhase });
+      } else {
+        const st = document.getElementById('story-status');
+        if (st) st.textContent = res?.error || 'Could not save — try again.';
+        if (btn) { btn.disabled = false; btn.textContent = '💾 Save to Playbook'; }
+      }
     });
   });
 }
@@ -579,37 +737,69 @@ function renderSettings() {
   contentEl.innerHTML = `
     <div class="settings-screen">
       <button class="settings-back" id="settings-back-btn">← Back</button>
-      <h2>Gemini AI Settings</h2>
-
-      <div class="settings-box">
-        <strong>Get your free API key</strong><br>
-        <ol>
-          <li>Go to <strong>aistudio.google.com/apikey</strong></li>
-          <li>Sign in → click "Create API Key"</li>
-          <li>Paste it below — ~1M tokens/min free</li>
-        </ol>
-      </div>
+      <h2>AI Settings</h2>
 
       <div class="form-group">
-        <label>Gemini API Key</label>
-        <input type="password" id="gemini-key" placeholder="AIza…" autocomplete="off">
-        <span class="form-hint">Stored on this device only (chrome.storage.local) — it does not sync to your other devices.</span>
+        <label>AI Provider</label>
+        <select id="ai-provider">
+          <option value="gemini">Google Gemini — free tier available</option>
+          <option value="anthropic">Anthropic Claude — highest quality</option>
+        </select>
       </div>
+
+      <div id="gemini-fields">
+        <div class="settings-box">
+          <strong>Get your free Gemini API key</strong><br>
+          <ol>
+            <li>Go to <strong>aistudio.google.com/apikey</strong></li>
+            <li>Sign in → click "Create API Key"</li>
+            <li>Paste it below — ~1M tokens/min free</li>
+          </ol>
+        </div>
+        <div class="form-group">
+          <label>Gemini API Key</label>
+          <input type="password" id="gemini-key" placeholder="AIza…" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Gemini Model</label>
+          <select id="gemini-model">
+            <option value="gemini-2.5-flash">gemini-2.5-flash — best speed + quality (default)</option>
+            <option value="gemini-2.5-flash-lite-preview-06-17">gemini-2.5-flash-lite — fastest</option>
+            <option value="gemini-flash-latest">gemini-flash-latest — always latest Flash</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="anthropic-fields" style="display:none">
+        <div class="settings-box">
+          <strong>Get your Anthropic API key</strong><br>
+          <ol>
+            <li>Go to <strong>platform.claude.com</strong></li>
+            <li>Sign in → API Keys → "Create Key"</li>
+            <li>Paste it below (paid — pay per use)</li>
+          </ol>
+        </div>
+        <div class="form-group">
+          <label>Anthropic API Key</label>
+          <input type="password" id="anthropic-key" placeholder="sk-ant-…" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Claude Model</label>
+          <select id="anthropic-model">
+            <option value="claude-opus-4-8">claude-opus-4-8 — most capable (default)</option>
+            <option value="claude-sonnet-5">claude-sonnet-5 — near-Opus quality, lower cost</option>
+            <option value="claude-haiku-4-5">claude-haiku-4-5 — fastest + cheapest</option>
+          </select>
+        </div>
+      </div>
+
+      <span class="form-hint">Keys are stored on this device only (chrome.storage.local) — they do not sync to your other devices.</span>
 
       <div class="form-group consent-box">
         <label class="consent-label">
           <input type="checkbox" id="ai-consent">
-          <span>I understand that running an analysis or drafting an email sends the subscription record — including chatter and internal CSM notes — to Google Gemini for processing. Do not enable this for data you are not permitted to share with a third-party AI provider.</span>
+          <span>I understand that running an analysis or drafting an email sends the subscription record — including chatter and internal CSM notes — to the selected AI provider (Google Gemini or Anthropic Claude) for processing. Do not enable this for data you are not permitted to share with a third-party AI provider.</span>
         </label>
-      </div>
-
-      <div class="form-group">
-        <label>Model</label>
-        <select id="gemini-model">
-          <option value="gemini-2.5-flash">gemini-2.5-flash — best speed + quality (default)</option>
-          <option value="gemini-2.5-flash-lite-preview-06-17">gemini-2.5-flash-lite — fastest</option>
-          <option value="gemini-flash-latest">gemini-flash-latest — always latest Flash</option>
-        </select>
       </div>
 
       <div class="form-group">
@@ -628,15 +818,40 @@ function renderSettings() {
       <div id="settings-saved" class="settings-saved" style="display:none">✓ Saved</div>
     </div>`;
 
+  function syncProviderFields() {
+    const p = document.getElementById('ai-provider')?.value || 'gemini';
+    document.getElementById('gemini-fields').style.display    = p === 'gemini' ? '' : 'none';
+    document.getElementById('anthropic-fields').style.display = p === 'anthropic' ? '' : 'none';
+  }
+
+  function collectSettings() {
+    return {
+      aiProvider:      document.getElementById('ai-provider').value,
+      geminiApiKey:    document.getElementById('gemini-key').value.trim(),
+      geminiModel:     document.getElementById('gemini-model').value,
+      anthropicApiKey: document.getElementById('anthropic-key').value.trim(),
+      anthropicModel:  document.getElementById('anthropic-model').value,
+      emailSignature:  document.getElementById('email-sig').value,
+      aiConsent:       document.getElementById('ai-consent').checked
+    };
+  }
+
   chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (res) => {
     if (res?.data) {
-      if (res.data.geminiApiKey)   document.getElementById('gemini-key').value  = res.data.geminiApiKey;
-      if (res.data.geminiModel)    document.getElementById('gemini-model').value = res.data.geminiModel;
-      if (res.data.emailSignature) document.getElementById('email-sig').value    = res.data.emailSignature;
+      const d = res.data;
+      if (d.aiProvider)      document.getElementById('ai-provider').value     = d.aiProvider;
+      if (d.geminiApiKey)    document.getElementById('gemini-key').value      = d.geminiApiKey;
+      if (d.geminiModel)     document.getElementById('gemini-model').value    = d.geminiModel;
+      if (d.anthropicApiKey) document.getElementById('anthropic-key').value   = d.anthropicApiKey;
+      if (d.anthropicModel)  document.getElementById('anthropic-model').value = d.anthropicModel;
+      if (d.emailSignature)  document.getElementById('email-sig').value       = d.emailSignature;
       const consentEl = document.getElementById('ai-consent');
-      if (consentEl) consentEl.checked = res.data.aiConsent === true;
+      if (consentEl) consentEl.checked = d.aiConsent === true;
+      syncProviderFields();
     }
   });
+
+  document.getElementById('ai-provider')?.addEventListener('change', syncProviderFields);
 
   document.getElementById('settings-back-btn')?.addEventListener('click', () => {
     transition(appState.prevPhase || STATE.IDLE);
@@ -645,14 +860,12 @@ function renderSettings() {
   document.getElementById('test-btn')?.addEventListener('click', () => {
     const statusEl = document.getElementById('gemini-status');
     statusEl.textContent = 'Testing…';
-    const geminiApiKey   = document.getElementById('gemini-key').value.trim();
-    const geminiModel    = document.getElementById('gemini-model').value;
-    const emailSignature = document.getElementById('email-sig').value;
-    const aiConsent      = document.getElementById('ai-consent').checked;
-    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload: { geminiApiKey, geminiModel, emailSignature, aiConsent } }, () => {
+    const payload = collectSettings();
+    const modelLabel = payload.aiProvider === 'anthropic' ? payload.anthropicModel : payload.geminiModel;
+    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload }, () => {
       chrome.runtime.sendMessage({ type: 'CHECK_GEMINI' }, (res) => {
         if (res?.data?.available) {
-          statusEl.innerHTML = `<span style="color:var(--success)">✓ Gemini connected — ${esc(geminiModel)}</span>`;
+          statusEl.innerHTML = `<span style="color:var(--success)">✓ Connected — ${esc(modelLabel)}</span>`;
           appState.geminiStatus = true;
         } else {
           statusEl.innerHTML = `<span style="color:var(--danger)">✕ Connection failed — check your API key</span>`;
@@ -663,11 +876,7 @@ function renderSettings() {
   });
 
   document.getElementById('save-btn')?.addEventListener('click', () => {
-    const geminiApiKey   = document.getElementById('gemini-key').value.trim();
-    const geminiModel    = document.getElementById('gemini-model').value;
-    const emailSignature = document.getElementById('email-sig').value;
-    const aiConsent      = document.getElementById('ai-consent').checked;
-    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload: { geminiApiKey, geminiModel, emailSignature, aiConsent } }, () => {
+    chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', payload: collectSettings() }, () => {
       const el = document.getElementById('settings-saved');
       if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 2000); }
     });
@@ -762,6 +971,7 @@ chrome.runtime.onMessage.addListener((msg) => {
           planText: msg.payload.planText,
           steps: msg.payload.steps || [],
           learningsApplied: msg.payload.learningsApplied ?? appState.learningsApplied,
+          playbookApplied: msg.payload.playbookApplied ?? appState.playbookApplied,
           teachStatus: '',
           _rating: null,
           _correctionDraft: '',
@@ -831,7 +1041,7 @@ document.getElementById('settings-btn')?.addEventListener('click', () => {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-  // Check Gemini in background
+  // Check AI provider availability in background
   chrome.runtime.sendMessage({ type: 'CHECK_GEMINI' }, (res) => {
     appState.geminiStatus = res?.data?.available ?? false;
     if (appState.phase === STATE.IDLE) render();
@@ -842,10 +1052,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   appState.currentTabId = tab.id;
 
-  // Load learned rules so the "N learnings applied" count is accurate on restore.
+  // Load learned rules + playbook so the applied counts are accurate on restore.
   const learnRes = await new Promise(r => chrome.runtime.sendMessage({ type: 'GET_LEARNINGS' }, r));
   appState.learnings = learnRes?.data || [];
   appState.learningsApplied = appState.learnings.length;
+  const playRes = await new Promise(r => chrome.runtime.sendMessage({ type: 'GET_PLAYBOOK' }, r));
+  appState.playbook = playRes?.data || [];
+  appState.playbookApplied = appState.playbook.length;
 
   const isOdoo = /odoo\.com|localhost|127\.0\.0\.1/.test(tab.url || '');
   const isSO   = /sale\.order|\/sales\/|\/subscriptions\/|[#&]model=sale/.test(tab.url || '');

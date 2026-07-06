@@ -1,6 +1,9 @@
 const SETTINGS_KEY = 'churn_settings';
 const SESSION_PREFIX = 'churn_session_';
-const SETTINGS_KEYS = ['geminiApiKey', 'geminiModel', 'emailSignature', 'aiConsent'];
+const SETTINGS_KEYS = [
+  'geminiApiKey', 'geminiModel', 'emailSignature', 'aiConsent',
+  'aiProvider', 'anthropicApiKey', 'anthropicModel'
+];
 
 // The Gemini API key and record data must NOT sync across a user's devices, so
 // everything lives in chrome.storage.local (device-only), never storage.sync.
@@ -30,18 +33,24 @@ export async function getSettings() {
   await migrateFromSync();
   const r = await chrome.storage.local.get(SETTINGS_KEYS);
   return {
-    geminiApiKey:   r.geminiApiKey   || '',
-    geminiModel:    r.geminiModel    || 'gemini-2.5-flash',
-    emailSignature: r.emailSignature || '',
-    aiConsent:      r.aiConsent === true
+    aiProvider:      r.aiProvider === 'anthropic' ? 'anthropic' : 'gemini',
+    geminiApiKey:    r.geminiApiKey    || '',
+    geminiModel:     r.geminiModel     || 'gemini-2.5-flash',
+    anthropicApiKey: r.anthropicApiKey || '',
+    anthropicModel:  r.anthropicModel  || 'claude-opus-4-8',
+    emailSignature:  r.emailSignature  || '',
+    aiConsent:       r.aiConsent === true
   };
 }
 
 export async function saveSettings(data) {
   const patch = {
-    geminiApiKey:   data.geminiApiKey || '',
-    geminiModel:    data.geminiModel || 'gemini-2.5-flash',
-    emailSignature: data.emailSignature || ''
+    aiProvider:      data.aiProvider === 'anthropic' ? 'anthropic' : 'gemini',
+    geminiApiKey:    data.geminiApiKey || '',
+    geminiModel:     data.geminiModel || 'gemini-2.5-flash',
+    anthropicApiKey: data.anthropicApiKey || '',
+    anthropicModel:  data.anthropicModel || 'claude-opus-4-8',
+    emailSignature:  data.emailSignature || ''
   };
   if (data.aiConsent !== undefined) patch.aiConsent = data.aiConsent === true;
   return chrome.storage.local.set(patch);
@@ -72,6 +81,32 @@ export async function addLearning(learning) {
 export async function deleteLearning(id) {
   const list = (await getLearnings()).filter(l => l.id !== id);
   await chrome.storage.local.set({ [LEARNINGS_KEY]: list });
+  return list;
+}
+
+// ── Success-story playbook ─────────────────────────────────────────────────────
+// Real retention wins — situation, the steps that worked, and the outcome —
+// captured by the CSM and injected into future analyses as proven plays to
+// pattern-match against. Device-only, like learnings.
+const PLAYBOOK_KEY = 'churn_playbook';
+const MAX_STORIES  = 40;
+
+export async function getPlaybook() {
+  const r = await chrome.storage.local.get([PLAYBOOK_KEY]);
+  return r[PLAYBOOK_KEY] || [];
+}
+
+export async function addPlaybookStory(story) {
+  const list = await getPlaybook();
+  list.unshift(story);
+  const trimmed = list.slice(0, MAX_STORIES);
+  await chrome.storage.local.set({ [PLAYBOOK_KEY]: trimmed });
+  return trimmed;
+}
+
+export async function deletePlaybookStory(id) {
+  const list = (await getPlaybook()).filter(s => s.id !== id);
+  await chrome.storage.local.set({ [PLAYBOOK_KEY]: list });
   return list;
 }
 
