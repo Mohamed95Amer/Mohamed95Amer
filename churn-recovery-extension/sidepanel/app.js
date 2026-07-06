@@ -131,15 +131,16 @@ function renderExtracted() {
   document.getElementById('analyze-btn')?.addEventListener('click', startAnalysis);
 }
 
-function renderLoading() {
-  const p = appState.loadingProgress;
-  const steps = [
-    { key: 'chatter', label: 'Loading full chatter history' },
-    { key: 'sales',   label: 'Loading previous subscription history' },
-    { key: 'ai',      label: 'AI analyzing churn signals' }
-  ];
+const PROGRESS_STEPS = [
+  { key: 'chatter',  label: 'Loading full chatter history' },
+  { key: 'sales',    label: 'Loading previous subscription history' },
+  { key: 'projects', label: 'Checking projects & delivery' },
+  { key: 'ai',       label: 'AI analyzing churn signals' }
+];
 
-  const rows = steps.map(s => {
+function renderProgressRows() {
+  const p = appState.loadingProgress;
+  return PROGRESS_STEPS.map(s => {
     const status = p[s.key] || 'pending';
     let icon;
     if      (status === 'running') icon = `<div class="spinner"></div>`;
@@ -147,31 +148,6 @@ function renderLoading() {
     else if (status === 'error')   icon = `<span style="color:var(--warning)">—</span>`;
     else                           icon = `<div class="pending-dot"></div>`;
 
-    const isActive = status === 'running';
-    const count = p[`${s.key}_count`];
-    const detail = count != null ? ` (${count})` : '';
-    return `<div class="loading-row">
-      <div class="loading-icon">${icon}</div>
-      <span class="loading-label ${isActive ? 'active' : ''}">${esc(s.label)}${detail}</span>
-    </div>`;
-  }).join('');
-
-  contentEl.innerHTML = `<div class="loading-screen">${rows}</div>`;
-}
-
-function renderAnalyzing() {
-  const p = appState.loadingProgress;
-  const steps = [
-    { key: 'chatter', label: 'Loading full chatter history' },
-    { key: 'sales',   label: 'Loading previous subscription history' },
-    { key: 'ai',      label: 'AI analyzing churn signals' }
-  ];
-  const rows = steps.map(s => {
-    const status = p[s.key] || 'pending';
-    let icon;
-    if      (status === 'running') icon = `<div class="spinner"></div>`;
-    else if (status === 'done')    icon = `<span class="check-icon">✓</span>`;
-    else                           icon = `<div class="pending-dot"></div>`;
     const count = p[`${s.key}_count`];
     const detail = count != null ? ` (${count})` : '';
     return `<div class="loading-row">
@@ -179,6 +155,14 @@ function renderAnalyzing() {
       <span class="loading-label ${status === 'running' ? 'active' : ''}">${esc(s.label)}${detail}</span>
     </div>`;
   }).join('');
+}
+
+function renderLoading() {
+  contentEl.innerHTML = `<div class="loading-screen">${renderProgressRows()}</div>`;
+}
+
+function renderAnalyzing() {
+  const rows = renderProgressRows();
 
   const isCursorVisible = !appState.planText.includes('## Recovery Pitch Script') || appState.planText.length < 300;
 
@@ -318,7 +302,9 @@ function wireTeachPanel(ctx) {
       churnCategory: (ctx.category || '').replace(/^\W+/, '').trim(),
       situation: '', actions: '', outcome: ''
     };
-    transition(STATE.STORY_INPUT, { prevPhase: STATE.COMPLETE });
+    appState._storyReturn = STATE.COMPLETE;
+    appState._learnReturn = STATE.COMPLETE; // saving lands on the Playbook; back → results
+    transition(STATE.STORY_INPUT);
   });
 
   ta()?.addEventListener('input', (e) => { appState._correctionDraft = e.target.value; });
@@ -327,7 +313,7 @@ function wireTeachPanel(ctx) {
     const text = ta()?.value?.trim();
     if (!text) { ta()?.focus(); return; }
     appState._correctionDraft = '';
-    appState.loadingProgress = { chatter: 'done', sales: 'done' };
+    appState.loadingProgress = { chatter: 'done', sales: 'done', projects: 'done' };
     transition(STATE.LOADING, { planText: '', steps: [], teachStatus: '' });
     chrome.runtime.sendMessage({ type: 'REGENERATE_ANALYSIS', payload: { tabId: appState.currentTabId, correction: text } });
   });
@@ -355,14 +341,19 @@ function wireTeachPanel(ctx) {
 }
 
 function openLearnings() {
+  // Remember where to return to — but never a learning screen itself, or the
+  // back button would loop the user back into the Learning Center forever.
   const from = appState.phase;
+  if (from !== STATE.LEARNINGS && from !== STATE.STORY_INPUT) {
+    appState._learnReturn = from;
+  }
   chrome.runtime.sendMessage({ type: 'GET_LEARNINGS' }, (res) => {
     appState.learnings = res?.data || [];
     appState.learningsApplied = (res?.data || []).length;
     chrome.runtime.sendMessage({ type: 'GET_PLAYBOOK' }, (res2) => {
       appState.playbook = res2?.data || [];
       appState.playbookApplied = (res2?.data || []).length;
-      transition(STATE.LEARNINGS, { prevPhase: from });
+      transition(STATE.LEARNINGS);
     });
   });
 }
@@ -422,13 +413,15 @@ function renderLearnings() {
     </div>`;
 
   document.getElementById('learnings-back-btn')?.addEventListener('click', () => {
-    transition(appState.prevPhase || STATE.COMPLETE);
+    // _learnReturn is guaranteed to be a non-learning phase (see openLearnings).
+    transition(appState._learnReturn || STATE.IDLE);
   });
   document.getElementById('learn-tab-rules')?.addEventListener('click', () => { appState.learnTab = 'rules'; render(); });
   document.getElementById('learn-tab-plays')?.addEventListener('click', () => { appState.learnTab = 'plays'; render(); });
   document.getElementById('add-story-btn')?.addEventListener('click', () => {
     appState._storyDraft = { accountName: '', churnCategory: '', situation: '', actions: '', outcome: '' };
-    transition(STATE.STORY_INPUT, { prevPhase: STATE.LEARNINGS });
+    appState._storyReturn = STATE.LEARNINGS;
+    transition(STATE.STORY_INPUT);
   });
   document.querySelectorAll('.learn-del').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -500,7 +493,7 @@ function renderStoryInput() {
     </div>`;
 
   document.getElementById('story-back-btn')?.addEventListener('click', () => {
-    transition(appState.prevPhase || STATE.COMPLETE);
+    transition(appState._storyReturn || STATE.LEARNINGS);
   });
 
   document.getElementById('story-save-btn')?.addEventListener('click', () => {
@@ -524,7 +517,9 @@ function renderStoryInput() {
         appState.playbookApplied = appState.playbook.length;
         appState._storyDraft = null;
         appState.learnTab = 'plays';
-        transition(STATE.LEARNINGS, { prevPhase: appState.prevPhase === STATE.LEARNINGS ? STATE.IDLE : appState.prevPhase });
+        // Land on the Playbook tab; its back button uses _learnReturn, which
+        // still points at wherever the user originally came from.
+        transition(STATE.LEARNINGS);
       } else {
         const st = document.getElementById('story-status');
         if (st) st.textContent = res?.error || 'Could not save — try again.';
@@ -955,9 +950,15 @@ chrome.runtime.onMessage.addListener((msg) => {
       if (msg.payload.count !== undefined) p[`${msg.payload.step}_count`] = msg.payload.count;
 
       if (msg.payload.accumulated !== undefined) {
-        // Streaming AI text — switch to ANALYZING view
+        // Streaming AI text — switch to ANALYZING view. Re-rendering the whole
+        // panel per chunk is O(n²) as text grows and makes streaming feel slow,
+        // so throttle full renders to ~8/s.
         appState = { ...appState, loadingProgress: p, planText: msg.payload.accumulated, phase: STATE.ANALYZING };
-        render();
+        const now = Date.now();
+        if (!appState._lastStreamRender || now - appState._lastStreamRender > 120) {
+          appState._lastStreamRender = now;
+          render();
+        }
       } else {
         appState.loadingProgress = p;
         if (appState.phase === STATE.LOADING || appState.phase === STATE.ANALYZING) render();
@@ -983,11 +984,17 @@ chrome.runtime.onMessage.addListener((msg) => {
       }
       break;
 
-    case 'EMAIL_DRAFT_PROGRESS':
+    case 'EMAIL_DRAFT_PROGRESS': {
       appState.emailText = msg.payload.accumulated || '';
       appState.emailStreaming = true;
-      if (appState.phase === STATE.EMAIL_DRAFT) render();
+      const now = Date.now();
+      if (appState.phase === STATE.EMAIL_DRAFT &&
+          (!appState._lastStreamRender || now - appState._lastStreamRender > 120)) {
+        appState._lastStreamRender = now;
+        render();
+      }
       break;
+    }
 
     case 'EMAIL_DRAFT_COMPLETE':
       if (msg.payload.success) {

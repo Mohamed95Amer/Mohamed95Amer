@@ -146,22 +146,53 @@ export function buildChurnPrompt(odooData, opts = {}) {
     ? odooData.products.map(p => `  - ${p.name} × ${p.qty} @ ${p.unitPrice}`).join('\n')
     : '  - (no products listed)';
 
+  // Cap what goes into the prompt — a huge prompt is the main driver of slow
+  // AI responses. Arrays are chronological; keep the MOST RECENT slice (the
+  // churn signals live near the end) and say when older messages were dropped.
+  const CHAT_CAP = 150, SALES_CAP = 80;
+
   const cleanChat = (odooData.chatHistory || []).filter(m => !isAutomatedNotification(m));
-  const chatter = cleanChat.length
-    ? cleanChat.map(m => {
+  const chatSlice = cleanChat.slice(-CHAT_CAP);
+  const chatNote = cleanChat.length > CHAT_CAP
+    ? `(showing the most recent ${CHAT_CAP} of ${cleanChat.length} messages)\n` : '';
+  const chatter = chatSlice.length
+    ? chatNote + chatSlice.map(m => {
         const tag = m.type === 'log_note' ? '[LOG NOTE]' : '[MSG]';
         return `${tag} ${m.date || ''} | ${m.author || 'Unknown'}: ${m.body}`;
       }).join('\n')
     : '(no communication history found)';
 
   const cleanSales = (odooData.salesHistory || []).filter(m => !isAutomatedNotification(m));
-  const salesHistory = cleanSales.length
-    ? cleanSales.map(m => {
+  const salesSlice = cleanSales.slice(-SALES_CAP);
+  const salesNote = cleanSales.length > SALES_CAP
+    ? `(showing the most recent ${SALES_CAP} of ${cleanSales.length} messages)\n` : '';
+  const salesHistory = salesSlice.length
+    ? salesNote + salesSlice.map(m => {
         const src = m.sourceOrder ? `[${m.sourceOrder}]` : '[prev-sub]';
         const tag = m.type === 'log_note' ? '[LOG NOTE]' : '[MSG]';
         return `${src} ${tag} ${m.date || ''} | ${m.author || 'Unknown'}: ${m.body}`;
       }).join('\n')
     : '(no previous subscription history found)';
+
+  // Projects & delivery — adoption/engagement signals (dormant timesheets and
+  // unused hour budgets are strong churn drivers; invested hours are the best
+  // win-back hook).
+  let projectsBlock = '(no project data available)';
+  const pd = odooData.projectData;
+  if (pd && (pd.projects?.length || pd.tasks?.length || pd.timesheetSummary?.totalHours)) {
+    const projLines = (pd.projects || []).map(p => {
+      const remaining = p.hoursAllocated > 0 ? ` | ${(p.hoursAllocated - p.hoursLogged).toFixed(1)}h remaining` : '';
+      return `  - ${p.name} [${p.stage || 'no stage'}${p.active ? '' : ', archived'}] — ${p.hoursLogged}h logged / ${p.hoursAllocated || '?'}h allocated${remaining}`;
+    }).join('\n') || '  - (no projects)';
+    const openTasks = (pd.tasks || []);
+    const blocked = openTasks.filter(t => t.blocked).length;
+    const taskLine = openTasks.length
+      ? `  - ${openTasks.length} task(s)${blocked ? `, ${blocked} BLOCKED` : ''}; recent: ${openTasks.slice(0, 5).map(t => `"${t.name}" [${t.stage}]`).join(', ')}`
+      : '  - (no tasks found)';
+    const tsu = pd.timesheetSummary || {};
+    const tsLine = `  - ${tsu.totalHours ?? 0}h logged total, ${tsu.last30DaysHours ?? 0}h in the last 30 days${tsu.lastEntryDate ? `, last entry ${tsu.lastEntryDate}` : ''}`;
+    projectsBlock = `Projects:\n${projLines}\nTasks:\n${taskLine}\nTimesheets:\n${tsLine}`;
+  }
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -177,6 +208,9 @@ export function buildChurnPrompt(odooData, opts = {}) {
 - Salesperson: ${odooData.assignedSalesperson || 'N/A'}
 - Products:
 ${products}
+
+## Projects & Delivery (implementation projects, tasks, timesheet activity for this account)
+${projectsBlock}
 
 ## Internal CSM Notes
 ${odooData.notesContent || '(none)'}
@@ -334,13 +368,18 @@ export function buildEmailPrompt(odooData, planText, userNote, signature, opts =
   const products = (odooData.products || []).map(p => p.name).filter(Boolean).join(', ') || 'N/A';
   const today = new Date().toISOString().split('T')[0];
 
-  // Scan chatter for hours mentioned, key quotes
+  // Hours invested — prefer real timesheet totals from the project data;
+  // fall back to scanning chatter text for a mention.
   const allMsgs = [...(odooData.chatHistory || []), ...(odooData.salesHistory || [])];
-  const hoursMatch = allMsgs
-    .map(m => m.body || '')
-    .join(' ')
-    .match(/(\d+)\s*(?:hours?|hrs?)/i);
-  const hoursContext = hoursMatch ? `${hoursMatch[1]} hours logged in their account` : '';
+  let hoursContext = '';
+  const tsu = odooData.projectData?.timesheetSummary;
+  if (tsu?.totalHours > 0) {
+    hoursContext = `${tsu.totalHours} hours of delivery work logged on their projects (real timesheet data)`;
+  } else {
+    const hoursMatch = allMsgs.map(m => m.body || '').join(' ').match(/(\d+)\s*(?:hours?|hrs?)/i);
+    if (hoursMatch) hoursContext = `${hoursMatch[1]} hours logged in their account`;
+  }
+  const projNames = (odooData.projectData?.projects || []).map(p => p.name).slice(0, 3).join(', ');
 
   // Recent chatter snippets (5 most relevant)
   const relevantMsgs = allMsgs
@@ -362,6 +401,7 @@ export function buildEmailPrompt(odooData, planText, userNote, signature, opts =
 - Subscription End Date: ${odooData.endDate || 'N/A'}
 - Today's Date: ${today}
 ${hoursContext ? `- Hours/Work in Account: ${hoursContext}` : ''}
+${projNames ? `- Their Projects: ${projNames}` : ''}
 
 ## Churn Analysis Summary
 - Churn Category: ${categoryMatch?.[1]?.trim() || 'Unknown'}

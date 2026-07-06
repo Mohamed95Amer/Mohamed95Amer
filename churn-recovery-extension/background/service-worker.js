@@ -57,7 +57,195 @@ async function extractPageData(tabId) {
   }
 }
 
-// ── Full chatter scroll + extract ─────────────────────────────────────────────
+// ── Odoo JSON-RPC collectors ───────────────────────────────────────────────────
+// These run inside the page (same origin → Odoo session cookie) and read the
+// ORM directly via /web/dataset/call_kw. One RPC replaces the old scroll-and-
+// click chatter loop (~30-60s of fixed sleeps) and the hidden-tab sales-history
+// automation (~20s per prior order). DOM scraping remains as the fallback.
+
+// Resolve the commercial partner (company-level customer) once from the order
+// in the URL, so every collector can query partner-wide data without repeating
+// the lookup.
+async function resolvePartnerId(tabId) {
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: async () => {
+        const id = parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] ||
+          new URLSearchParams(window.location.hash.replace('#', '')).get('id') || '0');
+        if (!id) return null;
+        try {
+          const r = await fetch('/web/dataset/call_kw', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: {
+              model: 'sale.order', method: 'read',
+              args: [[id], ['partner_id', 'commercial_partner_id']], kwargs: {}
+            }})
+          });
+          const so = (await r.json())?.result?.[0];
+          return { soId: id, partnerId: so?.commercial_partner_id?.[0] || so?.partner_id?.[0] || 0 };
+        } catch { return { soId: id, partnerId: 0 }; }
+      }
+    });
+    return results?.[0]?.result || null;
+  } catch { return null; }
+}
+
+// Full chatter in ONE RPC. Returns null (not []) on failure so the caller can
+// fall back to DOM scraping; returns messages in chronological order.
+async function fetchChatterRpc(tabId, soId) {
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      args: [soId || 0],
+      func: async (knownId) => {
+        const id = knownId || parseInt(window.location.pathname.match(/\/(\d+)\/?$/)?.[1] || '0');
+        if (!id) return null;
+        try {
+          const r = await fetch('/web/dataset/call_kw', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: {
+              model: 'mail.message', method: 'search_read',
+              args: [[['model', '=', 'sale.order'], ['res_id', '=', id],
+                     ['message_type', 'in', ['comment', 'email']]]],
+              kwargs: { fields: ['author_id', 'date', 'body', 'subtype_id'], limit: 300, order: 'date desc' }
+            }})
+          });
+          const j = await r.json();
+          if (j.error || !Array.isArray(j.result)) return null;
+          return j.result
+            .map(m => ({
+              author: m.author_id?.[1] || '',
+              date: m.date || '',
+              body: (m.body || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 700),
+              type: /note/i.test(m.subtype_id?.[1] || '') ? 'log_note' : 'message'
+            }))
+            .filter(m => m.body)
+            .reverse(); // chronological, matching the DOM extractor's order
+        } catch { return null; }
+      }
+    });
+    return results?.[0]?.result ?? null;
+  } catch { return null; }
+}
+
+// Previous-subscription history in TWO RPCs: all other orders for the customer's
+// company, then their chatter in one batched mail.message read. Returns null on
+// failure so the caller can fall back to the hidden-tab automation.
+async function fetchSalesHistoryRpc(tabId, partnerId, currentSoId) {
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      args: [partnerId || 0, currentSoId || 0],
+      func: async (pid, currentId) => {
+        if (!pid) return null;
+        const rpc = async (model, method, args, kwargs) => {
+          const r = await fetch('/web/dataset/call_kw', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
+          });
+          const j = await r.json();
+          if (j.error) throw new Error(j.error.data?.message || j.error.message || 'RPC error');
+          return Array.isArray(j.result) ? j.result : [];
+        };
+        try {
+          const orders = await rpc('sale.order', 'search_read',
+            [[['partner_id', 'child_of', pid], ['id', '!=', currentId]]],
+            { fields: ['name', 'date_order', 'subscription_state'], limit: 10, order: 'date_order desc' });
+          if (!orders.length) return [];
+
+          const msgs = await rpc('mail.message', 'search_read',
+            [[['model', '=', 'sale.order'], ['res_id', 'in', orders.map(o => o.id)],
+              ['message_type', 'in', ['comment', 'email']]]],
+            { fields: ['res_id', 'author_id', 'date', 'body'], limit: 200, order: 'date desc' });
+
+          const nameById = Object.fromEntries(orders.map(o => [o.id, o.name]));
+          return msgs
+            .map(m => ({
+              author: m.author_id?.[1] || '',
+              date: m.date || '',
+              body: (m.body || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 500),
+              type: 'message',
+              sourceOrder: nameById[m.res_id] || ''
+            }))
+            .filter(m => m.body.length > 10)
+            .reverse();
+        } catch { return null; }
+      }
+    });
+    return results?.[0]?.result ?? null;
+  } catch { return null; }
+}
+
+// Projects & delivery for the account: active projects with hour budgets,
+// open tasks, and timesheet activity — strong adoption/engagement signals and
+// the "hours invested" hook for recovery emails.
+async function fetchProjectData(tabId, partnerId) {
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      args: [partnerId || 0],
+      func: async (pid) => {
+        if (!pid) return null;
+        const rpc = async (model, method, args, kwargs) => {
+          try {
+            const r = await fetch('/web/dataset/call_kw', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(), params: { model, method, args, kwargs } })
+            });
+            const j = await r.json();
+            if (j.error) return null; // model may not be installed on this DB
+            return Array.isArray(j.result) ? j.result : null;
+          } catch { return null; }
+        };
+
+        const [projects, tasks, timesheets] = await Promise.all([
+          rpc('project.project', 'search_read',
+            [[['partner_id', 'child_of', pid]]],
+            { fields: ['name', 'allocated_hours', 'effective_hours', 'stage_id', 'active'], limit: 10 }),
+          rpc('project.task', 'search_read',
+            [[['partner_id', 'child_of', pid]]],
+            { fields: ['name', 'stage_id', 'date_deadline', 'kanban_state'], limit: 20, order: 'id desc' }),
+          rpc('account.analytic.line', 'search_read',
+            [[['partner_id', 'child_of', pid], ['unit_amount', '>', 0]]],
+            { fields: ['date', 'employee_id', 'unit_amount', 'project_id'], limit: 100, order: 'date desc' })
+        ]);
+        if (projects === null && tasks === null && timesheets === null) return null;
+
+        const ts = timesheets || [];
+        const totalHours = ts.reduce((s, t) => s + (t.unit_amount || 0), 0);
+        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+        let last30h = 0;
+        for (const t of ts) { if (new Date(t.date) >= cutoff) last30h += t.unit_amount || 0; }
+        const lastEntry = ts[0]?.date || null;
+
+        return {
+          projects: (projects || []).map(p => ({
+            name: p.name,
+            stage: p.stage_id?.[1] || '',
+            active: p.active !== false,
+            hoursAllocated: +(p.allocated_hours || 0).toFixed(1),
+            hoursLogged: +(p.effective_hours || 0).toFixed(1)
+          })),
+          tasks: (tasks || []).map(t => ({
+            name: t.name,
+            stage: t.stage_id?.[1] || '',
+            deadline: t.date_deadline || '',
+            blocked: t.kanban_state === 'blocked'
+          })),
+          timesheetSummary: {
+            totalHours: +totalHours.toFixed(1),
+            last30DaysHours: +last30h.toFixed(1),
+            lastEntryDate: lastEntry
+          }
+        };
+      }
+    });
+    return results?.[0]?.result ?? null;
+  } catch { return null; }
+}
+
+// ── Full chatter scroll + extract (DOM fallback) ───────────────────────────────
 async function scrollAndExtractChatter(tabId) {
   try {
     await injectScraper(tabId);
@@ -144,28 +332,56 @@ async function runAnalysis(payload) {
   const gate = await aiGateError();
   if (gate) { await broadcast('ANALYSIS_COMPLETE', { success: false, error: gate }); return; }
 
-  // Step 1: Scroll full chatter
-  await broadcast('ANALYSIS_PROGRESS', { step: 'chatter', status: 'running', label: 'Loading full chatter history…' });
-  const fullChat = await scrollAndExtractChatter(tabId);
-  await broadcast('ANALYSIS_PROGRESS', { step: 'chatter', status: fullChat.length ? 'done' : 'error', count: fullChat.length });
-
-  // Step 2: Sales history
-  await broadcast('ANALYSIS_PROGRESS', { step: 'sales', status: 'running', label: 'Loading previous subscription history…' });
   const session = await getSessionState(tabId) || {};
   const odooData = session.odooData || {};
-  const { messages: salesHistory, error: salesError } = await fetchSalesHistory(tabId, odooData.salesHistoryUrl || '');
+
+  // Resolve the customer once — the RPC collectors below all key off it.
+  const ids = await resolvePartnerId(tabId);
+  const partnerId = ids?.partnerId || 0;
+  const soId = ids?.soId || parseInt(odooData.soId || '0', 10) || 0;
+
+  // Step 1: Chatter — one RPC (~1s); DOM scroll loop only as fallback.
+  await broadcast('ANALYSIS_PROGRESS', { step: 'chatter', status: 'running', label: 'Loading full chatter history…' });
+  let fullChat = await fetchChatterRpc(tabId, soId);
+  if (fullChat === null) fullChat = await scrollAndExtractChatter(tabId);
+  await broadcast('ANALYSIS_PROGRESS', { step: 'chatter', status: fullChat.length ? 'done' : 'error', count: fullChat.length });
+
+  // Steps 2+3 in parallel: previous-subscription history and projects/delivery.
+  await broadcast('ANALYSIS_PROGRESS', { step: 'sales', status: 'running', label: 'Loading previous subscription history…' });
+  await broadcast('ANALYSIS_PROGRESS', { step: 'projects', status: 'running', label: 'Checking projects & delivery…' });
+
+  const [salesRpc, projectData] = await Promise.all([
+    fetchSalesHistoryRpc(tabId, partnerId, soId),
+    fetchProjectData(tabId, partnerId)
+  ]);
+
+  // Sales history: RPC result, else legacy hidden-tab automation as fallback.
+  let salesHistory, salesError = null;
+  if (salesRpc !== null) {
+    salesHistory = salesRpc;
+  } else {
+    const legacy = await fetchSalesHistory(tabId, odooData.salesHistoryUrl || '');
+    salesHistory = legacy.messages;
+    salesError = legacy.error;
+  }
   await broadcast('ANALYSIS_PROGRESS', {
     step: 'sales',
     status: salesError ? 'error' : 'done',
     count: salesHistory.length,
     label: salesError ? `Previous history unavailable — ${salesError}` : undefined
   });
+  await broadcast('ANALYSIS_PROGRESS', {
+    step: 'projects',
+    status: projectData ? 'done' : 'error',
+    count: projectData ? projectData.projects.length : 0,
+    label: projectData ? undefined : 'No project data (module missing or no access)'
+  });
 
   // Merge data
-  const enrichedData = { ...odooData, chatHistory: fullChat, salesHistory };
+  const enrichedData = { ...odooData, partnerId, chatHistory: fullChat, salesHistory, projectData };
   await saveSessionState(tabId, { ...session, odooData: enrichedData });
 
-  // Step 3: AI analysis (streaming) — with any learned rules injected.
+  // Final step: AI analysis (streaming) — with any learned rules injected.
   await generatePlan(tabId, enrichedData, session, '');
 }
 

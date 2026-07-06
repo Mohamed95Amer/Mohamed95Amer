@@ -88,14 +88,29 @@ lib/storage.js             Settings (storage.local) + per-tab session state
 sidepanel/                 Side-panel UI (vanilla JS state machine)
 ```
 
-The Odoo integration is currently **DOM scraping** — brittle across Odoo
-versions. The intended next step is to move to Odoo's JSON-RPC/ORM API and to
-switch the AI to structured (JSON-schema) output. See the audit/roadmap for the
-full plan.
+## Data collection: RPC-first (fast), DOM as fallback
+
+As of v1.4.0 the analysis reads Odoo through its **JSON-RPC ORM API**
+(`/web/dataset/call_kw`, using the logged-in session) instead of scraping:
+
+- **Chatter** — one `mail.message` read (~1s) replaces the old scroll-and-click
+  loop (30–60s of fixed sleeps).
+- **Previous subscription history** — two RPCs (all orders for the customer's
+  company + their messages in one batch) replace the hidden-tab automation
+  (~20s per prior order). Runs in parallel with projects.
+- **Projects & delivery (new)** — `project.project` (hour budgets), `project.task`
+  (open/blocked tasks), and `account.analytic.line` timesheets (total, last-30-days,
+  last entry). These feed the analysis as adoption signals and give recovery
+  emails a real "X hours invested" hook.
+
+DOM scraping (`content/odoo-scraper.js`) remains the automatic fallback when an
+RPC fails (older Odoo, access rights). Prompt size is capped (150 chatter / 80
+history messages, most recent first) to keep AI response time down, and
+streaming renders are throttled so long outputs stay smooth.
 
 ## Known limitations
 
-- Depends on Odoo web-client CSS class names; may need selector updates on Odoo
-  upgrades (all selectors live in `content/odoo-scraper.js`).
+- The DOM fallback depends on Odoo web-client CSS class names (all selectors
+  live in `content/odoo-scraper.js`).
 - Analysis state is per-tab and ephemeral (cleared when the tab/browser closes).
 - Output is copy-paste; it does not yet write activities back into Odoo.
