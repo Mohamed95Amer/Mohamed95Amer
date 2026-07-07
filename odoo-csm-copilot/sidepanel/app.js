@@ -1320,11 +1320,8 @@ function renderForecast() {
 
       <button class="btn btn-primary btn-full" id="run-forecast-btn" ${sheet ? '' : 'disabled'}>▶ Run check</button>
       <div id="last-forecast-slot"></div>
-      <button class="btn btn-secondary btn-sm" id="forecast-back-btn">← Back</button>
     </div>`;
 
-  document.getElementById('forecast-back-btn')?.addEventListener('click', () =>
-    transition(appState.forecastReturnPhase || STATE.IDLE));
   document.getElementById('forecast-file')?.addEventListener('change', onForecastFileChosen);
   document.getElementById('run-forecast-btn')?.addEventListener('click', runForecastCheckFromPanel);
   ensureXLSX().catch(() => {}); // warm up the parser while the user picks a file
@@ -1446,54 +1443,98 @@ function forecastRowHtml(u) {
     </div>`;
 }
 
-function renderForecastComplete() {
-  updatePhaseBar(null);
-  const r = appState.forecastResult;
-  if (!r) { transition(STATE.FORECAST); return; }
-
-  // Year → Quarter → Month collapsible groups
-  const groups = r.unforecastedGroups || {};
-  const groupsHtml = Object.keys(groups).sort().map(yr => {
+// Group a list of unforecasted items into collapsible Year → Quarter → Month
+// details with per-bucket account counts and MRR subtotals.
+function renderYQMGroups(items) {
+  if (!items.length) return '<p class="forecast-hint">None found 🎉</p>';
+  const groups = {};
+  for (const u of items) {
+    const { year, quarter, month, monthNum } = yqmOf(parseDateFlexible(u.nextInvoiceDate));
+    const y = year ?? 'No date', q = quarter ?? '—', m = month ?? '—';
+    if (!groups[y]) groups[y] = {};
+    if (!groups[y][q]) groups[y][q] = {};
+    if (!groups[y][q][m]) groups[y][q][m] = { monthNum, items: [] };
+    groups[y][q][m].items.push(u);
+  }
+  const mrr = list => {
+    const total = list.reduce((n, u) => n + (Number(u.monthly) || 0), 0);
+    const cur = list.find(u => u.currency)?.currency || '';
+    return total ? ` · ${total.toLocaleString()} ${esc(cur)}/mo` : '';
+  };
+  return Object.keys(groups).sort().map(yr => {
     const quarters = groups[yr];
     const qHtml = Object.keys(quarters).sort().map(q => {
       const months = quarters[q];
       const mHtml = Object.entries(months)
         .sort((a, b) => (a[1].monthNum || 0) - (b[1].monthNum || 0))
         .map(([mName, m]) =>
-          `<details class="forecast-month"><summary>${esc(mName)} <span class="forecast-count">${m.items.length}</span></summary>
+          `<details class="forecast-month" open><summary>${esc(mName)} <span class="forecast-count">${m.items.length}</span>${mrr(m.items)}</summary>
              ${m.items.map(forecastRowHtml).join('')}</details>`)
         .join('');
-      const qCount = Object.values(months).reduce((n, m) => n + m.items.length, 0);
-      return `<details class="forecast-quarter" open><summary>${esc(q)} <span class="forecast-count">${qCount}</span></summary>${mHtml}</details>`;
+      const qItems = Object.values(months).flatMap(m => m.items);
+      return `<details class="forecast-quarter" open><summary>${esc(q)} <span class="forecast-count">${qItems.length}</span>${mrr(qItems)}</summary>${mHtml}</details>`;
     }).join('');
-    const yCount = Object.values(quarters).reduce((n, ms) => n + Object.values(ms).reduce((k, m) => k + m.items.length, 0), 0);
-    return `<details class="forecast-year-group" open><summary>${esc(String(yr))} <span class="forecast-count">${yCount}</span></summary>${qHtml}</details>`;
-  }).join('') || '<p class="forecast-hint">None found 🎉</p>';
+    const yItems = Object.values(quarters).flatMap(ms => Object.values(ms).flatMap(m => m.items));
+    return `<details class="forecast-year-group" open><summary>${esc(String(yr))} <span class="forecast-count">${yItems.length}</span>${mrr(yItems)}</summary>${qHtml}</details>`;
+  }).join('');
+}
 
-  const wrongHtml = (r.wronglyForecasted || []).map(w => {
-    const evidence = [
-      w.churnDate ? `churned ${esc(w.churnDate)}` : '',
-      w.transitionDate ? `forecast from ${esc(w.transitionDate)}` : '',
-      w.assignedDate ? `received ${esc(w.assignedDate)}` : '',
-      w.tag ? `Odoo tag "${esc(w.tag)}"` : '',
-      w.sheetRow ? `sheet row ${w.sheetRow}` : ''
-    ].filter(Boolean).join(' · ');
-    return `<div class="forecast-row forecast-row-wrong">
-        <div class="forecast-row-main"><strong>${esc(w.account)}</strong> <span class="forecast-so">${esc(w.so || '')}</span></div>
-        <div class="forecast-row-sub"><span class="forecast-reason">${esc(w.reason)}</span>${evidence ? ' · ' + evidence : ''}</div>
-      </div>`;
-  }).join('') || '<p class="forecast-hint">None found 🎉</p>';
+function wrongRowHtml(w) {
+  const evidence = [
+    w.churnDate ? `churned ${esc(w.churnDate)}` : '',
+    w.transitionDate ? `forecast from ${esc(w.transitionDate)}` : '',
+    w.assignedDate ? `received ${esc(w.assignedDate)}` : '',
+    w.tag ? `Odoo tag "${esc(w.tag)}"` : '',
+    w.sheetRow ? `sheet row ${w.sheetRow}` : ''
+  ].filter(Boolean).join(' · ');
+  return `<div class="forecast-row forecast-row-wrong">
+      <div class="forecast-row-main"><strong>${esc(w.account)}</strong> <span class="forecast-so">${esc(w.so || '')}</span></div>
+      <div class="forecast-row-sub">${evidence}</div>
+    </div>`;
+}
+
+// The reason strings carry a B1/B2/B3 prefix; each gets its own subsection
+// with an explanation the user can act on directly.
+const WRONG_SECTIONS = [
+  { prefix: 'B1', title: 'Churned in Odoo', hint: 'The customer\'s subscription is churned — remove from the forecast (dates show whether it churned before you received it).' },
+  { prefix: 'B2', title: 'Churn tag in Odoo but sheet shows 0', hint: 'Odoo carries a churn tag; the sheet\'s Check Churn should be 1.' },
+  { prefix: 'B3', title: 'Forecasted before you received the account', hint: 'The sheet forecasts from an earlier month than the salesperson handover in the log notes.' }
+];
+
+function renderForecastComplete() {
+  updatePhaseBar(null);
+  const r = appState.forecastResult;
+  if (!r) { transition(STATE.FORECAST); return; }
+
+  const a1 = (r.unforecasted || []).filter(u => u.source.startsWith('A1'));
+  const a2 = (r.unforecasted || []).filter(u => u.source.startsWith('A2'));
+
+  const wrongHtml = WRONG_SECTIONS.map(sec => {
+    const items = (r.wronglyForecasted || []).filter(w => w.reason.startsWith(sec.prefix));
+    return `<details class="forecast-subsection" ${items.length ? 'open' : ''}>
+        <summary>${esc(sec.title)} <span class="forecast-count">${items.length}</span></summary>
+        <p class="forecast-hint">${esc(sec.hint)}</p>
+        ${items.map(wrongRowHtml).join('') || '<p class="forecast-hint">None 🎉</p>'}
+      </details>`;
+  }).join('');
 
   const bookMissingHtml = (r.bookNotInSheet || []).length
-    ? `<details class="forecast-unmatched" open><summary>⚠ ${r.bookNotInSheet.length} of your future-user accounts not found in the sheet</summary>
-         ${r.bookNotInSheet.map(u => `<div class="forecast-row"><div class="forecast-row-main">${esc(u.account)} <span class="forecast-so">${esc(u.so || '')}</span></div>
-           <div class="forecast-row-sub">${esc(u.state || '')}${u.nextInvoiceDate ? ' · next invoice ' + esc(String(u.nextInvoiceDate).slice(0, 10)) : ''}</div></div>`).join('')}
-         <p class="forecast-hint">These are forecasted onto you in Odoo but the department sheet doesn't have them (or the name is spelled too differently to match).</p>
+    ? `<h3>⚠ My accounts missing from the sheet <span class="forecast-count">${r.bookNotInSheet.length}</span></h3>
+       <p class="forecast-hint">Forecasted onto you in Odoo (future user) but not found in the department sheet — or the name is spelled too differently to match.</p>
+       ${r.bookNotInSheet.map(u => `<div class="forecast-row"><div class="forecast-row-main"><strong>${esc(u.account)}</strong> <span class="forecast-so">${esc(u.so || '')}</span></div>
+         <div class="forecast-row-sub">${esc(u.state || '')}${u.nextInvoiceDate ? ' · next invoice ' + esc(String(u.nextInvoiceDate).slice(0, 10)) : ''}</div></div>`).join('')}`
+    : '';
+
+  const okHtml = (r.forecastedOk || []).length
+    ? `<details class="forecast-subsection"><summary>✅ Forecasted correctly <span class="forecast-count">${r.forecastedOk.length}</span></summary>
+         <p class="forecast-hint">In your book, present in the sheet with Check Churn = 0, and clean on every check.</p>
+         ${r.forecastedOk.map(u => `<div class="forecast-row"><div class="forecast-row-main">${esc(u.account)} <span class="forecast-so">${esc(u.so || '')}</span></div>
+           <div class="forecast-row-sub">${u.nextInvoiceDate ? 'next invoice ' + esc(String(u.nextInvoiceDate).slice(0, 10)) : ''}${u.transitionDate ? ' · from ' + esc(u.transitionDate) : ''}</div></div>`).join('')}
        </details>`
     : '';
 
   const outsideHtml = (r.unforecastedOutsideYear || []).length
-    ? `<details class="forecast-unmatched"><summary>${r.unforecastedOutsideYear.length} unforecasted with next invoice outside ${esc(String(r.year))}</summary>
+    ? `<details class="forecast-subsection"><summary>Next invoice outside ${esc(String(r.year))} <span class="forecast-count">${r.unforecastedOutsideYear.length}</span></summary>
          ${r.unforecastedOutsideYear.map(forecastRowHtml).join('')}</details>`
     : '';
 
@@ -1504,13 +1545,13 @@ function renderForecastComplete() {
     ? '<div class="warning-banner">⚠ Odoo returned more records than the fetch cap (10,000) — results may be incomplete.</div>'
     : '';
   const futureNote = r.futureUserKnown === false
-    ? '<div class="warning-banner">No Future-user field was found on sale.order — the check used your salesperson accounts as the forecasted book. Tell me the field\'s technical name if Odoo has one.</div>'
+    ? '<div class="warning-banner">No Future-user field was found on sale.order — the check used your salesperson accounts as the forecasted book instead.</div>'
     : '';
 
   contentEl.innerHTML = `
     <div class="forecast-complete screen">
       <div class="portfolio-complete-header">
-        <span class="portfolio-count-badge">${r.totals?.bookCustomers ?? 0} in my book · ${r.totals?.bookMatchedInSheet ?? 0} found in sheet</span>
+        <span class="portfolio-count-badge">${r.totals?.bookCustomers ?? 0} in my book · ${r.totals?.bookMatchedInSheet ?? 0} in sheet</span>
         <button class="btn btn-secondary btn-sm" id="forecast-export-btn">⬇ Export Excel</button>
         <button class="btn btn-secondary btn-sm" id="forecast-rerun-btn">↺ Rerun</button>
       </div>
@@ -1518,22 +1559,32 @@ function renderForecastComplete() {
       ${trackingNote}${truncatedNote}${futureNote}
 
       <div class="forecast-tiles">
+        <div class="forecast-tile"><div class="forecast-tile-num">${r.totals?.forecastedOk ?? 0}</div><div>Forecasted<br>OK</div></div>
         <div class="forecast-tile"><div class="forecast-tile-num">${r.totals?.unforecasted ?? 0}</div><div>Unforecasted<br>(to add)</div></div>
-        <div class="forecast-tile forecast-tile-wrong"><div class="forecast-tile-num">${r.totals?.wronglyForecasted ?? 0}</div><div>Wrongly<br>forecasted</div></div>
+        <div class="forecast-tile forecast-tile-wrong"><div class="forecast-tile-num">${r.totals?.wronglyForecasted ?? 0}</div><div>Remove /<br>fix</div></div>
+        <div class="forecast-tile forecast-tile-wrong"><div class="forecast-tile-num">${r.totals?.bookNotInSheet ?? 0}</div><div>Missing<br>from sheet</div></div>
       </div>
 
-      <h3>➕ Unforecasted — by next invoice</h3>
-      ${groupsHtml}
+      <h3>➕ Unforecasted — add by next invoice Year / Quarter / Month</h3>
+      <details class="forecast-subsection" ${a1.length ? 'open' : ''}>
+        <summary>My accounts, in nobody's forecast <span class="forecast-count">${a1.length}</span></summary>
+        <p class="forecast-hint">You are the salesperson (not the future user) and the account appears nowhere in the department sheet.</p>
+        ${renderYQMGroups(a1)}
+      </details>
+      <details class="forecast-subsection" ${a2.length ? 'open' : ''}>
+        <summary>My lines with Check Churn = 1 <span class="forecast-count">${a2.length}</span></summary>
+        <p class="forecast-hint">In the sheet under your name but excluded by the churn tag — counted as unforecasted.</p>
+        ${renderYQMGroups(a2)}
+      </details>
       ${outsideHtml}
 
       <h3>🚫 Should not be forecasted</h3>
       ${wrongHtml}
 
       ${bookMissingHtml}
-      <button class="btn btn-secondary btn-sm" id="forecast-back2-btn">← Back</button>
+      ${okHtml}
     </div>`;
 
-  document.getElementById('forecast-back2-btn')?.addEventListener('click', () => transition(STATE.FORECAST));
   document.getElementById('forecast-rerun-btn')?.addEventListener('click', () => transition(STATE.FORECAST));
   document.getElementById('forecast-export-btn')?.addEventListener('click', () => {
     exportForecastExcel(r).catch(err => {
@@ -1570,6 +1621,13 @@ async function exportForecastExcel(r) {
     Account: u.account, SO: u.so || '', 'Odoo State': u.state || '', 'Next Invoice': u.nextInvoiceDate || ''
   }));
   if (missing.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(missing), 'My book not in sheet');
+
+  const okRows = (r.forecastedOk || []).map(u => ({
+    Account: u.account, SO: u.so || '', 'Sheet Row': u.sheetRow || '',
+    'Next Invoice': u.nextInvoiceDate || '', Monthly: u.monthly ?? '', Currency: u.currency || '',
+    'Transition Date': u.transitionDate || ''
+  }));
+  if (okRows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(okRows), 'Forecasted OK');
 
   const outside = (r.unforecastedOutsideYear || []).map(u => ({
     Account: u.account, SO: u.so || '', 'Next Invoice': u.nextInvoiceDate || '', Source: u.source
@@ -1777,25 +1835,9 @@ chrome.runtime.onMessage.addListener((msg) => {
       break;
 
     case 'PAGE_NAVIGATED':
-      if (msg.payload.tabId !== appState.currentTabId) break;
-      // Landing on the dashboard
-      if (msg.payload.isDashboard) {
-        appState = { ...initialState, currentTabId: appState.currentTabId, ollamaStatus: appState.ollamaStatus };
-        transition(STATE.DASHBOARD);
-        break;
-      }
-      if ([STATE.IDLE, STATE.EXTRACTED, STATE.COMPLETE, STATE.ERROR, STATE.DASHBOARD,
-           STATE.PORTFOLIO_COMPLETE].includes(appState.phase)) {
-        // Safe to auto-refresh immediately
-        const { currentTabId, ollamaStatus } = appState;
-        appState = { ...initialState, currentTabId, ollamaStatus };
-        updatePhaseBar(null);
-        triggerExtraction(currentTabId);
-      } else {
-        // Mid-flow — show a non-blocking banner so user can choose when to refresh
-        appState.navPending = true;
-        showNavBanner();
-      }
+      // Forecast Check doesn't follow Odoo navigation — just remember the tab
+      // so "Run check" targets the page the user is actually on.
+      if (msg.payload.tabId) appState.currentTabId = msg.payload.tabId;
       break;
   }
 });
@@ -1829,82 +1871,14 @@ async function triggerExtraction(tabId) {
   }
 }
 
+// The extension is now dedicated to Forecast Check: the panel boots straight
+// into it. The CSM-copilot flows (extraction/research/plans/portfolio/
+// reschedule) are PARKED — their code stays for a future revival but nothing
+// routes to them.
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load persisted deep search setting + configured server URL (for honest error text)
-  chrome.storage.sync.get(['deepSearch', 'ollamaUrl'], (r) => {
-    appState.deepSearch = !!r.deepSearch;
-    appState.ollamaUrl = r.ollamaUrl || 'http://10.100.255.200:11434';
-  });
-
-  // Background Ollama health check
-  chrome.runtime.sendMessage({ type: 'CHECK_OLLAMA' }, (res) => {
-    appState.ollamaStatus = res?.data?.available ?? false;
-    if (appState.phase === STATE.IDLE) render();
-  });
-
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab) { transition(STATE.IDLE); return; }
-
-  appState.currentTabId = tab.id;
-
-  const isOdoo = /odoo\.com|localhost|127\.0\.0\.1/.test(tab.url || '');
-  const isDashboard = /action-1592|\/board\//.test(tab.url || '');
-  const isSalesOrder = /sale\.order|\/sales\/|\/subscriptions\/|#.*model=sale/.test(tab.url || '');
-
-  // Try to restore saved session
-  const savedSession = await new Promise(r =>
-    chrome.runtime.sendMessage({ type: 'GET_SESSION', payload: { tabId: tab.id } }, r)
-  );
-
-  if (savedSession?.data?.activities?.length || savedSession?.data?.partialPlanText) {
-    const s = savedSession.data;
-    // Validate the session belongs to the current URL before restoring
-    // (prevents showing previous subscription's plan after in-tab navigation)
-    let urlMatch = false;
-    try {
-      const savedPath = s.odooData?.pageUrl ? new URL(s.odooData.pageUrl).pathname.replace(/\/$/, '') : '';
-      const currentPath = tab.url ? new URL(tab.url).pathname.replace(/\/$/, '') : '';
-      urlMatch = savedPath && currentPath && savedPath === currentPath;
-    } catch { /* bad URL — don't restore */ }
-
-    if (urlMatch && s.activities?.length) {
-      transition(STATE.REVIEW, {
-        odooData: s.odooData,
-        researchData: s.researchData,
-        companyProfile: s.companyProfile,
-        planText: s.planText,
-        activities: s.activities,
-        referenceChecks: s.referenceChecks || [],
-        coverage: s.coverage || null,
-        generatedAt: s.generatedAt || null,   // the banner marks stale plans — they used to look fresh
-        memoryKey: s.memoryKey || null
-      });
-      return;
-    }
-    if (urlMatch && s.partialPlanText) {
-      // The worker persists streamed text every ~3s — a plan interrupted by a
-      // closed panel is recoverable instead of silently discarded
-      transition(STATE.REVIEW, {
-        odooData: s.odooData,
-        researchData: s.researchData,
-        companyProfile: s.companyProfile,
-        planText: s.partialPlanText,
-        activities: parseActivitiesFromPlan(s.partialPlanText),
-        generatedAt: s.partialPlanAt || null,
-        error: 'Recovered a partially generated plan (the panel was closed mid-generation). Review carefully or Start Over to regenerate.'
-      });
-      return;
-    }
-    // URL mismatch — stale session from a different subscription, fall through to re-extract
-  }
-
-  if (isOdoo && isDashboard) {
-    transition(STATE.DASHBOARD);
-  } else if (isOdoo && isSalesOrder) {
-    triggerExtraction(tab.id);
-  } else {
-    transition(STATE.IDLE);
-  }
+  if (tab) appState.currentTabId = tab.id;
+  transition(STATE.FORECAST, { forecastReturnPhase: STATE.FORECAST });
 });
 
 // ── Reschedule screen ────────────────────────────────────────────────────────

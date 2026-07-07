@@ -274,6 +274,8 @@ export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullY
   const unforecasted = [];        // A1 + A2
   const wronglyForecasted = [];   // B1 + B2 + B3
   const bookNotInSheet = [];      // forecasted onto me but missing from the sheet
+  const forecastedOk = [];        // my book rows that pass every check
+  const flaggedCustomers = new Set();
 
   for (const c of customers.values()) {
     const rows = rowsByCustomer.get(c.key) || [];
@@ -312,6 +314,7 @@ export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullY
     // future user is a colleague is THEIR forecast, not mine.
     if (!inMyBook) continue;
 
+    const flagsBefore = wronglyForecasted.length;
     for (const row of rows) {
       if (row.checkChurn === 1) continue; // handled as A2 below (sheet-driven)
 
@@ -353,6 +356,21 @@ export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullY
         });
       }
     }
+
+    if (wronglyForecasted.length > flagsBefore) {
+      flaggedCustomers.add(c.key);
+    } else if (rows.some(r => r.checkChurn === 0)) {
+      // In my book, present in the sheet as forecasted, and clean on every
+      // check — the healthy baseline the user reconciles the totals against.
+      const okRow = rows.find(r => r.checkChurn === 0);
+      forecastedOk.push({
+        account: c.name, so: rep.so, sheetRow: okRow.rowIndex,
+        nextInvoiceDate: rep.nextInvoiceDate || null, monthly: rep.monthly,
+        currency: rep.currency, state: rep.state,
+        transitionDate: okRow.transitionDate ? isoDate(parseDateFlexible(okRow.transitionDate)) : '',
+        odooId: rep.id
+      });
+    }
   }
 
   // A2 — MY sheet lines excluded by Check Churn = 1. The sheet holds the whole
@@ -386,6 +404,7 @@ export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullY
     unforecastedGroups: groupByYQM(yearFiltered, u => parseDateFlexible(u.nextInvoiceDate)),
     wronglyForecasted,
     bookNotInSheet,
+    forecastedOk,
     totals: {
       odooAccounts: odooAccounts.length,
       odooCustomers: customers.size,
@@ -394,7 +413,8 @@ export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullY
       sheetRows: sheetRows.length,
       unforecasted: yearFiltered.length,
       wronglyForecasted: wronglyForecasted.length,
-      bookNotInSheet: bookNotInSheet.length
+      bookNotInSheet: bookNotInSheet.length,
+      forecastedOk: forecastedOk.length
     }
   };
 }

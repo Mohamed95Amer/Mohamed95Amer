@@ -228,6 +228,24 @@ const row = (over) => ({
   eq('R5 A2 only my book', res.unforecasted.filter(u => u.source.startsWith('A2')).map(u => u.account), ['Acme LLC']);
 }
 
+// R7 — clean book rows land in forecastedOk; flagged ones don't
+{
+  const res = F.crossCheck({
+    sheetRows: [
+      row({}),
+      row({ rowIndex: 3, accountName: 'BadCo', key: F.normalizeName('BadCo'), checkChurn: 0 })
+    ],
+    odooAccounts: [
+      mk({ isFutureUser: true }),
+      mk({ id: 8, so: 'S008', partner: 'BadCo', isFutureUser: true, tags: ['DU CST CHURN 2026'], nextInvoiceDate: '2026-03-01' })
+    ],
+    year: 2026, futureUserKnown: true
+  });
+  eq('R7 ok list', res.forecastedOk.map(o => o.account), ['Acme LLC']);
+  eq('R7 flagged not ok', res.forecastedOk.some(o => o.account === 'BadCo'), false);
+  eq('R7 totals ok', res.totals.forecastedOk, 1);
+}
+
 // R6 — B3 month granularity: received Jan 15, forecasted from Jan → OK;
 // received June, forecasted from Jan (blank) → flagged
 {

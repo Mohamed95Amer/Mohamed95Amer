@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Odoo CSM Copilot",
-  "version": "1.5.1",
-  "description": "AI-powered Customer Success Manager assistant for Odoo — local Ollama AI, automated activity creation, forecast account checker.",
+  "name": "Forecast Check",
+  "version": "2.0.0",
+  "description": "Cross-checks the yearly forecast sheet against your Odoo subscriptions (future user + salesperson) and reports what to add, remove, or fix.",
   "permissions": [
     "sidePanel",
     "storage",
@@ -29,7 +29,7 @@
     "default_path": "sidepanel/index.html"
   },
   "action": {
-    "default_title": "CSM Copilot",
+    "default_title": "Forecast Check",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

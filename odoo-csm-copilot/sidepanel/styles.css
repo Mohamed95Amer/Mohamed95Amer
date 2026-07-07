@@ -1214,3 +1214,9 @@ body {
 .forecast-row-wrong { padding-left: 8px; border-left: 3px solid var(--danger, #c0392b); margin: 4px 0; }
 .forecast-reason { color: var(--danger, #c0392b); font-weight: 700; }
 .forecast-state { color: var(--warning, #b8860b); font-weight: 700; }
+.forecast-subsection { margin: 8px 0; }
+.forecast-subsection > summary {
+  cursor: pointer; font-size: 12px; font-weight: 700; padding: 8px 10px;
+  border-radius: var(--radius-sm); box-shadow: var(--neu-in-sm);
+}
+.forecast-subsection > .forecast-hint { margin: 6px 8px 2px; text-align: left; }

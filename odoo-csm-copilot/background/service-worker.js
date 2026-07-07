@@ -2089,7 +2089,8 @@ async function runForecastCheck({ tabId, fallbackHandoverDate = null, year }) {
           body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {} })
         }).then(r => r.json()).catch(() => null);
         const uid = sessionResp?.result?.uid;
-        const userName = sessionResp?.result?.name || sessionResp?.result?.username || '';
+        const userName = sessionResp?.result?.name || '';
+        const userLogin = sessionResp?.result?.username || '';
         if (!uid) return { error: 'Could not read the Odoo session — open an Odoo tab and log in first.' };
 
         // The forecast is keyed on the FUTURE USER (who the account transitions
@@ -2098,7 +2099,8 @@ async function runForecastCheck({ tabId, fallbackHandoverDate = null, year }) {
         let futureField = null;
         try {
           const flds = await rpc('ir.model.fields', 'search_read',
-            [[['model', '=', 'sale.order'], ['name', 'like', 'future']]],
+            [['&', ['model', '=', 'sale.order'],
+              '|', ['name', 'like', 'future'], ['field_description', 'ilike', 'future']]],
             { fields: ['name', 'ttype', 'relation'], limit: 10 });
           futureField = (flds || []).find(f => f.ttype === 'many2one' && f.relation === 'res.users')?.name || null;
         } catch { /* fall back to salesperson-only mode */ }
@@ -2162,8 +2164,18 @@ async function runForecastCheck({ tabId, fallbackHandoverDate = null, year }) {
                 [[['mail_message_id.model', '=', 'sale.order'], ['mail_message_id.res_id', 'in', ids]]],
                 { fields, limit: 10000 });
               const isSalesperson = t => /sales\s*person/i.test(String(t.field_desc || t.field_id?.[1] || ''));
-              const isMe = t => t.new_value_integer === uid ||
-                String(t.new_value_char || '').trim() === String(userName).trim();
+              // Chatter renders the tracked user as "Mohamed Amer (amem)" —
+              // match by id when readable, else by name with or without the
+              // "(login)" suffix.
+              const isMe = t => {
+                if (t.new_value_integer === uid) return true;
+                const v = String(t.new_value_char || '').trim();
+                if (!v) return false;
+                if (v === String(userName).trim()) return true;
+                if (userLogin && v === `${String(userName).trim()} (${userLogin})`) return true;
+                if (userLogin && v.endsWith(`(${userLogin})`)) return true;
+                return false;
+              };
               const mine = (tvs || []).filter(t => isSalesperson(t) && isMe(t));
               const msgIds = [...new Set(mine.map(t => t.mail_message_id?.[0]).filter(Boolean))];
               if (msgIds.length) {
