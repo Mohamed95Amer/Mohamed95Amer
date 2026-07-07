@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Odoo CSM Copilot",
-  "version": "1.4.0",
-  "description": "AI-powered Customer Success Manager assistant for Odoo — local Ollama AI, automated activity creation.",
+  "version": "1.5.0",
+  "description": "AI-powered Customer Success Manager assistant for Odoo — local Ollama AI, automated activity creation, forecast account checker.",
   "permissions": [
     "sidePanel",
     "storage",

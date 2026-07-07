@@ -77,3 +77,24 @@ export async function getPortfolioResult() {
   const r = await chrome.storage.session.get('portfolio_result');
   return r.portfolio_result || null;
 }
+
+// Forecast check — sheet and result live in storage.local (not session): the
+// sheet is uploaded once and reused across days; re-uploading it after every
+// browser restart would defeat the feature.
+export async function saveForecastSheet(sheet) {
+  await chrome.storage.local.set({ forecast_sheet: sheet });
+}
+
+export async function getForecastSheet() {
+  const r = await chrome.storage.local.get('forecast_sheet');
+  return r.forecast_sheet || null;
+}
+
+export async function saveForecastResult(result) {
+  await chrome.storage.local.set({ forecast_result: { ...result, generatedAt: Date.now() } });
+}
+
+export async function getForecastResult() {
+  const r = await chrome.storage.local.get('forecast_result');
+  return r.forecast_result || null;
+}

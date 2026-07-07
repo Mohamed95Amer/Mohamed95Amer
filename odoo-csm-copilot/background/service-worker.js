@@ -23,8 +23,10 @@ import {
 } from '../lib/ollama.js';
 import {
   getSettings, saveSettings, getSessionState, saveSessionState, clearSessionState,
-  savePortfolioResult, getPortfolioResult
+  savePortfolioResult, getPortfolioResult,
+  saveForecastSheet, getForecastSheet, saveForecastResult, getForecastResult
 } from '../lib/storage.js';
+import { crossCheck } from '../lib/forecast.js';
 import {
   partnerKeyFor, getAccountMemory, recordReview, setLatestFeedback,
   buildMemoryBlock, buildLikedExamplesBlock, recordOutcomes, getLastCreatedReview
@@ -2046,6 +2048,143 @@ ${stats.topUpsell ? `- Top upsell opportunity by value: ${stats.topUpsell}` : ''
   }
 }
 
+// ── Forecast Check ────────────────────────────────────────────────────────────
+// Cross-checks the uploaded forecast sheet against the accounts where the
+// current Odoo user is the salesperson. Deterministic — no AI involved.
+
+async function runForecastCheck({ tabId, sheetRows, fallbackHandoverDate = null, year }) {
+  beginLongWork();
+  try {
+    const targetYear = year || new Date().getFullYear();
+    broadcast('FORECAST_PROGRESS', { step: 'fetch', status: 'running', label: 'Fetching your accounts from Odoo…' });
+
+    // All RPC runs inside the Odoo tab so it rides the user's own session.
+    const fetchResult = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: async () => {
+        const rpc = async (model, method, args, kwargs) => {
+          const r = await fetch('/web/dataset/call_kw', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', method: 'call', id: Date.now(),
+              params: { model, method, args, kwargs } })
+          });
+          const j = await r.json();
+          if (j.error) throw new Error(j.error?.data?.message || j.error?.message || 'RPC error');
+          return j.result;
+        };
+        const rpcOrNull = (...a) => rpc(...a).catch(() => null);
+
+        const sessionResp = await fetch('/web/session/get_session_info', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'call', params: {} })
+        }).then(r => r.json()).catch(() => null);
+        const uid = sessionResp?.result?.uid;
+        const userName = sessionResp?.result?.name || sessionResp?.result?.username || '';
+        if (!uid) return { error: 'Could not read the Odoo session — open an Odoo tab and log in first.' };
+
+        // Every subscription where I am the salesperson, in ANY state — churned
+        // ones are needed to catch wrongly-forecasted accounts.
+        const subs = await rpc('sale.order', 'search_read',
+          [[['user_id', '=', uid], ['subscription_state', '!=', false]]],
+          { fields: ['id', 'name', 'partner_id', 'commercial_partner_id', 'subscription_state',
+                     'next_invoice_date', 'end_date', 'start_date', 'date_order', 'tag_ids',
+                     'recurring_monthly', 'currency_id'],
+            limit: 2000, order: 'next_invoice_date asc' });
+        if (!subs?.length) return { error: 'No subscriptions found where you are the salesperson.' };
+        const ids = subs.map(s => s.id);
+
+        // Tag names (m2m returns bare ids)
+        const tagIds = [...new Set(subs.flatMap(s => s.tag_ids || []))];
+        const tagRows = tagIds.length
+          ? await rpcOrNull('crm.tag', 'search_read', [[['id', 'in', tagIds]]], { fields: ['id', 'name'], limit: tagIds.length })
+          : [];
+        const tagName = {};
+        (tagRows || []).forEach(t => { tagName[t.id] = t.name; });
+
+        // Churn dates from the subscription log (best-effort — model/rights vary)
+        const logs = await rpcOrNull('sale.order.log', 'search_read',
+          [[['order_id', 'in', ids]]],
+          { fields: ['order_id', 'event_type', 'event_date'], limit: 8000, order: 'event_date asc' });
+        const churnDate = {};
+        (logs || []).forEach(l => {
+          if (!/churn/i.test(String(l.event_type))) return;
+          const oid = Array.isArray(l.order_id) ? l.order_id[0] : l.order_id;
+          churnDate[oid] = l.event_date; // ascending order → last churn event wins
+        });
+
+        // When did each account become MINE? Chatter tracking of the Salesperson
+        // field. Field names differ across Odoo versions, so try both schemas;
+        // if neither is readable the UI's manual handover date takes over.
+        const assignedDate = {};
+        let trackingAvailable = false;
+        for (const fields of [['mail_message_id', 'new_value_char', 'field_desc'],
+                              ['mail_message_id', 'new_value_char', 'field_id']]) {
+          try {
+            const tvs = await rpc('mail.tracking.value', 'search_read',
+              [[['mail_message_id.model', '=', 'sale.order'], ['mail_message_id.res_id', 'in', ids]]],
+              { fields, limit: 10000 });
+            const isSalesperson = t => /sales\s*person/i.test(String(t.field_desc || t.field_id?.[1] || ''));
+            const mine = (tvs || []).filter(t => isSalesperson(t) &&
+              String(t.new_value_char || '').trim() === String(userName).trim());
+            const msgIds = [...new Set(mine.map(t => t.mail_message_id?.[0]).filter(Boolean))];
+            if (msgIds.length) {
+              const msgs = await rpc('mail.message', 'read', [msgIds, ['id', 'date', 'res_id']], {});
+              const msgById = {};
+              (msgs || []).forEach(m => { msgById[m.id] = m; });
+              for (const t of mine) {
+                const m = msgById[t.mail_message_id?.[0]];
+                if (!m?.res_id) continue;
+                const d = String(m.date || '').slice(0, 10);
+                // latest assignment to me = when I actually received the account
+                if (!assignedDate[m.res_id] || d > assignedDate[m.res_id]) assignedDate[m.res_id] = d;
+              }
+            }
+            trackingAvailable = true;
+            break;
+          } catch { /* try next field schema */ }
+        }
+
+        const accounts = subs.map(s => ({
+          id: s.id, so: s.name,
+          partner: s.commercial_partner_id?.[1] || s.partner_id?.[1] || '',
+          state: String(s.subscription_state || ''),
+          nextInvoiceDate: s.next_invoice_date || null,
+          endDate: s.end_date || null,
+          startDate: s.start_date || (s.date_order ? String(s.date_order).slice(0, 10) : null),
+          tags: (s.tag_ids || []).map(id => tagName[id]).filter(Boolean),
+          churnDate: churnDate[s.id] ? String(churnDate[s.id]).slice(0, 10) : null,
+          assignedDate: assignedDate[s.id] || null,
+          monthly: s.recurring_monthly ?? null,
+          currency: s.currency_id?.[1] || ''
+        }));
+        return { accounts, userName, trackingAvailable };
+      }
+    });
+
+    const { error, accounts, userName, trackingAvailable } = fetchResult?.[0]?.result || {};
+    if (error || !accounts?.length) {
+      broadcast('FORECAST_COMPLETE', { success: false, error: error || 'Could not fetch accounts from Odoo.' });
+      return;
+    }
+    broadcast('FORECAST_PROGRESS', { step: 'fetch', status: 'done', label: `${accounts.length} accounts loaded from Odoo` });
+    broadcast('FORECAST_PROGRESS', { step: 'check', status: 'running', label: 'Cross-checking against the forecast sheet…' });
+
+    const result = crossCheck({ sheetRows, odooAccounts: accounts, year: targetYear, fallbackHandoverDate });
+    result.userName = userName;
+    result.trackingAvailable = !!trackingAvailable;
+
+    await saveForecastResult(result);
+    broadcast('FORECAST_COMPLETE', { success: true, data: result });
+    logInfo('forecast_check_done', { accounts: accounts.length, sheetRows: sheetRows.length,
+      unforecasted: result.totals.unforecasted, wrong: result.totals.wronglyForecasted });
+  } catch (err) {
+    logError('forecast_check_failed', { error: err.message });
+    broadcast('FORECAST_COMPLETE', { success: false, error: err.message });
+  } finally {
+    endLongWork();
+  }
+}
+
 // Auto-refresh when user navigates to a different subscription in Odoo
 const ODOO_PATTERN = /odoo\.com|localhost|127\.0\.0\.1/;
 const SO_PATTERN   = /sale\.order|\/sales\/|\/subscriptions\/|[#&]model=sale/;
@@ -2088,6 +2227,7 @@ const PANEL_ONLY_TYPES = new Set([
   'EXTRACT_PAGE_DATA', 'START_RESEARCH', 'START_ANALYSIS', 'CANCEL_ANALYSIS',
   'CREATE_ACTIVITIES', 'SAVE_SETTINGS', 'START_QUICK_BRIEF', 'SCAN_PORTFOLIO',
   'RESCHEDULE_ACTIVITIES', 'SET_ACTIVITY_FEEDBACK', 'DRAFT_MESSAGE',
+  'RUN_FORECAST_CHECK', 'SAVE_FORECAST_SHEET',
   // does a fetch + installs a DNR origin-strip rule for an arbitrary URL — a
   // content script must not be able to probe intranet hosts through the SW
   'CHECK_OLLAMA_URL'
@@ -2237,6 +2377,24 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         case 'SCAN_PORTFOLIO': {
           runPortfolioScan(msg.payload);
           sendResponse({ success: true });
+          break;
+        }
+        case 'RUN_FORECAST_CHECK': {
+          runForecastCheck(msg.payload);
+          sendResponse({ success: true });
+          break;
+        }
+        case 'SAVE_FORECAST_SHEET': {
+          await saveForecastSheet(msg.payload);
+          sendResponse({ success: true });
+          break;
+        }
+        case 'GET_FORECAST_SHEET': {
+          sendResponse({ success: true, data: await getForecastSheet() });
+          break;
+        }
+        case 'GET_FORECAST_RESULT': {
+          sendResponse({ success: true, data: await getForecastResult() });
           break;
         }
         case 'RESCHEDULE_ACTIVITIES': {

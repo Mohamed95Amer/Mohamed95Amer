@@ -2,6 +2,7 @@
 // duplicate parser (ISO-only dates, no weekend skip), so clicking "Continue"
 // mid-stream produced different due dates than waiting for completion.
 import { parseActivitiesFromPlan, verifyActivityReferences } from '../lib/ollama.js';
+import { mapHeaders, parseSheetRows, isoDate, parseDateFlexible } from '../lib/forecast.js';
 
 // ---- State ----
 const STATE = {
@@ -18,7 +19,10 @@ const STATE = {
   DASHBOARD: 'dashboard',
   PORTFOLIO_SCANNING: 'portfolio_scanning',
   PORTFOLIO_COMPLETE: 'portfolio_complete',
-  FEEDBACK: 'feedback'
+  FEEDBACK: 'feedback',
+  FORECAST: 'forecast',
+  FORECAST_RUNNING: 'forecast_running',
+  FORECAST_COMPLETE: 'forecast_complete'
 };
 
 const PHASE_MAP = {
@@ -35,7 +39,10 @@ const PHASE_MAP = {
   [STATE.DASHBOARD]: null,
   [STATE.PORTFOLIO_SCANNING]: null,
   [STATE.PORTFOLIO_COMPLETE]: null,
-  [STATE.FEEDBACK]: null
+  [STATE.FEEDBACK]: null,
+  [STATE.FORECAST]: null,
+  [STATE.FORECAST_RUNNING]: null,
+  [STATE.FORECAST_COMPLETE]: null
 };
 
 const PHASE_ORDER = ['extract', 'research', 'analyze', 'review', 'execute'];
@@ -72,7 +79,11 @@ const initialState = {
   memoryKey: null,
   ollamaUrl: '',            // configured URL, for honest error messages
   analyzeModel: null,       // { model, degraded, preferred, phase, reason }
-  drafts: {}                // { activityIndex: { loading, text, error } }
+  drafts: {},               // { activityIndex: { loading, text, error } }
+  forecastSheet: null,      // { fileName, rowCount, rows, mappedColumns, uploadedAt }
+  forecastProgress: {},
+  forecastResult: null,
+  forecastError: null
 };
 
 let appState = { ...initialState };
@@ -159,6 +170,9 @@ function render() {
     case STATE.PORTFOLIO_SCANNING: renderPortfolioScanning(); break;
     case STATE.PORTFOLIO_COMPLETE: renderPortfolioComplete(); break;
     case STATE.FEEDBACK:           renderFeedback(); break;
+    case STATE.FORECAST:           renderForecast(); break;
+    case STATE.FORECAST_RUNNING:   renderForecastRunning(); break;
+    case STATE.FORECAST_COMPLETE:  renderForecastComplete(); break;
   }
 }
 
@@ -181,8 +195,10 @@ function renderIdle() {
       </div>
       <h2>CSM Copilot</h2>
       <p>Open a subscription or Sales Order page in Odoo to get started.</p>
+      <button class="btn btn-primary btn-full" id="open-forecast-idle">📈 Forecast Check</button>
       <button class="btn btn-secondary btn-sm" id="open-settings-idle">⚙ Settings</button>
     </div>`;
+  document.getElementById('open-forecast-idle')?.addEventListener('click', () => transition(STATE.FORECAST));
   document.getElementById('open-settings-idle')?.addEventListener('click', () => transition(STATE.SETTINGS));
   document.getElementById('setup-link')?.addEventListener('click', (e) => { e.preventDefault(); transition(STATE.SETTINGS); });
   bindErrorBanner();
@@ -1160,9 +1176,11 @@ function renderDashboard() {
       <h2>Portfolio Scanner</h2>
       <p>You're on your CSM Dashboard.<br>Scan all your accounts at once — chatter, renewals, and open issues — to get an AI-prioritized action list.</p>
       <button class="btn btn-primary btn-full" id="scan-portfolio-btn">🔍 Scan Portfolio</button>
+      <button class="btn btn-secondary btn-full" id="open-forecast-dash">📈 Forecast Check</button>
       <div id="last-portfolio-slot"></div>
       <p class="portfolio-hint">Analyzes chatter from all active subscriptions</p>
     </div>`;
+  document.getElementById('open-forecast-dash')?.addEventListener('click', () => transition(STATE.FORECAST));
   document.getElementById('scan-portfolio-btn')?.addEventListener('click', () => {
     transition(STATE.PORTFOLIO_SCANNING, { portfolioProgress: {}, portfolioText: '', portfolioCount: 0 });
     chrome.runtime.sendMessage({ type: 'SCAN_PORTFOLIO', payload: { tabId: appState.currentTabId } });
@@ -1239,6 +1257,284 @@ function renderPortfolioComplete() {
     transition(STATE.PORTFOLIO_SCANNING, { portfolioProgress: {}, portfolioText: '', portfolioCount: 0 });
     chrome.runtime.sendMessage({ type: 'SCAN_PORTFOLIO', payload: { tabId: appState.currentTabId } });
   });
+}
+
+// ── Forecast Check screens ────────────────────────────────────────────────────
+// Cross-checks the uploaded forecast sheet (accounts where I'm Future user)
+// against the subscriptions where I'm the salesperson in Odoo.
+
+const SHEET_COLUMN_LABELS = {
+  account: 'Account name', transitionDate: 'Transition date',
+  tags: 'Subscription tags', checkChurn: 'Check Churn', soNumber: 'SO number'
+};
+
+function renderForecast() {
+  updatePhaseBar(null);
+  const sheet = appState.forecastSheet;
+  const sheetInfo = sheet
+    ? `<div class="forecast-sheet-loaded">📄 <strong>${esc(sheet.fileName)}</strong> — ${sheet.rowCount} accounts
+         <div class="forecast-mapping">${esc(sheet.mappedColumns || '')}</div></div>`
+    : `<p class="forecast-hint">Upload the forecast sheet (.xlsx or .csv). Needed columns: account name, Transition date, Subscription tags, Check Churn.</p>`;
+
+  contentEl.innerHTML = `
+    <div class="forecast-screen screen">
+      ${appState.forecastError ? `<div class="warning-banner">${esc(appState.forecastError)}</div>` : ''}
+      <div class="portfolio-entry-icon">📈</div>
+      <h2>Forecast Check</h2>
+      <p>Find accounts missing from the forecast and accounts that shouldn't be forecasted on you.</p>
+
+      <label class="btn btn-secondary btn-full forecast-upload-label">
+        ⬆ ${sheet ? 'Replace sheet' : 'Upload forecast sheet'}
+        <input type="file" id="forecast-file" accept=".xlsx,.xls,.csv" hidden>
+      </label>
+      ${sheetInfo}
+
+      <div class="forecast-options">
+        <label>Target year
+          <input type="number" id="forecast-year" value="${new Date().getFullYear()}" min="2020" max="2035">
+        </label>
+        <label>Handover date <span class="forecast-opt-hint">(fallback if Odoo tracking is unreadable)</span>
+          <input type="date" id="forecast-handover">
+        </label>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="run-forecast-btn" ${sheet ? '' : 'disabled'}>▶ Run check</button>
+      <div id="last-forecast-slot"></div>
+      <button class="btn btn-secondary btn-sm" id="forecast-back-btn">← Back</button>
+    </div>`;
+
+  document.getElementById('forecast-back-btn')?.addEventListener('click', () => transition(STATE.IDLE));
+  document.getElementById('forecast-file')?.addEventListener('change', onForecastFileChosen);
+  document.getElementById('run-forecast-btn')?.addEventListener('click', runForecastCheckFromPanel);
+
+  // Restore persisted sheet + last result
+  if (!sheet) {
+    chrome.runtime.sendMessage({ type: 'GET_FORECAST_SHEET' }, (res) => {
+      if (res?.data?.rows?.length && appState.phase === STATE.FORECAST && !appState.forecastSheet) {
+        appState.forecastSheet = res.data;
+        renderForecast();
+      }
+    });
+  }
+  chrome.runtime.sendMessage({ type: 'GET_FORECAST_RESULT' }, (res) => {
+    const saved = res?.data;
+    if (!saved?.totals) return;
+    const slot = document.getElementById('last-forecast-slot');
+    if (!slot) return;
+    const when = new Date(saved.generatedAt).toLocaleString();
+    slot.innerHTML = `<button class="btn btn-secondary btn-full btn-sm" id="open-last-forecast">📄 View last result (${esc(when)})</button>`;
+    document.getElementById('open-last-forecast')?.addEventListener('click', () => {
+      transition(STATE.FORECAST_COMPLETE, { forecastResult: saved });
+    });
+  });
+}
+
+function onForecastFileChosen(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const wb = XLSX.read(reader.result, { type: 'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
+      if (!aoa.length) throw new Error('The sheet is empty.');
+
+      const mapping = mapHeaders(aoa[0]);
+      if (mapping.account == null || mapping.checkChurn == null) {
+        const missing = ['account', 'checkChurn'].filter(k => mapping[k] == null)
+          .map(k => SHEET_COLUMN_LABELS[k]).join(', ');
+        throw new Error(`Could not find column(s): ${missing}. Found headers: ${aoa[0].map(h => `"${h}"`).join(', ')}`);
+      }
+
+      const rows = parseSheetRows(aoa, mapping).map(r => ({
+        ...r, transitionDate: r.transitionDate ? isoDate(r.transitionDate) : null
+      }));
+      if (!rows.length) throw new Error('No account rows found under the header row.');
+
+      const mappedColumns = Object.entries(mapping)
+        .map(([k, idx]) => `${SHEET_COLUMN_LABELS[k]} ← "${aoa[0][idx]}"`).join(' · ');
+      const sheet = { fileName: file.name, rowCount: rows.length, rows, mappedColumns, uploadedAt: Date.now() };
+      appState.forecastSheet = sheet;
+      appState.forecastError = null;
+      chrome.runtime.sendMessage({ type: 'SAVE_FORECAST_SHEET', payload: sheet });
+    } catch (err) {
+      appState.forecastError = `Could not read the sheet: ${err.message}`;
+    }
+    renderForecast();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+async function runForecastCheckFromPanel() {
+  const sheet = appState.forecastSheet;
+  if (!sheet?.rows?.length) return;
+
+  // Use the live active tab — the panel may have been opened before navigation
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab || !/odoo\.com|localhost|127\.0\.0\.1/.test(tab.url || '')) {
+    appState.forecastError = 'Open your Odoo tab first (the check runs on your logged-in session), then click Run again.';
+    renderForecast();
+    return;
+  }
+  appState.currentTabId = tab.id;
+
+  const year = parseInt(document.getElementById('forecast-year')?.value, 10) || new Date().getFullYear();
+  const fallbackHandoverDate = document.getElementById('forecast-handover')?.value || null;
+
+  transition(STATE.FORECAST_RUNNING, { forecastProgress: {}, forecastError: null });
+  chrome.runtime.sendMessage({
+    type: 'RUN_FORECAST_CHECK',
+    payload: { tabId: tab.id, sheetRows: sheet.rows, year, fallbackHandoverDate }
+  });
+}
+
+function renderForecastRunning() {
+  updatePhaseBar(null);
+  const steps = [
+    { key: 'fetch', label: 'Fetching your accounts from Odoo' },
+    { key: 'check', label: 'Cross-checking against the sheet' }
+  ];
+  const p = appState.forecastProgress;
+  const stepsHtml = steps.map(s => {
+    const status = p[s.key] || 'pending';
+    const icon = status === 'done' ? '✅' : status === 'running' ? '⏳' : '○';
+    const label = p[`${s.key}_label`] || s.label;
+    return `<div class="portfolio-step ${status}"><span class="step-icon">${icon}</span><span>${esc(label)}</span></div>`;
+  }).join('');
+  contentEl.innerHTML = `
+    <div class="portfolio-scanning screen">
+      <h3>Running Forecast Check…</h3>
+      <div class="portfolio-steps">${stepsHtml}</div>
+    </div>`;
+}
+
+function forecastRowHtml(u) {
+  const amount = u.monthly != null && u.monthly !== '' ? ` · ${esc(String(u.monthly))} ${esc(u.currency || '')}/mo` : '';
+  const date = u.nextInvoiceDate ? esc(String(u.nextInvoiceDate).slice(0, 10)) : 'no next invoice date';
+  return `<div class="forecast-row">
+      <div class="forecast-row-main"><strong>${esc(u.account)}</strong> <span class="forecast-so">${esc(u.so || '')}</span></div>
+      <div class="forecast-row-sub">${date}${amount} · <span class="forecast-source">${esc(u.source)}</span></div>
+    </div>`;
+}
+
+function renderForecastComplete() {
+  updatePhaseBar(null);
+  const r = appState.forecastResult;
+  if (!r) { transition(STATE.FORECAST); return; }
+
+  // Year → Quarter → Month collapsible groups
+  const groups = r.unforecastedGroups || {};
+  const groupsHtml = Object.keys(groups).sort().map(yr => {
+    const quarters = groups[yr];
+    const qHtml = Object.keys(quarters).sort().map(q => {
+      const months = quarters[q];
+      const mHtml = Object.entries(months)
+        .sort((a, b) => (a[1].monthNum || 0) - (b[1].monthNum || 0))
+        .map(([mName, m]) =>
+          `<details class="forecast-month"><summary>${esc(mName)} <span class="forecast-count">${m.items.length}</span></summary>
+             ${m.items.map(forecastRowHtml).join('')}</details>`)
+        .join('');
+      const qCount = Object.values(months).reduce((n, m) => n + m.items.length, 0);
+      return `<details class="forecast-quarter" open><summary>${esc(q)} <span class="forecast-count">${qCount}</span></summary>${mHtml}</details>`;
+    }).join('');
+    const yCount = Object.values(quarters).reduce((n, ms) => n + Object.values(ms).reduce((k, m) => k + m.items.length, 0), 0);
+    return `<details class="forecast-year-group" open><summary>${esc(String(yr))} <span class="forecast-count">${yCount}</span></summary>${qHtml}</details>`;
+  }).join('') || '<p class="forecast-hint">None found 🎉</p>';
+
+  const wrongHtml = (r.wronglyForecasted || []).map(w => {
+    const evidence = [
+      w.churnDate ? `churned ${esc(w.churnDate)}` : '',
+      w.transitionDate ? `forecast from ${esc(w.transitionDate)}` : '',
+      w.assignedDate ? `received ${esc(w.assignedDate)}` : '',
+      w.tag ? `Odoo tag "${esc(w.tag)}"` : '',
+      w.sheetRow ? `sheet row ${w.sheetRow}` : ''
+    ].filter(Boolean).join(' · ');
+    return `<div class="forecast-row forecast-row-wrong">
+        <div class="forecast-row-main"><strong>${esc(w.account)}</strong> <span class="forecast-so">${esc(w.so || '')}</span></div>
+        <div class="forecast-row-sub"><span class="forecast-reason">${esc(w.reason)}</span>${evidence ? ' · ' + evidence : ''}</div>
+      </div>`;
+  }).join('') || '<p class="forecast-hint">None found 🎉</p>';
+
+  const unmatchedHtml = (r.unmatchedSheet || []).length
+    ? `<details class="forecast-unmatched"><summary>⚠ ${r.unmatchedSheet.length} sheet accounts not found in your Odoo accounts</summary>
+         ${r.unmatchedSheet.map(u => `<div class="forecast-row"><div class="forecast-row-main">${esc(u.account)} <span class="forecast-so">row ${u.sheetRow}</span></div></div>`).join('')}
+         <p class="forecast-hint">Name spelling differences, or accounts where you're Future user but not (yet) the salesperson.</p>
+       </details>`
+    : '';
+
+  const outsideHtml = (r.unforecastedOutsideYear || []).length
+    ? `<details class="forecast-unmatched"><summary>${r.unforecastedOutsideYear.length} unforecasted with next invoice outside ${esc(String(r.year))}</summary>
+         ${r.unforecastedOutsideYear.map(forecastRowHtml).join('')}</details>`
+    : '';
+
+  const trackingNote = r.trackingAvailable === false
+    ? '<div class="warning-banner">Salesperson-change history was not readable from Odoo — handover-date checks used the manual date (if provided).</div>'
+    : '';
+
+  contentEl.innerHTML = `
+    <div class="forecast-complete screen">
+      <div class="portfolio-complete-header">
+        <span class="portfolio-count-badge">${r.totals?.odooAccounts ?? 0} Odoo · ${r.totals?.sheetRows ?? 0} sheet</span>
+        <button class="btn btn-secondary btn-sm" id="forecast-export-btn">⬇ Export Excel</button>
+        <button class="btn btn-secondary btn-sm" id="forecast-rerun-btn">↺ Rerun</button>
+      </div>
+      ${r.generatedAt ? `<div class="generated-at">Checked ${esc(new Date(r.generatedAt).toLocaleString())} · year ${esc(String(r.year))}</div>` : ''}
+      ${trackingNote}
+
+      <div class="forecast-tiles">
+        <div class="forecast-tile"><div class="forecast-tile-num">${r.totals?.unforecasted ?? 0}</div><div>Unforecasted<br>(to add)</div></div>
+        <div class="forecast-tile forecast-tile-wrong"><div class="forecast-tile-num">${r.totals?.wronglyForecasted ?? 0}</div><div>Wrongly<br>forecasted</div></div>
+      </div>
+
+      <h3>➕ Unforecasted — by next invoice</h3>
+      ${groupsHtml}
+      ${outsideHtml}
+
+      <h3>🚫 Should not be forecasted</h3>
+      ${wrongHtml}
+
+      ${unmatchedHtml}
+      <button class="btn btn-secondary btn-sm" id="forecast-back2-btn">← Back</button>
+    </div>`;
+
+  document.getElementById('forecast-back2-btn')?.addEventListener('click', () => transition(STATE.FORECAST));
+  document.getElementById('forecast-rerun-btn')?.addEventListener('click', () => transition(STATE.FORECAST));
+  document.getElementById('forecast-export-btn')?.addEventListener('click', () => exportForecastExcel(r));
+}
+
+function exportForecastExcel(r) {
+  const wb = XLSX.utils.book_new();
+
+  const unf = (r.unforecasted || []).map(u => {
+    const d = parseDateFlexible(u.nextInvoiceDate);
+    return {
+      Year: d ? d.getFullYear() : '', Quarter: d ? 'Q' + (Math.floor(d.getMonth() / 3) + 1) : '',
+      Month: d ? d.toLocaleString('en', { month: 'long' }) : '',
+      Account: u.account, SO: u.so || '', 'Next Invoice': u.nextInvoiceDate || '',
+      'Monthly': u.monthly ?? '', Currency: u.currency || '', Source: u.source
+    };
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(unf.length ? unf : [{ Info: 'None' }]), 'Unforecasted');
+
+  const wrong = (r.wronglyForecasted || []).map(w => ({
+    Reason: w.reason, Account: w.account, SO: w.so || '', 'Sheet Row': w.sheetRow || '',
+    'Churn Date': w.churnDate || '', 'Assigned Date': w.assignedDate || '',
+    'Transition Date': w.transitionDate || '', 'Odoo Tag': w.tag || ''
+  }));
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(wrong.length ? wrong : [{ Info: 'None' }]), 'Remove from forecast');
+
+  const unmatched = (r.unmatchedSheet || []).map(u => ({
+    Account: u.account, 'Sheet Row': u.sheetRow, 'Check Churn': u.checkChurn
+  }));
+  if (unmatched.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(unmatched), 'Unmatched sheet rows');
+
+  const outside = (r.unforecastedOutsideYear || []).map(u => ({
+    Account: u.account, SO: u.so || '', 'Next Invoice': u.nextInvoiceDate || '', Source: u.source
+  }));
+  if (outside.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(outside), `Outside ${r.year}`);
+
+  XLSX.writeFile(wb, `forecast-check-${r.year}-${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 
 function restart() {
@@ -1413,6 +1709,23 @@ chrome.runtime.onMessage.addListener((msg) => {
         });
       } else {
         transition(STATE.ERROR, { error: msg.payload.error || 'Portfolio scan failed' });
+      }
+      break;
+
+    case 'FORECAST_PROGRESS': {
+      const p = { ...appState.forecastProgress };
+      p[msg.payload.step] = msg.payload.status;
+      if (msg.payload.label) p[`${msg.payload.step}_label`] = msg.payload.label;
+      appState.forecastProgress = p;
+      if (appState.phase === STATE.FORECAST_RUNNING) renderForecastRunning();
+      break;
+    }
+
+    case 'FORECAST_COMPLETE':
+      if (msg.payload.success) {
+        transition(STATE.FORECAST_COMPLETE, { forecastResult: { ...msg.payload.data, generatedAt: Date.now() } });
+      } else {
+        transition(STATE.FORECAST, { forecastError: msg.payload.error || 'Forecast check failed' });
       }
       break;
 
