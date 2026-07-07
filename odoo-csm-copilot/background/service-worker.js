@@ -2052,10 +2052,20 @@ ${stats.topUpsell ? `- Top upsell opportunity by value: ${stats.topUpsell}` : ''
 // Cross-checks the uploaded forecast sheet against the accounts where the
 // current Odoo user is the salesperson. Deterministic — no AI involved.
 
-async function runForecastCheck({ tabId, sheetRows, fallbackHandoverDate = null, year }) {
+async function runForecastCheck({ tabId, fallbackHandoverDate = null, year }) {
   beginLongWork();
   try {
     const targetYear = year || new Date().getFullYear();
+
+    // The sheet is already persisted by the upload step — reading it here
+    // avoids shipping the full rows array through the message on every run.
+    const sheet = await getForecastSheet();
+    const sheetRows = sheet?.rows;
+    if (!sheetRows?.length) {
+      broadcast('FORECAST_COMPLETE', { success: false, error: 'No forecast sheet uploaded yet.' });
+      return;
+    }
+
     broadcast('FORECAST_PROGRESS', { step: 'fetch', status: 'running', label: 'Fetching your accounts from Odoo…' });
 
     // All RPC runs inside the Odoo tab so it rides the user's own session.
@@ -2082,29 +2092,104 @@ async function runForecastCheck({ tabId, sheetRows, fallbackHandoverDate = null,
         const userName = sessionResp?.result?.name || sessionResp?.result?.username || '';
         if (!uid) return { error: 'Could not read the Odoo session — open an Odoo tab and log in first.' };
 
-        // Every subscription where I am the salesperson, in ANY state — churned
-        // ones are needed to catch wrongly-forecasted accounts.
-        const subs = await rpc('sale.order', 'search_read',
-          [[['user_id', '=', uid], ['subscription_state', '!=', false]]],
-          { fields: ['id', 'name', 'partner_id', 'commercial_partner_id', 'subscription_state',
-                     'next_invoice_date', 'end_date', 'start_date', 'date_order', 'tag_ids',
-                     'recurring_monthly', 'currency_id'],
-            limit: 2000, order: 'next_invoice_date asc' });
-        if (!subs?.length) return { error: 'No subscriptions found where you are the salesperson.' };
+        // The forecast is keyed on the FUTURE USER (who the account transitions
+        // to), a custom field whose technical name varies per instance — detect
+        // it: a many2one to res.users on sale.order named like "future".
+        let futureField = null;
+        try {
+          const flds = await rpc('ir.model.fields', 'search_read',
+            [[['model', '=', 'sale.order'], ['name', 'like', 'future']]],
+            { fields: ['name', 'ttype', 'relation'], limit: 10 });
+          futureField = (flds || []).find(f => f.ttype === 'many2one' && f.relation === 'res.users')?.name || null;
+        } catch { /* fall back to salesperson-only mode */ }
+
+        // Everything forecasted ONTO me (future user) plus everything I own as
+        // salesperson, in ANY subscription state — churned records are needed
+        // to catch wrongly-forecasted accounts. Paginated: a hard limit
+        // silently truncated big books of business.
+        const FIELDS = ['id', 'name', 'partner_id', 'commercial_partner_id', 'subscription_state',
+                        'next_invoice_date', 'end_date', 'start_date', 'date_order', 'tag_ids',
+                        'recurring_monthly', 'currency_id', 'user_id',
+                        ...(futureField ? [futureField] : [])];
+        const domain = futureField
+          ? ['|', ['user_id', '=', uid], [futureField, '=', uid], ['subscription_state', '!=', false]]
+          : [['user_id', '=', uid], ['subscription_state', '!=', false]];
+        const PAGE = 1000, CAP = 10000;
+        let subs = [];
+        let truncated = false;
+        for (let offset = 0; ; offset += PAGE) {
+          const page = await rpc('sale.order', 'search_read',
+            [domain], { fields: FIELDS, limit: PAGE, offset, order: 'id asc' });
+          subs = subs.concat(page || []);
+          if (!page || page.length < PAGE) break;
+          if (subs.length >= CAP) { truncated = true; break; }
+        }
+        if (!subs.length) return { error: 'No subscriptions found where you are the salesperson or future user.' };
         const ids = subs.map(s => s.id);
 
-        // Tag names (m2m returns bare ids)
+        // Tags, churn logs and salesperson tracking are independent — fetch in
+        // parallel instead of three back-to-back round-trips.
         const tagIds = [...new Set(subs.flatMap(s => s.tag_ids || []))];
-        const tagRows = tagIds.length
+
+        const fetchTags = async () => tagIds.length
           ? await rpcOrNull('crm.tag', 'search_read', [[['id', 'in', tagIds]]], { fields: ['id', 'name'], limit: tagIds.length })
           : [];
+
+        // Churn dates from the subscription log (best-effort — model/rights
+        // vary). Only supplies the churn DATE; whether a customer counts as
+        // churned is decided from subscription_state in the cross-check.
+        const fetchLogs = () => rpcOrNull('sale.order.log', 'search_read',
+          [[['order_id', 'in', ids]]],
+          { fields: ['order_id', 'event_type', 'event_date'], limit: 8000, order: 'event_date asc' });
+
+        // When did each account become MINE? Chatter tracking of the Salesperson
+        // field. Field names differ across Odoo versions, so try several
+        // schemas; match by user id when the integer column is readable (names
+        // are ambiguous/renameable), falling back to the display-name string.
+        // If nothing is readable, the UI's manual handover date takes over.
+        const fetchTracking = async () => {
+          const assignedDate = {};
+          let trackingAvailable = false;
+          const variants = [
+            ['mail_message_id', 'new_value_char', 'new_value_integer', 'field_desc'],
+            ['mail_message_id', 'new_value_char', 'new_value_integer', 'field_id'],
+            ['mail_message_id', 'new_value_char', 'field_desc'],
+            ['mail_message_id', 'new_value_char', 'field_id']
+          ];
+          for (const fields of variants) {
+            try {
+              const tvs = await rpc('mail.tracking.value', 'search_read',
+                [[['mail_message_id.model', '=', 'sale.order'], ['mail_message_id.res_id', 'in', ids]]],
+                { fields, limit: 10000 });
+              const isSalesperson = t => /sales\s*person/i.test(String(t.field_desc || t.field_id?.[1] || ''));
+              const isMe = t => t.new_value_integer === uid ||
+                String(t.new_value_char || '').trim() === String(userName).trim();
+              const mine = (tvs || []).filter(t => isSalesperson(t) && isMe(t));
+              const msgIds = [...new Set(mine.map(t => t.mail_message_id?.[0]).filter(Boolean))];
+              if (msgIds.length) {
+                const msgs = await rpc('mail.message', 'read', [msgIds, ['id', 'date', 'res_id']], {});
+                const msgById = {};
+                (msgs || []).forEach(m => { msgById[m.id] = m; });
+                for (const t of mine) {
+                  const m = msgById[t.mail_message_id?.[0]];
+                  if (!m?.res_id) continue;
+                  const d = String(m.date || '').slice(0, 10);
+                  // latest assignment to me = when I actually received the account
+                  if (!assignedDate[m.res_id] || d > assignedDate[m.res_id]) assignedDate[m.res_id] = d;
+                }
+              }
+              trackingAvailable = true;
+              break;
+            } catch { /* try next field schema */ }
+          }
+          return { assignedDate, trackingAvailable };
+        };
+
+        const [tagRows, logs, tracking] = await Promise.all([fetchTags(), fetchLogs(), fetchTracking()]);
+
         const tagName = {};
         (tagRows || []).forEach(t => { tagName[t.id] = t.name; });
 
-        // Churn dates from the subscription log (best-effort — model/rights vary)
-        const logs = await rpcOrNull('sale.order.log', 'search_read',
-          [[['order_id', 'in', ids]]],
-          { fields: ['order_id', 'event_type', 'event_date'], limit: 8000, order: 'event_date asc' });
         const churnDate = {};
         (logs || []).forEach(l => {
           if (!/churn/i.test(String(l.event_type))) return;
@@ -2112,37 +2197,7 @@ async function runForecastCheck({ tabId, sheetRows, fallbackHandoverDate = null,
           churnDate[oid] = l.event_date; // ascending order → last churn event wins
         });
 
-        // When did each account become MINE? Chatter tracking of the Salesperson
-        // field. Field names differ across Odoo versions, so try both schemas;
-        // if neither is readable the UI's manual handover date takes over.
-        const assignedDate = {};
-        let trackingAvailable = false;
-        for (const fields of [['mail_message_id', 'new_value_char', 'field_desc'],
-                              ['mail_message_id', 'new_value_char', 'field_id']]) {
-          try {
-            const tvs = await rpc('mail.tracking.value', 'search_read',
-              [[['mail_message_id.model', '=', 'sale.order'], ['mail_message_id.res_id', 'in', ids]]],
-              { fields, limit: 10000 });
-            const isSalesperson = t => /sales\s*person/i.test(String(t.field_desc || t.field_id?.[1] || ''));
-            const mine = (tvs || []).filter(t => isSalesperson(t) &&
-              String(t.new_value_char || '').trim() === String(userName).trim());
-            const msgIds = [...new Set(mine.map(t => t.mail_message_id?.[0]).filter(Boolean))];
-            if (msgIds.length) {
-              const msgs = await rpc('mail.message', 'read', [msgIds, ['id', 'date', 'res_id']], {});
-              const msgById = {};
-              (msgs || []).forEach(m => { msgById[m.id] = m; });
-              for (const t of mine) {
-                const m = msgById[t.mail_message_id?.[0]];
-                if (!m?.res_id) continue;
-                const d = String(m.date || '').slice(0, 10);
-                // latest assignment to me = when I actually received the account
-                if (!assignedDate[m.res_id] || d > assignedDate[m.res_id]) assignedDate[m.res_id] = d;
-              }
-            }
-            trackingAvailable = true;
-            break;
-          } catch { /* try next field schema */ }
-        }
+        const { assignedDate, trackingAvailable } = tracking;
 
         const accounts = subs.map(s => ({
           id: s.id, so: s.name,
@@ -2155,13 +2210,15 @@ async function runForecastCheck({ tabId, sheetRows, fallbackHandoverDate = null,
           churnDate: churnDate[s.id] ? String(churnDate[s.id]).slice(0, 10) : null,
           assignedDate: assignedDate[s.id] || null,
           monthly: s.recurring_monthly ?? null,
-          currency: s.currency_id?.[1] || ''
+          currency: s.currency_id?.[1] || '',
+          isSalesperson: s.user_id?.[0] === uid,
+          isFutureUser: futureField ? s[futureField]?.[0] === uid : false
         }));
-        return { accounts, userName, trackingAvailable };
+        return { accounts, userName, trackingAvailable, truncated, futureField };
       }
     });
 
-    const { error, accounts, userName, trackingAvailable } = fetchResult?.[0]?.result || {};
+    const { error, accounts, userName, trackingAvailable, truncated, futureField } = fetchResult?.[0]?.result || {};
     if (error || !accounts?.length) {
       broadcast('FORECAST_COMPLETE', { success: false, error: error || 'Could not fetch accounts from Odoo.' });
       return;
@@ -2169,9 +2226,12 @@ async function runForecastCheck({ tabId, sheetRows, fallbackHandoverDate = null,
     broadcast('FORECAST_PROGRESS', { step: 'fetch', status: 'done', label: `${accounts.length} accounts loaded from Odoo` });
     broadcast('FORECAST_PROGRESS', { step: 'check', status: 'running', label: 'Cross-checking against the forecast sheet…' });
 
-    const result = crossCheck({ sheetRows, odooAccounts: accounts, year: targetYear, fallbackHandoverDate });
+    const result = crossCheck({ sheetRows, odooAccounts: accounts, year: targetYear,
+      fallbackHandoverDate, futureUserKnown: !!futureField });
     result.userName = userName;
     result.trackingAvailable = !!trackingAvailable;
+    result.truncated = !!truncated;
+    result.futureField = futureField || null;
 
     await saveForecastResult(result);
     broadcast('FORECAST_COMPLETE', { success: true, data: result });

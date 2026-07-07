@@ -1,21 +1,41 @@
 // Forecast cross-check — pure logic, no chrome.* / DOM dependencies so it can
 // be unit-tested in Node and reused from both the side panel and the worker.
 //
-// Inputs:
-//   sheetRows    — parsed forecast sheet (accounts where the user is Future user)
-//   odooAccounts — subscriptions where the user is the salesperson
+// Direction of the check: it starts from MY Odoo subscriptions and searches
+// the sheet for each of them — the sheet holds the WHOLE department's
+// accounts, so sheet rows that match nobody of mine belong to colleagues and
+// are ignored, never reported.
 //
-// Outputs (all restricted to the target year):
+// Inputs:
+//   sheetRows    — parsed forecast sheet (all departments)
+//   odooAccounts — sale.order subscription records fetched for me, each marked
+//                  isFutureUser (forecasted onto me) / isSalesperson (owned by
+//                  me). One CUSTOMER often has several records (active sub,
+//                  replaced 5_renewed order, draft quotes, upsells), so all
+//                  checks aggregate per customer, never per order.
+//
+// Outputs:
 //   A. unforecasted   — accounts that should be added to the forecast:
-//        A1 owned in Odoo but missing from the sheet
-//        A2 sheet lines with Check Churn = 1 (excluded by churn tag)
-//      grouped by Year → Quarter → Month of next invoice date
-//   B. wronglyForecasted — sheet lines with Check Churn = 0 that should not be:
-//        B1 churned in Odoo (before handover when handover date is known)
-//        B2 churn tag present in Odoo but sheet still says 0
-//        B3 forecasted from a transition date earlier than the actual handover
+//        A1 I'm salesperson (active sub), NOT the future user, not in the sheet
+//        A2 MY sheet lines with Check Churn = 1 (excluded by churn tag)
+//      grouped by Year → Quarter → Month of next invoice date and filtered to
+//      the target year (off-year entries returned separately, not dropped)
+//   B. wronglyForecasted — MY forecasted-book rows (future user = me) with
+//      Check Churn = 0 that should not be forecasted. Deliberately NOT
+//      year-filtered: a row in this year's sheet is relevant whenever the
+//      churn/handover happened.
+//        B1 customer churned in Odoo (before handover when handover is known)
+//        B2 churn tag present in Odoo but the sheet still says 0
+//        B3 forecast starts in an earlier MONTH than the account was received
+//   bookNotInSheet — accounts forecasted onto me (future user) that the sheet
+//      is missing entirely.
+//
+// When the Odoo instance has no detectable future-user field
+// (futureUserKnown=false), my salesperson accounts stand in for the book.
 
 export const CHURN_TAG_RE = /churn/i;
+const ACTIVE_STATE_RE = /progress|paused/i;
+const CHURN_STATE_RE = /churn/i;
 
 // ── Name normalization / join key ────────────────────────────────────────────
 
@@ -52,7 +72,15 @@ export function normalizeName(name) {
 
 export function parseDateFlexible(v) {
   if (v == null || v === '') return null;
-  if (v instanceof Date) return isNaN(v) ? null : v;
+  if (v instanceof Date) {
+    if (isNaN(v)) return null;
+    // SheetJS cellDates produces UTC-midnight Dates; reading those with local
+    // getters shifts −1 day in behind-UTC timezones, so read them as UTC.
+    if (v.getUTCHours() === 0 && v.getUTCMinutes() === 0 && v.getUTCSeconds() === 0) {
+      return new Date(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate());
+    }
+    return v;
+  }
   if (typeof v === 'number' && isFinite(v)) {
     // Excel serial (1900 date system, epoch 1899-12-30)
     if (v > 20000 && v < 80000) {
@@ -89,6 +117,18 @@ export function isoDate(d) {
   if (!d) return '';
   const p = n => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+// Single source of the Year/Quarter/Month derivation — the on-screen grouping
+// and the Excel export must never disagree.
+export function yqmOf(d) {
+  if (!d) return { year: null, quarter: null, month: null, monthNum: 0 };
+  return {
+    year: d.getFullYear(),
+    quarter: 'Q' + (Math.floor(d.getMonth() / 3) + 1),
+    month: d.toLocaleString('en', { month: 'long' }),
+    monthNum: d.getMonth() + 1
+  };
 }
 
 // ── Sheet header mapping ─────────────────────────────────────────────────────
@@ -143,126 +183,218 @@ export function parseSheetRows(aoa, mapping) {
 export function groupByYQM(items, getDate) {
   const groups = {};
   for (const it of items) {
-    const d = getDate(it);
-    const year = d ? d.getFullYear() : 'No date';
-    const quarter = d ? 'Q' + (Math.floor(d.getMonth() / 3) + 1) : '—';
-    const month = d ? d.toLocaleString('en', { month: 'long' }) : '—';
-    const monthNum = d ? d.getMonth() + 1 : 0;
-    ((((groups[year] ??= {})[quarter] ??= {})[month] ??= { monthNum, items: [] })).items.push(it);
+    const { year, quarter, month, monthNum } = yqmOf(getDate(it));
+    const yearKey = year ?? 'No date';
+    const quarterKey = quarter ?? '—';
+    const monthKey = month ?? '—';
+    if (!groups[yearKey]) groups[yearKey] = {};
+    if (!groups[yearKey][quarterKey]) groups[yearKey][quarterKey] = {};
+    if (!groups[yearKey][quarterKey][monthKey]) {
+      groups[yearKey][quarterKey][monthKey] = { monthNum, items: [] };
+    }
+    groups[yearKey][quarterKey][monthKey].items.push(it);
   }
   return groups;
 }
 
-// ── The cross-check ──────────────────────────────────────────────────────────
+// ── Customer aggregation ──────────────────────────────────────────────────────
 
-// odooAccounts: [{ id, so, partner, state, nextInvoiceDate, endDate, startDate,
-//                  tags: [names], churnDate, assignedDate, monthly, currency }]
-// dates are ISO strings or null.
-export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullYear(), fallbackHandoverDate = null }) {
-  const sheetByKey = new Map();
-  for (const row of sheetRows) {
-    if (!sheetByKey.has(row.key)) sheetByKey.set(row.key, []);
-    sheetByKey.get(row.key).push(row);
-  }
-
-  const matchedSheetKeys = new Set();
-  const unforecasted = [];        // A1 + A2
-  const wronglyForecasted = [];   // B1 + B2 + B3
-  const unmatchedOdoo = [];       // informational: Odoo accounts with no sheet row (superset of A1 incl. churned)
-  const handoverFallback = parseDateFlexible(fallbackHandoverDate);
-
+// Collapse the per-order records into one entry per customer.
+function aggregateCustomers(odooAccounts) {
+  const customers = new Map(); // partner key → customer
   for (const acc of odooAccounts) {
     const key = normalizeName(acc.partner);
-    const rows = sheetByKey.get(key) || [];
-    if (rows.length) rows.forEach(r => { matchedSheetKeys.add(r.key); r._odoo = acc; });
+    if (!customers.has(key)) customers.set(key, { key, name: acc.partner, orders: [] });
+    customers.get(key).orders.push(acc);
+  }
 
-    const churned = /churn/i.test(acc.state || '') || !!acc.churnDate;
-    const assigned = parseDateFlexible(acc.assignedDate) || handoverFallback;
+  for (const c of customers.values()) {
+    const active = c.orders.filter(o => ACTIVE_STATE_RE.test(o.state || ''));
+    const churnedOrders = c.orders.filter(o => CHURN_STATE_RE.test(o.state || ''));
+
+    // Roles: forecasted onto me (future user) vs merely owned by me. Orders
+    // without role flags (older callers/tests) default to salesperson-owned.
+    c.isFutureUser = c.orders.some(o => !!o.isFutureUser);
+    c.isSalesperson = c.orders.some(o => o.isSalesperson !== false);
+
+    // Representative = the order whose dates/amounts we report: the active
+    // subscription with the earliest upcoming invoice, else the newest order.
+    const byNextInvoice = [...active].sort((a, b) =>
+      String(a.nextInvoiceDate || '9999').localeCompare(String(b.nextInvoiceDate || '9999')));
+    const byRecency = [...c.orders].sort((a, b) =>
+      String(b.startDate || '').localeCompare(String(a.startDate || '')) || (b.id - a.id));
+    c.rep = byNextInvoice[0] || byRecency[0];
+
+    c.hasActive = active.length > 0;
+    // State is authoritative: a customer with ANY active subscription is not
+    // churned, no matter what old orders/log events say (churn-then-renew).
+    c.churned = !c.hasActive && churnedOrders.length > 0;
+    c.churnDate = churnedOrders.map(o => o.churnDate).filter(Boolean).sort().pop()
+      || c.orders.map(o => o.churnDate).filter(Boolean).sort().pop() || null;
+    c.tags = [...new Set(c.orders.flatMap(o => o.tags || []))];
+    // Latest date any of the customer's orders was assigned to me — null when
+    // chatter tracking was unreadable (the caller's fallback date covers that).
+    c.assignedDate = c.orders.map(o => o.assignedDate).filter(Boolean).sort().pop() || null;
+  }
+  return customers;
+}
+
+// ── The cross-check ──────────────────────────────────────────────────────────
+
+// Month index for month-granularity comparisons — the forecast is monthly, so
+// "received Jan 15, forecasted from Jan" is fine while "received June,
+// forecasted from Jan" is not.
+const monthIndex = d => d.getFullYear() * 12 + d.getMonth();
+
+// odooAccounts: [{ id, so, partner, state, nextInvoiceDate, endDate, startDate,
+//                  tags: [names], churnDate, assignedDate, monthly, currency,
+//                  isFutureUser, isSalesperson }]
+// dates are ISO strings or null.
+export function crossCheck({ sheetRows, odooAccounts, year = new Date().getFullYear(),
+                             fallbackHandoverDate = null, futureUserKnown = false }) {
+  const customers = aggregateCustomers(odooAccounts);
+  const handoverFallback = parseDateFlexible(fallbackHandoverDate);
+
+  // Attach sheet rows to customers: exact SO-number join first, name join second.
+  const customerBySo = new Map();
+  for (const c of customers.values()) {
+    for (const o of c.orders) if (o.so) customerBySo.set(String(o.so).trim().toUpperCase(), c);
+  }
+  const rowsByCustomer = new Map(); // customer key → rows
+  for (const row of sheetRows) {
+    const bySo = row.soNumber ? customerBySo.get(row.soNumber.toUpperCase()) : null;
+    const c = bySo || customers.get(row.key) || null;
+    row._customer = c;
+    if (c) {
+      if (!rowsByCustomer.has(c.key)) rowsByCustomer.set(c.key, []);
+      rowsByCustomer.get(c.key).push(row);
+    }
+  }
+
+  const unforecasted = [];        // A1 + A2
+  const wronglyForecasted = [];   // B1 + B2 + B3
+  const bookNotInSheet = [];      // forecasted onto me but missing from the sheet
+
+  for (const c of customers.values()) {
+    const rows = rowsByCustomer.get(c.key) || [];
+    const rep = c.rep;
+    const assignedReal = parseDateFlexible(c.assignedDate); // per-account chatter tracking
+    const assigned = assignedReal || handoverFallback;
+
+    // My forecasted book: future-user accounts when the field is known,
+    // otherwise (no detectable field) my salesperson accounts stand in.
+    const inMyBook = futureUserKnown ? c.isFutureUser : c.isSalesperson;
 
     if (!rows.length) {
-      unmatchedOdoo.push(acc);
-      // A1 — I own it, it's alive, but nobody forecasted it
-      // (year split happens below so off-year accounts stay visible)
-      if (!churned) {
+      // A1 — I own a live subscription, I'm NOT the future user, and the
+      // department sheet doesn't have the customer at all: nobody forecasted
+      // it. Drafts, replaced (5_renewed) and churned customers don't qualify.
+      const notForecastedOnMe = futureUserKnown ? !c.isFutureUser : true;
+      if (c.isSalesperson && notForecastedOnMe && c.hasActive) {
         unforecasted.push({
-          source: 'A1 not in sheet', account: acc.partner, so: acc.so,
-          nextInvoiceDate: acc.nextInvoiceDate || null, monthly: acc.monthly,
-          currency: acc.currency, state: acc.state, odooId: acc.id
+          source: 'A1 not in sheet', account: c.name, so: rep.so,
+          nextInvoiceDate: rep.nextInvoiceDate || null, monthly: rep.monthly,
+          currency: rep.currency, state: rep.state, odooId: rep.id
+        });
+      }
+      // An account forecasted ONTO me that the sheet is missing is an anomaly
+      // of its own — the sheet is supposed to carry my whole book.
+      if (futureUserKnown && c.isFutureUser) {
+        bookNotInSheet.push({
+          account: c.name, so: rep.so, state: rep.state,
+          nextInvoiceDate: rep.nextInvoiceDate || null, odooId: rep.id
         });
       }
       continue;
     }
 
+    // B checks apply only to MY book — a matched row for an account whose
+    // future user is a colleague is THEIR forecast, not mine.
+    if (!inMyBook) continue;
+
     for (const row of rows) {
       if (row.checkChurn === 1) continue; // handled as A2 below (sheet-driven)
 
-      // B1 — churned in Odoo but the sheet still forecasts it
-      if (churned) {
-        const churnD = parseDateFlexible(acc.churnDate);
+      // B1 — customer churned in Odoo but the sheet still forecasts it
+      if (c.churned) {
+        const churnD = parseDateFlexible(c.churnDate);
         const beforeHandover = churnD && assigned && churnD < assigned;
         wronglyForecasted.push({
           reason: beforeHandover ? 'B1 churned before handover' : 'B1 churned in Odoo',
-          account: row.accountName, so: acc.so, sheetRow: row.rowIndex,
-          churnDate: acc.churnDate || '', assignedDate: assigned ? isoDate(assigned) : '',
-          state: acc.state, odooId: acc.id
+          account: row.accountName, so: rep.so, sheetRow: row.rowIndex,
+          churnDate: c.churnDate || '', assignedDate: assigned ? isoDate(assigned) : '',
+          state: rep.state, odooId: rep.id
         });
       }
 
-      // B2 — churn tag in Odoo, Check Churn still 0
-      const odooChurnTag = (acc.tags || []).find(t => CHURN_TAG_RE.test(t));
+      // B2 — churn tag anywhere on the customer's orders, Check Churn still 0
+      const odooChurnTag = c.tags.find(t => CHURN_TAG_RE.test(t));
       if (odooChurnTag) {
         wronglyForecasted.push({
           reason: 'B2 churn tag in Odoo but sheet says 0',
-          account: row.accountName, so: acc.so, sheetRow: row.rowIndex,
-          tag: odooChurnTag, sheetTags: row.tags, odooId: acc.id
+          account: row.accountName, so: rep.so, sheetRow: row.rowIndex,
+          tag: odooChurnTag, sheetTags: row.tags, odooId: rep.id
         });
       }
 
-      // B3 — forecast starts before I actually received the account
-      // (transitionDate may arrive as an ISO string after message serialization)
-      const transitionD = parseDateFlexible(row.transitionDate);
-      if (transitionD && assigned && assigned > transitionD) {
+      // B3 — forecast starts in an earlier MONTH than I received the account
+      // (the forecast is monthly, so same-month handovers are fine). Blank
+      // transition means "forecasted the whole year" (from Jan); apply that
+      // only with a real per-account tracking date — the global fallback date
+      // would mass-flag every full-year row.
+      const explicitTransition = parseDateFlexible(row.transitionDate);
+      const transitionD = explicitTransition || (assignedReal ? new Date(year, 0, 1) : null);
+      if (transitionD && assigned && monthIndex(assigned) > monthIndex(transitionD)) {
         wronglyForecasted.push({
           reason: 'B3 forecast starts before handover',
-          account: row.accountName, so: acc.so, sheetRow: row.rowIndex,
-          transitionDate: isoDate(transitionD), assignedDate: isoDate(assigned),
-          odooId: acc.id
+          account: row.accountName, so: rep.so, sheetRow: row.rowIndex,
+          transitionDate: explicitTransition ? isoDate(explicitTransition) : `(blank = full ${year})`,
+          assignedDate: isoDate(assigned), odooId: rep.id
         });
       }
     }
   }
 
-  // A2 — sheet lines excluded by Check Churn = 1
-  const unmatchedSheet = [];
+  // A2 — MY sheet lines excluded by Check Churn = 1. The sheet holds the whole
+  // department, so rows that match none of my accounts are colleagues' and are
+  // skipped entirely.
   for (const row of sheetRows) {
-    if (row.checkChurn === 1) {
-      const acc = row._odoo || null;
-      unforecasted.push({
-        source: 'A2 check churn = 1', account: row.accountName, so: acc?.so || row.soNumber,
-        nextInvoiceDate: acc?.nextInvoiceDate || null, monthly: acc?.monthly ?? null,
-        currency: acc?.currency || '', sheetRow: row.rowIndex, sheetTags: row.tags,
-        odooId: acc?.id ?? null
-      });
-    }
-    if (!row._odoo) unmatchedSheet.push(row);
+    if (row.checkChurn !== 1 || !row._customer) continue;
+    const c = row._customer;
+    if (!(futureUserKnown ? c.isFutureUser : c.isSalesperson)) continue;
+    const rep = c.rep;
+    unforecasted.push({
+      source: 'A2 check churn = 1', account: row.accountName, so: rep.so || row.soNumber,
+      nextInvoiceDate: rep.nextInvoiceDate || null, monthly: rep.monthly ?? null,
+      currency: rep.currency || '', sheetRow: row.rowIndex, sheetTags: row.tags,
+      state: rep.state, odooId: rep.id
+    });
   }
 
-  const yearFiltered = unforecasted.filter(u => !u.nextInvoiceDate || String(u.nextInvoiceDate).startsWith(String(year)));
-  const outsideYear = unforecasted.filter(u => u.nextInvoiceDate && !String(u.nextInvoiceDate).startsWith(String(year)));
+  const entryYear = u => { const d = parseDateFlexible(u.nextInvoiceDate); return d ? d.getFullYear() : null; };
+  const yearFiltered = unforecasted.filter(u => entryYear(u) === year || entryYear(u) === null);
+  const outsideYear = unforecasted.filter(u => entryYear(u) !== null && entryYear(u) !== year);
+
+  const bookCustomers = [...customers.values()]
+    .filter(c => (futureUserKnown ? c.isFutureUser : c.isSalesperson));
 
   return {
     year,
+    futureUserKnown,
     unforecasted: yearFiltered,
     unforecastedOutsideYear: outsideYear,
     unforecastedGroups: groupByYQM(yearFiltered, u => parseDateFlexible(u.nextInvoiceDate)),
     wronglyForecasted,
-    unmatchedSheet: unmatchedSheet.map(r => ({ account: r.accountName, sheetRow: r.rowIndex, checkChurn: r.checkChurn })),
+    bookNotInSheet,
     totals: {
       odooAccounts: odooAccounts.length,
+      odooCustomers: customers.size,
+      bookCustomers: bookCustomers.length,
+      bookMatchedInSheet: bookCustomers.filter(c => rowsByCustomer.has(c.key)).length,
       sheetRows: sheetRows.length,
       unforecasted: yearFiltered.length,
       wronglyForecasted: wronglyForecasted.length,
-      unmatchedSheet: unmatchedSheet.length
+      bookNotInSheet: bookNotInSheet.length
     }
   };
 }

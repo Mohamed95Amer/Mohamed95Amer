@@ -2,7 +2,7 @@
 // duplicate parser (ISO-only dates, no weekend skip), so clicking "Continue"
 // mid-stream produced different due dates than waiting for completion.
 import { parseActivitiesFromPlan, verifyActivityReferences } from '../lib/ollama.js';
-import { mapHeaders, parseSheetRows, isoDate, parseDateFlexible } from '../lib/forecast.js';
+import { mapHeaders, parseSheetRows, isoDate, parseDateFlexible, yqmOf } from '../lib/forecast.js';
 
 // ---- State ----
 const STATE = {
@@ -83,7 +83,8 @@ const initialState = {
   forecastSheet: null,      // { fileName, rowCount, rows, mappedColumns, uploadedAt }
   forecastProgress: {},
   forecastResult: null,
-  forecastError: null
+  forecastError: null,
+  forecastReturnPhase: null // screen to return to from Forecast Check (idle or dashboard)
 };
 
 let appState = { ...initialState };
@@ -198,7 +199,8 @@ function renderIdle() {
       <button class="btn btn-primary btn-full" id="open-forecast-idle">📈 Forecast Check</button>
       <button class="btn btn-secondary btn-sm" id="open-settings-idle">⚙ Settings</button>
     </div>`;
-  document.getElementById('open-forecast-idle')?.addEventListener('click', () => transition(STATE.FORECAST));
+  document.getElementById('open-forecast-idle')?.addEventListener('click', () =>
+    transition(STATE.FORECAST, { forecastReturnPhase: STATE.IDLE }));
   document.getElementById('open-settings-idle')?.addEventListener('click', () => transition(STATE.SETTINGS));
   document.getElementById('setup-link')?.addEventListener('click', (e) => { e.preventDefault(); transition(STATE.SETTINGS); });
   bindErrorBanner();
@@ -1180,7 +1182,8 @@ function renderDashboard() {
       <div id="last-portfolio-slot"></div>
       <p class="portfolio-hint">Analyzes chatter from all active subscriptions</p>
     </div>`;
-  document.getElementById('open-forecast-dash')?.addEventListener('click', () => transition(STATE.FORECAST));
+  document.getElementById('open-forecast-dash')?.addEventListener('click', () =>
+    transition(STATE.FORECAST, { forecastReturnPhase: STATE.DASHBOARD }));
   document.getElementById('scan-portfolio-btn')?.addEventListener('click', () => {
     transition(STATE.PORTFOLIO_SCANNING, { portfolioProgress: {}, portfolioText: '', portfolioCount: 0 });
     chrome.runtime.sendMessage({ type: 'SCAN_PORTFOLIO', payload: { tabId: appState.currentTabId } });
@@ -1268,6 +1271,23 @@ const SHEET_COLUMN_LABELS = {
   tags: 'Subscription tags', checkChurn: 'Check Churn', soNumber: 'SO number'
 };
 
+// SheetJS is ~880 KB — inject it on first use instead of taxing every panel
+// open with a parse for a feature that may not be touched that session.
+let _xlsxLoading = null;
+function ensureXLSX() {
+  if (window.XLSX) return Promise.resolve();
+  if (!_xlsxLoading) {
+    _xlsxLoading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = '../lib/vendor/xlsx.full.min.js';
+      s.onload = resolve;
+      s.onerror = () => { _xlsxLoading = null; reject(new Error('Could not load the Excel library')); };
+      document.head.appendChild(s);
+    });
+  }
+  return _xlsxLoading;
+}
+
 function renderForecast() {
   updatePhaseBar(null);
   const sheet = appState.forecastSheet;
@@ -1303,9 +1323,11 @@ function renderForecast() {
       <button class="btn btn-secondary btn-sm" id="forecast-back-btn">← Back</button>
     </div>`;
 
-  document.getElementById('forecast-back-btn')?.addEventListener('click', () => transition(STATE.IDLE));
+  document.getElementById('forecast-back-btn')?.addEventListener('click', () =>
+    transition(appState.forecastReturnPhase || STATE.IDLE));
   document.getElementById('forecast-file')?.addEventListener('change', onForecastFileChosen);
   document.getElementById('run-forecast-btn')?.addEventListener('click', runForecastCheckFromPanel);
+  ensureXLSX().catch(() => {}); // warm up the parser while the user picks a file
 
   // Restore persisted sheet + last result
   if (!sheet) {
@@ -1333,8 +1355,9 @@ function onForecastFileChosen(e) {
   const file = e.target.files?.[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = () => {
+  reader.onload = async () => {
     try {
+      await ensureXLSX();
       const wb = XLSX.read(reader.result, { type: 'array', cellDates: true });
       const ws = wb.Sheets[wb.SheetNames[0]];
       const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
@@ -1383,9 +1406,11 @@ async function runForecastCheckFromPanel() {
   const fallbackHandoverDate = document.getElementById('forecast-handover')?.value || null;
 
   transition(STATE.FORECAST_RUNNING, { forecastProgress: {}, forecastError: null });
+  // The worker reads the sheet rows from storage (persisted at upload time) —
+  // no need to ship the whole array through the message.
   chrome.runtime.sendMessage({
     type: 'RUN_FORECAST_CHECK',
-    payload: { tabId: tab.id, sheetRows: sheet.rows, year, fallbackHandoverDate }
+    payload: { tabId: tab.id, year, fallbackHandoverDate }
   });
 }
 
@@ -1412,9 +1437,12 @@ function renderForecastRunning() {
 function forecastRowHtml(u) {
   const amount = u.monthly != null && u.monthly !== '' ? ` · ${esc(String(u.monthly))} ${esc(u.currency || '')}/mo` : '';
   const date = u.nextInvoiceDate ? esc(String(u.nextInvoiceDate).slice(0, 10)) : 'no next invoice date';
+  // Surface the Odoo state so churned / missing accounts in the "to add" list
+  // (possible for Check Churn = 1 rows) are visible at a glance.
+  const state = u.state && !/progress/i.test(u.state) ? ` · <span class="forecast-state">${esc(u.state)}</span>` : '';
   return `<div class="forecast-row">
       <div class="forecast-row-main"><strong>${esc(u.account)}</strong> <span class="forecast-so">${esc(u.so || '')}</span></div>
-      <div class="forecast-row-sub">${date}${amount} · <span class="forecast-source">${esc(u.source)}</span></div>
+      <div class="forecast-row-sub">${date}${amount} · <span class="forecast-source">${esc(u.source)}</span>${state}</div>
     </div>`;
 }
 
@@ -1456,10 +1484,11 @@ function renderForecastComplete() {
       </div>`;
   }).join('') || '<p class="forecast-hint">None found 🎉</p>';
 
-  const unmatchedHtml = (r.unmatchedSheet || []).length
-    ? `<details class="forecast-unmatched"><summary>⚠ ${r.unmatchedSheet.length} sheet accounts not found in your Odoo accounts</summary>
-         ${r.unmatchedSheet.map(u => `<div class="forecast-row"><div class="forecast-row-main">${esc(u.account)} <span class="forecast-so">row ${u.sheetRow}</span></div></div>`).join('')}
-         <p class="forecast-hint">Name spelling differences, or accounts where you're Future user but not (yet) the salesperson.</p>
+  const bookMissingHtml = (r.bookNotInSheet || []).length
+    ? `<details class="forecast-unmatched" open><summary>⚠ ${r.bookNotInSheet.length} of your future-user accounts not found in the sheet</summary>
+         ${r.bookNotInSheet.map(u => `<div class="forecast-row"><div class="forecast-row-main">${esc(u.account)} <span class="forecast-so">${esc(u.so || '')}</span></div>
+           <div class="forecast-row-sub">${esc(u.state || '')}${u.nextInvoiceDate ? ' · next invoice ' + esc(String(u.nextInvoiceDate).slice(0, 10)) : ''}</div></div>`).join('')}
+         <p class="forecast-hint">These are forecasted onto you in Odoo but the department sheet doesn't have them (or the name is spelled too differently to match).</p>
        </details>`
     : '';
 
@@ -1471,16 +1500,22 @@ function renderForecastComplete() {
   const trackingNote = r.trackingAvailable === false
     ? '<div class="warning-banner">Salesperson-change history was not readable from Odoo — handover-date checks used the manual date (if provided).</div>'
     : '';
+  const truncatedNote = r.truncated
+    ? '<div class="warning-banner">⚠ Odoo returned more records than the fetch cap (10,000) — results may be incomplete.</div>'
+    : '';
+  const futureNote = r.futureUserKnown === false
+    ? '<div class="warning-banner">No Future-user field was found on sale.order — the check used your salesperson accounts as the forecasted book. Tell me the field\'s technical name if Odoo has one.</div>'
+    : '';
 
   contentEl.innerHTML = `
     <div class="forecast-complete screen">
       <div class="portfolio-complete-header">
-        <span class="portfolio-count-badge">${r.totals?.odooAccounts ?? 0} Odoo · ${r.totals?.sheetRows ?? 0} sheet</span>
+        <span class="portfolio-count-badge">${r.totals?.bookCustomers ?? 0} in my book · ${r.totals?.bookMatchedInSheet ?? 0} found in sheet</span>
         <button class="btn btn-secondary btn-sm" id="forecast-export-btn">⬇ Export Excel</button>
         <button class="btn btn-secondary btn-sm" id="forecast-rerun-btn">↺ Rerun</button>
       </div>
-      ${r.generatedAt ? `<div class="generated-at">Checked ${esc(new Date(r.generatedAt).toLocaleString())} · year ${esc(String(r.year))}</div>` : ''}
-      ${trackingNote}
+      ${r.generatedAt ? `<div class="generated-at">Checked ${esc(new Date(r.generatedAt).toLocaleString())} · year ${esc(String(r.year))} · ${r.totals?.odooCustomers ?? 0} customers / ${r.totals?.odooAccounts ?? 0} records from Odoo</div>` : ''}
+      ${trackingNote}${truncatedNote}${futureNote}
 
       <div class="forecast-tiles">
         <div class="forecast-tile"><div class="forecast-tile-num">${r.totals?.unforecasted ?? 0}</div><div>Unforecasted<br>(to add)</div></div>
@@ -1494,25 +1529,32 @@ function renderForecastComplete() {
       <h3>🚫 Should not be forecasted</h3>
       ${wrongHtml}
 
-      ${unmatchedHtml}
+      ${bookMissingHtml}
       <button class="btn btn-secondary btn-sm" id="forecast-back2-btn">← Back</button>
     </div>`;
 
   document.getElementById('forecast-back2-btn')?.addEventListener('click', () => transition(STATE.FORECAST));
   document.getElementById('forecast-rerun-btn')?.addEventListener('click', () => transition(STATE.FORECAST));
-  document.getElementById('forecast-export-btn')?.addEventListener('click', () => exportForecastExcel(r));
+  document.getElementById('forecast-export-btn')?.addEventListener('click', () => {
+    exportForecastExcel(r).catch(err => {
+      appState.forecastError = err.message;
+      transition(STATE.FORECAST);
+    });
+  });
 }
 
-function exportForecastExcel(r) {
+async function exportForecastExcel(r) {
+  await ensureXLSX();
   const wb = XLSX.utils.book_new();
 
   const unf = (r.unforecasted || []).map(u => {
-    const d = parseDateFlexible(u.nextInvoiceDate);
+    // Same Year/Quarter/Month derivation as the on-screen grouping
+    const { year, quarter, month } = yqmOf(parseDateFlexible(u.nextInvoiceDate));
     return {
-      Year: d ? d.getFullYear() : '', Quarter: d ? 'Q' + (Math.floor(d.getMonth() / 3) + 1) : '',
-      Month: d ? d.toLocaleString('en', { month: 'long' }) : '',
+      Year: year ?? '', Quarter: quarter ?? '', Month: month ?? '',
       Account: u.account, SO: u.so || '', 'Next Invoice': u.nextInvoiceDate || '',
-      'Monthly': u.monthly ?? '', Currency: u.currency || '', Source: u.source
+      'Monthly': u.monthly ?? '', Currency: u.currency || '',
+      Source: u.source, 'Odoo State': u.state || ''
     };
   });
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(unf.length ? unf : [{ Info: 'None' }]), 'Unforecasted');
@@ -1524,10 +1566,10 @@ function exportForecastExcel(r) {
   }));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(wrong.length ? wrong : [{ Info: 'None' }]), 'Remove from forecast');
 
-  const unmatched = (r.unmatchedSheet || []).map(u => ({
-    Account: u.account, 'Sheet Row': u.sheetRow, 'Check Churn': u.checkChurn
+  const missing = (r.bookNotInSheet || []).map(u => ({
+    Account: u.account, SO: u.so || '', 'Odoo State': u.state || '', 'Next Invoice': u.nextInvoiceDate || ''
   }));
-  if (unmatched.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(unmatched), 'Unmatched sheet rows');
+  if (missing.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(missing), 'My book not in sheet');
 
   const outside = (r.unforecastedOutsideYear || []).map(u => ({
     Account: u.account, SO: u.so || '', 'Next Invoice': u.nextInvoiceDate || '', Source: u.source
@@ -1722,10 +1764,15 @@ chrome.runtime.onMessage.addListener((msg) => {
     }
 
     case 'FORECAST_COMPLETE':
+      // Only steal the screen when the user is actually watching the run —
+      // a completion mid-Settings would wipe their unsaved edits. The result
+      // is persisted either way (reachable via "View last result").
       if (msg.payload.success) {
-        transition(STATE.FORECAST_COMPLETE, { forecastResult: { ...msg.payload.data, generatedAt: Date.now() } });
+        appState.forecastResult = { ...msg.payload.data, generatedAt: Date.now() };
+        if (appState.phase === STATE.FORECAST_RUNNING) transition(STATE.FORECAST_COMPLETE);
       } else {
-        transition(STATE.FORECAST, { forecastError: msg.payload.error || 'Forecast check failed' });
+        appState.forecastError = msg.payload.error || 'Forecast check failed';
+        if (appState.phase === STATE.FORECAST_RUNNING) transition(STATE.FORECAST);
       }
       break;
 
