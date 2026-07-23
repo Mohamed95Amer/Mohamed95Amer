@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_construction_root"
+              name="Construction"
+              web_icon="construction_base,static/description/icon.png"
+              sequence="35"
+              groups="construction_base.group_construction_user"/>
+
+    <menuitem id="menu_construction_projects"
+              name="Projects"
+              parent="menu_construction_root"
+              action="action_construction_projects"
+              sequence="10"/>
+
+    <menuitem id="menu_construction_engineering"
+              name="Engineering"
+              parent="menu_construction_root"
+              sequence="20"/>
+
+    <menuitem id="menu_construction_commercial"
+              name="Commercial"
+              parent="menu_construction_root"
+              sequence="30"/>
+
+    <menuitem id="menu_construction_config"
+              name="Configuration"
+              parent="menu_construction_root"
+              sequence="90"
+              groups="construction_base.group_construction_manager"/>
+</odoo>

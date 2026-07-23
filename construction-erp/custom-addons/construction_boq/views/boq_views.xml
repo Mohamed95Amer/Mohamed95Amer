@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_boq_form" model="ir.ui.view">
+        <field name="name">construction.boq.form</field>
+        <field name="model">construction.boq</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_lock" type="object" string="Lock"
+                            invisible="state != 'approved'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_new_revision" type="object" string="New Revision"
+                            invisible="state == 'draft'"
+                            groups="construction_base.group_construction_commercial"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="version"/>
+                            <field name="previous_version_id" invisible="not previous_version_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_sell_total"/>
+                            <field name="amount_cost_total"/>
+                            <field name="margin_percent" widget="percentage"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="section_id"/>
+                                    <field name="item_code"/>
+                                    <field name="name"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_rate"/>
+                                    <field name="unit_cost"/>
+                                    <field name="amount_sell" sum="Total"/>
+                                    <field name="amount_cost" sum="Total"/>
+                                    <field name="percent_complete" widget="progressbar" optional="show"/>
+                                    <field name="is_variation" optional="hide"/>
+                                    <field name="analytic_account_id" optional="hide"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sections" name="sections">
+                            <field name="section_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="amount_sell" sum="Total"/>
+                                    <field name="amount_cost" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_boq_list" model="ir.ui.view">
+        <field name="name">construction.boq.list</field>
+        <field name="model">construction.boq</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="project_id"/>
+                <field name="name"/>
+                <field name="version"/>
+                <field name="amount_sell_total"/>
+                <field name="amount_cost_total"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_construction_boq" model="ir.actions.act_window">
+        <field name="name">Bills of Quantities</field>
+        <field name="res_model">construction.boq</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_construction_boq"
+              name="Bills of Quantities"
+              parent="construction_base.menu_construction_commercial"
+              action="action_construction_boq"
+              sequence="10"/>
+</odoo>

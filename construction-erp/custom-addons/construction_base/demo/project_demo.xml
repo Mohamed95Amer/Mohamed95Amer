@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_demo_client" model="res.partner">
+        <field name="name">Al Noor Development LLC</field>
+        <field name="is_company" eval="True"/>
+    </record>
+    <record id="partner_demo_consultant" model="res.partner">
+        <field name="name">Horizon Engineering Consultants</field>
+        <field name="is_company" eval="True"/>
+    </record>
+    <record id="partner_demo_subcontractor" model="res.partner">
+        <field name="name">Delta MEP Contracting</field>
+        <field name="is_company" eval="True"/>
+    </record>
+
+    <record id="project_demo_alnoor" model="project.project">
+        <field name="name">Al Noor Tower</field>
+        <field name="is_construction" eval="True"/>
+        <field name="construction_stage">execution</field>
+        <field name="project_type">building</field>
+        <field name="client_id" ref="partner_demo_client"/>
+        <field name="consultant_id" ref="partner_demo_consultant"/>
+        <field name="contract_value">25000000</field>
+        <field name="retention_percent">10</field>
+        <field name="retention_cap_percent">5</field>
+        <field name="site_address">Plot 12, Business Bay, Dubai, UAE</field>
+    </record>
+</odoo>

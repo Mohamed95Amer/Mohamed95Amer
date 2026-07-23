@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="boq_demo_alnoor" model="construction.boq">
+        <field name="name">Al Noor Tower — Main Contract BOQ</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+    </record>
+
+    <record id="boq_section_substructure" model="construction.boq.section">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="code">01</field>
+        <field name="name">Substructure</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="boq_section_superstructure" model="construction.boq.section">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="code">02</field>
+        <field name="name">Superstructure</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="boq_section_mep" model="construction.boq.section">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="code">03</field>
+        <field name="name">MEP Works</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="boq_line_excavation" model="construction.boq.line">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="section_id" ref="boq_section_substructure"/>
+        <field name="item_code">01.010</field>
+        <field name="name">Bulk excavation to formation level</field>
+        <field name="uom_id" ref="uom.product_uom_cubic_meter"/>
+        <field name="quantity">12000</field>
+        <field name="unit_rate">18</field>
+        <field name="cost_material">2</field>
+        <field name="cost_labour">4</field>
+        <field name="cost_equipment">7</field>
+    </record>
+    <record id="boq_line_raft" model="construction.boq.line">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="section_id" ref="boq_section_substructure"/>
+        <field name="item_code">01.020</field>
+        <field name="name">Reinforced concrete raft foundation C40</field>
+        <field name="uom_id" ref="uom.product_uom_cubic_meter"/>
+        <field name="quantity">3500</field>
+        <field name="unit_rate">420</field>
+        <field name="cost_material">260</field>
+        <field name="cost_labour">60</field>
+        <field name="cost_equipment">25</field>
+    </record>
+    <record id="boq_line_columns" model="construction.boq.line">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="section_id" ref="boq_section_superstructure"/>
+        <field name="item_code">02.010</field>
+        <field name="name">RC columns and shear walls C50</field>
+        <field name="uom_id" ref="uom.product_uom_cubic_meter"/>
+        <field name="quantity">4800</field>
+        <field name="unit_rate">520</field>
+        <field name="cost_material">300</field>
+        <field name="cost_labour">90</field>
+        <field name="cost_equipment">30</field>
+    </record>
+    <record id="boq_line_slabs" model="construction.boq.line">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="section_id" ref="boq_section_superstructure"/>
+        <field name="item_code">02.020</field>
+        <field name="name">Post-tensioned floor slabs</field>
+        <field name="uom_id" ref="uom.product_uom_meter"/>
+        <field name="quantity">38000</field>
+        <field name="unit_rate">95</field>
+        <field name="cost_material">52</field>
+        <field name="cost_labour">18</field>
+        <field name="cost_equipment">6</field>
+    </record>
+    <record id="boq_line_hvac" model="construction.boq.line">
+        <field name="boq_id" ref="boq_demo_alnoor"/>
+        <field name="section_id" ref="boq_section_mep"/>
+        <field name="item_code">03.010</field>
+        <field name="name">HVAC installation complete (subcontract)</field>
+        <field name="uom_id" ref="uom.product_uom_unit"/>
+        <field name="quantity">1</field>
+        <field name="unit_rate">2800000</field>
+        <field name="cost_subcontract">2250000</field>
+        <field name="cost_overhead">100000</field>
+    </record>
+</odoo>

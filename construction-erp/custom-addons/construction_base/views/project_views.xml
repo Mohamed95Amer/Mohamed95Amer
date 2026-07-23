@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_construction" model="ir.ui.view">
+        <field name="name">project.project.form.construction</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Construction" name="construction" invisible="not is_construction">
+                    <group>
+                        <group string="Contract">
+                            <field name="project_code"/>
+                            <field name="construction_stage" widget="badge"/>
+                            <field name="project_type"/>
+                            <field name="contract_value"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="retention_percent"/>
+                            <field name="retention_cap_percent"/>
+                        </group>
+                        <group string="Parties">
+                            <field name="client_id"/>
+                            <field name="consultant_id"/>
+                            <field name="main_contractor_id"/>
+                            <field name="site_address"/>
+                        </group>
+                        <group string="Key Dates">
+                            <field name="date_commencement"/>
+                            <field name="date_completion_planned"/>
+                            <field name="date_taking_over"/>
+                            <field name="date_dlp_end"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="is_construction"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_construction_projects" model="ir.actions.act_window">
+        <field name="name">Construction Projects</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[("is_construction", "=", True)]</field>
+        <field name="context">{"default_is_construction": True}</field>
+    </record>
+</odoo>

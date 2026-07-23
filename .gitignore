@@ -12,3 +12,9 @@ dist
 .turbo
 .eslintcache
 coverage
+
+# construction-erp
+construction-erp/vendor/
+construction-erp/.env
+__pycache__/
+*.pyc

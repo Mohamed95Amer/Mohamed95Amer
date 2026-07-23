@@ -1,0 +1,76 @@
+# Pinned OCA (Odoo Community Association) sources.
+# All repos pinned to an exact commit on their 18.0 branch.
+# scripts/fetch-oca.sh reads this file, shallow-clones each repo at the pinned
+# commit, and copies ONLY the whitelisted modules into oca-addons/.
+#
+# To update a pin: git ls-remote https://github.com/OCA/<repo>.git refs/heads/18.0
+# then re-run scripts/fetch-oca.sh and commit the refreshed oca-addons/.
+
+odoo_version: "18.0"
+
+repos:
+  field-service:
+    url: https://github.com/OCA/field-service.git
+    commit: 02698ce4f21bd9c1bca486eae44de9206e5e3c28
+    modules:
+      - fieldservice
+      - fieldservice_stock
+      - fieldservice_sale
+      - fieldservice_recurring
+      - fieldservice_project
+      - fieldservice_activity
+  dms:
+    url: https://github.com/OCA/dms.git
+    commit: 6da958550a511dfa382c1f4208d6024adb4a5d95
+    modules:
+      - dms
+  helpdesk:
+    url: https://github.com/OCA/helpdesk.git
+    commit: b483a2d58ab3a664c1d112500f0cffa654e958ae
+    modules:
+      - helpdesk_mgmt
+      - helpdesk_mgmt_project
+  contract:
+    url: https://github.com/OCA/contract.git
+    commit: 0ebd97d9cdabc3591587d19c27564a4efbc68a33
+    modules:
+      - contract
+      - contract_variable_quantity
+  server-ux:
+    url: https://github.com/OCA/server-ux.git
+    commit: d6dc132bd2d1c57933664c036acd62a84e2737da
+    modules:
+      - base_tier_validation
+      - base_tier_validation_formula
+      - date_range
+  maintenance:
+    url: https://github.com/OCA/maintenance.git
+    commit: 7f45248ffef4ea07c6767b3c1ca6d549f785acd0
+    modules:
+      - base_maintenance
+      - maintenance_plan
+      - maintenance_equipment_hierarchy
+      - maintenance_request_purchase
+      - maintenance_equipment_contract
+  account-financial-reporting:
+    url: https://github.com/OCA/account-financial-reporting.git
+    commit: e5a66a92485344c5353bcbbfec3f12362f4c94ba
+    modules:
+      - account_financial_report
+  mis-builder:
+    url: https://github.com/OCA/mis-builder.git
+    commit: 223b9774af49c7059cbc24c86d531c7aaf642831
+    modules:
+      - mis_builder
+      - mis_builder_budget
+  web:
+    url: https://github.com/OCA/web.git
+    commit: fedf87bfa4243dec6c74bede0e3a1379bf9cd135
+    modules:
+      - web_responsive
+      - web_notify
+  reporting-engine:
+    url: https://github.com/OCA/reporting-engine.git
+    commit: 52e03a544f25b789ed34a0e842603ce0b80f36aa
+    modules:
+      - report_xlsx
