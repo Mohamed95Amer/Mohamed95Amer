@@ -12,7 +12,7 @@ CONF="$HERE/vendor/odoo-local.conf"
 if [ ! -f "$CONF" ]; then
     cat > "$CONF" <<EOF
 [options]
-addons_path = $HERE/custom-addons,$HERE/oca-addons,$ODOO/addons
+addons_path = $HERE/custom-addons,$HERE/oca-addons,$HERE/third-party-addons,$ODOO/addons
 data_dir = $HERE/vendor/odoo-data
 db_host = ${PGHOST:-localhost}
 db_user = ${PGUSER:-odoo}

@@ -1,10 +1,10 @@
 # Pinned OCA (Odoo Community Association) sources.
 # All repos pinned to an exact commit on their 18.0 branch.
-# scripts/fetch-oca.sh reads this file, shallow-clones each repo at the pinned
+# scripts/fetch-vendor.sh reads this file, shallow-clones each repo at the pinned
 # commit, and copies ONLY the whitelisted modules into oca-addons/.
 #
 # To update a pin: git ls-remote https://github.com/OCA/<repo>.git refs/heads/18.0
-# then re-run scripts/fetch-oca.sh and commit the refreshed oca-addons/.
+# then re-run scripts/fetch-vendor.sh and commit the refreshed oca-addons/.
 
 odoo_version: "18.0"
 
@@ -52,11 +52,10 @@ repos:
       - maintenance_equipment_hierarchy
       - maintenance_request_purchase
       - maintenance_equipment_contract
-  account-financial-reporting:
-    url: https://github.com/OCA/account-financial-reporting.git
-    commit: e5a66a92485344c5353bcbbfec3f12362f4c94ba
-    modules:
-      - account_financial_report
+  # Standard financial statements are provided by the Odoo Mates accounting
+  # suite in third-party-addons/ (see docs/reuse-decisions.md); OCA
+  # account-financial-reporting is intentionally not vendored to avoid two
+  # overlapping report engines. mis-builder is kept for custom CVR/WIP reports.
   mis-builder:
     url: https://github.com/OCA/mis-builder.git
     commit: 223b9774af49c7059cbc24c86d531c7aaf642831

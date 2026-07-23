@@ -25,6 +25,7 @@ services:
     volumes:
       - ./custom-addons:/mnt/custom-addons:ro
       - ./oca-addons:/mnt/oca-addons:ro
+      - ./third-party-addons:/mnt/third-party-addons:ro
       - ./odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-data:/var/lib/odoo
     ports:

@@ -7,7 +7,8 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 DB="${1:-erp}"
 
-MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal"
+# Construction suite + the free Odoo Mates full-accounting community app.
+MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,om_account_accountant"
 
 "$HERE/scripts/run-local.sh" -d "$DB" -i "$MODULES" --stop-after-init "${@:2}"
 echo ">> Database '$DB' initialized with: $MODULES"

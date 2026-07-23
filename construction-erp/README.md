@@ -10,8 +10,16 @@ Procore, Fieldwire, PlanRadar and IBM Maximo.
 | Layer | Content |
 |---|---|
 | Odoo core | Pinned by commit in `ODOO_PINNED_SHA`, fetched by `scripts/fetch-odoo.sh` (not committed) |
-| `oca-addons/` | Vendored OCA modules (field service, DMS, helpdesk, contracts, tier validation, financial reports, MIS builder, responsive web) pinned in `oca-repos.yml` |
+| `oca-addons/` | Vendored OCA modules (field service, DMS, helpdesk, contracts, tier validation, MIS builder, responsive web) pinned in `oca-repos.yml` |
+| `third-party-addons/` | Vendored free community apps not from OCA — currently the Odoo Mates **full accounting** suite — pinned in `third-party-repos.yml` |
 | `custom-addons/` | The product — construction & facilities modules (see below) |
+
+**Reuse over rebuild:** where a good free module already exists we vendor and
+pin it rather than writing our own. Full accounting (financial statements,
+asset management, budgets, recurring payments, customer follow-ups) — otherwise
+Enterprise-only — is provided for free by the LGPL-3 **Odoo Mates Accounting
+Community** app (`om_account_accountant` + 7 companion modules). See
+[`docs/reuse-decisions.md`](docs/reuse-decisions.md).
 
 ### Custom modules (Phase 1 — shipped)
 
@@ -41,15 +49,16 @@ facilities asset registry/PM/SLA) is in [`docs/roadmap.md`](docs/roadmap.md).
 cd construction-erp
 cp .env.example .env
 docker compose up -d --build
-# initialize a database with the construction suite + demo data
+# initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```
 
 Open http://localhost:8069 (db `erp`, login `admin` / `admin`). Demo data
-includes the "Al Noor Tower" project with a BOQ, drawings and RFIs.
+includes the "Al Noor Tower" project with a BOQ, drawings and RFIs, plus the
+full accounting app (financial reports, assets, budgets).
 
 ## Quickstart (bare metal)
 
@@ -71,5 +80,8 @@ pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
 
 - Odoo core: put the new commit SHA in `ODOO_PINNED_SHA`, re-run
   `scripts/fetch-odoo.sh`.
-- OCA: edit `oca-repos.yml`, re-run `scripts/fetch-oca.sh`, commit the
+- OCA: edit `oca-repos.yml`, re-run `scripts/fetch-vendor.sh`, commit the
   refreshed `oca-addons/`.
+- Third-party: edit `third-party-repos.yml`, re-run
+  `scripts/fetch-vendor.sh third-party-repos.yml third-party-addons`, commit
+  the refreshed `third-party-addons/`.

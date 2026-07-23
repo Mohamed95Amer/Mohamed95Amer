@@ -8,7 +8,9 @@ Portals trail their backing modules by one phase.
 
 ## Phase 0 — Foundation ✅
 Docker/bare-metal environment, pinned Odoo 18.0 core (`ODOO_PINNED_SHA`),
-vendored pinned OCA modules (`oca-repos.yml` → `oca-addons/`), scripts,
+vendored pinned OCA modules (`oca-repos.yml` → `oca-addons/`) and free
+third-party apps (`third-party-repos.yml` → `third-party-addons/`, currently
+the Odoo Mates full-accounting suite — see `docs/reuse-decisions.md`), scripts,
 CI-ready test runner.
 
 ## Phase 1 — Construction core ✅ (initial scope)
