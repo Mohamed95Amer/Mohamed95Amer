@@ -1,3 +1,4 @@
+from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -17,28 +18,57 @@ class TestDrawing(TransactionCase):
             }
         )
 
+    @property
+    def _approval_gated(self):
+        """True when a sign-off layer (construction_ui) is installed, which
+        holds new revisions as superseded until they are signed off."""
+        return "approval_state" in self.env["construction.drawing.revision"]._fields
+
+    def _publish(self, revision):
+        """Publish a revision as current, clearing the sign-off gate first when
+        one is installed. Keeps these tests about supersede semantics rather
+        than about which approval layer happens to be present."""
+        if self._approval_gated:
+            revision.approval_state = "approved"
+        revision.action_make_current()
+
+    def _new_revision(self, letter):
+        return self.env["construction.drawing.revision"].create(
+            {"drawing_id": self.drawing.id, "revision": letter}
+        )
+
     def test_new_revision_supersedes_previous(self):
-        rev_a = self.env["construction.drawing.revision"].create(
-            {"drawing_id": self.drawing.id, "revision": "A"}
-        )
+        rev_a = self._new_revision("A")
+        if self._approval_gated:
+            # Unsigned revisions must not silently become the current drawing.
+            self.assertEqual(rev_a.state, "superseded")
+            self.assertFalse(self.drawing.current_revision_id)
+            self._publish(rev_a)
         self.assertEqual(self.drawing.current_revision_id, rev_a)
-        rev_b = self.env["construction.drawing.revision"].create(
-            {"drawing_id": self.drawing.id, "revision": "B"}
-        )
+
+        rev_b = self._new_revision("B")
+        if self._approval_gated:
+            self._publish(rev_b)
         self.assertEqual(rev_a.state, "superseded")
         self.assertEqual(rev_b.state, "current")
         self.assertEqual(self.drawing.current_revision_id, rev_b)
 
     def test_make_current_rolls_back(self):
-        rev_a = self.env["construction.drawing.revision"].create(
-            {"drawing_id": self.drawing.id, "revision": "A"}
-        )
-        rev_b = self.env["construction.drawing.revision"].create(
-            {"drawing_id": self.drawing.id, "revision": "B"}
-        )
-        rev_a.action_make_current()
+        rev_a = self._new_revision("A")
+        rev_b = self._new_revision("B")
+        self._publish(rev_b)
+        self._publish(rev_a)
         self.assertEqual(rev_a.state, "current")
         self.assertEqual(rev_b.state, "superseded")
+
+    def test_unsigned_revision_cannot_be_published(self):
+        """The sign-off gate is the point of the approval layer: an unsigned
+        revision must never become the current drawing."""
+        if not self._approval_gated:
+            self.skipTest("No approval layer installed")
+        revision = self._new_revision("A")
+        with self.assertRaises(UserError):
+            revision.action_make_current()
 
     def test_upload_sheet_rpc(self):
         import base64

@@ -173,7 +173,9 @@ $majal-page: #f3f6f6;
 
 .o_majal_metrics {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    // auto-fit, not a fixed 4: workspaces expose 2–4 operational counts and the
+    // row should fill the width whichever number applies.
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 13px;
     margin: 16px auto 25px;
 }
@@ -203,6 +205,55 @@ $majal-page: #f3f6f6;
     small { margin-top: 5px; color: #65777f; }
     em { margin-top: 3px; color: #9aa6aa; font-size: .65rem; font-style: normal; }
     &.o_loading { border-top-color: #cbd6d9; }
+}
+
+// Metric tiles are buttons: each one opens its filtered list.
+.o_majal_metric_action {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+
+    .o_majal_metric_go {
+        margin-left: auto;
+        color: #b6c1c6;
+        opacity: 0;
+        transform: translateX(-4px);
+        transition: opacity .14s ease, transform .14s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+        border-color: var(--majal-accent);
+        box-shadow: 0 10px 24px rgba(15,42,52,.12);
+        transform: translateY(-2px);
+
+        .o_majal_metric_go { color: var(--majal-accent); opacity: 1; transform: translateX(0); }
+    }
+
+    &:active { transform: translateY(0); }
+
+    // A metric that represents risk (overdue, rejected, high severity) reads red
+    // as soon as it is non-zero, so problems are visible without reading labels.
+    &.o_tone_alert {
+        --majal-accent: #c0483c;
+    }
+}
+
+// Touch targets: keep the arrow affordance out of the way but never shrink the
+// tile below a comfortable tap area on phones.
+@media (hover: none) {
+    .o_majal_metric_action .o_majal_metric_go { opacity: .5; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_majal_metric_action,
+    .o_majal_metric_action .o_majal_metric_go {
+        transition: none;
+        transform: none;
+    }
 }
 
 .o_majal_detail_grid {
@@ -385,7 +436,13 @@ $majal-page: #f3f6f6;
     .o_majal_workspace_hero { padding: 25px 20px; border-radius: 17px; }
     .o_majal_workspace_identity { flex-direction: column; }
     .o_majal_workspace_actions { flex-direction: column; }
-    .o_majal_metrics { grid-template-columns: 1fr; }
+    // Two-up keeps the four operational counts visible without scrolling on a
+    // phone; one per row pushed the workspace links far below the fold.
+    .o_majal_metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_majal_metric { min-height: 92px; padding: 13px; gap: 10px; }
+    .o_majal_metric > span { width: 34px; height: 34px; }
+    .o_majal_metric strong { font-size: 1.2rem; }
+    .o_majal_metric .o_majal_metric_go { display: none; }
     .o_majal_live { display: none; }
     .o_majal_related_list > button { width: 100%; }
 }

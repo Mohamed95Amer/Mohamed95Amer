@@ -95,8 +95,11 @@ $facility-muted: #67777a;
     gap: 9px;
     margin-top: 26px;
 
+    // Three classes so these outrank backend.scss's `.o_web_client .btn`
+    // (34px), which loads later in the bundle.
+    .o_facility_home & .btn,
     .btn {
-        min-height: 42px;
+        min-height: 44px;
         padding: 9px 16px;
         border-radius: 11px;
         font-weight: 650;
@@ -383,7 +386,15 @@ $facility-muted: #67777a;
 @media (max-width: 575.98px) {
     .o_facility_home { padding: 12px; }
     .o_facility_hero { padding: 26px 20px; border-radius: 17px; }
-    .o_suite_kpis, .o_suite_apps { grid-template-columns: 1fr; }
+    // Two-up headline counts (see construction_home.scss) so the workspace
+    // links stay reachable without a long scroll on a phone.
+    .o_suite_kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_suite_apps { grid-template-columns: 1fr; }
+    .o_suite_kpi { padding: 14px; }
+    .o_suite_kpi strong { font-size: 1.3rem; }
+    // Technicians tap these in the field — keep a 44px+ target.
+    .o_facility_home .o_suite_hero_actions .btn,
+    .o_facility_home .o_suite_saved_view_tip .btn { width: 100%; min-height: 46px; }
     .o_suite_section_intro { align-items: start; flex-direction: column; gap: 6px; }
     .o_suite_section_intro p { text-align: left; }
     .o_suite_saved_view_tip { align-items: flex-start; flex-wrap: wrap; }

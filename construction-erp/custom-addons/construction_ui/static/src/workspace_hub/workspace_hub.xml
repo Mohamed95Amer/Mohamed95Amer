@@ -38,8 +38,12 @@
             </section>
 
             <section class="o_majal_metrics" aria-label="Workspace metrics">
-                <article t-foreach="state.metrics" t-as="metric" t-key="metric.label"
-                         class="o_majal_metric">
+                <button t-foreach="state.metrics" t-as="metric" t-key="metric.label"
+                        type="button"
+                        class="o_majal_metric o_majal_metric_action"
+                        t-att-class="{'o_tone_alert': metric.tone === 'alert'}"
+                        t-att-title="metric.label + ' — ' + metric.hint"
+                        t-on-click="() => this.openMetric(metric)">
                     <span><i t-attf-class="fa {{ metric.icon }}"/></span>
                     <div>
                         <strong t-att-class="{'o_skeleton': state.loading}"
@@ -47,7 +51,8 @@
                         <small t-esc="metric.label"/>
                         <em t-esc="metric.hint"/>
                     </div>
-                </article>
+                    <i class="fa fa-arrow-right o_majal_metric_go" aria-hidden="true"/>
+                </button>
                 <article t-if="state.loading" t-foreach="[1,2,3,4]" t-as="item"
                          t-key="item" class="o_majal_metric o_loading">
                     <span class="o_skeleton"/><div><strong class="o_skeleton">0</strong>

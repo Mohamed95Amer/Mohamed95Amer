@@ -36,6 +36,180 @@ const localizeConfig = (value, key = null) => {
     return value;
 };
 
+// Per-workspace operational metrics.
+//
+// The generic fallbacks below ("Total records", "Added recently", ...) count
+// the same rows from different angles, so on a young dataset every tile shows
+// the same number and none of them tells a site or commercial team what to do
+// next. These answer the operational question instead — what is open, overdue,
+// waiting on me — and each tile opens the matching filtered list.
+//
+// `requires` lists the fields a metric depends on; if the model no longer has
+// them the metric is dropped and the generic counts take over.
+const OPERATIONAL_METRICS = {
+    rfis: [
+        { label: "Open", hint: "Not yet closed", icon: "fa-folder-open-o",
+          requires: ["state"], domain: [["state", "!=", "closed"]] },
+        { label: "Overdue", hint: "Past the required date", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["is_overdue"], domain: [["is_overdue", "=", true]] },
+        { label: "Awaiting answer", hint: "Submitted, no response yet", icon: "fa-hourglass-half",
+          requires: ["state"], domain: [["state", "=", "submitted"]] },
+        { label: "Answered", hint: "Ready to review and close", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "=", "answered"]] },
+    ],
+    defects: [
+        { label: "Open", hint: "Raised or reopened", icon: "fa-folder-open-o",
+          requires: ["state"], domain: [["state", "in", ["open", "reopened"]]] },
+        { label: "In progress", hint: "Being rectified", icon: "fa-wrench",
+          requires: ["state"], domain: [["state", "=", "in_progress"]] },
+        { label: "Ready to inspect", hint: "Waiting on your sign-off", icon: "fa-search",
+          requires: ["state"], domain: [["state", "=", "ready"]] },
+        { label: "High severity", hint: "Critical and high risk", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["severity"], domain: [["severity", "in", ["high", "critical"]]] },
+    ],
+    submittals: [
+        { label: "Under review", hint: "With the consultant", icon: "fa-hourglass-half",
+          requires: ["state"], domain: [["state", "=", "submitted"]] },
+        { label: "Revise & resubmit", hint: "Returned for rework", icon: "fa-refresh",
+          tone: "alert", requires: ["state"], domain: [["state", "=", "revise_resubmit"]] },
+        { label: "Approved", hint: "Cleared for construction", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "in", ["approved", "approved_as_noted"]]] },
+        { label: "Draft", hint: "Not yet issued", icon: "fa-pencil",
+          requires: ["state"], domain: [["state", "=", "draft"]] },
+    ],
+    inspections: [
+        { label: "In progress", hint: "Being carried out", icon: "fa-wrench",
+          requires: ["state"], domain: [["state", "=", "in_progress"]] },
+        { label: "Awaiting approval", hint: "Submitted for review", icon: "fa-hourglass-half",
+          requires: ["state"], domain: [["state", "=", "submitted"]] },
+        { label: "Rejected", hint: "Failed, needs re-inspection", icon: "fa-times-circle",
+          tone: "alert", requires: ["state"], domain: [["state", "=", "rejected"]] },
+        { label: "Approved", hint: "Signed off", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "=", "approved"]] },
+    ],
+    progress_billing: [
+        { label: "Draft", hint: "Being prepared", icon: "fa-pencil",
+          requires: ["state"], domain: [["state", "=", "draft"]] },
+        { label: "Awaiting certification", hint: "Submitted to the consultant", icon: "fa-hourglass-half",
+          requires: ["state"], domain: [["state", "=", "submitted"]] },
+        { label: "Certified", hint: "Ready to invoice", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "=", "certified"]] },
+        { label: "Invoiced", hint: "Awaiting payment", icon: "fa-file-text-o",
+          requires: ["state"], domain: [["state", "in", ["invoiced", "paid"]]] },
+    ],
+    work_orders: [
+        { label: "To triage", hint: "New, not yet scheduled", icon: "fa-inbox",
+          requires: ["stage_id"], domain: [["stage_id.done", "=", false]] },
+        { label: "High priority", hint: "Escalated work", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["priority"], domain: [["priority", "in", ["2", "3"]]] },
+        { label: "Preventive", hint: "Planned maintenance", icon: "fa-refresh",
+          requires: ["maintenance_type"], domain: [["maintenance_type", "=", "preventive"]] },
+        { label: "Corrective", hint: "Breakdown response", icon: "fa-wrench",
+          requires: ["maintenance_type"], domain: [["maintenance_type", "=", "corrective"]] },
+    ],
+};
+
+Object.assign(OPERATIONAL_METRICS, {
+    projects: [
+        { label: "In execution", hint: "On site now", icon: "fa-building-o",
+          requires: ["construction_stage"], domain: [["construction_stage", "=", "execution"]] },
+        { label: "Tender & mobilization", hint: "Winning and starting up", icon: "fa-flag-o",
+          requires: ["construction_stage"], domain: [["construction_stage", "in", ["tender", "mobilization"]]] },
+        { label: "Handover & DLP", hint: "Closing out and under warranty", icon: "fa-key",
+          requires: ["construction_stage"], domain: [["construction_stage", "in", ["handover", "dlp"]]] },
+        { label: "Closed", hint: "Completed projects", icon: "fa-archive",
+          requires: ["construction_stage"], domain: [["construction_stage", "=", "closed"]] },
+    ],
+    // `state` (current/superseded) lives on construction.drawing.revision, not
+    // on the drawing, so the register splits by discipline instead.
+    drawings: [
+        { label: "Architectural", hint: "Layouts and finishes", icon: "fa-building-o",
+          requires: ["discipline"], domain: [["discipline", "=", "architectural"]] },
+        { label: "Structural", hint: "Frame and foundations", icon: "fa-cubes",
+          requires: ["discipline"], domain: [["discipline", "=", "structural"]] },
+        { label: "MEP", hint: "Mechanical, electrical, plumbing", icon: "fa-bolt",
+          requires: ["discipline"],
+          domain: [["discipline", "in", ["mechanical", "electrical", "plumbing"]]] },
+        { label: "Civil & external", hint: "Site works and landscape", icon: "fa-road",
+          requires: ["discipline"], domain: [["discipline", "in", ["civil", "landscape"]]] },
+    ],
+    programme: [
+        { label: "On the critical path", hint: "Slip here slips the project", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["is_critical"], domain: [["is_critical", "=", true]] },
+        { label: "Behind baseline", hint: "Finishing later than planned", icon: "fa-clock-o",
+          requires: ["finish_variance_days"], domain: [["finish_variance_days", ">", 0]] },
+        { label: "Milestones", hint: "Contract dates to hit", icon: "fa-flag-checkered",
+          requires: ["is_milestone"], domain: [["is_milestone", "=", true]] },
+        { label: "Complete", hint: "100% progressed", icon: "fa-check-circle",
+          requires: ["progress"], domain: [["progress", ">=", 100]] },
+    ],
+    plan_viewer: [
+        { label: "Task pins", hint: "Work dropped on a sheet", icon: "fa-wrench",
+          requires: ["pin_type"], domain: [["pin_type", "=", "task"]] },
+        { label: "RFI pins", hint: "Questions raised on a sheet", icon: "fa-question",
+          requires: ["pin_type"], domain: [["pin_type", "=", "rfi"]] },
+        { label: "Defect pins", hint: "Snags located on a sheet", icon: "fa-exclamation-triangle",
+          requires: ["pin_type"], domain: [["pin_type", "=", "defect"]] },
+        { label: "Notes", hint: "Field annotations", icon: "fa-sticky-note",
+          requires: ["pin_type"], domain: [["pin_type", "=", "note"]] },
+    ],
+    boq: [
+        { label: "Draft", hint: "Still being priced", icon: "fa-pencil",
+          requires: ["state"], domain: [["state", "=", "draft"]] },
+        { label: "Approved", hint: "Agreed, open for variation", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "=", "approved"]] },
+        { label: "Locked", hint: "Frozen baseline", icon: "fa-lock",
+          requires: ["state"], domain: [["state", "=", "locked"]] },
+    ],
+    change_orders: [
+        { label: "Draft", hint: "Being priced", icon: "fa-pencil",
+          requires: ["state"], domain: [["state", "=", "draft"]] },
+        { label: "Awaiting approval", hint: "Submitted to the client", icon: "fa-hourglass-half",
+          requires: ["state"], domain: [["state", "=", "submitted"]] },
+        { label: "Approved", hint: "Added to the contract", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "=", "approved"]] },
+        { label: "Rejected", hint: "Not recoverable", icon: "fa-times-circle",
+          tone: "alert", requires: ["state"], domain: [["state", "=", "rejected"]] },
+    ],
+    subcontracts: [
+        { label: "Draft", hint: "Not yet awarded", icon: "fa-pencil",
+          requires: ["state"], domain: [["state", "=", "draft"]] },
+        { label: "Live", hint: "Awarded and running", icon: "fa-handshake-o",
+          requires: ["state"], domain: [["state", "=", "confirmed"]] },
+        { label: "Closed", hint: "Completed packages", icon: "fa-archive",
+          requires: ["state"], domain: [["state", "=", "closed"]] },
+    ],
+    daily_logs: [
+        { label: "Draft", hint: "Not yet submitted", icon: "fa-pencil",
+          requires: ["state"], domain: [["state", "=", "draft"]] },
+        { label: "Submitted", hint: "Awaiting sign-off", icon: "fa-hourglass-half",
+          requires: ["state"], domain: [["state", "=", "submitted"]] },
+        { label: "Approved", hint: "Signed off", icon: "fa-check-circle",
+          requires: ["state"], domain: [["state", "=", "approved"]] },
+    ],
+    assets: [
+        { label: "Critical & high", hint: "Failure hurts most", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["criticality"], domain: [["criticality", "in", ["high", "critical"]]] },
+        { label: "Under warranty", hint: "Repairs may be recoverable", icon: "fa-shield",
+          requires: ["warranty_active"], domain: [["warranty_active", "=", true]] },
+        { label: "Out of warranty", hint: "Repairs are your cost", icon: "fa-money",
+          requires: ["warranty_active"], domain: [["warranty_active", "=", false]] },
+    ],
+    pm_plans: [
+        { label: "Calendar-driven", hint: "Time-based schedules", icon: "fa-calendar",
+          requires: ["trigger_type"], domain: [["trigger_type", "=", "calendar"]] },
+        { label: "Meter-driven", hint: "Usage-based schedules", icon: "fa-tachometer",
+          requires: ["trigger_type"], domain: [["trigger_type", "=", "meter"]] },
+        { label: "Paused", hint: "Archived, not generating", icon: "fa-pause-circle",
+          requires: ["active"], domain: [["active", "=", false]] },
+    ],
+});
+
+// Hubs that surface the same model share its metrics.
+OPERATIONAL_METRICS.quality_hub = OPERATIONAL_METRICS.defects;
+OPERATIONAL_METRICS.site_work = OPERATIONAL_METRICS.inspections;
+OPERATIONAL_METRICS.engineering_hub = OPERATIONAL_METRICS.drawings;
+
 const workspace = (values) => ({
     area: "construction",
     tone: "blue",
@@ -438,6 +612,17 @@ export class MajalWorkspaceHub extends Component {
                 [],
                 { attributes: ["type", "string"] }
             );
+            // Workspace-specific metrics answer "what needs me now?". They are
+            // only used when every field they reference actually exists, so a
+            // model change degrades to the generic counts instead of erroring.
+            const tailored = (OPERATIONAL_METRICS[this.workspaceKey] || []).filter((metric) =>
+                (metric.requires || []).every((fieldName) => fieldName in fields)
+            );
+            if (tailored.length) {
+                await this.applyMetrics(tailored.map((metric) => ({ ...metric, label: _t(metric.label), hint: _t(metric.hint) })));
+                await this.loadRecent();
+                return;
+            }
             const metricDefinitions = [
                 { label: _t("Total records"), hint: _t("Complete workspace"), domain: [], icon: "fa-database" },
                 {
@@ -476,28 +661,54 @@ export class MajalWorkspaceHub extends Component {
                 });
             }
 
-            const counts = await Promise.allSettled(
-                metricDefinitions.map((metric) =>
-                    this.orm.searchCount(
-                        this.config.model,
-                        [...this.config.domain, ...metric.domain]
-                    )
-                )
-            );
-            this.state.metrics = metricDefinitions.map((metric, index) => ({
-                ...metric,
-                value: counts[index].status === "fulfilled" ? counts[index].value : "–",
-            }));
-            this.state.recent = await this.orm.searchRead(
-                this.config.model,
-                this.config.domain,
-                ["display_name", "write_date"],
-                { limit: 5, order: "write_date desc" }
-            );
+            await this.applyMetrics(metricDefinitions);
+            await this.loadRecent();
         } catch {
             this.state.error = true;
         } finally {
             this.state.loading = false;
+        }
+    }
+
+    /** Count each metric and keep the definition so tiles stay clickable. */
+    async applyMetrics(metricDefinitions) {
+        const counts = await Promise.allSettled(
+            metricDefinitions.map((metric) =>
+                this.orm.searchCount(this.config.model, [
+                    ...this.config.domain,
+                    ...metric.domain,
+                ])
+            )
+        );
+        this.state.metrics = metricDefinitions.map((metric, index) => ({
+            ...metric,
+            value: counts[index].status === "fulfilled" ? counts[index].value : "–",
+        }));
+    }
+
+    async loadRecent() {
+        this.state.recent = await this.orm.searchRead(
+            this.config.model,
+            this.config.domain,
+            ["display_name", "write_date"],
+            { limit: 5, order: "write_date desc" }
+        );
+    }
+
+    /** Open the workspace list already filtered to the metric that was clicked. */
+    async openMetric(metric) {
+        try {
+            await this.action.doAction({
+                type: "ir.actions.act_window",
+                name: `${this.config.title} — ${metric.label}`,
+                res_model: this.config.model,
+                domain: [...this.config.domain, ...metric.domain],
+                views: [[false, "list"], [false, "form"]],
+                target: "current",
+                context: this.config.createContext,
+            });
+        } catch {
+            this.warnUnavailable();
         }
     }
 

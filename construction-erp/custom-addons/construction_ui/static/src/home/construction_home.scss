@@ -96,8 +96,11 @@ $muted: #647581;
     gap: 10px;
     margin-top: 28px;
 
+    // `.o_construction_home &` keeps these at three classes so they outrank
+    // backend.scss's `.o_web_client .btn`, which loads later in the bundle.
+    .o_construction_home & .btn,
     .btn {
-        min-height: 43px;
+        min-height: 44px;
         padding: 10px 17px;
         border-radius: 11px;
         font-weight: 700;
@@ -382,7 +385,20 @@ $muted: #647581;
 @media (max-width: 575.98px) {
     .o_construction_home { padding: 12px; }
     .o_construction_hero { padding: 26px 20px; border-radius: 18px; }
-    .o_construction_kpis { grid-template-columns: 1fr; }
+    // Keep the four headline counts two-up on a phone: one per row buried the
+    // workspace links a full screen below the fold.
+    .o_construction_kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_construction_kpi { padding: 14px; }
+    .o_construction_kpi strong { font-size: 1.3rem; }
+    // Site users tap these with gloves on — never below the 44px target.
+    // Needs the extra class: backend.scss loads last in the bundle and its
+    // `.o_web_client .btn { min-height: 34px }` ties on specificity, so a
+    // two-class selector here would lose on source order.
+    .o_construction_home .o_construction_hero_actions .btn,
+    .o_construction_home .o_construction_saved_view_tip .btn {
+        width: 100%;
+        min-height: 46px;
+    }
     .o_construction_apps { grid-template-columns: 1fr; }
     .o_construction_section_intro { align-items: start; flex-direction: column; gap: 6px; }
     .o_construction_section_intro p { text-align: left; }
