@@ -31,7 +31,7 @@ Each with demo data and TransactionCase tests.
   path), Gantt via OCA `web_timeline`. Reschedule button on the project.
 - `construction_daily_log` — site diary (manpower, equipment, activities,
   delays, safety), one-click PDF.
-- `construction_form` — no-code inspection/checklist builder, recurring
+- `construction_form` ✅ — no-code inspection/checklist builder, recurring
   inspections, photo/signature answers, PDF field reports.
 - `construction_defect` — punch lists + DLP defects, subcontractor assignment.
 - `construction_portal` v1 — defects, RFIs, drawings, forms for portal users.

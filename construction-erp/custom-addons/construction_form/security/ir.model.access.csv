@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_form_template_user,form template user,model_construction_form_template,construction_base.group_construction_user,1,0,0,0
+access_form_template_manager,form template manager,model_construction_form_template,construction_base.group_construction_pm,1,1,1,1
+access_form_question_user,form question user,model_construction_form_question,construction_base.group_construction_user,1,0,0,0
+access_form_question_manager,form question manager,model_construction_form_question,construction_base.group_construction_pm,1,1,1,1
+access_form_inspection_user,form inspection user,model_construction_form_inspection,construction_base.group_construction_user,1,1,1,0
+access_form_inspection_manager,form inspection manager,model_construction_form_inspection,construction_base.group_construction_pm,1,1,1,1
+access_form_answer_user,form answer user,model_construction_form_answer,construction_base.group_construction_user,1,1,1,1

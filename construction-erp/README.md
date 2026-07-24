@@ -51,6 +51,10 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   List PDF.
 - **construction_daily_log** — digital site diary (weather, manpower,
   equipment, activities, delays) with computed totals and a PDF.
+- **construction_form** — no-code inspection/checklist templates, recurring
+  inspections, photo/signature evidence and PDF field reports.
+- **construction_ui** — Odoo 19-inspired responsive command center, app
+  workspaces, live KPIs, saved-view dashboard access and backend visual polish.
 - **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate
@@ -105,7 +109,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,construction_change_order,construction_subcontractor,facility_asset,facility_workorder,facility_floorplan,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,facility_asset,facility_workorder,facility_floorplan,construction_ui,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```
