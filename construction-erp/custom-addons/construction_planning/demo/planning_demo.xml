@@ -49,4 +49,9 @@
         <field name="successor_id" ref="task_super_milestone"/>
         <field name="link_type">FS</field>
     </record>
+
+    <!-- Run the CPM engine so the demo shows computed float / critical path. -->
+    <function model="project.project" name="action_reschedule">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
 </odoo>

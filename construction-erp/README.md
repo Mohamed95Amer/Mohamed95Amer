@@ -51,6 +51,20 @@ The full multi-phase roadmap (field pins on plans, daily logs, defects,
 change orders, progress/RA billing with retention, subcontractor management,
 facilities asset registry/PM/SLA) is in [`docs/roadmap.md`](docs/roadmap.md).
 
+## One-click cloud demo (GitHub Codespaces)
+
+No local install needed — runs in your browser:
+
+1. Open the repo on GitHub → green **Code** button → **Codespaces** tab →
+   **Create codespace on `claude/odoo-construction-facilities-i324s2`**.
+2. Wait for the automated setup to finish (first boot pulls Odoo and installs
+   the accounting suite — several minutes; progress shows in the terminal).
+3. When it's ready, the **Ports** tab shows port **8069** — click the globe
+   icon to open it. Database `erp`, login **admin** / **admin**.
+
+The `.devcontainer/` config boots Postgres + Odoo and seeds the demo project
+automatically.
+
 ## Quickstart (Docker)
 
 ```bash

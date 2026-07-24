@@ -1,0 +1,14 @@
+{
+  "name": "Construction ERP (Odoo 18)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "forwardPorts": [8069],
+  "portsAttributes": {
+    "8069": { "label": "Odoo ERP", "onAutoForward": "openBrowser" }
+  },
+  "hostRequirements": { "cpus": 4, "memory": "8gb", "storage": "32gb" },
+  "postCreateCommand": "bash .devcontainer/bootstrap.sh",
+  "postStartCommand": "bash .devcontainer/start.sh"
+}

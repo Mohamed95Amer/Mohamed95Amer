@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Give the ME-301 revision a real PDF sheet so the plan viewer shows a
+         drawing out of the box on a fresh demo database. -->
+    <record id="att_me301_reva" model="ir.attachment">
+        <field name="name">ME-301_RevA.pdf</field>
+        <field name="datas" type="base64" file="construction_pin/demo/floorplan.pdf"/>
+        <field name="mimetype">application/pdf</field>
+        <field name="res_model">construction.drawing.revision</field>
+        <field name="res_id" eval="ref('construction_drawing.drawing_me301_reva')"/>
+    </record>
+    <record id="construction_drawing.drawing_me301_reva" model="construction.drawing.revision">
+        <field name="attachment_id" ref="att_me301_reva"/>
+    </record>
+
     <record id="pin_demo_rfi" model="construction.pin">
         <field name="name">Duct/beam clash — see RFI</field>
         <field name="revision_id" ref="construction_drawing.drawing_me301_reva"/>
