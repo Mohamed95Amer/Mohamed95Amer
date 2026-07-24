@@ -28,6 +28,7 @@
         "construction_progress_billing",
         "construction_change_order",
         "construction_subcontractor",
+        "construction_portal",
         "facility_asset",
         "facility_workorder",
         "facility_floorplan",
@@ -56,6 +57,9 @@
             "construction_ui/static/src/workspace_hub/workspace_hub.scss",
             "construction_ui/static/src/scss/backend.scss",
             "construction_ui/static/src/scss/rtl.scss",
+        ],
+        "web.assets_frontend": [
+            "construction_ui/static/src/scss/portal.scss",
         ],
     },
     "application": False,
