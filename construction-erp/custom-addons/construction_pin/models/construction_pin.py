@@ -4,10 +4,10 @@ from odoo.exceptions import ValidationError
 
 # Bootstrap colour indexes (Odoo kanban palette) per pin status.
 PIN_COLORS = {
-    "open": 1,        # red-ish
-    "in_progress": 3,  # yellow
+    "open": 1,        # red
+    "in_progress": 3,  # amber
     "done": 10,       # green
-    "info": 4,        # light blue
+    "info": 4,        # blue
     "default": 0,
 }
 
@@ -31,7 +31,7 @@ class ConstructionPin(models.Model):
     pos_x = fields.Float(required=True, digits=(12, 9))
     pos_y = fields.Float(required=True, digits=(12, 9))
     pin_type = fields.Selection(
-        [("task", "Task"), ("rfi", "RFI"), ("note", "Note")],
+        selection="_selection_pin_type",
         default="note",
         required=True,
     )
@@ -46,6 +46,54 @@ class ConstructionPin(models.Model):
         "done / info.",
     )
 
+    # ------------------------------------------------------------------
+    # Pin-type registry — extended by modules that add new pinnable records
+    # (e.g. construction_defect). Keeps the OWL viewer data-driven so new
+    # types appear without touching JS.
+    # ------------------------------------------------------------------
+    @api.model
+    def _pin_type_registry(self):
+        return [
+            {"id": "task", "label": self.env._("Task"), "icon": "fa-wrench",
+             "model": "project.task", "link_field": "task_id"},
+            {"id": "rfi", "label": self.env._("RFI"), "icon": "fa-question",
+             "model": "construction.rfi", "link_field": "rfi_id"},
+            {"id": "note", "label": self.env._("Note"),
+             "icon": "fa-sticky-note", "model": False, "link_field": False},
+        ]
+
+    @api.model
+    def _selection_pin_type(self):
+        return [(e["id"], e["label"]) for e in self._pin_type_registry()]
+
+    def _pin_target_vals(self, pin_type, name, description, project):
+        """Values used to create the linked record for a new pin."""
+        if pin_type == "task":
+            return {"name": name, "project_id": project.id}
+        if pin_type == "rfi":
+            return {"name": name, "project_id": project.id,
+                    "question": description or "<p></p>"}
+        return {}
+
+    def _pin_status(self):
+        """Return (status_label, colour_bucket) for one pin. Sub-modules
+        override with a super() fallback to cover their own pin types."""
+        self.ensure_one()
+        if self.pin_type == "task" and self.task_id:
+            label = dict(self.task_id._fields["state"].selection).get(
+                self.task_id.state, self.task_id.state)
+            bucket = ("done" if self.task_id.state in ("1_done", "1_canceled")
+                      else "in_progress")
+            return label, bucket
+        if self.pin_type == "rfi" and self.rfi_id:
+            label = dict(self.rfi_id._fields["state"].selection).get(
+                self.rfi_id.state)
+            bucket = {"draft": "open", "submitted": "open",
+                      "answered": "done", "closed": "done"}.get(
+                self.rfi_id.state, "open")
+            return label, bucket
+        return self.env._("Note"), "info"
+
     @api.constrains("pos_x", "pos_y")
     def _check_coords(self):
         for pin in self:
@@ -57,32 +105,18 @@ class ConstructionPin(models.Model):
     @api.depends("pin_type", "task_id.state", "rfi_id.state")
     def _compute_status_color(self):
         for pin in self:
-            status, bucket = self.env._("Note"), "info"
-            if pin.pin_type == "task" and pin.task_id:
-                status = dict(
-                    pin.task_id._fields["state"].selection
-                ).get(pin.task_id.state, pin.task_id.state)
-                bucket = "done" if pin.task_id.state in ("1_done", "1_canceled") else "in_progress"
-            elif pin.pin_type == "rfi" and pin.rfi_id:
-                status = dict(
-                    pin.rfi_id._fields["state"].selection
-                ).get(pin.rfi_id.state)
-                bucket = {
-                    "draft": "open",
-                    "submitted": "open",
-                    "answered": "done",
-                    "closed": "done",
-                }.get(pin.rfi_id.state, "open")
-            pin.status = status
+            label, bucket = pin._pin_status()
+            pin.status = label
             pin.color = PIN_COLORS.get(bucket, PIN_COLORS["default"])
             pin.status_bucket = bucket
 
     def action_open_target(self):
         self.ensure_one()
-        if self.pin_type == "task" and self.task_id:
-            return self._target_action("project.task", self.task_id.id)
-        if self.pin_type == "rfi" and self.rfi_id:
-            return self._target_action("construction.rfi", self.rfi_id.id)
+        entry = {e["id"]: e for e in self._pin_type_registry()}.get(self.pin_type)
+        if entry and entry.get("link_field"):
+            target = self[entry["link_field"]]
+            if target:
+                return self._target_action(entry["model"], target.id)
         return False
 
     def _target_action(self, model, res_id):
@@ -99,8 +133,12 @@ class ConstructionPin(models.Model):
     # ------------------------------------------------------------------
     @api.model
     def _viewer_pin_fields(self):
-        return ["id", "name", "pos_x", "pos_y", "pin_type", "status", "color",
-                "status_bucket", "task_id", "rfi_id"]
+        fields_list = ["id", "name", "pos_x", "pos_y", "pin_type", "status",
+                       "color", "status_bucket"]
+        for entry in self._pin_type_registry():
+            if entry.get("link_field") and entry["link_field"] not in fields_list:
+                fields_list.append(entry["link_field"])
+        return fields_list
 
     @api.model
     def get_plan_data(self, revision_id):
@@ -122,13 +160,18 @@ class ConstructionPin(models.Model):
             "revisions": [
                 {"id": r.id, "label": r.display_name} for r in siblings
             ],
+            "pin_types": [
+                {"id": e["id"], "label": e["label"], "icon": e["icon"]}
+                for e in self._pin_type_registry()
+            ],
             "pins": pins.read(self._viewer_pin_fields()),
         }
 
     @api.model
     def create_pin_with_target(self, revision_id, pos_x, pos_y, pin_type, name,
                                description=None):
-        """Create a pin and, for task/rfi pins, the linked record too."""
+        """Create a pin and, when the type has a target model, the linked
+        record too."""
         revision = self.env["construction.drawing.revision"].browse(revision_id)
         project = revision.project_id
         vals = {
@@ -138,21 +181,13 @@ class ConstructionPin(models.Model):
             "pin_type": pin_type,
             "name": name,
         }
-        if pin_type == "task":
-            task = self.env["project.task"].create(
-                {"name": name, "project_id": project.id}
+        entry = {e["id"]: e for e in self._pin_type_registry()}.get(pin_type)
+        if entry and entry.get("model"):
+            target = self.env[entry["model"]].create(
+                self._pin_target_vals(pin_type, name, description, project)
             )
-            vals["task_id"] = task.id
-        elif pin_type == "rfi":
-            rfi = self.env["construction.rfi"].create(
-                {
-                    "name": name,
-                    "project_id": project.id,
-                    "question": description or "<p></p>",
-                }
-            )
-            vals["rfi_id"] = rfi.id
-        elif pin_type == "note":
+            vals[entry["link_field"]] = target.id
+        else:
             vals["note"] = description
         pin = self.create(vals)
         return pin.read(self._viewer_pin_fields())[0]

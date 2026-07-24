@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="defect_tiling" model="construction.defect">
+        <field name="name">Cracked floor tile at lobby grid C3</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="location">Ground floor lobby, grid C3</field>
+        <field name="trade">architectural</field>
+        <field name="severity">medium</field>
+        <field name="phase">punch</field>
+        <field name="responsible_subcontractor_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="description">Two floor tiles cracked near column C3; replace and re-grout.</field>
+    </record>
+
+    <record id="defect_paint" model="construction.defect">
+        <field name="name">Paint touch-up required — Level 3 corridor</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="location">Level 3 corridor</field>
+        <field name="trade">architectural</field>
+        <field name="severity">low</field>
+        <field name="phase">punch</field>
+        <field name="state">in_progress</field>
+    </record>
+
+    <record id="defect_ac" model="construction.defect">
+        <field name="name">FCU leaking condensate above ceiling</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="location">Level 3, MEP riser</field>
+        <field name="trade">mep</field>
+        <field name="severity">high</field>
+        <field name="phase">dlp</field>
+        <field name="responsible_subcontractor_id" ref="construction_base.partner_demo_subcontractor"/>
+    </record>
+
+    <!-- Pin the leaking-FCU defect on the ME-301 sheet -->
+    <record id="pin_defect_ac" model="construction.pin">
+        <field name="name">FCU condensate leak</field>
+        <field name="revision_id" ref="construction_drawing.drawing_me301_reva"/>
+        <field name="pin_type">defect</field>
+        <field name="defect_id" ref="defect_ac"/>
+        <field name="pos_x">0.55</field>
+        <field name="pos_y">0.78</field>
+    </record>
+</odoo>

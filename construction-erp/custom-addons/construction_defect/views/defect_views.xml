@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_defect_form" model="ir.ui.view">
+        <field name="name">construction.defect.form</field>
+        <field name="model">construction.defect</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start"
+                            class="btn-primary"
+                            invisible="state not in ('open', 'reopened')"/>
+                    <button name="action_ready" type="object"
+                            string="Ready for Inspection" class="btn-primary"
+                            invisible="state not in ('open', 'in_progress', 'reopened')"/>
+                    <button name="action_close" type="object" string="Close"
+                            class="btn-primary"
+                            invisible="state not in ('ready', 'in_progress')"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="state not in ('closed', 'ready')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="open,in_progress,ready,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Defect title"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="location"/>
+                            <field name="trade"/>
+                            <field name="phase"/>
+                            <field name="severity" widget="badge"
+                                   decoration-danger="severity in ('high', 'critical')"
+                                   decoration-warning="severity == 'medium'"/>
+                        </group>
+                        <group>
+                            <field name="responsible_subcontractor_id"/>
+                            <field name="assigned_user_id"/>
+                            <field name="date_identified"/>
+                            <field name="date_required" string="Due Date"/>
+                            <field name="is_overdue" invisible="not is_overdue"
+                                   decoration-danger="is_overdue"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Describe the defect…"/>
+                    <group string="Photos">
+                        <field name="photo_before" widget="image"
+                               class="oe_avatar" nolabel="1"/>
+                        <field name="photo_after" widget="image"
+                               class="oe_avatar" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_defect_kanban" model="ir.ui.view">
+        <field name="name">construction.defect.kanban</field>
+        <field name="model">construction.defect</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="color"/>
+                <field name="severity"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card oe_kanban_color_#{record.color.raw_value}">
+                            <div class="o_kanban_record_top">
+                                <strong><field name="reference"/></strong>
+                                <span class="float-end">
+                                    <field name="severity" widget="badge"/>
+                                </span>
+                            </div>
+                            <div><field name="name"/></div>
+                            <div class="text-muted">
+                                <field name="location"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <field name="responsible_subcontractor_id"/>
+                                <field name="date_required"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_defect_list" model="ir.ui.view">
+        <field name="name">construction.defect.list</field>
+        <field name="model">construction.defect</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue"
+                  decoration-muted="state == 'closed'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="location"/>
+                <field name="trade"/>
+                <field name="severity" widget="badge"
+                       decoration-danger="severity in ('high', 'critical')"/>
+                <field name="phase"/>
+                <field name="responsible_subcontractor_id"/>
+                <field name="date_required"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('in_progress', 'ready')"
+                       decoration-success="state == 'closed'"
+                       decoration-danger="state == 'reopened'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_defect_search" model="ir.ui.view">
+        <field name="name">construction.defect.search</field>
+        <field name="model">construction.defect</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="responsible_subcontractor_id"/>
+                <filter name="filter_open" string="Open"
+                        domain="[('state', 'in', ('open', 'in_progress', 'ready', 'reopened'))]"/>
+                <filter name="filter_overdue" string="Overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter name="filter_punch" string="Punch List"
+                        domain="[('phase', '=', 'punch')]"/>
+                <filter name="filter_dlp" string="DLP Defects"
+                        domain="[('phase', '=', 'dlp')]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_sub" string="Subcontractor"
+                        context="{'group_by': 'responsible_subcontractor_id'}"/>
+                <filter name="group_severity" string="Severity"
+                        context="{'group_by': 'severity'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_construction_defect" model="ir.actions.act_window">
+        <field name="name">Defects &amp; Punch List</field>
+        <field name="res_model">construction.defect</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_defect_search"/>
+        <field name="context">{"search_default_filter_open": 1}</field>
+    </record>
+
+    <menuitem id="menu_construction_quality"
+              name="Quality"
+              parent="construction_base.menu_construction_root"
+              sequence="40"/>
+
+    <menuitem id="menu_construction_defect"
+              name="Defects &amp; Punch List"
+              parent="menu_construction_quality"
+              action="action_construction_defect"
+              sequence="10"/>
+</odoo>

@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"
 DB="${1:-erp}"
 
 # Construction suite + the free Odoo Mates full-accounting community app.
-MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,om_account_accountant"
+MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,om_account_accountant"
 
 "$HERE/scripts/run-local.sh" -d "$DB" -i "$MODULES" --stop-after-init "${@:2}"
 echo ">> Database '$DB' initialized with: $MODULES"

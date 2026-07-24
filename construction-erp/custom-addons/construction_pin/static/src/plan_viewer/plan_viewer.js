@@ -16,7 +16,9 @@ import { _t } from "@web/core/l10n/translation";
 
 const WORKER_SRC = "/web/static/lib/pdfjs/build/pdf.worker.js";
 
-const PIN_TYPES = [
+// Fallback shown before the server list loads; the real list (including
+// modules like construction_defect) comes from get_plan_data.
+const FALLBACK_TYPES = [
     { id: "task", label: _t("Task"), icon: "fa-wrench" },
     { id: "rfi", label: _t("RFI"), icon: "fa-question" },
     { id: "note", label: _t("Note"), icon: "fa-sticky-note" },
@@ -28,11 +30,15 @@ const PIN_TYPES = [
 export class PinPromptDialog extends Component {
     static template = "construction_pin.PinPromptDialog";
     static components = { Dialog };
-    static props = { close: Function, confirm: Function };
+    static props = { close: Function, confirm: Function, pinTypes: Array };
 
     setup() {
-        this.pinTypes = PIN_TYPES;
-        this.state = useState({ pinType: "task", name: "", description: "" });
+        this.pinTypes = this.props.pinTypes;
+        this.state = useState({
+            pinType: this.props.pinTypes[0]?.id || "note",
+            name: "",
+            description: "",
+        });
     }
     selectType(typeId) {
         this.state.pinType = typeId;
@@ -62,7 +68,6 @@ export class PlanViewer extends Component {
         this.canvasRef = useRef("canvas");
         this.scrollRef = useRef("scroll");
         this.fileInputRef = useRef("fileInput");
-        this.pinTypes = PIN_TYPES;
         const params = this.props.action.params || this.props.action.context || {};
         this.state = useState({
             revisionId: params.revision_id || false,
@@ -70,12 +75,13 @@ export class PlanViewer extends Component {
             projectName: "",
             revisionLabel: "",
             pins: [],
+            pinTypes: FALLBACK_TYPES,
             addMode: false,
             scale: 1.2,
             loading: true,
             uploading: false,
             hasSheet: false,
-            filters: { task: true, rfi: true, note: true },
+            filters: {},
         });
         this._renderSeq = 0;
 
@@ -121,6 +127,14 @@ export class PlanViewer extends Component {
         this.state.revisionLabel = data.revision.label;
         this.state.revisions = data.revisions;
         this.state.pins = data.pins;
+        if (data.pin_types?.length) {
+            this.state.pinTypes = data.pin_types;
+        }
+        const filters = {};
+        for (const type of this.state.pinTypes) {
+            filters[type.id] = this.state.filters[type.id] !== false;
+        }
+        this.state.filters = filters;
         this.attachmentId = data.revision.attachment_id;
         this.state.hasSheet = Boolean(this.attachmentId);
         this.state.loading = false;
@@ -248,6 +262,7 @@ export class PlanViewer extends Component {
         const posX = Math.min(1, Math.max(0, (ev.clientX - rect.left) / rect.width));
         const posY = Math.min(1, Math.max(0, (ev.clientY - rect.top) / rect.height));
         this.dialog.add(PinPromptDialog, {
+            pinTypes: this.state.pinTypes,
             confirm: async (vals) => {
                 const pin = await this.orm.call(
                     "construction.pin",
@@ -270,21 +285,16 @@ export class PlanViewer extends Component {
 
     async onPinClick(pin, ev) {
         ev.stopPropagation();
-        const targetModel = pin.pin_type === "task" ? "project.task"
-            : pin.pin_type === "rfi" ? "construction.rfi" : false;
-        const targetId = pin.pin_type === "task" ? pin.task_id?.[0]
-            : pin.pin_type === "rfi" ? pin.rfi_id?.[0] : false;
-        if (!targetModel || !targetId) {
+        const action = await this.orm.call(
+            "construction.pin", "action_open_target", [pin.id]
+        );
+        if (!action) {
             this.notification.add(pin.name, { type: "info" });
             return;
         }
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: targetModel,
-            res_id: targetId,
-            views: [[false, "form"]],
-            target: "new",
-        });
+        this.action.doAction(
+            { ...action, target: "new", views: [[false, "form"]] }
+        );
     }
 
     pinStyle(pin) {
@@ -297,7 +307,7 @@ export class PlanViewer extends Component {
     }
 
     pinIcon(pin) {
-        const type = this.pinTypes.find((t) => t.id === pin.pin_type);
+        const type = this.state.pinTypes.find((t) => t.id === pin.pin_type);
         return `fa ${type ? type.icon : "fa-map-marker"}`;
     }
 }

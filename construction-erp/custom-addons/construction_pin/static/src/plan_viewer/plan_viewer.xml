@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="o_plan_legend" t-if="state.pins.length">
-                    <t t-foreach="pinTypes" t-as="type" t-key="type.id">
+                    <t t-foreach="state.pinTypes" t-as="type" t-key="type.id">
                         <button class="o_legend_chip"
                                 t-att-class="state.filters[type.id] ? '' : 'o_chip_off'"
                                 t-att-title="state.filters[type.id] ? 'Click to hide' : 'Click to show'"
