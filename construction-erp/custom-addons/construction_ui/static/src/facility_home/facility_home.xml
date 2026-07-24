@@ -4,21 +4,21 @@
         <main class="o_facility_home">
             <section class="o_facility_hero">
                 <div class="o_facility_hero_copy">
-                    <span class="o_suite_eyebrow">FACILITIES OPERATIONS CENTER</span>
+                    <span class="o_suite_eyebrow">MAJAL · FACILITIES OPERATIONS CENTER</span>
                     <h1>Reliable buildings start with visible work.</h1>
                     <p>Assets, preventive maintenance, work orders and floor plans in one operational view.</p>
                     <div class="o_suite_hero_actions">
                         <button class="btn o_suite_btn_primary"
-                                t-on-click="() => this.openAction('maintenance.hr_equipment_request_action')">
-                            <i class="fa fa-clipboard"/> Open work orders
+                                t-on-click="() => this.openWorkspace('work_orders')">
+                            <i class="fa fa-clipboard"/> Work order dashboard
                         </button>
                         <button class="btn o_suite_btn_secondary"
-                                t-on-click="() => this.openAction('maintenance.hr_equipment_action')">
-                            <i class="fa fa-cogs"/> Asset register
+                                t-on-click="() => this.openWorkspace('assets')">
+                            <i class="fa fa-cogs"/> Asset dashboard
                         </button>
                         <button class="btn o_suite_btn_ghost"
                                 t-on-click="() => this.openAction('construction_ui.action_facility_my_dashboard')">
-                            <i class="fa fa-thumb-tack"/> My dashboard
+                            <i class="fa fa-thumb-tack"/> My workspace
                         </button>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                         <div class="o_suite_focus_items">
                             <button t-foreach="focusItems" t-as="item" t-key="item.key"
                                     class="o_suite_focus_item"
-                                    t-on-click="() => this.openAction(item.action)">
+                                    t-on-click="() => this.openWorkspace(item.workspace)">
                                 <span class="o_suite_focus_icon">
                                     <i t-attf-class="fa {{ item.icon }}"/>
                                 </span>
@@ -55,7 +55,7 @@
             <section class="o_suite_kpis" aria-label="Facilities overview">
                 <button t-foreach="kpiDefinitions" t-as="kpi" t-key="kpi.key"
                         t-attf-class="o_suite_kpi o_tone_{{ kpi.tone }}"
-                        t-on-click="() => this.openAction(kpi.action)">
+                        t-on-click="() => this.openWorkspace(kpi.workspace)">
                     <span class="o_suite_kpi_icon"><i t-attf-class="fa {{ kpi.icon }}"/></span>
                     <span class="o_suite_kpi_copy">
                         <strong t-att-class="{'o_skeleton': state.loading}"
@@ -85,7 +85,7 @@
                         <div class="o_suite_apps">
                             <button t-foreach="group.apps" t-as="app" t-key="app.name"
                                     class="o_suite_app"
-                                    t-on-click="() => this.openAction(app.action)">
+                                    t-on-click="() => this.openWorkspace(app.workspace)">
                                 <span t-attf-class="o_suite_app_icon o_tone_{{ app.tone }}">
                                     <i t-attf-class="fa {{ app.icon }}"/>
                                 </span>
@@ -103,12 +103,12 @@
             <aside class="o_suite_saved_view_tip">
                 <span class="o_suite_tip_icon"><i class="fa fa-star-o"/></span>
                 <div>
-                    <strong>Your personal facilities workspace</strong>
-                    <p>Save filtered asset lists, overdue work, maintenance graphs and team views to My Dashboard.</p>
+                    <strong>Your personal Majal workspace</strong>
+                    <p>Save filtered assets, overdue work, maintenance analysis and team views in one place.</p>
                 </div>
                 <button class="btn btn-link"
                         t-on-click="() => this.openAction('construction_ui.action_facility_my_dashboard')">
-                    Open My Dashboard <i class="fa fa-arrow-right"/>
+                    Open My Workspace <i class="fa fa-arrow-right"/>
                 </button>
             </aside>
         </main>

@@ -16,6 +16,7 @@ const FACILITY_KPIS = [
         icon: "fa-cogs",
         tone: "blue",
         hint: "Operating portfolio",
+        workspace: "assets",
     },
     {
         key: "workOrders",
@@ -26,6 +27,7 @@ const FACILITY_KPIS = [
         icon: "fa-clipboard",
         tone: "teal",
         hint: "Ready for triage",
+        workspace: "work_orders",
     },
     {
         key: "pmDue",
@@ -36,6 +38,7 @@ const FACILITY_KPIS = [
         icon: "fa-refresh",
         tone: "sand",
         hint: "Due through today",
+        workspace: "pm_plans",
     },
     {
         key: "criticalAssets",
@@ -46,6 +49,7 @@ const FACILITY_KPIS = [
         icon: "fa-shield",
         tone: "clay",
         hint: "Risk watchlist",
+        workspace: "assets",
     },
 ];
 
@@ -56,6 +60,7 @@ const FACILITY_FOCUS = [
         caption: "Triage and assign",
         action: "maintenance.hr_equipment_request_action",
         icon: "fa-clipboard",
+        workspace: "work_orders",
     },
     {
         key: "pmDue",
@@ -63,6 +68,7 @@ const FACILITY_FOCUS = [
         caption: "Due through today",
         action: "facility_workorder.action_pm_plan",
         icon: "fa-refresh",
+        workspace: "pm_plans",
     },
     {
         key: "criticalAssets",
@@ -70,6 +76,7 @@ const FACILITY_FOCUS = [
         caption: "Review exposure",
         action: "maintenance.hr_equipment_action",
         icon: "fa-shield",
+        workspace: "assets",
     },
 ];
 
@@ -84,6 +91,7 @@ const FACILITY_GROUPS = [
                 action: "maintenance.hr_equipment_action",
                 icon: "fa-cogs",
                 tone: "blue",
+                workspace: "assets",
             },
             {
                 name: "Locations",
@@ -91,6 +99,7 @@ const FACILITY_GROUPS = [
                 action: "facility_asset.action_facility_location",
                 icon: "fa-building-o",
                 tone: "teal",
+                workspace: "locations",
             },
             {
                 name: "Floor Plans",
@@ -98,6 +107,7 @@ const FACILITY_GROUPS = [
                 action: "facility_floorplan.action_facility_floorplan",
                 icon: "fa-map-o",
                 tone: "sand",
+                workspace: "floor_plans",
             },
             {
                 name: "Meters",
@@ -105,6 +115,7 @@ const FACILITY_GROUPS = [
                 action: "facility_asset.action_meter",
                 icon: "fa-tachometer",
                 tone: "slate",
+                workspace: "meters",
             },
         ],
     },
@@ -118,6 +129,7 @@ const FACILITY_GROUPS = [
                 action: "maintenance.hr_equipment_request_action",
                 icon: "fa-clipboard",
                 tone: "teal",
+                workspace: "work_orders",
             },
             {
                 name: "PM Plans",
@@ -125,6 +137,7 @@ const FACILITY_GROUPS = [
                 action: "facility_workorder.action_pm_plan",
                 icon: "fa-refresh",
                 tone: "blue",
+                workspace: "pm_plans",
             },
             {
                 name: "Job Plans",
@@ -132,6 +145,7 @@ const FACILITY_GROUPS = [
                 action: "facility_workorder.action_job_plan",
                 icon: "fa-list-alt",
                 tone: "sand",
+                workspace: "job_plans",
             },
             {
                 name: "Failure Codes",
@@ -139,6 +153,7 @@ const FACILITY_GROUPS = [
                 action: "facility_asset.action_failure_code",
                 icon: "fa-warning",
                 tone: "clay",
+                workspace: "failure_codes",
             },
         ],
     },
@@ -185,6 +200,10 @@ export class FacilityHome extends Component {
                 { type: "warning" }
             );
         }
+    }
+
+    async openWorkspace(workspaceKey) {
+        await this.openAction(`construction_ui.action_workspace_${workspaceKey}`);
     }
 }
 

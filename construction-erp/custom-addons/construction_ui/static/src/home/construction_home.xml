@@ -4,17 +4,17 @@
         <main class="o_construction_home">
             <section class="o_construction_hero">
                 <div class="o_construction_hero_copy">
-                    <span class="o_construction_eyebrow">CONSTRUCTION COMMAND CENTER</span>
+                    <span class="o_construction_eyebrow">MAJAL · CONSTRUCTION COMMAND CENTER</span>
                     <h1>Good work starts with a clear view.</h1>
                     <p>Projects, field operations, commercial control and facilities—together in one place.</p>
                     <div class="o_construction_hero_actions">
                         <button class="btn o_construction_btn_primary"
-                                t-on-click="() => this.openAction('construction_base.action_construction_projects')">
-                            <i class="fa fa-building-o"/> View projects
+                                t-on-click="() => this.openWorkspace('projects')">
+                            <i class="fa fa-building-o"/> Project dashboard
                         </button>
                         <button class="btn o_construction_btn_secondary"
                                 t-on-click="() => this.openAction('construction_ui.action_construction_my_dashboard')">
-                            <i class="fa fa-thumb-tack"/> My saved dashboard
+                            <i class="fa fa-thumb-tack"/> My workspace
                         </button>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                         <div class="o_construction_focus_items">
                             <button t-foreach="focusItems" t-as="item" t-key="item.key"
                                     class="o_construction_focus_item"
-                                    t-on-click="() => this.openAction(item.action)">
+                                    t-on-click="() => this.openWorkspace(item.workspace)">
                                 <span class="o_construction_focus_icon">
                                     <i t-attf-class="fa {{ item.icon }}"/>
                                 </span>
@@ -51,7 +51,7 @@
             <section class="o_construction_kpis" aria-label="Project overview">
                 <button t-foreach="kpiDefinitions" t-as="kpi" t-key="kpi.key"
                         t-attf-class="o_construction_kpi o_tone_{{ kpi.tone }}"
-                        t-on-click="() => this.openAction(kpi.action)">
+                        t-on-click="() => this.openWorkspace(kpi.workspace)">
                     <span class="o_construction_kpi_icon"><i t-attf-class="fa {{ kpi.icon }}"/></span>
                     <span class="o_construction_kpi_copy">
                         <strong t-att-class="{'o_skeleton': state.loading}"
@@ -81,7 +81,7 @@
                         <div class="o_construction_apps">
                             <button t-foreach="group.apps" t-as="app" t-key="app.name"
                                     class="o_construction_app"
-                                    t-on-click="() => this.openAction(app.action)">
+                                    t-on-click="() => this.openWorkspace(app.workspace)">
                                 <span t-attf-class="o_construction_app_icon o_tone_{{ app.tone }}">
                                     <i t-attf-class="fa {{ app.icon }}"/>
                                 </span>
@@ -99,13 +99,13 @@
             <aside class="o_construction_saved_view_tip">
                 <span class="o_construction_tip_icon"><i class="fa fa-star-o"/></span>
                 <div>
-                    <strong>Build your own Odoo 19-style workspace</strong>
-                    <p>Open any list, kanban, graph or pivot view, apply your filters, then use
-                       <b>Actions → Dashboard → Add to my Dashboard</b>.</p>
+                    <strong>Build your personal Majal workspace</strong>
+                    <p>Save filtered records, charts and analysis so your most important views
+                       are always one click away.</p>
                 </div>
                 <button class="btn btn-link"
                         t-on-click="() => this.openAction('construction_ui.action_construction_my_dashboard')">
-                    Open My Dashboard <i class="fa fa-arrow-right"/>
+                    Open My Workspace <i class="fa fa-arrow-right"/>
                 </button>
             </aside>
         </main>

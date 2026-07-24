@@ -1,11 +1,10 @@
 {
-    "name": "Construction Suite UI",
-    "summary": "Modern Odoo 19-inspired home, navigation and visual polish",
+    "name": "Majal Experience",
+    "summary": "Majal construction and facilities workspaces",
     "version": "18.0.1.0.0",
     "category": "Construction",
     "license": "LGPL-3",
-    "author": "Mohamed Amer",
-    "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
+    "author": "Majal",
     "depends": [
         "web",
         "board",
@@ -29,6 +28,8 @@
     "data": [
         "views/construction_home_views.xml",
         "views/facility_home_views.xml",
+        "views/workspace_hub_views.xml",
+        "views/majal_branding.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -38,6 +39,9 @@
             "construction_ui/static/src/facility_home/facility_home.js",
             "construction_ui/static/src/facility_home/facility_home.xml",
             "construction_ui/static/src/facility_home/facility_home.scss",
+            "construction_ui/static/src/workspace_hub/workspace_hub.js",
+            "construction_ui/static/src/workspace_hub/workspace_hub.xml",
+            "construction_ui/static/src/workspace_hub/workspace_hub.scss",
             "construction_ui/static/src/scss/backend.scss",
         ],
     },

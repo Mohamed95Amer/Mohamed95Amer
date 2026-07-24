@@ -14,6 +14,7 @@ const KPI_DEFINITIONS = [
         icon: "fa-building-o",
         tone: "navy",
         hint: "Current portfolio",
+        workspace: "projects",
     },
     {
         key: "rfi",
@@ -24,6 +25,7 @@ const KPI_DEFINITIONS = [
         icon: "fa-question-circle",
         tone: "amber",
         hint: "Awaiting resolution",
+        workspace: "rfis",
     },
     {
         key: "defects",
@@ -34,6 +36,7 @@ const KPI_DEFINITIONS = [
         icon: "fa-exclamation-triangle",
         tone: "coral",
         hint: "Site attention",
+        workspace: "defects",
     },
     {
         key: "inspections",
@@ -44,6 +47,7 @@ const KPI_DEFINITIONS = [
         icon: "fa-check-square-o",
         tone: "teal",
         hint: "Ready to progress",
+        workspace: "inspections",
     },
 ];
 
@@ -54,6 +58,7 @@ const CONSTRUCTION_FOCUS = [
         caption: "Clear information flow",
         action: "construction_rfi.action_construction_rfi",
         icon: "fa-question-circle",
+        workspace: "rfis",
     },
     {
         key: "defects",
@@ -61,6 +66,7 @@ const CONSTRUCTION_FOCUS = [
         caption: "Protect quality",
         action: "construction_defect.action_construction_defect",
         icon: "fa-exclamation-triangle",
+        workspace: "defects",
     },
     {
         key: "inspections",
@@ -68,6 +74,7 @@ const CONSTRUCTION_FOCUS = [
         caption: "Move work forward",
         action: "construction_form.action_form_inspections",
         icon: "fa-check-square-o",
+        workspace: "inspections",
     },
 ];
 
@@ -82,6 +89,7 @@ const APP_GROUPS = [
                 action: "construction_pin.action_plan_viewer",
                 icon: "fa-map-o",
                 tone: "blue",
+                workspace: "plan_viewer",
             },
             {
                 name: "Daily Site Logs",
@@ -89,6 +97,7 @@ const APP_GROUPS = [
                 action: "construction_daily_log.action_construction_daily_log",
                 icon: "fa-sun-o",
                 tone: "amber",
+                workspace: "daily_logs",
             },
             {
                 name: "Forms & Inspections",
@@ -96,6 +105,7 @@ const APP_GROUPS = [
                 action: "construction_form.action_form_inspections",
                 icon: "fa-check-square-o",
                 tone: "teal",
+                workspace: "inspections",
             },
             {
                 name: "Defects",
@@ -103,6 +113,7 @@ const APP_GROUPS = [
                 action: "construction_defect.action_construction_defect",
                 icon: "fa-wrench",
                 tone: "coral",
+                workspace: "defects",
             },
         ],
     },
@@ -116,6 +127,7 @@ const APP_GROUPS = [
                 action: "construction_drawing.action_construction_drawing",
                 icon: "fa-file-pdf-o",
                 tone: "violet",
+                workspace: "drawings",
             },
             {
                 name: "RFIs",
@@ -123,6 +135,7 @@ const APP_GROUPS = [
                 action: "construction_rfi.action_construction_rfi",
                 icon: "fa-question-circle",
                 tone: "blue",
+                workspace: "rfis",
             },
             {
                 name: "Submittals",
@@ -130,6 +143,7 @@ const APP_GROUPS = [
                 action: "construction_submittal.action_construction_submittal",
                 icon: "fa-share-square-o",
                 tone: "teal",
+                workspace: "submittals",
             },
             {
                 name: "Programme",
@@ -137,6 +151,7 @@ const APP_GROUPS = [
                 action: "construction_planning.action_construction_planning",
                 icon: "fa-calendar",
                 tone: "navy",
+                workspace: "programme",
             },
         ],
     },
@@ -150,6 +165,7 @@ const APP_GROUPS = [
                 action: "construction_boq.action_construction_boq",
                 icon: "fa-list-ol",
                 tone: "blue",
+                workspace: "boq",
             },
             {
                 name: "Change Orders",
@@ -157,6 +173,7 @@ const APP_GROUPS = [
                 action: "construction_change_order.action_change_order",
                 icon: "fa-exchange",
                 tone: "amber",
+                workspace: "change_orders",
             },
             {
                 name: "Progress Billing",
@@ -164,6 +181,7 @@ const APP_GROUPS = [
                 action: "construction_progress_billing.action_progress_claim",
                 icon: "fa-money",
                 tone: "teal",
+                workspace: "progress_billing",
             },
             {
                 name: "Subcontracts",
@@ -171,6 +189,7 @@ const APP_GROUPS = [
                 action: "construction_subcontractor.action_subcontract",
                 icon: "fa-handshake-o",
                 tone: "violet",
+                workspace: "subcontracts",
             },
         ],
     },
@@ -184,6 +203,7 @@ const APP_GROUPS = [
                 action: "maintenance.hr_equipment_action",
                 icon: "fa-cogs",
                 tone: "navy",
+                workspace: "assets",
             },
             {
                 name: "Work Orders",
@@ -191,6 +211,7 @@ const APP_GROUPS = [
                 action: "maintenance.hr_equipment_request_action",
                 icon: "fa-clipboard",
                 tone: "coral",
+                workspace: "work_orders",
             },
             {
                 name: "PM Plans",
@@ -198,6 +219,7 @@ const APP_GROUPS = [
                 action: "facility_workorder.action_pm_plan",
                 icon: "fa-refresh",
                 tone: "teal",
+                workspace: "pm_plans",
             },
             {
                 name: "Floor Plans",
@@ -205,6 +227,7 @@ const APP_GROUPS = [
                 action: "facility_floorplan.action_facility_floorplan",
                 icon: "fa-map-marker",
                 tone: "blue",
+                workspace: "floor_plans",
             },
         ],
     },
@@ -253,6 +276,10 @@ export class ConstructionHome extends Component {
                 { type: "warning" }
             );
         }
+    }
+
+    async openWorkspace(workspaceKey) {
+        await this.openAction(`construction_ui.action_workspace_${workspaceKey}`);
     }
 }
 

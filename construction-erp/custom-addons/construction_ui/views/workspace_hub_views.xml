@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_workspace_projects" model="ir.actions.client">
+        <field name="name">Project Portfolio</field>
+        <field name="tag">construction_ui.workspace.projects</field>
+    </record>
+    <record id="action_workspace_plan_viewer" model="ir.actions.client">
+        <field name="name">Plan Viewer</field>
+        <field name="tag">construction_ui.workspace.plan_viewer</field>
+    </record>
+    <record id="action_workspace_daily_logs" model="ir.actions.client">
+        <field name="name">Daily Site Logs</field>
+        <field name="tag">construction_ui.workspace.daily_logs</field>
+    </record>
+    <record id="action_workspace_inspections" model="ir.actions.client">
+        <field name="name">Forms &amp; Inspections</field>
+        <field name="tag">construction_ui.workspace.inspections</field>
+    </record>
+    <record id="action_workspace_defects" model="ir.actions.client">
+        <field name="name">Defects &amp; Punch List</field>
+        <field name="tag">construction_ui.workspace.defects</field>
+    </record>
+    <record id="action_workspace_drawings" model="ir.actions.client">
+        <field name="name">Drawing Register</field>
+        <field name="tag">construction_ui.workspace.drawings</field>
+    </record>
+    <record id="action_workspace_rfis" model="ir.actions.client">
+        <field name="name">Requests for Information</field>
+        <field name="tag">construction_ui.workspace.rfis</field>
+    </record>
+    <record id="action_workspace_submittals" model="ir.actions.client">
+        <field name="name">Submittals</field>
+        <field name="tag">construction_ui.workspace.submittals</field>
+    </record>
+    <record id="action_workspace_programme" model="ir.actions.client">
+        <field name="name">Programme &amp; Planning</field>
+        <field name="tag">construction_ui.workspace.programme</field>
+    </record>
+    <record id="action_workspace_boq" model="ir.actions.client">
+        <field name="name">Bill of Quantities</field>
+        <field name="tag">construction_ui.workspace.boq</field>
+    </record>
+    <record id="action_workspace_change_orders" model="ir.actions.client">
+        <field name="name">Change Control</field>
+        <field name="tag">construction_ui.workspace.change_orders</field>
+    </record>
+    <record id="action_workspace_progress_billing" model="ir.actions.client">
+        <field name="name">Progress Billing</field>
+        <field name="tag">construction_ui.workspace.progress_billing</field>
+    </record>
+    <record id="action_workspace_subcontracts" model="ir.actions.client">
+        <field name="name">Subcontracts</field>
+        <field name="tag">construction_ui.workspace.subcontracts</field>
+    </record>
+    <record id="action_workspace_assets" model="ir.actions.client">
+        <field name="name">Asset Portfolio</field>
+        <field name="tag">construction_ui.workspace.assets</field>
+    </record>
+    <record id="action_workspace_work_orders" model="ir.actions.client">
+        <field name="name">Maintenance Work Orders</field>
+        <field name="tag">construction_ui.workspace.work_orders</field>
+    </record>
+    <record id="action_workspace_pm_plans" model="ir.actions.client">
+        <field name="name">Preventive Maintenance</field>
+        <field name="tag">construction_ui.workspace.pm_plans</field>
+    </record>
+    <record id="action_workspace_job_plans" model="ir.actions.client">
+        <field name="name">Maintenance Job Plans</field>
+        <field name="tag">construction_ui.workspace.job_plans</field>
+    </record>
+    <record id="action_workspace_locations" model="ir.actions.client">
+        <field name="name">Location Hierarchy</field>
+        <field name="tag">construction_ui.workspace.locations</field>
+    </record>
+    <record id="action_workspace_floor_plans" model="ir.actions.client">
+        <field name="name">Facility Floor Plans</field>
+        <field name="tag">construction_ui.workspace.floor_plans</field>
+    </record>
+    <record id="action_workspace_meters" model="ir.actions.client">
+        <field name="name">Asset Meters</field>
+        <field name="tag">construction_ui.workspace.meters</field>
+    </record>
+    <record id="action_workspace_failure_codes" model="ir.actions.client">
+        <field name="name">Failure Knowledge</field>
+        <field name="tag">construction_ui.workspace.failure_codes</field>
+    </record>
+
+    <!-- Every leaf menu opens a Majal dashboard before the detailed records. -->
+    <record id="construction_base.menu_construction_projects" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_projects"/>
+    </record>
+    <record id="construction_pin.menu_plan_viewer" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_plan_viewer"/>
+    </record>
+    <record id="construction_daily_log.menu_construction_daily_log" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_daily_logs"/>
+    </record>
+    <record id="construction_form.menu_construction_forms" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_inspections"/>
+    </record>
+    <record id="construction_form.menu_construction_form_templates" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_inspections"/>
+    </record>
+    <record id="construction_defect.menu_construction_defect" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_defects"/>
+    </record>
+    <record id="construction_drawing.menu_construction_drawing" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_drawings"/>
+    </record>
+    <record id="construction_drawing.menu_drawing_upload" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_drawings"/>
+    </record>
+    <record id="construction_rfi.menu_construction_rfi" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_rfis"/>
+    </record>
+    <record id="construction_submittal.menu_construction_submittal" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_submittals"/>
+    </record>
+    <record id="construction_planning.menu_construction_programme" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_programme"/>
+    </record>
+    <record id="construction_planning.menu_construction_dependencies" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_programme"/>
+    </record>
+    <record id="construction_boq.menu_construction_boq" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_boq"/>
+    </record>
+    <record id="construction_boq.menu_boq_line_analysis" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_boq"/>
+    </record>
+    <record id="construction_change_order.menu_change_event" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_change_orders"/>
+    </record>
+    <record id="construction_change_order.menu_change_order" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_change_orders"/>
+    </record>
+    <record id="construction_progress_billing.menu_progress_claim" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_progress_billing"/>
+    </record>
+    <record id="construction_subcontractor.menu_subcontract" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_subcontracts"/>
+    </record>
+    <record id="construction_subcontractor.menu_sc_payment" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_subcontracts"/>
+    </record>
+
+    <record id="facility_asset.menu_facility_assets" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_assets"/>
+    </record>
+    <record id="facility_asset.menu_facility_requests" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_work_orders"/>
+    </record>
+    <record id="facility_workorder.menu_facility_pm_plans" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_pm_plans"/>
+    </record>
+    <record id="facility_workorder.menu_facility_job_plans" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_job_plans"/>
+    </record>
+    <record id="facility_asset.menu_facility_locations" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_locations"/>
+    </record>
+    <record id="facility_floorplan.menu_facility_floorplans" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_floor_plans"/>
+    </record>
+    <record id="facility_asset.menu_facility_meters" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_meters"/>
+    </record>
+    <record id="facility_asset.menu_facility_failure_codes" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_failure_codes"/>
+    </record>
+    <record id="facility_asset.menu_facility_categories" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_assets"/>
+    </record>
+</odoo>

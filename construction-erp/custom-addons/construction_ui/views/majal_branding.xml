@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="res.company" name="write">
+        <value eval="[ref('base.main_company')]"/>
+        <value eval="{'name': 'Majal'}"/>
+    </function>
+
+    <record id="construction_base.menu_construction_root" model="ir.ui.menu">
+        <field name="name">Majal Construction</field>
+    </record>
+    <record id="facility_asset.menu_facility_root" model="ir.ui.menu">
+        <field name="name">Majal Facilities</field>
+    </record>
+
+    <record id="action_construction_home" model="ir.actions.client">
+        <field name="name">Majal Construction</field>
+    </record>
+    <record id="action_facility_home" model="ir.actions.client">
+        <field name="name">Majal Facilities</field>
+    </record>
+    <record id="action_construction_my_dashboard" model="ir.actions.act_window">
+        <field name="name">My Workspace</field>
+    </record>
+    <record id="action_facility_my_dashboard" model="ir.actions.act_window">
+        <field name="name">My Workspace</field>
+    </record>
+    <record id="menu_construction_my_dashboard" model="ir.ui.menu">
+        <field name="name">My Workspace</field>
+    </record>
+    <record id="menu_facility_my_dashboard" model="ir.ui.menu">
+        <field name="name">My Workspace</field>
+    </record>
+
+    <record id="construction_base.menu_construction_config" model="ir.ui.menu">
+        <field name="name">Settings</field>
+    </record>
+    <record id="facility_asset.menu_facility_config" model="ir.ui.menu">
+        <field name="name">Settings</field>
+    </record>
+    <record id="facility_asset.menu_facility_assets" model="ir.ui.menu">
+        <field name="name">Asset Portfolio</field>
+    </record>
+    <record id="facility_asset.menu_facility_requests" model="ir.ui.menu">
+        <field name="name">Work Orders</field>
+    </record>
+    <record id="facility_workorder.menu_facility_pm_plans" model="ir.ui.menu">
+        <field name="name">Preventive Maintenance</field>
+    </record>
+</odoo>
