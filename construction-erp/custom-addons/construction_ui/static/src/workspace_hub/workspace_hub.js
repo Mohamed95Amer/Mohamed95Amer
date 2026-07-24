@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import { Component, onWillStart, useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 
@@ -8,6 +9,31 @@ const daysAgo = (days) => {
     const date = new Date();
     date.setDate(date.getDate() - days);
     return `${date.toISOString().slice(0, 10)} 00:00:00`;
+};
+
+const TRANSLATABLE_CONFIG_KEYS = new Set([
+    "title",
+    "eyebrow",
+    "description",
+    "workflow",
+]);
+
+const localizeConfig = (value, key = null) => {
+    if (Array.isArray(value)) {
+        return value.map((item) => localizeConfig(item, key));
+    }
+    if (value && typeof value === "object") {
+        return Object.fromEntries(
+            Object.entries(value).map(([childKey, childValue]) => [
+                childKey,
+                localizeConfig(childValue, childKey),
+            ])
+        );
+    }
+    if (typeof value === "string" && TRANSLATABLE_CONFIG_KEYS.has(key)) {
+        return _t(value);
+    }
+    return value;
 };
 
 const workspace = (values) => ({
@@ -385,7 +411,11 @@ export class MajalWorkspaceHub extends Component {
         this.orm = useService("orm");
         this.notification = useService("notification");
         this.workspaceKey = (this.props.action?.tag || "").replace("construction_ui.workspace.", "");
-        this.config = WORKSPACES[this.workspaceKey];
+        this.config = localizeConfig(WORKSPACES[this.workspaceKey]);
+        this.suiteTitle =
+            this.config.area === "facilities" ? _t("Majal Facilities") : _t("Majal Construction");
+        this.suiteArea =
+            this.config.area === "facilities" ? _t("Facilities") : _t("Construction");
         this.state = useState({
             loading: true,
             metrics: [],
@@ -394,7 +424,7 @@ export class MajalWorkspaceHub extends Component {
         });
         this.relatedWorkspaces = (this.config.related || []).map((key) => ({
             key,
-            ...WORKSPACES[key],
+            ...localizeConfig(WORKSPACES[key]),
         }));
 
         onWillStart(() => this.loadWorkspace());
@@ -409,38 +439,38 @@ export class MajalWorkspaceHub extends Component {
                 { attributes: ["type", "string"] }
             );
             const metricDefinitions = [
-                { label: "Total records", hint: "Complete workspace", domain: [], icon: "fa-database" },
+                { label: _t("Total records"), hint: _t("Complete workspace"), domain: [], icon: "fa-database" },
                 {
-                    label: "Added recently",
-                    hint: "Last 30 days",
+                    label: _t("Added recently"),
+                    hint: _t("Last 30 days"),
                     domain: [["create_date", ">=", daysAgo(30)]],
                     icon: "fa-plus-circle",
                 },
                 {
-                    label: "Recently active",
-                    hint: "Updated in 7 days",
+                    label: _t("Recently active"),
+                    hint: _t("Updated in 7 days"),
                     domain: [["write_date", ">=", daysAgo(7)]],
                     icon: "fa-line-chart",
                 },
             ];
             if (fields.active) {
                 metricDefinitions.push({
-                    label: "Active records",
-                    hint: "Current operating set",
+                    label: _t("Active records"),
+                    hint: _t("Current operating set"),
                     domain: [["active", "=", true]],
                     icon: "fa-check-circle",
                 });
             } else if (fields.state) {
                 metricDefinitions.push({
-                    label: "In workflow",
-                    hint: "Not closed or cancelled",
+                    label: _t("In workflow"),
+                    hint: _t("Not closed or cancelled"),
                     domain: [["state", "not in", ["done", "closed", "cancelled", "cancel"]]],
                     icon: "fa-random",
                 });
             } else {
                 metricDefinitions.push({
-                    label: "Available now",
-                    hint: "Ready to review",
+                    label: _t("Available now"),
+                    hint: _t("Ready to review"),
                     domain: [],
                     icon: "fa-eye",
                 });
@@ -479,7 +509,7 @@ export class MajalWorkspaceHub extends Component {
         try {
             await this.action.doAction({
                 type: "ir.actions.act_window",
-                name: `New ${this.config.title}`,
+                name: _t("New %s", this.config.title),
                 res_model: this.config.model,
                 views: [[false, "form"]],
                 target: "current",
@@ -527,7 +557,7 @@ export class MajalWorkspaceHub extends Component {
 
     warnUnavailable() {
         this.notification.add(
-            "This Majal workspace is not available for the current user.",
+            _t("This Majal workspace is not available for the current user."),
             { type: "warning" }
         );
     }
@@ -536,11 +566,15 @@ export class MajalWorkspaceHub extends Component {
         if (!value) {
             return "";
         }
-        return new Intl.DateTimeFormat(undefined, {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-        }).format(new Date(value.replace(" ", "T") + "Z"));
+        return new Intl.DateTimeFormat(
+            document.body.classList.contains("o_rtl") ? "ar-AE" : undefined,
+            {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                numberingSystem: document.body.classList.contains("o_rtl") ? "arab" : undefined,
+            }
+        ).format(new Date(value.replace(" ", "T") + "Z"));
     }
 }
 

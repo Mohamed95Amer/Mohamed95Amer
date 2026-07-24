@@ -45,6 +45,7 @@
             "construction_ui/static/src/workspace_hub/workspace_hub.xml",
             "construction_ui/static/src/workspace_hub/workspace_hub.scss",
             "construction_ui/static/src/scss/backend.scss",
+            "construction_ui/static/src/scss/rtl.scss",
         ],
     },
     "application": False,

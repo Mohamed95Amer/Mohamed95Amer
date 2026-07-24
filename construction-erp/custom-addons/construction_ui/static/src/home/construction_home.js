@@ -1,8 +1,25 @@
 /** @odoo-module **/
 
 import { Component, onWillStart, useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+
+const LOCALIZED_KEYS = new Set(["label", "hint", "caption", "title", "subtitle", "name", "description"]);
+const localizeItems = (value, key = null) => {
+    if (Array.isArray(value)) {
+        return value.map((item) => localizeItems(item, key));
+    }
+    if (value && typeof value === "object") {
+        return Object.fromEntries(
+            Object.entries(value).map(([childKey, childValue]) => [
+                childKey,
+                localizeItems(childValue, childKey),
+            ])
+        );
+    }
+    return typeof value === "string" && LOCALIZED_KEYS.has(key) ? _t(value) : value;
+};
 
 const KPI_DEFINITIONS = [
     {
@@ -244,13 +261,15 @@ export class ConstructionHome extends Component {
             loading: true,
             kpis: Object.fromEntries(KPI_DEFINITIONS.map((item) => [item.key, "–"])),
         });
-        this.kpiDefinitions = KPI_DEFINITIONS;
-        this.focusItems = CONSTRUCTION_FOCUS;
-        this.appGroups = APP_GROUPS;
-        this.today = new Intl.DateTimeFormat(undefined, {
+        this.kpiDefinitions = localizeItems(KPI_DEFINITIONS);
+        this.focusItems = localizeItems(CONSTRUCTION_FOCUS);
+        this.appGroups = localizeItems(APP_GROUPS);
+        const interfaceLocale = document.body.classList.contains("o_rtl") ? "ar-AE" : undefined;
+        this.today = new Intl.DateTimeFormat(interfaceLocale, {
             weekday: "long",
             day: "numeric",
             month: "long",
+            numberingSystem: interfaceLocale ? "arab" : undefined,
         }).format(new Date());
 
         onWillStart(async () => {
@@ -272,7 +291,7 @@ export class ConstructionHome extends Component {
             await this.action.doAction(actionXmlId);
         } catch {
             this.notification.add(
-                "This workspace is not available yet. Check that its module is installed.",
+                _t("This workspace is not available yet. Check that its module is installed."),
                 { type: "warning" }
             );
         }
@@ -280,6 +299,10 @@ export class ConstructionHome extends Component {
 
     async openWorkspace(workspaceKey) {
         await this.openAction(`construction_ui.action_workspace_${workspaceKey}`);
+    }
+
+    formatAppCount(count) {
+        return _t("%s apps", count);
     }
 }
 

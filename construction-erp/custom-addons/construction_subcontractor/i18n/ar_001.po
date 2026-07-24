@@ -1,0 +1,441 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+msgid " (net of %(ret)s retention and %(bc)s back-charges)"
+msgstr " (بعد خصم احتجاز %(ret)s وخصومات %(bc)s)"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid ""
+"<br/>\n"
+"                                <strong>Reference:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>المرجع:</strong>"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid ""
+"<br/>\n"
+"                                <strong>Subcontract:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>عقد المقاول الباطن:</strong>"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "<span class=\"o_stat_text\">Vendor Bill</span>"
+msgstr "<span class=\"o_stat_text\">فاتورة مورد</span>"
+
+#. modules: construction_form, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "<strong>Date:</strong>"
+msgstr "<strong>التاريخ:</strong>"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "<strong>Net payable</strong>"
+msgstr "<strong>صافي المستحق للدفع</strong>"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "<strong>Subcontractor:</strong>"
+msgstr "<strong>المقاول الباطن:</strong>"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__amount_cumulative
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__amount_cumulative
+msgid "Amount Cumulative"
+msgstr "المبلغ التراكمي"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__amount_this
+msgid "Amount This"
+msgstr "مبلغ هذه الفترة"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__boq_line_id
+msgid "BOQ Cost Item"
+msgstr "بند تكلفة بجدول الكميات"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Back-Charges"
+msgstr "الخصومات"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__backcharge_ids
+msgid "Backcharge"
+msgstr "خصم"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__backcharge_this
+msgid "Backcharge This"
+msgstr "خصم هذه الفترة"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__billed
+msgid "Billed"
+msgstr "مفوتر "
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__sequence_no
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Cert No."
+msgstr "رقم الشهادة"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+msgid "Certificates"
+msgstr "الشهادات "
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__certified
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__certified
+msgid "Certified"
+msgstr "معتمد "
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__amount_certified
+msgid "Certified to Date"
+msgstr "المعتمد حتى تاريخه"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Certify"
+msgstr "اعتماد"
+
+#. module: construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+msgid "Certify the certificate before billing."
+msgstr "اعتمد الشهادة قبل إنشاء الفاتورة."
+
+#. modules: construction_defect, construction_rfi, construction_subcontractor,
+#. construction_submittal, construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract__state__confirmed
+msgid "Confirmed"
+msgstr "تم التأكيد "
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Create Vendor Bill"
+msgstr "إنشاء فاتورة مورد"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_cumulative
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Cumulative"
+msgstr "التراكمي"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Cumulative Amount"
+msgstr "المبلغ التراكمي"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Cumulative Qty"
+msgstr "الكمية التراكمية"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__date_end
+msgid "Date End"
+msgstr "تاريخ الانتهاء "
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__date_start
+msgid "Date Start"
+msgstr "تاريخ البدء"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__gross_cumulative
+msgid "Gross Cumulative"
+msgstr "الإجمالي التراكمي"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__gross_previous
+msgid "Gross Previous"
+msgstr "الإجمالي السابق"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__gross_this
+msgid "Gross This"
+msgstr "إجمالي هذه الفترة"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Less back-charges"
+msgstr "ناقص الخصومات"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Less retention"
+msgstr "ناقص الاحتجاز"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Mark Paid"
+msgstr "تعيين كمدفوع"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Measured Work"
+msgstr "الأعمال المقاسة"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__move_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__move_id
+msgid "Move"
+msgstr "حركة"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__amount_due
+msgid "Net Payable"
+msgstr "صافي المستحق للدفع"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+msgid "New Payment Certificate"
+msgstr "شهادة دفع جديدة"
+
+#. module: construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+msgid "No expense account found — configure the chart of accounts."
+msgstr "لم يتم العثور على حساب مصروفات — اضبط دليل الحسابات."
+
+#. module: construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+msgid "Only submitted certificates can be certified."
+msgstr "يمكن اعتماد الشهادات المُرسلة فقط."
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__paid
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__paid
+msgid "Paid"
+msgstr "مدفوع"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__payment_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__payment_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__payment_id
+msgid "Payment"
+msgstr "الدفع "
+
+#. modules: construction_progress_billing, construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+#: model:ir.actions.report,name:construction_progress_billing.action_report_progress_claim
+msgid "Payment Certificate"
+msgstr "شهادة دفع"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+msgid "Payment Certificates"
+msgstr "شهادات الدفع"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__payment_count
+msgid "Payment Count"
+msgstr "عدد المدفوعات "
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__previous_payment_id
+msgid "Previous Payment"
+msgstr "الدفعة السابقة"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__qty_cumulative
+msgid "Qty Cumulative"
+msgstr "الكمية التراكمية"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__qty_previous
+msgid "Qty Previous"
+msgstr "الكمية السابقة"
+
+#. modules: construction_change_order, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__reason
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__name
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_order_form
+msgid "Reason"
+msgstr "السبب"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__defect_id
+msgid "Related Defect"
+msgstr "العيب المرتبط"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__retention_cap_percent
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__retention_cap_percent
+msgid "Retention Cap Percent"
+msgstr "نسبة حد الاحتجاز"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__retention_cumulative
+msgid "Retention Cumulative"
+msgstr "الاحتجاز التراكمي"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__amount_retained
+msgid "Retention Held"
+msgstr "الاحتجاز المحتجز"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_percent
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__retention_percent
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__retention_percent
+msgid "Retention Percent"
+msgstr "نسبة الاحتجاز"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__retention_this
+msgid "Retention This"
+msgstr "احتجاز هذه الفترة"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+msgid "Scope"
+msgstr "النطاق "
+
+#. module: construction_subcontractor
+#: model:ir.model,name:construction_subcontractor.model_construction_subcontract
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__subcontract_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__subcontract_id
+msgid "Subcontract"
+msgstr "عقد مقاول باطن"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__subcontract_line_id
+msgid "Subcontract Line"
+msgstr "بند عقد المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model:ir.model,name:construction_subcontractor.model_construction_subcontract_line
+msgid "Subcontract Scope Line"
+msgstr "بند نطاق المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__amount_total
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__amount_subcontract
+msgid "Subcontract Value"
+msgstr "قيمة عقد المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+msgid "Subcontract title"
+msgstr "عنوان عقد المقاول الباطن"
+
+#. module: construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+msgid "Subcontract work to %(date)s — %(ref)s%(note)s"
+msgstr "أعمال المقاول الباطن حتى %(date)s — %(ref)s%(note)s"
+
+#. modules: construction_defect, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__subcontractor_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__subcontractor_id
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+msgid "Subcontractor"
+msgstr "المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model:ir.model,name:construction_subcontractor.model_construction_subcontract_backcharge
+msgid "Subcontractor Back-Charge"
+msgstr "خصم على المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model:ir.actions.report,name:construction_subcontractor.action_report_sc_payment
+#: model:ir.model,name:construction_subcontractor.model_construction_subcontract_payment
+msgid "Subcontractor Payment Certificate"
+msgstr "شهادة دفع المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Subcontractor Payment Certificate No."
+msgstr "شهادة دفع المقاول الباطن No."
+
+#. module: construction_subcontractor
+#: model:ir.model,name:construction_subcontractor.model_construction_subcontract_payment_line
+msgid "Subcontractor Payment Line"
+msgstr "بند دفعة المقاول الباطن"
+
+#. module: construction_subcontractor
+#: model:ir.actions.act_window,name:construction_subcontractor.action_sc_payment
+#: model:ir.ui.menu,name:construction_subcontractor.menu_sc_payment
+msgid "Subcontractor Payments"
+msgstr "دفعات المقاولين الباطنين"
+
+#. modules: construction_subcontractor, construction_ui
+#. odoo-javascript
+#: model:ir.actions.act_window,name:construction_subcontractor.action_subcontract
+#: model:ir.actions.client,name:construction_ui.action_workspace_subcontracts
+#: model:ir.ui.menu,name:construction_subcontractor.menu_subcontract
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Subcontracts"
+msgstr "عقود المقاولين الباطنين"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_this_period
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__qty_this_period
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "This Period"
+msgstr "هذه الفترة"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__unit_rate
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__unit_rate
+msgid "Unit Rate (Cost)"
+msgstr "سعر الوحدة (تكلفة)"
+
+#. module: construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Work this period"
+msgstr "أعمال الفترة الحالية"
+
+#. module: construction_subcontractor
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__trade
+msgid "e.g. HVAC, Blockwork, Waterproofing."
+msgstr "مثال: تكييف، مبانٍ، عزل مائي."

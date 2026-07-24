@@ -1,0 +1,446 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid ""
+"<br/>\n"
+"                        <strong>Inspector:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>المفتش:</strong>"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid ""
+"<br/>\n"
+"                        <strong>Location:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>الموقع:</strong>"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid ""
+"<br/>\n"
+"                        <strong>Score:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>النتيجة:</strong>"
+
+#. modules: construction_form, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "<strong>Date:</strong>"
+msgstr "<strong>التاريخ:</strong>"
+
+#. modules: construction_form, facility_asset, facility_floorplan,
+#. facility_workorder
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__active
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__active
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__active
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__active
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__active
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__active
+msgid "Active"
+msgstr "نشط"
+
+#. modules: construction_form, construction_rfi
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__answer_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__answer
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Answer"
+msgstr "الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_binary
+msgid "Answer Binary"
+msgstr "مرفق الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_date
+msgid "Answer Date"
+msgstr "تاريخ الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_filename
+msgid "Answer Filename"
+msgstr "اسم ملف الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_number
+msgid "Answer Number"
+msgstr "الإجابة الرقمية"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_text
+msgid "Answer Text"
+msgstr "نص الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_type
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__answer_type
+msgid "Answer Type"
+msgstr "نوع الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_yes_no
+msgid "Answer Yes No"
+msgstr "إجابة نعم / لا"
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__checklist_ids
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_request_form_workorder_notebook
+msgid "Checklist"
+msgstr "قائمة مرجعية "
+
+#. modules: construction_boq, construction_form, facility_asset
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__code
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__code
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__code
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__comment
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid "Comment"
+msgstr "تعليق"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "Complete all required questions before submitting: %s"
+msgstr "أكمل جميع الأسئلة المطلوبة قبل الإرسال: %s"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__completed_date
+msgid "Completed Date"
+msgstr "تاريخ الإنجاز"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_answer
+msgid "Construction Form Answer"
+msgstr "إجابة نموذج إنشائي"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_question
+msgid "Construction Form Question"
+msgstr "سؤال نموذج إنشائي"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_template
+msgid "Construction Form Template"
+msgstr "قالب نموذج إنشائي"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_inspection
+msgid "Construction Inspection"
+msgstr "فحص إنشائي"
+
+#. module: construction_form
+#: model:ir.actions.server,name:construction_form.ir_cron_recurring_inspections_ir_actions_server
+msgid "Construction: Generate Recurring Inspections"
+msgstr "الإنشاءات: Generate متكرر Inspections"
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__days
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__interval_type__days
+msgid "Days"
+msgstr "الأيام"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__responsible_id
+msgid "Default Inspector"
+msgstr "المفتش الافتراضي"
+
+#. module: construction_form
+#: model:ir.model.constraint,message:construction_form.constraint_construction_form_answer_question_inspection_uniq
+msgid "Each question can only be answered once per inspection."
+msgstr "لا يمكن الإجابة عن كل سؤال أكثر من مرة في الفحص الواحد."
+
+#. module: construction_form
+#: model:ir.actions.act_window,name:construction_form.action_form_templates
+#: model:ir.ui.menu,name:construction_form.menu_construction_form_templates
+msgid "Form Templates"
+msgstr "قوالب النماذج"
+
+#. modules: construction_form, construction_ui
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_ui.action_workspace_inspections
+#: model:ir.ui.menu,name:construction_form.menu_construction_forms
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Forms & Inspections"
+msgstr "النماذج وعمليات التفتيش"
+
+#. modules: construction_defect, construction_form
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__in_progress
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__in_progress
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__inspection_id
+msgid "Inspection"
+msgstr "فحص"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__inspection_count
+msgid "Inspection Count"
+msgstr "عدد الفحوصات"
+
+#. module: construction_form
+#: model:ir.actions.report,name:construction_form.action_report_form_inspection
+msgid "Inspection Report"
+msgstr "تقرير الفحص"
+
+#. module: construction_form
+#: model:ir.actions.act_window,name:construction_form.action_form_inspections
+msgid "Inspections"
+msgstr "عمليات التفتيش"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__inspector_id
+msgid "Inspector"
+msgstr "المفتش"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__instructions
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_form
+msgid "Instructions"
+msgstr "التعليمات"
+
+#. modules: construction_daily_log, construction_defect, construction_form,
+#. facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__location
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__location
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__location
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__location_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__location_id
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_list
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_search
+msgid "Location"
+msgstr "الموقع"
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__months
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__interval_type__months
+msgid "Months"
+msgstr "شهور"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "My Inspections"
+msgstr "فحوصاتي"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_answer__answer_yes_no__na
+msgid "N/A"
+msgstr "لا ينطبق"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "New"
+msgstr "جديد"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__next_run_date
+msgid "Next Run Date"
+msgstr "تاريخ التشغيل التالي"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_answer__answer_yes_no__no
+msgid "No"
+msgstr "لا"
+
+#. modules: construction_daily_log, construction_form,
+#. construction_subcontractor, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__notes
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__notes
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__number
+msgid "Number"
+msgstr "رقم"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__photo
+msgid "Photo"
+msgstr "صورة"
+
+#. modules: construction_form, construction_rfi
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__question_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__question_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__question
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Question"
+msgstr "السؤال"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_form
+msgid "Questions"
+msgstr "الأسئلة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__recurrence_interval
+msgid "Recurrence Interval"
+msgstr "فاصل التكرار"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__recurrence_unit
+msgid "Recurrence Unit"
+msgstr "وحدة التكرار"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__recurring
+msgid "Recurring"
+msgstr "متكرر"
+
+#. modules: construction_change_order, construction_form
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_event_form
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_order_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Reject"
+msgstr "رفض"
+
+#. modules: construction_change_order, construction_form,
+#. construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__rejected
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_event__state__rejected
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_order__state__rejected
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__rejected
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__rejected
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. modules: construction_defect, construction_form, construction_rfi
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Reopen"
+msgstr "إعادة فتح"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__required
+msgid "Required"
+msgstr "مطلوب"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__scheduled_date
+msgid "Scheduled Date"
+msgstr "التاريخ المجدول"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__score
+msgid "Score"
+msgstr "النتيجة"
+
+#. modules: construction_boq, construction_form, construction_progress_billing
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__section_ids
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__section_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__section
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__section_id
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+msgid "Section"
+msgstr "القسم"
+
+#. modules: construction_boq, construction_change_order, construction_form,
+#. construction_progress_billing, construction_subcontractor,
+#. facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__sequence
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__sequence
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__sequence
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__sequence
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__sequence
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__sequence
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__sequence
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__sequence
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__signature
+msgid "Signature"
+msgstr "التوقيع"
+
+#. modules: construction_defect, construction_form
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Start"
+msgstr "بدء"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_form
+msgid "Start Inspection"
+msgstr "بدء الفحص"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__template_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__template_id
+msgid "Template"
+msgstr "القالب "
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__text
+msgid "Text"
+msgstr "نص"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "The question is not part of this inspection template."
+msgstr "السؤال ليس ضمن قالب الفحص هذا."
+
+#. module: construction_form
+#: model:ir.model.constraint,message:construction_form.constraint_construction_form_template_positive_interval
+msgid "The recurrence interval must be greater than zero."
+msgstr "يجب أن يكون فاصل التكرار أكبر من صفر."
+
+#. module: construction_form
+#: model:ir.model.constraint,message:construction_form.constraint_construction_form_template_code_company_uniq
+msgid "The template code must be unique per company."
+msgstr "يجب أن يكون رمز القالب فريداً داخل الشركة."
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__weeks
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__interval_type__weeks
+msgid "Weeks"
+msgstr "أسابيع"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_answer__answer_yes_no__yes
+msgid "Yes"
+msgstr "نعم"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__yes_no
+msgid "Yes / No / N/A"
+msgstr "نعم / لا / لا ينطبق"

@@ -1,8 +1,25 @@
 /** @odoo-module **/
 
 import { Component, onWillStart, useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+
+const LOCALIZED_KEYS = new Set(["label", "hint", "caption", "title", "subtitle", "name", "description"]);
+const localizeItems = (value, key = null) => {
+    if (Array.isArray(value)) {
+        return value.map((item) => localizeItems(item, key));
+    }
+    if (value && typeof value === "object") {
+        return Object.fromEntries(
+            Object.entries(value).map(([childKey, childValue]) => [
+                childKey,
+                localizeItems(childValue, childKey),
+            ])
+        );
+    }
+    return typeof value === "string" && LOCALIZED_KEYS.has(key) ? _t(value) : value;
+};
 
 const today = new Date().toISOString().slice(0, 10);
 
@@ -170,13 +187,15 @@ export class FacilityHome extends Component {
             loading: true,
             kpis: Object.fromEntries(FACILITY_KPIS.map((item) => [item.key, "–"])),
         });
-        this.kpiDefinitions = FACILITY_KPIS;
-        this.focusItems = FACILITY_FOCUS;
-        this.appGroups = FACILITY_GROUPS;
-        this.today = new Intl.DateTimeFormat(undefined, {
+        this.kpiDefinitions = localizeItems(FACILITY_KPIS);
+        this.focusItems = localizeItems(FACILITY_FOCUS);
+        this.appGroups = localizeItems(FACILITY_GROUPS);
+        const interfaceLocale = document.body.classList.contains("o_rtl") ? "ar-AE" : undefined;
+        this.today = new Intl.DateTimeFormat(interfaceLocale, {
             weekday: "long",
             day: "numeric",
             month: "long",
+            numberingSystem: interfaceLocale ? "arab" : undefined,
         }).format(new Date());
 
         onWillStart(async () => {
@@ -196,7 +215,7 @@ export class FacilityHome extends Component {
             await this.action.doAction(actionXmlId);
         } catch {
             this.notification.add(
-                "This workspace is not available. Check that its module is installed.",
+                _t("This workspace is not available. Check that its module is installed."),
                 { type: "warning" }
             );
         }
@@ -204,6 +223,10 @@ export class FacilityHome extends Component {
 
     async openWorkspace(workspaceKey) {
         await this.openAction(`construction_ui.action_workspace_${workspaceKey}`);
+    }
+
+    formatAppCount(count) {
+        return _t("%s apps", count);
     }
 }
 

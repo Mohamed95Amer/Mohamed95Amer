@@ -80,7 +80,7 @@
                              t-foreach="appGroups" t-as="group" t-key="group.title">
                         <header>
                             <div><h3 t-esc="group.title"/><p t-esc="group.subtitle"/></div>
-                            <span t-esc="group.apps.length + ' apps'"/>
+                            <span t-esc="formatAppCount(group.apps.length)"/>
                         </header>
                         <div class="o_suite_apps">
                             <button t-foreach="group.apps" t-as="app" t-key="app.name"

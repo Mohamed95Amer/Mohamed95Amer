@@ -1,0 +1,258 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. modules: construction_form, facility_asset, facility_floorplan,
+#. facility_workorder
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__active
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__active
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__active
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__active
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__active
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__active
+msgid "Active"
+msgstr "نشط"
+
+#. modules: facility_floorplan, facility_workorder
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__equipment_id
+msgid "Asset"
+msgstr "أصل"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__color
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__color
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__color
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__color
+msgid "Color"
+msgstr "اللون"
+
+#. module: facility_floorplan
+#: model_terms:ir.actions.act_window,help:facility_floorplan.action_facility_floorplan
+msgid "Create a floor plan"
+msgstr "إنشاء مخطط طابق"
+
+#. modules: construction_daily_log, facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__equipment_ids
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__equipment_id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__equipment_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__equipment_id
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+msgid "Equipment"
+msgstr "المعدات"
+
+#. module: facility_floorplan
+#: model:ir.model,name:facility_floorplan.model_facility_floorplan
+msgid "Facility Floor Plan"
+msgstr "مخطط طابق المرفق"
+
+#. modules: facility_asset, facility_floorplan
+#: model:ir.model,name:facility_floorplan.model_facility_location
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__facility_location_id
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__facility_location_id
+msgid "Facility Location"
+msgstr "موقع المرفق"
+
+#. module: facility_floorplan
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__sheet_file
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+msgid "Floor Plan PDF"
+msgstr "ملف مخطط الطابق PDF"
+
+#. module: facility_floorplan
+#: model:ir.model,name:facility_floorplan.model_facility_pin
+msgid "Floor Plan Pin"
+msgstr "علامة على مخطط الطابق"
+
+#. module: facility_floorplan
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_floorplan.py:0
+msgid "Floor Plan — %s"
+msgstr "مخطط الطابق — %s"
+
+#. module: facility_floorplan
+#: model:ir.actions.act_window,name:facility_floorplan.action_facility_floorplan
+#: model:ir.ui.menu,name:facility_floorplan.menu_facility_floorplans
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_location_form_floorplan
+msgid "Floor Plans"
+msgstr "مخططات الطوابق"
+
+#. module: facility_floorplan
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_location.py:0
+msgid "Floor Plans — %s"
+msgstr "مخططات الطوابق — %s"
+
+#. module: facility_floorplan
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_location__floorplan_ids
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__floorplan_id
+msgid "Floorplan"
+msgstr "مخطط طابق"
+
+#. module: facility_floorplan
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_location__floorplan_count
+msgid "Floorplan Count"
+msgstr "عدد مخططات الطوابق"
+
+#. module: facility_floorplan
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_search
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. module: facility_floorplan
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_search
+msgid "Has PDF"
+msgstr "يوجد PDF"
+
+#. modules: construction_drawing, facility_floorplan
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__has_sheet
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__has_sheet
+msgid "Has Sheet"
+msgstr "توجد لوحة"
+
+#. modules: construction_pin, facility_asset, facility_floorplan
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__note
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__note
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__note
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__note
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__note
+msgid "Note"
+msgstr "الملاحظات"
+
+#. module: facility_floorplan
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_floorplan.py:0
+msgid "Only PDF files can be uploaded as floor plans."
+msgstr "يمكن رفع ملفات PDF فقط لمخططات الطوابق."
+
+#. modules: construction_pin, facility_floorplan
+#: model_terms:ir.ui.view,arch_db:construction_pin.view_drawing_form_pin
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_list
+msgid "Open Plan Viewer"
+msgstr "فتح عارض المخططات"
+
+#. module: facility_floorplan
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+msgid "Optional notes…"
+msgstr "ملاحظات اختيارية..."
+
+#. module: facility_floorplan
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_list
+msgid "PDF"
+msgstr "PDF"
+
+#. modules: construction_drawing, facility_floorplan
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__attachment_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__attachment_id
+msgid "PDF Attachment"
+msgstr "مرفق PDF"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_ids
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_ids
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_ids
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_ids
+msgid "Pin"
+msgstr "علامة"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_count
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_count
+msgid "Pin Count"
+msgstr "عدد العلامات"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pin_type
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__pin_type
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__pin_type
+msgid "Pin Type"
+msgstr "نوع العلامة"
+
+#. module: facility_floorplan
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_list
+msgid "Pins"
+msgstr "العلامات"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pos_x
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__pos_x
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__pos_x
+msgid "Pos X"
+msgstr "الموضع س"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pos_y
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__pos_y
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__pos_y
+msgid "Pos Y"
+msgstr "الموضع ص"
+
+#. modules: facility_floorplan, facility_workorder
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__request_id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__request_id
+msgid "Request"
+msgstr "طلب"
+
+#. modules: construction_drawing, facility_floorplan
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__sheet_filename
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__sheet_filename
+msgid "Sheet Filename"
+msgstr "اسم ملف اللوحة"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__status_bucket
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__status_bucket
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__status_bucket
+msgid "Status Bucket"
+msgstr "مجموعة الحالة"
+
+#. module: facility_floorplan
+#: model:ir.model.fields,help:facility_floorplan.field_facility_floorplan__attachment_id
+msgid "The floor-plan PDF rendered by the plan viewer."
+msgstr "ملف مخطط الطابق PDF الذي يعرضه عارض المخططات."
+
+#. module: facility_floorplan
+#: model_terms:ir.actions.act_window,help:facility_floorplan.action_facility_floorplan
+msgid ""
+"Upload a PDF floor plan, then open the plan viewer to pin\n"
+"               assets, maintenance requests and notes on it."
+msgstr ""
+"ارفع مخطط طابق PDF ثم افتح عارض المخططات لوضع علامات الأصول وطلبات الصيانة "
+"والملاحظات عليه."
+
+#. module: facility_floorplan
+#: model:ir.model.fields,help:facility_floorplan.field_facility_floorplan__sheet_file
+msgid ""
+"Upload the floor-plan PDF here — it is stored as the plan's attachment and "
+"rendered by the plan viewer."
+msgstr "ارفع مخطط الطابق PDF هنا؛ سيُحفظ كمرفق للمخطط ويعرضه عارض المخططات."
+
+#. module: facility_floorplan
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+msgid "e.g. Level 3 — Office"
+msgstr "مثال: الطابق الثالث — مكتب"

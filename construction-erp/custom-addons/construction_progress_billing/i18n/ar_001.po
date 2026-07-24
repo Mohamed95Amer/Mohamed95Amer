@@ -1,0 +1,372 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid " (net of %(amt)s retention)"
+msgstr " (بعد خصم احتجاز بقيمة %(amt)s)"
+
+#. modules: construction_planning, construction_progress_billing
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__progress
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__pct_complete
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "% Complete"
+msgstr "% الإنجاز"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid ""
+"<br/>\n"
+"                                <strong>Client:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>العميل:</strong>"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid ""
+"<br/>\n"
+"                                <strong>Reference:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>المرجع:</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "<span class=\"o_stat_text\">Invoice</span>"
+msgstr "<span class=\"o_stat_text\">فاتورة</span>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "<strong>Net amount due this certificate</strong>"
+msgstr "<strong>صافي المبلغ المستحق لهذا المستخلص</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "<strong>Period to:</strong>"
+msgstr "<strong>الفترة حتى:</strong>"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_res_company__construction_retention_account_id
+#: model:ir.model.fields,help:construction_progress_billing.field_res_config_settings__construction_retention_account_id
+msgid ""
+"Account where retention withheld on progress claims is booked until release."
+" Auto-created on first use if left empty."
+msgstr ""
+"الحساب الذي تُسجل فيه مبالغ الاحتجاز من مطالبات الدفعات حتى الإفراج عنها، "
+"ويُنشأ تلقائياً عند أول استخدام إذا تُرك فارغاً."
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__amount_cumulative
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__amount_cumulative
+msgid "Amount Cumulative"
+msgstr "المبلغ التراكمي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_net_cumulative
+msgid "Amount Net Cumulative"
+msgstr "صافي المبلغ التراكمي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__amount_this
+msgid "Amount This Period"
+msgstr "مبلغ الفترة الحالية"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__boq_line_id
+msgid "Boq Line"
+msgstr "بند جدول الكميات"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__certified
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__certified
+msgid "Certified"
+msgstr "معتمد "
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Certify"
+msgstr "اعتماد"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Certify the claim before invoicing."
+msgstr "اعتمد المطالبة قبل إنشاء الفاتورة."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__claim_id
+msgid "Claim"
+msgstr "المطالبة"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_res_company
+msgid "Companies"
+msgstr "الشركات"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_res_config_settings
+msgid "Config Settings"
+msgstr "تهيئة الإعدادات "
+
+#. modules: construction_boq, construction_progress_billing, construction_ui
+#. odoo-javascript
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__amount_sell_total
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_contract
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Contract Amount"
+msgstr "قيمة العقد"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_contract
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Contract Qty"
+msgstr "كمية العقد"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "Create Invoice"
+msgstr "إنشاء فاتورة"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_cumulative
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Cumulative"
+msgstr "التراكمي"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Cumulative Amount"
+msgstr "المبلغ التراكمي"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Cumulative Qty"
+msgstr "الكمية التراكمية"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__sequence_no
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "IPC No."
+msgstr "رقم المستخلص"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Interim Payment Certificate"
+msgstr "مستخلص مرحلي"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid ""
+"Interim Payment Certificate\n"
+"                            No."
+msgstr ""
+"مستخلص مرحلي\n"
+"                            No."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__move_payment_state
+msgid "Invoice Payment"
+msgstr "دفعة الفاتورة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__invoiced
+msgid "Invoiced"
+msgstr "مفوتر"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Less previously certified (net)"
+msgstr "ناقص صافي المعتمد سابقاً"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Less retention"
+msgstr "ناقص الاحتجاز"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Mark Paid"
+msgstr "تعيين كمدفوع"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "Measured Work"
+msgstr "الأعمال المقاسة"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__move_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__move_id
+msgid "Move"
+msgstr "حركة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_due
+msgid "Net Amount Due"
+msgstr "صافي المبلغ المستحق"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "No income account found — configure the chart of accounts."
+msgstr "لم يتم العثور على حساب إيرادات — اضبط دليل الحسابات."
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Only submitted claims can be certified."
+msgstr "يمكن اعتماد المطالبات المُرسلة فقط."
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__paid
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__paid
+msgid "Paid"
+msgstr "مدفوع"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#. odoo-python
+#: code:addons/construction_subcontractor/models/subcontract.py:0
+#: model:ir.actions.report,name:construction_progress_billing.action_report_progress_claim
+msgid "Payment Certificate"
+msgstr "شهادة دفع"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__date_from
+msgid "Period From"
+msgstr "الفترة من"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__date_to
+msgid "Period To"
+msgstr "الفترة إلى"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__previous_claim_id
+msgid "Previous Claim"
+msgstr "المطالبة السابقة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_previous
+msgid "Previous Qty"
+msgstr "الكمية السابقة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_work_done_previous
+msgid "Previously Certified"
+msgstr "المعتمد سابقاً"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_construction_progress_claim
+msgid "Progress Claim / IPC"
+msgstr "مطالبة دفعة / مستخلص"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_construction_progress_claim_line
+msgid "Progress Claim Line"
+msgstr "بند مطالبة دفعة"
+
+#. module: construction_progress_billing
+#: model:ir.actions.act_window,name:construction_progress_billing.action_progress_claim
+#: model:ir.ui.menu,name:construction_progress_billing.menu_progress_claim
+msgid "Progress Claims (IPC)"
+msgstr "مطالبات الدفعات (المستخلصات)"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "Reload from BOQ"
+msgstr "إعادة تحميل من جدول الكميات"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_cumulative
+msgid "Retention (Cumulative)"
+msgstr "الاحتجاز (تراكمي)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_cap_percent
+msgid "Retention Cap (% contract)"
+msgstr "حد الاحتجاز (% من العقد)"
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_percent
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__retention_percent
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__retention_percent
+msgid "Retention Percent"
+msgstr "نسبة الاحتجاز"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_res_company__construction_retention_account_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_res_config_settings__construction_retention_account_id
+msgid "Retention Receivable Account"
+msgstr "حساب الاحتجاز المستحق"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_this
+msgid "Retention This Period"
+msgstr "احتجاز الفترة الحالية"
+
+#. modules: construction_boq, construction_form, construction_progress_billing
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__section_ids
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__section_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__section
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__section_id
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+msgid "Section"
+msgstr "القسم"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Set the project's Client before invoicing."
+msgstr "حدد عميل المشروع قبل إنشاء الفاتورة."
+
+#. modules: construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_this_period
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__qty_this_period
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+msgid "This Period"
+msgstr "هذه الفترة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_work_done_cumulative
+msgid "Work Done (Cumulative)"
+msgstr "الأعمال المنفذة (تراكمي)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_this_period
+msgid "Work This Period"
+msgstr "أعمال الفترة الحالية"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Work done to date"
+msgstr "الأعمال المنفذة حتى تاريخه"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Work executed to %(date)s — %(ref)s%(note)s"
+msgstr "الأعمال المنفذة حتى %(date)s — %(ref)s%(note)s"

@@ -1,0 +1,417 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: facility_asset
+#: model:maintenance.equipment,name:facility_asset.asset_ahu1
+msgid "AHU-01 Air Handling Unit"
+msgstr "AHU-01 وحدة مناولة الهواء"
+
+#. modules: construction_form, facility_asset, facility_floorplan,
+#. facility_workorder
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__active
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__active
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__active
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__active
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__active
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: facility_asset
+#: model:ir.ui.menu,name:facility_asset.menu_facility_categories
+msgid "Asset Categories"
+msgstr "فئات الأصول"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__asset_count
+msgid "Asset Count"
+msgstr "عدد الأصول"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_count_children
+msgid "Asset Count Children"
+msgstr "عدد الأصول الفرعية"
+
+#. module: facility_asset
+#: model:ir.model,name:facility_asset.model_facility_asset_meter
+msgid "Asset Meter"
+msgstr "عداد الأصل"
+
+#. module: facility_asset
+#: model:ir.model,name:facility_asset.model_facility_asset_meter_reading
+msgid "Asset Meter Reading"
+msgstr "قراءة عداد الأصل"
+
+#. modules: construction_ui, facility_asset
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_ui.action_workspace_assets
+#: model:ir.ui.menu,name:facility_asset.menu_facility_assets
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Asset Portfolio"
+msgstr "محفظة الأصول"
+
+#. module: facility_asset
+#: model:ir.model,name:facility_asset.model_facility_spare_line
+msgid "Asset Spare Part"
+msgstr "قطعة غيار الأصل"
+
+#. module: facility_asset
+#: model:ir.model.fields,help:facility_asset.field_maintenance_request__downtime_hours
+msgid ""
+"Asset downtime attributable to this request, for availability and cost "
+"reporting."
+msgstr ""
+"وقت توقف الأصل الناتج عن هذا الطلب لاستخدامه في تقارير الإتاحة والتكلفة."
+
+#. module: facility_asset
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_form
+msgid "Assets"
+msgstr "الأصول"
+
+#. module: facility_asset
+#. odoo-python
+#: code:addons/facility_asset/models/facility_location.py:0
+msgid "Assets — %s"
+msgstr "الأصول — %s"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__barcode
+msgid "Barcode"
+msgstr "باركود"
+
+#. modules: construction_base, facility_asset
+#: model:ir.model.fields.selection,name:construction_base.selection__project_project__project_type__building
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_location__location_type__building
+msgid "Building"
+msgstr "مبنى"
+
+#. modules: construction_daily_log, facility_asset
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__cause
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__failure_cause_id
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_failure_code__failure_type__cause
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Cause"
+msgstr "السبب"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__child_ids
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__child_ids
+msgid "Child"
+msgstr "فرعي"
+
+#. modules: construction_boq, construction_form, facility_asset
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__code
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__code
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__code
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__complete_name
+msgid "Complete Name"
+msgstr "الاسم الكامل"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__critical
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__critical
+msgid "Critical"
+msgstr "حرج"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__criticality
+msgid "Criticality"
+msgstr "درجة الأهمية"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__current_value
+msgid "Current Value"
+msgstr "القيمة الحالية"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__downtime_hours
+msgid "Downtime Hours"
+msgstr "ساعات التوقف"
+
+#. modules: construction_daily_log, facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__equipment_ids
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__equipment_id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__equipment_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__equipment_id
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+msgid "Equipment"
+msgstr "المعدات"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__expected_life_years
+msgid "Expected Life (years)"
+msgstr "العمر المتوقع (سنوات)"
+
+#. modules: facility_asset, facility_floorplan
+#: model:ir.model,name:facility_floorplan.model_facility_location
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__facility_location_id
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__facility_location_id
+msgid "Facility Location"
+msgstr "موقع المرفق"
+
+#. module: facility_asset
+#: model:ir.actions.server,name:facility_asset.cron_warranty_alerts_ir_actions_server
+msgid "Facility: asset warranty expiry alerts"
+msgstr "المرافق: تنبيهات انتهاء ضمان الأصول"
+
+#. module: facility_asset
+#: model:ir.model,name:facility_asset.model_facility_failure_code
+msgid "Failure Code"
+msgstr "رمز عطل"
+
+#. module: facility_asset
+#: model:ir.actions.act_window,name:facility_asset.action_failure_code
+#: model:ir.ui.menu,name:facility_asset.menu_facility_failure_codes
+msgid "Failure Codes"
+msgstr "رموز الأعطال"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__failure_type
+msgid "Failure Type"
+msgstr "نوع الفشل"
+
+#. module: facility_asset
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_location__location_type__floor
+msgid "Floor"
+msgstr "طابق"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__high
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__high
+msgid "High"
+msgstr "مرتفع"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__last_reading_date
+msgid "Last Reading Date"
+msgstr "تاريخ آخر قراءة"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__location_type
+msgid "Location Type"
+msgstr "نوع الموقع "
+
+#. module: facility_asset
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_form
+msgid "Location name"
+msgstr "اسم الموقع "
+
+#. module: facility_asset
+#: model:ir.actions.act_window,name:facility_asset.action_facility_location
+#: model:ir.ui.menu,name:facility_asset.menu_facility_locations
+msgid "Locations"
+msgstr "المواقع"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__low
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__low
+msgid "Low"
+msgstr "منخفض"
+
+#. module: facility_asset
+#: model:ir.model,name:facility_asset.model_maintenance_equipment
+msgid "Maintenance Equipment"
+msgstr "معدات الصيانة"
+
+#. modules: construction_ui, facility_asset
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_ui.action_facility_home
+#: model:ir.ui.menu,name:facility_asset.menu_facility_root
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Majal Facilities"
+msgstr "مجال لإدارة المرافق"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__medium
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. modules: facility_asset, facility_workorder
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__meter_id
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__meter_ids
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__meter_id
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__trigger_type__meter
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Meter"
+msgstr "عداد"
+
+#. module: facility_asset
+#: model:ir.actions.act_window,name:facility_asset.action_meter
+#: model:ir.ui.menu,name:facility_asset.menu_facility_meters
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_equipment_form_facility
+msgid "Meters"
+msgstr "العدادات"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__min_qty
+msgid "Min. Stock"
+msgstr "الحد الأدنى للمخزون"
+
+#. modules: construction_pin, facility_asset, facility_floorplan
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__note
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__note
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__note
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__note
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__note
+msgid "Note"
+msgstr "الملاحظات"
+
+#. modules: construction_boq, facility_asset
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__parent_id
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_search
+msgid "Parent"
+msgstr "الأصل"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__parent_id
+msgid "Parent Asset"
+msgstr "الأصل الرئيسي"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__parent_id
+msgid "Parent Location"
+msgstr "الموقع الرئيسي "
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__parent_path
+msgid "Parent Path"
+msgstr "المسار الرئيسي "
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__failure_problem_id
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_failure_code__failure_type__problem
+msgid "Problem"
+msgstr "المشكلة"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__purchase_value
+msgid "Purchase Value"
+msgstr "قيمة الشراء "
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__reading_ids
+msgid "Reading"
+msgstr "القراءة"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__failure_remedy_id
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_failure_code__failure_type__remedy
+msgid "Remedy"
+msgstr "المعالجة"
+
+#. module: facility_asset
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_location__location_type__room
+msgid "Room"
+msgstr "غرفة"
+
+#. modules: construction_base, facility_asset
+#: model:ir.ui.menu,name:construction_base.menu_construction_config
+#: model:ir.ui.menu,name:facility_asset.menu_facility_config
+msgid "Settings"
+msgstr "الإعدادات"
+
+#. module: facility_asset
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_location__location_type__site
+msgid "Site"
+msgstr "موقع"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__spare_line_ids
+msgid "Spare Line"
+msgstr "بند قطعة غيار"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__product_id
+msgid "Spare Part"
+msgstr "قطعة غيار"
+
+#. module: facility_asset
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_equipment_form_facility
+msgid "Spare Parts"
+msgstr "قطع الغيار"
+
+#. modules: construction_planning, facility_asset
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__link_type
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_search
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_failure_code_search
+msgid "Type"
+msgstr "النوع"
+
+#. modules: construction_boq, facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__uom
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__user_id
+msgid "User"
+msgstr "المستخدم"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__value
+msgid "Value"
+msgstr "القيمة"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__warranty_active
+msgid "Warranty Active"
+msgstr "الضمان ساري"
+
+#. module: facility_asset
+#. odoo-python
+#: code:addons/facility_asset/models/maintenance_equipment.py:0
+msgid "Warranty ends on %s."
+msgstr "ينتهي الضمان في %s."
+
+#. module: facility_asset
+#. odoo-python
+#: code:addons/facility_asset/models/maintenance_equipment.py:0
+msgid "Warranty expiring: %s"
+msgstr "ضمان على وشك الانتهاء: %s"
+
+#. modules: facility_asset, facility_workorder
+#: model:ir.ui.menu,name:facility_asset.menu_facility_requests
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Work Orders"
+msgstr "أوامر العمل"
+
+#. module: facility_asset
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_location__location_type__zone
+msgid "Zone"
+msgstr "منطقة"
+
+#. module: facility_asset
+#: model:ir.model.fields,help:facility_asset.field_facility_asset_meter__name
+msgid "e.g. Running Hours, kWh, Cycles."
+msgstr "مثال: ساعات التشغيل، ك.و.س، دورات."
+
+#. module: facility_asset
+#: model:ir.model.fields,help:facility_asset.field_facility_asset_meter__uom
+msgid "hours / kWh / cycles …"
+msgstr "ساعات / ك.و.س / دورات ..."

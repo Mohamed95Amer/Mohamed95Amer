@@ -5,11 +5,11 @@
             <nav class="o_majal_workspace_nav" aria-label="Workspace navigation">
                 <button class="o_majal_back" t-on-click="goHome">
                     <i class="fa fa-arrow-left"/>
-                    <span t-esc="config.area === 'facilities' ? 'Majal Facilities' : 'Majal Construction'"/>
+                    <span t-esc="suiteTitle"/>
                 </button>
                 <div class="o_majal_breadcrumb">
                     <span>Majal</span><i class="fa fa-angle-right"/>
-                    <span t-esc="config.area === 'facilities' ? 'Facilities' : 'Construction'"/>
+                    <span t-esc="suiteArea"/>
                     <i class="fa fa-angle-right"/><strong t-esc="config.title"/>
                 </div>
                 <span class="o_majal_live"><i/> Live workspace</span>

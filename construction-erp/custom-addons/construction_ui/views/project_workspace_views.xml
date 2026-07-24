@@ -159,6 +159,12 @@
             <xpath expr="//page[@name='construction']" position="attributes">
                 <attribute name="string">Project Profile</attribute>
             </xpath>
+            <xpath expr="//field[@name='label_tasks']" position="attributes">
+                <attribute name="string">Task Label</attribute>
+            </xpath>
+            <xpath expr="//field[@name='last_update_status']" position="attributes">
+                <attribute name="status_label">لوحة المشروع</attribute>
+            </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_majal_documents" type="object" class="oe_stat_button"
                         icon="fa-folder-open" invisible="not is_construction">

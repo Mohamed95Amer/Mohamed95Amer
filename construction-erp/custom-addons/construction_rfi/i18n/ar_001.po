@@ -1,0 +1,270 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "(no date set)"
+msgstr "(لم يُحدد تاريخ)"
+
+#. modules: construction_form, construction_rfi
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__answer_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__answer
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Answer"
+msgstr "الإجابة"
+
+#. module: construction_rfi
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__state__answered
+msgid "Answered"
+msgstr "تمت الإجابة "
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__answered_by_id
+msgid "Answered By"
+msgstr "أجاب بواسطة"
+
+#. modules: construction_drawing, construction_rfi
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__architectural
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__architectural
+msgid "Architectural"
+msgstr "معماري"
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Ball in court: %s — response required by %s."
+msgstr "مسؤول الإجراء: %s — الرد مطلوب قبل %s."
+
+#. modules: construction_drawing, construction_rfi
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__civil
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__civil
+msgid "Civil"
+msgstr "مدني"
+
+#. modules: construction_defect, construction_rfi, construction_subcontractor,
+#. construction_submittal, construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. modules: construction_base, construction_defect, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields.selection,name:construction_base.selection__project_project__construction_stage__closed
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__closed
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__state__closed
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract__state__closed
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__closed
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__closed
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: construction_rfi
+#: model:ir.actions.server,name:construction_rfi.cron_rfi_overdue_ir_actions_server
+msgid "Construction: RFI overdue reminders"
+msgstr "الإنشاءات: تذكيرات طلبات المعلومات المتأخرة"
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__cost_impact
+msgid "Cost Impact"
+msgstr "أثر التكلفة"
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__date_answered
+msgid "Date Answered"
+msgstr "تاريخ الإجابة"
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__date_submitted
+msgid "Date Submitted"
+msgstr "تاريخ التقديم"
+
+#. modules: construction_drawing, construction_rfi
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__discipline
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__discipline
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_search
+msgid "Discipline"
+msgstr "التخصص"
+
+#. modules: construction_drawing, construction_rfi, construction_ui
+#. odoo-python
+#. odoo-javascript
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model:ir.ui.menu,name:construction_drawing.menu_construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Drawings"
+msgstr "الرسومات"
+
+#. modules: construction_base, construction_defect, construction_rfi
+#: model:ir.model.fields.selection,name:construction_base.selection__project_project__project_type__mep
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__mep
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__mep
+msgid "MEP"
+msgstr "ميكانيكا وكهرباء وصحي"
+
+#. module: construction_rfi
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Mark Answered"
+msgstr "تعيين كمجاب"
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Only answered RFIs can be closed."
+msgstr "يمكن إغلاق طلبات المعلومات المجاب عنها فقط."
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Only answered/closed RFIs can be reopened."
+msgstr "يمكن إعادة فتح طلبات المعلومات المجاب عنها أو المغلقة فقط."
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Only draft RFIs can be submitted."
+msgstr "يمكن إرسال طلبات المعلومات المسودة فقط."
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Only submitted RFIs can be answered."
+msgstr "يمكن الرد على طلبات المعلومات المُرسلة فقط."
+
+#. modules: construction_change_order, construction_defect, construction_rfi
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_event__state__open
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__open
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+msgid "Open"
+msgstr "مفتوح"
+
+#. modules: construction_defect, construction_rfi, construction_ui
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Overdue"
+msgstr "متأخر"
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Overdue RFI response: %s"
+msgstr "رد طلب معلومات متأخر: %s"
+
+#. modules: construction_form, construction_rfi
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__question_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__question_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__question
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Question"
+msgstr "السؤال"
+
+#. module: construction_rfi
+#: model:ir.actions.act_window,name:construction_rfi.action_construction_rfi
+#: model:ir.ui.menu,name:construction_rfi.menu_construction_rfi
+msgid "RFIs"
+msgstr "طلبات المعلومات"
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__raised_by_id
+msgid "Raised By"
+msgstr "أنشأ بواسطة"
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__drawing_revision_ids
+msgid "Referenced Drawings"
+msgstr "الرسومات المرجعية"
+
+#. modules: construction_defect, construction_form, construction_rfi
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Reopen"
+msgstr "إعادة فتح"
+
+#. module: construction_rfi
+#: model:ir.model,name:construction_rfi.model_construction_rfi
+msgid "Request for Information"
+msgstr "طلب معلومات"
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__schedule_impact
+msgid "Schedule Impact"
+msgstr "أثر الجدول"
+
+#. module: construction_rfi
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__portal_visible
+msgid "Show this RFI to portal users (client/consultant/subcontractor)."
+msgstr ""
+"أظهر طلب المعلومات هذا لمستخدمي البوابة من العميل والاستشاري والمقاول "
+"الباطن."
+
+#. modules: construction_defect, construction_pin, construction_rfi,
+#. construction_ui, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__status
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__status
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__status
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+msgid "Status"
+msgstr "الحالة"
+
+#. modules: construction_defect, construction_drawing, construction_rfi
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__structural
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__structural
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__structural
+msgid "Structural"
+msgstr "إنشائي"
+
+#. module: construction_rfi
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Subject"
+msgstr "الموضوع "
+
+#. module: construction_rfi
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__schedule_impact
+msgid "The answer may affect the programme — candidate for an EOT."
+msgstr "قد تؤثر الإجابة على البرنامج الزمني — مرشح لطلب تمديد مدة."
+
+#. module: construction_rfi
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__cost_impact
+msgid ""
+"The answer may change the contract cost — candidate for a change event."
+msgstr "قد تغير الإجابة تكلفة العقد — مرشح لإنشاء حدث تغيير."
+
+#. module: construction_rfi
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__portal_visible
+msgid "Visible in Portal"
+msgstr "ظاهر في البوابة"
+
+#. module: construction_rfi
+#. odoo-python
+#: code:addons/construction_rfi/models/rfi.py:0
+msgid "Write the answer before marking as answered."
+msgstr "اكتب الإجابة قبل تعيين الطلب كمجاب."
