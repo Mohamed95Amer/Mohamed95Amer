@@ -69,6 +69,10 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   floor→room), asset parent/child, criticality, warranties (expiry-alert cron),
   **meters & readings**, **failure codes** (problem/cause/remedy) and downtime
   on maintenance requests, and spare-part lists. New **Facilities** app.
+- **facility_workorder** — **job plans**, **preventive-maintenance plans**
+  (calendar- and meter-based) that auto-generate maintenance work orders via
+  cron, a work-order **checklist** copied from the job plan, and labour /
+  parts / contractor **costing**.
 
 The full multi-phase roadmap (field pins on plans, daily logs, defects,
 change orders, progress/RA billing with retention, subcontractor management,
