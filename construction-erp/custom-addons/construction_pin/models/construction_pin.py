@@ -40,6 +40,11 @@ class ConstructionPin(models.Model):
     note = fields.Text()
     status = fields.Char(compute="_compute_status_color")
     color = fields.Integer(compute="_compute_status_color")
+    status_bucket = fields.Char(
+        compute="_compute_status_color",
+        help="Semantic colour bucket for the viewer: open / in_progress / "
+        "done / info.",
+    )
 
     @api.constrains("pos_x", "pos_y")
     def _check_coords(self):
@@ -70,6 +75,7 @@ class ConstructionPin(models.Model):
                 }.get(pin.rfi_id.state, "open")
             pin.status = status
             pin.color = PIN_COLORS.get(bucket, PIN_COLORS["default"])
+            pin.status_bucket = bucket
 
     def action_open_target(self):
         self.ensure_one()
@@ -94,7 +100,7 @@ class ConstructionPin(models.Model):
     @api.model
     def _viewer_pin_fields(self):
         return ["id", "name", "pos_x", "pos_y", "pin_type", "status", "color",
-                "task_id", "rfi_id"]
+                "status_bucket", "task_id", "rfi_id"]
 
     @api.model
     def get_plan_data(self, revision_id):

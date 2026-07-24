@@ -22,11 +22,14 @@
                     <notebook>
                         <page string="Revisions" name="revisions">
                             <field name="revision_ids">
-                                <list>
+                                <list editable="bottom">
                                     <field name="revision"/>
                                     <field name="issued_for"/>
                                     <field name="issue_date"/>
-                                    <field name="attachment_id"/>
+                                    <field name="sheet_file" widget="binary"
+                                           filename="sheet_filename"
+                                           string="Sheet PDF"/>
+                                    <field name="sheet_filename" column_invisible="1"/>
                                     <field name="state" widget="badge"
                                            decoration-success="state == 'current'"
                                            decoration-muted="state == 'superseded'"/>

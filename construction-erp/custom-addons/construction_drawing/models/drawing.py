@@ -1,3 +1,5 @@
+import base64
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -84,10 +86,66 @@ class ConstructionDrawingRevision(models.Model):
     )
     attachment_id = fields.Many2one(
         "ir.attachment",
-        string="PDF File",
+        string="PDF Attachment",
         ondelete="restrict",
         help="The sheet PDF for this revision.",
     )
+    sheet_file = fields.Binary(
+        compute="_compute_sheet_file",
+        inverse="_inverse_sheet_file",
+        string="Sheet PDF",
+        attachment=False,
+        help="Upload the sheet PDF here — it is stored as the revision's "
+        "attachment and rendered by the plan viewer.",
+    )
+    sheet_filename = fields.Char()
+    has_sheet = fields.Boolean(compute="_compute_has_sheet")
+
+    @api.depends("attachment_id")
+    def _compute_sheet_file(self):
+        for rev in self:
+            rev.sheet_file = rev.attachment_id.datas
+
+    @api.depends("attachment_id")
+    def _compute_has_sheet(self):
+        for rev in self:
+            rev.has_sheet = bool(rev.attachment_id)
+
+    def _inverse_sheet_file(self):
+        for rev in self:
+            old = rev.attachment_id
+            if rev.sheet_file:
+                rev._check_pdf(base64.b64decode(rev.sheet_file))
+                attachment = self.env["ir.attachment"].create(
+                    {
+                        "name": rev.sheet_filename
+                        or f"{rev.display_name or 'sheet'}.pdf",
+                        "datas": rev.sheet_file,
+                        "mimetype": "application/pdf",
+                        "res_model": rev._name,
+                        "res_id": rev.id,
+                    }
+                )
+                rev.attachment_id = attachment
+            else:
+                rev.attachment_id = False
+            if old and old != rev.attachment_id:
+                old.sudo().unlink()
+
+    @api.model
+    def _check_pdf(self, data):
+        if not data.startswith(b"%PDF"):
+            raise UserError(
+                self.env._("Only PDF files can be uploaded as drawing sheets.")
+            )
+
+    def upload_sheet(self, filename, data_b64):
+        """RPC used by the plan viewer's Upload button."""
+        self.ensure_one()
+        self.write(
+            {"sheet_filename": filename or "sheet.pdf", "sheet_file": data_b64}
+        )
+        return {"attachment_id": self.attachment_id.id}
     state = fields.Selection(
         [("current", "Current"), ("superseded", "Superseded")],
         default="current",

@@ -40,6 +40,35 @@ class TestDrawing(TransactionCase):
         self.assertEqual(rev_a.state, "current")
         self.assertEqual(rev_b.state, "superseded")
 
+    def test_upload_sheet_rpc(self):
+        import base64
+
+        rev = self.env["construction.drawing.revision"].create(
+            {"drawing_id": self.drawing.id, "revision": "A"}
+        )
+        pdf_b64 = base64.b64encode(b"%PDF-1.4 minimal").decode()
+        result = rev.upload_sheet("plan.pdf", pdf_b64)
+        self.assertTrue(rev.attachment_id)
+        self.assertEqual(result["attachment_id"], rev.attachment_id.id)
+        self.assertEqual(rev.attachment_id.mimetype, "application/pdf")
+        self.assertTrue(rev.has_sheet)
+        # Replacing removes the old attachment
+        old = rev.attachment_id
+        rev.upload_sheet("plan_v2.pdf", pdf_b64)
+        self.assertNotEqual(rev.attachment_id, old)
+        self.assertFalse(old.exists())
+
+    def test_upload_non_pdf_rejected(self):
+        import base64
+
+        from odoo.exceptions import UserError
+
+        rev = self.env["construction.drawing.revision"].create(
+            {"drawing_id": self.drawing.id, "revision": "A"}
+        )
+        with self.assertRaises(UserError):
+            rev.upload_sheet("x.pdf", base64.b64encode(b"not a pdf").decode())
+
     def test_filename_parsing(self):
         wizard = self.env["construction.drawing.upload"].create(
             {"project_id": self.project.id}
