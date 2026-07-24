@@ -26,8 +26,10 @@
         "facility_floorplan",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "views/construction_home_views.xml",
         "views/facility_home_views.xml",
+        "views/project_workspace_views.xml",
         "views/workspace_hub_views.xml",
         "views/majal_branding.xml",
     ],

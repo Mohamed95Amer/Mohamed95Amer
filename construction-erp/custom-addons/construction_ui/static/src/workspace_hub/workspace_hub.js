@@ -14,6 +14,8 @@ const workspace = (values) => ({
     area: "construction",
     tone: "blue",
     allowCreate: true,
+    domain: [],
+    createContext: {},
     workflow: [
         ["Capture", "Create and classify the operational record."],
         ["Coordinate", "Assign ownership and move the work forward."],
@@ -32,12 +34,76 @@ export const WORKSPACES = {
         action: "construction_base.action_construction_projects",
         icon: "fa-building-o",
         tone: "navy",
+        domain: [["is_construction", "=", true]],
+        createContext: { default_is_construction: true },
         workflow: [
             ["Mobilise", "Set the project team, dates and commercial baseline."],
             ["Deliver", "Coordinate engineering, site and commercial workstreams."],
             ["Handover", "Close delivery and transition assets into operations."],
         ],
         related: ["programme", "drawings", "boq", "daily_logs"],
+    }),
+    site_work: workspace({
+        title: "Site Work Control",
+        eyebrow: "ON-SITE DELIVERY",
+        description: "A project-aware landing page for daily records, structured forms, inspections, quantities and field observations.",
+        model: "construction.form.inspection",
+        action: "construction_form.action_form_inspections",
+        icon: "fa-hard-hat",
+        tone: "sand",
+        workflow: [
+            ["Plan", "Select the project, location, form and responsible field team."],
+            ["Capture", "Record quantities, checks, photos, signatures and daily evidence."],
+            ["Coordinate", "Route exceptions into defects, RFIs or technical approvals."],
+        ],
+        related: ["daily_logs", "inspections", "boq", "plan_viewer"],
+    }),
+    quality_hub: workspace({
+        title: "Quality & QA",
+        eyebrow: "ASSURANCE & CLOSE-OUT",
+        description: "Control inspections, quality assurance forms, snags, observations and technical submittals from one place.",
+        model: "construction.defect",
+        action: "construction_defect.action_construction_defect",
+        icon: "fa-shield",
+        tone: "teal",
+        workflow: [
+            ["Inspect", "Run the planned check and capture objective field evidence."],
+            ["Resolve", "Assign observations and verify corrective action."],
+            ["Approve", "Close the record with a traceable decision and sign-off."],
+        ],
+        related: ["inspections", "defects", "submittals", "drawings"],
+    }),
+    engineering_hub: workspace({
+        title: "Engineering & Information",
+        eyebrow: "DESIGN COORDINATION",
+        description: "Coordinate drawings, revisions, RFIs and submittals with a controlled approval trail.",
+        model: "construction.drawing",
+        action: "construction_drawing.action_construction_drawing",
+        icon: "fa-sitemap",
+        tone: "violet",
+        allowCreate: false,
+        workflow: [
+            ["Register", "Structure the drawing and information registers by project."],
+            ["Review", "Coordinate RFIs, submittals and drawing revision comments."],
+            ["Release", "Sign off and publish the approved information set."],
+        ],
+        related: ["drawings", "rfis", "submittals", "plan_viewer"],
+    }),
+    commercial_hub: workspace({
+        title: "Commercial Control",
+        eyebrow: "COST & CONTRACT",
+        description: "Connect tender documents, quotations, sales orders, BOQs, change and payment control.",
+        model: "majal.project.document",
+        action: "construction_ui.action_majal_project_documents",
+        icon: "fa-line-chart",
+        tone: "navy",
+        allowCreate: false,
+        workflow: [
+            ["Baseline", "Capture tender, contract, quantities, costs and target margin."],
+            ["Control", "Evaluate changes, commitments and measured progress."],
+            ["Certify", "Approve commercial documents and payment outcomes."],
+        ],
+        related: ["boq", "change_orders", "progress_billing", "subcontracts"],
     }),
     plan_viewer: workspace({
         title: "Plan Viewer",
@@ -382,7 +448,10 @@ export class MajalWorkspaceHub extends Component {
 
             const counts = await Promise.allSettled(
                 metricDefinitions.map((metric) =>
-                    this.orm.searchCount(this.config.model, metric.domain)
+                    this.orm.searchCount(
+                        this.config.model,
+                        [...this.config.domain, ...metric.domain]
+                    )
                 )
             );
             this.state.metrics = metricDefinitions.map((metric, index) => ({
@@ -391,7 +460,7 @@ export class MajalWorkspaceHub extends Component {
             }));
             this.state.recent = await this.orm.searchRead(
                 this.config.model,
-                [],
+                this.config.domain,
                 ["display_name", "write_date"],
                 { limit: 5, order: "write_date desc" }
             );
@@ -414,6 +483,7 @@ export class MajalWorkspaceHub extends Component {
                 res_model: this.config.model,
                 views: [[false, "form"]],
                 target: "current",
+                context: this.config.createContext,
             });
         } catch {
             this.warnUnavailable();

@@ -1,1 +1,1 @@
-# This addon is intentionally UI-only.
+from . import models

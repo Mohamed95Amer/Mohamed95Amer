@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Unified project documents: tender, bids, quotations, orders and contracts. -->
+    <record id="view_majal_project_document_list" model="ir.ui.view">
+        <field name="name">majal.project.document.list</field>
+        <field name="model">majal.project.document</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="document_type" widget="badge"/>
+                <field name="partner_id" optional="show"/>
+                <field name="date_document"/>
+                <field name="date_required" optional="show"/>
+                <field name="amount" sum="Total"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('submitted', 'under_review')"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="ball_in_court_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_project_document_kanban" model="ir.ui.view">
+        <field name="name">majal.project.document.kanban</field>
+        <field name="model">majal.project.document</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="document_type" class="o_kanban_small_column">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="state"/>
+                <field name="amount"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <main>
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <strong class="fs-6"><field name="name"/></strong>
+                                <field name="state" widget="label_selection"/>
+                            </div>
+                            <div class="text-muted mt-1"><field name="reference"/></div>
+                            <div class="mt-3"><i class="fa fa-building-o me-1" title="Project"/><field name="project_id"/></div>
+                            <div class="mt-2 fw-semibold" t-if="record.amount.raw_value">
+                                <field name="amount"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_majal_project_document_form" model="ir.ui.view">
+        <field name="name">majal.project.document.form</field>
+        <field name="model">majal.project.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                            class="btn-primary" invisible="state not in ('draft', 'rejected')"/>
+                    <button name="action_review" string="Start Review" type="object"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_approve" string="Approve" type="object"
+                            class="btn-primary" invisible="state not in ('submitted', 'under_review')"/>
+                    <button name="action_reject" string="Return" type="object"
+                            invisible="state not in ('submitted', 'under_review')"/>
+                    <button name="action_close" string="Close" type="object"
+                            invisible="state != 'approved'"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object"
+                            invisible="state not in ('rejected', 'closed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,under_review,approved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Document title"/></h1>
+                        <div class="text-muted fs-5"><field name="reference"/></div>
+                    </div>
+                    <group>
+                        <group string="Document">
+                            <field name="project_id"/>
+                            <field name="document_type"/>
+                            <field name="partner_id"/>
+                            <field name="date_document"/>
+                            <field name="date_required"/>
+                        </group>
+                        <group string="Commercial &amp; Responsibility">
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="approver_id"/>
+                            <field name="ball_in_court_id"/>
+                            <field name="is_overdue"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Files &amp; Attachments" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Scope, requirements and document notes..."/>
+                        </page>
+                        <page string="Approval Trail" name="approval">
+                            <group>
+                                <group>
+                                    <field name="submitted_by_id"/>
+                                    <field name="submitted_date"/>
+                                </group>
+                                <group>
+                                    <field name="approved_by_id"/>
+                                    <field name="approved_date"/>
+                                </group>
+                            </group>
+                            <field name="decision_note" placeholder="Reviewer decision and conditions..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_majal_project_document_search" model="ir.ui.view">
+        <field name="name">majal.project.document.search</field>
+        <field name="model">majal.project.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <filter name="needs_action" string="Needs Action"
+                        domain="[('state', 'in', ('submitted', 'under_review'))]"/>
+                <filter name="overdue" string="Overdue" domain="[('is_overdue', '=', True)]"/>
+                <separator/>
+                <filter name="group_project" string="Project" context="{'group_by': 'project_id'}"/>
+                <filter name="group_type" string="Document Type" context="{'group_by': 'document_type'}"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_project_documents" model="ir.actions.act_window">
+        <field name="name">Documents &amp; Commercial</field>
+        <field name="res_model">majal.project.document</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_group_project': 1}</field>
+    </record>
+
+    <!-- Project 360: one project folder with every delivery stream in context. -->
+    <record id="view_project_form_majal_360" model="ir.ui.view">
+        <field name="name">project.project.form.majal.360</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="construction_base.view_project_form_construction"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='construction']" position="attributes">
+                <attribute name="string">Project Profile</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_majal_documents" type="object" class="oe_stat_button"
+                        icon="fa-folder-open" invisible="not is_construction">
+                    <field name="majal_document_count" widget="statinfo" string="Documents"/>
+                </button>
+                <button name="action_majal_boqs" type="object" class="oe_stat_button"
+                        icon="fa-list-ol" invisible="not is_construction">
+                    <field name="boq_count" widget="statinfo" string="BOQs"/>
+                </button>
+                <button name="action_majal_drawings" type="object" class="oe_stat_button"
+                        icon="fa-file-pdf-o" invisible="not is_construction">
+                    <field name="drawing_count" widget="statinfo" string="Drawings"/>
+                </button>
+                <button name="action_majal_site_forms" type="object" class="oe_stat_button"
+                        icon="fa-clipboard" invisible="not is_construction">
+                    <field name="site_form_count" widget="statinfo" string="Site Forms"/>
+                </button>
+                <button name="action_majal_quality" type="object" class="oe_stat_button"
+                        icon="fa-check-square-o" invisible="not is_construction">
+                    <field name="quality_item_count" widget="statinfo" string="Quality"/>
+                </button>
+                <button name="action_majal_engineering" type="object" class="oe_stat_button"
+                        icon="fa-paper-plane-o" invisible="not is_construction">
+                    <field name="engineering_item_count" widget="statinfo" string="Engineering"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='construction']" position="after">
+                <page string="Documents &amp; Tender" name="majal_documents"
+                      invisible="not is_construction">
+                    <div class="alert alert-info border-0 mb-3" role="alert">
+                        One controlled register for tender papers, bidding requests,
+                        quotations, sales orders, contracts and authority documents.
+                    </div>
+                    <field name="majal_document_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list editable="bottom" delete="false">
+                            <field name="reference" readonly="1"/>
+                            <field name="name"/>
+                            <field name="document_type" widget="badge"/>
+                            <field name="partner_id"/>
+                            <field name="date_document"/>
+                            <field name="date_required"/>
+                            <field name="amount"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Commercial &amp; BOQ" name="majal_commercial"
+                      invisible="not is_construction">
+                    <field name="boq_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="name"/>
+                            <field name="version"/>
+                            <field name="amount_sell_total" sum="Contract Amount"/>
+                            <field name="amount_cost_total" sum="Budget Cost"/>
+                            <field name="margin_percent"/>
+                            <field name="percent_complete"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Site Work" name="majal_site_work"
+                      invisible="not is_construction">
+                    <field name="form_inspection_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="name"/>
+                            <field name="template_id"/>
+                            <field name="location"/>
+                            <field name="scheduled_date"/>
+                            <field name="inspector_id"/>
+                            <field name="score"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Quality &amp; QA" name="majal_quality"
+                      invisible="not is_construction">
+                    <group>
+                        <group string="Field Quality">
+                            <field name="quality_item_count" string="Forms, submittals &amp; snags"/>
+                        </group>
+                        <group string="Quick Navigation">
+                            <button name="action_majal_site_forms" type="object"
+                                    string="Open Inspections &amp; QA Forms" class="btn-primary"/>
+                            <button name="action_majal_quality" type="object"
+                                    string="Open Snags &amp; Observations"/>
+                        </group>
+                    </group>
+                    <field name="defect_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="reference"/>
+                            <field name="name"/>
+                            <field name="location"/>
+                            <field name="trade"/>
+                            <field name="severity" widget="badge"/>
+                            <field name="assigned_user_id"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Drawings &amp; Revisions" name="majal_drawings"
+                      invisible="not is_construction">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h4 class="mb-1">Controlled drawing register</h4>
+                            <span class="text-muted">Every drawing, revision, PDF and sign-off status in one place.</span>
+                        </div>
+                        <button name="action_majal_drawings" type="object"
+                                string="Open Full Drawing Register" class="btn-primary"/>
+                    </div>
+                    <field name="drawing_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="number"/>
+                            <field name="name"/>
+                            <field name="discipline"/>
+                            <field name="current_revision_id"/>
+                            <field name="revision_count"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Engineering Workflow" name="majal_engineering"
+                      invisible="not is_construction">
+                    <group>
+                        <group string="Coordination">
+                            <field name="engineering_item_count" string="Open information records"/>
+                        </group>
+                        <group string="Quick Navigation">
+                            <button name="action_majal_engineering" type="object"
+                                    string="Open Submittals" class="btn-primary"/>
+                        </group>
+                    </group>
+                    <separator string="Requests for Information"/>
+                    <field name="rfi_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="reference"/>
+                            <field name="name"/>
+                            <field name="date_required"/>
+                            <field name="ball_in_court_id"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                    <separator string="Technical Submittals"/>
+                    <field name="submittal_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="reference"/>
+                            <field name="name"/>
+                            <field name="submittal_type"/>
+                            <field name="revision"/>
+                            <field name="date_required"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Dedicated drawing revision form so each revision has a real sign-off trail. -->
+    <record id="view_drawing_revision_list_majal" model="ir.ui.view">
+        <field name="name">construction.drawing.revision.list.majal</field>
+        <field name="model">construction.drawing.revision</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="project_id"/>
+                <field name="drawing_id"/>
+                <field name="revision"/>
+                <field name="issued_for"/>
+                <field name="issue_date"/>
+                <field name="has_sheet"/>
+                <field name="approval_state" widget="badge"
+                       decoration-info="approval_state == 'submitted'"
+                       decoration-success="approval_state == 'approved'"
+                       decoration-danger="approval_state == 'rejected'"/>
+                <field name="approver_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_drawing_revision_form_majal" model="ir.ui.view">
+        <field name="name">construction.drawing.revision.form.majal</field>
+        <field name="model">construction.drawing.revision</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_approval" string="Request Sign-off" type="object"
+                            class="btn-primary" invisible="approval_state not in ('draft', 'rejected')"/>
+                    <button name="action_approve_revision" string="Sign Off" type="object"
+                            class="btn-primary" invisible="approval_state != 'submitted'"/>
+                    <button name="action_reject_revision" string="Return with Comments" type="object"
+                            invisible="approval_state != 'submitted'"/>
+                    <button name="action_reset_approval" string="Reset to Draft" type="object"
+                            invisible="approval_state != 'rejected'"/>
+                    <button name="action_make_current" string="Publish as Current" type="object"
+                            invisible="state == 'current' or approval_state != 'approved'"/>
+                    <field name="approval_state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="display_name"/>
+                        <h1><field name="display_name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Revision">
+                            <field name="drawing_id"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="revision"/>
+                            <field name="issued_for"/>
+                            <field name="issue_date"/>
+                            <field name="state" widget="badge"/>
+                        </group>
+                        <group string="PDF &amp; Sign-off">
+                            <field name="sheet_file" widget="binary" filename="sheet_filename"/>
+                            <field name="sheet_filename" invisible="1"/>
+                            <field name="approver_id"/>
+                            <field name="approved_by_id"/>
+                            <field name="approved_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Review Notes">
+                            <field name="approval_note"
+                                   placeholder="Reviewer comments, conditions or reasons for return..."/>
+                        </page>
+                        <page string="Submission Trail">
+                            <group>
+                                <field name="submitted_by_id"/>
+                                <field name="submitted_date"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_drawing_revisions" model="ir.actions.act_window">
+        <field name="name">Drawing Revisions &amp; Sign-off</field>
+        <field name="res_model">construction.drawing.revision</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_drawing_form_majal_signoff" model="ir.ui.view">
+        <field name="name">construction.drawing.form.majal.signoff</field>
+        <field name="model">construction.drawing</field>
+        <field name="inherit_id" ref="construction_drawing.view_drawing_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='revision_ids']/list/field[@name='state']" position="before">
+                <field name="approval_state" widget="badge"
+                       decoration-info="approval_state == 'submitted'"
+                       decoration-success="approval_state == 'approved'"
+                       decoration-danger="approval_state == 'rejected'"/>
+                <field name="approver_id" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='revision_ids']/list/button[@name='action_make_current']" position="before">
+                <button name="action_open_revision" type="object"
+                        string="Review / Sign-off" icon="fa-external-link"/>
+            </xpath>
+            <xpath expr="//field[@name='revision_ids']/list/button[@name='action_make_current']" position="attributes">
+                <attribute name="invisible">state == 'current' or approval_state != 'approved'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_majal_project_documents"
+              name="Documents &amp; Commercial"
+              parent="construction_base.menu_construction_commercial"
+              action="action_majal_project_documents"
+              sequence="20"/>
+    <menuitem id="menu_majal_drawing_revisions"
+              name="Revisions &amp; Sign-off"
+              parent="construction_base.menu_construction_engineering"
+              action="action_majal_drawing_revisions"
+              sequence="15"/>
+</odoo>

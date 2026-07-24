@@ -4,6 +4,10 @@
         <value eval="[ref('base.main_company')]"/>
         <value eval="{'name': 'Majal'}"/>
     </function>
+    <function model="res.users" name="write">
+        <value eval="[ref('base.user_root')]"/>
+        <value eval="{'name': 'Majal Assistant'}"/>
+    </function>
 
     <record id="construction_base.menu_construction_root" model="ir.ui.menu">
         <field name="name">Majal Construction</field>
