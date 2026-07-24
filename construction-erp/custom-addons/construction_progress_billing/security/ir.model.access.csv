@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_claim_user,progress.claim user,model_construction_progress_claim,construction_base.group_construction_user,1,0,0,0
+access_claim_commercial,progress.claim commercial,model_construction_progress_claim,construction_base.group_construction_commercial,1,1,1,1
+access_claim_line_user,progress.claim.line user,model_construction_progress_claim_line,construction_base.group_construction_user,1,0,0,0
+access_claim_line_commercial,progress.claim.line commercial,model_construction_progress_claim_line,construction_base.group_construction_commercial,1,1,1,1

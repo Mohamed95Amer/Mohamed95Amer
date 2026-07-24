@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Approve the demo BOQ so it can be certified against -->
+    <function model="construction.boq" name="action_approve">
+        <value eval="[ref('construction_boq.boq_demo_alnoor')]"/>
+    </function>
+
+    <record id="claim_ipc1" model="construction.progress.claim">
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="boq_id" ref="construction_boq.boq_demo_alnoor"/>
+        <field name="date_to" eval="DateTime.today()"/>
+        <field name="line_ids" eval="[
+            (0, 0, {'boq_line_id': ref('construction_boq.boq_line_excavation'), 'qty_this_period': 12000}),
+            (0, 0, {'boq_line_id': ref('construction_boq.boq_line_raft'), 'qty_this_period': 3500}),
+            (0, 0, {'boq_line_id': ref('construction_boq.boq_line_columns'), 'qty_this_period': 2400}),
+            (0, 0, {'boq_line_id': ref('construction_boq.boq_line_slabs'), 'qty_this_period': 15000}),
+        ]"/>
+    </record>
+</odoo>

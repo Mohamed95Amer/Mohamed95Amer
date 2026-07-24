@@ -21,7 +21,7 @@ Enterprise-only — is provided for free by the LGPL-3 **Odoo Mates Accounting
 Community** app (`om_account_accountant` + 7 companion modules). See
 [`docs/reuse-decisions.md`](docs/reuse-decisions.md).
 
-### Custom modules (Phase 1–2 — shipped)
+### Custom modules (Phases 1–3 — shipped)
 
 - **construction_base** — security groups, construction project extensions
   (project code, contract value, retention, parties, lifecycle stages),
@@ -44,8 +44,17 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   3-tap pin → task/RFI/note creation).
 - **construction_planning** — **Primavera-style programme**: WBS, typed task
   dependencies (FS/SS/FF/SF) with lag, a critical-path (CPM) engine computing
-  early/late dates, total float and the critical path, and a Gantt timeline
-  (OCA `web_timeline`).
+  early/late dates, total float and the critical path, baselines & variance,
+  and a Gantt timeline (OCA `web_timeline`).
+- **construction_defect** — snagging / punch lists and DLP defects, pinnable on
+  drawings, assignable to subcontractors, with kanban, severity and a Punch
+  List PDF.
+- **construction_daily_log** — digital site diary (weather, manpower,
+  equipment, activities, delays) with computed totals and a PDF.
+- **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
+  certify cumulative BOQ work done, withhold retention (percent, capped),
+  and raise the net customer invoice; per-line % complete, Payment Certificate
+  PDF.
 
 The full multi-phase roadmap (field pins on plans, daily logs, defects,
 change orders, progress/RA billing with retention, subcontractor management,
@@ -73,7 +82,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```
