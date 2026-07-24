@@ -8,12 +8,12 @@
 
             <div class="o_plan_toolbar">
                 <div class="o_plan_toolbar_left">
-                    <span class="o_plan_project" t-esc="state.projectName"/>
+                    <span class="o_plan_project" t-esc="state.contextName"/>
                     <select class="form-select form-select-sm o_plan_rev_select"
-                            t-on-change="onSelectRevision">
-                        <t t-foreach="state.revisions" t-as="rev" t-key="rev.id">
+                            t-on-change="onSelectSheet">
+                        <t t-foreach="state.sheets" t-as="rev" t-key="rev.id">
                             <option t-att-value="rev.id"
-                                    t-att-selected="rev.id === state.revisionId"
+                                    t-att-selected="rev.id === state.sheetId"
                                     t-esc="rev.label"/>
                         </t>
                     </select>
@@ -56,7 +56,7 @@
                     </button>
                     <button class="btn btn-sm o_btn_addpin"
                             t-att-class="state.addMode ? 'active' : ''"
-                            t-att-disabled="!state.revisionId"
+                            t-att-disabled="!state.sheetId"
                             t-on-click="toggleAddMode">
                         <i class="fa fa-map-pin me-1"/>
                         <t t-if="state.addMode">Cancel</t>
@@ -78,19 +78,19 @@
                         <p>Loading sheet…</p>
                     </div>
                 </t>
-                <t t-elif="!state.revisionId">
+                <t t-elif="!state.sheetId">
                     <div class="o_plan_empty">
                         <i class="fa fa-map-o fa-3x"/>
-                        <p>Open a drawing revision to view its sheet.</p>
+                        <p>Open a sheet to view it.</p>
                         <p class="text-muted">
-                            Engineering ▸ Drawings ▸ pick a drawing ▸ Open Plan Viewer
+                            Pick a drawing or floor plan, then Open Plan Viewer.
                         </p>
                     </div>
                 </t>
                 <t t-elif="!state.hasSheet">
                     <div class="o_plan_empty">
                         <i class="fa fa-cloud-upload fa-3x"/>
-                        <p class="fw-bold">No PDF sheet on this revision yet</p>
+                        <p class="fw-bold">No PDF sheet uploaded yet</p>
                         <p class="text-muted">
                             Upload the drawing sheet to start pinning tasks,
                             RFIs and notes on the plan.

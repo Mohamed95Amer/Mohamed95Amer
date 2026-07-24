@@ -73,6 +73,11 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   (calendar- and meter-based) that auto-generate maintenance work orders via
   cron, a work-order **checklist** copied from the job plan, and labour /
   parts / contractor **costing**.
+- **facility_floorplan** — **pin-on-plan for facilities**: upload a 2D floor
+  plan PDF per location and drop **asset**, **maintenance-request** and
+  **note** pins on it, reusing the same OWL Plan Viewer as construction
+  drawings (via the shared `plan.pin.mixin`). Open it from **Facilities ▸
+  Floor Plans** or a location's *Floor Plans* smart button.
 
 The full multi-phase roadmap (field pins on plans, daily logs, defects,
 change orders, progress/RA billing with retention, subcontractor management,
@@ -100,7 +105,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,construction_change_order,construction_subcontractor,facility_asset,facility_workorder,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,construction_change_order,construction_subcontractor,facility_asset,facility_workorder,facility_floorplan,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="floorplan_l3" model="facility.floorplan">
+        <field name="name">Level 3 — Office Floor</field>
+        <field name="location_id" ref="facility_asset.loc_l3"/>
+        <field name="sheet_filename">level3.pdf</field>
+        <field name="sheet_file" type="base64"
+               file="facility_floorplan/demo/level3.pdf"/>
+    </record>
+
+    <record id="pin_ahu" model="facility.pin">
+        <field name="name">AHU-01</field>
+        <field name="floorplan_id" ref="floorplan_l3"/>
+        <field name="pin_type">asset</field>
+        <field name="pos_x">0.35</field>
+        <field name="pos_y">0.28</field>
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+    </record>
+
+    <record id="pin_note" model="facility.pin">
+        <field name="name">Ceiling leak reported near stair core</field>
+        <field name="floorplan_id" ref="floorplan_l3"/>
+        <field name="pin_type">note</field>
+        <field name="pos_x">0.62</field>
+        <field name="pos_y">0.55</field>
+        <field name="note">Reported by tenant on level 3 — inspect after rain.</field>
+    </record>
+
+</odoo>

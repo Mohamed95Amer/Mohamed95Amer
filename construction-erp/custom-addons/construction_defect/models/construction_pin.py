@@ -19,14 +19,14 @@ class ConstructionPin(models.Model):
         })
         return registry
 
-    def _pin_target_vals(self, pin_type, name, description, project):
+    def _pin_target_vals(self, pin_type, name, description, sheet):
         if pin_type == "defect":
             return {
                 "name": name,
-                "project_id": project.id,
+                "project_id": sheet.project_id.id,
                 "description": description,
             }
-        return super()._pin_target_vals(pin_type, name, description, project)
+        return super()._pin_target_vals(pin_type, name, description, sheet)
 
     def _pin_status(self):
         self.ensure_one()

@@ -59,10 +59,10 @@ class TestPin(TransactionCase):
             }
         )
         data = self.env["construction.pin"].get_plan_data(self.revision.id)
-        self.assertEqual(data["revision"]["id"], self.revision.id)
+        self.assertEqual(data["sheet"]["id"], self.revision.id)
         self.assertEqual(len(data["pins"]), 1)
         self.assertTrue(
-            any(r["id"] == self.revision.id for r in data["revisions"])
+            any(r["id"] == self.revision.id for r in data["sheets"])
         )
 
     def test_status_color_for_rfi_pin(self):

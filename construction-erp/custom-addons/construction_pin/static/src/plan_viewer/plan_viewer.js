@@ -16,17 +16,12 @@ import { _t } from "@web/core/l10n/translation";
 
 const WORKER_SRC = "/web/static/lib/pdfjs/build/pdf.worker.js";
 
-// Fallback shown before the server list loads; the real list (including
-// modules like construction_defect) comes from get_plan_data.
+// Fallback shown before the server list loads.
 const FALLBACK_TYPES = [
-    { id: "task", label: _t("Task"), icon: "fa-wrench" },
-    { id: "rfi", label: _t("RFI"), icon: "fa-question" },
     { id: "note", label: _t("Note"), icon: "fa-sticky-note" },
 ];
 
-/**
- * Modal asking for the new pin's type + label before it is created.
- */
+/** Modal asking for the new pin's type + label before it is created. */
 export class PinPromptDialog extends Component {
     static template = "construction_pin.PinPromptDialog";
     static components = { Dialog };
@@ -53,8 +48,10 @@ export class PinPromptDialog extends Component {
 }
 
 /**
- * Fieldwire/PlanRadar-style plan viewer: renders a drawing sheet PDF on a
- * canvas and overlays status-coloured pins linked to tasks / RFIs / notes.
+ * Generic pin-on-plan viewer. Driven by any model implementing the pin RPCs
+ * (get_plan_data / create_pin_with_target / action_open_target) — construction
+ * drawing pins, facility floor-plan pins, … — selected via action params
+ * `pin_model`, `sheet_model` and `sheet_id`.
  */
 export class PlanViewer extends Component {
     static template = "construction_pin.PlanViewer";
@@ -69,11 +66,13 @@ export class PlanViewer extends Component {
         this.scrollRef = useRef("scroll");
         this.fileInputRef = useRef("fileInput");
         const params = this.props.action.params || this.props.action.context || {};
+        this.pinModel = params.pin_model || "construction.pin";
+        this.sheetModel = params.sheet_model || "construction.drawing.revision";
         this.state = useState({
-            revisionId: params.revision_id || false,
-            revisions: [],
-            projectName: "",
-            revisionLabel: "",
+            sheetId: params.sheet_id || params.revision_id || false,
+            sheets: [],
+            contextName: "",
+            sheetLabel: "",
             pins: [],
             pinTypes: FALLBACK_TYPES,
             addMode: false,
@@ -93,7 +92,7 @@ export class PlanViewer extends Component {
 
         onWillStart(async () => {
             await loadPDFJSAssets();
-            if (this.state.revisionId) {
+            if (this.state.sheetId) {
                 await this.loadData();
             } else {
                 this.state.loading = false;
@@ -108,8 +107,7 @@ export class PlanViewer extends Component {
 
     get visiblePins() {
         return this.state.pins.filter(
-            (pin) => this.state.filters[pin.pin_type] !== false
-        );
+            (pin) => this.state.filters[pin.pin_type] !== false);
     }
 
     pinCount(typeId) {
@@ -119,13 +117,10 @@ export class PlanViewer extends Component {
     async loadData() {
         this.state.loading = true;
         const data = await this.orm.call(
-            "construction.pin",
-            "get_plan_data",
-            [this.state.revisionId]
-        );
-        this.state.projectName = data.revision.project_name;
-        this.state.revisionLabel = data.revision.label;
-        this.state.revisions = data.revisions;
+            this.pinModel, "get_plan_data", [this.state.sheetId]);
+        this.state.contextName = data.sheet.context_name;
+        this.state.sheetLabel = data.sheet.label;
+        this.state.sheets = data.sheets;
         this.state.pins = data.pins;
         if (data.pin_types?.length) {
             this.state.pinTypes = data.pin_types;
@@ -135,7 +130,7 @@ export class PlanViewer extends Component {
             filters[type.id] = this.state.filters[type.id] !== false;
         }
         this.state.filters = filters;
-        this.attachmentId = data.revision.attachment_id;
+        this.attachmentId = data.sheet.attachment_id;
         this.state.hasSheet = Boolean(this.attachmentId);
         this.state.loading = false;
     }
@@ -148,19 +143,17 @@ export class PlanViewer extends Component {
         try {
             this.pdfjs.GlobalWorkerOptions.workerSrc = WORKER_SRC;
             const pdf = await this.pdfjs.getDocument(
-                `/web/content/${this.attachmentId}`
-            ).promise;
+                `/web/content/${this.attachmentId}`).promise;
             const page = await pdf.getPage(1);
             if (seq !== this._renderSeq) {
-                return; // a newer render started meanwhile
+                return;
             }
             if (fit && this.scrollRef.el) {
                 const base = page.getViewport({ scale: 1 });
                 const available = this.scrollRef.el.clientWidth - 48;
                 if (available > 100) {
                     this.state.scale = Math.min(
-                        3, Math.max(0.4, available / base.width)
-                    );
+                        3, Math.max(0.4, available / base.width));
                 }
             }
             const viewport = page.getViewport({ scale: this.state.scale });
@@ -168,20 +161,17 @@ export class PlanViewer extends Component {
             canvas.width = viewport.width;
             canvas.height = viewport.height;
             await page.render({
-                canvasContext: canvas.getContext("2d"),
-                viewport,
+                canvasContext: canvas.getContext("2d"), viewport,
             }).promise;
         } catch (error) {
-            this.notification.add(
-                _t("Could not render the drawing sheet PDF."),
-                { type: "danger" }
-            );
+            this.notification.add(_t("Could not render the sheet PDF."),
+                { type: "danger" });
             console.error(error);
         }
     }
 
-    async onSelectRevision(ev) {
-        this.state.revisionId = parseInt(ev.target.value, 10);
+    async onSelectSheet(ev) {
+        this.state.sheetId = parseInt(ev.target.value, 10);
         await this.loadData();
         await this.renderPdf({ fit: true });
     }
@@ -203,9 +193,6 @@ export class PlanViewer extends Component {
         this.state.filters[typeId] = !this.state.filters[typeId];
     }
 
-    // ------------------------------------------------------------------
-    // Sheet upload
-    // ------------------------------------------------------------------
     triggerUpload() {
         this.fileInputRef.el?.click();
     }
@@ -217,9 +204,8 @@ export class PlanViewer extends Component {
             return;
         }
         if (!/\.pdf$/i.test(file.name)) {
-            this.notification.add(_t("Please choose a PDF file."), {
-                type: "warning",
-            });
+            this.notification.add(_t("Please choose a PDF file."),
+                { type: "warning" });
             return;
         }
         this.state.uploading = true;
@@ -232,10 +218,8 @@ export class PlanViewer extends Component {
                 reader.readAsDataURL(file);
             });
             const result = await this.orm.call(
-                "construction.drawing.revision",
-                "upload_sheet",
-                [this.state.revisionId, file.name, dataB64]
-            );
+                this.sheetModel, "upload_sheet",
+                [this.state.sheetId, file.name, dataB64]);
             this.attachmentId = result.attachment_id;
             this.state.hasSheet = true;
             this.notification.add(_t("Sheet uploaded."), { type: "success" });
@@ -243,17 +227,13 @@ export class PlanViewer extends Component {
         } catch (error) {
             this.notification.add(
                 _t("Upload failed — is the file a valid PDF?"),
-                { type: "danger" }
-            );
+                { type: "danger" });
             console.error(error);
         } finally {
             this.state.uploading = false;
         }
     }
 
-    // ------------------------------------------------------------------
-    // Pins
-    // ------------------------------------------------------------------
     async onSheetClick(ev) {
         if (!this.state.addMode) {
             return;
@@ -265,17 +245,9 @@ export class PlanViewer extends Component {
             pinTypes: this.state.pinTypes,
             confirm: async (vals) => {
                 const pin = await this.orm.call(
-                    "construction.pin",
-                    "create_pin_with_target",
-                    [
-                        this.state.revisionId,
-                        posX,
-                        posY,
-                        vals.pinType,
-                        vals.name,
-                        vals.description,
-                    ]
-                );
+                    this.pinModel, "create_pin_with_target",
+                    [this.state.sheetId, posX, posY, vals.pinType, vals.name,
+                     vals.description]);
                 this.state.pins = [...this.state.pins, pin];
                 this.state.addMode = false;
                 this.notification.add(_t("Pin created."), { type: "success" });
@@ -286,15 +258,13 @@ export class PlanViewer extends Component {
     async onPinClick(pin, ev) {
         ev.stopPropagation();
         const action = await this.orm.call(
-            "construction.pin", "action_open_target", [pin.id]
-        );
+            this.pinModel, "action_open_target", [pin.id]);
         if (!action) {
             this.notification.add(pin.name, { type: "info" });
             return;
         }
         this.action.doAction(
-            { ...action, target: "new", views: [[false, "form"]] }
-        );
+            { ...action, target: "new", views: [[false, "form"]] });
     }
 
     pinStyle(pin) {
