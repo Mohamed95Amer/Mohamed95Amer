@@ -7,7 +7,14 @@
     "author": "Majal",
     "depends": [
         "web",
+        "mail",
         "board",
+        "project_todo",
+        "spreadsheet_dashboard",
+        "account",
+        "project",
+        "maintenance",
+        "hr",
         "construction_base",
         "construction_boq",
         "construction_drawing",
@@ -32,9 +39,12 @@
         "views/project_workspace_views.xml",
         "views/workspace_hub_views.xml",
         "views/majal_branding.xml",
+        "views/app_icon_branding.xml",
     ],
     "assets": {
         "web.assets_backend": [
+            "construction_ui/static/src/app_launcher/app_launcher.xml",
+            "construction_ui/static/src/app_launcher/app_launcher.scss",
             "construction_ui/static/src/home/construction_home.js",
             "construction_ui/static/src/home/construction_home.xml",
             "construction_ui/static/src/home/construction_home.scss",

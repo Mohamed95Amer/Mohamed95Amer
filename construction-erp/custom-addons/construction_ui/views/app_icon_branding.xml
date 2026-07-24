@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A fully original Majal icon family for every visible top-level app. -->
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/discuss.svg</field>
+    </record>
+    <record id="project_todo.menu_todo_todos" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/tasks.svg</field>
+    </record>
+    <record id="construction_base.menu_construction_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/construction.svg</field>
+    </record>
+    <record id="facility_asset.menu_facility_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/facilities.svg</field>
+    </record>
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/dashboards.svg</field>
+    </record>
+    <record id="account.menu_finance" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/finance.svg</field>
+    </record>
+    <record id="project.menu_main_pm" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/projects.svg</field>
+    </record>
+    <record id="maintenance.menu_maintenance_title" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/maintenance.svg</field>
+    </record>
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/people.svg</field>
+    </record>
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/apps.svg</field>
+    </record>
+    <record id="base.menu_administration" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/settings.svg</field>
+    </record>
+</odoo>
