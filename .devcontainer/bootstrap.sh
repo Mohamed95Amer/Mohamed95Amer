@@ -7,7 +7,8 @@ set -euo pipefail
 cd "$(cd "$(dirname "$0")/.." && pwd)/construction-erp"
 [ -f .env ] || cp .env.example .env
 
-MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,om_account_accountant"
+# Single source of truth for the module list: scripts/init-db.sh
+MODULES="$(grep -m1 '^MODULES=' scripts/init-db.sh | cut -d'"' -f2)"
 
 echo "==> Building images (first run pulls Odoo 18 — a few minutes)…"
 docker compose build
