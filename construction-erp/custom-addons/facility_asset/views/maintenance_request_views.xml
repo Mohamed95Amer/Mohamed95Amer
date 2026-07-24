@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_request_form_facility" model="ir.ui.view">
+        <field name="name">maintenance.request.form.facility</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <field name="duration" position="after">
+                <field name="downtime_hours"/>
+                <field name="facility_location_id"/>
+                <field name="failure_problem_id"/>
+                <field name="failure_cause_id"/>
+                <field name="failure_remedy_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_facility_root"
+              name="Facilities"
+              web_icon="facility_asset,static/description/icon.png"
+              sequence="36"
+              groups="maintenance.group_equipment_manager"/>
+
+    <menuitem id="menu_facility_assets"
+              name="Assets"
+              parent="menu_facility_root"
+              action="maintenance.hr_equipment_action"
+              sequence="10"/>
+
+    <menuitem id="menu_facility_requests"
+              name="Maintenance Requests"
+              parent="menu_facility_root"
+              action="maintenance.hr_equipment_request_action"
+              sequence="20"/>
+
+    <menuitem id="menu_facility_locations"
+              name="Locations"
+              parent="menu_facility_root"
+              action="action_facility_location"
+              sequence="30"/>
+
+    <menuitem id="menu_facility_meters"
+              name="Meters"
+              parent="menu_facility_root"
+              action="action_meter"
+              sequence="40"/>
+
+    <menuitem id="menu_facility_config"
+              name="Configuration"
+              parent="menu_facility_root"
+              sequence="90"/>
+    <menuitem id="menu_facility_failure_codes"
+              name="Failure Codes"
+              parent="menu_facility_config"
+              action="action_failure_code"
+              sequence="10"/>
+    <menuitem id="menu_facility_categories"
+              name="Asset Categories"
+              parent="menu_facility_config"
+              action="maintenance.hr_equipment_category_action"
+              sequence="20"/>
+</odoo>
