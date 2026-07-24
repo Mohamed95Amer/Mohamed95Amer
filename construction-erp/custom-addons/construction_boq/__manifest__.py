@@ -10,7 +10,9 @@
     "depends": ["construction_base", "product", "analytic"],
     "data": [
         "security/ir.model.access.csv",
+        "wizard/boq_import_views.xml",
         "views/boq_views.xml",
+        "report/boq_report.xml",
     ],
     "demo": [
         "demo/boq_demo.xml",

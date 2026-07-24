@@ -15,9 +15,29 @@
                     <button name="action_new_revision" type="object" string="New Revision"
                             invisible="state == 'draft'"
                             groups="construction_base.group_construction_commercial"/>
+                    <button name="%(action_boq_import)d" type="action"
+                            string="Import Lines (XLSX)" icon="fa-upload"
+                            invisible="state == 'locked'"
+                            context="{'default_boq_id': id}"
+                            groups="construction_base.group_construction_commercial"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines" type="object"
+                                class="oe_stat_button" icon="fa-bar-chart">
+                            <field name="line_count" widget="statinfo"
+                                   string="Analysis"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-percent" disabled="1">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="percent_complete"/>
+                                </span>
+                                <span class="o_stat_text">Certified</span>
+                            </div>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1><field name="name"/></h1>
                     </div>
@@ -31,13 +51,15 @@
                             <field name="currency_id" invisible="1"/>
                             <field name="amount_sell_total"/>
                             <field name="amount_cost_total"/>
-                            <field name="margin_percent" widget="percentage"/>
+                            <field name="margin_percent" string="Margin %"/>
+                            <field name="amount_variation_total"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Lines" name="lines">
                             <field name="line_ids">
-                                <list editable="bottom">
+                                <list editable="bottom"
+                                      decoration-info="is_variation">
                                     <field name="sequence" widget="handle"/>
                                     <field name="section_id"/>
                                     <field name="item_code"/>
@@ -48,6 +70,9 @@
                                     <field name="unit_cost"/>
                                     <field name="amount_sell" sum="Total"/>
                                     <field name="amount_cost" sum="Total"/>
+                                    <field name="margin_amount" sum="Total" optional="show"/>
+                                    <field name="margin_percent" optional="hide"/>
+                                    <field name="qty_certified" optional="hide"/>
                                     <field name="percent_complete" widget="progressbar" optional="show"/>
                                     <field name="is_variation" optional="hide"/>
                                     <field name="analytic_account_id" optional="hide"/>
@@ -84,9 +109,84 @@
                 <field name="version"/>
                 <field name="amount_sell_total"/>
                 <field name="amount_cost_total"/>
+                <field name="margin_percent" string="Margin %" optional="show"/>
+                <field name="percent_complete" widget="progressbar" optional="show"/>
                 <field name="state" widget="badge"/>
                 <field name="currency_id" column_invisible="1"/>
             </list>
+        </field>
+    </record>
+
+    <!-- Standalone BOQ line analysis: list / pivot / graph -->
+    <record id="view_boq_line_list" model="ir.ui.view">
+        <field name="name">construction.boq.line.list</field>
+        <field name="model">construction.boq.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" decoration-info="is_variation" multi_edit="1">
+                <field name="section_id"/>
+                <field name="item_code"/>
+                <field name="name"/>
+                <field name="uom_id"/>
+                <field name="quantity"/>
+                <field name="unit_rate"/>
+                <field name="unit_cost"/>
+                <field name="amount_sell" sum="Total"/>
+                <field name="amount_cost" sum="Total"/>
+                <field name="margin_amount" sum="Total"/>
+                <field name="amount_certified" sum="Total" optional="show"/>
+                <field name="percent_complete" widget="progressbar"/>
+                <field name="is_variation" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_boq_line_pivot" model="ir.ui.view">
+        <field name="name">construction.boq.line.pivot</field>
+        <field name="model">construction.boq.line</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="section_id" type="row"/>
+                <field name="amount_sell" type="measure"/>
+                <field name="amount_cost" type="measure"/>
+                <field name="margin_amount" type="measure"/>
+                <field name="amount_certified" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_boq_line_graph" model="ir.ui.view">
+        <field name="name">construction.boq.line.graph</field>
+        <field name="model">construction.boq.line</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="0">
+                <field name="section_id"/>
+                <field name="amount_sell" type="measure"/>
+                <field name="amount_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_boq_line_search" model="ir.ui.view">
+        <field name="name">construction.boq.line.search</field>
+        <field name="model">construction.boq.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="item_code"/>
+                <field name="section_id"/>
+                <filter name="filter_variations" string="Variations"
+                        domain="[('is_variation', '=', True)]"/>
+                <filter name="filter_original" string="Original Scope"
+                        domain="[('is_variation', '=', False)]"/>
+                <separator/>
+                <filter name="group_section" string="Section"
+                        context="{'group_by': 'section_id'}"/>
+                <filter name="group_boq" string="BOQ"
+                        context="{'group_by': 'boq_id'}"/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+            </search>
         </field>
     </record>
 
@@ -96,9 +196,23 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    <record id="action_boq_line_analysis" model="ir.actions.act_window">
+        <field name="name">BOQ Analysis</field>
+        <field name="res_model">construction.boq.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_boq_line_search"/>
+        <field name="context">{"search_default_group_section": 1}</field>
+    </record>
+
     <menuitem id="menu_construction_boq"
               name="Bills of Quantities"
               parent="construction_base.menu_construction_commercial"
               action="action_construction_boq"
               sequence="10"/>
+
+    <menuitem id="menu_boq_line_analysis"
+              name="BOQ Analysis"
+              parent="construction_base.menu_construction_commercial"
+              action="action_boq_line_analysis"
+              sequence="15"/>
 </odoo>

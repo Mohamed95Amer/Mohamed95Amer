@@ -15,7 +15,7 @@
                             <field name="planned_duration"
                                    invisible="is_milestone"/>
                             <field name="constraint_date"/>
-                            <field name="progress" widget="percentage"/>
+                            <field name="progress" string="% Complete"/>
                         </group>
                         <group string="Schedule (CPM)">
                             <field name="planned_start"/>
@@ -25,6 +25,20 @@
                             <button name="action_reschedule_project" type="object"
                                     string="Reschedule Project" icon="fa-refresh"
                                     class="btn-link"/>
+                        </group>
+                        <group string="Baseline"
+                               invisible="not baseline_start">
+                            <field name="baseline_start"/>
+                            <field name="baseline_finish"/>
+                            <field name="finish_variance_days"/>
+                        </group>
+                        <group string="Late Dates (CPM)"
+                               invisible="not cpm_late_start"
+                               groups="base.group_no_one">
+                            <field name="cpm_early_start"/>
+                            <field name="cpm_early_finish"/>
+                            <field name="cpm_late_start"/>
+                            <field name="cpm_late_finish"/>
                         </group>
                     </group>
                     <group string="Predecessors">
@@ -52,23 +66,56 @@
         </field>
     </record>
 
-    <!-- Planning list -->
+    <!-- Programme list: selection header buttons + baseline/variance columns -->
     <record id="view_task_list_planning" model="ir.ui.view">
         <field name="name">project.task.list.planning</field>
         <field name="model">project.task</field>
         <field name="arch" type="xml">
-            <list decoration-danger="is_critical" default_order="planned_start">
+            <list decoration-danger="is_critical" default_order="planned_start"
+                  multi_edit="1">
+                <header>
+                    <button name="action_reschedule_project" type="object"
+                            string="Reschedule (CPM)" icon="fa-refresh"/>
+                </header>
                 <field name="wbs_code" optional="show"/>
                 <field name="name"/>
                 <field name="project_id"/>
-                <field name="is_milestone"/>
+                <field name="is_milestone" optional="show"/>
                 <field name="planned_duration"/>
                 <field name="planned_start"/>
                 <field name="planned_finish"/>
                 <field name="total_float"/>
                 <field name="is_critical"/>
+                <field name="baseline_finish" optional="hide"/>
+                <field name="finish_variance_days" optional="show"
+                       decoration-danger="finish_variance_days &gt; 0"
+                       decoration-success="finish_variance_days &lt; 0"/>
                 <field name="progress" widget="progressbar"/>
             </list>
+        </field>
+    </record>
+
+    <!-- Programme search: critical / milestones / slipped filters -->
+    <record id="view_task_search_planning" model="ir.ui.view">
+        <field name="name">project.task.search.planning</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="wbs_code"/>
+                <field name="project_id"/>
+                <filter name="filter_critical" string="Critical Path"
+                        domain="[('is_critical', '=', True)]"/>
+                <filter name="filter_milestones" string="Milestones"
+                        domain="[('is_milestone', '=', True)]"/>
+                <filter name="filter_slipped" string="Slipped vs Baseline"
+                        domain="[('finish_variance_days', '&gt;', 0)]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_stage" string="Stage"
+                        context="{'group_by': 'stage_id'}"/>
+            </search>
         </field>
     </record>
 
@@ -81,10 +128,11 @@
             <timeline date_start="planned_start" date_stop="planned_finish"
                       default_group_by="project_id"
                       dependency_arrow="predecessor_task_ids"
-                      colors="#dc3545:is_critical == True"
+                      colors="#dc3545:is_critical == True;#6f42c1:is_milestone == True"
                       event_open_popup="true">
                 <field name="name"/>
                 <field name="is_critical"/>
+                <field name="is_milestone"/>
                 <field name="predecessor_task_ids"/>
             </timeline>
         </field>
@@ -96,13 +144,36 @@
         <field name="view_mode">timeline,list,form</field>
         <field name="domain">[('project_id.is_construction', '=', True)]</field>
         <field name="context">{"search_default_group_project": 1}</field>
+        <field name="search_view_id" ref="view_task_search_planning"/>
         <field name="view_ids"
                eval="[(5, 0, 0),
                       (0, 0, {'view_mode': 'timeline', 'view_id': ref('view_task_timeline_planning')}),
                       (0, 0, {'view_mode': 'list', 'view_id': ref('view_task_list_planning')})]"/>
     </record>
 
-    <!-- Reschedule button on the construction project form -->
+    <!-- Dependencies manager -->
+    <record id="view_task_link_full_list" model="ir.ui.view">
+        <field name="name">construction.task.link.full.list</field>
+        <field name="model">construction.task.link</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="project_id"/>
+                <field name="predecessor_id"/>
+                <field name="link_type"/>
+                <field name="lag_days"/>
+                <field name="successor_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_task_links" model="ir.actions.act_window">
+        <field name="name">Dependencies</field>
+        <field name="res_model">construction.task.link</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_task_link_full_list"/>
+    </record>
+
+    <!-- Project form: schedule summary + reschedule/baseline buttons -->
     <record id="edit_project_reschedule" model="ir.ui.view">
         <field name="name">project.project.form.reschedule</field>
         <field name="model">project.project</field>
@@ -112,7 +183,29 @@
                 <button name="action_reschedule" type="object"
                         string="Reschedule (CPM)" icon="fa-refresh"
                         invisible="not is_construction"/>
+                <button name="action_set_baseline" type="object"
+                        string="Set Baseline" icon="fa-bookmark"
+                        invisible="not is_construction"
+                        confirm="Capture the current schedule as the baseline? Existing baseline values will be overwritten."/>
             </header>
+        </field>
+    </record>
+
+    <record id="view_project_form_schedule_summary" model="ir.ui.view">
+        <field name="name">project.project.form.schedule.summary</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="construction_base.view_project_form_construction"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='construction']//group[last()]" position="after">
+                <group string="Programme Summary">
+                    <field name="scheduled_start"/>
+                    <field name="scheduled_finish"/>
+                    <field name="schedule_duration_days"/>
+                    <field name="critical_task_count"/>
+                    <field name="last_rescheduled"/>
+                    <field name="baseline_date"/>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>

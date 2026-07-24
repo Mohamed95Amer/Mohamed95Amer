@@ -1,5 +1,7 @@
 from odoo import api, fields, models
 
+from . import cpm
+
 
 class ProjectTask(models.Model):
     _inherit = "project.task"
@@ -31,6 +33,16 @@ class ProjectTask(models.Model):
     )
     is_critical = fields.Boolean(readonly=True, index=True)
 
+    # Baseline (Primavera 'target' schedule) + variance tracking.
+    baseline_start = fields.Datetime(readonly=True)
+    baseline_finish = fields.Datetime(readonly=True)
+    finish_variance_days = fields.Integer(
+        compute="_compute_finish_variance", store=True,
+        string="Finish Variance (wd)",
+        help="Working days the scheduled finish has slipped (+) or gained (-) "
+        "against the baseline.",
+    )
+
     predecessor_link_ids = fields.One2many(
         "construction.task.link", "successor_id", string="Predecessors"
     )
@@ -51,6 +63,17 @@ class ProjectTask(models.Model):
                 "predecessor_id"
             )
 
+    @api.depends("baseline_finish", "planned_finish")
+    def _compute_finish_variance(self):
+        for task in self:
+            if task.baseline_finish and task.planned_finish:
+                task.finish_variance_days = cpm.working_days_between(
+                    task.baseline_finish.date(), task.planned_finish.date()
+                )
+            else:
+                task.finish_variance_days = 0
+
     def action_reschedule_project(self):
         """Reschedule the whole project this activity belongs to."""
-        self.mapped("project_id").action_reschedule()
+        projects = self.mapped("project_id")
+        return projects.action_reschedule()

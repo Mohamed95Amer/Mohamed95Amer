@@ -40,9 +40,19 @@ class ConstructionBoq(models.Model):
         compute="_compute_totals", store=True, string="Budget Cost"
     )
     margin_percent = fields.Float(compute="_compute_totals", store=True)
+    amount_variation_total = fields.Monetary(
+        compute="_compute_totals", store=True, string="Variations",
+        help="Value of lines added by approved variations/change orders."
+    )
+    percent_complete = fields.Float(
+        compute="_compute_totals", store=True, string="% Certified",
+        help="Certified value as a percentage of the contract amount."
+    )
+    line_count = fields.Integer(compute="_compute_line_count")
 
     @api.depends(
-        "line_ids.amount_sell", "line_ids.amount_cost", "line_ids.is_variation"
+        "line_ids.amount_sell", "line_ids.amount_cost",
+        "line_ids.amount_certified", "line_ids.is_variation",
     )
     def _compute_totals(self):
         for boq in self:
@@ -54,6 +64,34 @@ class ConstructionBoq(models.Model):
                 if boq.amount_sell_total
                 else 0.0
             )
+            boq.amount_variation_total = sum(
+                boq.line_ids.filtered("is_variation").mapped("amount_sell")
+            )
+            certified = sum(boq.line_ids.mapped("amount_certified"))
+            boq.percent_complete = (
+                certified / boq.amount_sell_total * 100
+                if boq.amount_sell_total else 0.0
+            )
+
+    def _compute_line_count(self):
+        for boq in self:
+            boq.line_count = len(boq.line_ids)
+
+    def action_view_lines(self):
+        """Open the BOQ lines in a standalone analysis view (list grouped by
+        section, plus pivot and graph)."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("BOQ Analysis — %s", self.name),
+            "res_model": "construction.boq.line",
+            "view_mode": "list,pivot,graph,form",
+            "domain": [("boq_id", "=", self.id)],
+            "context": {
+                "default_boq_id": self.id,
+                "search_default_group_section": 1,
+            },
+        }
 
     def action_approve(self):
         for boq in self:
@@ -156,6 +194,14 @@ class ConstructionBoqLine(models.Model):
     unit_cost = fields.Monetary(compute="_compute_unit_cost", store=True)
     amount_sell = fields.Monetary(compute="_compute_amounts", store=True)
     amount_cost = fields.Monetary(compute="_compute_amounts", store=True)
+    margin_amount = fields.Monetary(compute="_compute_amounts", store=True)
+    margin_percent = fields.Float(compute="_compute_amounts", store=True)
+    amount_claimed = fields.Monetary(
+        compute="_compute_claim_amounts", store=True,
+        help="Cumulative claimed value (claimed qty × unit rate).")
+    amount_certified = fields.Monetary(
+        compute="_compute_claim_amounts", store=True,
+        help="Cumulative certified value (certified qty × unit rate).")
     analytic_account_id = fields.Many2one(
         "account.analytic.account",
         help="Job-costing bucket: actual costs (bills, timesheets, stock "
@@ -197,6 +243,17 @@ class ConstructionBoqLine(models.Model):
         for line in self:
             line.amount_sell = line.quantity * line.unit_rate
             line.amount_cost = line.quantity * line.unit_cost
+            line.margin_amount = line.amount_sell - line.amount_cost
+            line.margin_percent = (
+                line.margin_amount / line.amount_sell * 100
+                if line.amount_sell else 0.0
+            )
+
+    @api.depends("qty_claimed", "qty_certified", "unit_rate")
+    def _compute_claim_amounts(self):
+        for line in self:
+            line.amount_claimed = line.qty_claimed * line.unit_rate
+            line.amount_certified = line.qty_certified * line.unit_rate
 
     @api.depends("quantity", "qty_certified")
     def _compute_percent_complete(self):
