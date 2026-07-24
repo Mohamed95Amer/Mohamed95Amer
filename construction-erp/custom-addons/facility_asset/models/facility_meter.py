@@ -16,8 +16,10 @@ class FacilityAssetMeter(models.Model):
     @api.depends("reading_ids.value", "reading_ids.date")
     def _compute_current_value(self):
         for meter in self:
-            latest = meter.reading_ids.sorted("date")[-1:] \
-                if meter.reading_ids else meter.reading_ids
+            # Sort by (date, id) so multiple readings on the same day resolve
+            # to the most recently entered value.
+            latest = meter.reading_ids.sorted(
+                lambda r: (r.date or fields.Date.today(), r.id))[-1:]
             meter.current_value = latest.value if latest else 0.0
             meter.last_reading_date = latest.date if latest else False
 

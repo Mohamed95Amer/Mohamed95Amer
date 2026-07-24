@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_request_form_workorder" model="ir.ui.view">
+        <field name="name">maintenance.request.form.workorder</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="facility_asset.view_request_form_facility"/>
+        <field name="arch" type="xml">
+            <field name="downtime_hours" position="after">
+                <field name="job_plan_id"/>
+                <field name="pm_plan_id" readonly="1"
+                       invisible="not pm_plan_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_request_form_workorder_notebook" model="ir.ui.view">
+        <field name="name">maintenance.request.form.workorder.notebook</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                    <page string="Checklist" name="checklist">
+                        <button name="action_load_job_plan" type="object"
+                                string="Load from Job Plan" class="btn-link"
+                                invisible="not job_plan_id"/>
+                        <field name="checklist_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="done" widget="boolean_toggle"/>
+                            </list>
+                        </field>
+                        <field name="checklist_progress" widget="progressbar"/>
+                    </page>
+                    <page string="Costing" name="costing">
+                        <group>
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="labor_hours"/>
+                                <field name="labor_rate"/>
+                                <field name="labor_cost"/>
+                            </group>
+                            <group>
+                                <field name="parts_cost"/>
+                                <field name="contractor_cost"/>
+                                <field name="total_cost"/>
+                            </group>
+                        </group>
+                    </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

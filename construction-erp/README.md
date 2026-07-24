@@ -96,7 +96,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,construction_change_order,construction_subcontractor,facility_asset,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,construction_change_order,construction_subcontractor,facility_asset,facility_workorder,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```
