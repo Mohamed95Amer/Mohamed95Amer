@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_ui.FacilityHome">
+        <main class="o_facility_home">
+            <section class="o_facility_hero">
+                <div class="o_facility_hero_copy">
+                    <span class="o_suite_eyebrow">FACILITIES OPERATIONS CENTER</span>
+                    <h1>Reliable buildings start with visible work.</h1>
+                    <p>Assets, preventive maintenance, work orders and floor plans in one operational view.</p>
+                    <div class="o_suite_hero_actions">
+                        <button class="btn o_suite_btn_primary"
+                                t-on-click="() => this.openAction('maintenance.hr_equipment_request_action')">
+                            <i class="fa fa-clipboard"/> Open work orders
+                        </button>
+                        <button class="btn o_suite_btn_secondary"
+                                t-on-click="() => this.openAction('maintenance.hr_equipment_action')">
+                            <i class="fa fa-cogs"/> Asset register
+                        </button>
+                        <button class="btn o_suite_btn_ghost"
+                                t-on-click="() => this.openAction('construction_ui.action_facility_my_dashboard')">
+                            <i class="fa fa-thumb-tack"/> My dashboard
+                        </button>
+                    </div>
+                </div>
+                <div class="o_facility_hero_meta">
+                    <span class="o_suite_date" t-esc="today"/>
+                    <div class="o_suite_status"><span/> Facilities data live</div>
+                </div>
+            </section>
+
+            <section class="o_suite_kpis" aria-label="Facilities overview">
+                <button t-foreach="kpiDefinitions" t-as="kpi" t-key="kpi.key"
+                        t-attf-class="o_suite_kpi o_tone_{{ kpi.tone }}"
+                        t-on-click="() => this.openAction(kpi.action)">
+                    <span class="o_suite_kpi_icon"><i t-attf-class="fa {{ kpi.icon }}"/></span>
+                    <span class="o_suite_kpi_copy">
+                        <strong t-att-class="{'o_skeleton': state.loading}"
+                                t-esc="state.kpis[kpi.key]"/>
+                        <small t-esc="kpi.label"/>
+                    </span>
+                    <i class="fa fa-arrow-right o_suite_kpi_arrow"/>
+                </button>
+            </section>
+
+            <section class="o_facility_workspace">
+                <div class="o_suite_section_intro">
+                    <div>
+                        <span class="o_suite_eyebrow">WORKSPACES</span>
+                        <h2>Run the building from one place</h2>
+                    </div>
+                    <p>Start from the operational question, then drill into the underlying record.</p>
+                </div>
+                <div class="o_facility_groups">
+                    <article class="o_suite_group"
+                             t-foreach="appGroups" t-as="group" t-key="group.title">
+                        <header>
+                            <div><h3 t-esc="group.title"/><p t-esc="group.subtitle"/></div>
+                            <span t-esc="group.apps.length + ' apps'"/>
+                        </header>
+                        <div class="o_suite_apps">
+                            <button t-foreach="group.apps" t-as="app" t-key="app.name"
+                                    class="o_suite_app"
+                                    t-on-click="() => this.openAction(app.action)">
+                                <span t-attf-class="o_suite_app_icon o_tone_{{ app.tone }}">
+                                    <i t-attf-class="fa {{ app.icon }}"/>
+                                </span>
+                                <span class="o_suite_app_copy">
+                                    <strong t-esc="app.name"/>
+                                    <small t-esc="app.description"/>
+                                </span>
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <aside class="o_suite_saved_view_tip">
+                <span class="o_suite_tip_icon"><i class="fa fa-star-o"/></span>
+                <div>
+                    <strong>Your personal facilities workspace</strong>
+                    <p>Save filtered asset lists, overdue work, maintenance graphs and team views to My Dashboard.</p>
+                </div>
+                <button class="btn btn-link"
+                        t-on-click="() => this.openAction('construction_ui.action_facility_my_dashboard')">
+                    Open My Dashboard <i class="fa fa-arrow-right"/>
+                </button>
+            </aside>
+        </main>
+    </t>
+</templates>

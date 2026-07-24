@@ -28,12 +28,16 @@
     ],
     "data": [
         "views/construction_home_views.xml",
+        "views/facility_home_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "construction_ui/static/src/home/construction_home.js",
             "construction_ui/static/src/home/construction_home.xml",
             "construction_ui/static/src/home/construction_home.scss",
+            "construction_ui/static/src/facility_home/facility_home.js",
+            "construction_ui/static/src/facility_home/facility_home.xml",
+            "construction_ui/static/src/facility_home/facility_home.scss",
             "construction_ui/static/src/scss/backend.scss",
         ],
     },

@@ -1,6 +1,6 @@
 $navy: #142b3d;
 $navy-deep: #0b1d2a;
-$amber: #f2a900;
+$amber: #c89b43;
 $surface: #f5f7f8;
 $ink: #182832;
 $muted: #647581;
@@ -12,7 +12,7 @@ $muted: #647581;
     padding: clamp(18px, 3vw, 42px);
     color: $ink;
     background:
-        radial-gradient(circle at 95% 0%, rgba($amber, .10), transparent 24rem),
+        radial-gradient(circle at 95% 0%, rgba($amber, .06), transparent 24rem),
         $surface;
     overflow: auto;
 
@@ -40,7 +40,7 @@ $muted: #647581;
         bottom: -105px;
         width: 330px;
         height: 330px;
-        border: 55px solid rgba($amber, .18);
+        border: 48px solid rgba($amber, .085);
         border-radius: 50%;
     }
 }
@@ -90,9 +90,9 @@ $muted: #647581;
 
 .o_construction_btn_primary {
     color: $navy-deep;
-    border-color: $amber;
-    background: $amber;
-    &:hover { color: $navy-deep; background: lighten($amber, 7%); }
+    border-color: #d2ae69;
+    background: #d2ae69;
+    &:hover { color: $navy-deep; background: #ddbf83; }
 }
 
 .o_construction_btn_secondary {
@@ -136,6 +136,7 @@ $muted: #647581;
 }
 
 .o_construction_kpi {
+    --construction-tone: #647d88;
     display: flex;
     align-items: center;
     gap: 13px;
@@ -143,6 +144,7 @@ $muted: #647581;
     padding: 16px;
     text-align: left;
     border: 1px solid #e1e6e9;
+    border-top: 3px solid var(--construction-tone);
     border-radius: 15px;
     background: white;
     box-shadow: 0 6px 18px rgba($navy-deep,.05);
@@ -157,15 +159,21 @@ $muted: #647581;
     place-items: center;
     width: 42px; height: 42px;
     border-radius: 12px;
-    color: white;
-    background: $navy;
+    color: var(--construction-tone);
+    background: color-mix(in srgb, var(--construction-tone) 13%, white);
 }
-.o_tone_amber { background: #eaa000; }
-.o_tone_coral { background: #d96652; }
-.o_tone_teal { background: #258b85; }
-.o_tone_blue { background: #3c73a8; }
-.o_tone_violet { background: #6d65a8; }
-.o_tone_navy { background: $navy; }
+.o_construction_kpi.o_tone_amber,
+.o_construction_app_icon.o_tone_amber { --construction-tone: #a9874d; }
+.o_construction_kpi.o_tone_coral,
+.o_construction_app_icon.o_tone_coral { --construction-tone: #a86e62; }
+.o_construction_kpi.o_tone_teal,
+.o_construction_app_icon.o_tone_teal { --construction-tone: #558783; }
+.o_construction_kpi.o_tone_blue,
+.o_construction_app_icon.o_tone_blue { --construction-tone: #66839b; }
+.o_construction_kpi.o_tone_violet,
+.o_construction_app_icon.o_tone_violet { --construction-tone: #7b748d; }
+.o_construction_kpi.o_tone_navy,
+.o_construction_app_icon.o_tone_navy { --construction-tone: #496574; }
 
 .o_construction_kpi_copy {
     display: flex;
@@ -236,12 +244,12 @@ $muted: #647581;
     gap: 15px;
     margin-top: 18px;
     padding: 18px 20px;
-    border: 1px solid rgba($amber,.30);
+    border: 1px solid #dfe5e7;
     border-radius: 16px;
-    background: #fffaf0;
+    background: #f8fafb;
     .o_construction_tip_icon {
         display: grid; place-items: center; width: 40px; height: 40px;
-        border-radius: 11px; color: #9b6a00; background: #ffe9b5;
+        border-radius: 11px; color: #657d88; background: #e6edef;
     }
     p { margin: 3px 0 0; color: $muted; font-size: .82rem; }
     .btn { margin-left: auto; color: $navy; font-weight: 700; white-space: nowrap; }
