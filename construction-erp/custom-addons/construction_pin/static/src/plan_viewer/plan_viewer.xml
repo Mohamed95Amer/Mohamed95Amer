@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="construction_pin.PlanViewer">
+        <div class="o_plan_viewer d-flex flex-column h-100">
+            <div class="o_plan_toolbar d-flex align-items-center gap-2 p-2 border-bottom">
+                <span class="fw-bold" t-esc="state.projectName"/>
+                <select class="form-select form-select-sm w-auto"
+                        t-on-change="onSelectRevision">
+                    <t t-foreach="state.revisions" t-as="rev" t-key="rev.id">
+                        <option t-att-value="rev.id"
+                                t-att-selected="rev.id === state.revisionId"
+                                t-esc="rev.label"/>
+                    </t>
+                </select>
+                <div class="btn-group btn-group-sm ms-auto">
+                    <button class="btn btn-secondary" t-on-click="() => this.zoom(-0.2)">
+                        <i class="fa fa-search-minus"/>
+                    </button>
+                    <button class="btn btn-secondary" t-on-click="() => this.zoom(0.2)">
+                        <i class="fa fa-search-plus"/>
+                    </button>
+                </div>
+                <button class="btn btn-sm"
+                        t-att-class="state.addMode ? 'btn-primary' : 'btn-outline-primary'"
+                        t-on-click="toggleAddMode">
+                    <i class="fa fa-map-pin me-1"/>
+                    <t t-if="state.addMode">Click on the sheet…</t>
+                    <t t-else="">Add pin</t>
+                </button>
+            </div>
+
+            <div class="o_plan_scroll flex-grow-1 overflow-auto p-3">
+                <t t-if="state.loading">
+                    <div class="text-center text-muted p-5">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                    </div>
+                </t>
+                <t t-elif="!state.revisionId">
+                    <div class="text-center text-muted p-5">
+                        Open a drawing revision to view its sheet.
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="o_plan_sheet position-relative d-inline-block"
+                         t-att-class="state.addMode ? 'o_add_mode' : ''"
+                         t-on-click="onSheetClick">
+                        <canvas t-ref="canvas"/>
+                        <t t-if="!state.hasSheet">
+                            <div class="o_plan_no_pdf text-muted p-4">
+                                This revision has no PDF sheet attached. Pins can
+                                still be placed once a sheet is uploaded.
+                            </div>
+                        </t>
+                        <t t-foreach="state.pins" t-as="pin" t-key="pin.id">
+                            <div class="o_plan_pin" t-att-class="pinColorClass(pin)"
+                                 t-att-style="pinStyle(pin)"
+                                 t-att-title="pin.name + ' — ' + (pin.status or '')"
+                                 t-on-click="(ev) => this.onPinClick(pin, ev)">
+                                <i class="fa fa-map-marker"/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="construction_pin.PinPromptDialog">
+        <Dialog title="'New pin'" size="'md'">
+            <div class="mb-2">
+                <label class="form-label">Type</label>
+                <select class="form-select" t-model="state.pinType">
+                    <option value="task">Task</option>
+                    <option value="rfi">RFI</option>
+                    <option value="note">Note</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" t-model="state.name"
+                       placeholder="e.g. Cracked tile at column C3"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" t-model="state.description" rows="3"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="onConfirm">Create</button>
+                <button class="btn btn-secondary" t-on-click="() => this.props.close()">
+                    Cancel
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

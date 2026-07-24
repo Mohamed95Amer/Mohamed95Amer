@@ -68,6 +68,7 @@ repos:
     modules:
       - web_responsive
       - web_notify
+      - web_timeline
   reporting-engine:
     url: https://github.com/OCA/reporting-engine.git
     commit: 52e03a544f25b789ed34a0e842603ce0b80f36aa

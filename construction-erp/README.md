@@ -10,7 +10,7 @@ Procore, Fieldwire, PlanRadar and IBM Maximo.
 | Layer | Content |
 |---|---|
 | Odoo core | Pinned by commit in `ODOO_PINNED_SHA`, fetched by `scripts/fetch-odoo.sh` (not committed) |
-| `oca-addons/` | Vendored OCA modules (field service, DMS, helpdesk, contracts, tier validation, MIS builder, responsive web) pinned in `oca-repos.yml` |
+| `oca-addons/` | Vendored OCA modules (field service, DMS, helpdesk, contracts, tier validation, MIS builder, responsive web, Gantt timeline) pinned in `oca-repos.yml` |
 | `third-party-addons/` | Vendored free community apps not from OCA — currently the Odoo Mates **full accounting** suite — pinned in `third-party-repos.yml` |
 | `custom-addons/` | The product — construction & facilities modules (see below) |
 
@@ -21,7 +21,7 @@ Enterprise-only — is provided for free by the LGPL-3 **Odoo Mates Accounting
 Community** app (`om_account_accountant` + 7 companion modules). See
 [`docs/reuse-decisions.md`](docs/reuse-decisions.md).
 
-### Custom modules (Phase 1 — shipped)
+### Custom modules (Phase 1–2 — shipped)
 
 - **construction_base** — security groups, construction project extensions
   (project code, contract value, retention, parties, lifecycle stages),
@@ -38,6 +38,14 @@ Community** app (`om_account_accountant` + 7 companion modules). See
 - **construction_submittal** — submittal register with revision cycles
   (Revise & Resubmit spawns the next revision) and multi-reviewer approval
   chains via OCA `base_tier_validation`.
+- **construction_pin** — Fieldwire/PlanRadar-style pins dropped on drawing
+  sheets, with an interactive **OWL plan viewer** (renders the sheet PDF on a
+  canvas via Odoo's bundled pdf.js, status-coloured pins, tap-to-open, and
+  3-tap pin → task/RFI/note creation).
+- **construction_planning** — **Primavera-style programme**: WBS, typed task
+  dependencies (FS/SS/FF/SF) with lag, a critical-path (CPM) engine computing
+  early/late dates, total float and the critical path, and a Gantt timeline
+  (OCA `web_timeline`).
 
 The full multi-phase roadmap (field pins on plans, daily logs, defects,
 change orders, progress/RA billing with retention, subcontractor management,
@@ -51,7 +59,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Planning tab on the task form -->
+    <record id="view_task_form_planning" model="ir.ui.view">
+        <field name="name">project.task.form.planning</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <page name="description_page" position="after">
+                <page name="planning_page" string="Planning">
+                    <group>
+                        <group string="Activity">
+                            <field name="wbs_code"/>
+                            <field name="is_milestone"/>
+                            <field name="planned_duration"
+                                   invisible="is_milestone"/>
+                            <field name="constraint_date"/>
+                            <field name="progress" widget="percentage"/>
+                        </group>
+                        <group string="Schedule (CPM)">
+                            <field name="planned_start"/>
+                            <field name="planned_finish"/>
+                            <field name="total_float"/>
+                            <field name="is_critical"/>
+                            <button name="action_reschedule_project" type="object"
+                                    string="Reschedule Project" icon="fa-refresh"
+                                    class="btn-link"/>
+                        </group>
+                    </group>
+                    <group string="Predecessors">
+                        <field name="predecessor_link_ids" nolabel="1"
+                               context="{'default_successor_id': id}">
+                            <list editable="bottom">
+                                <field name="predecessor_id"
+                                       domain="[('project_id', '=', parent.project_id), ('id', '!=', parent.id)]"/>
+                                <field name="link_type"/>
+                                <field name="lag_days"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Successors">
+                        <field name="successor_link_ids" nolabel="1" readonly="1">
+                            <list>
+                                <field name="successor_id"/>
+                                <field name="link_type"/>
+                                <field name="lag_days"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <!-- Planning list -->
+    <record id="view_task_list_planning" model="ir.ui.view">
+        <field name="name">project.task.list.planning</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_critical" default_order="planned_start">
+                <field name="wbs_code" optional="show"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="is_milestone"/>
+                <field name="planned_duration"/>
+                <field name="planned_start"/>
+                <field name="planned_finish"/>
+                <field name="total_float"/>
+                <field name="is_critical"/>
+                <field name="progress" widget="progressbar"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Gantt-style timeline (OCA web_timeline) -->
+    <record id="view_task_timeline_planning" model="ir.ui.view">
+        <field name="name">project.task.timeline.planning</field>
+        <field name="model">project.task</field>
+        <field name="type">timeline</field>
+        <field name="arch" type="xml">
+            <timeline date_start="planned_start" date_stop="planned_finish"
+                      default_group_by="project_id"
+                      dependency_arrow="predecessor_task_ids"
+                      colors="#dc3545:is_critical == True"
+                      event_open_popup="true">
+                <field name="name"/>
+                <field name="is_critical"/>
+                <field name="predecessor_task_ids"/>
+            </timeline>
+        </field>
+    </record>
+
+    <record id="action_construction_planning" model="ir.actions.act_window">
+        <field name="name">Programme (Schedule)</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">timeline,list,form</field>
+        <field name="domain">[('project_id.is_construction', '=', True)]</field>
+        <field name="context">{"search_default_group_project": 1}</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'timeline', 'view_id': ref('view_task_timeline_planning')}),
+                      (0, 0, {'view_mode': 'list', 'view_id': ref('view_task_list_planning')})]"/>
+    </record>
+
+    <!-- Reschedule button on the construction project form -->
+    <record id="edit_project_reschedule" model="ir.ui.view">
+        <field name="name">project.project.form.reschedule</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_reschedule" type="object"
+                        string="Reschedule (CPM)" icon="fa-refresh"
+                        invisible="not is_construction"/>
+            </header>
+        </field>
+    </record>
+</odoo>

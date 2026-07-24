@@ -1,0 +1,43 @@
+.o_plan_viewer {
+    background: #f4f5f7;
+
+    .o_plan_sheet {
+        background: #fff;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+
+        &.o_add_mode {
+            cursor: crosshair;
+        }
+
+        canvas {
+            display: block;
+            max-width: none;
+        }
+    }
+
+    .o_plan_pin {
+        position: absolute;
+        transform: translate(-50%, -100%);
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+
+        &:hover {
+            font-size: 26px;
+        }
+
+        // Odoo kanban colour palette subset used by construction.pin.color
+        &.o_pin_color_0 { color: #6c757d; }
+        &.o_pin_color_1 { color: #dc3545; }
+        &.o_pin_color_3 { color: #f0ad4e; }
+        &.o_pin_color_4 { color: #17a2b8; }
+        &.o_pin_color_10 { color: #28a745; }
+    }
+
+    .o_plan_no_pdf {
+        border: 1px dashed #ccc;
+        min-width: 320px;
+        text-align: center;
+    }
+}

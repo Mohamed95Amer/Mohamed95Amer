@@ -22,9 +22,13 @@ CI-ready test runner.
 Each with demo data and TransactionCase tests.
 
 ## Phase 2 — Field operations (Fieldwire/PlanRadar parity)
-- `construction_pin` + OWL Plan Viewer: render sheet PDFs (bundled pdf.js) on
-  canvas, pin overlay with normalized x/y, 3-tap pin → task/defect/RFI create,
-  status-colored pins, filter bar. Mobile-first via `web_responsive` + PWA.
+- `construction_pin` + OWL Plan Viewer ✅: render sheet PDFs (bundled pdf.js) on
+  canvas, pin overlay with normalized x/y, 3-tap pin → task/RFI/note create,
+  status-colored pins. Mobile-first via `web_responsive` + PWA. (Defect pins
+  land with `construction_defect`.)
+- `construction_planning` ✅ (Primavera-style): WBS, typed dependencies
+  (FS/SS/FF/SF) with lag, CPM engine (early/late dates, total float, critical
+  path), Gantt via OCA `web_timeline`. Reschedule button on the project.
 - `construction_daily_log` — site diary (manpower, equipment, activities,
   delays, safety), one-click PDF.
 - `construction_form` — no-code inspection/checklist builder, recurring

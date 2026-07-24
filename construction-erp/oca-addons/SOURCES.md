@@ -12,5 +12,5 @@ update the pin in the repos manifest and re-run the script.
 | https://github.com/OCA/server-ux.git | `d6dc132bd2d1c57933664c036acd62a84e2737da` | base_tier_validation, base_tier_validation_formula, date_range |
 | https://github.com/OCA/maintenance.git | `7f45248ffef4ea07c6767b3c1ca6d549f785acd0` | base_maintenance, maintenance_plan, maintenance_equipment_hierarchy, maintenance_request_purchase, maintenance_equipment_contract |
 | https://github.com/OCA/mis-builder.git | `223b9774af49c7059cbc24c86d531c7aaf642831` | mis_builder, mis_builder_budget |
-| https://github.com/OCA/web.git | `fedf87bfa4243dec6c74bede0e3a1379bf9cd135` | web_responsive, web_notify |
+| https://github.com/OCA/web.git | `fedf87bfa4243dec6c74bede0e3a1379bf9cd135` | web_responsive, web_notify, web_timeline |
 | https://github.com/OCA/reporting-engine.git | `52e03a544f25b789ed34a0e842603ce0b80f36aa` | report_xlsx |

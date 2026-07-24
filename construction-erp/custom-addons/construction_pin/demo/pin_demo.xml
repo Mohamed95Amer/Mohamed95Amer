@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pin_demo_rfi" model="construction.pin">
+        <field name="name">Duct/beam clash — see RFI</field>
+        <field name="revision_id" ref="construction_drawing.drawing_me301_reva"/>
+        <field name="pin_type">rfi</field>
+        <field name="rfi_id" ref="construction_rfi.rfi_demo_submitted"/>
+        <field name="pos_x">0.42</field>
+        <field name="pos_y">0.55</field>
+    </record>
+    <record id="pin_demo_note" model="construction.pin">
+        <field name="name">Confirm ceiling height here</field>
+        <field name="revision_id" ref="construction_drawing.drawing_me301_reva"/>
+        <field name="pin_type">note</field>
+        <field name="note">Coordinate with architect before MEP first-fix.</field>
+        <field name="pos_x">0.7</field>
+        <field name="pos_y">0.3</field>
+    </record>
+</odoo>
