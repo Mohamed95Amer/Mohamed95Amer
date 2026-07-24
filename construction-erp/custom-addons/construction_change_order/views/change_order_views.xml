@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Change Event -->
+    <record id="view_change_event_form" model="ir.ui.view">
+        <field name="name">construction.change.event.form</field>
+        <field name="model">construction.change.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_change_order" type="object"
+                            string="Create Variation Order" class="btn-primary"
+                            invisible="state != 'open'"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state != 'open'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-exchange"
+                                disabled="1">
+                            <field name="change_order_count" widget="statinfo"
+                                   string="VOs"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Change title"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="origin"/>
+                            <field name="source_rfi_id"
+                                   invisible="origin != 'rfi'"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="estimated_amount"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_change_event_list" model="ir.ui.view">
+        <field name="name">construction.change.event.list</field>
+        <field name="model">construction.change.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="origin"/>
+                <field name="estimated_amount"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'converted'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_change_event" model="ir.actions.act_window">
+        <field name="name">Change Events</field>
+        <field name="res_model">construction.change.event</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Change Order (Variation) -->
+    <record id="view_change_order_form" model="ir.ui.view">
+        <field name="name">construction.change.order.form</field>
+        <field name="model">construction.change.order</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="state != 'submitted'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state not in ('draft', 'submitted')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_boq_lines" type="object"
+                                class="oe_stat_button" icon="fa-list"
+                                invisible="not boq_section_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">BOQ Lines</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Variation title"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="boq_id"/>
+                            <field name="change_event_id"/>
+                            <field name="change_type"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_sell_total"/>
+                            <field name="amount_cost_total"/>
+                            <field name="approved_date"
+                                   invisible="state != 'approved'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="item_code"/>
+                                    <field name="name"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_rate"/>
+                                    <field name="unit_cost"/>
+                                    <field name="amount_sell" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Reason" name="reason">
+                            <field name="reason"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_change_order_list" model="ir.ui.view">
+        <field name="name">construction.change.order.list</field>
+        <field name="model">construction.change.order</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="change_type"/>
+                <field name="amount_sell_total"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submitted'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_change_order" model="ir.actions.act_window">
+        <field name="name">Variation Orders</field>
+        <field name="res_model">construction.change.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_change_event"
+              name="Change Events"
+              parent="construction_base.menu_construction_commercial"
+              action="action_change_event"
+              sequence="30"/>
+    <menuitem id="menu_change_order"
+              name="Variation Orders"
+              parent="construction_base.menu_construction_commercial"
+              action="action_change_order"
+              sequence="35"/>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_change_order" model="ir.actions.report">
+        <field name="name">Variation Order</field>
+        <field name="model">construction.change.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_change_order.report_co_document</field>
+        <field name="report_file">construction_change_order.report_co_document</field>
+        <field name="binding_model_id" ref="model_construction_change_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_co_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="co">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            Variation Order
+                            <span t-field="co.reference"/>
+                        </h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="co.project_id"/><br/>
+                                <strong>Title:</strong>
+                                <span t-field="co.name"/><br/>
+                                <strong>Type:</strong>
+                                <span t-field="co.change_type"/>
+                            </div>
+                        </div>
+                        <div t-if="co.reason" class="mb-3">
+                            <strong>Reason:</strong>
+                            <span t-field="co.reason"/>
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Description</th>
+                                    <th class="text-end">Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="co.line_ids" t-as="line">
+                                    <td t-field="line.item_code"/>
+                                    <td t-field="line.name"/>
+                                    <td class="text-end" t-field="line.quantity"/>
+                                    <td class="text-end" t-field="line.unit_rate"/>
+                                    <td class="text-end" t-field="line.amount_sell"/>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end">
+                                        <strong>Variation Total</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong t-field="co.amount_sell_total"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

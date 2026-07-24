@@ -55,6 +55,10 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate
   PDF.
+- **construction_change_order** — Change Events (from RFIs / instructions) →
+  priced **Variation Orders** that, on approval, append variation lines to the
+  BOQ (adjusting the contract value, even when locked) and flow into the next
+  IPC; Variation Order PDF.
 
 The full multi-phase roadmap (field pins on plans, daily logs, defects,
 change orders, progress/RA billing with retention, subcontractor management,
@@ -82,7 +86,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_progress_billing,construction_change_order,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

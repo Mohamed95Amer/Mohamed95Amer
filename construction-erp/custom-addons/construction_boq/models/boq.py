@@ -265,6 +265,9 @@ class ConstructionBoqLine(models.Model):
     @api.constrains("boq_id")
     def _check_boq_editable(self):
         for line in self:
+            # Approved variations (change orders) may post to a locked BOQ.
+            if line.is_variation and self.env.context.get("adding_variation"):
+                continue
             if line.boq_id.state == "locked":
                 raise UserError(
                     self.env._("Locked BOQs cannot be modified. Create a new revision.")

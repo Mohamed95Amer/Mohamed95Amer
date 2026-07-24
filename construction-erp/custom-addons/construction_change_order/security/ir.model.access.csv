@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ce_user,change.event user,model_construction_change_event,construction_base.group_construction_user,1,1,1,0
+access_ce_pm,change.event pm,model_construction_change_event,construction_base.group_construction_pm,1,1,1,1
+access_co_user,change.order user,model_construction_change_order,construction_base.group_construction_user,1,0,0,0
+access_co_commercial,change.order commercial,model_construction_change_order,construction_base.group_construction_commercial,1,1,1,1
+access_co_line_user,change.order.line user,model_construction_change_order_line,construction_base.group_construction_user,1,0,0,0
+access_co_line_commercial,change.order.line commercial,model_construction_change_order_line,construction_base.group_construction_commercial,1,1,1,1

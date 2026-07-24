@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ce_demo" model="construction.change.event">
+        <field name="name">Additional basement waterproofing membrane</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="origin">client_request</field>
+        <field name="estimated_amount">180000</field>
+        <field name="description">Client requested an upgraded HDPE membrane to
+            the basement retaining walls.</field>
+    </record>
+
+    <record id="co_demo" model="construction.change.order">
+        <field name="name">Basement waterproofing upgrade</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="change_event_id" ref="ce_demo"/>
+        <field name="boq_id" ref="construction_boq.boq_demo_alnoor"/>
+        <field name="change_type">addition</field>
+        <field name="reason"><![CDATA[<p>Upgrade to HDPE membrane per client request CR-014.</p>]]></field>
+        <field name="line_ids" eval="[
+            (0, 0, {'item_code': 'VO.01', 'name': 'HDPE waterproofing membrane to retaining walls', 'quantity': 4200, 'unit_rate': 38, 'unit_cost': 27}),
+            (0, 0, {'item_code': 'VO.02', 'name': 'Protection board', 'quantity': 4200, 'unit_rate': 9, 'unit_cost': 6}),
+        ]"/>
+    </record>
+</odoo>
