@@ -32,6 +32,7 @@
         "construction_portal",
         "facility_asset",
         "facility_workorder",
+        "facility_sla",
         "facility_floorplan",
     ],
     "data": [

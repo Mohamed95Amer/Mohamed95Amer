@@ -86,6 +86,12 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   (calendar- and meter-based) that auto-generate maintenance work orders via
   cron, a work-order **checklist** copied from the job plan, and labour /
   parts / contractor **costing**.
+- **facility_sla** — **response and resolution SLAs** on work orders: a policy
+  matrix matched on priority, maintenance type, equipment category and asset
+  criticality (first match wins), with both clocks measured on a **business
+  calendar** so a promise does not burn overnight. On-track / at-risk /
+  breached states, an escalation cron every 15 minutes, and SLA-breach filters
+  and grouping on the work-order list.
 - **facility_floorplan** — **pin-on-plan for facilities**: upload a 2D floor
   plan PDF per location and drop **asset**, **maintenance-request** and
   **note** pins on it, reusing the same OWL Plan Viewer as construction
@@ -118,7 +124,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_portal,facility_asset,facility_workorder,facility_floorplan,construction_ui,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_portal,facility_asset,facility_workorder,facility_sla,facility_floorplan,construction_ui,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

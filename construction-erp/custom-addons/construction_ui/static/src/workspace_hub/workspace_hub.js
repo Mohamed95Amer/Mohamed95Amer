@@ -98,14 +98,15 @@ const OPERATIONAL_METRICS = {
           requires: ["state"], domain: [["state", "in", ["invoiced", "paid"]]] },
     ],
     work_orders: [
+        { label: "SLA breached", hint: "Missed the promised allowance", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["sla_breached"], domain: [["sla_breached", "=", true]] },
+        { label: "SLA at risk", hint: "Running out of allowance", icon: "fa-clock-o",
+          tone: "alert", requires: ["sla_resolution_state"],
+          domain: [["sla_resolution_state", "=", "at_risk"]] },
         { label: "To triage", hint: "New, not yet scheduled", icon: "fa-inbox",
           requires: ["stage_id"], domain: [["stage_id.done", "=", false]] },
-        { label: "High priority", hint: "Escalated work", icon: "fa-exclamation-triangle",
-          tone: "alert", requires: ["priority"], domain: [["priority", "in", ["2", "3"]]] },
         { label: "Preventive", hint: "Planned maintenance", icon: "fa-refresh",
           requires: ["maintenance_type"], domain: [["maintenance_type", "=", "preventive"]] },
-        { label: "Corrective", hint: "Breakdown response", icon: "fa-wrench",
-          requires: ["maintenance_type"], domain: [["maintenance_type", "=", "corrective"]] },
     ],
 };
 

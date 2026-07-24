@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_maintenance_request_form_sla" model="ir.ui.view">
+        <field name="name">maintenance.request.form.sla</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header position="inside">
+                    <button name="action_sla_respond" type="object"
+                            string="Acknowledge"
+                            help="Record the first response without moving the stage."
+                            invisible="not sla_policy_id or sla_responded_on"/>
+                </header>
+            </xpath>
+            <!-- A notebook page, not an appended group: `//sheet` position
+                 inside puts content after the notebook, where it sits below
+                 the fold and is missed. -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Service Level" name="sla"
+                      invisible="not sla_policy_id">
+                    <group>
+                        <group string="Commitment">
+                            <field name="sla_policy_id"/>
+                            <field name="sla_start"/>
+                            <field name="sla_resolution_hours_used"/>
+                            <field name="sla_breached" invisible="1"/>
+                        </group>
+                        <group string="Response">
+                            <field name="sla_response_deadline"/>
+                            <field name="sla_responded_on"/>
+                            <field name="sla_response_state" widget="badge"
+                                   decoration-danger="sla_response_state == 'breached'"
+                                   decoration-warning="sla_response_state == 'at_risk'"
+                                   decoration-success="sla_response_state == 'met'"/>
+                        </group>
+                        <group string="Resolution">
+                            <field name="sla_resolution_deadline"/>
+                            <field name="sla_resolved_on"/>
+                            <field name="sla_resolution_state" widget="badge"
+                                   decoration-danger="sla_resolution_state == 'breached'"
+                                   decoration-warning="sla_resolution_state == 'at_risk'"
+                                   decoration-success="sla_resolution_state == 'met'"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_list_sla" model="ir.ui.view">
+        <field name="name">maintenance.request.list.sla</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="stage_id" position="before">
+                <field name="sla_policy_id" optional="show"/>
+                <field name="sla_resolution_deadline" optional="show"/>
+                <field name="sla_resolution_state" widget="badge"
+                       decoration-danger="sla_resolution_state == 'breached'"
+                       decoration-warning="sla_resolution_state == 'at_risk'"
+                       decoration-success="sla_resolution_state == 'met'"
+                       optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_search_sla" model="ir.ui.view">
+        <field name="name">maintenance.request.search.sla</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_request_date" position="before">
+                <separator/>
+                <filter name="sla_breached" string="SLA Breached"
+                        domain="[('sla_breached', '=', True)]"/>
+                <filter name="sla_at_risk" string="SLA At Risk"
+                        domain="['|', ('sla_response_state', '=', 'at_risk'), ('sla_resolution_state', '=', 'at_risk')]"/>
+                <separator/>
+                <filter name="group_sla" string="SLA Policy"
+                        context="{'group_by': 'sla_policy_id'}"/>
+                <filter name="group_sla_state" string="Resolution SLA"
+                        context="{'group_by': 'sla_resolution_state'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_sla_breaches" model="ir.actions.act_window">
+        <field name="name">SLA Breaches</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('sla_breached', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No SLA breaches</p>
+            <p>Work orders that missed their response or resolution allowance
+               appear here.</p>
+        </field>
+    </record>
+</odoo>
