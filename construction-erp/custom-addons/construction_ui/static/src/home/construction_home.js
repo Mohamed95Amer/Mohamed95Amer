@@ -13,6 +13,7 @@ const KPI_DEFINITIONS = [
         action: "construction_base.action_construction_projects",
         icon: "fa-building-o",
         tone: "navy",
+        hint: "Current portfolio",
     },
     {
         key: "rfi",
@@ -22,6 +23,7 @@ const KPI_DEFINITIONS = [
         action: "construction_rfi.action_construction_rfi",
         icon: "fa-question-circle",
         tone: "amber",
+        hint: "Awaiting resolution",
     },
     {
         key: "defects",
@@ -31,6 +33,7 @@ const KPI_DEFINITIONS = [
         action: "construction_defect.action_construction_defect",
         icon: "fa-exclamation-triangle",
         tone: "coral",
+        hint: "Site attention",
     },
     {
         key: "inspections",
@@ -40,6 +43,31 @@ const KPI_DEFINITIONS = [
         action: "construction_form.action_form_inspections",
         icon: "fa-check-square-o",
         tone: "teal",
+        hint: "Ready to progress",
+    },
+];
+
+const CONSTRUCTION_FOCUS = [
+    {
+        key: "rfi",
+        label: "Open RFIs",
+        caption: "Clear information flow",
+        action: "construction_rfi.action_construction_rfi",
+        icon: "fa-question-circle",
+    },
+    {
+        key: "defects",
+        label: "Open defects",
+        caption: "Protect quality",
+        action: "construction_defect.action_construction_defect",
+        icon: "fa-exclamation-triangle",
+    },
+    {
+        key: "inspections",
+        label: "Inspections",
+        caption: "Move work forward",
+        action: "construction_form.action_form_inspections",
+        icon: "fa-check-square-o",
     },
 ];
 
@@ -194,6 +222,7 @@ export class ConstructionHome extends Component {
             kpis: Object.fromEntries(KPI_DEFINITIONS.map((item) => [item.key, "–"])),
         });
         this.kpiDefinitions = KPI_DEFINITIONS;
+        this.focusItems = CONSTRUCTION_FOCUS;
         this.appGroups = APP_GROUPS;
         this.today = new Intl.DateTimeFormat(undefined, {
             weekday: "long",

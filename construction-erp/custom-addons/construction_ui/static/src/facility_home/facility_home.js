@@ -15,6 +15,7 @@ const FACILITY_KPIS = [
         action: "maintenance.hr_equipment_action",
         icon: "fa-cogs",
         tone: "blue",
+        hint: "Operating portfolio",
     },
     {
         key: "workOrders",
@@ -24,6 +25,7 @@ const FACILITY_KPIS = [
         action: "maintenance.hr_equipment_request_action",
         icon: "fa-clipboard",
         tone: "teal",
+        hint: "Ready for triage",
     },
     {
         key: "pmDue",
@@ -33,6 +35,7 @@ const FACILITY_KPIS = [
         action: "facility_workorder.action_pm_plan",
         icon: "fa-refresh",
         tone: "sand",
+        hint: "Due through today",
     },
     {
         key: "criticalAssets",
@@ -42,6 +45,31 @@ const FACILITY_KPIS = [
         action: "maintenance.hr_equipment_action",
         icon: "fa-shield",
         tone: "clay",
+        hint: "Risk watchlist",
+    },
+];
+
+const FACILITY_FOCUS = [
+    {
+        key: "workOrders",
+        label: "Work orders",
+        caption: "Triage and assign",
+        action: "maintenance.hr_equipment_request_action",
+        icon: "fa-clipboard",
+    },
+    {
+        key: "pmDue",
+        label: "PM plans",
+        caption: "Due through today",
+        action: "facility_workorder.action_pm_plan",
+        icon: "fa-refresh",
+    },
+    {
+        key: "criticalAssets",
+        label: "Critical assets",
+        caption: "Review exposure",
+        action: "maintenance.hr_equipment_action",
+        icon: "fa-shield",
     },
 ];
 
@@ -128,6 +156,7 @@ export class FacilityHome extends Component {
             kpis: Object.fromEntries(FACILITY_KPIS.map((item) => [item.key, "–"])),
         });
         this.kpiDefinitions = FACILITY_KPIS;
+        this.focusItems = FACILITY_FOCUS;
         this.appGroups = FACILITY_GROUPS;
         this.today = new Intl.DateTimeFormat(undefined, {
             weekday: "long",

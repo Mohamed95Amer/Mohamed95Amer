@@ -12,6 +12,10 @@ $ui-muted: #697983;
 // Upgrade-safe design layer: style native Odoo surfaces without replacing core
 // templates or changing view behavior.
 .o_web_client {
+    .o_action_manager {
+        background: $ui-page;
+    }
+
     // One quiet navigation color; section links no longer create a purple block.
     .o_main_navbar {
         border-bottom: 0;
@@ -70,6 +74,13 @@ $ui-muted: #697983;
         background: rgba(255,255,255,.98);
         box-shadow: 0 2px 9px rgba(12,31,41,.03);
 
+        .o_breadcrumb .breadcrumb-item.active,
+        .o_control_panel_breadcrumbs {
+            color: $ui-navy;
+            font-weight: 650;
+            letter-spacing: -.012em;
+        }
+
         .o_cp_action_menus,
         .o_search_options {
             .dropdown-toggle { border-radius: 8px; }
@@ -89,9 +100,20 @@ $ui-muted: #697983;
 
     // Consistent actions across every installed app.
     .btn {
+        min-height: 34px;
         border-radius: 8px;
         font-weight: 600;
-        transition: color .14s ease, background .14s ease, border-color .14s ease, box-shadow .14s ease;
+        letter-spacing: -.006em;
+        transition: color .14s ease, background .14s ease, border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+
+        &:focus-visible {
+            outline: 0;
+            box-shadow: 0 0 0 3px rgba($ui-primary,.16);
+        }
+
+        .fa:not(:only-child) {
+            margin-right: 4px;
+        }
     }
 
     .btn-primary {
@@ -106,6 +128,7 @@ $ui-muted: #697983;
             border-color: $ui-primary-hover;
             background-color: $ui-primary-hover;
             box-shadow: 0 3px 9px rgba($ui-primary,.18);
+            transform: translateY(-1px);
         }
     }
 
@@ -121,6 +144,11 @@ $ui-muted: #697983;
             border-color: #b7c3c9;
             background: #f5f7f8;
         }
+    }
+
+    .btn-sm {
+        min-height: 29px;
+        border-radius: 7px;
     }
 
     .btn-link {
@@ -158,14 +186,56 @@ $ui-muted: #697983;
         }
     }
 
+    // In-record tabs behave like a compact segmented control.
+    .o_notebook > .nav-tabs {
+        width: fit-content;
+        max-width: 100%;
+        gap: 2px;
+        padding: 4px;
+        overflow-x: auto;
+        border: 1px solid $ui-border;
+        border-radius: 11px;
+        background: #eef2f3;
+
+        .nav-link {
+            margin: 0;
+            padding: 7px 12px;
+            border: 0;
+            border-radius: 7px;
+
+            &:hover {
+                border: 0;
+                background: rgba(255,255,255,.62);
+            }
+
+            &.active {
+                border: 0;
+                background: white;
+                box-shadow: 0 2px 7px rgba(12,31,41,.09);
+            }
+        }
+    }
+
     // Forms gain separation without becoming card-heavy.
     .o_form_view {
         .o_form_sheet_bg { background: $ui-page; }
+
+        .o_form_statusbar {
+            border-bottom-color: $ui-border;
+            background: rgba(255,255,255,.97);
+            box-shadow: 0 2px 9px rgba(12,31,41,.025);
+        }
 
         .o_form_sheet {
             border: 1px solid $ui-border;
             border-radius: 13px;
             box-shadow: 0 6px 20px rgba(12,31,41,.05);
+        }
+
+        .oe_title h1,
+        .oe_title h2 {
+            color: $ui-navy;
+            letter-spacing: -.025em;
         }
 
         .o_group .o_td_label {
@@ -219,6 +289,13 @@ $ui-muted: #697983;
                 border-bottom-color: #e8ecee;
             }
         }
+    }
+
+    .o_list_renderer {
+        border: 1px solid $ui-border;
+        border-radius: 10px;
+        background: white;
+        box-shadow: 0 4px 14px rgba(12,31,41,.035);
     }
 
     // Kanban cards use the same restrained elevation as forms.
@@ -281,7 +358,36 @@ $ui-muted: #697983;
         }
     }
 
+    .modal-content {
+        overflow: hidden;
+        border-color: $ui-border;
+        border-radius: 14px;
+        box-shadow: 0 22px 55px rgba(12,31,41,.18);
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: $ui-border;
+        background: #fafbfb;
+    }
+
+    .form-check-input:checked {
+        border-color: $ui-primary;
+        background-color: $ui-primary;
+    }
+
     .o_pager {
         .btn { border-color: $ui-border; }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_web_client *,
+    .o_construction_home *,
+    .o_facility_home * {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

@@ -23,8 +23,32 @@
                     </div>
                 </div>
                 <div class="o_facility_hero_meta">
-                    <span class="o_suite_date" t-esc="today"/>
-                    <div class="o_suite_status"><span/> Facilities data live</div>
+                    <div class="o_suite_meta_line">
+                        <span class="o_suite_date" t-esc="today"/>
+                        <div class="o_suite_status"><span/> Live</div>
+                    </div>
+                    <div class="o_suite_focus_panel">
+                        <header>
+                            <span><i class="fa fa-bolt"/> Today's focus</span>
+                            <small>Live priorities</small>
+                        </header>
+                        <div class="o_suite_focus_items">
+                            <button t-foreach="focusItems" t-as="item" t-key="item.key"
+                                    class="o_suite_focus_item"
+                                    t-on-click="() => this.openAction(item.action)">
+                                <span class="o_suite_focus_icon">
+                                    <i t-attf-class="fa {{ item.icon }}"/>
+                                </span>
+                                <span>
+                                    <strong t-att-class="{'o_skeleton': state.loading}"
+                                            t-esc="state.kpis[item.key]"/>
+                                    <small t-esc="item.label"/>
+                                    <em t-esc="item.caption"/>
+                                </span>
+                                <i class="fa fa-arrow-right"/>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -37,6 +61,7 @@
                         <strong t-att-class="{'o_skeleton': state.loading}"
                                 t-esc="state.kpis[kpi.key]"/>
                         <small t-esc="kpi.label"/>
+                        <em t-esc="kpi.hint"/>
                     </span>
                     <i class="fa fa-arrow-right o_suite_kpi_arrow"/>
                 </button>
