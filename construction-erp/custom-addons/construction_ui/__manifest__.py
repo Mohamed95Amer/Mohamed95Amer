@@ -28,6 +28,7 @@
         "construction_progress_billing",
         "construction_change_order",
         "construction_subcontractor",
+        "construction_report",
         "construction_portal",
         "facility_asset",
         "facility_workorder",

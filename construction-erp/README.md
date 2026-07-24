@@ -67,6 +67,11 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   payment certificates** (payable mirror of the IPC) with retention and
   **back-charges linked to defects**, generating vendor bills; Payment
   Certificate PDF.
+- **construction_report** — **Cost Value Reconciliation (CVR)**, the monthly
+  commercial control: contract value and certified value against budget,
+  committed and incurred cost, giving earned margin, forecast final margin and
+  the movement against the margin the job was tendered at. Overspend already
+  signed away in subcontracts shows up in the forecast; CVR PDF.
 - **construction_portal** — **free portal users** for subcontractors, clients
   and consultants: self-service RFIs (ball-in-court), assigned defects — with a
   "ready for inspection" action — and subcontracts with their payment
@@ -113,7 +118,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_portal,facility_asset,facility_workorder,facility_floorplan,construction_ui,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_portal,facility_asset,facility_workorder,facility_floorplan,construction_ui,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

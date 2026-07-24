@@ -68,6 +68,10 @@
         <field name="name">Subcontracts</field>
         <field name="tag">construction_ui.workspace.subcontracts</field>
     </record>
+    <record id="action_workspace_cvr" model="ir.actions.client">
+        <field name="name">Cost Value Reconciliation</field>
+        <field name="tag">construction_ui.workspace.cvr</field>
+    </record>
     <record id="action_workspace_assets" model="ir.actions.client">
         <field name="name">Asset Portfolio</field>
         <field name="tag">construction_ui.workspace.assets</field>
@@ -189,6 +193,9 @@
     </record>
     <record id="construction_progress_billing.menu_progress_claim" model="ir.ui.menu">
         <field name="action" ref="action_workspace_progress_billing"/>
+    </record>
+    <record id="construction_report.menu_construction_cvr" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_cvr"/>
     </record>
     <record id="construction_subcontractor.menu_subcontract" model="ir.ui.menu">
         <field name="action" ref="action_workspace_subcontracts"/>

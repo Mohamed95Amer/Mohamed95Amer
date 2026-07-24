@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_cvr_list" model="ir.ui.view">
+        <field name="name">project.project.cvr.list</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <list string="Cost Value Reconciliation" create="false"
+                  decoration-danger="cvr_margin_variance &lt; 0"
+                  decoration-muted="cvr_contract_value == 0">
+                <field name="name"/>
+                <field name="construction_stage"/>
+                <field name="cvr_contract_value" sum="Contract"/>
+                <field name="cvr_certified_value" sum="Certified"/>
+                <field name="cvr_percent_complete" widget="percentage"
+                       string="% Cert."/>
+                <field name="cvr_budget_cost" sum="Budget" optional="show"/>
+                <field name="cvr_committed_cost" sum="Committed"/>
+                <field name="cvr_cost_to_date" sum="Cost to date"/>
+                <field name="cvr_earned_margin" sum="Earned margin"
+                       decoration-danger="cvr_earned_margin &lt; 0"/>
+                <field name="cvr_forecast_margin" sum="Forecast margin"
+                       decoration-danger="cvr_forecast_margin &lt; 0"/>
+                <field name="cvr_margin_variance" sum="Movement"
+                       decoration-danger="cvr_margin_variance &lt; 0"
+                       decoration-success="cvr_margin_variance &gt; 0"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_project_cvr_form" model="ir.ui.view">
+        <field name="name">project.project.cvr.form</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <form string="Cost Value Reconciliation" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3 class="text-muted">
+                            <field name="cvr_boq_id" readonly="1"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group string="Value — what the client owes">
+                            <field name="cvr_contract_value"/>
+                            <field name="cvr_certified_value"/>
+                            <field name="cvr_percent_complete" widget="percentage"/>
+                        </group>
+                        <group string="Cost — what it takes to earn it">
+                            <field name="cvr_budget_cost"/>
+                            <field name="cvr_committed_cost"/>
+                            <field name="cvr_cost_to_date"/>
+                            <field name="cvr_uncommitted_budget"
+                                   decoration-danger="cvr_uncommitted_budget &lt; 0"/>
+                        </group>
+                    </group>
+                    <group string="Margin">
+                        <group>
+                            <field name="cvr_earned_margin"
+                                   decoration-danger="cvr_earned_margin &lt; 0"/>
+                            <field name="cvr_earned_margin_percent"
+                                   widget="percentage"/>
+                        </group>
+                        <group>
+                            <field name="cvr_forecast_margin"
+                                   decoration-danger="cvr_forecast_margin &lt; 0"/>
+                            <field name="cvr_forecast_margin_percent"
+                                   widget="percentage"/>
+                            <field name="cvr_margin_variance"
+                                   decoration-danger="cvr_margin_variance &lt; 0"
+                                   decoration-success="cvr_margin_variance &gt; 0"/>
+                        </group>
+                    </group>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_cvr" model="ir.actions.act_window">
+        <field name="name">Cost Value Reconciliation</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_construction', '=', True)]</field>
+        <field name="view_id" ref="view_project_cvr_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No construction projects yet</p>
+            <p>Cost Value Reconciliation compares the value certified to the
+               client with the cost incurred to earn it, so margin erosion shows
+               up while there is still time to act.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_construction_cvr"
+              name="Cost Value Reconciliation"
+              parent="construction_base.menu_construction_commercial"
+              action="action_project_cvr"
+              sequence="60"
+              groups="construction_base.group_construction_commercial"/>
+</odoo>
