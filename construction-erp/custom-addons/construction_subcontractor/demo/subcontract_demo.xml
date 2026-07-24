@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="subcontract_mep" model="construction.subcontract">
+        <field name="name">HVAC installation — main contract</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="subcontractor_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="trade">HVAC / MEP</field>
+        <field name="retention_percent">10</field>
+        <field name="retention_cap_percent">5</field>
+        <field name="line_ids" eval="[
+            (0, 0, {'name': 'Supply &amp; install AHUs and ductwork', 'quantity': 1, 'unit_rate': 1800000}),
+            (0, 0, {'name': 'FCUs and controls', 'quantity': 1, 'unit_rate': 450000}),
+        ]"/>
+    </record>
+
+    <function model="construction.subcontract" name="action_confirm">
+        <value eval="[ref('subcontract_mep')]"/>
+    </function>
+</odoo>
