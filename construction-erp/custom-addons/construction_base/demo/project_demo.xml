@@ -25,4 +25,41 @@
         <field name="retention_cap_percent">5</field>
         <field name="site_address">Plot 12, Business Bay, Dubai, UAE</field>
     </record>
+
+    <!-- A second job so the portfolio views have something to compare. It is
+         deliberately less healthy than Al Noor: the dashboard, CVR and
+         watchlist only demonstrate anything when the projects differ. -->
+    <record id="partner_demo_client_marina" model="res.partner">
+        <field name="name">Marina Waterfront Holdings</field>
+        <field name="is_company" eval="True"/>
+    </record>
+    <record id="partner_demo_sub_piling" model="res.partner">
+        <field name="name">Gulf Piling &amp; Foundations</field>
+        <field name="is_company" eval="True"/>
+    </record>
+
+    <record id="project_demo_marina" model="project.project">
+        <field name="name">Marina Residences</field>
+        <field name="is_construction" eval="True"/>
+        <field name="construction_stage">execution</field>
+        <field name="project_type">building</field>
+        <field name="client_id" ref="partner_demo_client_marina"/>
+        <field name="consultant_id" ref="partner_demo_consultant"/>
+        <field name="contract_value">8400000</field>
+        <field name="retention_percent">10</field>
+        <field name="retention_cap_percent">5</field>
+        <field name="site_address">Parcel 4, Dubai Marina, UAE</field>
+    </record>
+
+    <!-- A tender-stage job: the portfolio should not look like every project
+         is on site. -->
+    <record id="project_demo_kariat" model="project.project">
+        <field name="name">Kariat Retail Park</field>
+        <field name="is_construction" eval="True"/>
+        <field name="construction_stage">tender</field>
+        <field name="project_type">building</field>
+        <field name="client_id" ref="partner_demo_client_marina"/>
+        <field name="contract_value">0</field>
+        <field name="site_address">Al Khail Road, Dubai, UAE</field>
+    </record>
 </odoo>

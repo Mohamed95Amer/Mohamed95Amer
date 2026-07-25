@@ -16,4 +16,54 @@
         <field name="uom_id" ref="uom.product_uom_ton"/>
         <field name="uom_po_id" ref="uom.product_uom_ton"/>
     </record>
+
+    <!-- Tie the bill to real products so consumption can be measured against
+         what was priced; without this the material position has no budget
+         column and demonstrates nothing. -->
+    <function model="construction.boq.line" name="write">
+        <value eval="[ref('construction_boq.boq_line_raft')]"/>
+        <value eval="{'product_id': ref('product_concrete')}"/>
+    </function>
+
+    <!-- Deliver stock into Al Noor's site store. -->
+    <function model="project.project" name="ensure_site_location">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
+    <function model="construction.material.issue" name="_demo_receive_stock"
+              eval="[ref('construction_base.project_demo_alnoor'), ref('product_concrete'), 4200]"/>
+    <function model="construction.material.issue" name="_demo_receive_stock"
+              eval="[ref('construction_base.project_demo_alnoor'), ref('product_rebar'), 260]"/>
+
+    <record id="issue_raft_pour" model="construction.material.issue">
+        <field name="name">Raft pour — section B</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="issued_to_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="note">Continuous pour, two pumps.</field>
+    </record>
+    <record id="issue_raft_line_concrete" model="construction.material.issue.line">
+        <field name="issue_id" ref="issue_raft_pour"/>
+        <field name="product_id" ref="product_concrete"/>
+        <field name="boq_line_id" ref="construction_boq.boq_line_raft"/>
+        <field name="quantity">3350</field>
+    </record>
+    <record id="issue_raft_line_steel" model="construction.material.issue.line">
+        <field name="issue_id" ref="issue_raft_pour"/>
+        <field name="product_id" ref="product_rebar"/>
+        <field name="quantity">180</field>
+    </record>
+    <function model="construction.material.issue" name="action_confirm">
+        <value eval="[ref('issue_raft_pour')]"/>
+    </function>
+
+    <!-- Some of it never reached the works. -->
+    <record id="scrap_concrete_spillage" model="stock.scrap">
+        <field name="product_id" ref="product_concrete"/>
+        <field name="scrap_qty">85</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="waste_reason">spillage</field>
+        <field name="waste_note">Pump line blockage, part load rejected.</field>
+    </record>
+    <function model="stock.scrap" name="action_validate">
+        <value eval="[ref('scrap_concrete_spillage')]"/>
+    </function>
 </odoo>

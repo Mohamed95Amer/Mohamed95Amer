@@ -27,4 +27,16 @@
         <field name="question"><![CDATA[<p>Please confirm the stone type and finish for the ground floor lobby shown on AR-101 Rev.B.</p>]]></field>
         <field name="answer"><![CDATA[<p>Use honed Crema Marfil marble, 20 mm, as per finishes schedule FS-03.</p>]]></field>
     </record>
+
+    <record id="rfi_marina_clash" model="construction.rfi">
+        <field name="name">Pile cap reinforcement clash at grid F4</field>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="question">&lt;p&gt;Bottom mat clashes with the ground beam
+            starter bars. Confirm the revised arrangement.&lt;/p&gt;</field>
+        <field name="date_required" eval="(DateTime.today() - relativedelta(days=9)).strftime('%Y-%m-%d')"/>
+        <field name="ball_in_court_id" ref="construction_base.partner_demo_consultant"/>
+    </record>
+    <function model="construction.rfi" name="action_submit">
+        <value eval="[ref('rfi_marina_clash')]"/>
+    </function>
 </odoo>

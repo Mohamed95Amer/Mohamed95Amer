@@ -16,4 +16,25 @@
     <function model="construction.subcontract" name="action_confirm">
         <value eval="[ref('subcontract_mep')]"/>
     </function>
+
+    <!-- Awarded above the bill's cost allowance: this is what makes Marina's
+         forecast margin erode, and gives the CVR and the dashboard watchlist
+         something real to flag. -->
+    <record id="subcontract_marina_piling" model="construction.subcontract">
+        <field name="name">Piling package</field>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="subcontractor_id" ref="construction_base.partner_demo_sub_piling"/>
+        <field name="trade">Piling</field>
+        <field name="retention_percent">10</field>
+    </record>
+    <record id="subcontract_marina_line" model="construction.subcontract.line">
+        <field name="subcontract_id" ref="subcontract_marina_piling"/>
+        <field name="boq_line_id" ref="construction_boq.boq_line_marina_piling"/>
+        <field name="name">Bored piling works, all-in</field>
+        <field name="quantity">1200</field>
+        <field name="unit_rate">1290</field>
+    </record>
+    <function model="construction.subcontract" name="action_confirm">
+        <value eval="[ref('subcontract_marina_piling')]"/>
+    </function>
 </odoo>

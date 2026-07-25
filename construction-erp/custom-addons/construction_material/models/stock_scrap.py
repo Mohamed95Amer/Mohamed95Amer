@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class StockMove(models.Model):
@@ -44,9 +44,26 @@ class StockScrap(models.Model):
     )
     waste_note = fields.Char()
 
-    def action_validate(self):
-        """Default the scrap source to the project's site store."""
+    @api.onchange("project_id")
+    def _onchange_project_id(self):
+        """Point the scrap at the project's site store.
+
+        Material lost on site was issued to that site, so it has to come off
+        that store. Left on the main warehouse the quantity is deducted from
+        stock the site never held, and the project's material position shows no
+        waste at all.
+        """
         for scrap in self:
-            if scrap.project_id and not scrap.project_id.site_location_id:
-                scrap.project_id.ensure_site_location()
+            if scrap.project_id:
+                scrap.location_id = scrap.project_id.ensure_site_location()
+
+    def action_validate(self):
+        # Safety net for scraps created programmatically (imports, demo data),
+        # which never run the onchange.
+        for scrap in self:
+            if not scrap.project_id:
+                continue
+            site_location = scrap.project_id.ensure_site_location()
+            if scrap.location_id != site_location:
+                scrap.location_id = site_location
         return super().action_validate()

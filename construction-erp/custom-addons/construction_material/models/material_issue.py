@@ -107,6 +107,23 @@ class ConstructionMaterialIssue(models.Model):
         moves._action_done()
         return moves
 
+    @api.model
+    def _demo_receive_stock(self, project_id, product_id, quantity):
+        """Put stock into a project's site store.
+
+        Demo helper only: a realistic material position needs deliveries to
+        have happened, and expressing an inventory adjustment in XML data is
+        far less readable than one call. Real deliveries arrive through
+        purchase receipts into the same location.
+        """
+        project = self.env["project.project"].browse(project_id)
+        project.ensure_site_location()
+        self.env["stock.quant"].with_context(inventory_mode=True).create({
+            "product_id": product_id,
+            "location_id": project.site_location_id.id,
+            "inventory_quantity": quantity,
+        })._apply_inventory()
+
     def action_cancel(self):
         for issue in self:
             if issue.state == "done":

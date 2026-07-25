@@ -40,4 +40,14 @@
         <field name="pos_x">0.55</field>
         <field name="pos_y">0.78</field>
     </record>
+
+    <record id="defect_marina_honeycomb" model="construction.defect">
+        <field name="name">Honeycombing to pile cap PC-14</field>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="location">Grid F4, substructure</field>
+        <field name="severity">high</field>
+        <field name="trade">structural</field>
+        <field name="description">Voids visible on the south face after strike.</field>
+        <field name="responsible_subcontractor_id" ref="construction_base.partner_demo_sub_piling"/>
+    </record>
 </odoo>

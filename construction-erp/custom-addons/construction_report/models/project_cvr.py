@@ -104,9 +104,11 @@ class ProjectProjectCvr(models.Model):
         compute="_compute_cvr",
         currency_field="currency_id",
         string="Forecast Final Margin",
-        help="Contract value less the expected final cost, taking the higher of "
-             "budget and committed cost so that overspend already committed is "
-             "not hidden.",
+        help="Contract value less the expected final cost, where the expected "
+             "cost is what has been committed plus the budget for work not yet "
+             "let — so a package awarded above its own allowance erodes the "
+             "forecast immediately, not only once total commitments pass the "
+             "total budget.",
     )
     cvr_forecast_margin_percent = fields.Float(
         compute="_compute_cvr", string="Forecast Margin %"
@@ -128,6 +130,8 @@ class ProjectProjectCvr(models.Model):
         "cvr_subcontract_ids.state",
         "cvr_subcontract_ids.amount_total",
         "cvr_subcontract_ids.amount_certified",
+        "cvr_subcontract_ids.line_ids.boq_line_id",
+        "cvr_subcontract_ids.line_ids.boq_line_id.amount_cost",
         "cvr_claim_ids.state",
         "cvr_claim_ids.sequence_no",
         "cvr_claim_ids.amount_work_done_cumulative",
@@ -169,10 +173,26 @@ class ProjectProjectCvr(models.Model):
             committed_cost = sum(subcontracts.mapped("amount_total"))
             cost_to_date = sum(subcontracts.mapped("amount_certified"))
 
-            # The expected final cost cannot be lower than what is already
-            # committed, otherwise overspend signed away in subcontracts would
-            # never show up in the forecast.
-            expected_final_cost = max(budget_cost, committed_cost)
+            # Expected final cost, the honest way round: what has been
+            # committed, plus the budget for work not yet let.
+            #
+            # Comparing total committed against total budget hides the case
+            # that matters. A package let above its own allowance only shows up
+            # once commitments exceed the entire budget, which happens near the
+            # end of a job when almost everything is let and it is far too late
+            # to act. Subcontract lines name the BOQ item they cover, so the
+            # budget they replace can be taken out and the overspend appears on
+            # the first package.
+            covered_budget = sum(
+                subcontracts.mapped("line_ids.boq_line_id").mapped("amount_cost")
+            )
+            if covered_budget:
+                expected_final_cost = committed_cost + (budget_cost - covered_budget)
+            else:
+                # Commitments that do not say which bill items they cover
+                # cannot be netted off; fall back to the cruder comparison
+                # rather than double-counting the budget they replace.
+                expected_final_cost = max(budget_cost, committed_cost)
 
             project.cvr_contract_value = contract_value
             project.cvr_budget_cost = budget_cost

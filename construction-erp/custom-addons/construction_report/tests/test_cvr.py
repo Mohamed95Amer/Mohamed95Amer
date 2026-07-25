@@ -131,3 +131,40 @@ class TestProjectCvr(TransactionCase):
         self.assertEqual(claim.state, "draft")
         self.assertEqual(self.project.cvr_certified_value, 0)
         self.assertEqual(self.project.cvr_percent_complete, 0)
+
+    def test_package_let_over_its_own_budget_erodes_the_forecast(self):
+        """The case a CVR exists to catch: one package let above its own
+        allowance, long before total commitments approach the total budget."""
+        # Add a second bill item so the job is only part-let.
+        second = self.env["construction.boq.line"].create({
+            "boq_id": self.boq.id,
+            "section_id": self.section.id,
+            "name": "Finishes",
+            "quantity": 100,
+            "unit_rate": 1000,
+            "cost_material": 700,
+        })
+        # Contract 200,000 / budget 140,000, of which 70,000 is the RC works.
+        self.assertEqual(self.project.cvr_budget_cost, 140000)
+
+        subcontract = self.env["construction.subcontract"].create({
+            "name": "RC package",
+            "project_id": self.project.id,
+            "subcontractor_id": self.env["res.partner"].create(
+                {"name": "Sub over"}).id,
+        })
+        self.env["construction.subcontract.line"].create({
+            "subcontract_id": subcontract.id,
+            "boq_line_id": self.line.id,      # covers the 70,000 RC budget
+            "name": "RC works",
+            "quantity": 1,
+            "unit_rate": 85000,               # let 15,000 over
+        })
+        subcontract.action_confirm()
+
+        # Total committed (85,000) is still far below total budget (140,000),
+        # so the old comparison saw nothing. Cost to complete does:
+        # 85,000 committed + 70,000 not yet let = 155,000 expected.
+        self.assertEqual(self.project.cvr_forecast_margin, 200000 - 155000)
+        self.assertEqual(self.project.cvr_margin_variance, -15000)
+        self.assertTrue(second)

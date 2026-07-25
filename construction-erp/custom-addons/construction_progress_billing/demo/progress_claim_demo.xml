@@ -16,4 +16,14 @@
             (0, 0, {'boq_line_id': ref('construction_boq.boq_line_slabs'), 'qty_this_period': 15000}),
         ]"/>
     </record>
+
+    <!-- Certify it. A demo that leaves every certificate in draft shows the
+         whole revenue chain as zero: no certified value, no % complete, no
+         earned margin, and a dashboard that looks broken rather than empty. -->
+    <function model="construction.progress.claim" name="action_submit">
+        <value eval="[ref('claim_ipc1')]"/>
+    </function>
+    <function model="construction.progress.claim" name="action_certify">
+        <value eval="[ref('claim_ipc1')]"/>
+    </function>
 </odoo>

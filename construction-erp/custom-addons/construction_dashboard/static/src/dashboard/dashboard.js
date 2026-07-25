@@ -53,8 +53,13 @@ export class ConstructionDashboard extends Component {
                 "construction.dashboard", "get_dashboard_data", [null]
             );
             this.state.data = data;
-            // Compare everything by default: the portfolio view is the point.
-            this.state.selected = data.projects.map((p) => p.id);
+            // Default to the jobs that are actually running. A tender-stage
+            // project has no bill yet, so it contributes an empty row to every
+            // chart and flattens the scale the others are compared on — it is
+            // still one chip away for anyone who wants it.
+            const priced = data.projects.filter((p) => p.contract_value > 0);
+            this.state.selected = (priced.length ? priced : data.projects)
+                .map((p) => p.id);
         } catch {
             this.state.error = true;
         } finally {
