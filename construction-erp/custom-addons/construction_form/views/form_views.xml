@@ -148,6 +148,90 @@
                                     <field name="answer_filename" column_invisible="True"/>
                                     <field name="comment"/>
                                 </list>
+                                <!-- Odoo picks the kanban sub-view on a small
+                                     screen. Without one, a phone gets the list:
+                                     a 577px table squeezed into 390px, which
+                                     truncates the question to "Wall finish…" —
+                                     the one thing an inspector has to read.
+                                     Tapping a card opens the form below. -->
+                                <kanban class="o_kanban_mobile">
+                                    <field name="is_failed"/>
+                                    <field name="is_answered"/>
+                                    <field name="answer_type"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div t-attf-class="o_form_answer_card {{ record.is_failed.raw_value ? 'o_answer_failed' : '' }}">
+                                                <small t-if="record.section.value"
+                                                       class="text-muted"
+                                                       t-esc="record.section.value"/>
+                                                <div class="fw-bold">
+                                                    <field name="question_id"/>
+                                                </div>
+                                                <div t-if="record.instructions.value"
+                                                     class="text-muted small">
+                                                    <field name="instructions"/>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <field name="answer_yes_no"
+                                                           widget="badge"
+                                                           invisible="answer_type != 'yes_no'"
+                                                           decoration-danger="answer_yes_no == 'no'"
+                                                           decoration-success="answer_yes_no == 'yes'"/>
+                                                    <field name="answer_text"
+                                                           invisible="answer_type != 'text'"/>
+                                                    <field name="answer_number"
+                                                           invisible="answer_type != 'number'"/>
+                                                    <field name="answer_date"
+                                                           invisible="answer_type != 'date'"/>
+                                                    <span t-if="!record.is_answered.raw_value"
+                                                          class="badge text-bg-light">
+                                                        Not answered
+                                                    </span>
+                                                </div>
+                                                <div t-if="record.comment.value"
+                                                     class="text-muted small fst-italic">
+                                                    <field name="comment"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <!-- The dialog behind a tapped card. Radio
+                                     buttons rather than a dropdown: answering
+                                     is one tap, which is the whole difference
+                                     on site. -->
+                                <form>
+                                    <sheet>
+                                        <div class="oe_title">
+                                            <small class="text-muted">
+                                                <field name="section" readonly="1"/>
+                                            </small>
+                                            <h2><field name="question_id" readonly="1"/></h2>
+                                            <p class="text-muted">
+                                                <field name="instructions" readonly="1"/>
+                                            </p>
+                                        </div>
+                                        <field name="answer_type" invisible="1"/>
+                                        <group>
+                                            <field name="answer_yes_no" widget="radio"
+                                                   options="{'horizontal': True}"
+                                                   nolabel="1"
+                                                   invisible="answer_type != 'yes_no'"/>
+                                            <field name="answer_text"
+                                                   invisible="answer_type != 'text'"/>
+                                            <field name="answer_number"
+                                                   invisible="answer_type != 'number'"/>
+                                            <field name="answer_date"
+                                                   invisible="answer_type != 'date'"/>
+                                            <field name="answer_binary"
+                                                   filename="answer_filename"
+                                                   invisible="answer_type not in ['photo', 'signature']"/>
+                                            <field name="answer_filename" invisible="1"/>
+                                            <field name="comment"
+                                                   placeholder="What is wrong, and where"/>
+                                        </group>
+                                    </sheet>
+                                </form>
                             </field>
                         </page>
                         <page string="Notes"><field name="notes"/></page>
