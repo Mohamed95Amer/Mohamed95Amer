@@ -51,7 +51,9 @@
                         <group>
                             <field name="margin"
                                    decoration-danger="margin &lt; 0"/>
-                            <field name="margin_percent" widget="percentage"/>
+                            <!-- Already expressed 0-100, so the percentage
+                                 widget would scale it a second time. -->
+                            <field name="margin_percent"/>
                             <field name="chargeable_cost"/>
                         </group>
                     </group>
