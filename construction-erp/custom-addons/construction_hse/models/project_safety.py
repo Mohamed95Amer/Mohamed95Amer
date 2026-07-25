@@ -83,8 +83,14 @@ class ProjectSafety(models.Model):
             )
 
             last_lti = max(ltis.mapped("occurred_on"), default=False)
+            # Both sides in the reader's timezone. `today` is already local,
+            # and taking .date() off a UTC datetime put the two a day apart for
+            # anyone east of Greenwich — which on a Gulf job is everybody, and
+            # showed up as a safety board reading one day out every evening.
             project.hse_days_since_lti = (
-                (today - last_lti.date()).days if last_lti else -1
+                (today - fields.Datetime.context_timestamp(
+                    project, last_lti).date()).days
+                if last_lti else -1
             )
             project.hse_live_permit_count = len(
                 project.hse_permit_ids.filtered("is_live")
