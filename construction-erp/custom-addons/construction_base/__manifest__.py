@@ -14,6 +14,7 @@
         "data/ir_sequence_data.xml",
         "views/project_views.xml",
         "views/construction_menus.xml",
+        "views/approval_views.xml",
     ],
     "demo": [
         "demo/project_demo.xml",
