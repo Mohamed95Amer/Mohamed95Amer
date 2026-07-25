@@ -86,6 +86,13 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   budgeted, consumed, wasted and on-site quantities on one row per product, so
   over-consumption — the early signal of waste, theft or a mis-measured
   quantity — is visible against what was priced. Issue Docket PDF.
+- **construction_dashboard** — **executive portfolio dashboard**: one call
+  gathers commercial (CVR), programme (CPM slip), quality, safety (LTIFR) and
+  material figures for every project, then compares any selection of them —
+  metric bars scaled across the selection and coloured by meaning rather than
+  series order, certified-against-contract tracks, a value-against-cost stack
+  that flags over-commitment, a worst-first watchlist, and a full metric table.
+  Portfolio rates are re-derived from their components, never averaged.
 - **construction_hse** — **permits to work** (hot work, confined space, height,
   excavation, lifting) that cannot be approved until every mandatory precaution
   is confirmed and are auto-expired the moment their validity window closes;
