@@ -55,6 +55,30 @@ MODULES = [
 # Majal vocabulary. Exact messages are intentionally used so placeholders,
 # punctuation and workflow terminology remain safe and reviewable.
 CUSTOM = {
+    # Viewer and checklist wording added with the 3D pins and the standard
+    # form library. These are exact matches so they beat the generic official
+    # catalogue, which renders some of them for a different context.
+    "New Inspection": "فحص جديد",
+    "Install Standard Forms": "تثبيت النماذج القياسية",
+    "Mark Rest as Yes": "تعليم الباقي بنعم",
+    "Still Open": "ما زالت مفتوحة",
+    "Awaiting Approval": "بانتظار الاعتماد",
+    "Scheduled This Week": "مجدولة هذا الأسبوع",
+    "Section": "القسم",
+    "Completed": "منجز",
+    "Elements": "العناصر",
+    # Odoo's own catalogue renders "Pins" as العلامات, and the viewer must not
+    # use one word in a tab and another in the counter beside it.
+    "Search pins…": "بحث في العلامات...",
+    "Search elements…": "بحث في العناصر...",
+    "Open record": "فتح السجل",
+    # Lower-case fragments: the viewer's counters read "7 elements", "1 pin".
+    "elements": "عنصر",
+    "linked": "مرتبط",
+    "pin": "علامة",
+    "pins": "علامة",
+    "Fly the camera to this pin": "توجيه الكاميرا إلى هذه العلامة",
+    "Open the record this pin stands for": "فتح السجل الذي تمثله هذه العلامة",
     "Majal Construction": "مجال للإنشاءات",
     "Majal Facilities": "مجال لإدارة المرافق",
     "Majal Assistant": "مساعد مجال",
@@ -682,6 +706,15 @@ CUSTOM.update(
 # Used only after exact Majal and official Odoo matches. Replacements are
 # longest-first and preserve placeholders, HTML and technical identifiers.
 PHRASES = {
+    # Short words also kept here as substitution fragments: PHRASES composes
+    # longer messages out of them, and dropping them when the exact matches
+    # moved to CUSTOM left seventeen composed strings untranslated.
+    "Section": "القسم",
+    "Questions": "الأسئلة",
+    "Completed": "منجز",
+    "Elements": "العناصر",
+    "elements": "عنصر",
+    "linked": "مرتبط",
     "Amount This Period": "مبلغ الفترة الحالية",
     "Amount Net Cumulative": "صافي المبلغ التراكمي",
     "Amount Cumulative": "المبلغ التراكمي",
