@@ -70,30 +70,42 @@ const FACILITY_KPIS = [
     },
 ];
 
+// The focus panel counts what is *breaching a promise*, not what exists — the
+// KPI row below already reports the portfolio. Rendering the same three numbers
+// in both places, as this used to, told nobody what to do first.
 const FACILITY_FOCUS = [
     {
-        key: "workOrders",
-        label: "Work orders",
-        caption: "Triage and assign",
+        key: "slaBreached",
+        label: "SLA breached",
+        caption: "Promise missed",
+        model: "maintenance.request",
+        domain: [["sla_breached", "=", true]],
         action: "maintenance.hr_equipment_request_action",
-        icon: "fa-clipboard",
+        filter: "sla_breached",
+        icon: "fa-bolt",
         workspace: "work_orders",
     },
     {
-        key: "pmDue",
-        label: "PM plans",
-        caption: "Due through today",
-        action: "facility_workorder.action_pm_plan",
-        icon: "fa-refresh",
-        workspace: "pm_plans",
+        key: "slaAtRisk",
+        label: "SLA at risk",
+        caption: "Save it now",
+        model: "maintenance.request",
+        domain: ["|", ["sla_response_state", "=", "at_risk"],
+                 ["sla_resolution_state", "=", "at_risk"]],
+        action: "maintenance.hr_equipment_request_action",
+        filter: "sla_at_risk",
+        icon: "fa-hourglass-half",
+        workspace: "work_orders",
     },
     {
-        key: "criticalAssets",
-        label: "Critical assets",
-        caption: "Review exposure",
-        action: "maintenance.hr_equipment_action",
-        icon: "fa-shield",
-        workspace: "assets",
+        key: "contractsExpiring",
+        label: "Contracts to renew",
+        caption: "Ends in 60 days",
+        model: "contract.contract",
+        domain: [["is_amc", "=", true], ["days_to_expiry", "<=", 60]],
+        action: "facility_contract.action_facility_contract",
+        icon: "fa-file-text-o",
+        workspace: "maintenance_contracts",
     },
 ];
 
@@ -185,7 +197,9 @@ export class FacilityHome extends Component {
         this.notification = useService("notification");
         this.state = useState({
             loading: true,
-            kpis: Object.fromEntries(FACILITY_KPIS.map((item) => [item.key, "–"])),
+            kpis: Object.fromEntries(
+                [...FACILITY_KPIS, ...FACILITY_FOCUS].map((item) => [item.key, "–"])
+            ),
         });
         this.kpiDefinitions = localizeItems(FACILITY_KPIS);
         this.focusItems = localizeItems(FACILITY_FOCUS);
@@ -199,11 +213,12 @@ export class FacilityHome extends Component {
         }).format(new Date());
 
         onWillStart(async () => {
+            const counted = [...FACILITY_KPIS, ...FACILITY_FOCUS];
             const results = await Promise.allSettled(
-                FACILITY_KPIS.map((item) => this.orm.searchCount(item.model, item.domain))
+                counted.map((item) => this.orm.searchCount(item.model, item.domain))
             );
             results.forEach((result, index) => {
-                this.state.kpis[FACILITY_KPIS[index].key] =
+                this.state.kpis[counted[index].key] =
                     result.status === "fulfilled" ? result.value : "–";
             });
             this.state.loading = false;
@@ -223,6 +238,22 @@ export class FacilityHome extends Component {
 
     async openWorkspace(workspaceKey) {
         await this.openAction(`construction_ui.action_workspace_${workspaceKey}`);
+    }
+
+    /** Late work opens the work itself, filtered and labelled, rather than a
+     * dashboard the user then has to filter by hand. */
+    async openFocus(item) {
+        if (item.filter) {
+            try {
+                await this.action.doAction(item.action, {
+                    additionalContext: { [`search_default_${item.filter}`]: 1 },
+                });
+                return;
+            } catch {
+                // fall through
+            }
+        }
+        await this.openWorkspace(item.workspace);
     }
 
     formatAppCount(count) {

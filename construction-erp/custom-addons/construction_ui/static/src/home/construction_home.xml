@@ -31,7 +31,7 @@
                         <div class="o_construction_focus_items">
                             <button t-foreach="focusItems" t-as="item" t-key="item.key"
                                     class="o_construction_focus_item"
-                                    t-on-click="() => this.openWorkspace(item.workspace)">
+                                    t-on-click="() => this.openFocus(item)">
                                 <span class="o_construction_focus_icon">
                                     <i t-attf-class="fa {{ item.icon }}"/>
                                 </span>

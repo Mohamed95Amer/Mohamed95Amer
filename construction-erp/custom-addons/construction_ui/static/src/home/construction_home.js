@@ -3,6 +3,7 @@
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 
 const LOCALIZED_KEYS = new Set(["label", "hint", "caption", "title", "subtitle", "name", "description"]);
@@ -68,32 +69,53 @@ const KPI_DEFINITIONS = [
     },
 ];
 
+// "Today's focus" answers a different question from the KPI row below it.
+//
+// It used to render the same three counts the KPI row already showed, twice on
+// one screen — the number of things that exist. That is a portfolio figure, and
+// it does not tell anyone what to do first. These count what is *late*: work
+// that has passed a date somebody agreed to. A zero here is genuinely good
+// news, which is exactly what a focus panel should be able to say.
 const CONSTRUCTION_FOCUS = [
     {
-        key: "rfi",
-        label: "Open RFIs",
-        caption: "Clear information flow",
-        action: "construction_rfi.action_construction_rfi",
+        key: "rfi_overdue",
+        label: "Overdue RFIs",
+        caption: "Reply date passed",
+        model: "construction.rfi",
+        domain: [["is_overdue", "=", true]],
         icon: "fa-question-circle",
         workspace: "rfis",
+        action: "construction_rfi.action_construction_rfi",
+        filter: "filter_overdue",
     },
     {
-        key: "defects",
-        label: "Open defects",
-        caption: "Protect quality",
-        action: "construction_defect.action_construction_defect",
+        key: "defects_overdue",
+        label: "Overdue defects",
+        caption: "Fix date passed",
+        model: "construction.defect",
+        domain: [["is_overdue", "=", true]],
         icon: "fa-exclamation-triangle",
         workspace: "defects",
+        action: "construction_defect.action_construction_defect",
+        filter: "filter_overdue",
     },
     {
-        key: "inspections",
-        label: "Inspections",
-        caption: "Move work forward",
-        action: "construction_form.action_form_inspections",
-        icon: "fa-check-square-o",
-        workspace: "inspections",
+        key: "my_actions",
+        label: "My overdue actions",
+        caption: "Mine, from meetings",
+        model: "construction.meeting.action",
+        domain: [["is_overdue", "=", true], ["owner_id", "=", "@uid"]],
+        icon: "fa-gavel",
+        workspace: "meetings",
     },
 ];
+
+// Domains are declared as data, so the current user is written as a token and
+// substituted at load time rather than captured when the module is imported.
+const resolveDomain = (domain, uid) =>
+    domain.map((leaf) =>
+        Array.isArray(leaf) ? leaf.map((part) => (part === "@uid" ? uid : part)) : leaf
+    );
 
 const APP_GROUPS = [
     {
@@ -259,7 +281,9 @@ export class ConstructionHome extends Component {
         this.notification = useService("notification");
         this.state = useState({
             loading: true,
-            kpis: Object.fromEntries(KPI_DEFINITIONS.map((item) => [item.key, "–"])),
+            kpis: Object.fromEntries(
+                [...KPI_DEFINITIONS, ...CONSTRUCTION_FOCUS].map((item) => [item.key, "–"])
+            ),
         });
         this.kpiDefinitions = localizeItems(KPI_DEFINITIONS);
         this.focusItems = localizeItems(CONSTRUCTION_FOCUS);
@@ -273,13 +297,14 @@ export class ConstructionHome extends Component {
         }).format(new Date());
 
         onWillStart(async () => {
+            const counted = [...KPI_DEFINITIONS, ...CONSTRUCTION_FOCUS];
             const results = await Promise.allSettled(
-                KPI_DEFINITIONS.map((item) =>
-                    this.orm.searchCount(item.model, item.domain)
+                counted.map((item) =>
+                    this.orm.searchCount(item.model, resolveDomain(item.domain, user.userId))
                 )
             );
             results.forEach((result, index) => {
-                this.state.kpis[KPI_DEFINITIONS[index].key] =
+                this.state.kpis[counted[index].key] =
                     result.status === "fulfilled" ? result.value : "–";
             });
             this.state.loading = false;
@@ -299,6 +324,23 @@ export class ConstructionHome extends Component {
 
     async openWorkspace(workspaceKey) {
         await this.openAction(`construction_ui.action_workspace_${workspaceKey}`);
+    }
+
+    /** A focus item is a piece of late work, so it opens that work, not a
+     * dashboard about it. Where the module has a matching filter the list
+     * arrives with a removable facet explaining what is being shown. */
+    async openFocus(item) {
+        if (item.filter) {
+            try {
+                await this.action.doAction(item.action || `construction_ui.action_workspace_${item.workspace}`, {
+                    additionalContext: { [`search_default_${item.filter}`]: 1 },
+                });
+                return;
+            } catch {
+                // fall through to the workspace
+            }
+        }
+        await this.openWorkspace(item.workspace);
     }
 
     formatAppCount(count) {

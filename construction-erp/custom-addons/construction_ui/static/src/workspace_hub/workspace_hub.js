@@ -5,6 +5,11 @@ import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 
+const escapeHtml = (value) =>
+    String(value).replace(/[&<>"]/g, (ch) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch])
+    );
+
 const daysAgo = (days) => {
     const date = new Date();
     date.setDate(date.getDate() - days);
@@ -51,7 +56,7 @@ const OPERATIONAL_METRICS = {
         { label: "Open", hint: "Not yet closed", icon: "fa-folder-open-o",
           requires: ["state"], domain: [["state", "!=", "closed"]] },
         { label: "Overdue", hint: "Past the required date", icon: "fa-exclamation-triangle",
-          tone: "alert", requires: ["is_overdue"], domain: [["is_overdue", "=", true]] },
+          tone: "alert", requires: ["is_overdue"], filter: "filter_overdue", domain: [["is_overdue", "=", true]] },
         { label: "Awaiting answer", hint: "Submitted, no response yet", icon: "fa-hourglass-half",
           requires: ["state"], domain: [["state", "=", "submitted"]] },
         { label: "Answered", hint: "Ready to review and close", icon: "fa-check-circle",
@@ -136,49 +141,50 @@ Object.assign(OPERATIONAL_METRICS, {
     ],
     permits: [
         { label: "Live now", hint: "Work authorised right now", icon: "fa-play-circle",
-          requires: ["is_live"], domain: [["is_live", "=", true]] },
+          requires: ["is_live"], filter: "live", domain: [["is_live", "=", true]] },
         { label: "Awaiting approval", hint: "Cannot start yet", icon: "fa-hourglass-half",
-          requires: ["state"], domain: [["state", "=", "submitted"]] },
+          requires: ["state"], filter: "awaiting", domain: [["state", "=", "submitted"]] },
         { label: "Expired", hint: "Window closed, not closed out", icon: "fa-exclamation-triangle",
-          tone: "alert", requires: ["state"], domain: [["state", "=", "expired"]] },
+          tone: "alert", requires: ["state"], filter: "expired", domain: [["state", "=", "expired"]] },
         { label: "Suspended", hint: "Stopped on site", icon: "fa-pause-circle",
           tone: "alert", requires: ["state"], domain: [["state", "=", "suspended"]] },
     ],
     incidents: [
         { label: "Lost time injuries", hint: "Counts towards LTIFR", icon: "fa-ambulance",
-          tone: "alert", requires: ["is_lti"], domain: [["is_lti", "=", true]] },
+          tone: "alert", requires: ["is_lti"], filter: "lti", domain: [["is_lti", "=", true]] },
         { label: "Reportable", hint: "Notifiable to the regulator", icon: "fa-gavel",
-          tone: "alert", requires: ["reportable"], domain: [["reportable", "=", true]] },
+          tone: "alert", requires: ["reportable"], filter: "reportable", domain: [["reportable", "=", true]] },
         { label: "Near misses", hint: "Free lessons — keep them coming", icon: "fa-eye",
-          requires: ["incident_class"], domain: [["incident_class", "=", "near_miss"]] },
+          requires: ["incident_class"], filter: "near_miss", domain: [["incident_class", "=", "near_miss"]] },
         { label: "Open", hint: "Investigation or actions outstanding", icon: "fa-folder-open-o",
           requires: ["state"], domain: [["state", "!=", "closed"]] },
     ],
     tenders: [
         { label: "In leveling", hint: "Bids in, decision pending", icon: "fa-balance-scale",
-          requires: ["state"], domain: [["state", "=", "leveling"]] },
+          requires: ["state"], filter: "leveling", domain: [["state", "=", "leveling"]] },
         { label: "Out to bid", hint: "Issued, awaiting prices", icon: "fa-paper-plane-o",
           requires: ["state"], domain: [["state", "=", "issued"]] },
         { label: "Awarded over budget", hint: "Committed above the estimate", icon: "fa-exclamation-triangle",
           tone: "alert", requires: ["award_saving"], domain: [["award_saving", "<", 0]] },
         { label: "Awarded", hint: "Now a subcontract commitment", icon: "fa-handshake-o",
-          requires: ["state"], domain: [["state", "=", "awarded"]] },
+          requires: ["state"], filter: "awarded", domain: [["state", "=", "awarded"]] },
     ],
     materials: [
         { label: "Over budget", hint: "Used more than the bill priced", icon: "fa-exclamation-triangle",
-          tone: "alert", requires: ["qty_variance"], domain: [["qty_variance", ">", 0]] },
+          tone: "alert", requires: ["qty_variance", "qty_budget"], filter: "over_budget",
+          domain: [["qty_budget", ">", 0], ["qty_variance", ">", 0]] },
         { label: "Wasted", hint: "Products with recorded waste", icon: "fa-trash-o",
-          tone: "alert", requires: ["qty_wasted"], domain: [["qty_wasted", ">", 0]] },
+          tone: "alert", requires: ["qty_wasted"], filter: "has_waste", domain: [["qty_wasted", ">", 0]] },
         { label: "On site", hint: "Still in the site store", icon: "fa-cubes",
-          requires: ["qty_on_hand"], domain: [["qty_on_hand", ">", 0]] },
+          requires: ["qty_on_hand"], filter: "in_store", domain: [["qty_on_hand", ">", 0]] },
         { label: "Tracked", hint: "Materials with a budget", icon: "fa-list",
           requires: ["qty_budget"], domain: [["qty_budget", ">", 0]] },
     ],
     meetings: [
         { label: "Overdue actions", hint: "Past their agreed date", icon: "fa-exclamation-triangle",
-          tone: "alert", requires: ["overdue_action_count"], domain: [["overdue_action_count", ">", 0]] },
+          tone: "alert", requires: ["overdue_action_count"], filter: "overdue", domain: [["overdue_action_count", ">", 0]] },
         { label: "Actions open", hint: "Minutes still carrying work", icon: "fa-folder-open-o",
-          requires: ["open_action_count"], domain: [["open_action_count", ">", 0]] },
+          requires: ["open_action_count"], filter: "open_actions", domain: [["open_action_count", ">", 0]] },
         { label: "Minutes to issue", hint: "Held but not yet circulated", icon: "fa-pencil",
           requires: ["state"], domain: [["state", "=", "draft"]] },
         { label: "Issued", hint: "Circulated, actions running", icon: "fa-paper-plane-o",
@@ -206,11 +212,11 @@ Object.assign(OPERATIONAL_METRICS, {
     ],
     programme: [
         { label: "On the critical path", hint: "Slip here slips the project", icon: "fa-exclamation-triangle",
-          tone: "alert", requires: ["is_critical"], domain: [["is_critical", "=", true]] },
+          tone: "alert", requires: ["is_critical"], filter: "filter_critical", domain: [["is_critical", "=", true]] },
         { label: "Behind baseline", hint: "Finishing later than planned", icon: "fa-clock-o",
-          requires: ["finish_variance_days"], domain: [["finish_variance_days", ">", 0]] },
+          requires: ["finish_variance_days"], filter: "filter_slipped", domain: [["finish_variance_days", ">", 0]] },
         { label: "Milestones", hint: "Contract dates to hit", icon: "fa-flag-checkered",
-          requires: ["is_milestone"], domain: [["is_milestone", "=", true]] },
+          requires: ["is_milestone"], filter: "filter_milestones", domain: [["is_milestone", "=", true]] },
         { label: "Complete", hint: "100% progressed", icon: "fa-check-circle",
           requires: ["progress"], domain: [["progress", ">=", 100]] },
     ],
@@ -895,8 +901,28 @@ export class MajalWorkspaceHub extends Component {
         );
     }
 
-    /** Open the workspace list already filtered to the metric that was clicked. */
+    /** Open the workspace list already filtered to the metric that was clicked.
+     *
+     * Where the module's own search view has a filter with the same meaning,
+     * the tile opens that action and switches the filter on. That matters more
+     * than it sounds: the user lands with a removable facet in the search bar,
+     * so the list says why it is filtered and can be widened in one click,
+     * and they keep the module's filters, group-bys and saved searches.
+     *
+     * A raw domain, by contrast, is invisible and cannot be undone without
+     * navigating away — which is what the tiles used to do.
+     */
     async openMetric(metric) {
+        if (metric.filter) {
+            try {
+                await this.action.doAction(this.config.action, {
+                    additionalContext: { [`search_default_${metric.filter}`]: 1 },
+                });
+                return;
+            } catch {
+                // Fall through to the self-contained list below.
+            }
+        }
         try {
             await this.action.doAction({
                 type: "ir.actions.act_window",
@@ -906,6 +932,12 @@ export class MajalWorkspaceHub extends Component {
                 views: [[false, "list"], [false, "form"]],
                 target: "current",
                 context: this.config.createContext,
+                // Without this a count of zero opens an empty grid with no
+                // explanation, which reads as a broken screen rather than as
+                // good news.
+                help: `<p class="o_view_nocontent_smiling_face">${escapeHtml(
+                    _t("Nothing here — %s is at zero.", metric.label)
+                )}</p><p>${escapeHtml(metric.hint)}</p>`,
             });
         } catch {
             this.warnUnavailable();
@@ -916,7 +948,23 @@ export class MajalWorkspaceHub extends Component {
         await this.openAction(this.config.action);
     }
 
+    /** Start a new record through the module's own action.
+     *
+     * Going through the action rather than opening a bare form means the
+     * defaults the module sets in its action context actually apply, so the
+     * form opens partly filled instead of as a wall of required fields.
+     */
     async createRecord() {
+        try {
+            await this.action.doAction(this.config.action, {
+                additionalContext: this.config.createContext,
+                viewType: "form",
+            });
+            return;
+        } catch {
+            // Fall through — a workspace can point at an action that does not
+            // offer a form view.
+        }
         try {
             await this.action.doAction({
                 type: "ir.actions.act_window",

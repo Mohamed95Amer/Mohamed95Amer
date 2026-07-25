@@ -205,12 +205,22 @@ $facility-muted: #67777a;
     transition: background .14s ease;
 
     &:last-child { border-right: 0; }
+    padding-right: 14px;
     &:hover { background: rgba(255,255,255,.08); }
     > .fa-arrow-right { display: none; }
     > span:not(.o_suite_focus_icon) { display: flex; min-width: 0; flex-direction: column; }
     strong { margin-top: 8px; font-size: 1.25rem; line-height: 1; }
     small { margin-top: 5px; overflow: hidden; font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
-    em { margin-top: 2px; overflow: hidden; color: rgba(255,255,255,.46); font-size: .61rem; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
+    em {
+        margin-top: 2px;
+        color: rgba(255,255,255,.46);
+        font-size: .61rem;
+        font-style: normal;
+        line-height: 1.35;
+        // A truncated explanation explains nothing, so this wraps rather
+        // than ellipsising into the neighbouring column.
+        overflow-wrap: anywhere;
+    }
 }
 
 .o_suite_focus_icon {
