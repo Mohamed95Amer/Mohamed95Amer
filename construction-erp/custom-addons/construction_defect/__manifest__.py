@@ -7,10 +7,11 @@
     "license": "LGPL-3",
     "author": "Mohamed Amer",
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
-    "depends": ["construction_pin"],
+    "depends": ["construction_pin", "construction_form"],
     "data": [
         "security/ir.model.access.csv",
         "views/defect_views.xml",
+        "views/inspection_bridge_views.xml",
         "report/defect_report.xml",
     ],
     "demo": [

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inspection_form_defects" model="ir.ui.view">
+        <field name="name">construction.form.inspection.form.defects</field>
+        <field name="model">construction.form.inspection</field>
+        <field name="inherit_id" ref="construction_form.view_form_inspection_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_raise_defects" type="object"
+                        string="Raise Defects" class="btn-primary"
+                        invisible="unraised_check_count == 0"
+                        help="Create one punch-list item per failed check."/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="oe_button_box" name="defect_box" invisible="1"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group string="Follow-up" name="followup"
+                       invisible="failed_check_count == 0">
+                    <field name="failed_check_count"/>
+                    <field name="unraised_check_count"/>
+                    <field name="defect_count"/>
+                    <button name="action_view_defects" type="object"
+                            string="View defects" class="btn-link"
+                            invisible="defect_count == 0"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_defect_form_inspection" model="ir.ui.view">
+        <field name="name">construction.defect.form.inspection</field>
+        <field name="model">construction.defect</field>
+        <field name="inherit_id" ref="construction_defect.view_defect_form"/>
+        <field name="arch" type="xml">
+            <field name="trade" position="after">
+                <field name="inspection_id" readonly="1"
+                       invisible="not inspection_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

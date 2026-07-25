@@ -44,6 +44,7 @@
                             <field name="permit_type"/>
                             <field name="project_id"/>
                             <field name="location"/>
+                            <field name="task_id"/>
                             <field name="contractor_id"/>
                             <field name="workers_count"/>
                         </group>

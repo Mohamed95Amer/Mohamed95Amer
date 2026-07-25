@@ -105,3 +105,88 @@ class TestDefect(TransactionCase):
         action = pin.action_open_target()
         self.assertEqual(action["res_model"], "construction.defect")
         self.assertEqual(action["res_id"], defect.id)
+
+
+@tagged("post_install", "-at_install")
+class TestInspectionRaisesDefects(TransactionCase):
+    """The bridge that stops a failed inspection being a dead end."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "QA Bridge", "is_construction": True}
+        )
+        cls.template = cls.env["construction.form.template"].create({
+            "name": "Pre-pour check",
+            "code": "QA-BRIDGE",
+            "project_id": cls.project.id,
+            "question_ids": [
+                (0, 0, {"name": "Rebar to drawing", "answer_type": "yes_no"}),
+                (0, 0, {"name": "Formwork clean", "answer_type": "yes_no"}),
+                (0, 0, {"name": "Slump", "answer_type": "number"}),
+            ],
+        })
+
+    def _inspection(self, answers):
+        inspection = self.env["construction.form.inspection"].create({
+            "template_id": self.template.id,
+            "project_id": self.project.id,
+            "location": "Grid B",
+        })
+        inspection.action_start()
+        for answer in inspection.answer_ids:
+            value = answers.get(answer.question_id.name)
+            if value:
+                answer.answer_yes_no = value
+        return inspection
+
+    def test_failed_checks_become_defects(self):
+        inspection = self._inspection(
+            {"Rebar to drawing": "no", "Formwork clean": "yes"}
+        )
+        self.assertEqual(inspection.failed_check_count, 1)
+        self.assertEqual(inspection.unraised_check_count, 1)
+
+        inspection.action_raise_defects()
+        self.assertEqual(inspection.defect_count, 1)
+        defect = inspection.defect_ids
+        self.assertEqual(defect.name, "Rebar to drawing")
+        self.assertEqual(defect.project_id, self.project)
+        self.assertEqual(defect.location, "Grid B")
+        self.assertEqual(defect.inspection_id, inspection)
+
+    def test_one_defect_per_failed_check(self):
+        inspection = self._inspection(
+            {"Rebar to drawing": "no", "Formwork clean": "no"}
+        )
+        inspection.action_raise_defects()
+        self.assertEqual(inspection.defect_count, 2)
+
+    def test_raising_twice_does_not_duplicate(self):
+        """Pressing the button again must not re-raise what is already open."""
+        inspection = self._inspection({"Rebar to drawing": "no"})
+        inspection.action_raise_defects()
+        self.assertEqual(inspection.unraised_check_count, 0)
+        with self.assertRaises(UserError):
+            inspection.action_raise_defects()
+        self.assertEqual(inspection.defect_count, 1)
+
+    def test_a_new_failure_can_still_be_raised(self):
+        inspection = self._inspection({"Rebar to drawing": "no"})
+        inspection.action_raise_defects()
+        # A later check fails too; only the new one should be raised.
+        inspection.answer_ids.filtered(
+            lambda a: a.question_id.name == "Formwork clean"
+        ).answer_yes_no = "no"
+        self.assertEqual(inspection.unraised_check_count, 1)
+        inspection.action_raise_defects()
+        self.assertEqual(inspection.defect_count, 2)
+
+    def test_a_passing_inspection_raises_nothing(self):
+        inspection = self._inspection(
+            {"Rebar to drawing": "yes", "Formwork clean": "yes"}
+        )
+        self.assertEqual(inspection.failed_check_count, 0)
+        with self.assertRaises(UserError):
+            inspection.action_raise_defects()

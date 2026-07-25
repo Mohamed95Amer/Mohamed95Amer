@@ -44,6 +44,14 @@ class ConstructionPermit(models.Model):
     supervisor_id = fields.Many2one(
         "res.users", string="Site Supervisor",
         default=lambda self: self.env.user)
+    task_id = fields.Many2one(
+        "project.task",
+        string="Programme Activity",
+        domain="[('project_id', '=', project_id)]",
+        help="Activity this permit authorises. Ties the authority to the work "
+             "it covers, so a programme can be read for what is permitted to "
+             "start rather than only for what is scheduled to.",
+    )
     valid_from = fields.Datetime(required=True, default=fields.Datetime.now,
                                  tracking=True)
     valid_to = fields.Datetime(required=True, tracking=True)
