@@ -19,18 +19,40 @@ trap 'rm -rf "$TMP"' EXIT
 
 mkdir -p "$LIB/web-ifc" "$LIB/three"
 
+# Tarballs come straight from the registry over HTTPS rather than through npm.
+# The Codespaces base image has no Node, and needing a JavaScript package
+# manager to download two files would make the 3D viewer unavailable there for
+# no reason. npm is used only if curl is missing.
+fetch() {
+    local name="$1" version="$2" out="$3"
+    local url="https://registry.npmjs.org/$name/-/$name-$version.tgz"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "$url" -o "$out"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -qO "$out" "$url"
+    elif command -v npm >/dev/null 2>&1; then
+        npm pack "$name@$version" --pack-destination "$(dirname "$out")" >/dev/null
+        mv "$(dirname "$out")/$name-$version.tgz" "$out"
+    else
+        echo "need curl, wget or npm to fetch $name" >&2
+        exit 1
+    fi
+}
+
 echo "==> web-ifc $WEB_IFC_VERSION"
-npm pack "web-ifc@$WEB_IFC_VERSION" --pack-destination "$TMP" >/dev/null
-tar xzf "$TMP/web-ifc-$WEB_IFC_VERSION.tgz" -C "$TMP"
+fetch web-ifc "$WEB_IFC_VERSION" "$TMP/web-ifc.tgz"
+tar xzf "$TMP/web-ifc.tgz" -C "$TMP"
 cp "$TMP/package/web-ifc-api-iife.js" "$LIB/web-ifc/"
 cp "$TMP/package/web-ifc.wasm" "$LIB/web-ifc/"
 cp "$TMP/package/LICENSE.md" "$LIB/web-ifc/"
+rm -rf "$TMP/package"
 
 echo "==> three $THREE_VERSION"
-npm pack "three@$THREE_VERSION" --pack-destination "$TMP" >/dev/null
-tar xzf "$TMP/three-$THREE_VERSION.tgz" -C "$TMP"
+fetch three "$THREE_VERSION" "$TMP/three.tgz"
+tar xzf "$TMP/three.tgz" -C "$TMP"
 cp "$TMP/package/build/three.module.min.js" "$LIB/three/"
 cp "$TMP/package/LICENSE" "$LIB/three/"
+rm -rf "$TMP/package"
 
 cat > "$LIB/SOURCES.md" <<SRC
 # Vendored BIM libraries
