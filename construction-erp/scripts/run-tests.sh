@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"
 MOD="${1:?usage: run-tests.sh <module|all>}"
 
 if [ "$MOD" = all ]; then
-    MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_portal,facility_asset,facility_workorder,facility_sla,facility_floorplan,construction_ui"
+    MODULES="construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_portal,facility_asset,facility_workorder,facility_sla,facility_floorplan,construction_ui"
     TAGS=""
     for m in ${MODULES//,/ }; do TAGS="$TAGS,/$m"; done
     TAGS="${TAGS#,}"
