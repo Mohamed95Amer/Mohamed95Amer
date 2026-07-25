@@ -38,6 +38,12 @@
                             t-on-click="toggleSection" title="Cut through the model">
                         <i class="fa fa-scissors"/> Section
                     </button>
+                    <button t-if="state.hasSchedule"
+                            t-att-class="{'active': state.fourD}"
+                            t-on-click="toggleFourD"
+                            title="Show the model as it should stand on a date">
+                        <i class="fa fa-calendar"/> 4D
+                    </button>
                     <button t-on-click="fitView" title="Frame the selection">
                         <i class="fa fa-expand"/> Fit
                     </button>
@@ -93,6 +99,21 @@
                                t-att-value="state.sectionHeight"
                                t-on-input="(ev) => this.setSectionHeight(ev.target.value)"/>
                         <span><t t-esc="state.sectionHeight"/>%</span>
+                    </div>
+
+                    <div t-if="state.fourD" class="o_bim_fourd">
+                        <label for="bim_play">On</label>
+                        <input id="bim_play" type="date"
+                               t-att-min="state.scheduleFrom"
+                               t-att-max="state.scheduleTo"
+                               t-att-value="state.playDate"
+                               t-on-change="(ev) => this.setPlayDate(ev.target.value)"/>
+                        <input class="o_bim_play_range" type="range" min="0" max="100"
+                               t-att-value="playPercent"
+                               t-on-input="(ev) => this.setPlayPercent(ev.target.value)"/>
+                        <span class="o_bim_fourd_key">
+                            <i class="fa fa-square"/> under construction
+                        </span>
                     </div>
 
                     <div t-if="state.placing" class="o_bim_hint">
@@ -155,6 +176,27 @@
                                 <dd t-esc="row.value"/>
                             </t>
                         </dl>
+                        <!-- The property sets the authoring tool wrote: fire
+                             ratings, references, whether it is load bearing.
+                             Fetched on selection rather than sent with the
+                             model, which would be tens of thousands of rows. -->
+                        <t t-if="state.selected.psets and state.selected.psets.length">
+                            <button class="o_bim_pset_toggle"
+                                    t-on-click="() => this.state.showPsets = !this.state.showPsets">
+                                <i t-attf-class="fa fa-caret-{{ state.showPsets ? 'down' : 'right' }}"/>
+                                <t t-esc="state.selected.psets.length"/> properties
+                            </button>
+                            <dl t-if="state.showPsets" class="o_bim_props o_bim_psets">
+                                <t t-foreach="state.selected.psets" t-as="row"
+                                   t-key="row.id">
+                                    <dt t-esc="row.name"/>
+                                    <dd>
+                                        <t t-esc="row.value"/>
+                                        <small t-if="row.pset" t-esc="row.pset"/>
+                                    </dd>
+                                </t>
+                            </dl>
+                        </t>
                     </div>
                 </div>
 

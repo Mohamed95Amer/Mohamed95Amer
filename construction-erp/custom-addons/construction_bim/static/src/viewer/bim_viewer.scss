@@ -193,6 +193,65 @@
 .o_bucket_open .o_bim_pin_main > i { color: #d8a13a; }
 .o_bucket_done .o_bim_pin_main > i { color: #2f7d5c; }
 
+// The 4D strip sits along the bottom of the stage, where a programme belongs:
+// out of the model, and readable while dragging.
+.o_bim_fourd {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    font-size: .82rem;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(20, 38, 31, .12);
+
+    label { margin: 0; color: var(--bim-muted); }
+    input[type="date"] {
+        padding: 3px 6px;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+    }
+    .o_bim_play_range { width: 260px; }
+}
+
+.o_bim_fourd_key {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--bim-muted);
+
+    i { color: #1f6f8b; }
+}
+
+.o_bim_pset_toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 0;
+    font-size: .78rem;
+    color: var(--bim-deep);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.o_bim_psets {
+    max-height: 220px;
+    overflow-y: auto;
+
+    dd small {
+        display: block;
+        color: #8d9b97;
+        font-size: .68rem;
+    }
+}
+
 .o_bim_tabs {
     display: flex;
     border-bottom: 1px solid var(--bim-rule);

@@ -1,3 +1,5 @@
+import uuid
+
 from odoo import api, fields, models
 
 # Same buckets and colours as element links, so a pin and a coloured element
@@ -45,6 +47,18 @@ class ConstructionBimPin(models.Model):
     pos_z = fields.Float(digits=(16, 4), required=True)
     storey = fields.Char(index=True)
 
+    # The camera the pin was dropped from. A position on its own says where
+    # something is; the viewpoint says what the person was looking at when they
+    # decided it was a problem, which is most of what a reviewer needs and is
+    # exactly what BCF carries between tools.
+    cam_x = fields.Float(digits=(16, 4))
+    cam_y = fields.Float(digits=(16, 4))
+    cam_z = fields.Float(digits=(16, 4))
+    cam_target_x = fields.Float(digits=(16, 4))
+    cam_target_y = fields.Float(digits=(16, 4))
+    cam_target_z = fields.Float(digits=(16, 4))
+    has_viewpoint = fields.Boolean(compute="_compute_has_viewpoint", store=True)
+
     pin_type = fields.Selection(
         selection="_selection_pin_type", default="note", required=True)
     task_id = fields.Many2one("project.task", ondelete="cascade")
@@ -77,6 +91,17 @@ class ConstructionBimPin(models.Model):
     @api.model
     def _selection_pin_type(self):
         return [(entry["id"], entry["label"]) for entry in self._pin_type_registry()]
+
+    @api.depends("cam_x", "cam_y", "cam_z", "cam_target_x", "cam_target_y",
+                 "cam_target_z")
+    def _compute_has_viewpoint(self):
+        for pin in self:
+            # An all-zero camera is the absence of one, not a camera at the
+            # origin: nobody reviews a model from inside the survey point.
+            pin.has_viewpoint = any((
+                pin.cam_x, pin.cam_y, pin.cam_z,
+                pin.cam_target_x, pin.cam_target_y, pin.cam_target_z,
+            ))
 
     @api.depends("pin_type", "task_id.state", "rfi_id.state", "defect_id.state")
     def _compute_status(self):
@@ -158,6 +183,9 @@ class ConstructionBimPin(models.Model):
             "storey": element.storey if element else False,
             "pin_type": pin_type,
         }
+        for key in ("cam_x", "cam_y", "cam_z",
+                    "cam_target_x", "cam_target_y", "cam_target_z"):
+            pin_values[key] = values.get(key) or 0.0
         pin_values.update(self._create_linked_record(model, pin_type, name, values))
         pin = self.create(pin_values)
         return pin._payload()
@@ -196,11 +224,123 @@ class ConstructionBimPin(models.Model):
             "storey": self.storey or "",
             "global_id": self.global_id or "",
             "position": [self.pos_x, self.pos_y, self.pos_z],
+            "has_viewpoint": self.has_viewpoint,
+            "camera": (
+                [self.cam_x, self.cam_y, self.cam_z] if self.has_viewpoint
+                else None),
+            "camera_target": (
+                [self.cam_target_x, self.cam_target_y, self.cam_target_z]
+                if self.has_viewpoint else None),
         }
 
     @api.model
     def pins_for_model(self, model_id):
         return [pin._payload() for pin in self.search([("model_id", "=", model_id)])]
+
+    # ------------------------------------------------------------------
+    # BCF
+    # ------------------------------------------------------------------
+    bcf_guid = fields.Char(
+        readonly=True, copy=False, index=True,
+        help="Topic GUID this pin came from, or was last exported as, so a "
+             "round trip through another tool updates the pin rather than "
+             "creating a second one beside it.")
+
+    def _bcf_guid(self):
+        """The topic GUID, minted once and then kept.
+
+        Stability is the whole point: re-exporting must produce the same topic
+        so a reviewer's answer lands on the issue they answered, not on a new
+        one that looks identical.
+        """
+        self.ensure_one()
+        if not self.bcf_guid:
+            self.bcf_guid = str(uuid.uuid4())
+        return self.bcf_guid
+
+    def _linked_record(self):
+        self.ensure_one()
+        for entry in self._pin_type_registry():
+            field = entry["link_field"]
+            if field and self[field]:
+                return self[field]
+        return None
+
+    def _bcf_comment(self):
+        """What the linked record adds beyond the pin's own note."""
+        self.ensure_one()
+        record = self._linked_record()
+        if record is None:
+            return ""
+        parts = [record.display_name]
+        if self.status:
+            parts.append(self.env._("Status: %s", self.status))
+        return " — ".join(parts)
+
+    def _camera_position(self):
+        self.ensure_one()
+        if self.has_viewpoint:
+            return (self.cam_x, self.cam_y, self.cam_z)
+        # No stored viewpoint: stand back from the pin along a fixed diagonal so
+        # the exported topic still opens on something rather than inside a wall.
+        return (self.pos_x + 8.0, self.pos_y + 6.0, self.pos_z + 8.0)
+
+    def _camera_direction(self):
+        self.ensure_one()
+        position = self._camera_position()
+        target = (
+            (self.cam_target_x, self.cam_target_y, self.cam_target_z)
+            if self.has_viewpoint else (self.pos_x, self.pos_y, self.pos_z))
+        vector = [t - p for t, p in zip(target, position)]
+        length = sum(v * v for v in vector) ** 0.5
+        return tuple(v / length for v in vector) if length else (0.0, 0.0, -1.0)
+
+    @api.model
+    def _create_from_bcf(self, model, values):
+        """Create or update the pin a BCF topic describes.
+
+        Matched on the topic GUID: a file that has been round-tripped through a
+        reviewer's tool carries the same GUIDs, and importing it must update
+        those issues rather than duplicate every one of them.
+        """
+        title = values.get("title") or self.env._("Imported topic")
+        guid = values.get("guid") or ""
+        existing = self.search(
+            [("model_id", "=", model.id), ("bcf_guid", "=", guid)], limit=1
+        ) if guid else self.browse()
+
+        position = values.get("position") or (0.0, 0.0, 0.0)
+        camera = values.get("camera") or (0.0, 0.0, 0.0)
+        target = values.get("target") or (0.0, 0.0, 0.0)
+        element = self.env["construction.bim.element"]
+        if values.get("global_id"):
+            element = element.search([
+                ("model_id", "=", model.id),
+                ("global_id", "=", values["global_id"]),
+            ], limit=1)
+
+        pin_values = {
+            "model_id": model.id,
+            "name": title,
+            "note": values.get("description") or False,
+            "bcf_guid": guid or False,
+            "global_id": values.get("global_id") or False,
+            "element_id": element.id if element else False,
+            "storey": element.storey if element else False,
+            "pos_x": position[0], "pos_y": position[1], "pos_z": position[2],
+            "cam_x": camera[0], "cam_y": camera[1], "cam_z": camera[2],
+            "cam_target_x": target[0], "cam_target_y": target[1],
+            "cam_target_z": target[2],
+        }
+        if existing:
+            # The type is not overwritten: a topic that was raised here as a
+            # defect stays a defect even if the reviewer's tool called it
+            # something from its own vocabulary.
+            existing.write(pin_values)
+            return existing
+
+        pin_values["pin_type"] = "note"
+        return self.create(pin_values)
 
     def remove_pin(self):
         """Delete the pin and, if it is only a note, nothing else.

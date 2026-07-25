@@ -17,6 +17,11 @@ const BUCKET_COLOURS = {
     none: 0xb9c4c8,      // nothing attached
 };
 
+// What is under construction on the chosen day, in the 4D view. One colour,
+// because the question the slider answers is "is this up yet", not "how far
+// along is it".
+const SCHEDULE_ACTIVE = 0x1f6f8b;
+
 /**
  * The IFC model viewer.
  *
@@ -59,11 +64,21 @@ export class BimViewer extends Component {
             pins: [],
             placing: false,
             draft: null,
+            showPsets: false,
+            // 4D
+            hasSchedule: false,
+            fourD: false,
+            playDate: "",
+            scheduleFrom: "",
+            scheduleTo: "",
         });
 
         this.linkedByGlobalId = new Map();
         this.meshesByExpressId = new Map();
         this.storeyByExpressId = new Map();
+        this.globalIdByExpressId = new Map();
+        this.expressIdByGlobalId = new Map();
+        this.scheduleByExpressId = new Map();
         this.hiddenExpressIds = new Set();
         this.pinMarkers = [];
 
@@ -214,8 +229,10 @@ export class BimViewer extends Component {
         this.scene.add(group);
         this.modelGroup = group;
         box.setFromObject(group);
+        this.indexGlobalIds();
         this.indexStoreys();
         this.paintLinkedElements();
+        this.indexSchedule();
         this.modelBounds = box;
         return box;
     }
@@ -245,7 +262,30 @@ export class BimViewer extends Component {
                     side: THREE.DoubleSide,
                 });
                 mesh.userData.globalId = globalId;
+                // The link colour is this mesh's colour from now on. Without
+                // this, anything that restores the base colour — the 4D
+                // slider — would quietly repaint every RFI grey.
+                mesh.userData.baseColour = mesh.material.color.clone();
             }
+        }
+    }
+
+    /**
+     * Resolve every drawn element's GlobalId once.
+     *
+     * Each lookup crosses into the WASM parser, and three separate passes were
+     * each paying that cost per element. One pass, cached both ways, because
+     * everything after this — storeys, links, the programme, pins — is keyed
+     * on GlobalId.
+     */
+    indexGlobalIds() {
+        for (const [expressID] of this.meshesByExpressId) {
+            const globalId = this.globalIdOf(expressID);
+            if (!globalId) {
+                continue;
+            }
+            this.globalIdByExpressId.set(expressID, globalId);
+            this.expressIdByGlobalId.set(globalId, expressID);
         }
     }
 
@@ -335,12 +375,116 @@ export class BimViewer extends Component {
         for (const [expressID, meshes] of this.meshesByExpressId) {
             const hidden =
                 this.hiddenExpressIds.has(expressID) ||
-                meshes.some((m) => m.userData.isolatedOut || m.userData.storeyHidden);
+                meshes.some((m) => m.userData.isolatedOut || m.userData.storeyHidden
+                    || m.userData.notBuiltYet);
             for (const mesh of meshes) {
                 mesh.visible = !hidden;
             }
         }
         this.render();
+    }
+
+    // ------------------------------------------------------------------
+    // 4D — the model as it should stand on a given day
+    // ------------------------------------------------------------------
+    /**
+     * Index the programme by element.
+     *
+     * Dates come from the tasks elements are linked to, so this is the real
+     * programme rather than a second one kept inside the model. An element
+     * with no task is treated as existing throughout: a model is not a
+     * complete programme, and hiding everything nobody has scheduled yet would
+     * leave an empty screen on day one.
+     */
+    indexSchedule() {
+        this.scheduleByExpressId = new Map();
+        const dates = [];
+        for (const row of this.state.info.schedule || []) {
+            const expressID = this.expressIdByGlobalId.get(row.global_id);
+            const start = row.start ? new Date(row.start) : null;
+            const finish = row.finish ? new Date(row.finish) : start;
+            if (start) {
+                dates.push(start.getTime());
+            }
+            if (finish) {
+                dates.push(finish.getTime());
+            }
+            if (expressID !== undefined) {
+                this.scheduleByExpressId.set(expressID, { start, finish, task: row.task });
+            }
+        }
+        if (!dates.length) {
+            return;
+        }
+        this.state.scheduleFrom = new Date(Math.min(...dates))
+            .toISOString().slice(0, 10);
+        this.state.scheduleTo = new Date(Math.max(...dates))
+            .toISOString().slice(0, 10);
+        this.state.hasSchedule = true;
+        this.state.playDate = this.state.scheduleTo;
+    }
+
+    toggleFourD() {
+        this.state.fourD = !this.state.fourD;
+        if (this.state.fourD) {
+            this.state.playDate = this.state.scheduleFrom;
+        }
+        this.applySchedule();
+    }
+
+    setPlayDate(value) {
+        this.state.playDate = value;
+        this.applySchedule();
+    }
+
+    /** The slider and the date box drive the same thing from both ends. */
+    get playPercent() {
+        const from = new Date(this.state.scheduleFrom).getTime();
+        const to = new Date(this.state.scheduleTo).getTime();
+        const at = new Date(this.state.playDate).getTime();
+        if (!(to > from) || Number.isNaN(at)) {
+            return 0;
+        }
+        return Math.round(((at - from) / (to - from)) * 100);
+    }
+
+    setPlayPercent(value) {
+        const from = new Date(this.state.scheduleFrom).getTime();
+        const to = new Date(this.state.scheduleTo).getTime();
+        if (!(to > from)) {
+            return;
+        }
+        const at = new Date(from + ((to - from) * Number(value)) / 100);
+        this.setPlayDate(at.toISOString().slice(0, 10));
+    }
+
+    /** Hide what has not started, and colour what is in progress. */
+    applySchedule() {
+        const on = this.state.fourD;
+        const day = on ? new Date(this.state.playDate).getTime() : 0;
+        for (const [expressID, meshes] of this.meshesByExpressId) {
+            const row = this.scheduleByExpressId.get(expressID);
+            const notStarted = Boolean(
+                on && row && row.start && row.start.getTime() > day);
+            // In progress on the chosen day: started, not finished. Drawn in
+            // the site's colour rather than hidden, so a screenshot of the
+            // model reads as a programme rather than as a half-built shell.
+            const active = Boolean(
+                on && row && !notStarted && row.finish
+                && row.finish.getTime() >= day);
+            for (const mesh of meshes) {
+                mesh.userData.notBuiltYet = notStarted;
+                this.tintMesh(mesh, active ? SCHEDULE_ACTIVE : null);
+            }
+        }
+        this.applyVisibility();
+    }
+
+    tintMesh(mesh, colour) {
+        if (!mesh.userData.baseColour) {
+            return;
+        }
+        mesh.material.color.set(colour || mesh.userData.baseColour);
     }
 
     /**
@@ -397,6 +541,9 @@ export class BimViewer extends Component {
     }
 
     globalIdOf(expressID) {
+        if (this.globalIdByExpressId.has(expressID)) {
+            return this.globalIdByExpressId.get(expressID);
+        }
         try {
             const line = this.api.GetLine(this.ifcModelId, expressID);
             return line?.GlobalId?.value || null;
@@ -512,7 +659,9 @@ export class BimViewer extends Component {
             globalId,
             element: globalId ? this.linkedByGlobalId.get(globalId) : null,
             properties: this.propertiesOf(expressID, globalId),
+            psets: [],
         };
+        this.loadProperties(globalId);
     }
 
     /** What the model itself knows about an element. */
@@ -541,10 +690,47 @@ export class BimViewer extends Component {
         if (storey) {
             rows.push({ label: _t("Storey"), value: storey });
         }
+        // The indexed quantities. Read from the server's index rather than
+        // recomputed from the mesh: a volume measured off a triangulated
+        // surface is not the volume the model was exported with, and it is the
+        // exported one a bill is checked against.
+        const indexed = globalId ? this.linkedByGlobalId.get(globalId) : null;
+        for (const [key, label] of [
+            ["quantity_count", _t("Count")],
+            ["quantity_length", _t("Length")],
+            ["quantity_area", _t("Area")],
+            ["quantity_volume", _t("Volume")],
+        ]) {
+            if (indexed && indexed[key]) {
+                rows.push({ label, value: indexed[key].toFixed(3) });
+            }
+        }
         if (globalId) {
             rows.push({ label: _t("GlobalId"), value: globalId });
         }
         return rows;
+    }
+
+    /**
+     * Fetch an element's property sets on demand.
+     *
+     * Not sent with the payload: a model of any size carries tens of thousands
+     * of properties, and the viewer needs the thirty belonging to whatever was
+     * just clicked.
+     */
+    async loadProperties(globalId) {
+        if (!globalId) {
+            return;
+        }
+        const rows = await this.orm.searchRead(
+            "construction.bim.property",
+            [["model_id", "=", this.modelId], ["element_id.global_id", "=", globalId]],
+            ["pset", "name", "value"],
+            { limit: 200 },
+        );
+        if (this.state.selected && this.state.selected.globalId === globalId) {
+            this.state.selected.psets = rows;
+        }
     }
 
     // ------------------------------------------------------------------
@@ -577,6 +763,10 @@ export class BimViewer extends Component {
                 pos_x: draft.position[0],
                 pos_y: draft.position[1],
                 pos_z: draft.position[2],
+                // The view it was seen from, not only the point. This is what
+                // BCF carries to Solibri and back, and what lets somebody
+                // else stand where the person raising it stood.
+                ...this.cameraState(),
             }],
         );
         if (pin && pin.id) {
@@ -690,6 +880,46 @@ export class BimViewer extends Component {
         this.state.tab = tab;
     }
 
+    /** Where the camera is, in the shape the pin stores. */
+    cameraState() {
+        if (!this.camera) {
+            return {};
+        }
+        return {
+            cam_x: this.camera.position.x,
+            cam_y: this.camera.position.y,
+            cam_z: this.camera.position.z,
+            cam_target_x: this.target.x,
+            cam_target_y: this.target.y,
+            cam_target_z: this.target.z,
+        };
+    }
+
+    /**
+     * Put the camera back where the pin was dropped from.
+     *
+     * Restoring the saved view rather than framing the point is the difference
+     * between "here is the wall" and "here is what I was looking at" — the
+     * second is the one that explains an issue without a paragraph of text.
+     */
+    restoreViewpoint(pin) {
+        const THREE = this.THREE;
+        const [cx, cy, cz] = pin.camera;
+        const [tx, ty, tz] = pin.camera_target;
+        this.target = new THREE.Vector3(tx, ty, tz);
+        const offset = new THREE.Vector3(cx - tx, cy - ty, cz - tz);
+        const radius = offset.length() || 10;
+        // The hand-rolled controls orbit in spherical coordinates, so the
+        // stored Cartesian camera has to be expressed in them or the next drag
+        // would snap the view somewhere else.
+        this.spherical = {
+            radius,
+            theta: Math.atan2(offset.z, offset.x),
+            phi: Math.acos(Math.min(1, Math.max(-1, offset.y / radius))),
+        };
+        this.updateCamera();
+    }
+
     /**
      * Fly the camera to a pin and select it.
      *
@@ -703,14 +933,19 @@ export class BimViewer extends Component {
         if (!this.camera || !pin.position) {
             return;
         }
-        // Frame a room-sized box around the pin rather than the pin itself:
-        // standing on top of a marker tells you nothing about where it is.
-        const span = this.modelBounds
-            ? this.modelBounds.getSize(new THREE.Vector3()).length() / 8
-            : 4;
-        const centre = new THREE.Vector3(...pin.position);
-        this.frame(new THREE.Box3().setFromCenterAndSize(
-            centre, new THREE.Vector3(span, span, span).addScalar(2)));
+        if (pin.has_viewpoint && pin.camera && pin.camera_target) {
+            this.restoreViewpoint(pin);
+        } else {
+            // No saved view: frame a room-sized box around the pin rather than
+            // the pin itself, because standing on top of a marker tells you
+            // nothing about where it is.
+            const span = this.modelBounds
+                ? this.modelBounds.getSize(new THREE.Vector3()).length() / 8
+                : 4;
+            const centre = new THREE.Vector3(...pin.position);
+            this.frame(new THREE.Box3().setFromCenterAndSize(
+                centre, new THREE.Vector3(span, span, span).addScalar(2)));
+        }
         // Show the storey the pin is on, otherwise a filter left on another
         // level flies the camera to an empty space.
         if (pin.storey && this.state.storey !== "all"

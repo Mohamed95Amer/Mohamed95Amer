@@ -1,6 +1,8 @@
 import base64
 
-from odoo import models
+from dateutil.relativedelta import relativedelta
+
+from odoo import fields, models
 from odoo.tools import file_open
 
 
@@ -57,4 +59,35 @@ class ConstructionBimDemo(models.AbstractModel):
         element_model.link_element(
             model.id, "5SlAbGuId0000000000000",
             {"note": "Slab level to be confirmed against the survey."})
+        self._link_demo_programme(model, element_model)
+        return True
+
+    def _link_demo_programme(self, model, element_model):
+        """Put the elements on a programme so 4D has something to play.
+
+        The dates are the tasks' own. That is the argument for driving 4D from
+        the programme rather than from a separate schedule kept inside the
+        model: there is only one set of dates, and it is the one the site is
+        working to.
+        """
+        task_model = self.env["project.task"]
+        today = fields.Date.context_today(self)
+        sequence = [
+            ("5SlAbGuId0000000000000", "Slab pour — Level 03", 0, 6),
+            ("2O2Fr$t4X7Zf8NOew3FLIE", "Blockwork — grid A", 7, 20),
+            ("4Kl0mNoPq1RsT2uVwXyZaB", "Core wall — Level 03", 10, 24),
+            ("3Xs9pQ1nD2yQ8mWJk4LzAB", "Curtain wall — grid F", 25, 45),
+        ]
+        for global_id, name, starts_in, ends_in in sequence:
+            task = task_model.search([
+                ("project_id", "=", model.project_id.id), ("name", "=", name),
+            ], limit=1)
+            if not task:
+                task = task_model.create({
+                    "name": name, "project_id": model.project_id.id})
+            task.write({
+                "date_assign": today + relativedelta(days=starts_in),
+                "date_deadline": today + relativedelta(days=ends_in),
+            })
+            element_model.link_element(model.id, global_id, {"task_id": task.id})
         return True

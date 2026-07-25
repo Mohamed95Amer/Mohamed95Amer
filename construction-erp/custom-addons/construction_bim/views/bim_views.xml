@@ -10,6 +10,17 @@
                             class="btn-primary" invisible="not ifc_file"/>
                     <button name="action_open_viewer" type="object"
                             string="Open 3D Viewer" invisible="state == 'draft'"/>
+                    <button name="action_export_bcf" type="object"
+                            string="Export BCF" invisible="pin_count == 0"
+                            help="Hand the issues to Solibri, Navisworks or
+                                  BIMcollab as a BCF 2.1 archive."/>
+                    <button name="action_import_bcf" type="object"
+                            string="Import BCF" invisible="state == 'draft'"/>
+                    <button name="action_compare" type="object"
+                            string="Compare Revisions"
+                            invisible="state == 'draft'"
+                            help="What changed against the previous revision of
+                                  this discipline."/>
                     <button name="action_make_current" type="object"
                             string="Set as Current"
                             invisible="state in ('draft', 'current')"/>
@@ -28,6 +39,19 @@
                             <field name="linked_count" string="Linked"
                                    widget="statinfo"/>
                         </button>
+                        <button name="action_view_pins" type="object"
+                                icon="fa-map-marker" class="oe_stat_button">
+                            <field name="pin_count" string="Pins"
+                                   widget="statinfo"/>
+                        </button>
+                        <button name="action_takeoff" type="object"
+                                icon="fa-calculator" class="oe_stat_button"
+                                string="Takeoff"
+                                invisible="state == 'draft'"/>
+                        <button name="action_view_properties" type="object"
+                                icon="fa-tags" class="oe_stat_button"
+                                string="Properties"
+                                invisible="state == 'draft'"/>
                     </div>
                     <div class="alert alert-danger" role="alert"
                          invisible="not index_error">
@@ -157,9 +181,32 @@
                             <field name="boq_line_id"/>
                         </group>
                     </group>
+                    <group string="Quantities" invisible="not has_quantities">
+                        <field name="has_quantities" invisible="1"/>
+                        <group>
+                            <field name="quantity_count"/>
+                            <field name="quantity_length"/>
+                            <field name="quantity_area"/>
+                        </group>
+                        <group>
+                            <field name="quantity_volume"/>
+                            <field name="quantity_weight"/>
+                        </group>
+                    </group>
                     <group string="Note">
                         <field name="note" nolabel="1"/>
                     </group>
+                    <notebook>
+                        <page string="Properties" name="properties">
+                            <field name="property_ids" readonly="1">
+                                <list>
+                                    <field name="pset"/>
+                                    <field name="name"/>
+                                    <field name="value"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -186,6 +233,66 @@
         </field>
     </record>
 
+    <!-- Takeoff: the same elements, read as a measurement rather than a
+         register. Sums on every column, because the number a QS wants is the
+         group total, not the row. -->
+    <record id="view_bim_element_takeoff" model="ir.ui.view">
+        <field name="name">construction.bim.element.takeoff</field>
+        <field name="model">construction.bim.element</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" default_order="ifc_type,storey,name">
+                <field name="ifc_type" string="Type"/>
+                <field name="storey" string="Storey"/>
+                <field name="name" string="Element"/>
+                <field name="quantity_count" string="Count" sum="Count"
+                       optional="hide"/>
+                <field name="quantity_length" string="Length" sum="Length"
+                       optional="show"/>
+                <field name="quantity_area" string="Area" sum="Area"
+                       optional="show"/>
+                <field name="quantity_volume" string="Volume" sum="Volume"
+                       optional="show"/>
+                <field name="quantity_weight" string="Weight" sum="Weight"
+                       optional="hide"/>
+                <field name="boq_line_id" string="Bill Item" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bim_property_list" model="ir.ui.view">
+        <field name="name">construction.bim.property.list</field>
+        <field name="model">construction.bim.property</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="element_id"/>
+                <field name="pset"/>
+                <field name="name"/>
+                <field name="value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bim_property_search" model="ir.ui.view">
+        <field name="name">construction.bim.property.search</field>
+        <field name="model">construction.bim.property</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="value"/>
+                <field name="pset"/>
+                <field name="element_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_pset" string="Property Set"
+                            context="{'group_by': 'pset'}"/>
+                    <filter name="group_name" string="Property"
+                            context="{'group_by': 'name'}"/>
+                    <filter name="group_value" string="Value"
+                            context="{'group_by': 'value'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="view_bim_element_search" model="ir.ui.view">
         <field name="name">construction.bim.element.search</field>
         <field name="model">construction.bim.element</field>
@@ -200,6 +307,14 @@
                         domain="[('link_bucket', '=', 'blocked')]"/>
                 <filter name="orphan" string="Gone from the model"
                         domain="[('is_orphan', '=', True)]"/>
+                <filter name="quantified" string="Has Quantities"
+                        domain="[('has_quantities', '=', True)]"/>
+                <separator/>
+                <!-- Searching a property by name and value is how a model gets
+                     interrogated: every door with a 60-minute fire rating. -->
+                <field name="property_ids" string="Property"
+                       filter_domain="['|', ('property_ids.name', 'ilike', self),
+                                            ('property_ids.value', 'ilike', self)]"/>
                 <separator/>
                 <group expand="0" string="Group By">
                     <filter name="group_storey" string="Storey"

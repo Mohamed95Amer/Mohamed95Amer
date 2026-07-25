@@ -16,6 +16,9 @@
     "data": [
         "security/ir.model.access.csv",
         "views/bim_views.xml",
+        "views/bim_pin_views.xml",
+        "views/bim_compare_views.xml",
+        "views/boq_bridge_views.xml",
         "views/bim_menus.xml",
     ],
     "demo": ["demo/bim_demo.xml"],
