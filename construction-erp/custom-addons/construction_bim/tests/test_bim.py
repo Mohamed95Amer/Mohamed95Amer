@@ -306,3 +306,149 @@ class TestBimModel(TransactionCase):
     def test_the_payload_of_a_missing_model_is_empty_not_an_error(self):
         self.assertEqual(
             self.env["construction.bim.model"].viewer_payload(999999), {})
+
+
+@tagged("post_install", "-at_install")
+class TestBimPins(TransactionCase):
+    """Pins put a record at a point, not just on an element.
+
+    Element links answer "which wall"; a pin answers "where on it". The
+    position is stored in the model's own space so it stays on the crack while
+    the camera moves — which is the only thing separating this from drawing on
+    a screenshot.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Pin Project", "is_construction": True,
+             "project_code": "PIN1"})
+        cls.model = cls.env["construction.bim.model"].create({
+            "name": "Pinned model",
+            "project_id": cls.project.id,
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.model.action_index()
+
+    def _drop(self, **values):
+        payload = {
+            "name": "Crack at third window",
+            "pos_x": 1.5, "pos_y": 2.5, "pos_z": 3.5,
+            "pin_type": "note",
+        }
+        payload.update(values)
+        return self.env["construction.bim.pin"].drop_pin(self.model.id, payload)
+
+    def test_a_pin_keeps_its_position_in_model_space(self):
+        result = self._drop()
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertEqual(pin.pos_x, 1.5)
+        self.assertEqual(pin.pos_y, 2.5)
+        self.assertEqual(pin.pos_z, 3.5)
+        self.assertEqual(result["position"], [1.5, 2.5, 3.5])
+
+    def test_a_pin_on_an_element_records_which_one(self):
+        result = self._drop(global_id="2O2Fr$t4X7Zf8NOew3FLIE")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertTrue(pin.element_id)
+        self.assertEqual(pin.element_id.global_id, "2O2Fr$t4X7Zf8NOew3FLIE")
+        self.assertEqual(pin.storey, "Level 03",
+                         "the pin should inherit the storey it was dropped on")
+
+    def test_a_pin_in_mid_air_is_still_a_pin(self):
+        """A click that misses an element must not be refused — plenty of
+        observations are about a space, not a component."""
+        result = self._drop(global_id="")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertFalse(pin.element_id)
+        self.assertTrue(pin.exists())
+
+    def test_dropping_a_defect_pin_creates_the_defect(self):
+        """Placing the pin and raising the record are one action.
+
+        Making somebody place a pin, then open a form, then come back and link
+        them loses the position and most of the point.
+        """
+        result = self._drop(pin_type="defect", name="Chipped nosing",
+                            note="Second step from the top")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertTrue(pin.defect_id)
+        self.assertEqual(pin.defect_id.name, "Chipped nosing")
+        self.assertEqual(pin.defect_id.project_id, self.project)
+
+    def test_dropping_an_rfi_pin_creates_the_rfi(self):
+        result = self._drop(pin_type="rfi", name="Which lap applies here?",
+                            note="Grid F, level 3")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertTrue(pin.rfi_id)
+        self.assertEqual(pin.rfi_id.project_id, self.project)
+
+    def test_dropping_a_task_pin_creates_the_task(self):
+        result = self._drop(pin_type="task", name="Make good")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertTrue(pin.task_id)
+        self.assertEqual(pin.task_id.project_id, self.project)
+
+    def test_the_pin_colour_follows_the_record_it_stands_for(self):
+        result = self._drop(pin_type="rfi", name="Open question")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertEqual(pin.bucket, "blocked")
+
+        pin.rfi_id.write({"state": "closed"})
+        pin.invalidate_recordset()
+        self.assertEqual(pin.bucket, "done")
+
+    def test_deleting_a_marker_does_not_delete_the_question(self):
+        """A pin standing for an RFI is a view of it, not the RFI itself."""
+        result = self._drop(pin_type="rfi", name="Still open")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        rfi = pin.rfi_id
+
+        pin.remove_pin()
+
+        self.assertTrue(pin.exists(), "an RFI pin is not a throwaway marker")
+        self.assertTrue(rfi.exists())
+
+    def test_a_plain_note_pin_can_be_removed(self):
+        result = self._drop(pin_type="note", name="Just a note")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        pin.remove_pin()
+        self.assertFalse(pin.exists())
+
+    def test_the_viewer_is_told_about_pins_and_storeys(self):
+        self._drop(global_id="2O2Fr$t4X7Zf8NOew3FLIE")
+        payload = self.env["construction.bim.model"].viewer_payload(self.model.id)
+        self.assertEqual(len(payload["pins"]), 1)
+        self.assertIn("Level 03", payload["storeys"])
+        self.assertTrue(payload["pin_types"])
+
+    def test_clicking_a_pin_opens_an_action_the_client_can_run(self):
+        """The viewer hands this straight to doAction, which needs `views`.
+
+        Without it the web client throws while preprocessing and the click does
+        nothing visible — the pin looks broken rather than the action.
+        """
+        result = self._drop(pin_type="defect", name="Chipped nosing")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+
+        action = pin.action_open_record()
+
+        self.assertEqual(action["res_model"], "construction.defect")
+        self.assertEqual(action["res_id"], pin.defect_id.id)
+        self.assertEqual(action["views"], [[False, "form"]])
+
+    def test_a_note_pin_opens_nothing_because_there_is_nothing_to_open(self):
+        result = self._drop(pin_type="note", name="Just a note")
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.assertFalse(pin.action_open_record())
+
+    def test_a_pin_on_a_missing_model_is_refused_quietly(self):
+        self.assertEqual(
+            self.env["construction.bim.pin"].drop_pin(999999, {"name": "x"}), {})
+
+    def test_deleting_the_model_takes_its_pins(self):
+        result = self._drop()
+        pin = self.env["construction.bim.pin"].browse(result["id"])
+        self.model.unlink()
+        self.assertFalse(pin.exists())

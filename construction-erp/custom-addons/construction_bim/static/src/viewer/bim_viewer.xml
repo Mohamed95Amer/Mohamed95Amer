@@ -12,9 +12,48 @@
                         rev <t t-esc="state.info.revision"/>
                     </small>
                 </div>
+                <div class="o_bim_tools" t-if="!state.librariesMissing and !state.error">
+                    <select class="o_bim_select" t-if="storeys.length"
+                            t-on-change="(ev) => this.setStorey(ev.target.value)">
+                        <option value="all">All storeys</option>
+                        <option t-foreach="storeys" t-as="level" t-key="level"
+                                t-att-value="level" t-esc="level"/>
+                    </select>
+                    <button t-att-class="{'active': state.placing}"
+                            t-on-click="startPlacing"
+                            title="Click the model to drop a pin">
+                        <i class="fa fa-map-marker"/> Pin
+                    </button>
+                    <button t-on-click="isolateSelection"
+                            t-att-disabled="!state.selected"
+                            title="Hide everything except the selection">
+                        <i class="fa fa-crosshairs"/> Isolate
+                    </button>
+                    <button t-on-click="hideSelection"
+                            t-att-disabled="!state.selected"
+                            title="Hide the selected element">
+                        <i class="fa fa-eye-slash"/> Hide
+                    </button>
+                    <button t-att-class="{'active': state.sectionOn}"
+                            t-on-click="toggleSection" title="Cut through the model">
+                        <i class="fa fa-scissors"/> Section
+                    </button>
+                    <button t-on-click="fitView" title="Frame the selection">
+                        <i class="fa fa-expand"/> Fit
+                    </button>
+                    <button t-on-click="showEverything"
+                            t-att-disabled="!state.hidden and !state.isolated and state.storey === 'all'"
+                            title="Show everything again">
+                        <i class="fa fa-refresh"/> Reset
+                    </button>
+                </div>
                 <div class="o_bim_counts">
                     <span><strong t-esc="state.info.element_count"/> elements</span>
                     <span><strong t-esc="state.info.linked_count"/> linked</span>
+                    <span><strong t-esc="state.pins.length"/>
+                        <t t-if="state.pins.length === 1"> pin</t>
+                        <t t-else=""> pins</t>
+                    </span>
                 </div>
             </header>
 
@@ -48,6 +87,43 @@
                         <p t-esc="state.error"/>
                     </div>
 
+                    <div t-if="state.sectionOn" class="o_bim_section">
+                        <label for="bim_section">Cut height</label>
+                        <input id="bim_section" type="range" min="0" max="100"
+                               t-att-value="state.sectionHeight"
+                               t-on-input="(ev) => this.setSectionHeight(ev.target.value)"/>
+                        <span><t t-esc="state.sectionHeight"/>%</span>
+                    </div>
+
+                    <div t-if="state.placing" class="o_bim_hint">
+                        <i class="fa fa-map-marker"/>
+                        Click a point on the model to drop the pin.
+                        <button class="btn btn-sm btn-link" t-on-click="cancelDraft">Cancel</button>
+                    </div>
+
+                    <div t-if="state.draft" class="o_bim_draft">
+                        <span class="o_bim_eyebrow">NEW PIN</span>
+                        <label for="pin_type">What is it?</label>
+                        <select id="pin_type" t-model="state.draft.pin_type">
+                            <option t-foreach="pinTypes" t-as="type" t-key="type.id"
+                                    t-att-value="type.id" t-esc="type.label"/>
+                        </select>
+                        <label for="pin_name">Title</label>
+                        <input id="pin_name" type="text" t-model="state.draft.name"
+                               placeholder="e.g. Crack at third window"/>
+                        <label for="pin_note">Detail</label>
+                        <textarea id="pin_note" rows="2" t-model="state.draft.note"
+                                  placeholder="What needs doing here"/>
+                        <div class="o_bim_draft_actions">
+                            <button class="btn btn-sm btn-primary" t-on-click="saveDraft">
+                                Drop pin
+                            </button>
+                            <button class="btn btn-sm btn-link" t-on-click="cancelDraft">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
                     <div t-if="state.selected" class="o_bim_selection">
                         <t t-if="state.selected.element">
                             <span class="o_bim_eyebrow"
@@ -62,14 +138,21 @@
                         <t t-else="">
                             <span class="o_bim_eyebrow">NOTHING LINKED</span>
                             <strong>Element <t t-esc="state.selected.expressID"/></strong>
-                            <p class="o_bim_muted">
-                                <t t-esc="state.selected.globalId or 'No GlobalId'"/>
-                            </p>
                         </t>
+                        <dl t-if="state.selected.properties" class="o_bim_props">
+                            <t t-foreach="state.selected.properties" t-as="row"
+                               t-key="row.label">
+                                <dt t-esc="row.label"/>
+                                <dd t-esc="row.value"/>
+                            </t>
+                        </dl>
                     </div>
                 </div>
 
                 <aside class="o_bim_side">
+                    <input class="o_bim_search" type="search"
+                           placeholder="Search elements…"
+                           t-model="state.search"/>
                     <div class="o_bim_filters">
                         <button t-att-class="{'active': state.filter === 'all'}"
                                 t-on-click="() => this.setFilter('all')">All</button>

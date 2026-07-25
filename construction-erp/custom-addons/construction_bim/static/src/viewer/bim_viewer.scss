@@ -182,3 +182,120 @@
     .o_bim_body { grid-template-columns: minmax(0, 1fr); }
     .o_bim_side { border-left: 0; border-top: 1px solid var(--bim-rule); max-height: 40vh; }
 }
+
+/* ---------- toolbar ---------- */
+.o_bim_tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-inline-start: auto;
+
+    button, .o_bim_select {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        font-size: .78rem;
+        color: #fff;
+        background: rgba(255, 255, 255, .1);
+        border: 1px solid rgba(255, 255, 255, .22);
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover:not(:disabled) { background: rgba(255, 255, 255, .2); }
+        &:disabled { opacity: .4; cursor: default; }
+        &:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+        &.active { background: #fff; color: var(--bim-deep); border-color: #fff; }
+    }
+
+    .o_bim_select option { color: var(--bim-ink); }
+}
+
+/* ---------- section slider ---------- */
+.o_bim_section {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    font-size: .8rem;
+    background: #fff;
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 12px 28px -18px rgba(18, 58, 60, .5);
+
+    input[type="range"] { width: 160px; }
+    span { font-variant-numeric: tabular-nums; min-width: 3.5ch; }
+}
+
+/* ---------- pin placement ---------- */
+.o_bim_hint {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: .84rem;
+    color: #fff;
+    background: var(--bim-deep);
+    border-radius: 999px;
+    box-shadow: 0 12px 28px -18px rgba(18, 58, 60, .6);
+
+    .btn-link { color: #fff; text-decoration: underline; padding: 0; }
+}
+
+.o_bim_draft {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 16px 36px -20px rgba(18, 58, 60, .6);
+
+    .o_bim_eyebrow { color: var(--bim-muted); margin-bottom: 4px; }
+    label { font-size: .74rem; color: var(--bim-muted); margin-top: 6px; }
+    input, select, textarea {
+        width: 100%;
+        padding: 5px 8px;
+        font-size: .84rem;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+    }
+}
+
+.o_bim_draft_actions { display: flex; gap: 6px; margin-top: 10px; }
+
+/* ---------- element properties ---------- */
+.o_bim_props {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 10px;
+    margin: 6px 0 0;
+    font-size: .78rem;
+
+    dt { color: var(--bim-muted); }
+    dd { margin: 0; overflow-wrap: anywhere; }
+}
+
+/* ---------- search ---------- */
+.o_bim_search {
+    margin: 10px 10px 0;
+    padding: 6px 10px;
+    font-size: .82rem;
+    border: 1px solid var(--bim-rule);
+    border-radius: 4px;
+
+    &:focus-visible { outline: 2px solid var(--bim-deep); outline-offset: 1px; }
+}

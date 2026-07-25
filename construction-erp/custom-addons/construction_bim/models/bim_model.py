@@ -192,6 +192,14 @@ class ConstructionBimModel(models.Model):
             ["global_id", "name", "ifc_type", "storey", "link_summary",
              "link_bucket"],
         )
+        # Storeys drive the level filter. Read from the index rather than the
+        # file, so the viewer knows them before the geometry has parsed.
+        storeys = [
+            storey for storey, in self.env["construction.bim.element"]._read_group(
+                [("model_id", "=", model.id), ("storey", "!=", False)],
+                ["storey"],
+            )
+        ]
         return {
             "id": model.id,
             "name": model.display_name,
@@ -202,4 +210,7 @@ class ConstructionBimModel(models.Model):
             "linked_count": model.linked_count,
             "file_url": f"/web/content/construction.bim.model/{model.id}/ifc_file",
             "linked": elements,
+            "storeys": sorted(s for s in storeys if s),
+            "pins": self.env["construction.bim.pin"].pins_for_model(model.id),
+            "pin_types": self.env["construction.bim.pin"]._pin_type_registry(),
         }
