@@ -13,7 +13,15 @@
         "views/task_link_views.xml",
         "views/project_task_views.xml",
         "views/planning_menus.xml",
+        "views/gantt_views.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "construction_planning/static/src/gantt/gantt.js",
+            "construction_planning/static/src/gantt/gantt.xml",
+            "construction_planning/static/src/gantt/gantt.scss",
+        ],
+    },
     "demo": [
         "demo/planning_demo.xml",
     ],

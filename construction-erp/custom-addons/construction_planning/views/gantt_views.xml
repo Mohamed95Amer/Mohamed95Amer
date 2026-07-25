@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_programme_gantt" model="ir.actions.client">
+        <field name="name">Programme Gantt</field>
+        <field name="tag">construction_planning.gantt</field>
+    </record>
+
+    <menuitem id="menu_programme_gantt"
+              name="Programme Gantt"
+              parent="construction_base.menu_construction_root"
+              action="action_programme_gantt"
+              sequence="24"/>
+</odoo>

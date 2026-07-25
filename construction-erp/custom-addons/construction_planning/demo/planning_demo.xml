@@ -54,4 +54,21 @@
     <function model="project.project" name="action_reschedule">
         <value eval="[ref('construction_base.project_demo_alnoor')]"/>
     </function>
+
+    <!-- Freeze that as the baseline (the Primavera 'target'), then let the
+         foundation overrun by a week and reschedule again. A programme with a
+         baseline and no variance demonstrates nothing: this leaves the demo
+         showing real drift, which is what the Gantt exists to make visible. -->
+    <function model="project.project" name="action_set_baseline">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
+
+    <function model="project.task" name="write">
+        <value eval="[ref('task_raft')]"/>
+        <value eval="{'planned_duration': 20}"/>
+    </function>
+
+    <function model="project.project" name="action_reschedule">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
 </odoo>
