@@ -5,4 +5,5 @@ from . import bim_pin
 from . import boq_bridge
 from . import bcf
 from . import bim_compare
+from . import bim_clash
 from . import demo_loader

@@ -10,3 +10,7 @@ access_bim_property_pm,construction.bim.property pm,model_construction_bim_prope
 access_bcf_import,construction.bim.bcf.import,model_construction_bim_bcf_import,construction_base.group_construction_pm,1,1,1,1
 access_bim_comparison,construction.bim.comparison,model_construction_bim_comparison,construction_base.group_construction_site_engineer,1,1,1,1
 access_bim_comparison_line,construction.bim.comparison.line,model_construction_bim_comparison_line,construction_base.group_construction_site_engineer,1,1,1,1
+access_clash_test_user,construction.bim.clash.test user,model_construction_bim_clash_test,construction_base.group_construction_site_engineer,1,1,1,0
+access_clash_test_pm,construction.bim.clash.test pm,model_construction_bim_clash_test,construction_base.group_construction_pm,1,1,1,1
+access_clash_user,construction.bim.clash user,model_construction_bim_clash,construction_base.group_construction_site_engineer,1,1,1,0
+access_clash_pm,construction.bim.clash pm,model_construction_bim_clash,construction_base.group_construction_pm,1,1,1,1

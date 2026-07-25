@@ -22,6 +22,19 @@ const BUCKET_COLOURS = {
 // along is it".
 const SCHEDULE_ACTIVE = 0x1f6f8b;
 
+// Overlaid models are tinted by discipline so a duct is recognisable as the
+// mechanical model's duct without reading a legend.
+const OVERLAY_COLOURS = {
+    architectural: 0x9a7bb0,
+    structural: 0x6b7f9e,
+    mechanical: 0x3f8f7a,
+    electrical: 0xc9a227,
+    plumbing: 0x4a90a4,
+    civil: 0x8a7f6d,
+    federated: 0x7d7d7d,
+    other: 0x8b6f9c,
+};
+
 /**
  * The IFC model viewer.
  *
@@ -42,6 +55,7 @@ export class BimViewer extends Component {
         this.modelId =
             this.props.action?.params?.model_id ||
             this.props.action?.context?.active_id;
+        this.clashTestId = this.props.action?.params?.clash_test_id || null;
 
         this.state = useState({
             loading: true,
@@ -65,6 +79,11 @@ export class BimViewer extends Component {
             placing: false,
             draft: null,
             showPsets: false,
+            busy: false,
+            // Federation and clash
+            overlays: [],
+            clashTest: null,
+            clashSummary: null,
             // 4D
             hasSchedule: false,
             fourD: false,
@@ -79,6 +98,7 @@ export class BimViewer extends Component {
         this.globalIdByExpressId = new Map();
         this.expressIdByGlobalId = new Map();
         this.scheduleByExpressId = new Map();
+        this.overlays = new Map();
         this.hiddenExpressIds = new Set();
         this.pinMarkers = [];
 
@@ -92,6 +112,11 @@ export class BimViewer extends Component {
             this.state.pins = this.state.info.pins || [];
             this.pinTypes = this.state.info.pin_types || [];
             this.storeys = this.state.info.storeys || [];
+            if (this.clashTestId) {
+                this.state.clashTest = await this.orm.call(
+                    "construction.bim.clash.test", "test_payload",
+                    [this.clashTestId]);
+            }
         });
 
         onMounted(() => this.start());
@@ -168,18 +193,300 @@ export class BimViewer extends Component {
         this.render();
     }
 
+    // ------------------------------------------------------------------
+    // Clash detection
+    // ------------------------------------------------------------------
+    /**
+     * World-space bounding box per element of a mesh set.
+     *
+     * One box per element rather than per mesh: an element built from four
+     * meshes is one thing that either clashes or does not, and reporting it
+     * four times is how a clash report becomes unreadable.
+     */
+    elementBoxes(meshesByExpressId, globalIdByExpressId) {
+        const THREE = this.THREE;
+        const boxes = [];
+        for (const [expressID, meshes] of meshesByExpressId) {
+            const globalId = globalIdByExpressId.get(expressID);
+            if (!globalId) {
+                continue;
+            }
+            const box = new THREE.Box3();
+            for (const mesh of meshes) {
+                box.expandByObject(mesh);
+            }
+            if (box.isEmpty()) {
+                continue;
+            }
+            boxes.push({ globalId, box });
+        }
+        return boxes;
+    }
+
+    /**
+     * Run the test between the host model and one overlay.
+     *
+     * Boxes are bucketed into a uniform grid before testing: every element
+     * against every element is a hundred million comparisons on two models of
+     * ten thousand elements, and the browser would simply stop. The grid makes
+     * it proportional to how much the models actually overlap.
+     *
+     * What this finds is axis-aligned box overlap beyond the tolerance. It is
+     * a broad phase, not a triangle-precise test — a duct through a door
+     * opening will be reported — which is why the results have a status and
+     * somebody can approve one as "seen, not a problem".
+     */
+    runClash(overlay, tolerance) {
+        const hostBoxes = this.elementBoxes(
+            this.meshesByExpressId, this.globalIdByExpressId);
+        const otherBoxes = this.elementBoxes(
+            overlay.meshesByExpressId, overlay.globalIdByExpressId);
+        if (!hostBoxes.length || !otherBoxes.length) {
+            return { results: [], skipped: 0 };
+        }
+
+        // Cell size from the median box, so the grid suits the model rather
+        // than a number somebody guessed.
+        const spans = hostBoxes.map((entry) => {
+            const size = entry.box.getSize(new this.THREE.Vector3());
+            return Math.max(size.x, size.y, size.z);
+        }).sort((a, b) => a - b);
+        const cell = Math.max(spans[Math.floor(spans.length / 2)] || 1, 0.5);
+
+        const grid = new Map();
+        const keyOf = (x, y, z) => `${x}|${y}|${z}`;
+        const cellsOf = (box) => {
+            const min = box.min, max = box.max;
+            const cells = [];
+            for (let x = Math.floor(min.x / cell); x <= Math.floor(max.x / cell); x++) {
+                for (let y = Math.floor(min.y / cell); y <= Math.floor(max.y / cell); y++) {
+                    for (let z = Math.floor(min.z / cell); z <= Math.floor(max.z / cell); z++) {
+                        cells.push(keyOf(x, y, z));
+                    }
+                }
+            }
+            return cells;
+        };
+
+        for (const entry of hostBoxes) {
+            for (const key of cellsOf(entry.box)) {
+                const bucket = grid.get(key);
+                if (bucket) {
+                    bucket.push(entry);
+                } else {
+                    grid.set(key, [entry]);
+                }
+            }
+        }
+
+        const results = [];
+        const seen = new Set();
+        for (const other of otherBoxes) {
+            for (const key of cellsOf(other.box)) {
+                for (const host of grid.get(key) || []) {
+                    const pair = `${host.globalId}|${other.globalId}`;
+                    if (seen.has(pair)) {
+                        continue;
+                    }
+                    seen.add(pair);
+                    const hit = this.overlapOf(host.box, other.box, tolerance);
+                    if (hit) {
+                        results.push({
+                            global_id_a: host.globalId,
+                            global_id_b: other.globalId,
+                            overlap: hit.overlap,
+                            x: hit.centre.x, y: hit.centre.y, z: hit.centre.z,
+                        });
+                    }
+                }
+            }
+        }
+        results.sort((a, b) => b.overlap - a.overlap);
+        return { results, skipped: 0 };
+    }
+
+    /** The depth of an intersection, or nothing if it is within tolerance. */
+    overlapOf(a, b, tolerance) {
+        const THREE = this.THREE;
+        const min = new THREE.Vector3(
+            Math.max(a.min.x, b.min.x),
+            Math.max(a.min.y, b.min.y),
+            Math.max(a.min.z, b.min.z));
+        const max = new THREE.Vector3(
+            Math.min(a.max.x, b.max.x),
+            Math.min(a.max.y, b.max.y),
+            Math.min(a.max.z, b.max.z));
+        const depth = Math.min(max.x - min.x, max.y - min.y, max.z - min.z);
+        if (!(depth > tolerance)) {
+            return null;
+        }
+        return {
+            overlap: depth,
+            centre: min.clone().add(max).multiplyScalar(0.5),
+        };
+    }
+
+    async startClashRun() {
+        const test = this.state.clashTest;
+        if (!test) {
+            return;
+        }
+        this.state.busy = true;
+        this.state.progress = _t("Loading the model to test against…");
+        try {
+            const overlay = await this.loadOverlay({
+                id: test.model_b.id,
+                name: test.model_b.name,
+                discipline: "other",
+                file_url: test.model_b.file_url,
+            });
+            this.state.progress = _t("Testing…");
+            // Yield once so the message paints before the loop blocks.
+            await new Promise((resolve) => setTimeout(resolve, 50));
+            const { results, skipped } = this.runClash(overlay, test.tolerance);
+            const summary = await this.orm.call(
+                "construction.bim.clash.test", "record_results",
+                [test.id, results, skipped],
+            );
+            this.state.clashSummary = summary;
+            this.notification.add(
+                _t("%(found)s clash(es) found, %(created)s new.", summary),
+                { type: summary.found ? "warning" : "success" },
+            );
+        } catch (error) {
+            this.notification.add(error.message || String(error),
+                                  { type: "danger" });
+        } finally {
+            this.state.busy = false;
+        }
+    }
+
+    async openClashList() {
+        await this.action.doAction({
+            type: "ir.actions.act_window",
+            name: _t("Clashes"),
+            res_model: "construction.bim.clash",
+            views: [[false, "list"], [false, "form"]],
+            domain: [["test_id", "=", this.state.clashTest.id]],
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // Federation — several disciplines in one scene
+    // ------------------------------------------------------------------
+    /**
+     * Load another model on top of this one.
+     *
+     * Overlays are for coordination, not for record-keeping: pins and links
+     * stay with the host model, because "which model is this pin on" has to
+     * have one answer. What an overlay is for is seeing the duct and the beam
+     * in the same space, and testing whether they occupy it at once.
+     */
+    async loadOverlay(entry) {
+        const THREE = this.THREE;
+        if (this.overlays.has(entry.id)) {
+            return this.overlays.get(entry.id);
+        }
+        this.state.progress = _t("Loading %s…", entry.name);
+        this.state.busy = true;
+        try {
+            const response = await fetch(entry.file_url);
+            if (!response.ok) {
+                throw new Error(_t("%s could not be downloaded.", entry.name));
+            }
+            const buffer = new Uint8Array(await response.arrayBuffer());
+            const ifcModelId = this.api.OpenModel(buffer);
+            const colour = new THREE.Color(
+                OVERLAY_COLOURS[entry.discipline] || OVERLAY_COLOURS.other);
+            const built = this.buildMeshes(ifcModelId, { tint: colour });
+            built.group.name = `overlay-${entry.id}`;
+            this.scene.add(built.group);
+            const overlay = {
+                ...entry,
+                ifcModelId,
+                group: built.group,
+                meshesByExpressId: built.meshesByExpressId,
+                globalIdByExpressId: built.globalIdByExpressId,
+                visible: true,
+            };
+            this.overlays.set(entry.id, overlay);
+            this.state.overlays = [...this.state.overlays, {
+                id: entry.id, name: entry.name,
+                discipline: entry.discipline, visible: true,
+            }];
+            this.render();
+            return overlay;
+        } finally {
+            this.state.busy = false;
+        }
+    }
+
+    toggleOverlay(id) {
+        const overlay = this.overlays.get(id);
+        if (!overlay) {
+            return;
+        }
+        overlay.visible = !overlay.visible;
+        overlay.group.visible = overlay.visible;
+        this.state.overlays = this.state.overlays.map(
+            (row) => (row.id === id ? { ...row, visible: overlay.visible } : row));
+        this.render();
+    }
+
+    async onOverlayPicked(value) {
+        const id = Number(value);
+        if (!id) {
+            return;
+        }
+        if (this.overlays.has(id)) {
+            this.toggleOverlay(id);
+            return;
+        }
+        const entry = (this.state.info.federation || []).find((f) => f.id === id);
+        if (entry) {
+            try {
+                await this.loadOverlay(entry);
+            } catch (error) {
+                this.notification.add(error.message || String(error),
+                                      { type: "danger" });
+            }
+        }
+    }
+
     /** Turn web-ifc's flat vertex arrays into meshes the scene can draw. */
     loadGeometry() {
-        const THREE = this.THREE;
-        const box = new THREE.Box3();
-        const group = new THREE.Group();
+        const built = this.buildMeshes(this.ifcModelId);
+        this.meshesByExpressId = built.meshesByExpressId;
+        this.scene.add(built.group);
+        this.modelGroup = built.group;
+        const bounds = new this.THREE.Box3().setFromObject(built.group);
+        this.indexGlobalIds();
+        this.indexStoreys();
+        this.paintLinkedElements();
+        this.indexSchedule();
+        this.modelBounds = bounds;
+        return bounds;
+    }
 
-        this.api.StreamAllMeshes(this.ifcModelId, (mesh) => {
+    /**
+     * Build the meshes of one opened IFC model.
+     *
+     * Shared by the host model and by every overlay, because a federated model
+     * is drawn exactly the same way — the only difference is that an overlay is
+     * tinted so you can tell whose duct it is.
+     */
+    buildMeshes(ifcModelId, { tint = null } = {}) {
+        const THREE = this.THREE;
+        const group = new THREE.Group();
+        const meshesByExpressId = new Map();
+        const globalIdByExpressId = new Map();
+
+        this.api.StreamAllMeshes(ifcModelId, (mesh) => {
             const placed = mesh.geometries;
             for (let index = 0; index < placed.size(); index++) {
                 const item = placed.get(index);
                 const raw = this.api.GetGeometry(
-                    this.ifcModelId, item.geometryExpressID);
+                    ifcModelId, item.geometryExpressID);
                 const vertices = this.api.GetVertexArray(
                     raw.GetVertexData(), raw.GetVertexDataSize());
                 const indices = this.api.GetIndexArray(
@@ -207,9 +514,12 @@ export class BimViewer extends Component {
 
                 const colour = item.color;
                 const material = new THREE.MeshLambertMaterial({
-                    color: new THREE.Color(colour.x, colour.y, colour.z),
-                    transparent: colour.w !== 1,
-                    opacity: colour.w,
+                    color: tint || new THREE.Color(colour.x, colour.y, colour.z),
+                    // An overlay is drawn see-through: coordination means
+                    // looking at the duct and the beam at once, and an opaque
+                    // second model just hides the first.
+                    transparent: Boolean(tint) || colour.w !== 1,
+                    opacity: tint ? 0.55 : colour.w,
                     side: THREE.DoubleSide,
                 });
                 const object = new THREE.Mesh(geometry, material);
@@ -219,22 +529,28 @@ export class BimViewer extends Component {
                 object.userData.baseColour = material.color.clone();
                 group.add(object);
 
-                const existing = this.meshesByExpressId.get(mesh.expressID) || [];
+                const existing = meshesByExpressId.get(mesh.expressID) || [];
                 existing.push(object);
-                this.meshesByExpressId.set(mesh.expressID, existing);
+                meshesByExpressId.set(mesh.expressID, existing);
                 raw.delete();
             }
         });
 
-        this.scene.add(group);
-        this.modelGroup = group;
-        box.setFromObject(group);
-        this.indexGlobalIds();
-        this.indexStoreys();
-        this.paintLinkedElements();
-        this.indexSchedule();
-        this.modelBounds = box;
-        return box;
+        for (const [expressID] of meshesByExpressId) {
+            const globalId = this.globalIdOfModel(ifcModelId, expressID);
+            if (globalId) {
+                globalIdByExpressId.set(expressID, globalId);
+            }
+        }
+        return { group, meshesByExpressId, globalIdByExpressId };
+    }
+
+    globalIdOfModel(ifcModelId, expressID) {
+        try {
+            return this.api.GetLine(ifcModelId, expressID)?.GlobalId?.value || null;
+        } catch {
+            return null;
+        }
     }
 
     /**
@@ -572,25 +888,83 @@ export class BimViewer extends Component {
         this.camera.lookAt(this.target);
     }
 
-    /** Orbit and zoom, written by hand rather than pulling in another library. */
+    /**
+     * Orbit, zoom and pan, written by hand rather than pulling in a library.
+     *
+     * Two fingers matter as much as the mouse wheel here. A site engineer
+     * opening a model on a phone could rotate it but not zoom, which makes the
+     * viewer a demo rather than a tool: everything worth looking at on a model
+     * is closer than the default camera.
+     */
     attachControls() {
         const canvas = this.canvasRef.el;
-        let dragging = false;
+        const active = new Map();
         let last = { x: 0, y: 0 };
+        let pinchDistance = 0;
+
+        const spread = () => {
+            const [a, b] = [...active.values()];
+            return Math.hypot(a.x - b.x, a.y - b.y);
+        };
+        const centre = () => {
+            const points = [...active.values()];
+            return {
+                x: points.reduce((sum, p) => sum + p.x, 0) / points.length,
+                y: points.reduce((sum, p) => sum + p.y, 0) / points.length,
+            };
+        };
+        const zoomBy = (factor) => {
+            this.spherical.radius = Math.max(
+                0.5, Math.min(this.spherical.radius * factor, 100000));
+            this.updateCamera();
+            this.render();
+        };
 
         canvas.addEventListener("pointerdown", (event) => {
-            dragging = true;
-            last = { x: event.clientX, y: event.clientY };
+            active.set(event.pointerId, { x: event.clientX, y: event.clientY });
             canvas.setPointerCapture(event.pointerId);
+            if (active.size === 2) {
+                pinchDistance = spread();
+            }
+            last = active.size === 2 ? centre()
+                : { x: event.clientX, y: event.clientY };
         });
-        canvas.addEventListener("pointerup", (event) => {
-            dragging = false;
-            canvas.releasePointerCapture(event.pointerId);
-        });
+
+        const release = (event) => {
+            active.delete(event.pointerId);
+            if (canvas.hasPointerCapture?.(event.pointerId)) {
+                canvas.releasePointerCapture(event.pointerId);
+            }
+            pinchDistance = 0;
+            if (active.size === 1) {
+                last = [...active.values()][0];
+            }
+        };
+        canvas.addEventListener("pointerup", release);
+        // Without this a finger leaving the glass edge-first leaves the view
+        // stuck in a drag that never ends.
+        canvas.addEventListener("pointercancel", release);
+        canvas.addEventListener("pointerleave", release);
+
         canvas.addEventListener("pointermove", (event) => {
-            if (!dragging) {
+            if (!active.has(event.pointerId)) {
                 return;
             }
+            active.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+            if (active.size >= 2) {
+                // Pinch to zoom, drag with two fingers to pan the target.
+                const distance = spread();
+                if (pinchDistance) {
+                    zoomBy(pinchDistance / (distance || pinchDistance));
+                }
+                pinchDistance = distance;
+                const middle = centre();
+                this.panBy(middle.x - last.x, middle.y - last.y);
+                last = middle;
+                return;
+            }
+
             const dx = event.clientX - last.x;
             const dy = event.clientY - last.y;
             last = { x: event.clientX, y: event.clientY };
@@ -601,13 +975,33 @@ export class BimViewer extends Component {
             this.updateCamera();
             this.render();
         });
+
         canvas.addEventListener("wheel", (event) => {
             event.preventDefault();
-            this.spherical.radius = Math.max(
-                1, this.spherical.radius * (event.deltaY > 0 ? 1.12 : 0.89));
-            this.updateCamera();
-            this.render();
+            zoomBy(event.deltaY > 0 ? 1.12 : 0.89);
         }, { passive: false });
+
+        // The browser's own pinch-zoom would scale the page rather than the
+        // model, which on a canvas is never what anybody meant.
+        canvas.style.touchAction = "none";
+    }
+
+    /** Slide the point the camera orbits, in the plane of the screen. */
+    panBy(dx, dy) {
+        const THREE = this.THREE;
+        if (!dx && !dy) {
+            return;
+        }
+        const scale = this.spherical.radius / 600;
+        const forward = new THREE.Vector3()
+            .subVectors(this.target, this.camera.position).normalize();
+        const right = new THREE.Vector3()
+            .crossVectors(forward, this.camera.up).normalize();
+        const up = new THREE.Vector3().crossVectors(right, forward).normalize();
+        this.target.addScaledVector(right, -dx * scale);
+        this.target.addScaledVector(up, dy * scale);
+        this.updateCamera();
+        this.render();
     }
 
     onPick(event) {

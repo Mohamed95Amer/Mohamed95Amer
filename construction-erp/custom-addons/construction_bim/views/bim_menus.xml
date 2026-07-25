@@ -6,4 +6,8 @@
               parent="menu_bim_root" action="action_bim_model" sequence="10"/>
     <menuitem id="menu_bim_elements" name="Linked Elements"
               parent="menu_bim_root" action="action_bim_element" sequence="20"/>
+    <menuitem id="menu_bim_clash_tests" name="Clash Tests"
+              parent="menu_bim_root" action="action_clash_test" sequence="30"/>
+    <menuitem id="menu_bim_clashes" name="Clashes"
+              parent="menu_bim_root" action="action_clash" sequence="40"/>
 </odoo>

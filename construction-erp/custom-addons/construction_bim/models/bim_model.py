@@ -367,6 +367,35 @@ class ConstructionBimModel(models.Model):
     # ------------------------------------------------------------------
     # Viewer data
     # ------------------------------------------------------------------
+    def _file_url(self):
+        self.ensure_one()
+        return f"/web/content/construction.bim.model/{self.id}/ifc_file"
+
+    @api.model
+    def federation_candidates(self, model_id):
+        """The other models of this project that can be overlaid on this one.
+
+        Superseded revisions are left out: coordinating against a drawing
+        somebody has already replaced is how a clash gets designed around twice.
+        """
+        model = self.browse(model_id).exists()
+        if not model:
+            return []
+        siblings = self.search([
+            ("project_id", "=", model.project_id.id),
+            ("id", "!=", model.id),
+            ("state", "in", ("indexed", "current")),
+        ])
+        return [
+            {
+                "id": sibling.id,
+                "name": sibling.display_name,
+                "discipline": sibling.discipline,
+                "file_url": sibling._file_url(),
+            }
+            for sibling in siblings
+        ]
+
     @api.model
     def viewer_payload(self, model_id):
         """Everything the viewer needs in one call."""
@@ -395,7 +424,8 @@ class ConstructionBimModel(models.Model):
             "revision": model.revision,
             "element_count": model.element_count,
             "linked_count": model.linked_count,
-            "file_url": f"/web/content/construction.bim.model/{model.id}/ifc_file",
+            "file_url": model._file_url(),
+            "federation": self.federation_candidates(model.id),
             "linked": elements,
             "storeys": sorted(s for s in storeys if s),
             "pins": self.env["construction.bim.pin"].pins_for_model(model.id),

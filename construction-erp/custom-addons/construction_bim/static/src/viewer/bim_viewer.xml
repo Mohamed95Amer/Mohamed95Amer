@@ -47,6 +47,15 @@
                     <button t-on-click="fitView" title="Frame the selection">
                         <i class="fa fa-expand"/> Fit
                     </button>
+                    <select t-if="state.info.federation and state.info.federation.length"
+                            class="o_bim_select o_bim_overlay_select"
+                            t-on-change="(ev) => this.onOverlayPicked(ev.target.value)">
+                        <option value="">Overlay a model…</option>
+                        <option t-foreach="state.info.federation" t-as="entry"
+                                t-key="entry.id" t-att-value="entry.id">
+                            <t t-esc="entry.name"/>
+                        </option>
+                    </select>
                     <button t-on-click="showEverything"
                             t-att-disabled="!state.hidden and !state.isolated and state.storey === 'all'"
                             title="Show everything again">
@@ -99,6 +108,49 @@
                                t-att-value="state.sectionHeight"
                                t-on-input="(ev) => this.setSectionHeight(ev.target.value)"/>
                         <span><t t-esc="state.sectionHeight"/>%</span>
+                    </div>
+
+                    <!-- Clash strip: only when the viewer was opened from a
+                         test, because clash review is a different job from
+                         looking at a model. -->
+                    <div t-if="state.clashTest" class="o_bim_clash">
+                        <span class="o_bim_eyebrow">CLASH TEST</span>
+                        <strong t-esc="state.clashTest.name"/>
+                        <small>
+                            against <t t-esc="state.clashTest.model_b.name"/>,
+                            tolerance <t t-esc="state.clashTest.tolerance"/>
+                        </small>
+                        <div class="o_bim_clash_actions">
+                            <button class="btn btn-sm btn-primary"
+                                    t-att-disabled="state.busy"
+                                    t-on-click="startClashRun">
+                                <i class="fa fa-bolt"/> Run test
+                            </button>
+                            <button class="btn btn-sm btn-secondary"
+                                    t-on-click="openClashList">
+                                Open results
+                            </button>
+                        </div>
+                        <p t-if="state.clashSummary" class="o_bim_clash_summary">
+                            <t t-esc="state.clashSummary.found"/> found ·
+                            <t t-esc="state.clashSummary.created"/> new ·
+                            <t t-esc="state.clashSummary.resolved"/> resolved
+                        </p>
+                    </div>
+
+                    <div t-if="state.overlays.length" class="o_bim_overlays">
+                        <span class="o_bim_eyebrow">OVERLAID</span>
+                        <button t-foreach="state.overlays" t-as="row" t-key="row.id"
+                                t-attf-class="o_bim_overlay_chip o_bim_disc_{{ row.discipline }} {{ row.visible ? 'active' : '' }}"
+                                t-on-click="() => this.toggleOverlay(row.id)">
+                            <i t-attf-class="fa fa-{{ row.visible ? 'eye' : 'eye-slash' }}"/>
+                            <t t-esc="row.name"/>
+                        </button>
+                    </div>
+
+                    <div t-if="state.busy" class="o_bim_busy">
+                        <i class="fa fa-circle-o-notch fa-spin"/>
+                        <t t-esc="state.progress"/>
                     </div>
 
                     <div t-if="state.fourD" class="o_bim_fourd">

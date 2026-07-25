@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.construction_bim.models import ifc_parser
+from odoo.addons.construction_bim.models.bim_clash import MAX_RESULTS
 
 # A minimal but real STEP file: two walls and a door on one storey, plus the
 # containment relationship and enough noise entities to prove the filtering.
@@ -947,3 +948,199 @@ class TestFourD(TransactionCase):
         payload = self.model.viewer_payload(self.model.id)
         self.assertIn("schedule", payload)
         self.assertIn("totals", payload)
+
+
+@tagged("post_install", "-at_install")
+class TestClashDetection(TransactionCase):
+    """Clash tests: run in the browser, recorded here.
+
+    The geometry lives in the browser, so what is tested here is the half that
+    matters over time — that a re-run does not undo a person's decision, and
+    that a clash which has been designed out closes itself.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Coordination", "is_construction": True,
+             "project_code": "CO1"})
+        cls.structure = cls.env["construction.bim.model"].create({
+            "name": "Tower — structural", "project_id": cls.project.id,
+            "discipline": "structural",
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.structure.action_index()
+        cls.services = cls.env["construction.bim.model"].create({
+            "name": "Tower — mechanical", "project_id": cls.project.id,
+            "discipline": "mechanical",
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.services.action_index()
+        cls.test = cls.env["construction.bim.clash.test"].create({
+            "name": "Structure vs MEP",
+            "project_id": cls.project.id,
+            "model_a_id": cls.structure.id,
+            "model_b_id": cls.services.id,
+        })
+
+    def _results(self, *pairs):
+        return [
+            {"global_id_a": a, "global_id_b": b, "overlap": overlap,
+             "x": 1.0, "y": 2.0, "z": 3.0}
+            for a, b, overlap in pairs
+        ]
+
+    def test_a_run_records_what_it_found(self):
+        summary = self.env["construction.bim.clash.test"].record_results(
+            self.test.id,
+            self._results(("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4)),
+        )
+        self.assertEqual(summary["created"], 1)
+        clash = self.test.clash_ids
+        self.assertEqual(clash.status, "new")
+        self.assertEqual(clash.overlap, 0.4)
+        # Resolved to the indexed elements, so the clash names something a
+        # person recognises rather than a GUID.
+        self.assertEqual(clash.element_a_id.global_id, "2O2Fr$t4X7Zf8NOew3FLIE")
+        self.assertEqual(clash.name_a, "Basic Wall:CMU 200")
+
+    def test_running_again_does_not_duplicate(self):
+        results = self._results(
+            ("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4))
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id, results)
+        summary = self.env["construction.bim.clash.test"].record_results(
+            self.test.id, results)
+
+        self.assertEqual(summary["created"], 0)
+        self.assertEqual(len(self.test.clash_ids), 1)
+
+    def test_an_approved_clash_stays_approved(self):
+        """The whole reason the status exists.
+
+        A box-overlap test reports things that are not problems. Somebody says
+        so once; a re-run must not make them say it again every week.
+        """
+        results = self._results(
+            ("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4))
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id, results)
+        self.test.clash_ids.action_approve()
+
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id, results)
+
+        self.assertEqual(self.test.clash_ids.status, "approved")
+
+    def test_a_clash_that_is_gone_closes_itself(self):
+        """Designed out between revisions; nobody should have to notice."""
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id,
+            self._results(("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4)),
+        )
+        summary = self.env["construction.bim.clash.test"].record_results(
+            self.test.id, [])
+
+        self.assertEqual(summary["resolved"], 1)
+        clash = self.test.clash_ids
+        self.assertEqual(clash.status, "resolved")
+        self.assertTrue(clash.resolved_by_run)
+
+    def test_a_clash_that_comes_back_is_reopened(self):
+        """It was fixed and then it was not. That is news."""
+        results = self._results(
+            ("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4))
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id, results)
+        self.env["construction.bim.clash.test"].record_results(self.test.id, [])
+        self.assertEqual(self.test.clash_ids.status, "resolved")
+
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id, results)
+
+        self.assertEqual(self.test.clash_ids.status, "active")
+
+    def test_the_pair_is_the_same_clash_whichever_way_round(self):
+        """Which model was A is an accident of how the test was set up."""
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id,
+            self._results(("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4)),
+        )
+        summary = self.env["construction.bim.clash.test"].record_results(
+            self.test.id,
+            self._results(("3Xs9pQ1nD2yQ8mWJk4LzAB", "2O2Fr$t4X7Zf8NOew3FLIE", 0.4)),
+        )
+
+        self.assertEqual(summary["created"], 0)
+        self.assertEqual(len(self.test.clash_ids), 1)
+
+    def test_raising_an_rfi_pins_it_where_the_clash_is(self):
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id,
+            self._results(("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4)),
+        )
+        clash = self.test.clash_ids
+
+        clash.action_raise_rfi()
+
+        self.assertTrue(clash.rfi_id)
+        self.assertTrue(clash.pin_id)
+        self.assertEqual(clash.pin_id.pin_type, "rfi")
+        self.assertEqual(clash.pin_id.pos_x, clash.pos_x)
+        self.assertEqual(clash.status, "active")
+
+    def test_raising_twice_reuses_the_question(self):
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id,
+            self._results(("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB", 0.4)),
+        )
+        clash = self.test.clash_ids
+        clash.action_raise_rfi()
+        first = clash.rfi_id
+
+        clash.action_raise_rfi()
+
+        self.assertEqual(clash.rfi_id, first)
+
+    def test_a_test_against_itself_is_refused(self):
+        with self.assertRaises(UserError):
+            self.env["construction.bim.clash.test"].create({
+                "name": "Nonsense", "project_id": self.project.id,
+                "model_a_id": self.structure.id,
+                "model_b_id": self.structure.id,
+            })
+
+    def test_the_browser_is_told_both_files_and_the_tolerance(self):
+        payload = self.env["construction.bim.clash.test"].test_payload(
+            self.test.id)
+        self.assertEqual(payload["tolerance"], self.test.tolerance)
+        self.assertIn("file_url", payload["model_a"])
+        self.assertIn("file_url", payload["model_b"])
+
+    def test_results_are_capped(self):
+        """A run finding fifty thousand clashes has found nothing actionable."""
+        flood = [
+            {"global_id_a": f"A{index:021d}", "global_id_b": f"B{index:021d}",
+             "overlap": 0.1, "x": 0.0, "y": 0.0, "z": 0.0}
+            for index in range(MAX_RESULTS + 25)
+        ]
+        self.env["construction.bim.clash.test"].record_results(
+            self.test.id, flood, skipped=25)
+
+        self.assertEqual(len(self.test.clash_ids), MAX_RESULTS)
+        self.assertEqual(self.test.last_run_skipped, 25)
+
+    def test_federation_offers_the_other_models_of_the_project(self):
+        candidates = self.env["construction.bim.model"].federation_candidates(
+            self.structure.id)
+        names = {entry["name"] for entry in candidates}
+        self.assertIn(self.services.display_name, names)
+        self.assertNotIn(self.structure.display_name, names)
+
+    def test_a_superseded_revision_is_not_offered_to_federate(self):
+        """Coordinating against a model already replaced is a wasted week."""
+        self.services.write({"state": "superseded"})
+        candidates = self.env["construction.bim.model"].federation_candidates(
+            self.structure.id)
+        self.assertFalse(candidates)

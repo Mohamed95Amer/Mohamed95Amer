@@ -193,6 +193,82 @@
 .o_bucket_open .o_bim_pin_main > i { color: #d8a13a; }
 .o_bucket_done .o_bim_pin_main > i { color: #2f7d5c; }
 
+// Clash review is a job with a beginning and an end, so it gets its own panel
+// rather than another button in a toolbar that already has seven.
+.o_bim_clash {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 320px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, .97);
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(20, 38, 31, .12);
+
+    small { color: var(--bim-muted); }
+}
+
+.o_bim_clash_actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.o_bim_clash_summary {
+    margin: 4px 0 0;
+    font-size: .8rem;
+    color: var(--bim-deep);
+}
+
+.o_bim_overlays {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.o_bim_overlay_chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: .78rem;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid var(--bim-rule);
+    border-left: 3px solid #8b6f9c;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:not(.active) { opacity: .5; }
+    &.o_bim_disc_structural { border-left-color: #6b7f9e; }
+    &.o_bim_disc_mechanical { border-left-color: #3f8f7a; }
+    &.o_bim_disc_electrical { border-left-color: #c9a227; }
+    &.o_bim_disc_plumbing { border-left-color: #4a90a4; }
+    &.o_bim_disc_architectural { border-left-color: #9a7bb0; }
+}
+
+.o_bim_busy {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: .82rem;
+    background: rgba(20, 38, 31, .9);
+    color: #fff;
+    border-radius: 20px;
+}
+
 // The 4D strip sits along the bottom of the stage, where a programme belongs:
 // out of the model, and readable while dragging.
 .o_bim_fourd {
