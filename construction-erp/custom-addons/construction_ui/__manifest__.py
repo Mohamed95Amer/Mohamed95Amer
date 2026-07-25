@@ -30,6 +30,7 @@
         "construction_subcontractor",
         "construction_report",
         "construction_hse",
+        "construction_tender",
         "construction_portal",
         "facility_asset",
         "facility_workorder",

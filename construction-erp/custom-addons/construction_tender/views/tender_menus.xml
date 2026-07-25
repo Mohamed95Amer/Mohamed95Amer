@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_tender" name="Tender Packages"
+              parent="construction_base.menu_construction_commercial"
+              action="action_tender" sequence="5"
+              groups="construction_base.group_construction_commercial"/>
+    <menuitem id="menu_tender_bids" name="Bids"
+              parent="construction_base.menu_construction_commercial"
+              action="action_tender_bid" sequence="6"
+              groups="construction_base.group_construction_commercial"/>
+</odoo>

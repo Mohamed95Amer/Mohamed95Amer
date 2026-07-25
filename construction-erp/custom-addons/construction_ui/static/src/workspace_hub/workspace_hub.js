@@ -154,6 +154,16 @@ Object.assign(OPERATIONAL_METRICS, {
         { label: "Open", hint: "Investigation or actions outstanding", icon: "fa-folder-open-o",
           requires: ["state"], domain: [["state", "!=", "closed"]] },
     ],
+    tenders: [
+        { label: "In leveling", hint: "Bids in, decision pending", icon: "fa-balance-scale",
+          requires: ["state"], domain: [["state", "=", "leveling"]] },
+        { label: "Out to bid", hint: "Issued, awaiting prices", icon: "fa-paper-plane-o",
+          requires: ["state"], domain: [["state", "=", "issued"]] },
+        { label: "Awarded over budget", hint: "Committed above the estimate", icon: "fa-exclamation-triangle",
+          tone: "alert", requires: ["award_saving"], domain: [["award_saving", "<", 0]] },
+        { label: "Awarded", hint: "Now a subcontract commitment", icon: "fa-handshake-o",
+          requires: ["state"], domain: [["state", "=", "awarded"]] },
+    ],
     cvr: [
         { label: "Margin eroding", hint: "Forecast below the tendered margin", icon: "fa-arrow-down",
           tone: "alert", requires: ["cvr_margin_variance"], domain: [["cvr_margin_variance", "<", 0]] },
@@ -380,6 +390,21 @@ export const WORKSPACES = {
             ["Reuse", "Feed incident lessons into the next talk."],
         ],
         related: ["incidents", "permits", "daily_logs"],
+    }),
+    tenders: workspace({
+        title: "Tender Packages",
+        eyebrow: "PROCUREMENT",
+        description: "Price a scope with several subcontractors against identical lines, then award straight into a subcontract.",
+        model: "construction.tender",
+        action: "construction_tender.action_tender",
+        icon: "fa-gavel",
+        tone: "amber",
+        workflow: [
+            ["Package", "Take the scope from the BOQ so budget travels with it."],
+            ["Level", "Compare line by line — totals hide unpriced scope."],
+            ["Award", "Turn the winning price into a subcontract commitment."],
+        ],
+        related: ["subcontracts", "boq", "cvr"],
     }),
     cvr: workspace({
         title: "Cost Value Reconciliation",

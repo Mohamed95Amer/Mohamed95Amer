@@ -80,6 +80,10 @@
         <field name="name">Toolbox Talks</field>
         <field name="tag">construction_ui.workspace.toolbox_talks</field>
     </record>
+    <record id="action_workspace_tenders" model="ir.actions.client">
+        <field name="name">Tender Packages</field>
+        <field name="tag">construction_ui.workspace.tenders</field>
+    </record>
     <record id="action_workspace_cvr" model="ir.actions.client">
         <field name="name">Cost Value Reconciliation</field>
         <field name="tag">construction_ui.workspace.cvr</field>
@@ -214,6 +218,9 @@
     </record>
     <record id="construction_hse.menu_hse_talks" model="ir.ui.menu">
         <field name="action" ref="action_workspace_toolbox_talks"/>
+    </record>
+    <record id="construction_tender.menu_tender" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_tenders"/>
     </record>
     <record id="construction_report.menu_construction_cvr" model="ir.ui.menu">
         <field name="action" ref="action_workspace_cvr"/>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tender_user,tender user,model_construction_tender,construction_base.group_construction_user,1,0,0,0
+access_tender_commercial,tender commercial,model_construction_tender,construction_base.group_construction_commercial,1,1,1,1
+access_tender_line_user,tender line user,model_construction_tender_line,construction_base.group_construction_user,1,0,0,0
+access_tender_line_commercial,tender line commercial,model_construction_tender_line,construction_base.group_construction_commercial,1,1,1,1
+access_bid_user,tender bid user,model_construction_tender_bid,construction_base.group_construction_user,1,0,0,0
+access_bid_commercial,tender bid commercial,model_construction_tender_bid,construction_base.group_construction_commercial,1,1,1,1
+access_bid_line_user,tender bid line user,model_construction_tender_bid_line,construction_base.group_construction_user,1,0,0,0
+access_bid_line_commercial,tender bid line commercial,model_construction_tender_bid_line,construction_base.group_construction_commercial,1,1,1,1
