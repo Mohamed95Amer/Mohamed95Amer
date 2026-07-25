@@ -79,14 +79,28 @@
                 <header>
                     <button name="action_submit" type="object" string="Submit"
                             class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_request_approval" type="object"
+                            string="Request Approval" class="btn-primary"
+                            invisible="state != 'submitted' or approval_state != 'none'"/>
+                    <button name="action_view_approval" type="object"
+                            string="View Approval"
+                            invisible="approval_state == 'none'"/>
+                    <!-- Kept for a variation no rule covers. Where one does,
+                         the method refuses and names the rule. -->
                     <button name="action_approve" type="object" string="Approve"
-                            class="btn-primary" invisible="state != 'submitted'"
+                            class="btn-primary"
+                            invisible="state != 'submitted' or approval_state != 'none'"
                             groups="construction_base.group_construction_pm"/>
                     <button name="action_reject" type="object" string="Reject"
                             invisible="state not in ('draft', 'submitted')"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <field name="approval_state" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="approval_state != 'pending'">
+                        <field name="approval_summary" nolabel="1" readonly="1"/>
+                    </div>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_boq_lines" type="object"
                                 class="oe_stat_button" icon="fa-list"

@@ -10,6 +10,10 @@ class TestBoq(TransactionCase):
         cls.project = cls.env["project.project"].create(
             {"name": "BOQ Test Project", "is_construction": True}
         )
+        # These test locking and revisions, not approvals. The module ships
+        # demo approval rules, and leaving them on would make every one of
+        # them a test of the approval engine instead.
+        cls.env["construction.approval.rule"].search([]).write({"active": False})
         cls.boq = cls.env["construction.boq"].create(
             {"project_id": cls.project.id}
         )

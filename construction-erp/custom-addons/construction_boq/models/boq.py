@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 class ConstructionBoq(models.Model):
     _name = "construction.boq"
     _description = "Bill of Quantities"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "construction.approvable"]
     _order = "project_id, version desc"
 
     name = fields.Char(required=True, default="Bill of Quantities")
@@ -93,10 +93,26 @@ class ConstructionBoq(models.Model):
             },
         }
 
+    def _approval_amount(self):
+        """A bill is worth what it sells for."""
+        self.ensure_one()
+        return abs(self.amount_sell_total or 0.0)
+
+    def _on_approval_granted(self, request):
+        """The last signature approves the bill, rather than a person doing it
+        a second time in a different screen."""
+        self.filtered(lambda b: b.state == "draft").write({"state": "approved"})
+        return True
+
     def action_approve(self):
         for boq in self:
             if boq.state != "draft":
                 raise UserError(self.env._("Only draft BOQs can be approved."))
+            # The rule lives here, not on the button. A `groups` attribute in a
+            # view hides a control; it does not stop the method being called
+            # from a script, and a bill is worth too much for that difference
+            # to be theoretical.
+            boq._check_approved()
             boq.state = "approved"
 
     def action_lock(self):

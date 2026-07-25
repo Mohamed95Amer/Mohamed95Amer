@@ -16,6 +16,7 @@
     ],
     "demo": [
         "demo/change_order_demo.xml",
+        "demo/approval_rules_demo.xml",
     ],
     "installable": True,
 }

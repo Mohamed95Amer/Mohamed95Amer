@@ -73,7 +73,7 @@ class ConstructionChangeOrder(models.Model):
     _name = "construction.change.order"
     _description = "Change Order / Variation"
     _inherit = ["construction.document.mixin", "mail.thread",
-                "mail.activity.mixin"]
+                "mail.activity.mixin", "construction.approvable"]
     _doc_prefix = "VO"
     _order = "id desc"
 
@@ -119,10 +119,32 @@ class ConstructionChangeOrder(models.Model):
                 raise UserError(self.env._("Add at least one line before submitting."))
             co.state = "submitted"
 
+    def _approval_amount(self):
+        """The value at stake, regardless of direction.
+
+        An omission of half a million is as material as an addition of one, and
+        a threshold that only caught additions would be the wrong control.
+        """
+        self.ensure_one()
+        return abs(self.amount_sell_total or 0.0)
+
+    def _on_approval_granted(self, request):
+        self.filtered(lambda c: c.state == "submitted").action_approve()
+        return True
+
+    def _on_approval_refused(self, request, reason):
+        self.filtered(lambda c: c.state == "submitted").write(
+            {"state": "rejected"})
+        return True
+
     def action_approve(self):
         for co in self:
             if co.state != "submitted":
                 raise UserError(self.env._("Only submitted VOs can be approved."))
+            # Approving a variation appends lines to the bill and moves the
+            # contract value. Whether the caller is allowed to do that is
+            # decided here rather than by whether a button was rendered.
+            co._check_approved()
             co._apply_to_boq()
             co.write({"state": "approved",
                       "approved_date": fields.Date.context_today(co)})

@@ -16,6 +16,7 @@
     ],
     "demo": [
         "demo/boq_demo.xml",
+        "demo/approval_rules_demo.xml",
     ],
     "installable": True,
 }

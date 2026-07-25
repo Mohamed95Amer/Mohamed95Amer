@@ -73,6 +73,9 @@ class TestBoqImport(TransactionCase):
             wizard.action_import()
 
     def test_locked_boq_rejected(self):
+        # About importing into a locked bill, not about approvals: the demo
+        # rules would otherwise make this a test of the approval engine.
+        self.env["construction.approval.rule"].search([]).write({"active": False})
         self.boq.action_approve()
         self.boq.action_lock()
         wizard = self._wizard([HEADER])

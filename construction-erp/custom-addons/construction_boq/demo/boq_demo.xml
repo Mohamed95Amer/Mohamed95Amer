@@ -115,7 +115,11 @@
         <field name="cost_labour">420</field>
     </record>
 
-    <function model="construction.boq" name="action_approve">
-        <value eval="[ref('boq_demo_marina')]"/>
-    </function>
+    <!-- Set rather than approved through the workflow. Demo data is a
+         fixture describing a bill that was approved some time ago, not a
+         signature being given now — and running it through the approval
+         engine at install would need an approver who is not the loader. -->
+    <record id="boq_demo_marina" model="construction.boq">
+        <field name="state">approved</field>
+    </record>
 </odoo>
