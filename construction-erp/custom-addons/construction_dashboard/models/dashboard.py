@@ -52,7 +52,12 @@ class ConstructionDashboard(models.AbstractModel):
             domain.append(("id", "in", project_ids))
         projects = self.env["project.project"].search(domain, order="name")
 
-        rows = [self._project_row(project) for project in projects]
+        # Counts are grouped across the whole portfolio in one query each
+        # rather than asked per project. The loop version issued eight counts
+        # per project, so a company with a hundred jobs paid eight hundred
+        # round trips to draw one screen.
+        counts = self._portfolio_counts(projects)
+        rows = [self._project_row(project, counts) for project in projects]
         return {
             "projects": rows,
             "portfolio": self._portfolio(rows),
@@ -60,28 +65,51 @@ class ConstructionDashboard(models.AbstractModel):
             "currency": self.env.company.currency_id.symbol or "",
         }
 
-    def _project_row(self, project):
-        defect_model = self.env["construction.defect"]
-        rfi_model = self.env["construction.rfi"]
-        task_model = self.env["project.task"]
+    def _grouped_count(self, model, domain, projects):
+        """One count per project, in a single query."""
+        groups = self.env[model]._read_group(
+            [("project_id", "in", projects.ids)] + domain,
+            ["project_id"], ["__count"],
+        )
+        return {project.id: count for project, count in groups}
 
-        defects_open = defect_model.search_count([
-            ("project_id", "=", project.id),
-            ("state", "in", ["open", "reopened", "in_progress"]),
-        ])
-        defects_high = defect_model.search_count([
-            ("project_id", "=", project.id),
-            ("state", "!=", "closed"),
-            ("severity", "in", ["high", "critical"]),
-        ])
-        rfis_open = rfi_model.search_count([
-            ("project_id", "=", project.id), ("state", "!=", "closed"),
-        ])
-        rfis_overdue = rfi_model.search_count([
-            ("project_id", "=", project.id), ("is_overdue", "=", True),
-        ])
+    def _portfolio_counts(self, projects):
+        return {
+            "defects_open": self._grouped_count(
+                "construction.defect",
+                [("state", "in", ["open", "reopened", "in_progress"])], projects),
+            "defects_high": self._grouped_count(
+                "construction.defect",
+                [("state", "!=", "closed"),
+                 ("severity", "in", ["high", "critical"])], projects),
+            "rfis_open": self._grouped_count(
+                "construction.rfi", [("state", "!=", "closed")], projects),
+            "rfis_overdue": self._grouped_count(
+                "construction.rfi", [("is_overdue", "=", True)], projects),
+            # Tasks are read in one sweep and bucketed in Python: the slip
+            # figures need the records themselves, not just a count.
+            "tasks": self._portfolio_tasks(projects),
+        }
 
-        tasks = task_model.search([("project_id", "=", project.id)])
+    def _portfolio_tasks(self, projects):
+        tasks = self.env["project.task"].search(
+            [("project_id", "in", projects.ids)])
+        buckets = {project.id: self.env["project.task"] for project in projects}
+        for task in tasks:
+            if task.project_id.id in buckets:
+                buckets[task.project_id.id] |= task
+        return buckets
+
+    def _project_row(self, project, counts=None):
+        if counts is None:
+            counts = self._portfolio_counts(project)
+
+        defects_open = counts["defects_open"].get(project.id, 0)
+        defects_high = counts["defects_high"].get(project.id, 0)
+        rfis_open = counts["rfis_open"].get(project.id, 0)
+        rfis_overdue = counts["rfis_overdue"].get(project.id, 0)
+
+        tasks = counts["tasks"].get(project.id, self.env["project.task"])
         scheduled = tasks.filtered(lambda t: t.planned_start and t.planned_finish)
         slips = [t.finish_variance_days for t in scheduled if t.finish_variance_days > 0]
 

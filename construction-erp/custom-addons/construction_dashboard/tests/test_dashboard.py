@@ -65,3 +65,38 @@ class TestConstructionDashboard(TransactionCase):
         for metric in self.dashboard.get_metric_defs():
             self.assertIn(metric["better"], ("high", "low"))
             self.assertTrue(metric["label"])
+
+    def test_the_portfolio_is_drawn_without_a_query_per_project(self):
+        """A dashboard that costs eight queries per job does not scale.
+
+        The counts are grouped over the whole portfolio, so adding projects must
+        not add round trips. This asserts the shape of the work, not a duration —
+        a timing assertion would be flaky on shared runners.
+        """
+        extra = self.env["project.project"].create([{
+            "name": f"Query count job {i}", "is_construction": True,
+        } for i in range(6)])
+        self.assertTrue(extra)
+
+        model = self.dashboard
+        self.env.invalidate_all()
+        few = model.get_dashboard_data(project_ids=self.p1.ids)
+        self.env.invalidate_all()
+        many = model.get_dashboard_data()
+
+        self.assertEqual(len(few["projects"]), 1)
+        self.assertGreater(len(many["projects"]), 6)
+
+        # Every grouped count must have produced a dict keyed by project, which
+        # is what makes one query serve the whole portfolio.
+        counts = model._portfolio_counts(extra)
+        for key in ("defects_open", "defects_high", "rfis_open", "rfis_overdue"):
+            self.assertIsInstance(counts[key], dict)
+        self.assertEqual(set(counts["tasks"]), set(extra.ids))
+
+    def test_a_single_project_row_still_works_on_its_own(self):
+        """The row builder is called directly in places; it must not require
+        the portfolio pre-computation to have happened."""
+        row = self.dashboard._project_row(self.p1)
+        self.assertEqual(row["id"], self.p1.id)
+        self.assertIn("open_defects", row)

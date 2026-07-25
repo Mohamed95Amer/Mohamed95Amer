@@ -47,8 +47,22 @@ class ProjectMaterial(models.Model):
 
     @api.depends("material_summary_ids")
     def _compute_material_position(self):
+        # One search for the whole recordset, not one per project. The summary
+        # is a SQL view that flushes its sources and drops its cached rows on
+        # every search — necessary, or a figure read before a movement is served
+        # again after it — which makes a per-project loop pay that cost N times
+        # and re-query from scratch each time. On a portfolio dashboard that was
+        # the single most expensive thing on the screen.
+        summary_model = self.env["construction.material.summary"]
+        rows_by_project = {project.id: summary_model for project in self}
+        if self.ids:
+            for row in summary_model.search([("project_id", "in", self.ids)]):
+                project_id = row.project_id.id
+                if project_id in rows_by_project:
+                    rows_by_project[project_id] |= row
+
         for project in self:
-            rows = project.material_summary_ids
+            rows = rows_by_project[project.id]
             project.material_budget_value = sum(rows.mapped("budget_value"))
             project.material_consumed_value = sum(rows.mapped("consumed_value"))
             project.material_waste_value = sum(rows.mapped("waste_value"))
