@@ -14,8 +14,14 @@ on:
       - ".github/workflows/construction-erp-ci.yml"
   workflow_dispatch:
 
+# A push to a branch that has an open pull request fires two runs — one for
+# each event. Keying the group on the ref alone put both in the same group, so
+# with cancel-in-progress they cancelled each other and the run that had
+# already passed every job was still reported as failed. Pull-request runs are
+# keyed by PR number and push runs by ref, so they no longer collide; a second
+# push supersedes its own earlier run, which is the behaviour that was wanted.
 concurrency:
-  group: erp-ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 defaults:
