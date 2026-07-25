@@ -113,16 +113,45 @@ The supported paths are **IFC** for models and **PDF** for drawings
 (`construction_drawing`, with pin-on-sheet in `construction_pin`). Every
 authoring tool that produces DWG can export both.
 
+## Federation and clash detection
+
+Several models load into one scene, each tinted by discipline and toggled
+independently. Overlays are for coordination, not record-keeping: pins and
+links stay with the host model, because "which model is this pin on" has to
+have one answer.
+
+A **clash test** names two models and a tolerance. It runs in the browser,
+where the geometry is, and the results are recorded here. What it detects is
+**axis-aligned bounding-box overlap** beyond the tolerance — a broad phase, and
+the same first step every clash engine takes, but *not* triangle-precise: a
+duct passing cleanly through a door opening has overlapping boxes and will be
+reported. Elements are bucketed into a uniform grid sized from the median
+element, because every-element-against-every-element on two ten-thousand-element
+models is a hundred million comparisons and the browser would simply stop.
+
+The status workflow is the part that matters over weeks:
+
+- A clash somebody **approved** as "seen, not a problem" stays approved through
+  every future run. Without that, a box-overlap test is unusable by the second
+  week.
+- A clash the latest run no longer finds **resolves itself**, flagged as closed
+  by the run rather than by a person.
+- A resolved clash that comes back is **reopened**, because that is news.
+- Pairs are matched irrespective of which model was A — that is an accident of
+  how the test was set up.
+
+Any clash becomes an RFI with a pin at the intersection point, in one click.
+
 ## Limitations
 
 Stated plainly, because the alternative is somebody discovering them on a job:
 
-- **No clash detection.** Clash testing needs geometry on the server, which is
-  deliberately not parsed here. Federating disciplines and testing intersections
-  is a real gap against Navisworks and Solibri.
-- **One model at a time in the viewer.** No federated overlay of architectural,
-  structural and MEP together.
-- **Units are not read** from `IfcUnitAssignment` — see above.
+- **Clash testing is bounding-box, not triangle-precise.** See above. It will
+  report things that are not problems; approving them is how you tell it so.
+- **Clash results are capped** at 2000 per run. A run finding fifty thousand
+  overlaps has found nothing anybody can act on, and the count skipped is kept.
+- **Units are not read** from `IfcUnitAssignment` — see above. This applies to
+  the clash tolerance too, which is in the model's own units.
 - **Comparison is not geometric** — see above.
 - **No IFC writing.** The module reads models and writes BCF; it never edits or
   re-exports an IFC file.

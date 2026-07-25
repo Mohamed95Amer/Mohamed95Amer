@@ -128,8 +128,15 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   **BCF 2.1** archives, matched on topic GUID so a reviewer's answer updates the
   issue rather than duplicating it. Two revisions of a discipline can be
   **compared** — added, removed, renamed, moved storey, changed quantity — with
-  removals that carry records flagged. DWG is not supported — see `docs/` for
-  why.
+  removals that carry records flagged. Models **federate**: overlay structural
+  on architectural on MEP, each tinted by discipline, and run a **clash test**
+  between two of them. The test runs in the browser, where the geometry is, and
+  the results come back with a status workflow — a clash somebody approved as
+  "not a problem" stays quiet on every future run, and one that has been
+  designed out closes itself. Any clash becomes an RFI pinned where it is, in
+  one click. DWG is not supported, and clash testing is bounding-box rather
+  than triangle-precise — `docs/bim.md` says what that means and what else is
+  and is not there.
 - **construction_whatsapp** — operational alerts over **Meta's WhatsApp Cloud
   API**, which is what Odoo's Enterprise-only WhatsApp app wraps. Permits about
   to expire, SLAs at risk or breached, RFIs landing in someone's court, defects
