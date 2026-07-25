@@ -7,7 +7,7 @@
     "license": "LGPL-3",
     "author": "Mohamed Amer",
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
-    "depends": ["construction_base", "construction_boq", "stock"],
+    "depends": ["construction_base", "construction_boq", "stock", "purchase_stock"],
     "data": [
         "security/ir.model.access.csv",
         "data/material_data.xml",
@@ -15,6 +15,7 @@
         "views/material_summary_views.xml",
         "views/stock_scrap_views.xml",
         "views/project_material_views.xml",
+        "views/purchase_delivery_views.xml",
         "views/material_menus.xml",
         "report/material_reports.xml",
     ],

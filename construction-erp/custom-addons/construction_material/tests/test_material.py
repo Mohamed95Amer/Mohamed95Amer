@@ -1,3 +1,4 @@
+from odoo import fields
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
@@ -197,3 +198,55 @@ class TestConstructionMaterial(TransactionCase):
         # 10 wasted of 100 issued.
         self.assertAlmostEqual(self.project.material_waste_percent, 10.0, places=4)
         self.assertEqual(self.project.material_over_budget_count, 0)
+
+    # ------------------------------------------------------------------
+    # Deliveries
+    # ------------------------------------------------------------------
+    def test_purchase_receipt_lands_in_the_site_store(self):
+        """A delivery has to reach the project's store, otherwise the material
+        position counts stock the site never held."""
+        vendor = self.env["res.partner"].create({"name": "Readymix Co"})
+        order = self.env["purchase.order"].create({
+            "partner_id": vendor.id,
+            "construction_project_id": self.project.id,
+            "order_line": [(0, 0, {
+                "product_id": self.concrete.id,
+                "product_qty": 40,
+                "price_unit": 60,
+                "name": "Concrete",
+                "date_planned": fields.Datetime.now(),
+            })],
+        })
+        order.button_confirm()
+
+        picking = order.picking_ids
+        self.assertTrue(picking, "confirming the order should raise a receipt")
+        self.assertEqual(picking.construction_project_id, self.project)
+        site = self.project.site_location_id
+        self.assertTrue(
+            all(m.location_dest_id == site for m in picking.move_ids),
+            "every received move must be destined for the project's site store",
+        )
+
+        for move in picking.move_ids:
+            move.quantity = move.product_uom_qty
+            move.picked = True
+        picking.button_validate()
+
+        on_hand = self.concrete.with_context(location=site.id).qty_available
+        self.assertEqual(on_hand, 40)
+
+    def test_order_without_a_project_is_untouched(self):
+        vendor = self.env["res.partner"].create({"name": "General supplier"})
+        order = self.env["purchase.order"].create({
+            "partner_id": vendor.id,
+            "order_line": [(0, 0, {
+                "product_id": self.concrete.id,
+                "product_qty": 5,
+                "price_unit": 60,
+                "name": "Concrete",
+                "date_planned": fields.Datetime.now(),
+            })],
+        })
+        order.button_confirm()
+        self.assertFalse(order.picking_ids.construction_project_id)

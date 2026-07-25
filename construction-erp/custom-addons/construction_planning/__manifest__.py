@@ -7,13 +7,14 @@
     "license": "LGPL-3",
     "author": "Mohamed Amer",
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
-    "depends": ["construction_base", "web_timeline"],
+    "depends": ["construction_base", "construction_boq", "web_timeline"],
     "data": [
         "security/ir.model.access.csv",
         "views/task_link_views.xml",
         "views/project_task_views.xml",
         "views/planning_menus.xml",
         "views/gantt_views.xml",
+        "views/task_boq_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

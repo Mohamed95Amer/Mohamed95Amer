@@ -168,3 +168,84 @@ class TestProjectCvr(TransactionCase):
         self.assertEqual(self.project.cvr_forecast_margin, 200000 - 155000)
         self.assertEqual(self.project.cvr_margin_variance, -15000)
         self.assertTrue(second)
+
+
+@tagged("post_install", "-at_install")
+class TestSectionCvr(TransactionCase):
+    """A project CVR says the job is losing money; the section CVR says where."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Section CVR", "is_construction": True}
+        )
+        cls.boq = cls.env["construction.boq"].create({"project_id": cls.project.id})
+        cls.sub = cls.env["construction.boq.section"].create(
+            {"boq_id": cls.boq.id, "name": "Substructure", "code": "01"}
+        )
+        cls.fin = cls.env["construction.boq.section"].create(
+            {"boq_id": cls.boq.id, "name": "Finishes", "code": "02"}
+        )
+        # Substructure: 100,000 sell / 70,000 cost.
+        cls.sub_line = cls.env["construction.boq.line"].create({
+            "boq_id": cls.boq.id, "section_id": cls.sub.id, "name": "Piling",
+            "quantity": 100, "unit_rate": 1000, "cost_material": 700,
+        })
+        # Finishes: 50,000 sell / 30,000 cost.
+        cls.fin_line = cls.env["construction.boq.line"].create({
+            "boq_id": cls.boq.id, "section_id": cls.fin.id, "name": "Plaster",
+            "quantity": 50, "unit_rate": 1000, "cost_material": 600,
+        })
+        cls.boq.action_approve()
+
+    def test_section_carries_its_own_value_and_budget(self):
+        self.assertEqual(self.sub.cvr_contract_value, 100000)
+        self.assertEqual(self.sub.cvr_budget_cost, 70000)
+        self.assertEqual(self.fin.cvr_contract_value, 50000)
+        self.assertEqual(self.sub.cvr_forecast_margin, 30000)
+        self.assertEqual(self.sub.cvr_margin_variance, 0)
+
+    def _let_package(self, boq_line, amount):
+        subcontract = self.env["construction.subcontract"].create({
+            "name": "Package",
+            "project_id": self.project.id,
+            "subcontractor_id": self.env["res.partner"].create(
+                {"name": "Sub"}).id,
+        })
+        self.env["construction.subcontract.line"].create({
+            "subcontract_id": subcontract.id,
+            "boq_line_id": boq_line.id,
+            "name": "works", "quantity": 1, "unit_rate": amount,
+        })
+        subcontract.action_confirm()
+        return subcontract
+
+    def test_erosion_is_attributed_to_the_section_that_caused_it(self):
+        """The point of the report: one section bleeding must not be averaged
+        away by another that is holding."""
+        self._let_package(self.sub_line, 85000)   # 15,000 over its 70,000
+        self.assertEqual(self.sub.cvr_committed_cost, 85000)
+        self.assertEqual(self.sub.cvr_margin_variance, -15000)
+        # Finishes is untouched and must still read healthy.
+        self.assertEqual(self.fin.cvr_margin_variance, 0)
+        self.assertEqual(self.fin.cvr_committed_cost, 0)
+
+    def test_draft_package_is_not_committed_to_a_section(self):
+        subcontract = self.env["construction.subcontract"].create({
+            "name": "Not awarded",
+            "project_id": self.project.id,
+            "subcontractor_id": self.env["res.partner"].create(
+                {"name": "Sub draft"}).id,
+        })
+        self.env["construction.subcontract.line"].create({
+            "subcontract_id": subcontract.id,
+            "boq_line_id": self.sub_line.id,
+            "name": "x", "quantity": 1, "unit_rate": 90000,
+        })
+        self.assertEqual(self.sub.cvr_committed_cost, 0)
+        self.assertEqual(self.sub.cvr_margin_variance, 0)
+
+    def test_section_percent_certified(self):
+        self.sub_line.qty_certified = 25
+        self.assertAlmostEqual(self.sub.cvr_percent_complete, 25.0, places=4)

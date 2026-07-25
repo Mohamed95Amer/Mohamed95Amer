@@ -15,6 +15,7 @@
     ],
     "data": [
         "views/project_cvr_views.xml",
+        "views/section_cvr_views.xml",
         "report/cvr_report.xml",
     ],
     "installable": True,
