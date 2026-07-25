@@ -15,4 +15,9 @@
         <field name="interval_type">days</field>
         <field name="active">True</field>
     </record>
+
+    <!-- The standard forms, installed once. Ordinary records afterwards: edit,
+         copy or delete them per project. Nothing is re-imposed on upgrade. -->
+    <function model="construction.form.library" name="_install_library"
+              eval="[]"/>
 </odoo>

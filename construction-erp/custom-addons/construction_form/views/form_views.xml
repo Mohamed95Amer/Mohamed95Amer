@@ -138,6 +138,24 @@
         <field name="name">Form Templates</field>
         <field name="res_model">construction.form.template</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Build a form, or start from a standard one</p>
+            <p>
+                Thirteen standard forms install with the module — snagging,
+                pre and post pour, blockwork, MEP first fix, firestopping,
+                waterproofing, finishes, deliveries, safety walk and handover.
+                Copy one and edit it rather than starting from nothing.
+            </p>
+        </field>
+    </record>
+
+    <!-- Reachable after install too: somebody who deleted a form, or who
+         upgrades to a release that adds one, can pull in what is missing. -->
+    <record id="action_install_form_library" model="ir.actions.server">
+        <field name="name">Install Standard Forms</field>
+        <field name="model_id" ref="model_construction_form_library"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_install_library()</field>
     </record>
     <record id="action_form_inspections" model="ir.actions.act_window">
         <field name="name">Inspections</field>
@@ -151,4 +169,7 @@
     <menuitem id="menu_construction_form_templates" name="Form Templates"
               parent="construction_base.menu_construction_config"
               action="action_form_templates" sequence="40"/>
+    <menuitem id="menu_install_form_library" name="Install Standard Forms"
+              parent="construction_base.menu_construction_config"
+              action="action_install_form_library" sequence="45"/>
 </odoo>

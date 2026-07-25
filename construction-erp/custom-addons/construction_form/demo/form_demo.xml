@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- The standard QA-PREPOUR form ships with the module. This is the other
+         half of the pattern: a project taking its own copy and editing it,
+         which is why it carries a distinct code — codes are unique per
+         company, and a project copy is a different form. -->
     <record id="template_pre_pour" model="construction.form.template">
-        <field name="name">Pre-Pour Concrete Inspection</field>
-        <field name="code">QA-PREPOUR</field>
+        <field name="name">Pre-Pour Concrete Inspection — Al Noor</field>
+        <field name="code">QA-PREPOUR-ALNOOR</field>
         <field name="project_id" ref="construction_base.project_demo_alnoor"/>
         <field name="responsible_id" ref="base.user_admin"/>
     </record>
