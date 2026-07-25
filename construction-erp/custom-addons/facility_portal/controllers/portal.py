@@ -25,8 +25,21 @@ class FacilityPortal(CustomerPortal):
         requests = Request.search(
             [], limit=self._items_per_page, offset=page_detail["offset"],
             order="id desc")
+        # The record rule has already narrowed this to the occupant's own
+        # requests. Handing the whole recordset to the template with sudo()
+        # would then read every field on it as superuser — convenient, and one
+        # template edit away from showing something it should not. Only the
+        # values the page actually needs are escalated, and only because the
+        # stage and equipment names live on models portal users cannot read.
+        rows = [{
+            "id": record.id,
+            "name": record.name,
+            "equipment": record.sudo().equipment_id.name or "",
+            "stage": record.sudo().stage_id.name or "",
+            "deadline": record.sudo().sla_resolution_deadline,
+        } for record in requests]
         return request.render("facility_portal.portal_my_requests", {
-            "requests": requests.sudo(),
+            "requests": rows,
             "pager": page_detail,
             "page_name": "facility_request",
             "default_url": "/my/facility/requests",
@@ -47,7 +60,7 @@ class FacilityPortal(CustomerPortal):
                 website=True)
     def portal_new_request_form(self, **kw):
         equipment = request.env["maintenance.equipment"].sudo().search(
-            [], limit=80, order="name")
+            [("portal_selectable", "=", True)], limit=80, order="name")
         return request.render("facility_portal.portal_new_request", {
             "equipments": equipment,
             "page_name": "facility_request",
@@ -73,7 +86,14 @@ class FacilityPortal(CustomerPortal):
         }
         equipment_id = post.get("equipment_id")
         if equipment_id and equipment_id.isdigit():
-            values["equipment_id"] = int(equipment_id)
+            # Whatever the form offered, the value came from the client. Only an
+            # asset that was actually published is accepted.
+            offered = request.env["maintenance.equipment"].sudo().search([
+                ("id", "=", int(equipment_id)),
+                ("portal_selectable", "=", True),
+            ], limit=1)
+            if offered:
+                values["equipment_id"] = offered.id
 
         record = request.env["maintenance.request"].sudo().create(values)
         return request.redirect(f"/my/facility/request/{record.id}")

@@ -27,3 +27,21 @@ class MaintenanceRequestPortal(models.Model):
         super()._compute_access_url()
         for request in self:
             request.access_url = f"/my/facility/request/{request.id}"
+
+
+class MaintenanceEquipmentPortal(models.Model):
+    """Only equipment somebody has published is offered on the portal.
+
+    The fault form used to list every asset in the database, which told any
+    occupant of any building the names of every chiller, pump and panel the
+    company maintains — including other clients'. Opt-in rather than opt-out:
+    nothing appears until it is deliberately published.
+    """
+
+    _inherit = "maintenance.equipment"
+
+    portal_selectable = fields.Boolean(
+        string="Show on Portal",
+        help="Occupants can pick this asset when reporting a fault. Leave off "
+             "for anything they should not be able to enumerate.",
+    )

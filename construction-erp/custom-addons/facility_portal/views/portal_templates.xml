@@ -41,16 +41,16 @@
                 <tbody>
                     <tr t-foreach="requests" t-as="task">
                         <td>
-                            <a t-attf-href="/my/facility/request/{{ task.id }}">
-                                <span class="o_majal_ref">#<t t-esc="task.id"/></span>
+                            <a t-attf-href="/my/facility/request/{{ task['id'] }}">
+                                <span class="o_majal_ref">#<t t-esc="task['id']"/></span>
                             </a>
                         </td>
-                        <td><span t-field="task.name"/></td>
-                        <td><span t-field="task.equipment_id.name"/></td>
-                        <td><span t-field="task.sla_resolution_deadline"/></td>
+                        <td><t t-esc="task['name']"/></td>
+                        <td><t t-esc="task['equipment']"/></td>
+                        <td><t t-esc="task['deadline']"/></td>
                         <td>
                             <span class="badge rounded-pill text-bg-info"
-                                  t-field="task.stage_id.name"/>
+                                  t-esc="task['stage']"/>
                         </td>
                     </tr>
                 </tbody>

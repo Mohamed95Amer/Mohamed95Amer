@@ -11,6 +11,7 @@
     "data": [
         "security/ir.model.access.csv",
         "security/portal_security.xml",
+        "views/equipment_views.xml",
         "views/portal_templates.xml",
     ],
     "demo": ["demo/portal_demo.xml"],

@@ -46,3 +46,27 @@ class TestFacilityPortal(TransactionCase):
         internal = self.env["maintenance.request"].create({"name": "Planned PM"})
         visible = self.env["maintenance.request"].with_user(self.user_a).search([])
         self.assertNotIn(internal, visible)
+
+    # ------------------------------------------------------------------
+    # Information the portal must not hand out
+    # ------------------------------------------------------------------
+    def test_only_published_equipment_is_offered(self):
+        """The fault form used to enumerate every asset in the database.
+
+        An occupant of one building could read the names of every chiller,
+        pump and panel the company maintains, including other clients'.
+        """
+        hidden = self.env["maintenance.equipment"].create(
+            {"name": "Other client's chiller"})
+        published = self.env["maintenance.equipment"].create(
+            {"name": "Lobby air handling unit", "portal_selectable": True})
+
+        offered = self.env["maintenance.equipment"].search(
+            [("portal_selectable", "=", True)])
+        self.assertIn(published, offered)
+        self.assertNotIn(hidden, offered)
+
+    def test_equipment_is_hidden_from_the_portal_by_default(self):
+        """Opt in, not opt out: a new asset must not leak the moment it exists."""
+        fresh = self.env["maintenance.equipment"].create({"name": "New pump"})
+        self.assertFalse(fresh.portal_selectable)

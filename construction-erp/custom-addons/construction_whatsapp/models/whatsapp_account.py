@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import logging
 
 import requests
@@ -52,6 +54,16 @@ class WhatsappAccount(models.Model):
              "webhook, which is how the callback proves it came from your "
              "own configuration.",
     )
+    app_secret = fields.Char(
+        groups="base.group_system",
+        help="App Secret from the Meta app. Every webhook Meta sends is signed "
+             "with it, and callbacks that do not carry a valid signature are "
+             "refused — without it the endpoint would accept anything posted "
+             "to it from anywhere.",
+    )
+    webhook_ready = fields.Boolean(
+        compute="_compute_webhook_ready",
+        help="An app secret is set, so signed callbacks can be verified.")
 
     state = fields.Selection(
         [("draft", "Not Verified"), ("connected", "Connected"),
@@ -65,6 +77,35 @@ class WhatsappAccount(models.Model):
         ("phone_number_id_uniq", "unique(phone_number_id, company_id)",
          "That phone number ID is already configured for this company."),
     ]
+
+    def _compute_webhook_ready(self):
+        for account in self:
+            account.webhook_ready = bool(account.sudo().app_secret)
+
+    @api.model
+    def _verify_signature(self, header, body):
+        """Is this callback really from Meta?
+
+        Meta signs every webhook with HMAC-SHA256 of the raw request body under
+        the app secret. Verifying it is the only thing standing between a public
+        endpoint and anyone on the internet marking messages as delivered or
+        posting text into a project's chatter.
+
+        This fails closed. If no account has an app secret configured, no
+        callback is accepted — refusing delivery receipts is a smaller problem
+        than accepting forged ones.
+        """
+        if not header or not header.startswith("sha256="):
+            return False
+        provided = header.split("=", 1)[1]
+        for secret in self.sudo().search([]).mapped("app_secret"):
+            if not secret:
+                continue
+            expected = hmac.new(
+                secret.encode(), body, hashlib.sha256).hexdigest()
+            if hmac.compare_digest(provided, expected):
+                return True
+        return False
 
     def _compute_message_count(self):
         counts = dict(self.env["whatsapp.message"]._read_group(

@@ -36,8 +36,23 @@ class WhatsappWebhook(http.Controller):
     @http.route("/whatsapp/webhook", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def receive(self, **kwargs):
+        """Accept a signed callback from Meta, and nothing else.
+
+        This endpoint writes to the database — it advances message states and
+        posts inbound text into the chatter of whichever record the
+        conversation was about. Unauthenticated, that is an open door: anyone
+        could mark messages as read or inject text into a project's history.
+        So the signature is checked before the body is even parsed.
+        """
+        body = request.httprequest.get_data() or b""
+        signature = request.httprequest.headers.get("X-Hub-Signature-256")
+        if not request.env["whatsapp.account"].sudo()._verify_signature(
+                signature, body):
+            _logger.warning(
+                "WhatsApp webhook rejected: signature missing or invalid")
+            return request.make_response("forbidden", status=403)
         try:
-            payload = json.loads(request.httprequest.data or b"{}")
+            payload = json.loads(body or b"{}")
         except ValueError:
             return request.make_response("bad request", status=400)
         try:

@@ -1,9 +1,11 @@
+import hashlib
+import hmac
 import json
 from datetime import timedelta
 from unittest.mock import patch
 
 from odoo import fields
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 
 SEND_PATH = ("odoo.addons.construction_whatsapp.models.whatsapp_account"
@@ -27,6 +29,7 @@ class TestWhatsapp(TransactionCase):
             "phone_number_id": "1234567890",
             "access_token": "test-token",
             "webhook_verify_token": "verify-me",
+            "app_secret": "app-secret-value",
         })
         cls.project = cls.env["project.project"].create(
             {"name": "WhatsApp Project", "is_construction": True,
@@ -344,6 +347,74 @@ class TestWhatsapp(TransactionCase):
             [("webhook_verify_token", "!=", False)])
         self.assertIn("verify-me", accounts.mapped("webhook_verify_token"))
         self.assertNotIn("wrong-token", accounts.mapped("webhook_verify_token"))
+
+    def test_a_callback_must_carry_metas_signature(self):
+        """The POST route is public and it writes to the database.
+
+        Without a signature check anyone on the internet could mark messages as
+        read, or post text into the chatter of a project they have never seen.
+        """
+        Account = self.env["whatsapp.account"]
+        body = b'{"entry":[]}'
+        good = "sha256=" + hmac.new(
+            b"app-secret-value", body, hashlib.sha256).hexdigest()
+
+        self.assertTrue(Account._verify_signature(good, body))
+        self.assertFalse(Account._verify_signature(None, body))
+        self.assertFalse(Account._verify_signature("", body))
+        self.assertFalse(Account._verify_signature("sha256=deadbeef", body))
+        self.assertFalse(
+            Account._verify_signature(good.replace("sha256=", ""), body),
+            "an unprefixed digest is not a signature")
+
+    def test_a_signature_is_over_the_exact_body(self):
+        """Signing the body means the body cannot be swapped after signing."""
+        Account = self.env["whatsapp.account"]
+        signed = b'{"entry":[{"a":1}]}'
+        tampered = b'{"entry":[{"a":2}]}'
+        signature = "sha256=" + hmac.new(
+            b"app-secret-value", signed, hashlib.sha256).hexdigest()
+        self.assertTrue(Account._verify_signature(signature, signed))
+        self.assertFalse(Account._verify_signature(signature, tampered))
+
+    def test_verification_fails_closed_with_no_secret_configured(self):
+        """Refusing receipts is a smaller problem than accepting forged ones."""
+        self.env["whatsapp.account"].search([]).write({"app_secret": False})
+        body = b"{}"
+        signature = "sha256=" + hmac.new(
+            b"anything", body, hashlib.sha256).hexdigest()
+        self.assertFalse(
+            self.env["whatsapp.account"]._verify_signature(signature, body))
+
+    def test_an_ordinary_user_cannot_hand_write_a_message(self):
+        """The log is a record of what the system sent, not an outbox.
+
+        Create rights would let any employee send a template to any number at
+        the company's expense.
+        """
+        staff = self.env["res.users"].create({
+            "name": "Site staff", "login": "wa.staff@example.com",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+        with self.assertRaises(AccessError):
+            self.env["whatsapp.message"].with_user(staff).create({
+                "phone": "971500000000",
+                "template_id": self.template.id,
+            })
+
+    def test_the_events_can_still_queue_as_an_ordinary_user(self):
+        """Locking the log down must not break the thing that fills it."""
+        staff = self.env["res.users"].create({
+            "name": "Engineer", "login": "wa.eng@example.com",
+            "groups_id": [(6, 0, [
+                self.env.ref("base.group_user").id,
+                self.env.ref("construction_base.group_construction_pm").id,
+            ])],
+        })
+        rfi = self._rfi()
+        queued = self.env["whatsapp.message"].with_user(staff)._queue(
+            self.template, record=rfi, partner=self.consultant)
+        self.assertTrue(queued)
 
     def test_json_payloads_round_trip(self):
         """Guard against the webhook body shape drifting silently."""

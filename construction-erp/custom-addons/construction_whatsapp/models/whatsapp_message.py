@@ -109,7 +109,11 @@ class WhatsappMessage(models.Model):
             values["body"] = template._plain_body(record)
         else:
             values["body"] = template._plain_body(None)
-        return self.create(values)
+        # Queueing is a consequence of the business action, not something the
+        # acting user is doing to the message log. Creating with sudo lets the
+        # log itself stay read-only for ordinary users, so an employee cannot
+        # hand-craft a message to an arbitrary number at the company's expense.
+        return self.sudo().create(values)
 
     # ------------------------------------------------------------------
     # Sending
