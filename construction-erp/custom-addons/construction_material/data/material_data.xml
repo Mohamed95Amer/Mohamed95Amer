@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Site stores hang under one view location so the warehouse tree stays
+         readable as jobs come and go. -->
+    <record id="location_construction_sites" model="stock.location">
+        <field name="name">Construction Sites</field>
+        <field name="usage">view</field>
+        <field name="location_id" ref="stock.stock_location_locations"/>
+    </record>
+
+    <!-- Material issued into the works leaves stock for good: a production
+         usage location consumes it rather than parking it somewhere it could
+         be double-counted as still available. -->
+    <record id="location_site_consumption" model="stock.location">
+        <field name="name">Site Consumption (Works)</field>
+        <field name="usage">production</field>
+        <field name="location_id" ref="stock.stock_location_locations_virtual"/>
+    </record>
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_concrete" model="product.product">
+        <field name="name">Ready-mix concrete C30/37</field>
+        <field name="type">consu</field>
+        <field name="is_storable" eval="True"/>
+        <field name="standard_price">62.0</field>
+        <field name="uom_id" ref="uom.product_uom_cubic_meter"/>
+        <field name="uom_po_id" ref="uom.product_uom_cubic_meter"/>
+    </record>
+    <record id="product_rebar" model="product.product">
+        <field name="name">Reinforcement steel B500B</field>
+        <field name="type">consu</field>
+        <field name="is_storable" eval="True"/>
+        <field name="standard_price">720.0</field>
+        <field name="uom_id" ref="uom.product_uom_ton"/>
+        <field name="uom_po_id" ref="uom.product_uom_ton"/>
+    </record>
+</odoo>

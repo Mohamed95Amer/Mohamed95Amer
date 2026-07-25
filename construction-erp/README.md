@@ -78,6 +78,14 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   totals alone hide. Awarding writes the winning price straight into a
   **subcontract**, so it lands in the CVR as committed cost, and marks the
   other bids unsuccessful. Bid Leveling Sheet PDF.
+- **construction_material** — **site stores and material control**, built on
+  Odoo stock rather than a parallel inventory: each project gets a real stock
+  location, **material issues** book stock out of the store into the works
+  against a BOQ item, and **waste is recorded as scrap with a reason** (offcut,
+  damage, spillage, over-order, loss). The **material position** view puts
+  budgeted, consumed, wasted and on-site quantities on one row per product, so
+  over-consumption — the early signal of waste, theft or a mis-measured
+  quantity — is visible against what was priced. Issue Docket PDF.
 - **construction_hse** — **permits to work** (hot work, confined space, height,
   excavation, lifting) that cannot be approved until every mandatory precaution
   is confirmed and are auto-expired the moment their validity window closes;
@@ -137,7 +145,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_portal,facility_asset,facility_workorder,facility_sla,facility_floorplan,construction_ui,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_portal,facility_asset,facility_workorder,facility_sla,facility_floorplan,construction_ui,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```
