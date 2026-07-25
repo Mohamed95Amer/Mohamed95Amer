@@ -125,7 +125,16 @@
                     </div>
 
                     <div t-if="state.selected" class="o_bim_selection">
-                        <t t-if="state.selected.element">
+                        <t t-if="state.selected.pin">
+                            <span class="o_bim_eyebrow" t-esc="state.selected.eyebrow"/>
+                            <strong t-esc="state.selected.title"/>
+                            <button t-if="state.selected.pin.pin_type !== 'note'"
+                                    class="btn btn-sm btn-primary"
+                                    t-on-click="() => this.openPin(state.selected.pin)">
+                                Open record
+                            </button>
+                        </t>
+                        <t t-elif="state.selected.element">
                             <span class="o_bim_eyebrow"
                                   t-esc="state.selected.element.ifc_type"/>
                             <strong t-esc="state.selected.element.name"/>
@@ -150,8 +159,20 @@
                 </div>
 
                 <aside class="o_bim_side">
+                    <div class="o_bim_tabs">
+                        <button t-att-class="{'active': state.tab === 'elements'}"
+                                t-on-click="() => this.setTab('elements')">
+                            Elements
+                            <span class="o_bim_badge" t-esc="state.elements.length"/>
+                        </button>
+                        <button t-att-class="{'active': state.tab === 'pins'}"
+                                t-on-click="() => this.setTab('pins')">
+                            Pins
+                            <span class="o_bim_badge" t-esc="state.pins.length"/>
+                        </button>
+                    </div>
                     <input class="o_bim_search" type="search"
-                           placeholder="Search elements…"
+                           t-att-placeholder="state.tab === 'pins' ? 'Search pins…' : 'Search elements…'"
                            t-model="state.search"/>
                     <div class="o_bim_filters">
                         <button t-att-class="{'active': state.filter === 'all'}"
@@ -164,7 +185,41 @@
                                 t-on-click="() => this.setFilter('done')">Done</button>
                     </div>
 
-                    <div t-if="visibleElements.length" class="o_bim_list">
+                    <t t-if="state.tab === 'pins'">
+                        <div t-if="listedPins.length" class="o_bim_list">
+                            <div t-foreach="listedPins" t-as="pin" t-key="pin.id"
+                                 t-attf-class="o_bim_item o_bim_pin_row o_bucket_{{ pin.bucket }}">
+                                <button class="o_bim_pin_main"
+                                        t-on-click="() => this.focusPin(pin)"
+                                        title="Fly the camera to this pin">
+                                    <i t-attf-class="fa {{ this.pinIcon(pin.pin_type) }}"/>
+                                    <span>
+                                        <strong t-esc="pin.name"/>
+                                        <small t-esc="pin.note or pin.status"/>
+                                        <em t-if="pin.storey" t-esc="pin.storey"/>
+                                    </span>
+                                </button>
+                                <button class="o_bim_pin_open"
+                                        t-on-click="() => this.openPin(pin)"
+                                        title="Open the record this pin stands for">
+                                    <i class="fa fa-external-link"/>
+                                </button>
+                            </div>
+                        </div>
+                        <div t-else="" class="o_bim_empty">
+                            <i class="fa fa-map-marker"/>
+                            <p t-if="state.pins.length">
+                                No pin matches the current filter.
+                            </p>
+                            <p t-else="">
+                                No pins yet. Click <strong>Pin</strong>, then click
+                                the spot on the model — the task, RFI or defect is
+                                created where you put it.
+                            </p>
+                        </div>
+                    </t>
+
+                    <div t-elif="visibleElements.length" class="o_bim_list">
                         <button t-foreach="visibleElements" t-as="element"
                                 t-key="element.id"
                                 t-attf-class="o_bim_item o_bucket_{{ element.link_bucket }}"

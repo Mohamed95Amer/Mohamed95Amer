@@ -47,6 +47,7 @@ export class BimViewer extends Component {
             selected: null,
             elements: [],
             filter: "all",
+            tab: "elements",
             // Interrogation tools
             storey: "all",
             isolated: false,
@@ -581,6 +582,13 @@ export class BimViewer extends Component {
         if (pin && pin.id) {
             this.state.pins = [...this.state.pins, pin];
             this.drawPins();
+            // Show the pin in the list as well as on the model, so it is clear
+            // the click produced a record and not just a marker.
+            this.state.tab = "pins";
+            this.notification.add(
+                _t("%s created and pinned.", this.pinTypeLabel(pin.pin_type)),
+                { type: "success" },
+            );
         }
         this.state.draft = null;
     }
@@ -678,6 +686,61 @@ export class BimViewer extends Component {
         this.render();
     }
 
+    setTab(tab) {
+        this.state.tab = tab;
+    }
+
+    /**
+     * Fly the camera to a pin and select it.
+     *
+     * A pin nobody can find is a pin nobody acts on: on a tower model the
+     * marker for a defect on level nine is a few pixels from anywhere useful.
+     * The list is how you get there — clicking a row puts the camera in front
+     * of the thing the pin is about, close enough to see it in context.
+     */
+    focusPin(pin) {
+        const THREE = this.THREE;
+        if (!this.camera || !pin.position) {
+            return;
+        }
+        // Frame a room-sized box around the pin rather than the pin itself:
+        // standing on top of a marker tells you nothing about where it is.
+        const span = this.modelBounds
+            ? this.modelBounds.getSize(new THREE.Vector3()).length() / 8
+            : 4;
+        const centre = new THREE.Vector3(...pin.position);
+        this.frame(new THREE.Box3().setFromCenterAndSize(
+            centre, new THREE.Vector3(span, span, span).addScalar(2)));
+        // Show the storey the pin is on, otherwise a filter left on another
+        // level flies the camera to an empty space.
+        if (pin.storey && this.state.storey !== "all"
+                && this.state.storey !== pin.storey) {
+            this.setStorey(pin.storey);
+        }
+        this.state.selected = {
+            expressID: null,
+            globalId: pin.global_id,
+            element: null,
+            pin,
+            title: pin.name,
+            eyebrow: this.pinTypeLabel(pin.pin_type).toUpperCase(),
+            properties: [
+                { label: _t("Status"), value: pin.status || _t("—") },
+                { label: _t("Note"), value: pin.note || _t("—") },
+                { label: _t("Storey"), value: pin.storey || _t("—") },
+            ],
+        };
+        this.render();
+    }
+
+    pinTypeLabel(id) {
+        return this.pinTypes.find((type) => type.id === id)?.label || id;
+    }
+
+    pinIcon(id) {
+        return this.pinTypes.find((type) => type.id === id)?.icon || "fa-map-marker";
+    }
+
     async openPin(pin) {
         const action = await this.orm.call(
             "construction.bim.pin", "action_open_record", [[pin.id]]);
@@ -696,12 +759,32 @@ export class BimViewer extends Component {
         }
     }
 
+    /** Pins on the current storey. What the model draws. */
     get visiblePins() {
         if (this.state.storey === "all") {
             return this.state.pins;
         }
         return this.state.pins.filter(
             (pin) => !pin.storey || pin.storey === this.state.storey);
+    }
+
+    /**
+     * Pins in the list, which is the storey filter plus the search box and the
+     * status filter — the same three controls that narrow the element list, so
+     * the two tabs behave the same way rather than each having its own rules.
+     */
+    get listedPins() {
+        const term = (this.state.search || "").trim().toLowerCase();
+        return this.visiblePins.filter((pin) => {
+            if (this.state.filter !== "all" && pin.bucket !== this.state.filter) {
+                return false;
+            }
+            if (!term) {
+                return true;
+            }
+            return [pin.name, pin.note, pin.status, pin.storey]
+                .some((value) => (value || "").toLowerCase().includes(term));
+        });
     }
 
     async openElement(element) {
