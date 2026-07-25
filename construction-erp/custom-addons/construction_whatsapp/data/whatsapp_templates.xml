@@ -44,4 +44,15 @@
         <field name="model_id" ref="construction_meeting.model_construction_meeting_action"/>
         <field name="body_params">name,meeting_id.project_id.name,deadline,carried_count</field>
     </record>
+    <!-- An approval nobody sees is an approval nobody gives. This is the
+         message that turns a two-day cycle into a ten-minute one — and it
+         carries the value, because "please approve VO-0007" without a number
+         is a message somebody opens later. -->
+    <record id="template_approval_waiting" model="whatsapp.template">
+        <field name="name">Approval waiting for you</field>
+        <field name="template_name">approval_waiting</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="construction_base.model_construction_approval_step"/>
+        <field name="body_params">record_reference,name,amount,requested_by_id.name</field>
+    </record>
 </odoo>

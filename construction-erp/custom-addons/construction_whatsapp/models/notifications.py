@@ -133,3 +133,44 @@ class MeetingActionWhatsapp(models.Model):
             )
         stuck.write({"whatsapp_chased": True})
         return len(stuck)
+
+
+class ApprovalStepWhatsapp(models.Model):
+    """Tell an approver, on the channel they read.
+
+    An approval sitting in an inbox nobody opens is the single commonest way a
+    variation takes two weeks. The message carries the value, because "please
+    approve VO-0007" without a number is something people read later.
+
+    Only the people who can act now are told: an approver at step two hearing
+    about it before step one has signed learns nothing and stops reading.
+    """
+
+    _inherit = "construction.approval.step"
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        steps = super().create(vals_list)
+        steps._notify_ready_approvers()
+        return steps
+
+    def _notify_ready_approvers(self):
+        for step in self:
+            if step.state != "pending":
+                continue
+            for user in step._approvers():
+                if not step._can_be_signed_by(user):
+                    continue
+                self.env["whatsapp.message"]._queue(
+                    "construction_whatsapp.template_approval_waiting",
+                    record=step, partner=user.partner_id,
+                )
+        return True
+
+    def _decide(self, decision, reason):
+        result = super()._decide(decision, reason)
+        # Whoever is next can act now, and did not know a moment ago.
+        if decision == "approved":
+            self.request_id.step_ids.filtered(
+                lambda s: s.state == "pending")._notify_ready_approvers()
+        return result

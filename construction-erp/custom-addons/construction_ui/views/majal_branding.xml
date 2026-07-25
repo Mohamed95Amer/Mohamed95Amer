@@ -35,6 +35,15 @@
         <field name="name">My Workspace</field>
     </record>
 
+    <!-- Sits near the top of the menu on purpose. An approvals queue people
+         have to go looking for is an approvals queue that runs a week late. -->
+    <record id="construction_base.menu_approvals_root" model="ir.ui.menu">
+        <field name="name">Approvals</field>
+    </record>
+    <record id="construction_base.menu_approval_inbox" model="ir.ui.menu">
+        <field name="name">Waiting for Me</field>
+    </record>
+
     <record id="construction_base.menu_construction_config" model="ir.ui.menu">
         <field name="name">Settings</field>
     </record>

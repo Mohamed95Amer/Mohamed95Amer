@@ -6,6 +6,10 @@ class TestConstructionDashboard(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Not a test of approvals: the suite ships demo approval rules,
+        # and leaving them on turns every fixture that approves a bill
+        # or a variation into a test of the approval engine.
+        cls.env["construction.approval.rule"].search([]).write({"active": False})
         cls.dashboard = cls.env["construction.dashboard"]
         cls.p1 = cls._build_project("Dash A", contract=1000, cost=700)
         cls.p2 = cls._build_project("Dash B", contract=2000, cost=1600)

@@ -9,6 +9,10 @@ class TestProjectCvr(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Not a test of approvals: the suite ships demo approval rules,
+        # and leaving them on turns every fixture that approves a bill
+        # or a variation into a test of the approval engine.
+        cls.env["construction.approval.rule"].search([]).write({"active": False})
         cls.project = cls.env["project.project"].create(
             {"name": "CVR Test Project", "is_construction": True}
         )

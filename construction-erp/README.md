@@ -25,7 +25,15 @@ Community** app (`om_account_accountant` + 7 companion modules). See
 
 - **construction_base** — security groups, construction project extensions
   (project code, contract value, retention, parties, lifecycle stages),
-  shared document-numbering mixin with ball-in-court tracking.
+  shared document-numbering mixin with ball-in-court tracking, and the
+  **approval engine**: rules matching a document's kind and value to a chain of
+  approvers, so a variation under 50k takes one signature and one over 250k
+  takes three, configured as data rather than code. Enforcement lives in the
+  method rather than on the button — a `groups` attribute hides a control, it
+  does not stop a script — with segregation of duties, ordered steps, a
+  captured reason, delegation that records whose authority was used, and one
+  **"waiting for me"** inbox across every kind of document. See
+  `docs/approvals.md`.
 - **construction_boq** — Bill of Quantities: hierarchical sections, priced
   lines with material/labour/equipment/subcontract/overhead budget breakdown,
   totals & margin, approval lock, versioned revisions.
