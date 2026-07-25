@@ -28,6 +28,12 @@ class ConstructionFormTemplate(models.Model):
     next_run_date = fields.Date()
     responsible_id = fields.Many2one("res.users", string="Default Inspector")
     inspection_count = fields.Integer(compute="_compute_inspection_count")
+    question_count = fields.Integer(compute="_compute_question_count")
+
+    @api.depends("question_ids")
+    def _compute_question_count(self):
+        for template in self:
+            template.question_count = len(template.question_ids)
 
     _sql_constraints = [
         ("code_company_uniq", "unique(code, company_id)",
@@ -43,8 +49,36 @@ class ConstructionFormTemplate(models.Model):
         for template in self:
             template.inspection_count = counts.get(template.id, 0)
 
+    @api.constrains("recurring", "project_id")
+    def _check_recurring_has_a_project(self):
+        """A schedule needs somewhere to raise the inspection."""
+        for template in self:
+            if template.recurring and not template.project_id:
+                raise ValidationError(_(
+                    "Set a project on '%s' before scheduling it: a recurring "
+                    "inspection has to be raised against one job.",
+                    template.name,
+                ))
+
     def action_new_inspection(self):
         self.ensure_one()
+        if not self.project_id:
+            # The standard forms are company-wide on purpose — one snag sheet
+            # for every job, not one per job. Starting one therefore has to ask
+            # which project it is for, rather than failing on a required field
+            # the user was never shown.
+            return {
+                "type": "ir.actions.act_window",
+                "name": _("New Inspection"),
+                "res_model": "construction.form.inspection",
+                "views": [[False, "form"]],
+                "target": "current",
+                "context": {
+                    "default_template_id": self.id,
+                    "default_inspector_id": (
+                        self.responsible_id.id or self.env.user.id),
+                },
+            }
         inspection = self.env["construction.form.inspection"].create({
             "template_id": self.id,
             "project_id": self.project_id.id,
@@ -64,6 +98,10 @@ class ConstructionFormTemplate(models.Model):
         templates = self.search([
             ("active", "=", True), ("recurring", "=", True),
             ("next_run_date", "!=", False), ("next_run_date", "<=", today),
+            # A company-wide template has no project to raise the inspection
+            # against. Filtering here rather than failing keeps one misconfigured
+            # template from stopping the cron for every other one.
+            ("project_id", "!=", False),
         ])
         for template in templates:
             inspection = self.env["construction.form.inspection"].create({
@@ -128,6 +166,19 @@ class ConstructionFormInspection(models.Model):
         "construction.form.answer", "inspection_id", copy=False)
     notes = fields.Text()
     score = fields.Float(compute="_compute_score", store=True)
+    question_count = fields.Integer(compute="_compute_progress")
+    answered_count = fields.Integer(compute="_compute_progress")
+    remaining_count = fields.Integer(compute="_compute_progress")
+    progress = fields.Float(
+        compute="_compute_progress",
+        help="Share of the checklist answered, as a percentage.")
+    # Which answer columns this form actually needs. A snag sheet is all
+    # Yes/No, and showing it four permanently empty columns is how a checklist
+    # starts looking like a spreadsheet nobody wants to fill in on a phone.
+    uses_text = fields.Boolean(compute="_compute_used_answer_types")
+    uses_number = fields.Boolean(compute="_compute_used_answer_types")
+    uses_date = fields.Boolean(compute="_compute_used_answer_types")
+    uses_binary = fields.Boolean(compute="_compute_used_answer_types")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -148,6 +199,52 @@ class ConstructionFormInspection(models.Model):
                 100.0 * len(scored.filtered(
                     lambda a: a.answer_yes_no == "yes")) / len(scored)
                 if scored else 0.0)
+
+    @api.depends("answer_ids.is_answered")
+    def _compute_progress(self):
+        """How much of the checklist is done.
+
+        Somebody halfway through a fifty-question handover sheet needs to know
+        what is left without scrolling the whole list looking for blanks.
+        """
+        for inspection in self:
+            answers = inspection.answer_ids
+            answered = len(answers.filtered("is_answered"))
+            inspection.question_count = len(answers)
+            inspection.answered_count = answered
+            inspection.remaining_count = len(answers) - answered
+            inspection.progress = 100.0 * answered / len(answers) if answers else 0.0
+
+    @api.depends("answer_ids.answer_type")
+    def _compute_used_answer_types(self):
+        for inspection in self:
+            types = set(inspection.answer_ids.mapped("answer_type"))
+            inspection.uses_text = "text" in types
+            inspection.uses_number = "number" in types
+            inspection.uses_date = "date" in types
+            inspection.uses_binary = bool(types & {"photo", "signature"})
+
+    def action_pass_remaining(self):
+        """Answer every unanswered Yes/No check with Yes.
+
+        On a real walk almost everything passes and three things do not. Making
+        the inspector tap Yes forty times to record that is how checklists end
+        up filled in afterwards from memory, which is worse than not filling
+        them in at all. Only blank Yes/No checks are touched — nothing already
+        answered is overwritten, and free-text, photo and signature questions
+        are left alone because there is no safe default for them.
+        """
+        self.ensure_one()
+        blank = self.answer_ids.filtered(
+            lambda answer: answer.question_id.answer_type == "yes_no"
+            and not answer.answer_yes_no
+        )
+        if not blank:
+            raise UserError(_("Every Yes/No check on this inspection is answered."))
+        blank.answer_yes_no = "yes"
+        self.message_post(body=_(
+            "%s outstanding check(s) marked as Yes.", len(blank)))
+        return True
 
     @api.onchange("template_id")
     def _onchange_template_id(self):
@@ -191,13 +288,23 @@ class ConstructionFormInspection(models.Model):
 class ConstructionFormAnswer(models.Model):
     _name = "construction.form.answer"
     _description = "Construction Form Answer"
-    _order = "question_id"
+    # The order the questions were written in, not the order the answer rows
+    # happen to have been created: a checklist that jumps between sections is
+    # read as a different checklist.
+    _order = "sequence, question_id"
 
     inspection_id = fields.Many2one(
         "construction.form.inspection", required=True, ondelete="cascade")
     question_id = fields.Many2one(
         "construction.form.question", required=True, ondelete="restrict")
     answer_type = fields.Selection(related="question_id.answer_type")
+    # Related copies so the checklist can show the section it belongs to and
+    # the guidance written on the question, without the inspector opening the
+    # template to find out what the check actually means.
+    section = fields.Char(related="question_id.section", string="Section")
+    instructions = fields.Char(related="question_id.instructions")
+    is_required = fields.Boolean(related="question_id.required")
+    sequence = fields.Integer(related="question_id.sequence", store=True)
     answer_yes_no = fields.Selection(
         [("yes", "Yes"), ("no", "No"), ("na", "N/A")])
     answer_text = fields.Text()
@@ -211,6 +318,20 @@ class ConstructionFormAnswer(models.Model):
         ("question_inspection_uniq", "unique(inspection_id, question_id)",
          "Each question can only be answered once per inspection."),
     ]
+
+    is_answered = fields.Boolean(compute="_compute_is_answered")
+    is_failed = fields.Boolean(
+        compute="_compute_is_answered",
+        help="A Yes/No check answered No. These are what become defects.")
+
+    @api.depends("answer_yes_no", "answer_text", "answer_number", "answer_date",
+                 "answer_binary", "question_id.answer_type")
+    def _compute_is_answered(self):
+        for answer in self:
+            answer.is_answered = answer._has_answer()
+            answer.is_failed = (
+                answer.question_id.answer_type == "yes_no"
+                and answer.answer_yes_no == "no")
 
     def _has_answer(self):
         self.ensure_one()
