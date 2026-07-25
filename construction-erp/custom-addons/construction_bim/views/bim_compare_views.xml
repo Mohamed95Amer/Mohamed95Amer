@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bim_comparison_form" model="ir.ui.view">
+        <field name="name">construction.bim.comparison.form</field>
+        <field name="model">construction.bim.comparison</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="alert alert-info" role="alert"
+                     invisible="base_model_id">
+                    This is the only revision of this discipline so far. Pick a
+                    model to compare it against, or upload the next revision and
+                    come back.
+                </div>
+                <group>
+                    <group>
+                        <field name="base_model_id"
+                               options="{'no_create': True}"/>
+                        <field name="target_model_id"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="added_count" string="Added"/>
+                        <field name="removed_count" string="Removed"/>
+                        <field name="changed_count" string="Changed"/>
+                    </group>
+                </group>
+                <field name="line_ids" readonly="1" nolabel="1">
+                    <list create="0" delete="0"
+                          decoration-danger="change_type == 'removed' and is_linked"
+                          decoration-warning="change_type == 'removed'"
+                          decoration-success="change_type == 'added'">
+                        <field name="change_type"/>
+                        <field name="ifc_type"/>
+                        <field name="name"/>
+                        <field name="storey"/>
+                        <field name="measure" optional="show"/>
+                        <field name="was"/>
+                        <field name="now"/>
+                        <field name="is_linked"/>
+                        <field name="global_id" optional="hide"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_compare" type="object" string="Compare"
+                            class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
