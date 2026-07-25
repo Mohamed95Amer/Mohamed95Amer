@@ -164,6 +164,19 @@ class TestConstructionMaterial(TransactionCase):
         self.assertEqual(row.qty_variance, 30)
         self.assertAlmostEqual(row.variance_percent, 30.0, places=4)
 
+    def test_the_position_refreshes_after_an_issue(self):
+        """A figure read before a movement must not be served again after it.
+
+        The summary is a SQL view over other models, so Odoo neither flushes
+        them nor drops its own cached rows on its own — and the view's ids come
+        from row_number(), which happily hands the same id to a different row.
+        """
+        self._stock_up(120)
+        self.assertEqual(self._summary().qty_on_hand, 120)
+        self._issue(30)
+        self.assertEqual(self._summary().qty_on_hand, 90)
+        self.assertEqual(self._summary().qty_consumed, 30)
+
     def test_draft_boq_is_not_a_budget(self):
         """An unapproved bill is not a commitment to a quantity."""
         other = self.env["project.project"].create(

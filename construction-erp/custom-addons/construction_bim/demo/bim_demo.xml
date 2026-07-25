@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bim_model_al_noor_l03" model="construction.bim.model">
+        <field name="name">Al Noor Tower — Level 03 architectural</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">architectural</field>
+        <field name="revision">A</field>
+        <field name="ifc_file">TG9hZGVkIG9uIGluc3RhbGwu</field>
+    </record>
+
+    <function model="construction.bim.demo" name="_load_demo_model" eval="[[]]"/>
+
+    <!-- The point of the module: a question attached to the wall it is about. -->
+    <function model="construction.bim.demo" name="_link_demo_records" eval="[[]]"/>
+</odoo>

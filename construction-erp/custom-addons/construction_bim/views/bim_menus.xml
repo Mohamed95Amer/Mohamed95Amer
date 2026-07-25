@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bim_root" name="BIM"
+              parent="construction_base.menu_construction_root" sequence="27"/>
+    <menuitem id="menu_bim_models" name="Models"
+              parent="menu_bim_root" action="action_bim_model" sequence="10"/>
+    <menuitem id="menu_bim_elements" name="Linked Elements"
+              parent="menu_bim_root" action="action_bim_element" sequence="20"/>
+</odoo>

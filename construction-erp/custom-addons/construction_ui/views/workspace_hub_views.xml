@@ -100,6 +100,18 @@
         <field name="name">Maintenance Contracts</field>
         <field name="tag">construction_ui.workspace.maintenance_contracts</field>
     </record>
+    <record id="action_workspace_bim" model="ir.actions.client">
+        <field name="name">BIM Models</field>
+        <field name="tag">construction_ui.workspace.bim</field>
+    </record>
+    <record id="action_workspace_whatsapp" model="ir.actions.client">
+        <field name="name">WhatsApp Alerts</field>
+        <field name="tag">construction_ui.workspace.whatsapp</field>
+    </record>
+    <record id="action_workspace_parts" model="ir.actions.client">
+        <field name="name">Parts &amp; Stores</field>
+        <field name="tag">construction_ui.workspace.parts</field>
+    </record>
     <record id="action_workspace_assets" model="ir.actions.client">
         <field name="name">Asset Portfolio</field>
         <field name="tag">construction_ui.workspace.assets</field>
@@ -251,6 +263,16 @@
         <field name="action" ref="action_workspace_meetings"/>
     </record>
 
+    <record id="construction_bim.menu_bim_elements" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_bim"/>
+    </record>
+    <record id="construction_whatsapp.menu_whatsapp_messages" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_whatsapp"/>
+    </record>
+
+    <record id="facility_inventory.menu_facility_parts" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_parts"/>
+    </record>
     <record id="facility_contract.menu_facility_contracts" model="ir.ui.menu">
         <field name="action" ref="action_workspace_maintenance_contracts"/>
     </record>

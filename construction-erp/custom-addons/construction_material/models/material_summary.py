@@ -69,6 +69,11 @@ class ConstructionMaterialSummary(models.Model):
         for model in self._SOURCE_MODELS:
             if model in self.env:
                 self.env[model].flush_model()
+        # Flushing writes the sources to the database, but rows already read
+        # from this view are still sitting in the cache under ids that
+        # row_number() may hand out again. Without dropping them, a position
+        # read before a movement is served again after it.
+        self.env[self._name].invalidate_model()
 
     @api.model
     def search_fetch(self, domain, field_names, offset=0, limit=None, order=None):

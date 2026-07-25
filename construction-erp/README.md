@@ -106,6 +106,21 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   meeting they were first raised at and a **carry count**, so an item's real
   age survives the move and the one nobody is doing stops being invisible.
   Minutes-of-Meeting PDF.
+- **construction_bim** — **IFC models** indexed server-side by a dependency-free
+  STEP reader, so an RFI, a defect, a task or a bill item can be attached to a
+  specific wall or duct. Links are keyed on the element's **GlobalId**, the one
+  identity IFC keeps stable across exports, so they survive a model being
+  re-issued; an element that disappears while carrying records is flagged, never
+  deleted. A **3D viewer** (web-ifc + three.js, fetched by
+  `scripts/fetch-bim-libs.sh`) draws linked elements in the colour of their
+  worst open item. DWG is not supported — see `docs/` for why.
+- **construction_whatsapp** — operational alerts over **Meta's WhatsApp Cloud
+  API**, which is what Odoo's Enterprise-only WhatsApp app wraps. Permits about
+  to expire, SLAs at risk or breached, RFIs landing in someone's court, defects
+  assigned to a subcontractor and meeting actions carried too many times are
+  queued by the events that cause them and sent by cron, so a slow API never
+  blocks a save. Delivery receipts and replies come back through a webhook and
+  land on the document they were about.
 - **construction_portal** — **free portal users** for subcontractors, clients
   and consultants: self-service RFIs (ball-in-court), assigned defects — with a
   "ready for inspection" action — and subcontracts with their payment
@@ -134,6 +149,13 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   stay apart and each contract shows a live **margin** against what it has
   invoiced. PM-visit entitlement is counted on delivery, and a daily cron flags
   contracts approaching their end date.
+- **facility_inventory** — spare parts held in **real stores** attached to
+  facility locations, drawn down by work orders. An asset takes parts from the
+  nearest store above it in the hierarchy, so `parts_cost` stops being a number
+  somebody typed and becomes what actually left the shelf. The **minimum
+  quantity** that has always sat on the spare list finally means something, and
+  parts consumed on covered work under a contract that excludes them show as
+  **recoverable**.
 - **facility_portal** — **occupant self-service**: report a fault against a
   piece of equipment, then follow its stage and SLA dates without a back-office
   login.
@@ -169,7 +191,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_portal,facility_floorplan,construction_ui,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_bim,construction_whatsapp,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_inventory,facility_portal,facility_floorplan,construction_ui,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```
@@ -177,6 +199,19 @@ docker compose restart odoo
 Open http://localhost:8069 (db `erp`, login `admin` / `admin`). Demo data
 includes the "Al Noor Tower" project with a BOQ, drawings and RFIs, plus the
 full accounting app (financial reports, assets, budgets).
+
+## BIM viewer libraries
+
+The 3D viewer needs two upstream libraries that are **not committed** —
+web-ifc's browser build alone is 6 MB. Fetch them once:
+
+```bash
+scripts/fetch-bim-libs.sh        # web-ifc (MPL-2.0) + three.js (MIT), pinned
+```
+
+Everything else about a BIM model — the element index and its linked RFIs,
+defects, tasks and bill items — works without them; only the 3D canvas needs
+them, and it says so on screen if they are missing.
 
 ## Quickstart (bare metal)
 

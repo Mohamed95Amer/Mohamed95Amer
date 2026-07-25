@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_whatsapp_messages" name="WhatsApp"
+              parent="construction_base.menu_construction_root"
+              action="action_whatsapp_message" sequence="72"/>
+
+    <menuitem id="menu_whatsapp_config" name="WhatsApp Accounts"
+              parent="construction_base.menu_construction_config"
+              action="action_whatsapp_account" sequence="70"
+              groups="base.group_system"/>
+    <menuitem id="menu_whatsapp_template_config" name="WhatsApp Templates"
+              parent="construction_base.menu_construction_config"
+              action="action_whatsapp_template" sequence="71"
+              groups="base.group_system"/>
+</odoo>

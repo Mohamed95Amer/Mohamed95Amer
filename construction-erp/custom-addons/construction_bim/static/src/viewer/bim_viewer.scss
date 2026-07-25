@@ -1,0 +1,184 @@
+.o_bim_viewer {
+    --bim-ink: #16211f;
+    --bim-muted: #5a6b67;
+    --bim-rule: #d3dbd8;
+    --bim-deep: #123a3c;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #eef1ef;
+    color: var(--bim-ink);
+}
+
+.o_bim_bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 20px;
+    background: var(--bim-deep);
+    color: #fff;
+
+    // Odoo's own h1 colour applies inside a client action, so the bar has to
+    // say so explicitly or the title renders dark on dark.
+    h1 { margin: 2px 0 0; font-size: 1.25rem; font-weight: 600; color: #fff; }
+    small { color: rgba(255, 255, 255, .68); font-size: .78rem; }
+}
+
+.o_bim_eyebrow {
+    font-size: .66rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .58);
+}
+
+.o_bim_counts {
+    display: flex;
+    gap: 20px;
+    font-size: .82rem;
+    color: rgba(255, 255, 255, .78);
+
+    strong { display: block; font-size: 1.3rem; color: #fff; }
+}
+
+.o_bim_body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    flex: 1;
+    min-height: 0;
+}
+
+.o_bim_stage {
+    position: relative;
+    min-height: 0;
+
+    canvas { display: block; width: 100%; height: 100%; }
+}
+
+.o_bim_overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 32px;
+    text-align: center;
+    background: rgba(238, 241, 239, .96);
+
+    > .fa { font-size: 2rem; color: var(--bim-deep); }
+    h2 { font-size: 1.05rem; margin: 0; }
+    p { max-width: 46ch; color: var(--bim-muted); margin: 0; }
+    pre {
+        background: #fff;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+        padding: 8px 14px;
+        margin: 0;
+    }
+}
+
+.o_bim_error > .fa { color: #97382f; }
+.o_bim_muted { color: var(--bim-muted); font-size: .84rem; }
+
+.o_bim_selection {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 12px 28px -18px rgba(18, 58, 60, .5);
+
+    .o_bim_eyebrow { color: var(--bim-muted); }
+    p { margin: 0 0 6px; font-size: .84rem; color: var(--bim-muted); }
+}
+
+.o_bim_side {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-left: 1px solid var(--bim-rule);
+    background: #fff;
+}
+
+.o_bim_filters {
+    display: flex;
+    gap: 4px;
+    padding: 10px;
+    border-bottom: 1px solid var(--bim-rule);
+
+    button {
+        flex: 1;
+        padding: 5px 6px;
+        font-size: .76rem;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+        background: #fff;
+        color: var(--bim-muted);
+        cursor: pointer;
+
+        &.active { background: var(--bim-deep); border-color: var(--bim-deep); color: #fff; }
+        &:focus-visible { outline: 2px solid var(--bim-deep); outline-offset: 2px; }
+    }
+}
+
+.o_bim_list { overflow-y: auto; }
+
+.o_bim_item {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    text-align: left;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--bim-rule);
+    cursor: pointer;
+
+    &:hover { background: #f4f7f5; }
+    &:focus-visible { outline: 2px solid var(--bim-deep); outline-offset: -2px; }
+
+    span { display: flex; flex-direction: column; min-width: 0; }
+    strong { font-size: .86rem; }
+    small { font-size: .76rem; color: var(--bim-muted); }
+    em { font-size: .7rem; color: #8d9b97; font-style: normal; }
+}
+
+.o_bim_dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    background: #b9c4c8;
+}
+
+.o_bucket_blocked .o_bim_dot { background: #c0483c; }
+.o_bucket_open .o_bim_dot { background: #d8a13a; }
+.o_bucket_done .o_bim_dot { background: #2f7d5c; }
+
+.o_bim_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--bim-muted);
+
+    .fa { font-size: 1.6rem; color: #b9c4c8; }
+    p { font-size: .84rem; margin: 0; }
+}
+
+@media (max-width: 991.98px) {
+    .o_bim_body { grid-template-columns: minmax(0, 1fr); }
+    .o_bim_side { border-left: 0; border-top: 1px solid var(--bim-rule); max-height: 40vh; }
+}

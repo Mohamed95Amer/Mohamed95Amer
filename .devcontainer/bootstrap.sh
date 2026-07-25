@@ -10,6 +10,10 @@ cd "$(cd "$(dirname "$0")/.." && pwd)/construction-erp"
 # Single source of truth for the module list: scripts/init-db.sh
 MODULES="$(grep -m1 '^MODULES=' scripts/init-db.sh | cut -d'"' -f2)"
 
+# The BIM viewer's libraries are fetched rather than committed.
+echo "==> Fetching BIM viewer libraries…"
+./scripts/fetch-bim-libs.sh || echo "   (skipped — the 3D viewer will say so on screen)"
+
 echo "==> Building images (first run pulls Odoo 18 — a few minutes)…"
 docker compose build
 

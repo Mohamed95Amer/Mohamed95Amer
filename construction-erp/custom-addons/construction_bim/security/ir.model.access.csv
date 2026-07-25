@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bim_model_user,construction.bim.model user,model_construction_bim_model,construction_base.group_construction_site_engineer,1,0,0,0
+access_bim_model_pm,construction.bim.model pm,model_construction_bim_model,construction_base.group_construction_pm,1,1,1,1
+access_bim_element_user,construction.bim.element user,model_construction_bim_element,construction_base.group_construction_site_engineer,1,1,1,0
+access_bim_element_pm,construction.bim.element pm,model_construction_bim_element,construction_base.group_construction_pm,1,1,1,1

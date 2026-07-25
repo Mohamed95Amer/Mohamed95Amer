@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_bim.Viewer">
+        <div class="o_bim_viewer">
+            <header class="o_bim_bar">
+                <div class="o_bim_title">
+                    <span class="o_bim_eyebrow">BIM MODEL</span>
+                    <h1 t-esc="state.info.name"/>
+                    <small>
+                        <t t-esc="state.info.project"/> ·
+                        <t t-esc="state.info.discipline"/> ·
+                        rev <t t-esc="state.info.revision"/>
+                    </small>
+                </div>
+                <div class="o_bim_counts">
+                    <span><strong t-esc="state.info.element_count"/> elements</span>
+                    <span><strong t-esc="state.info.linked_count"/> linked</span>
+                </div>
+            </header>
+
+            <div class="o_bim_body">
+                <div class="o_bim_stage">
+                    <canvas t-ref="canvas"/>
+
+                    <div t-if="state.loading" class="o_bim_overlay">
+                        <i class="fa fa-cube fa-spin"/>
+                        <p t-esc="state.progress"/>
+                    </div>
+
+                    <div t-if="state.librariesMissing" class="o_bim_overlay o_bim_setup">
+                        <i class="fa fa-download"/>
+                        <h2>The 3D libraries are not installed</h2>
+                        <p>
+                            They are fetched by a setup script rather than
+                            committed — web-ifc's browser build alone is 6 MB.
+                            Run this once, then reload:
+                        </p>
+                        <pre>scripts/fetch-bim-libs.sh</pre>
+                        <p class="o_bim_muted">
+                            Everything else on this model — the element index and
+                            its linked records — works without them.
+                        </p>
+                    </div>
+
+                    <div t-if="state.error" class="o_bim_overlay o_bim_error">
+                        <i class="fa fa-exclamation-triangle"/>
+                        <h2>The model could not be drawn</h2>
+                        <p t-esc="state.error"/>
+                    </div>
+
+                    <div t-if="state.selected" class="o_bim_selection">
+                        <t t-if="state.selected.element">
+                            <span class="o_bim_eyebrow"
+                                  t-esc="state.selected.element.ifc_type"/>
+                            <strong t-esc="state.selected.element.name"/>
+                            <p t-esc="state.selected.element.link_summary"/>
+                            <button class="btn btn-sm btn-primary"
+                                    t-on-click="() => this.openElement(state.selected.element)">
+                                Open linked records
+                            </button>
+                        </t>
+                        <t t-else="">
+                            <span class="o_bim_eyebrow">NOTHING LINKED</span>
+                            <strong>Element <t t-esc="state.selected.expressID"/></strong>
+                            <p class="o_bim_muted">
+                                <t t-esc="state.selected.globalId or 'No GlobalId'"/>
+                            </p>
+                        </t>
+                    </div>
+                </div>
+
+                <aside class="o_bim_side">
+                    <div class="o_bim_filters">
+                        <button t-att-class="{'active': state.filter === 'all'}"
+                                t-on-click="() => this.setFilter('all')">All</button>
+                        <button t-att-class="{'active': state.filter === 'blocked'}"
+                                t-on-click="() => this.setFilter('blocked')">Blocked</button>
+                        <button t-att-class="{'active': state.filter === 'open'}"
+                                t-on-click="() => this.setFilter('open')">Open</button>
+                        <button t-att-class="{'active': state.filter === 'done'}"
+                                t-on-click="() => this.setFilter('done')">Done</button>
+                    </div>
+
+                    <div t-if="visibleElements.length" class="o_bim_list">
+                        <button t-foreach="visibleElements" t-as="element"
+                                t-key="element.id"
+                                t-attf-class="o_bim_item o_bucket_{{ element.link_bucket }}"
+                                t-on-click="() => this.openElement(element)">
+                            <span class="o_bim_dot"/>
+                            <span>
+                                <strong t-esc="element.name"/>
+                                <small t-esc="element.link_summary"/>
+                                <em t-if="element.storey" t-esc="element.storey"/>
+                            </span>
+                        </button>
+                    </div>
+                    <div t-else="" class="o_bim_empty">
+                        <i class="fa fa-link"/>
+                        <p>
+                            Nothing linked yet. Attach an RFI, a defect, a task
+                            or a bill item to an element and it will be coloured
+                            in the model.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </t>
+</templates>
