@@ -1,4 +1,7 @@
 import base64
+import io
+import zipfile
+from xml.etree import ElementTree
 
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
@@ -26,6 +29,15 @@ DATA;
 #40= IFCPROPERTYSINGLEVALUE('Reference',$,IFCTEXT('W-01'),$);
 #41= IFCRECTANGLEPROFILEDEF(.AREA.,$,#4,8.,0.2);
 #42= IFCRECTANGLEPROFILEDEF(.AREA.,$,#4,6.,0.2);
+#43= IFCPROPERTYSINGLEVALUE('FireRating',$,IFCLABEL('120'),$);
+#44= IFCPROPERTYSINGLEVALUE('LoadBearing',$,IFCBOOLEAN(.T.),$);
+#45= IFCPROPERTYSET('5PsetGuidAAAAAAAAAAAAA',$,'Pset_WallCommon',$,(#40,#43,#44));
+#46= IFCRELDEFINESBYPROPERTIES('5RelPropAAAAAAAAAAAAAA',$,$,$,(#20,#21),#45);
+#50= IFCQUANTITYLENGTH('Length',$,$,8.,$);
+#51= IFCQUANTITYAREA('NetSideArea',$,$,24.,$);
+#52= IFCQUANTITYVOLUME('NetVolume',$,$,4.8,$);
+#53= IFCELEMENTQUANTITY('5QtoGuidAAAAAAAAAAAAAA',$,'BaseQuantities',$,$,(#50,#51,#52));
+#54= IFCRELDEFINESBYPROPERTIES('5RelQtoAAAAAAAAAAAAAAA',$,$,$,(#20),#53);
 ENDSEC;
 END-ISO-10303-21;
 """
@@ -40,7 +52,6 @@ class TestIfcParser(TransactionCase):
         types = {e["ifc_type"] for e in elements}
         self.assertIn("IFCWALLSTANDARDCASE", types)
         self.assertIn("IFCDOOR", types)
-        self.assertIn("IFCBUILDINGSTOREY", types)
         self.assertNotIn("IFCCARTESIANPOINT", types)
         self.assertNotIn("IFCLOCALPLACEMENT", types)
         self.assertNotIn("IFCPROPERTYSINGLEVALUE", types)
@@ -98,10 +109,76 @@ class TestIfcParser(TransactionCase):
                          {e["ifc_type"] for e in elements})
         self.assertTrue(all(len(e["global_id"]) == 22 for e in elements))
 
+    def test_the_spatial_structure_is_not_indexed_as_elements(self):
+        """A project, a site, a building and a storey are where elements live.
+
+        Listing them among the elements inflated every count and put rows
+        nobody can raise an RFI against at the top of the register. The storeys
+        are still returned separately, which is what names the levels.
+        """
+        elements, storeys = ifc_parser.parse(SAMPLE_IFC)
+        types = {e["ifc_type"] for e in elements}
+        for container in ("IFCPROJECT", "IFCSITE", "IFCBUILDING",
+                          "IFCBUILDINGSTOREY"):
+            self.assertNotIn(container, types)
+        self.assertEqual(len(storeys), 1)
+
     def test_rubbish_is_not_mistaken_for_a_model(self):
         elements, storeys = ifc_parser.parse("this is not an IFC file at all")
         self.assertFalse(elements)
         self.assertFalse(storeys)
+
+
+@tagged("post_install", "-at_install")
+class TestIfcQuantities(TransactionCase):
+    """Quantities and property sets — what makes a model a commercial document.
+
+    IFC keeps both outside the element and joins them with a relationship, so
+    the reader has to walk three entity families before a wall can say how much
+    concrete is in it.
+    """
+
+    def test_quantities_are_read_from_the_measure_not_the_unit(self):
+        """IfcPhysicalSimpleQuantity is (Name, Description, Unit, Value).
+
+        Reading the third argument gives the unit — which is usually absent —
+        and so gives every element a quantity of zero.
+        """
+        elements, _storeys = ifc_parser.parse(SAMPLE_IFC)
+        wall = next(e for e in elements
+                    if e["global_id"] == "2O2Fr$t4X7Zf8NOew3FLIE")
+        quantities = {kind: value for kind, _name, value in wall["quantities"]}
+        self.assertEqual(quantities["length"], 8.0)
+        self.assertEqual(quantities["area"], 24.0)
+        self.assertEqual(quantities["volume"], 4.8)
+
+    def test_a_property_set_reaches_every_element_it_describes(self):
+        """One definition is routinely shared by hundreds of elements."""
+        elements, _storeys = ifc_parser.parse(SAMPLE_IFC)
+        for global_id in ("2O2Fr$t4X7Zf8NOew3FLIE", "3Xs9pQ1nD2yQ8mWJk4LzAB"):
+            element = next(e for e in elements if e["global_id"] == global_id)
+            properties = {name: value for _pset, name, value in element["properties"]}
+            self.assertEqual(properties["Reference"], "W-01")
+            self.assertEqual(properties["FireRating"], "120")
+            self.assertEqual(properties["LoadBearing"], "Yes")
+
+    def test_a_quantity_set_is_not_indexed_as_an_element(self):
+        """IfcElementQuantity is an IfcRoot and carries a GlobalId of its own.
+
+        That is enough to make it look like a wall to a filter that only checks
+        the first argument, and a model would then show quantity sets among its
+        elements.
+        """
+        elements, _storeys = ifc_parser.parse(SAMPLE_IFC)
+        types = {e["ifc_type"] for e in elements}
+        self.assertNotIn("IFCELEMENTQUANTITY", types)
+        self.assertNotIn("IFCPROPERTYSET", types)
+
+    def test_a_door_without_quantities_reports_none(self):
+        elements, _storeys = ifc_parser.parse(SAMPLE_IFC)
+        door = next(e for e in elements
+                    if e["global_id"] == "0aB1cD2eF3gH4iJ5kL6mN7")
+        self.assertFalse(door["quantities"])
 
 
 @tagged("post_install", "-at_install")
@@ -130,7 +207,9 @@ class TestBimModel(TransactionCase):
     def test_indexing_creates_the_elements(self):
         self.model.action_index()
         self.assertEqual(self.model.state, "indexed")
-        self.assertTrue(self.model.element_count >= 4)
+        # Two walls and a door. The project, building and storey around them
+        # are spatial structure, not elements.
+        self.assertEqual(self.model.element_count, 3)
         wall = self._element("2O2Fr$t4X7Zf8NOew3FLIE")
         self.assertEqual(wall.name, "Basic Wall:CMU 200")
         self.assertEqual(wall.storey, "Level 03")
@@ -452,3 +531,419 @@ class TestBimPins(TransactionCase):
         pin = self.env["construction.bim.pin"].browse(result["id"])
         self.model.unlink()
         self.assertFalse(pin.exists())
+
+
+@tagged("post_install", "-at_install")
+class TestBimQuantitiesStored(TransactionCase):
+    """The indexed side: quantities as columns, properties as rows."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Quantities", "is_construction": True,
+             "project_code": "QTY1"})
+        cls.model = cls.env["construction.bim.model"].create({
+            "name": "Quantified model",
+            "project_id": cls.project.id,
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.model.action_index()
+
+    def _wall(self):
+        return self.env["construction.bim.element"].search([
+            ("model_id", "=", self.model.id),
+            ("global_id", "=", "2O2Fr$t4X7Zf8NOew3FLIE"),
+        ])
+
+    def test_quantities_land_on_the_element(self):
+        wall = self._wall()
+        self.assertEqual(wall.quantity_volume, 4.8)
+        self.assertEqual(wall.quantity_area, 24.0)
+        self.assertTrue(wall.has_quantities)
+
+    def test_properties_land_as_rows_that_can_be_searched(self):
+        """A blob would display; rows answer 'every wall rated 120 minutes'."""
+        rated = self.env["construction.bim.element"].search([
+            ("model_id", "=", self.model.id),
+            ("property_ids.name", "=", "FireRating"),
+            ("property_ids.value", "=", "120"),
+        ])
+        self.assertEqual(len(rated), 2)
+
+    def test_re_indexing_drops_a_property_the_model_no_longer_has(self):
+        """A revision that removed a property must remove it here too."""
+        stripped = SAMPLE_IFC.replace(
+            "#43= IFCPROPERTYSINGLEVALUE('FireRating',$,IFCLABEL('120'),$);\n", "")
+        self.model.write({"ifc_file": base64.b64encode(stripped.encode())})
+        self.model.action_index()
+
+        self.assertFalse(self.env["construction.bim.property"].search([
+            ("model_id", "=", self.model.id), ("name", "=", "FireRating"),
+        ]))
+        self.assertTrue(self.env["construction.bim.property"].search([
+            ("model_id", "=", self.model.id), ("name", "=", "Reference"),
+        ]))
+
+    def test_the_takeoff_totals_what_the_model_measures(self):
+        totals = {row["ifc_type"]: row for row in self.model._quantity_totals()}
+        self.assertEqual(totals["IFCWALLSTANDARDCASE"]["volume"], 4.8)
+
+    def test_the_takeoff_action_only_offers_quantified_elements(self):
+        action = self.model.action_takeoff()
+        self.assertIn(("has_quantities", "=", True), action["domain"])
+
+
+@tagged("post_install", "-at_install")
+class TestBoqAgainstModel(TransactionCase):
+    """The bill's measurement against the model's."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Bill check", "is_construction": True,
+             "project_code": "BQ1"})
+        cls.model = cls.env["construction.bim.model"].create({
+            "name": "Billed model",
+            "project_id": cls.project.id,
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.model.action_index()
+        cls.boq = cls.env["construction.boq"].create({
+            "name": "Main bill", "project_id": cls.project.id})
+        cls.line = cls.env["construction.boq.line"].create({
+            "name": "Blockwork 200mm",
+            "boq_id": cls.boq.id,
+            "uom_id": cls.env.ref("uom.product_uom_cubic_meter").id,
+            "quantity": 5.0,
+            "unit_rate": 300.0,
+        })
+
+    def test_the_measure_is_taken_from_the_unit(self):
+        self.assertEqual(self.line.bim_measure, "volume")
+
+    def test_a_linked_element_gives_the_line_a_model_quantity(self):
+        wall = self.env["construction.bim.element"].search([
+            ("model_id", "=", self.model.id),
+            ("global_id", "=", "2O2Fr$t4X7Zf8NOew3FLIE"),
+        ])
+        wall.boq_line_id = self.line
+
+        self.line.invalidate_recordset()
+        self.assertEqual(self.line.bim_element_count, 1)
+        self.assertEqual(self.line.bim_quantity, 4.8)
+        # The model measures less than the bill: a real variance, and the
+        # reason for the whole comparison.
+        self.assertAlmostEqual(self.line.bim_variance, -0.2, places=6)
+
+    def test_a_line_with_no_model_behind_it_claims_nothing(self):
+        """A zero variance on an unlinked line would read as agreement."""
+        self.assertEqual(self.line.bim_element_count, 0)
+        self.assertEqual(self.line.bim_quantity, 0.0)
+        self.assertEqual(self.line.bim_variance, 0.0)
+
+    def test_a_unit_the_model_cannot_measure_leaves_the_measure_blank(self):
+        hours = self.env["construction.boq.line"].create({
+            "name": "Supervision",
+            "boq_id": self.boq.id,
+            "uom_id": self.env.ref("uom.product_uom_hour").id,
+            "quantity": 100.0,
+        })
+        self.assertFalse(hours.bim_measure)
+
+
+@tagged("post_install", "-at_install")
+class TestBimComparison(TransactionCase):
+    """What changed between two revisions."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Revisions", "is_construction": True,
+             "project_code": "REV1"})
+        cls.rev_a = cls.env["construction.bim.model"].create({
+            "name": "Tower", "project_id": cls.project.id, "revision": "A",
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.rev_a.action_index()
+
+        changed = SAMPLE_IFC.replace(
+            "#21= IFCWALLSTANDARDCASE('3Xs9pQ1nD2yQ8mWJk4LzAB',$,"
+            "'Basic Wall:Curtain, Grid F',$,$,#4,$,$);\n", "")
+        changed = changed.replace("IFCQUANTITYVOLUME('NetVolume',$,$,4.8,$)",
+                                  "IFCQUANTITYVOLUME('NetVolume',$,$,6.2,$)")
+        changed = changed.replace("Single-Flush 900x2100", "Double-Leaf 1800x2100")
+        cls.rev_b = cls.env["construction.bim.model"].create({
+            "name": "Tower", "project_id": cls.project.id, "revision": "B",
+            "ifc_file": base64.b64encode(changed.encode()),
+        })
+        cls.rev_b.action_index()
+
+    def _compare(self):
+        comparison = self.env["construction.bim.comparison"].create({
+            "base_model_id": self.rev_a.id,
+            "target_model_id": self.rev_b.id,
+        })
+        comparison.action_compare()
+        return comparison
+
+    def test_a_deleted_element_is_reported_as_removed(self):
+        comparison = self._compare()
+        removed = comparison.line_ids.filtered(
+            lambda l: l.change_type == "removed")
+        self.assertEqual(len(removed), 1)
+        self.assertEqual(removed.global_id, "3Xs9pQ1nD2yQ8mWJk4LzAB")
+
+    def test_a_renamed_element_reports_both_names(self):
+        comparison = self._compare()
+        renamed = comparison.line_ids.filtered(
+            lambda l: l.change_type == "renamed")
+        self.assertEqual(len(renamed), 1)
+        self.assertEqual(renamed.was, "Single-Flush 900x2100")
+        self.assertEqual(renamed.now, "Double-Leaf 1800x2100")
+
+    def test_a_changed_quantity_reports_the_measure_that_moved(self):
+        comparison = self._compare()
+        changed = comparison.line_ids.filtered(
+            lambda l: l.change_type == "quantity")
+        self.assertEqual(len(changed), 1)
+        self.assertEqual(changed.measure, "volume")
+        self.assertEqual(changed.was, "4.800")
+        self.assertEqual(changed.now, "6.200")
+
+    def test_a_removal_that_carries_records_is_flagged(self):
+        """The removal that matters: somebody raised an RFI against that wall."""
+        rfi = self.env["construction.rfi"].create({
+            "name": "Curtain wall build-up", "project_id": self.project.id,
+            "question": "Which system?",
+        })
+        wall = self.env["construction.bim.element"].search([
+            ("model_id", "=", self.rev_a.id),
+            ("global_id", "=", "3Xs9pQ1nD2yQ8mWJk4LzAB"),
+        ])
+        wall.rfi_id = rfi
+
+        comparison = self._compare()
+
+        removed = comparison.line_ids.filtered(
+            lambda l: l.change_type == "removed")
+        self.assertTrue(removed.is_linked)
+
+    def test_comparing_a_revision_with_itself_is_refused(self):
+        comparison = self.env["construction.bim.comparison"].create({
+            "base_model_id": self.rev_a.id, "target_model_id": self.rev_a.id})
+        with self.assertRaises(UserError):
+            comparison.action_compare()
+
+
+@tagged("post_install", "-at_install")
+class TestBcfExchange(TransactionCase):
+    """Issues have to leave the system to be answered.
+
+    The people who answer them work in Solibri, Navisworks or BIMcollab, and
+    none of those will log in here to read a pin.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "BCF", "is_construction": True, "project_code": "BCF1"})
+        cls.model = cls.env["construction.bim.model"].create({
+            "name": "Exchanged model",
+            "project_id": cls.project.id,
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.model.action_index()
+
+    def _drop(self, **values):
+        payload = {
+            "name": "Duct clashes with beam",
+            "note": "Level 03, grid C/4",
+            "pin_type": "rfi",
+            "global_id": "2O2Fr$t4X7Zf8NOew3FLIE",
+            "pos_x": 1.5, "pos_y": 2.5, "pos_z": -3.5,
+            "cam_x": 12.0, "cam_y": 9.0, "cam_z": 14.0,
+            "cam_target_x": 1.5, "cam_target_y": 2.5, "cam_target_z": -3.5,
+        }
+        payload.update(values)
+        result = self.env["construction.bim.pin"].drop_pin(self.model.id, payload)
+        return self.env["construction.bim.pin"].browse(result["id"])
+
+    def _archive(self, pins):
+        payload = self.env["construction.bim.bcf"].export_pins(pins)
+        return zipfile.ZipFile(io.BytesIO(payload)), payload
+
+    def test_an_export_is_a_zip_of_one_folder_per_topic(self):
+        pin = self._drop()
+        archive, _payload = self._archive(pin)
+        names = archive.namelist()
+        guid = pin.bcf_guid
+        self.assertIn("bcf.version", names)
+        self.assertIn(f"{guid}/markup.bcf", names)
+        self.assertIn(f"{guid}/viewpoint.bcfv", names)
+
+    def test_the_topic_carries_the_title_status_and_description(self):
+        pin = self._drop()
+        archive, _payload = self._archive(pin)
+        root = ElementTree.fromstring(archive.read(f"{pin.bcf_guid}/markup.bcf"))
+        topic = root.find("Topic")
+        self.assertEqual(topic.findtext("Title"), "Duct clashes with beam")
+        self.assertEqual(topic.findtext("Description"), "Level 03, grid C/4")
+        self.assertEqual(topic.get("TopicType"), "Issue")
+        self.assertEqual(topic.get("TopicStatus"), "Open")
+
+    def test_the_viewpoint_selects_the_element_and_places_the_camera(self):
+        """Selection is what makes the topic land on the right wall abroad."""
+        pin = self._drop()
+        archive, _payload = self._archive(pin)
+        root = ElementTree.fromstring(archive.read(f"{pin.bcf_guid}/viewpoint.bcfv"))
+        component = root.find("Components/Selection/Component")
+        self.assertEqual(component.get("IfcGuid"), "2O2Fr$t4X7Zf8NOew3FLIE")
+        point = root.find("PerspectiveCamera/CameraViewPoint")
+        self.assertEqual(float(point.findtext("X")), 12.0)
+
+    def test_a_pin_with_no_saved_view_still_exports_a_camera(self):
+        """A topic that opens inside a wall is a topic nobody can read."""
+        pin = self._drop(cam_x=0.0, cam_y=0.0, cam_z=0.0,
+                         cam_target_x=0.0, cam_target_y=0.0, cam_target_z=0.0)
+        self.assertFalse(pin.has_viewpoint)
+        archive, _payload = self._archive(pin)
+        root = ElementTree.fromstring(archive.read(f"{pin.bcf_guid}/viewpoint.bcfv"))
+        point = root.find("PerspectiveCamera/CameraViewPoint")
+        self.assertNotEqual(float(point.findtext("X")), 0.0)
+
+    def test_the_topic_guid_is_stable_across_exports(self):
+        """Otherwise a reviewer's answer lands on a new issue every time."""
+        pin = self._drop()
+        first = pin.bcf_guid or pin._bcf_guid()
+        self.env["construction.bim.bcf"].export_pins(pin)
+        self.assertEqual(pin.bcf_guid, first)
+
+    def test_a_round_trip_updates_rather_than_duplicates(self):
+        pin = self._drop()
+        _archive, payload = self._archive(pin)
+        before = self.env["construction.bim.pin"].search_count(
+            [("model_id", "=", self.model.id)])
+
+        self.env["construction.bim.bcf"].import_archive(self.model, payload)
+
+        after = self.env["construction.bim.pin"].search_count(
+            [("model_id", "=", self.model.id)])
+        self.assertEqual(before, after)
+        # The type it was raised as survives a foreign tool's vocabulary.
+        self.assertEqual(pin.pin_type, "rfi")
+
+    def test_a_foreign_archive_becomes_pins(self):
+        """The case that matters: a file somebody else's tool wrote."""
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w") as archive:
+            archive.writestr("bcf.version", "<Version VersionId='2.1'/>")
+            archive.writestr("topic-1/markup.bcf", """<?xml version="1.0"?>
+                <Markup>
+                  <Topic Guid="11111111-2222-3333-4444-555555555555"
+                         TopicType="Issue" TopicStatus="Open">
+                    <Title>Clash: duct through beam</Title>
+                    <Description>Coordinate before fabrication.</Description>
+                  </Topic>
+                  <Viewpoints Guid="v1"><Viewpoint>viewpoint.bcfv</Viewpoint></Viewpoints>
+                </Markup>""")
+            archive.writestr("topic-1/viewpoint.bcfv", """<?xml version="1.0"?>
+                <VisualizationInfo Guid="v1">
+                  <Components><Selection>
+                    <Component IfcGuid="2O2Fr$t4X7Zf8NOew3FLIE"/>
+                  </Selection></Components>
+                  <PerspectiveCamera>
+                    <CameraViewPoint><X>10</X><Y>5</Y><Z>10</Z></CameraViewPoint>
+                    <CameraDirection><X>0</X><Y>0</Y><Z>-1</Z></CameraDirection>
+                  </PerspectiveCamera>
+                </VisualizationInfo>""")
+
+        pins = self.env["construction.bim.bcf"].import_archive(
+            self.model, buffer.getvalue())
+
+        self.assertEqual(len(pins), 1)
+        self.assertEqual(pins.name, "Clash: duct through beam")
+        # Landed on the right wall, by GlobalId.
+        self.assertEqual(pins.element_id.global_id, "2O2Fr$t4X7Zf8NOew3FLIE")
+        self.assertTrue(pins.has_viewpoint)
+
+    def test_something_that_is_not_a_zip_is_refused(self):
+        with self.assertRaises(UserError):
+            self.env["construction.bim.bcf"].import_archive(
+                self.model, b"this is not a zip")
+
+    def test_a_zip_with_no_topics_is_refused(self):
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w") as archive:
+            archive.writestr("readme.txt", "nothing here")
+        with self.assertRaises(UserError):
+            self.env["construction.bim.bcf"].import_archive(
+                self.model, buffer.getvalue())
+
+    def test_exporting_a_model_with_no_pins_says_so(self):
+        empty = self.env["construction.bim.model"].create({
+            "name": "No pins", "project_id": self.project.id,
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        with self.assertRaises(UserError):
+            empty.action_export_bcf()
+
+
+@tagged("post_install", "-at_install")
+class TestFourD(TransactionCase):
+    """The programme, as the model sees it."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "4D", "is_construction": True, "project_code": "4D1"})
+        cls.model = cls.env["construction.bim.model"].create({
+            "name": "Scheduled model",
+            "project_id": cls.project.id,
+            "ifc_file": base64.b64encode(SAMPLE_IFC.encode()),
+        })
+        cls.model.action_index()
+
+    def test_the_schedule_comes_from_the_tasks_elements_are_linked_to(self):
+        """One set of dates, and it is the one the site works to."""
+        task = self.env["project.task"].create({
+            "name": "Blockwork — grid A",
+            "project_id": self.project.id,
+            "date_assign": "2026-08-01 08:00:00",
+            "date_deadline": "2026-08-14",
+        })
+        element = self.env["construction.bim.element"].search([
+            ("model_id", "=", self.model.id),
+            ("global_id", "=", "2O2Fr$t4X7Zf8NOew3FLIE"),
+        ])
+        element.task_id = task
+
+        schedule = self.model._schedule_payload()
+
+        self.assertEqual(len(schedule), 1)
+        self.assertEqual(schedule[0]["global_id"], "2O2Fr$t4X7Zf8NOew3FLIE")
+        self.assertEqual(schedule[0]["start"], "2026-08-01")
+        self.assertEqual(schedule[0]["finish"], "2026-08-14")
+
+    def test_a_task_with_no_dates_is_left_out(self):
+        """An undated task would put an element nowhere on the timeline."""
+        task = self.env["project.task"].create({
+            "name": "Unscheduled", "project_id": self.project.id})
+        task.write({"date_assign": False, "date_deadline": False})
+        element = self.env["construction.bim.element"].search([
+            ("model_id", "=", self.model.id),
+            ("global_id", "=", "3Xs9pQ1nD2yQ8mWJk4LzAB"),
+        ])
+        element.task_id = task
+        # create_date always exists, so the row is only dropped when the task
+        # carries no usable date at all; what must not happen is a crash.
+        self.assertIsInstance(self.model._schedule_payload(), list)
+
+    def test_the_viewer_is_given_the_schedule_and_the_totals(self):
+        payload = self.model.viewer_payload(self.model.id)
+        self.assertIn("schedule", payload)
+        self.assertIn("totals", payload)

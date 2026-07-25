@@ -111,9 +111,25 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   specific wall or duct. Links are keyed on the element's **GlobalId**, the one
   identity IFC keeps stable across exports, so they survive a model being
   re-issued; an element that disappears while carrying records is flagged, never
-  deleted. A **3D viewer** (web-ifc + three.js, fetched by
-  `scripts/fetch-bim-libs.sh`) draws linked elements in the colour of their
-  worst open item. DWG is not supported — see `docs/` for why.
+  deleted. The reader also pulls **property sets and quantities** out of the
+  file, which is what turns a model into a commercial document: a wall that
+  carries its volume can be checked against the bill item somebody is being paid
+  for, and every BOQ line linked to model elements shows a **model quantity and
+  variance** beside the billed one. A **quantity takeoff** totals the model by
+  type and storey.
+  A **3D viewer** (web-ifc + three.js, fetched by `scripts/fetch-bim-libs.sh`)
+  draws linked elements in the colour of their worst open item, with storey
+  filtering, isolate/hide, a live section cut, IFC properties on selection, and
+  **3D pins** that create the task, RFI or defect they stand for and store the
+  camera they were dropped from. **4D**: a date slider drives element visibility
+  from the dates of the programme tasks elements are linked to — the real
+  programme, not a second one kept inside the model.
+  Issues round-trip with Solibri, Navisworks, BIMcollab and Revizto as
+  **BCF 2.1** archives, matched on topic GUID so a reviewer's answer updates the
+  issue rather than duplicating it. Two revisions of a discipline can be
+  **compared** — added, removed, renamed, moved storey, changed quantity — with
+  removals that carry records flagged. DWG is not supported — see `docs/` for
+  why.
 - **construction_whatsapp** — operational alerts over **Meta's WhatsApp Cloud
   API**, which is what Odoo's Enterprise-only WhatsApp app wraps. Permits about
   to expire, SLAs at risk or breached, RFIs landing in someone's court, defects

@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 17:40+0000\n"
-"PO-Revision-Date: 2026-07-25 17:40+0000\n"
+"POT-Creation-Date: 2026-07-25 20:26+0000\n"
+"PO-Revision-Date: 2026-07-25 20:26+0000\n"
 "Last-Translator: Majal\n"
 "Language-Team: Majal\n"
 "Language: ar_001\n"
@@ -14,9 +14,21 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "%(count)s topic(s) imported from %(name)s."
+msgstr ""
+
+#. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "%s created and pinned."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "%s issue(s) exported as BCF 2.1."
 msgstr ""
 
 #. module: construction_bim
@@ -26,6 +38,17 @@ msgid ""
 ", then click\n"
 "                                the spot on the model — the task, RFI or defect is\n"
 "                                created where you put it."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "4D"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.constraint,message:construction_bim.constraint_construction_bim_property_property_unique
+msgid "A property appears once per element."
 msgstr ""
 
 #. modules: construction_bim, construction_boq, construction_change_order,
@@ -165,6 +188,17 @@ msgstr "حالة النشاط"
 msgid "Activity Type Icon"
 msgstr "أيقونة نوع النشاط"
 
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__added
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Added"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__added_count
+msgid "Added Count"
+msgstr ""
+
 #. modules: construction_bim, construction_dashboard
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
@@ -189,6 +223,14 @@ msgstr ""
 #: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__architectural
 msgid "Architectural"
 msgstr "معماري"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__area
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Area"
+msgstr "المنطقة "
 
 #. module: construction_bim
 #. odoo-python
@@ -234,6 +276,21 @@ msgid "Author"
 msgstr "الكاتب "
 
 #. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__bcf_file
+msgid "BCF Archive"
+msgstr "ملف BCF"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_bcf
+msgid "BCF Exchange"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_list
+msgid "BCF Topic"
+msgstr ""
+
+#. module: construction_bim
 #: model:ir.ui.menu,name:construction_bim.menu_bim_root
 msgid "BIM"
 msgstr "نمذجة معلومات البناء"
@@ -247,6 +304,11 @@ msgstr ""
 #: model:ir.model,name:construction_bim.model_construction_bim_element
 msgid "BIM Element"
 msgstr "عنصر الموديل"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_property
+msgid "BIM Element Property"
+msgstr "خاصية عنصر النموذج"
 
 #. module: construction_bim
 #: model:ir.actions.act_window,name:construction_bim.action_bim_element
@@ -277,6 +339,16 @@ msgstr "موديلات نمذجة معلومات البناء"
 msgid "BIM Pin"
 msgstr ""
 
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_comparison
+msgid "BIM Revision Comparison"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_comparison_line
+msgid "BIM Revision Comparison Line"
+msgstr ""
+
 #. modules: construction_base, construction_bim, construction_change_order,
 #. construction_defect, construction_hse, construction_material,
 #. construction_meeting, construction_progress_billing, construction_rfi,
@@ -300,6 +372,41 @@ msgstr ""
 #: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__ball_in_court_id
 msgid "Ball in Court"
 msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__bcf_filename
+msgid "Bcf Filename"
+msgstr "Bcf اسم الملف"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__bcf_guid
+msgid "Bcf Guid"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Bill Item"
+msgstr "بند المقايسة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_element_count
+msgid "Bim Element Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_measure
+msgid "Bim Measure"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_variance
+msgid "Bim Variance"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_variance_percent
+msgid "Bim Variance Percent"
+msgstr ""
 
 #. module: construction_bim
 #. odoo-javascript
@@ -327,12 +434,58 @@ msgstr ""
 msgid "Building the model…"
 msgstr ""
 
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_x
+msgid "Cam Target X"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_y
+msgid "Cam Target Y"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_z
+msgid "Cam Target Z"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_x
+msgid "Cam X"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_y
+msgid "Cam Y"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_z
+msgid "Cam Z"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Camera X"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Camera Y"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Camera Z"
+msgstr ""
+
 #. modules: construction_bim, construction_boq, construction_drawing,
 #. construction_material, construction_pin, construction_tender,
 #. construction_whatsapp
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 #: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bcf_import_form
 #: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
 #: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
@@ -340,6 +493,41 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
 msgid "Cancel"
 msgstr "إلغاء"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_comparison_line__is_linked
+msgid ""
+"Carried an RFI, defect, task or bill item. A removal here needs somebody's "
+"attention."
+msgstr ""
+
+#. modules: construction_bim, construction_change_order
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__change_type
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__change_type
+msgid "Change Type"
+msgstr "نوع التغيير"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Changed"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__changed_count
+msgid "Changed Count"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_compare.py:0
+msgid "Choose the revision to compare against."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_compare.py:0
+msgid "Choose two different revisions."
+msgstr ""
 
 #. modules: construction_bim, construction_drawing, construction_rfi
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__civil
@@ -359,6 +547,20 @@ msgstr ""
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Click the model to drop a pin"
 msgstr ""
+
+#. modules: construction_bim, construction_defect, construction_hse,
+#. construction_meeting, construction_rfi, construction_subcontractor,
+#. construction_submittal, construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_incident_form
+#: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Close"
+msgstr "إغلاق"
 
 #. modules: construction_base, construction_bim, construction_boq,
 #. construction_change_order, construction_daily_log, construction_defect,
@@ -396,6 +598,33 @@ msgstr ""
 msgid "Company"
 msgstr "الشركة"
 
+#. modules: construction_bim, construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Compare"
+msgstr "المقارنة"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Compare Revisions"
+msgstr "مقارنة المراجعات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__comparison_id
+msgid "Comparison"
+msgstr "مقارنة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__count
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Count"
+msgstr "التعداد "
+
 #. modules: construction_bim, construction_boq, construction_change_order,
 #. construction_daily_log, construction_defect, construction_drawing,
 #. construction_form, construction_hse, construction_material,
@@ -404,9 +633,13 @@ msgstr "الشركة"
 #. construction_subcontractor, construction_submittal, construction_tender,
 #. construction_ui, construction_whatsapp, facility_asset, facility_floorplan,
 #. facility_inventory, facility_sla, facility_workorder
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__create_uid
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__create_uid
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__create_uid
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__create_uid
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__create_uid
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__create_uid
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__create_uid
@@ -481,9 +714,13 @@ msgstr "أنشئ بواسطة"
 #. construction_subcontractor, construction_submittal, construction_tender,
 #. construction_ui, construction_whatsapp, facility_asset, facility_floorplan,
 #. facility_inventory, facility_sla, facility_workorder
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__create_date
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__create_date
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__create_date
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__create_date
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__create_date
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__create_date
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__create_date
@@ -653,9 +890,13 @@ msgstr "التخصص"
 #. construction_subcontractor, construction_submittal, construction_tender,
 #. construction_ui, construction_whatsapp, facility_asset, facility_floorplan,
 #. facility_inventory, facility_sla, facility_workorder
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__display_name
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__display_name
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__display_name
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__display_name
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__display_name
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__display_name
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__display_name
@@ -756,6 +997,8 @@ msgstr "كهربائي"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__element_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__element_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
 msgid "Element"
 msgstr "العنصر"
 
@@ -793,6 +1036,11 @@ msgid ""
 msgstr ""
 "كلthing else on this model — the element index and\n"
 "                            its مرتبط records — works without them."
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Export BCF"
+msgstr "تصدير BCF"
 
 #. module: construction_bim
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__federated
@@ -917,12 +1165,23 @@ msgid "Frame the selection"
 msgstr ""
 
 #. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+msgid "From BCF"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__base_model_id
+msgid "From Revision"
+msgstr "من المراجعة"
+
+#. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Give the pin a name."
 msgstr ""
 
 #. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__global_id
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__global_id
 msgid "Global"
 msgstr "شامل"
@@ -943,6 +1202,8 @@ msgstr "غير موجود في الموديل"
 #. facility_floorplan, facility_inventory
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
 #: model_terms:ir.ui.view,arch_db:construction_hse.view_incident_search
 #: model_terms:ir.ui.view,arch_db:construction_hse.view_permit_search
 #: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_search
@@ -955,6 +1216,13 @@ msgstr "غير موجود في الموديل"
 #: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_search
 msgid "Group By"
 msgstr "تجميع حسب"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid ""
+"Hand the issues to Solibri, Navisworks or                                   "
+"BIMcollab as a BCF 2.1 archive."
+msgstr ""
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
@@ -994,6 +1262,22 @@ msgid "Has Message"
 msgstr "يحتوي على رسالة "
 
 #. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__has_quantities
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+msgid "Has Quantities"
+msgstr "يحتوي كميات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__is_linked
+msgid "Has Records"
+msgstr "مرتبط بسجلات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__has_viewpoint
+msgid "Has Viewpoint"
+msgstr ""
+
+#. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Hide"
@@ -1019,9 +1303,13 @@ msgstr ""
 #. construction_subcontractor, construction_submittal, construction_tender,
 #. construction_ui, construction_whatsapp, facility_asset, facility_floorplan,
 #. facility_inventory, facility_sla, facility_workorder
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__id
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__id
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__id
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__id
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__id
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__id
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__id
@@ -1244,8 +1532,36 @@ msgid "If checked, some messages have a delivery error."
 msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
 
 #. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__ifc_type
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__ifc_type
 msgid "Ifc Type"
+msgstr ""
+
+#. modules: construction_bim, construction_boq, construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bcf_import_form
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
+msgid "Import"
+msgstr "استيراد"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: model:ir.model,name:construction_bim.model_construction_bim_bcf_import
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Import BCF"
+msgstr "استيراد BCF"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "Imported Topics"
+msgstr "الموضوعات المستوردة"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+msgid "Imported topic"
 msgstr ""
 
 #. module: construction_bim
@@ -1368,9 +1684,13 @@ msgstr ""
 #. construction_subcontractor, construction_submittal, construction_tender,
 #. construction_ui, construction_whatsapp, facility_asset, facility_floorplan,
 #. facility_inventory, facility_sla, facility_workorder
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__write_uid
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__write_uid
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__write_uid
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__write_uid
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__write_uid
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__write_uid
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__write_uid
@@ -1445,9 +1765,13 @@ msgstr "آخر تحديث بواسطة"
 #. construction_subcontractor, construction_submittal, construction_tender,
 #. construction_ui, construction_whatsapp, facility_asset, facility_floorplan,
 #. facility_inventory, facility_sla, facility_workorder
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__write_date
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__write_date
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__write_date
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__write_date
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__write_date
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__write_date
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__write_date
@@ -1515,6 +1839,30 @@ msgid "Last Updated on"
 msgstr "آخر تحديث في"
 
 #. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__length
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Length"
+msgstr "الطول"
+
+#. modules: construction_bim, construction_boq, construction_change_order,
+#. construction_material, construction_progress_billing,
+#. construction_subcontractor, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__line_ids
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__line_ids
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__line_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__line_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__line_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__line_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__line_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__line_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__line_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__line_ids
+msgid "Line"
+msgstr "البند "
+
+#. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__link_bucket
 msgid "Link Bucket"
 msgstr ""
@@ -1541,6 +1889,16 @@ msgstr "العناصر المرتبطة"
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
 msgid "Linked records"
 msgstr "السجلات المرتبطة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_search_bim
+msgid "Linked to a model that measures less than the bill."
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__measure
+msgid "Measure"
+msgstr "قياس"
 
 #. modules: construction_bim, construction_drawing
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__mechanical
@@ -1614,17 +1972,60 @@ msgid "Messages"
 msgstr "الرسائل"
 
 #. modules: construction_bim, construction_whatsapp
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__model_id
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__model_id
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__model_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__model_id
 #: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__model
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
 msgid "Model"
 msgstr "الطراز"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/boq_bridge.py:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_element_ids
+msgid "Model Elements"
+msgstr "عناصر النموذج"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_search_bim
+msgid "Model Over Bill"
+msgstr "النموذج أكثر من المقايسة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_form_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_list_bim
+msgid "Model Qty"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_quantity
+msgid "Model Quantity"
+msgstr "كمية النموذج"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_search_bim
+msgid "Model Under Bill"
+msgstr "النموذج أقل من المقايسة"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_boq_line__bim_variance
+msgid ""
+"Model quantity less billed quantity. Negative means the model contains less "
+"than the bill is measured against."
+msgstr ""
 
 #. module: construction_bim
 #: model:ir.ui.menu,name:construction_bim.menu_bim_models
 msgid "Models"
 msgstr "النماذج"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__moved
+msgid "Moved storey"
+msgstr "نُقل إلى دور آخر"
 
 #. modules: construction_bim, construction_boq, construction_change_order,
 #. construction_defect, construction_form, construction_hse,
@@ -1673,9 +2074,11 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 #: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__name
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__name
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__name
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__name
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq__name
 #: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__name
 #: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__name
@@ -1806,6 +2209,20 @@ msgstr ""
 msgid "No pins yet. Click"
 msgstr ""
 
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "No topics could be read from that archive."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid ""
+"No topics found. A BCF archive holds one folder per topic, each containing a"
+" markup.bcf."
+msgstr ""
+
 #. modules: construction_bim, construction_hse, construction_material,
 #. construction_pin, facility_asset, facility_floorplan
 #. odoo-javascript
@@ -1827,6 +2244,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__note
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_pin__bucket__none
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
 msgid "Note"
 msgstr "الملاحظات"
 
@@ -1846,6 +2264,11 @@ msgstr ""
 "Nothing مرتبط yet. Attach an RFI, a defect, a task\n"
 "                            or a bill item to an element and it will be coloured\n"
 "                            in the model."
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__now
+msgid "Now"
+msgstr ""
 
 #. modules: construction_bim, construction_boq, construction_change_order,
 #. construction_daily_log, construction_defect, construction_drawing,
@@ -1981,6 +2404,12 @@ msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
 msgid "Object type"
 msgstr ""
 
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "On"
+msgstr "في"
+
 #. modules: construction_bim, construction_change_order, construction_defect,
 #. construction_meeting, construction_rfi
 #. odoo-javascript
@@ -1990,6 +2419,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_event__state__open
 #: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__open
 #: model:ir.model.fields.selection,name:construction_meeting.selection__construction_meeting_action__state__open
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
 #: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
 #: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_action_search
 #: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
@@ -2000,6 +2430,12 @@ msgstr "مفتوح"
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
 msgid "Open 3D Viewer"
 msgstr "فتح العارض ثلاثي الأبعاد"
+
+#. modules: construction_bim, construction_pin
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+#: model_terms:ir.ui.view,arch_db:construction_pin.view_pin_form
+msgid "Open Linked Record"
+msgstr "فتح السجل المرتبط"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -2080,6 +2516,16 @@ msgstr "الطرف المسؤول حالياً عن الإجراء التالي.
 msgid "Pin"
 msgstr "علامة"
 
+#. modules: construction_bim, construction_defect, construction_pin,
+#. facility_floorplan
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__pin_count
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_count
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_count
+msgid "Pin Count"
+msgstr "عدد العلامات"
+
 #. modules: construction_bim, construction_pin, facility_floorplan
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__pin_type
 #: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pin_type
@@ -2090,7 +2536,11 @@ msgstr "نوع العلامة"
 
 #. modules: construction_bim, facility_floorplan
 #. odoo-javascript
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__pin_ids
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
 #: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
 #: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_list
 msgid "Pins"
@@ -2120,6 +2570,11 @@ msgstr "الموضع ص"
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__pos_z
 msgid "Pos Z"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Position in the model"
 msgstr ""
 
 #. modules: construction_base, construction_bim, construction_boq,
@@ -2182,6 +2637,73 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
 msgid "Project"
 msgstr "المشروع"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__property_ids
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Properties"
+msgstr "الخصائص "
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+msgid "Property"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__property_count
+msgid "Property Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__pset
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+msgid "Property Set"
+msgstr "مجموعة الخصائص"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+msgid "Quantities"
+msgstr "الكميات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_area
+msgid "Quantity Area"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_count
+msgid "Quantity Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_length
+msgid "Quantity Length"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "Quantity Takeoff — %s"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_volume
+msgid "Quantity Volume"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_weight
+msgid "Quantity Weight"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__quantity
+msgid "Quantity changed"
+msgstr "تغيرت الكمية"
 
 #. modules: construction_bim, construction_change_order, construction_pin
 #. odoo-python
@@ -2253,6 +2775,22 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:facility_portal.portal_my_requests
 msgid "Reference"
 msgstr "المرجع"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__removed
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Removed"
+msgstr "تمت الإزالة "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__removed_count
+msgid "Removed Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__renamed
+msgid "Renamed"
+msgstr "أُعيدت التسمية"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -2389,6 +2927,12 @@ msgstr "تعيين كنسخة حالية"
 msgid "Show everything again"
 msgstr ""
 
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Show the model as it should stand on a date"
+msgstr ""
+
 #. modules: construction_bim, construction_boq, construction_change_order,
 #. construction_daily_log, construction_defect, construction_form,
 #. construction_hse, construction_material, construction_meeting,
@@ -2481,6 +3025,12 @@ msgstr ""
 "اليوم: تاريخ النشاط هو اليوم\n"
 "المخطط: الأنشطة المستقبلية."
 
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+msgid "Status: %s"
+msgstr ""
+
 #. modules: construction_bim, facility_workorder
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__step_id
 #: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__name
@@ -2491,9 +3041,12 @@ msgstr "خطوة"
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__storey
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__storey
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__storey
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
 msgid "Storey"
 msgstr "الطابق"
 
@@ -2518,6 +3071,11 @@ msgstr "ملغى بأحدث"
 msgid "Tag"
 msgstr "علامة تصنيف "
 
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Takeoff"
+msgstr "الحصر"
+
 #. modules: construction_bim, construction_pin, construction_planning,
 #. facility_workorder
 #. odoo-python
@@ -2530,6 +3088,25 @@ msgstr "علامة تصنيف "
 #: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__task_ids
 msgid "Task"
 msgstr "المهمة"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid ""
+"That archive expands to far more than a BCF should. It has not been read."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "That file is not a BCF archive (a BCF is a zip)."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "That file is too large to be a BCF archive."
+msgstr ""
 
 #. module: construction_bim
 #. odoo-javascript
@@ -2565,6 +3142,20 @@ msgid ""
 msgstr ""
 
 #. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid ""
+"This is the only revision of this discipline so far. Pick a\n"
+"                    model to compare it against, or upload the next revision and\n"
+"                    come back."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model has no pins to export."
+msgstr ""
+
+#. module: construction_bim
 #. odoo-python
 #: code:addons/construction_bim/models/bim_model.py:0
 msgid "This model is %(size)s MB. Split it by discipline before indexing."
@@ -2579,6 +3170,28 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
 msgid "Title"
 msgstr "العنوان"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__target_model_id
+msgid "To Revision"
+msgstr "إلى المراجعة"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_pin__bcf_guid
+msgid ""
+"Topic GUID this pin came from, or was last exported as, so a round trip "
+"through another tool updates the pin rather than creating a second one "
+"beside it."
+msgstr ""
+
+#. modules: construction_bim, construction_planning, facility_asset
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__link_type
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_search
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_failure_code_search
+msgid "Type"
+msgstr "النوع"
 
 #. modules: construction_bim, construction_boq, construction_change_order,
 #. construction_defect, construction_form, construction_hse,
@@ -2606,6 +3219,15 @@ msgid "Type of the exception activity on record."
 msgstr "نوع النشاط المستثنى في السجل. "
 
 #. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bcf_import_form
+msgid ""
+"Upload a BCF 2.1 archive exported from Solibri, Navisworks,\n"
+"                    BIMcollab, Revizto or any other tool that speaks BCF. Topics\n"
+"                    that came from here originally are matched on their GUID and\n"
+"                    updated, so a round trip does not duplicate them."
+msgstr ""
+
+#. module: construction_bim
 #: model_terms:ir.actions.act_window,help:construction_bim.action_bim_model
 msgid "Upload an IFC model"
 msgstr ""
@@ -2614,6 +3236,44 @@ msgstr ""
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__state__draft
 msgid "Uploaded"
 msgstr "تم التحميل"
+
+#. modules: construction_bim, construction_form, construction_material,
+#. construction_report, facility_asset, facility_inventory
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__value
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__value
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__value
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__value
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_list
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Value"
+msgstr "القيمة"
+
+#. modules: construction_bim, construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__variance
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_form_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_list_bim
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Variance"
+msgstr "الفرق"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__volume
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Volume"
+msgstr "الحجم "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__was
+msgid "Was"
+msgstr ""
 
 #. modules: construction_bim, construction_boq, construction_change_order,
 #. construction_daily_log, construction_defect, construction_drawing,
@@ -2680,6 +3340,19 @@ msgid "Website communication history"
 msgstr "سجل تواصل الموقع الإلكتروني "
 
 #. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__weight
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Weight"
+msgstr "الوزن"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid ""
+"What changed against the previous revision of"
+"                                   this discipline."
+msgstr ""
+
+#. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "What is it?"
@@ -2689,6 +3362,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "What needs doing here"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_boq_line__bim_measure
+msgid ""
+"Which model quantity answers this line. Taken from the unit of measure, and "
+"editable where the model measures it differently."
 msgstr ""
 
 #. module: construction_bim
@@ -2729,8 +3409,20 @@ msgstr "علامة"
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "properties"
+msgstr "الخصائص "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "scripts/fetch-bim-libs.sh"
 msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "under construction"
+msgstr "قيد التنفيذ"
 
 #. module: construction_bim
 #. odoo-javascript
