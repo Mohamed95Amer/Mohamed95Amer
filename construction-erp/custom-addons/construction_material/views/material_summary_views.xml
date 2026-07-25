@@ -17,9 +17,9 @@
                 <field name="qty_variance" sum="Variance"
                        decoration-danger="qty_variance &gt; 0"
                        decoration-success="qty_variance &lt; 0"/>
-                <field name="variance_percent" string="Var %" widget="percentage"
+                <field name="variance_percent" string="Var %"
                        optional="show"/>
-                <field name="waste_percent" string="Waste %" widget="percentage"/>
+                <field name="waste_percent" string="Waste %"/>
                 <field name="consumed_value" sum="Consumed value" optional="show"/>
                 <field name="waste_value" sum="Waste value"/>
                 <field name="on_hand_value" sum="On site value" optional="hide"/>

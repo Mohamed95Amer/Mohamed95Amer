@@ -13,8 +13,8 @@
                         <field name="currency_id" invisible="1"/>
                     </group>
                     <group>
-                        <field name="boq_certified_percent" widget="percentage"/>
-                        <field name="boq_progress_gap" widget="percentage"
+                        <field name="boq_certified_percent"/>
+                        <field name="boq_progress_gap"
                                decoration-danger="boq_progress_gap &gt; 15"
                                decoration-warning="boq_progress_gap &gt; 5"/>
                     </group>
@@ -33,8 +33,7 @@
         <field name="inherit_id" ref="construction_boq.view_boq_line_list"/>
         <field name="arch" type="xml">
             <field name="amount_cost" position="after">
-                <field name="programme_percent" string="Programme %"
-                       widget="percentage" optional="show"/>
+                <field name="programme_percent" string="Programme %" optional="show"/>
                 <field name="task_count" string="Activities" optional="hide"/>
             </field>
         </field>

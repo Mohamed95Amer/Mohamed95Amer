@@ -11,8 +11,7 @@
                 <field name="material_budget_value" sum="Budget"/>
                 <field name="material_consumed_value" sum="Consumed"/>
                 <field name="material_waste_value" sum="Waste"/>
-                <field name="material_waste_percent" string="Waste %"
-                       widget="percentage"/>
+                <field name="material_waste_percent" string="Waste %"/>
                 <field name="material_on_hand_value" sum="On site"/>
                 <field name="material_over_budget_count" string="Over budget"/>
                 <field name="currency_id" column_invisible="1"/>

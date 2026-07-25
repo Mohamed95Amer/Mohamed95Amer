@@ -36,7 +36,7 @@ class ProjectTaskBoqLink(models.Model):
              "consultant.",
     )
     boq_progress_gap = fields.Float(
-        compute="_compute_boq_position", string="Progress Gap",
+        compute="_compute_boq_position", string="Progress Gap %",
         help="Reported progress less certified percentage. Positive means the "
              "programme claims more than has been certified.",
     )

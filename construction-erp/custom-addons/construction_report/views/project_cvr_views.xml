@@ -11,7 +11,7 @@
                 <field name="construction_stage"/>
                 <field name="cvr_contract_value" sum="Contract"/>
                 <field name="cvr_certified_value" sum="Certified"/>
-                <field name="cvr_percent_complete" widget="percentage"
+                <field name="cvr_percent_complete"
                        string="% Cert."/>
                 <field name="cvr_budget_cost" sum="Budget" optional="show"/>
                 <field name="cvr_committed_cost" sum="Committed"/>
@@ -44,7 +44,7 @@
                         <group string="Value — what the client owes">
                             <field name="cvr_contract_value"/>
                             <field name="cvr_certified_value"/>
-                            <field name="cvr_percent_complete" widget="percentage"/>
+                            <field name="cvr_percent_complete"/>
                         </group>
                         <group string="Cost — what it takes to earn it">
                             <field name="cvr_budget_cost"/>
@@ -58,14 +58,12 @@
                         <group>
                             <field name="cvr_earned_margin"
                                    decoration-danger="cvr_earned_margin &lt; 0"/>
-                            <field name="cvr_earned_margin_percent"
-                                   widget="percentage"/>
+                            <field name="cvr_earned_margin_percent"/>
                         </group>
                         <group>
                             <field name="cvr_forecast_margin"
                                    decoration-danger="cvr_forecast_margin &lt; 0"/>
-                            <field name="cvr_forecast_margin_percent"
-                                   widget="percentage"/>
+                            <field name="cvr_forecast_margin_percent"/>
                             <field name="cvr_margin_variance"
                                    decoration-danger="cvr_margin_variance &lt; 0"
                                    decoration-success="cvr_margin_variance &gt; 0"/>
