@@ -75,6 +75,60 @@ element_ids.append(
     box("Floor slab L03", "5SlAbGuId0000000000000", STOREY_PL,
         0.0, 3.0, 8.4, 6.4, 0.25, "IFCSLAB"))
 
+# --- property sets and quantities ------------------------------------------
+# Without these the model is only a picture. A wall that carries its volume and
+# its fire rating can be checked against a bill item and against a spec.
+GUID_SEQ = iter([
+    "6PsetWall00000000000A0", "6QtoWall000000000000A1",
+    "6PsetWall00000000000B0", "6QtoWall000000000000B1",
+    "6PsetWall00000000000C0", "6QtoWall000000000000C1",
+    "6PsetSlab00000000000D0", "6QtoSlab000000000000D1",
+    "7RelProp000000000000A0", "7RelQto0000000000000A1",
+    "7RelProp000000000000B0", "7RelQto0000000000000B1",
+    "7RelProp000000000000C0", "7RelQto0000000000000C1",
+    "7RelProp000000000000D0", "7RelQto0000000000000D1",
+])
+
+
+def properties(step_id, values):
+    """One IfcPropertySet of single values, attached to one element."""
+    ids = []
+    for name, value in values:
+        ids.append(add(f"IFCPROPERTYSINGLEVALUE('{name}',$,IFCLABEL('{value}'),$)"))
+    refs = ",".join(f"#{i}" for i in ids)
+    pset = add(
+        f"IFCPROPERTYSET('{next(GUID_SEQ)}',#{OWNER},'Pset_Common',$,({refs}))")
+    add(f"IFCRELDEFINESBYPROPERTIES('{next(GUID_SEQ)}',#{OWNER},$,$,"
+        f"(#{step_id}),#{pset})")
+
+
+def quantities(step_id, length, area, volume):
+    ids = [
+        add(f"IFCQUANTITYLENGTH('Length',$,$,{length},$)"),
+        add(f"IFCQUANTITYAREA('NetSideArea',$,$,{area},$)"),
+        add(f"IFCQUANTITYVOLUME('NetVolume',$,$,{volume},$)"),
+    ]
+    refs = ",".join(f"#{i}" for i in ids)
+    quantity_set = add(
+        f"IFCELEMENTQUANTITY('{next(GUID_SEQ)}',#{OWNER},'BaseQuantities',$,$,"
+        f"({refs}))")
+    add(f"IFCRELDEFINESBYPROPERTIES('{next(GUID_SEQ)}',#{OWNER},$,$,"
+        f"(#{step_id}),#{quantity_set})")
+
+
+measures = [
+    (8.0, 24.0, 4.8, [("Reference", "CMU-200"), ("FireRating", "120"),
+                      ("LoadBearing", "Yes")]),
+    (8.0, 24.0, 4.8, [("Reference", "CW-01"), ("FireRating", "60"),
+                      ("IsExternal", "Yes")]),
+    (6.0, 18.0, 3.6, [("Reference", "CORE-01"), ("FireRating", "120"),
+                      ("LoadBearing", "Yes")]),
+    (8.4, 53.76, 13.44, [("Reference", "SLAB-250"), ("Structural", "Yes")]),
+]
+for element_step_id, (length, area, volume, props) in zip(element_ids, measures):
+    properties(element_step_id, props)
+    quantities(element_step_id, length, area, volume)
+
 # --- spatial structure ----------------------------------------------------
 add(f"IFCRELAGGREGATES('1AggProj0000000000000A',#{OWNER},$,$,#{PROJECT},(#{SITE}))")
 add(f"IFCRELAGGREGATES('1AggSite0000000000000B',#{OWNER},$,$,#{SITE},(#{BUILDING}))")

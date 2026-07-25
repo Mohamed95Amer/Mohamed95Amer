@@ -35,6 +35,20 @@ class ConstructionBimElement(models.Model):
              "records are attached to it.",
     )
 
+    # Quantities as read from the model's IfcElementQuantity sets. Stored as
+    # columns rather than a blob because the whole point is to total them:
+    # "how much blockwork is on level three" has to be a read_group, not a
+    # thousand JSON parses.
+    quantity_length = fields.Float(digits=(16, 3), readonly=True)
+    quantity_area = fields.Float(digits=(16, 3), readonly=True)
+    quantity_volume = fields.Float(digits=(16, 3), readonly=True)
+    quantity_count = fields.Float(digits=(16, 2), readonly=True)
+    quantity_weight = fields.Float(digits=(16, 3), readonly=True)
+    has_quantities = fields.Boolean(compute="_compute_has_quantities", store=True)
+    property_ids = fields.One2many(
+        "construction.bim.property", "element_id", string="Properties")
+    property_count = fields.Integer(compute="_compute_property_count")
+
     task_id = fields.Many2one("project.task", ondelete="set null")
     rfi_id = fields.Many2one("construction.rfi", ondelete="set null")
     defect_id = fields.Many2one("construction.defect", ondelete="set null")
@@ -91,6 +105,22 @@ class ConstructionBimElement(models.Model):
                 (b for b in BUCKET_ORDER if b in buckets),
                 "open" if element.is_linked else "none",
             )
+
+    @api.depends("quantity_length", "quantity_area", "quantity_volume",
+                 "quantity_count", "quantity_weight")
+    def _compute_has_quantities(self):
+        for element in self:
+            element.has_quantities = any((
+                element.quantity_length, element.quantity_area,
+                element.quantity_volume, element.quantity_count,
+                element.quantity_weight,
+            ))
+
+    def _compute_property_count(self):
+        counts = dict(self.env["construction.bim.property"]._read_group(
+            [("element_id", "in", self.ids)], ["element_id"], ["__count"]))
+        for element in self:
+            element.property_count = counts.get(element, 0)
 
     def action_open_link(self):
         """Open whatever this element is attached to."""

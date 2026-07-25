@@ -5,3 +5,8 @@ access_bim_element_user,construction.bim.element user,model_construction_bim_ele
 access_bim_element_pm,construction.bim.element pm,model_construction_bim_element,construction_base.group_construction_pm,1,1,1,1
 access_bim_pin_user,construction.bim.pin user,model_construction_bim_pin,construction_base.group_construction_site_engineer,1,1,1,1
 access_bim_pin_pm,construction.bim.pin pm,model_construction_bim_pin,construction_base.group_construction_pm,1,1,1,1
+access_bim_property_user,construction.bim.property user,model_construction_bim_property,construction_base.group_construction_site_engineer,1,0,0,0
+access_bim_property_pm,construction.bim.property pm,model_construction_bim_property,construction_base.group_construction_pm,1,1,1,1
+access_bcf_import,construction.bim.bcf.import,model_construction_bim_bcf_import,construction_base.group_construction_pm,1,1,1,1
+access_bim_comparison,construction.bim.comparison,model_construction_bim_comparison,construction_base.group_construction_site_engineer,1,1,1,1
+access_bim_comparison_line,construction.bim.comparison.line,model_construction_bim_comparison_line,construction_base.group_construction_site_engineer,1,1,1,1
