@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_amc_client" model="res.partner">
+        <field name="name">Al Noor Tower Owners Association</field>
+        <field name="company_type">company</field>
+    </record>
+
+    <record id="product_amc_service" model="product.product">
+        <field name="name">HVAC Maintenance — monthly fee</field>
+        <field name="type">service</field>
+        <field name="list_price">9500</field>
+    </record>
+
+    <!-- A comprehensive HVAC contract: planned visits and breakdowns are in
+         the fee, parts are not, so a compressor replacement is recoverable
+         while the callout that found it is not. -->
+    <record id="contract_hvac_amc" model="contract.contract">
+        <field name="name">HVAC AMC — Al Noor Tower</field>
+        <field name="code">AMC-2026-001</field>
+        <field name="partner_id" ref="partner_amc_client"/>
+        <field name="contract_type">sale</field>
+        <field name="line_recurrence" eval="False"/>
+        <field name="is_amc" eval="True"/>
+        <field name="sla_policy_id" ref="facility_sla.sla_high_priority"/>
+        <field name="covers_preventive" eval="True"/>
+        <field name="covers_corrective" eval="True"/>
+        <field name="covers_parts" eval="False"/>
+        <field name="pm_visits_included">12</field>
+        <field name="equipment_ids" eval="[(6, 0, [ref('facility_asset.asset_ahu1')])]"/>
+        <field name="date_start" eval="(DateTime.today() - relativedelta(months=6)).strftime('%Y-%m-%d')"/>
+        <field name="recurring_next_date" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <record id="contract_hvac_amc_line" model="contract.line">
+        <field name="contract_id" ref="contract_hvac_amc"/>
+        <field name="product_id" ref="product_amc_service"/>
+        <field name="name">Monthly HVAC maintenance — AHU-01</field>
+        <field name="quantity">1</field>
+        <field name="price_unit">9500</field>
+        <field name="recurring_rule_type">monthly</field>
+        <field name="recurring_interval">1</field>
+        <field name="date_start" eval="(DateTime.today() - relativedelta(months=6)).strftime('%Y-%m-%d')"/>
+        <field name="recurring_next_date" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+        <!-- The contract's end date is computed from its lines, so the term
+             has to be stated here rather than on the header. -->
+        <field name="date_end" eval="(DateTime.today() + relativedelta(days=40)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- Work the contract has absorbed, and work it has not: the callout is
+         covered, the compressor replacement is a parts job the fee excludes. -->
+    <record id="wo_amc_pm_visit" model="maintenance.request">
+        <field name="name">Quarterly PM visit — AHU-01</field>
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+        <field name="maintenance_type">preventive</field>
+        <field name="labor_hours">6</field>
+    </record>
+
+    <record id="wo_amc_callout" model="maintenance.request">
+        <field name="name">AHU-01 tripping on high pressure</field>
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="labor_hours">4</field>
+        <field name="contractor_cost">1800</field>
+    </record>
+
+    <!-- Six months already billed, so the workspace shows a margin rather than
+         a contract that looks like it is only ever losing money. -->
+    <record id="invoice_amc_billed" model="account.move">
+        <field name="move_type">out_invoice</field>
+        <field name="partner_id" ref="partner_amc_client"/>
+        <field name="invoice_date" eval="(DateTime.today() - relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+        <field name="invoice_line_ids" eval="[(0, 0, {
+            'product_id': ref('product_amc_service'),
+            'name': 'HVAC maintenance — 6 months',
+            'quantity': 6,
+            'price_unit': 9500,
+            'contract_line_id': ref('contract_hvac_amc_line'),
+        })]"/>
+    </record>
+
+    <function model="account.move" name="action_post"
+              eval="[[ref('invoice_amc_billed')]]"/>
+</odoo>

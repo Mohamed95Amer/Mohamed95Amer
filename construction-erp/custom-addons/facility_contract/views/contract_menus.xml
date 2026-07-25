@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_facility_contracts"
+              name="Maintenance Contracts"
+              parent="facility_asset.menu_facility_root"
+              action="action_facility_contract"
+              sequence="45"/>
+
+    <menuitem id="menu_facility_chargeable"
+              name="Chargeable Work"
+              parent="facility_asset.menu_facility_root"
+              action="action_chargeable_work"
+              sequence="46"/>
+</odoo>

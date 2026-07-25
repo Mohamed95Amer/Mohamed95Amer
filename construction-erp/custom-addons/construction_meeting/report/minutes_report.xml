@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_minutes" model="ir.actions.report">
+        <field name="name">Minutes of Meeting</field>
+        <field name="model">construction.meeting</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_meeting.report_minutes_document</field>
+        <field name="report_file">construction_meeting.report_minutes_document</field>
+        <field name="binding_model_id" ref="model_construction_meeting"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_minutes_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="meeting">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Minutes of Meeting</h2>
+                        <h4 class="text-muted">
+                            <span t-field="meeting.reference"/> —
+                            <span t-field="meeting.name"/>
+                        </h4>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="meeting.project_id.name"/><br/>
+                                <strong>Type:</strong>
+                                <span t-field="meeting.meeting_type"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong>
+                                <span t-field="meeting.meeting_date"/><br/>
+                                <strong>Location:</strong>
+                                <span t-field="meeting.location"/><br/>
+                                <strong>Chair:</strong>
+                                <span t-field="meeting.chaired_by_id"/>
+                            </div>
+                        </div>
+
+                        <h5>Attendance</h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Name</th><th>Organisation</th><th>Present</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="meeting.attendee_ids" t-as="a">
+                                    <td><span t-field="a.name"/></td>
+                                    <td><span t-field="a.organisation"/></td>
+                                    <td>
+                                        <span t-if="a.present">Yes</span>
+                                        <span t-elif="a.apologies">Apologies</span>
+                                        <span t-else="">No</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h5>Discussion</h5>
+                        <div t-field="meeting.minutes"/>
+
+                        <h5>Actions</h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Action</th><th>Owner</th><th>By</th>
+                                    <th>Carried</th><th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="meeting.action_ids" t-as="act">
+                                    <td><span t-field="act.name"/></td>
+                                    <td>
+                                        <span t-if="act.owner_id" t-field="act.owner_id"/>
+                                        <span t-else="" t-field="act.owner_partner_id"/>
+                                    </td>
+                                    <td><span t-field="act.deadline"/></td>
+                                    <td><span t-field="act.carried_count"/></td>
+                                    <td><span t-field="act.state"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

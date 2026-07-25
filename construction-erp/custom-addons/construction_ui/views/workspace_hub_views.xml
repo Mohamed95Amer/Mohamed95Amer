@@ -92,6 +92,14 @@
         <field name="name">Cost Value Reconciliation</field>
         <field name="tag">construction_ui.workspace.cvr</field>
     </record>
+    <record id="action_workspace_meetings" model="ir.actions.client">
+        <field name="name">Meetings &amp; Minutes</field>
+        <field name="tag">construction_ui.workspace.meetings</field>
+    </record>
+    <record id="action_workspace_maintenance_contracts" model="ir.actions.client">
+        <field name="name">Maintenance Contracts</field>
+        <field name="tag">construction_ui.workspace.maintenance_contracts</field>
+    </record>
     <record id="action_workspace_assets" model="ir.actions.client">
         <field name="name">Asset Portfolio</field>
         <field name="tag">construction_ui.workspace.assets</field>
@@ -239,6 +247,13 @@
         <field name="action" ref="action_workspace_subcontracts"/>
     </record>
 
+    <record id="construction_meeting.menu_meetings" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_meetings"/>
+    </record>
+
+    <record id="facility_contract.menu_facility_contracts" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_maintenance_contracts"/>
+    </record>
     <record id="facility_asset.menu_facility_assets" model="ir.ui.menu">
         <field name="action" ref="action_workspace_assets"/>
     </record>

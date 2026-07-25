@@ -100,6 +100,12 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   actions that gate closure; **toolbox talks** with a signed attendance record;
   and **LTIFR safety statistics** computed from the labour hours already
   recorded on the daily site logs. Permit-to-Work PDF.
+- **construction_meeting** — **meetings and minutes** for a series (progress,
+  site, technical, HSE, client): attendance, discussion and action items. Open
+  actions are carried into the next meeting automatically while keeping the
+  meeting they were first raised at and a **carry count**, so an item's real
+  age survives the move and the one nobody is doing stops being invisible.
+  Minutes-of-Meeting PDF.
 - **construction_portal** — **free portal users** for subcontractors, clients
   and consultants: self-service RFIs (ball-in-court), assigned defects — with a
   "ready for inspection" action — and subcontracts with their payment
@@ -120,6 +126,17 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   calendar** so a promise does not burn overnight. On-track / at-risk /
   breached states, an escalation cron every 15 minutes, and SLA-breach filters
   and grouping on the work-order list.
+- **facility_contract** — **annual maintenance contracts** on OCA `contract`'s
+  recurring billing: the assets covered, the scope (preventive, corrective,
+  parts) and the **SLA that was sold**, which outranks the standing SLA matrix
+  for work on covered assets. Work orders match themselves to their contract as
+  they are raised, so **absorbed cost** and **recoverable out-of-scope cost**
+  stay apart and each contract shows a live **margin** against what it has
+  invoiced. PM-visit entitlement is counted on delivery, and a daily cron flags
+  contracts approaching their end date.
+- **facility_portal** — **occupant self-service**: report a fault against a
+  piece of equipment, then follow its stage and SLA dates without a back-office
+  login.
 - **facility_floorplan** — **pin-on-plan for facilities**: upload a 2D floor
   plan PDF per location and drop **asset**, **maintenance-request** and
   **note** pins on it, reusing the same OWL Plan Viewer as construction
@@ -152,7 +169,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_portal,facility_asset,facility_workorder,facility_sla,facility_floorplan,construction_ui,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_portal,facility_floorplan,construction_ui,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

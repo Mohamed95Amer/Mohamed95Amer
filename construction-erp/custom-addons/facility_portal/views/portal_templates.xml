@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_facility" name="Portal: facility requests"
+              inherit_id="portal.portal_my_home" priority="32">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Service Requests</t>
+                <t t-set="url" t-value="'/my/facility/requests'"/>
+                <t t-set="text">Report a fault and follow what happens next</t>
+                <t t-set="placeholder_count" t-value="'facility_request_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_requests" name="My Service Requests">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Service Requests</t>
+            </t>
+            <div class="mb-3">
+                <a href="/my/facility/request/new" class="btn btn-primary">
+                    <i class="fa fa-plus me-1"/>Report a fault
+                </a>
+            </div>
+            <t t-if="not requests">
+                <p class="alert alert-info">
+                    You have not reported anything yet.
+                </p>
+            </t>
+            <t t-if="requests" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Request</th>
+                        <th>Equipment</th>
+                        <th>Respond by</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="requests" t-as="task">
+                        <td>
+                            <a t-attf-href="/my/facility/request/{{ task.id }}">
+                                <span class="o_majal_ref">#<t t-esc="task.id"/></span>
+                            </a>
+                        </td>
+                        <td><span t-field="task.name"/></td>
+                        <td><span t-field="task.equipment_id.name"/></td>
+                        <td><span t-field="task.sla_resolution_deadline"/></td>
+                        <td>
+                            <span class="badge rounded-pill text-bg-info"
+                                  t-field="task.stage_id.name"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_request_page" name="Service Request">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-12">
+                    <h3><span t-field="task.name"/></h3>
+                    <dl class="row">
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9"><span t-field="task.stage_id.name"/></dd>
+                        <dt class="col-sm-3">Equipment</dt>
+                        <dd class="col-sm-9"><span t-field="task.equipment_id.name"/></dd>
+                        <dt class="col-sm-3">Reported</dt>
+                        <dd class="col-sm-9"><span t-field="task.request_date"/></dd>
+                        <t t-if="task.sla_policy_id">
+                            <dt class="col-sm-3">Service level</dt>
+                            <dd class="col-sm-9"><span t-field="task.sla_policy_id.name"/></dd>
+                            <dt class="col-sm-3">Respond by</dt>
+                            <dd class="col-sm-9"><span t-field="task.sla_response_deadline"/></dd>
+                            <dt class="col-sm-3">Resolve by</dt>
+                            <dd class="col-sm-9"><span t-field="task.sla_resolution_deadline"/></dd>
+                        </t>
+                    </dl>
+                    <p t-field="task.description"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_new_request" name="Report a Fault">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3>Report a fault</h3>
+                    <div t-if="error" class="alert alert-warning" t-esc="error"/>
+                    <form action="/my/facility/request/submit" method="post">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label" for="name">What is wrong?</label>
+                            <input type="text" name="name" id="name"
+                                   class="form-control" required="required"
+                                   placeholder="e.g. Air conditioning not cooling"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="equipment_id">
+                                Equipment (if you know it)
+                            </label>
+                            <select name="equipment_id" id="equipment_id"
+                                    class="form-select">
+                                <option value="">— not sure —</option>
+                                <option t-foreach="equipments" t-as="equipment"
+                                        t-key="equipment.id"
+                                        t-att-value="equipment.id"
+                                        t-esc="equipment.name"/>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="description">Details</label>
+                            <textarea name="description" id="description" rows="4"
+                                      class="form-control"
+                                      placeholder="When does it happen, which area..."/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Send request
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

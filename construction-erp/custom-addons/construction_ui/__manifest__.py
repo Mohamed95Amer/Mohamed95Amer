@@ -32,10 +32,13 @@
         "construction_hse",
         "construction_tender",
         "construction_material",
+        "construction_meeting",
         "construction_portal",
         "facility_asset",
         "facility_workorder",
         "facility_sla",
+        "facility_contract",
+        "facility_portal",
         "facility_floorplan",
     ],
     "data": [
