@@ -21,4 +21,18 @@
             (0, 0, {'item_code': 'VO.02', 'name': 'Protection board', 'quantity': 4200, 'unit_rate': 9, 'unit_cost': 6}),
         ]"/>
     </record>
+
+    <!-- Leave this one waiting for a signature.
+
+         Everything else in the demo is signed off, which makes the approval
+         inbox, the "waiting for my approval" line on My Day and the
+         "waiting for a signature" table on the exposure screen all render
+         empty — three screens that look broken rather than calm. One live
+         variation fixes that, and at 197,400 it lands in the middle band, so
+         what is waiting is a two-signature chain: the project manager first,
+         then the commercial manager. -->
+    <function model="construction.change.order" name="action_submit"
+              eval="[ref('co_demo')]"/>
+    <function model="construction.change.order" name="action_request_approval"
+              eval="[ref('co_demo')]"/>
 </odoo>

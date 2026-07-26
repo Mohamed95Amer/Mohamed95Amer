@@ -15,8 +15,9 @@
         "report/change_order_report.xml",
     ],
     "demo": [
-        "demo/change_order_demo.xml",
+        # Rules first: the demo variation is raised against them.
         "demo/approval_rules_demo.xml",
+        "demo/change_order_demo.xml",
     ],
     "installable": True,
 }

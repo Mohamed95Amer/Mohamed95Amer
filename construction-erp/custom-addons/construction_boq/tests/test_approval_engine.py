@@ -35,6 +35,12 @@ class ApprovalCase(TransactionCase):
         # this" has to mean it. Archived rather than deleted so the demo data
         # is still there for anything that looks at it.
         cls.env["construction.approval.rule"].search([]).write({"active": False})
+        # The demo also leaves one variation deliberately unsigned, so the
+        # approval screens are not empty in a demo database. Archiving the
+        # rules does not touch a request already raised against them, and its
+        # step would show up in every inbox assertion below.
+        cls.env["construction.approval.request"].search(
+            [("state", "=", "pending")]).action_cancel()
         cls.boq = cls.env["construction.boq"].create(
             {"name": "Main bill", "project_id": cls.project.id})
 
