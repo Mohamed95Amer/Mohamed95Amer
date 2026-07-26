@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_exposure" model="ir.actions.client">
+        <field name="name">Commercial Exposure</field>
+        <field name="tag">construction_report.exposure</field>
+    </record>
+
+    <!-- Under the commercial menu, restricted to managers: this is the
+         company's position, not a project's. -->
+    <menuitem id="menu_exposure" name="Commercial Exposure"
+              parent="construction_base.menu_construction_root"
+              action="action_exposure" sequence="6"
+              groups="construction_base.group_construction_manager"/>
+</odoo>

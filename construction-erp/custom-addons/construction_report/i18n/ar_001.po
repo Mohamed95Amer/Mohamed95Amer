@@ -423,3 +423,123 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_form
 msgid "Value — what the client owes"
 msgstr ""
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Commercial Exposure"
+msgstr "الانكشاف التجاري"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Commercial exposure"
+msgstr "الانكشاف التجاري"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Contract value"
+msgstr "قيمة العقد"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Approved variations"
+msgstr "أوامر التغيير المعتمدة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "of contract"
+msgstr "من قيمة العقد"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Retention held"
+msgstr "المحتجزات لدى العميل"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "cash sitting with the client"
+msgstr "مبالغ محتجزة لدى العميل"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Certified, not invoiced"
+msgstr "معتمد ولم يُفوتر"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "earned and not yet billed"
+msgstr "مستحق ولم تصدر به فاتورة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Waiting for a signature"
+msgstr "بانتظار التوقيع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Waiting for signature"
+msgstr "بانتظار التوقيع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "See all"
+msgstr "عرض الكل"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "By project"
+msgstr "حسب المشروع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Ordered by how far variations have moved the contract"
+msgstr "مرتبة حسب أثر أوامر التغيير على قيمة العقد"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Adding it up…"
+msgstr "نجمع الأرقام…"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "live projects"
+msgstr "مشاريع قائمة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Step"
+msgstr "الخطوة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Days"
+msgstr "أيام"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Variations"
+msgstr "أوامر التغيير"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Uninvoiced"
+msgstr "غير مفوتر"

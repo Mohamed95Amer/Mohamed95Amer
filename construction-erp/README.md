@@ -62,7 +62,11 @@ Community** app (`om_account_accountant` + 7 companion modules). See
 - **construction_form** — no-code inspection/checklist templates, recurring
   inspections, photo/signature evidence and PDF field reports.
 - **construction_ui** — Odoo 19-inspired responsive command center, app
-  workspaces, live KPIs, saved-view dashboard access and backend visual polish.
+  workspaces, live KPIs, saved-view dashboard access and backend visual polish,
+  plus **My Day**: everything assigned to one person — approvals waiting on
+  them, their defects, inspections, tasks, RFIs and permits — on one thumb-sized
+  screen, ordered by how much trouble it causes to ignore. See
+  [`docs/screens.md`](docs/screens.md).
 - **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate
@@ -79,7 +83,11 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   commercial control: contract value and certified value against budget,
   committed and incurred cost, giving earned margin, forecast final margin and
   the movement against the margin the job was tendered at. Overspend already
-  signed away in subcontracts shows up in the forecast; CVR PDF.
+  signed away in subcontracts shows up in the forecast; CVR PDF. Also
+  **Commercial Exposure**: contract value, approved variations against it,
+  retention held and work certified but not invoiced across the whole
+  portfolio, with what is sitting above a signature threshold right now — the
+  board's question rather than the site's.
 - **construction_tender** — **tender packages**: pull the scope from the BOQ so
   its budget travels with it, invite bidders, and compare submissions **line by
   line** — a bid with unpriced lines has not offered the whole scope, which bid

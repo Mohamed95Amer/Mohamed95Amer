@@ -1873,6 +1873,52 @@ def translate(source):
     return translated, custom, mechanical
 
 
+CUSTOM.update(
+    {
+        # My Day — one person's own work, gathered from wherever it lives
+        "My Day": "يومي",
+        "Good morning": "صباح الخير",
+        "Good afternoon": "مساء الخير",
+        "Good evening": "طاب مساؤك",
+        "Nothing is waiting on you": "لا شيء بانتظارك",
+        "Nothing is waiting on you.": "لا شيء بانتظارك.",
+        "%(total)s open, %(urgent)s of them late.":
+            "%(total)s مفتوح، منها %(urgent)s متأخر.",
+        "%s open, none late.": "%s مفتوح، ولا شيء متأخر.",
+        "Gathering your day…": "نجمع مهام يومك…",
+        "Waiting for my approval": "بانتظار اعتمادي",
+        "Defects assigned to me": "العيوب المسندة إليّ",
+        "My inspections": "عمليات الفحص الخاصة بي",
+        "My tasks": "مهامي",
+        "RFIs in my court": "طلبات المعلومات في عهدتي",
+        "Permits I supervise": "التصاريح التي أشرف عليها",
+
+        # Commercial exposure — the board's question rather than the site's
+        "Commercial Exposure": "الانكشاف التجاري",
+        "Commercial exposure": "الانكشاف التجاري",
+        "Contract value": "قيمة العقد",
+        "Approved variations": "أوامر التغيير المعتمدة",
+        "of contract": "من قيمة العقد",
+        "Retention held": "المحتجزات لدى العميل",
+        "cash sitting with the client": "مبالغ محتجزة لدى العميل",
+        "Certified, not invoiced": "معتمد ولم يُفوتر",
+        "earned and not yet billed": "مستحق ولم تصدر به فاتورة",
+        "Waiting for a signature": "بانتظار التوقيع",
+        "Waiting for signature": "بانتظار التوقيع",
+        "See all": "عرض الكل",
+        "By project": "حسب المشروع",
+        "Ordered by how far variations have moved the contract":
+            "مرتبة حسب أثر أوامر التغيير على قيمة العقد",
+        "Adding it up…": "نجمع الأرقام…",
+        "live projects": "مشاريع قائمة",
+        "Step": "الخطوة",
+        "Days": "أيام",
+        "Variations": "أوامر التغيير",
+        "Uninvoiced": "غير مفوتر",
+    }
+)
+
+
 def make_catalog(metadata):
     catalog = polib.POFile()
     catalog.metadata = dict(metadata)
