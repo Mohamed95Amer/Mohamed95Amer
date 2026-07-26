@@ -115,6 +115,48 @@ and not yet approved" into the contract.
 
 These passwords exist in demo data only.
 
+## Turning on the 3D model viewer
+
+Open a BIM model and you may get **"The 3D libraries are not installed"**. That
+is expected on a fresh copy, not a fault: the viewer's two libraries — web-ifc
+and three.js — are about 6 MB and are fetched by a script rather than committed
+to the repository. Everything else about the model, its element index and the
+records linked to it, works without them.
+
+Run this **on your own machine, in the `construction-erp` folder** — not inside
+the container. Docker mounts `custom-addons` read-only, so the container cannot
+write these files even if you ask it to.
+
+**Mac or Linux**
+
+```bash
+./scripts/fetch-bim-libs.sh
+```
+
+**Windows**
+
+The `.sh` script cannot run in PowerShell, so there is a PowerShell version:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\fetch-bim-libs.ps1
+```
+
+Either way it downloads about 8 MB and prints `>> BIM libraries in ...`. Then
+**reload the model page in your browser**. No restart, no reinstall — the files
+are served straight off disk.
+
+If your company blocks `registry.npmjs.org`, download the two packages by hand
+from any machine that can reach it and drop the files here:
+
+```
+custom-addons/construction_bim/static/lib/web-ifc/web-ifc-api-iife.js
+custom-addons/construction_bim/static/lib/web-ifc/web-ifc.wasm
+custom-addons/construction_bim/static/lib/three/three.module.min.js
+```
+
+They come from `web-ifc@0.0.77` and `three@0.170.0` — both from the npm
+registry, MPL-2.0 and MIT respectively.
+
 ## Stopping, starting, removing
 
 ```bash

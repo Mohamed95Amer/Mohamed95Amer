@@ -250,6 +250,7 @@ web-ifc's browser build alone is 6 MB. Fetch them once:
 
 ```bash
 scripts/fetch-bim-libs.sh        # web-ifc (MPL-2.0) + three.js (MIT), pinned
+scripts/fetch-bim-libs.ps1       # the same, for Windows PowerShell
 ```
 
 Everything else about a BIM model — the element index and its linked RFIs,
