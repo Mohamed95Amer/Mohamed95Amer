@@ -2,9 +2,16 @@
 // site engineer opens standing up, so the rows are large and the count is the
 // thing the eye lands on.
 .o_my_day {
+    height: 100%;
+    min-height: 0;
     max-width: 720px;
     margin: 0 auto;
     padding: 24px 16px 48px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
 }
 
 .o_my_day_head {
@@ -107,4 +114,15 @@
 
     h2 { margin: 0; font-size: 1.1rem; }
     p { margin: 0; max-width: 420px; }
+}
+
+@media (max-width: 575.98px) {
+    .o_my_day { padding: 16px 12px 36px; }
+    .o_my_day_head {
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 16px;
+    }
+    .o_my_day_row { padding: 13px 12px; gap: 10px; }
+    .o_my_day_urgent { display: none; }
 }

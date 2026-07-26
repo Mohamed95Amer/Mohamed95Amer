@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="asset_tag_landing" name="Secure asset scan">
+        <t t-call="web.frontend_layout">
+            <t t-set="title">Majal · Secure asset scan</t>
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="no_livechat" t-value="True"/>
+            <t t-set="body_classname" t-value="'bg-100'"/>
+            <main class="container py-4 py-md-5" style="max-width: 720px">
+                <section class="card border-0 shadow-sm overflow-hidden">
+                    <div class="p-4 text-white" style="background:#173b43">
+                        <div class="small text-uppercase opacity-75">Majal · Secure asset scan</div>
+                        <h1 class="h3 mt-2 mb-1" t-esc="asset.name"/>
+                        <div class="opacity-75" t-esc="asset.barcode"/>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <div class="small text-muted">Location</div>
+                                <strong t-esc="asset.facility_location_id.complete_name or 'Not assigned'"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="small text-muted">Criticality</div>
+                                <strong class="text-capitalize" t-esc="asset.criticality"/>
+                            </div>
+                        </div>
+                        <div class="alert alert-light border">
+                            You are signed in as <strong t-esc="request.env.user.name"/>.
+                            Confirming records who verified this physical tag and when.
+                        </div>
+                        <form t-att-action="'/majal/asset/%s/%s/confirm' % (asset.tag_token, source)"
+                              method="post">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg w-100 mb-2">
+                                Confirm scan and open asset
+                            </button>
+                        </form>
+                        <a t-att-href="backend_url"
+                           class="btn btn-outline-secondary btn-lg w-100">
+                            Open without recording
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </t>
+    </template>
+</odoo>

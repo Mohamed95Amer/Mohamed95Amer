@@ -52,6 +52,7 @@ export class BimViewer extends Component {
         this.action = useService("action");
         this.notification = useService("notification");
         this.canvasRef = useRef("canvas");
+        this.sideRef = useRef("side");
         this.modelId =
             this.props.action?.params?.model_id ||
             this.props.action?.context?.active_id;
@@ -187,7 +188,10 @@ export class BimViewer extends Component {
         this.frame(bounds);
         this.attachControls();
         this.resize();
-        window.addEventListener("resize", this.resize.bind(this));
+        this.onWindowResize = this.resize.bind(this);
+        window.addEventListener("resize", this.onWindowResize);
+        this.resizeObserver = new ResizeObserver(() => this.resize());
+        this.resizeObserver.observe(canvas.parentElement);
         canvas.addEventListener("click", this.onPick.bind(this));
         this.drawPins();
         this.render();
@@ -1456,6 +1460,14 @@ export class BimViewer extends Component {
         this.state.filter = value;
     }
 
+    showDetails() {
+        this.sideRef.el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    showModel() {
+        this.canvasRef.el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
     resize() {
         const canvas = this.canvasRef.el;
         if (!canvas || !this.renderer) {
@@ -1475,7 +1487,10 @@ export class BimViewer extends Component {
     }
 
     dispose() {
-        window.removeEventListener("resize", this.resize);
+        if (this.onWindowResize) {
+            window.removeEventListener("resize", this.onWindowResize);
+        }
+        this.resizeObserver?.disconnect();
         if (this.api && this.ifcModelId !== undefined) {
             try {
                 this.api.CloseModel(this.ifcModelId);

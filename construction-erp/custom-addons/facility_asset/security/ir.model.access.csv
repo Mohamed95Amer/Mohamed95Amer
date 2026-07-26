@@ -8,3 +8,5 @@ access_fac_failure_user,failure.code user,model_facility_failure_code,maintenanc
 access_fac_failure_all,failure.code read,model_facility_failure_code,base.group_user,1,0,0,0
 access_fac_spare_user,facility.spare.line user,model_facility_spare_line,maintenance.group_equipment_manager,1,1,1,1
 access_fac_spare_all,facility.spare.line read,model_facility_spare_line,base.group_user,1,0,0,0
+access_asset_scan_user,facility.asset.scan user,model_facility_asset_scan,base.group_user,1,0,1,0
+access_asset_scan_manager,facility.asset.scan manager,model_facility_asset_scan,maintenance.group_equipment_manager,1,0,1,0

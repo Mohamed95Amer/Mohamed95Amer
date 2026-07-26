@@ -7,6 +7,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0;
+    overflow: hidden;
     background: #eef1ef;
     color: var(--bim-ink);
 }
@@ -107,6 +109,11 @@
     min-height: 0;
     border-left: 1px solid var(--bim-rule);
     background: #fff;
+}
+
+.o_bim_mobile_details,
+.o_bim_mobile_model {
+    display: none !important;
 }
 
 .o_bim_filters {
@@ -390,8 +397,120 @@
 }
 
 @media (max-width: 991.98px) {
-    .o_bim_body { grid-template-columns: minmax(0, 1fr); }
-    .o_bim_side { border-left: 0; border-top: 1px solid var(--bim-rule); max-height: 40vh; }
+    .o_bim_bar {
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .o_bim_tools {
+        order: 3;
+        width: 100%;
+        margin-inline-start: 0;
+    }
+    .o_bim_body {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(320px, 60vh) auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+        scroll-behavior: smooth;
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+    }
+    .o_bim_side {
+        min-height: 280px;
+        max-height: none;
+        border-top: 1px solid var(--bim-rule);
+        border-left: 0;
+    }
+    .o_bim_mobile_details,
+    .o_bim_mobile_model {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .o_bim_mobile_model {
+        min-height: 44px;
+        margin: 10px 10px 0;
+        color: var(--bim-deep);
+        border: 1px solid var(--bim-rule);
+        border-radius: 7px;
+        background: #f5f8f6;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .o_bim_bar {
+        align-items: stretch;
+        padding: 11px 12px;
+    }
+    .o_bim_title h1 {
+        overflow: hidden;
+        font-size: 1.05rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .o_bim_tools {
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+
+        button,
+        .o_bim_select {
+            min-height: 42px;
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+    }
+    .o_bim_counts {
+        width: 100%;
+        gap: 24px;
+        padding-bottom: 2px;
+        overflow-x: auto;
+    }
+    .o_bim_body {
+        grid-template-rows: minmax(300px, 56vh) auto;
+    }
+    .o_bim_overlay {
+        padding: 22px 16px;
+
+        pre {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+    }
+    .o_bim_selection,
+    .o_bim_clash,
+    .o_bim_draft {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+    }
+    .o_bim_overlays {
+        top: 12px;
+        right: 12px;
+        max-width: calc(100% - 24px);
+    }
+    .o_bim_section {
+        right: 12px;
+        left: 12px;
+        flex-wrap: wrap;
+
+        input[type="range"] { min-width: 0; flex: 1; }
+    }
+    .o_bim_fourd {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        flex-wrap: wrap;
+        transform: none;
+
+        .o_bim_play_range { width: 100%; }
+    }
 }
 
 /* ---------- toolbar ---------- */

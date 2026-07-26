@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_asset_tag" model="report.paperformat">
+        <field name="name">Majal Asset Tag 70 × 50 mm</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">50</field>
+        <field name="page_width">70</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_asset_tag" model="ir.actions.report">
+        <field name="name">Asset QR / NFC Tag</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">facility_asset.report_asset_tag</field>
+        <field name="report_file">facility_asset.report_asset_tag</field>
+        <field name="paperformat_id" ref="paperformat_asset_tag"/>
+        <field name="print_report_name">'Asset Tag - %s' % (object.barcode or object.name)</field>
+        <field name="binding_model_id" ref="maintenance.model_maintenance_equipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_asset_tag">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page" style="font-family:Arial,sans-serif;padding:0;margin:0">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <div style="width:35mm;height:35mm">
+                            <img t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=320&amp;height=320' % o.qr_tag_encoded_url"
+                                 style="width:35mm;height:35mm" alt="Asset QR code"/>
+                        </div>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:9px;letter-spacing:1px;color:#537078">
+                                MAJAL · ASSET
+                            </div>
+                            <div style="font-size:15px;font-weight:700;line-height:1.1;margin:4px 0"
+                                 t-esc="o.name"/>
+                            <div style="font-size:11px;font-weight:700;color:#173b43"
+                                 t-esc="o.barcode"/>
+                            <div style="font-size:8px;color:#6a797d;margin-top:4px"
+                                 t-esc="o.facility_location_id.complete_name or ''"/>
+                            <div style="font-size:8px;color:#6a797d;margin-top:5px">
+                                Scan QR or tap NFC · Sign-in required
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

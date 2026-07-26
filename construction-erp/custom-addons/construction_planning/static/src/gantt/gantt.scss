@@ -282,6 +282,25 @@ html[dir="rtl"] .o_prog_gantt {
 }
 
 @media (max-width: 767.98px) {
+    .o_prog_toolbar {
+        align-items: stretch;
+        flex-direction: column;
+
+        .o_prog_toolbar_left,
+        .o_prog_toolbar_right {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .o_prog_toolbar_right { justify-content: flex-start; }
+        .o_prog_project { min-width: 150px; flex: 1; }
+        .btn { min-height: 42px; white-space: nowrap; }
+    }
+    .o_prog_summary {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+    }
+    .o_prog_body { min-height: 320px; }
     .o_prog_names { width: 150px; flex-basis: 150px; }
     .o_prog_summary .o_prog_stat { min-width: 88px; padding: 6px 9px; }
 }

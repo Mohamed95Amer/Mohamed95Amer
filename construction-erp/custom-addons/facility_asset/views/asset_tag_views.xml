@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_equipment_form_asset_tag" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.asset.tag</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_scans" type="object"
+                        class="oe_stat_button" icon="fa-history">
+                    <field name="scan_count" widget="statinfo" string="Tag scans"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Asset Tag" name="asset_tag">
+                    <group>
+                        <group string="Identity">
+                            <field name="barcode" string="Asset code"/>
+                            <field name="tag_status" widget="badge"
+                                   decoration-success="tag_status == 'active'"
+                                   decoration-warning="tag_status == 'missing'"
+                                   decoration-danger="tag_status == 'retired'"/>
+                            <field name="nfc_uid"/>
+                            <field name="tag_token" groups="maintenance.group_equipment_manager"/>
+                        </group>
+                        <group string="Last verified">
+                            <field name="last_scan_at"/>
+                            <field name="last_scan_user_id"/>
+                            <field name="last_scan_source"/>
+                        </group>
+                    </group>
+                    <group string="Secure tag destinations">
+                        <field name="qr_tag_url" readonly="1"/>
+                        <field name="nfc_tag_url" readonly="1"/>
+                        <field name="qr_tag_encoded_url" invisible="1"/>
+                    </group>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button name="action_open_tag_landing" type="object"
+                                class="btn btn-secondary"
+                                string="Test secure scan"/>
+                        <button name="%(action_report_asset_tag)d" type="action"
+                                class="btn btn-primary"
+                                string="Print QR / NFC label"/>
+                        <button name="action_rotate_tag_token" type="object"
+                                class="btn btn-outline-danger"
+                                string="Replace compromised tag"
+                                confirm="The existing QR and NFC links will stop working. Continue?"
+                                groups="maintenance.group_equipment_manager"/>
+                    </div>
+                    <field name="scan_ids" readonly="1">
+                        <list create="0" edit="0" delete="0">
+                            <field name="scanned_at"/>
+                            <field name="source" widget="badge"/>
+                            <field name="user_id"/>
+                            <field name="facility_location_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_asset_scan_list" model="ir.ui.view">
+        <field name="name">facility.asset.scan.list</field>
+        <field name="model">facility.asset.scan</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" default_order="scanned_at desc">
+                <field name="scanned_at"/>
+                <field name="equipment_id"/>
+                <field name="source" widget="badge"/>
+                <field name="user_id"/>
+                <field name="facility_location_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_asset_scan_search" model="ir.ui.view">
+        <field name="name">facility.asset.scan.search</field>
+        <field name="model">facility.asset.scan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id"/>
+                <field name="user_id"/>
+                <field name="facility_location_id"/>
+                <filter name="qr" string="QR" domain="[('source', '=', 'qr')]"/>
+                <filter name="nfc" string="NFC" domain="[('source', '=', 'nfc')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_asset" string="Asset"
+                            context="{'group_by': 'equipment_id'}"/>
+                    <filter name="group_source" string="Method"
+                            context="{'group_by': 'source'}"/>
+                    <filter name="group_day" string="Day"
+                            context="{'group_by': 'scanned_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_asset_scan" model="ir.actions.act_window">
+        <field name="name">Asset Tag Scans</field>
+        <field name="res_model">facility.asset.scan</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_asset_scan_search"/>
+    </record>
+</odoo>

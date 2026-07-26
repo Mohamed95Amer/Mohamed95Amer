@@ -61,6 +61,11 @@
                             title="Show everything again">
                         <i class="fa fa-refresh"/> Reset
                     </button>
+                    <button class="o_bim_mobile_details"
+                            t-on-click="showDetails"
+                            title="Open linked records and model details">
+                        <i class="fa fa-list"/> Details
+                    </button>
                 </div>
                 <div class="o_bim_counts">
                     <span><strong t-esc="state.info.element_count"/> elements</span>
@@ -252,7 +257,11 @@
                     </div>
                 </div>
 
-                <aside class="o_bim_side">
+                <aside class="o_bim_side" t-ref="side">
+                    <button class="o_bim_mobile_model"
+                            t-on-click="showModel">
+                        <i class="fa fa-cube"/> Back to model
+                    </button>
                     <div class="o_bim_tabs">
                         <button t-att-class="{'active': state.tab === 'elements'}"
                                 t-on-click="() => this.setTab('elements')">

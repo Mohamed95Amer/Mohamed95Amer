@@ -29,6 +29,11 @@
               parent="menu_facility_root"
               action="action_meter"
               sequence="40"/>
+    <menuitem id="menu_facility_tag_scans"
+              name="Tag Scan History"
+              parent="menu_facility_root"
+              action="action_asset_scan"
+              sequence="45"/>
 
     <menuitem id="menu_facility_config"
               name="Configuration"

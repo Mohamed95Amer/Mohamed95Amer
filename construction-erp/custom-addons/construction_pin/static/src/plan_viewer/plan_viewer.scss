@@ -13,6 +13,8 @@
 
     background: var(--pv-bg);
     color: var(--pv-text);
+    min-height: 0;
+    overflow: hidden;
 
     // ------------------------------------------------------------------
     // Toolbar
@@ -225,6 +227,41 @@
         i { color: #c3cbd9; }
         p { margin: 0; max-width: 420px; }
         .fw-bold { color: var(--pv-text); font-size: 16px; }
+    }
+}
+
+@media (max-width: 767.98px) {
+    .o_plan_viewer {
+        .o_plan_toolbar {
+            align-items: stretch;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            padding: 10px 12px;
+        }
+        .o_plan_toolbar_left,
+        .o_plan_toolbar_right,
+        .o_plan_legend {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .o_plan_toolbar_right {
+            margin-left: 0;
+
+            .btn { min-height: 42px; white-space: nowrap; }
+        }
+        .o_plan_rev_select { min-width: 150px; flex: 1; }
+        .o_plan_legend {
+            flex-wrap: nowrap;
+            padding-bottom: 2px;
+            overscroll-behavior-x: contain;
+        }
+        .o_legend_chip { min-height: 40px; flex: 0 0 auto; }
+        .o_plan_stage { justify-content: flex-start; padding: 12px; }
+        .o_plan_scroll {
+            min-height: 0;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
     }
 }
 

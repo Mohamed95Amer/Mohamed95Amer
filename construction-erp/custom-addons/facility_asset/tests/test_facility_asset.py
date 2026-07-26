@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 from odoo.tests import TransactionCase, tagged
+from odoo.exceptions import AccessError
 
 
 @tagged("post_install", "-at_install")
@@ -72,3 +73,32 @@ class TestFacilityAsset(TransactionCase):
             {"name": "AHU-01 Fan", "parent_id": self.asset.id})
         self.assertIn(child, self.asset.child_ids)
         self.assertEqual(self.asset.asset_count_children, 1)
+
+    def test_secure_asset_tag_identity(self):
+        second = self.env["maintenance.equipment"].create({"name": "Pump-02"})
+        self.assertTrue(self.asset.barcode.startswith("AST-"))
+        self.assertTrue(self.asset.tag_token)
+        self.assertNotEqual(self.asset.barcode, second.barcode)
+        self.assertNotEqual(self.asset.tag_token, second.tag_token)
+        self.assertIn("/web/login?db=erp&redirect=", self.asset.qr_tag_url)
+        self.assertIn(
+            f"%2Fmajal%2Fasset%2F{self.asset.tag_token}%2Fqr",
+            self.asset.qr_tag_url)
+        self.assertIn(
+            f"%2Fmajal%2Fasset%2F{self.asset.tag_token}%2Fnfc",
+            self.asset.nfc_tag_url)
+        self.assertIn("%3A", self.asset.qr_tag_encoded_url)
+
+    def test_tag_scan_is_audited(self):
+        scan = self.asset.record_tag_scan("nfc")
+        self.assertEqual(scan.equipment_id, self.asset)
+        self.assertEqual(scan.source, "nfc")
+        self.assertEqual(scan.user_id, self.env.user)
+        self.assertEqual(scan.facility_location_id, self.room)
+        self.assertEqual(self.asset.last_scan_at, scan.scanned_at)
+        self.assertEqual(self.asset.scan_count, 1)
+
+    def test_inactive_tag_cannot_record_scan(self):
+        self.asset.tag_status = "retired"
+        with self.assertRaises(AccessError):
+            self.asset.record_tag_scan("qr")
