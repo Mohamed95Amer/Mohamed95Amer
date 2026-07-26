@@ -18,6 +18,7 @@
     ],
     "demo": [
         "demo/project_demo.xml",
+        "demo/approval_demo.xml",
     ],
     "application": True,
     "installable": True,

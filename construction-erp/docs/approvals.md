@@ -105,7 +105,32 @@ person on the step rather than a group that others inherit.
   value and links into an authenticated session. A token in a message body that
   approves a quarter-million variation is a signature anybody who sees the
   phone can forge.
-- **Not every model is wired up yet.** Bills of quantities and variation orders
-  are, because that is where the money is. Progress claims, permits, submittals,
-  daily logs and inspections still use their own buttons; moving them across is
-  a matter of inheriting the mixin and calling `_check_approved()`.
+- **Not every model is wired up.** Six are: bills of quantities, variation
+  orders, payment certificates, permits to work, daily logs and inspections.
+  Moving another across is a matter of inheriting `construction.approvable`,
+  answering `_approval_amount()`, and calling `_check_approved()` from the
+  action that commits the document. Anything not wired up keeps its own button
+  and its own rules.
+
+## What each wired document is checked at
+
+The check sits on the action that commits the document, not on the button that
+shows it — a `groups` attribute in a view hides a control, it does not stop the
+method being called from a script or a controller.
+
+| Document | Checked in | Matched on | The last signature |
+|---|---|---|---|
+| Bill of quantities | `action_approve` | sell total | approves the bill |
+| Variation order | `action_approve` | absolute sell total | approves the variation |
+| Payment certificate | `action_certify` | value of the period | certifies it |
+| Permit to work | `action_approve` | kind only | issues the permit |
+| Daily log | `action_approve` | kind only | approves the log |
+| Inspection | `action_approve` | kind only | approves the inspection |
+
+Permits, logs and inspections are worth nothing and matter enormously, so their
+rules match on kind rather than value: hot work and confined space want the
+safety manager, everything else the project manager.
+
+The last signature *completes the document* rather than merely unlocking the
+button. Without that the approval finishes, the permit stays submitted, and it
+reads to everybody as the system having lost it.

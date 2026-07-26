@@ -4,7 +4,7 @@ from odoo import api, fields, models
 class ConstructionDailyLog(models.Model):
     _name = "construction.daily.log"
     _description = "Daily Site Log"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "construction.approvable"]
     _order = "log_date desc, id desc"
     _rec_name = "display_name"
 
@@ -65,8 +65,19 @@ class ConstructionDailyLog(models.Model):
     def action_submit(self):
         self.filtered(lambda l: l.state == "draft").state = "submitted"
 
-    def action_approve(self):
+    def _approval_amount(self):
+        """A day's record has no value. Rules for it match on kind alone."""
+        self.ensure_one()
+        return 0.0
+
+    def _on_approval_granted(self, request):
         self.filtered(lambda l: l.state == "submitted").state = "approved"
+        return True
+
+    def action_approve(self):
+        for log in self.filtered(lambda l: l.state == "submitted"):
+            log._check_approved()
+            log.state = "approved"
 
     def action_reset(self):
         self.state = "draft"

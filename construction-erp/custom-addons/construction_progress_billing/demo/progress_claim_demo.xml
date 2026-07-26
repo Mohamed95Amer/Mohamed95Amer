@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Approve the demo BOQ so it can be certified against -->
-    <function model="construction.boq" name="action_approve">
-        <value eval="[ref('construction_boq.boq_demo_alnoor')]"/>
-    </function>
+    <!-- The demo bill is already approved: construction_boq's demo walks it
+         through its own approval chain, which is where that belongs. -->
 
     <record id="claim_ipc1" model="construction.progress.claim">
         <field name="project_id" ref="construction_base.project_demo_alnoor"/>
@@ -19,11 +17,39 @@
 
     <!-- Certify it. A demo that leaves every certificate in draft shows the
          whole revenue chain as zero: no certified value, no % complete, no
-         earned margin, and a dashboard that looks broken rather than empty. -->
+         earned margin, and a dashboard that looks broken rather than empty.
+
+         This one is worth about 4.36m, so it falls in the band that wants a
+         third signature. Nobody calls certify here: the last signature does
+         it, which is the behaviour worth demonstrating. -->
     <function model="construction.progress.claim" name="action_submit">
         <value eval="[ref('claim_ipc1')]"/>
     </function>
-    <function model="construction.progress.claim" name="action_certify">
-        <value eval="[ref('claim_ipc1')]"/>
+    <function model="construction.progress.claim" name="action_request_approval"
+              eval="[ref('claim_ipc1')]"/>
+
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_qs">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.progress.claim'),
+            ('res_id', '=', ref('claim_ipc1')),
+            ('state', '=', 'pending'),
+        ]"/>
+    </function>
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_pm">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.progress.claim'),
+            ('res_id', '=', ref('claim_ipc1')),
+            ('state', '=', 'pending'),
+        ]"/>
+    </function>
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_director">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.progress.claim'),
+            ('res_id', '=', ref('claim_ipc1')),
+            ('state', '=', 'pending'),
+        ]"/>
     </function>
 </odoo>

@@ -10,7 +10,7 @@ class ConstructionProgressClaim(models.Model):
     _name = "construction.progress.claim"
     _description = "Progress Claim / IPC"
     _inherit = ["construction.document.mixin", "mail.thread",
-                "mail.activity.mixin"]
+                "mail.activity.mixin", "construction.approvable"]
     _doc_prefix = "IPC"
     _order = "project_id, sequence_no"
 
@@ -125,11 +125,24 @@ class ConstructionProgressClaim(models.Model):
     def action_submit(self):
         self.filtered(lambda c: c.state == "draft").state = "submitted"
 
+    def _approval_amount(self):
+        """What the certificate is worth this period."""
+        self.ensure_one()
+        return abs(self.amount_this_period or 0.0)
+
+    def _on_approval_granted(self, request):
+        self.filtered(lambda c: c.state == "submitted").action_certify()
+        return True
+
     def action_certify(self):
         for claim in self:
             if claim.state != "submitted":
                 raise UserError(self.env._(
                     "Only submitted claims can be certified."))
+            # Certifying writes certified quantities back onto the bill and
+            # is what an invoice is raised from. The most consequential button
+            # in the suite, and until now the least guarded.
+            claim._check_approved()
             for line in claim.line_ids:
                 line.boq_line_id.qty_certified = line.qty_cumulative
             claim.state = "certified"

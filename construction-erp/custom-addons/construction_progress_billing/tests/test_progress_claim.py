@@ -113,3 +113,75 @@ class TestProgressClaim(TransactionCase):
         claim.action_certify()
         with self.assertRaises(UserError):
             claim.action_create_invoice()
+
+
+@tagged("post_install", "-at_install")
+class TestClaimApproval(TransactionCase):
+    """Certifying writes certified quantities back onto the bill and is what an
+    invoice is raised from — the most consequential button in the suite, and
+    until now the least guarded."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["construction.approval.rule"].search([]).write({"active": False})
+        cls.project = cls.env["project.project"].create(
+            {"name": "Certificates", "is_construction": True,
+             "project_code": "CERT"})
+        cls.boq = cls.env["construction.boq"].create(
+            {"name": "Bill", "project_id": cls.project.id})
+        cls.line = cls.env["construction.boq.line"].create({
+            "name": "Concrete", "boq_id": cls.boq.id,
+            "quantity": 100.0, "unit_rate": 500.0,
+        })
+
+        def user(login, group):
+            return cls.env["res.users"].create({
+                "name": login, "login": login, "email": f"{login}@majal.test",
+                "groups_id": [(6, 0, [cls.env.ref("base.group_user").id,
+                                      cls.env.ref(group).id])]})
+
+        cls.qs = user("cert_qs", "construction_base.group_construction_commercial")
+        cls.pm = user("cert_pm", "construction_base.group_construction_pm")
+        cls.env["construction.approval.rule"].create({
+            "name": "Certificates",
+            "model_id": cls.env["ir.model"]._get_id("construction.progress.claim"),
+            "step_ids": [(0, 0, {
+                "name": "Project manager",
+                "group_id": cls.env.ref(
+                    "construction_base.group_construction_pm").id})],
+        })
+
+    def _claim(self):
+        claim = self.env["construction.progress.claim"].create({
+            "name": "IPC 1", "project_id": self.project.id,
+            "boq_id": self.boq.id,
+        })
+        claim.action_load_lines()
+        for line in claim.line_ids:
+            # This period, not cumulative: cumulative is previous + this and
+            # is computed, so assigning it is quietly undone on recompute.
+            line.qty_this_period = 40.0
+        claim.action_submit()
+        return claim
+
+    def test_a_claim_cannot_be_certified_without_approval(self):
+        claim = self._claim()
+        with self.assertRaises(UserError):
+            claim.with_user(self.qs).action_certify()
+        self.assertEqual(claim.state, "submitted")
+
+    def test_approval_certifies_and_writes_back_to_the_bill(self):
+        claim = self._claim()
+        request = claim.with_user(self.qs).action_request_approval()
+
+        request.step_ids.with_user(self.pm).action_approve()
+
+        claim.invalidate_recordset()
+        self.line.invalidate_recordset()
+        self.assertEqual(claim.state, "certified")
+        self.assertEqual(self.line.qty_certified, 40.0)
+
+    def test_the_value_of_the_period_decides_the_band(self):
+        claim = self._claim()
+        self.assertEqual(claim._approval_amount(), claim.amount_this_period)

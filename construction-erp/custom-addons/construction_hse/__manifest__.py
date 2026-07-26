@@ -19,6 +19,9 @@
         "views/hse_menus.xml",
         "report/hse_reports.xml",
     ],
-    "demo": ["demo/hse_demo.xml"],
+    "demo": [
+        "demo/hse_demo.xml",
+        "demo/approval_rules_demo.xml",
+    ],
     "installable": True,
 }

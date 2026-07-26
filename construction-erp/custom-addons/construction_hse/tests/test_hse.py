@@ -10,6 +10,9 @@ class TestConstructionHse(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Not a test of approvals: the demo rules would otherwise make
+        # every fixture that issues a permit a test of the engine.
+        cls.env["construction.approval.rule"].search([]).write({"active": False})
         cls.project = cls.env["project.project"].create(
             {"name": "HSE Test Project", "is_construction": True}
         )
@@ -238,3 +241,95 @@ class TestConstructionHse(TransactionCase):
         self.assertEqual(self.project.hse_live_permit_count, 0)
         self._approved_permit()
         self.assertEqual(self.project.hse_live_permit_count, 1)
+
+
+@tagged("post_install", "-at_install")
+class TestPermitApproval(TransactionCase):
+    """A permit is the case a value-band engine has to handle without a value.
+
+    It is worth nothing and matters enormously, so its rules match on kind:
+    hot work and confined space need the safety manager, everything else the
+    project manager.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Permits", "is_construction": True, "project_code": "PTW"})
+        cls.env["construction.approval.rule"].search([]).write({"active": False})
+
+        def user(login, group):
+            return cls.env["res.users"].create({
+                "name": login, "login": login, "email": f"{login}@majal.test",
+                "groups_id": [(6, 0, [cls.env.ref("base.group_user").id,
+                                      cls.env.ref(group).id])]})
+
+        cls.engineer = user("ptw_engineer",
+                            "construction_base.group_construction_site_engineer")
+        cls.safety = user("ptw_safety",
+                          "construction_base.group_construction_manager")
+        cls.env["construction.approval.rule"].create({
+            "name": "Hot work",
+            "model_id": cls.env["ir.model"]._get_id("construction.permit"),
+            "document_kind": "hot_work",
+            "step_ids": [(0, 0, {
+                "name": "Safety manager",
+                "group_id": cls.env.ref(
+                    "construction_base.group_construction_manager").id})],
+        })
+
+    def _permit(self, permit_type="hot_work"):
+        now = fields.Datetime.now()
+        permit = self.env["construction.permit"].create({
+            "name": "Welding to steelwork",
+            "project_id": self.project.id,
+            "permit_type": permit_type,
+            "valid_from": now,
+            "valid_to": now + timedelta(hours=8),
+            "precaution_ids": [(0, 0, {"name": "Fire watch", "mandatory": True})],
+        })
+        permit.action_submit()
+        permit.precaution_ids.write({"checked": True})
+        return permit
+
+    def test_a_rule_matches_on_kind_when_there_is_no_value(self):
+        self.assertEqual(self._permit()._approval_rule().name, "Hot work")
+
+    def test_an_unmatched_kind_keeps_the_old_behaviour(self):
+        """No rule covers an excavation permit here, so it approves as before."""
+        permit = self._permit("excavation")
+        permit.with_user(self.safety).action_approve()
+        self.assertEqual(permit.state, "approved")
+
+    def test_a_site_engineer_cannot_issue_a_hot_work_permit(self):
+        permit = self._permit()
+        with self.assertRaises(UserError):
+            permit.with_user(self.engineer).action_approve()
+        self.assertEqual(permit.state, "submitted")
+
+    def test_precautions_still_come_first(self):
+        """Approval does not replace the control it exists to protect."""
+        now = fields.Datetime.now()
+        permit = self.env["construction.permit"].create({
+            "name": "Welding", "project_id": self.project.id,
+            "permit_type": "hot_work",
+            "valid_from": now,
+            "valid_to": now + timedelta(hours=8),
+            "precaution_ids": [(0, 0, {"name": "Fire watch", "mandatory": True})],
+        })
+        permit.action_submit()
+        with self.assertRaises(UserError):
+            permit.with_user(self.safety).action_approve()
+
+    def test_the_last_signature_issues_the_permit(self):
+        """Otherwise the approval completes and the permit stays submitted,
+        which reads as the system having lost it."""
+        permit = self._permit()
+        request = permit.with_user(self.engineer).action_request_approval()
+
+        request.step_ids.with_user(self.safety).action_approve()
+
+        permit.invalidate_recordset()
+        self.assertEqual(permit.state, "approved")
+        self.assertEqual(permit.approved_by_id, self.safety)

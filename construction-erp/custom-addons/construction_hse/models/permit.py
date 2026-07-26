@@ -18,7 +18,8 @@ class ConstructionPermit(models.Model):
 
     _name = "construction.permit"
     _description = "Permit to Work"
-    _inherit = ["construction.document.mixin", "mail.thread", "mail.activity.mixin"]
+    _inherit = ["construction.document.mixin", "mail.thread",
+                "mail.activity.mixin", "construction.approvable"]
     _doc_prefix = "PTW"
     _order = "id desc"
 
@@ -146,6 +147,30 @@ class ConstructionPermit(models.Model):
                 )
             permit.state = "submitted"
 
+    def _approval_amount(self):
+        """A permit is worth nothing and matters enormously.
+
+        Rules for it therefore match on kind — hot work and confined space need
+        the safety manager, everything else the project manager — which is the
+        case a value-band engine has to handle without a value.
+        """
+        self.ensure_one()
+        return 0.0
+
+    def _on_approval_granted(self, request):
+        """The last signature issues the permit.
+
+        Without this the approval completes and the permit stays submitted,
+        which reads as the system having lost it.
+        """
+        self.filtered(lambda p: p.state == "submitted").write({
+            "state": "approved",
+            "approved_by_id": request.step_ids[-1:].decided_by_id.id
+                              or self.env.user.id,
+            "approved_date": fields.Datetime.now(),
+        })
+        return True
+
     def action_approve(self):
         for permit in self:
             if permit.state != "submitted":
@@ -158,6 +183,7 @@ class ConstructionPermit(models.Model):
                     "Every mandatory precaution must be confirmed before this "
                     "permit can be approved."
                 ))
+            permit._check_approved()
             permit.write({
                 "state": "approved",
                 "approved_by_id": self.env.user.id,

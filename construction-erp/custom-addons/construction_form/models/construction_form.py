@@ -141,7 +141,7 @@ class ConstructionFormQuestion(models.Model):
 class ConstructionFormInspection(models.Model):
     _name = "construction.form.inspection"
     _description = "Construction Inspection"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "construction.approvable"]
     _order = "scheduled_date desc, id desc"
 
     name = fields.Char(default=lambda self: _("New"), readonly=True, copy=False)
@@ -275,8 +275,19 @@ class ConstructionFormInspection(models.Model):
                 "completed_date": fields.Datetime.now(),
             })
 
-    def action_approve(self):
+    def _approval_amount(self):
+        """An inspection carries no value; rules match on kind alone."""
+        self.ensure_one()
+        return 0.0
+
+    def _on_approval_granted(self, request):
         self.filtered(lambda i: i.state == "submitted").state = "approved"
+        return True
+
+    def action_approve(self):
+        for inspection in self.filtered(lambda i: i.state == "submitted"):
+            inspection._check_approved()
+            inspection.state = "approved"
 
     def action_reject(self):
         self.filtered(lambda i: i.state == "submitted").state = "rejected"

@@ -192,9 +192,19 @@ class ConstructionApprovable(models.AbstractModel):
                 ("state", "=", "approved"),
             ], limit=1)
             if not latest:
-                raise UserError(self.env._(
-                    "%(document)s needs approving first — %(rule)s applies at "
-                    "this value.", document=record.display_name, rule=rule.name))
+                # A permit and a bill both arrive here, and only one of them
+                # has a value. Saying "applies at this value" about a permit
+                # reads as a bug in the sentence.
+                if record._approval_amount():
+                    message = self.env._(
+                        "%(document)s needs approving first — %(rule)s applies "
+                        "at this value.",
+                        document=record.display_name, rule=rule.name)
+                else:
+                    message = self.env._(
+                        "%(document)s needs approving first — %(rule)s applies.",
+                        document=record.display_name, rule=rule.name)
+                raise UserError(message)
         return True
 
     def action_view_approval(self):

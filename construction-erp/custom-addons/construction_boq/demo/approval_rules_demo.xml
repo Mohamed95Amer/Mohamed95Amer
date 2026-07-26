@@ -23,4 +23,34 @@
             }),
         ]"/>
     </record>
+
+    <!-- Then walk the demo bill through that rule rather than round it.
+
+         The whole downstream demo — claims, certified value, the CVR — needs
+         an approved bill, and it used to get one by calling the approve
+         button straight from demo data. That now (correctly) raises, and the
+         fix is not to exempt the demo: a demo that skips the control is a
+         demo of a system that does not have one. Requested as the loading
+         user, signed by two demo approvers, exactly as a person would.
+    -->
+    <function model="construction.boq" name="action_request_approval"
+              eval="[ref('construction_boq.boq_demo_alnoor')]"/>
+
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_qs">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.boq'),
+            ('res_id', '=', ref('construction_boq.boq_demo_alnoor')),
+            ('state', '=', 'pending'),
+        ]"/>
+    </function>
+
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_pm">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.boq'),
+            ('res_id', '=', ref('construction_boq.boq_demo_alnoor')),
+            ('state', '=', 'pending'),
+        ]"/>
+    </function>
 </odoo>
