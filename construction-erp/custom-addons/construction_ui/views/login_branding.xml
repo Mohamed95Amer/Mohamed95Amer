@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="majal_login_layout" inherit_id="web.login_layout" name="Majal Login">
+        <xpath expr="//t[@t-call='web.frontend_layout']" position="inside">
+            <t t-set="title">Majal</t>
+        </xpath>
+
+        <xpath expr="//div[hasclass('pb-3')]/img" position="replace">
+            <div class="o_majal_login_brand" aria-label="Majal">
+                <span class="o_majal_login_mark" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" role="img">
+                        <path d="M8 35V18l16-9 16 9v17l-16 9z"/>
+                        <path d="M16 33V21l8-4 8 4v12"/>
+                        <path d="M24 17v27"/>
+                    </svg>
+                </span>
+                <span class="o_majal_login_wordmark">
+                    <strong>Majal</strong>
+                    <small>Construction &amp; Facilities</small>
+                </span>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('small', 'mt-4')]" position="replace">
+            <div class="o_majal_login_footer">
+                Smart project and facility operations
+            </div>
+        </xpath>
+    </template>
+
+    <function model="res.users" name="write">
+        <value eval="[ref('base.user_admin'), ref('base.user_root')]"/>
+        <value eval="{'action_id': ref('construction_ui.action_construction_home')}"/>
+    </function>
+</odoo>

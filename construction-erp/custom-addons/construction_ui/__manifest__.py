@@ -51,6 +51,7 @@
         "views/facility_home_views.xml",
         "views/project_workspace_views.xml",
         "views/workspace_hub_views.xml",
+        "views/login_branding.xml",
         "views/majal_branding.xml",
         "views/app_icon_branding.xml",
     ],
@@ -74,6 +75,7 @@
             "construction_ui/static/src/scss/rtl.scss",
         ],
         "web.assets_frontend": [
+            "construction_ui/static/src/scss/login.scss",
             "construction_ui/static/src/scss/portal.scss",
         ],
     },

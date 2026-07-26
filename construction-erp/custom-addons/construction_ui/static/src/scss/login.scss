@@ -1,0 +1,105 @@
+body.bg-100 {
+    background:
+        radial-gradient(circle at 12% 12%, rgba(40, 180, 154, 0.16), transparent 32rem),
+        radial-gradient(circle at 88% 88%, rgba(21, 56, 76, 0.13), transparent 36rem),
+        #f4f7f8 !important;
+
+    .o_database_list {
+        max-width: 390px !important;
+        overflow: hidden;
+        border: 1px solid rgba(20, 56, 75, 0.08) !important;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.96) !important;
+        box-shadow: 0 24px 70px rgba(17, 46, 63, 0.13);
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-control {
+            min-height: 48px;
+            border-color: #d8e2e7;
+            border-radius: 12px;
+            background: #f9fbfc;
+
+            &:focus {
+                border-color: #28b49a;
+                box-shadow: 0 0 0 4px rgba(40, 180, 154, 0.13);
+            }
+        }
+
+        .btn-primary {
+            min-height: 48px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #173d51, #245d67);
+            box-shadow: 0 10px 24px rgba(23, 61, 81, 0.2);
+            font-weight: 700;
+
+            &:hover,
+            &:focus {
+                background: linear-gradient(135deg, #102f40, #1f696c);
+                transform: translateY(-1px);
+            }
+        }
+    }
+}
+
+.o_majal_login_brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    padding: 0.35rem 0 0.85rem;
+    color: #173d51;
+}
+
+.o_majal_login_mark {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #173d51, #276f70);
+    box-shadow: 0 10px 22px rgba(23, 61, 81, 0.2);
+
+    svg {
+        width: 36px;
+        height: 36px;
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2.6;
+    }
+}
+
+.o_majal_login_wordmark {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+
+    strong {
+        font-size: 1.65rem;
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
+
+    small {
+        margin-top: 0.35rem;
+        color: #6d7f88;
+        font-size: 0.72rem;
+        font-weight: 650;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+}
+
+.o_majal_login_footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e4ecef;
+    color: #7b8b93;
+    font-size: 0.75rem;
+    text-align: center;
+}
