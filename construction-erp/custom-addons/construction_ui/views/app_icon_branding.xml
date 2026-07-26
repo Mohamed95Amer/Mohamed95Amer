@@ -19,6 +19,12 @@
     <record id="account.menu_finance" model="ir.ui.menu">
         <field name="web_icon">construction_ui,static/description/apps/finance.svg</field>
     </record>
+    <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/purchase.svg</field>
+    </record>
+    <record id="stock.menu_stock_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/inventory.svg</field>
+    </record>
     <record id="project.menu_main_pm" model="ir.ui.menu">
         <field name="web_icon">construction_ui,static/description/apps/projects.svg</field>
     </record>

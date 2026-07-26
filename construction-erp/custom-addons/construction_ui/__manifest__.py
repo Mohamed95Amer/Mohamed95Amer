@@ -12,6 +12,8 @@
         "project_todo",
         "spreadsheet_dashboard",
         "account",
+        "purchase",
+        "stock",
         "project",
         "maintenance",
         "hr",
