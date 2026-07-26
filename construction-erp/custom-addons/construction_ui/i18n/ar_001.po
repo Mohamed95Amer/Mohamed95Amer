@@ -8302,3 +8302,103 @@ msgstr "مسمى المهام"
 #: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
 msgid "Project Overview"
 msgstr "لوحة المشروع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "My Day"
+msgstr "يومي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Good morning"
+msgstr "صباح الخير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Good afternoon"
+msgstr "مساء الخير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Good evening"
+msgstr "طاب مساؤك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Nothing is waiting on you"
+msgstr "لا شيء بانتظارك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Nothing is waiting on you."
+msgstr "لا شيء بانتظارك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "%(total)s open, %(urgent)s of them late."
+msgstr "%(total)s مفتوح، منها %(urgent)s متأخر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "%s open, none late."
+msgstr "%s مفتوح، ولا شيء متأخر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Gathering your day…"
+msgstr "نجمع مهام يومك…"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid ""
+"No approvals, no defects assigned, no inspections due.\n"
+"                    Anything raised for you today will appear here."
+msgstr ""
+"لا اعتمادات، ولا عيوب مسندة إليك، ولا عمليات فحص مستحقة.\n"
+"                    وكل ما يُسجَّل باسمك اليوم سيظهر هنا."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Waiting for my approval"
+msgstr "بانتظار اعتمادي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Defects assigned to me"
+msgstr "العيوب المسندة إليّ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "My inspections"
+msgstr "عمليات الفحص الخاصة بي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "My tasks"
+msgstr "مهامي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "RFIs in my court"
+msgstr "طلبات المعلومات في عهدتي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Permits I supervise"
+msgstr "التصاريح التي أشرف عليها"

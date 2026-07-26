@@ -47,6 +47,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/construction_home_views.xml",
+        "views/my_day_views.xml",
         "views/facility_home_views.xml",
         "views/project_workspace_views.xml",
         "views/workspace_hub_views.xml",
@@ -63,6 +64,9 @@
             "construction_ui/static/src/facility_home/facility_home.js",
             "construction_ui/static/src/facility_home/facility_home.xml",
             "construction_ui/static/src/facility_home/facility_home.scss",
+            "construction_ui/static/src/my_day/my_day.js",
+            "construction_ui/static/src/my_day/my_day.xml",
+            "construction_ui/static/src/my_day/my_day.scss",
             "construction_ui/static/src/workspace_hub/workspace_hub.js",
             "construction_ui/static/src/workspace_hub/workspace_hub.xml",
             "construction_ui/static/src/workspace_hub/workspace_hub.scss",
