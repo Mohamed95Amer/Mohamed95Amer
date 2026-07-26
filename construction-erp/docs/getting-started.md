@@ -1,0 +1,152 @@
+# Getting started, from nothing
+
+Written for somebody who has never used a terminal. Nothing here needs
+programming — it is copying four commands and waiting.
+
+Docker runs the whole system, database included, inside a sandbox on your
+computer. Nothing is installed permanently and removing it later is one
+command. You need about **10 GB of free disk**, 8 GB of memory, and roughly
+**30 minutes**, most of it waiting.
+
+## 1. Install Docker Desktop
+
+Download it from [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
+— Windows or Mac — install it the ordinary way, then **open it**.
+
+On Windows it may ask to install WSL2 and restart. Say yes, and let it restart.
+
+Wait until Docker Desktop says **Running** (a whale icon appears near the
+clock). Leave it open; everything below needs it running. This is the only real
+installation on the list.
+
+## 2. Get the code
+
+The simplest way needs no extra tools:
+
+1. Open the branch on GitHub.
+2. Click the green **Code** button, then **Download ZIP** (about 80 MB).
+3. Unzip it — right-click → Extract All on Windows, double-click on a Mac.
+4. Move the unzipped folder somewhere easy. The Desktop is fine.
+
+Inside it is a folder called `construction-erp`. That is the one that matters.
+
+Alternatively, if you already have git:
+
+```bash
+git clone -b claude/odoo-construction-facilities-i324s2 \
+  https://github.com/Mohamed95Amer/Mohamed95Amer.git majal
+cd majal/construction-erp
+```
+
+## 3. Open a terminal
+
+A terminal is a window where you type a command and press Enter. That is all it
+is.
+
+- **Windows:** click Start, type `powershell`, press Enter.
+- **Mac:** press ⌘ + Space, type `terminal`, press Enter.
+
+## 4. Point it at the folder
+
+Type `cd` and a space — do not press Enter yet — then **drag the
+`construction-erp` folder onto the terminal window**. It pastes the path for
+you. Now press Enter.
+
+Check you are in the right place with `ls` (Mac) or `dir` (Windows). You should
+see `custom-addons`, `docker-compose.yml` and `scripts`.
+
+## 5. Start the system
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
+
+Three to ten minutes of scrolling text while it downloads and builds. It is
+finished when the cursor comes back.
+
+## 6. Install into a database
+
+One long command. **Windows PowerShell does not accept the `\` line breaks**, so
+use the single-line form there; Mac and Linux can use either.
+
+```bash
+docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,\
+construction_submittal,construction_pin,construction_planning,construction_defect,\
+construction_daily_log,construction_form,construction_progress_billing,\
+construction_change_order,construction_subcontractor,construction_report,\
+construction_hse,construction_tender,construction_material,construction_dashboard,\
+construction_meeting,construction_bim,construction_whatsapp,construction_portal,\
+facility_asset,facility_workorder,facility_sla,facility_contract,\
+facility_inventory,facility_portal,facility_floorplan,construction_ui,\
+om_account_accountant --stop-after-init
+```
+
+About ten minutes, and it will look frozen for long stretches. It is not. It is
+building the demo company: the Al Noor Tower project, its bill of quantities, a
+certified payment certificate, and one variation left waiting for a signature.
+
+## 7. Open it
+
+```bash
+docker compose restart odoo
+```
+
+Wait thirty seconds, then open <http://localhost:8069>. Log in as `admin` /
+`admin`.
+
+## Who to log in as
+
+The point of an approval chain is that people see different things, so the demo
+ships four:
+
+| Login | Password | Who | What they see |
+|---|---|---|---|
+| `admin` | `admin` | Administrator | Everything, including Configuration → Approval Rules |
+| `omar.pm` | `omar.pm` | Project manager | A variation waiting for his signature — the first rung |
+| `hala.director` | `hala.director` | Commercial manager | Nothing yet: her rung comes after Omar signs |
+| `nadia.qs` | `nadia.qs` | Quantity surveyor | The bill and certificate she already signed |
+
+Worth doing first: log in as `omar.pm`, open **My Day**, approve the one thing
+waiting. Log in as `hala.director` and it is now on her screen and not his. Then
+as `admin`, open **Commercial Exposure**: the 197,400 has moved from "submitted
+and not yet approved" into the contract.
+
+These passwords exist in demo data only.
+
+## Stopping, starting, removing
+
+```bash
+docker compose stop     # stop it
+docker compose start    # start it again, data intact
+docker compose down -v  # remove everything, database included
+```
+
+## If something goes wrong
+
+| What you see | What it means |
+|---|---|
+| `docker: command not found` | Docker Desktop is not installed, or the terminal was open before you installed it. Open a new terminal. |
+| `Cannot connect to the Docker daemon` | Docker Desktop is not running. Open it and wait for **Running**. |
+| `no such file or directory` after `cd` | Wrong folder. Redo step 4 and check with `ls` / `dir`. |
+| `port is already allocated` | Something else is using port 8069. Quit it, or change the port mapping in `docker-compose.yml`. |
+| The page will not load | Give it another minute after the restart, then reload. Odoo is slow on its first boot. |
+
+## Without Docker
+
+The path CI runs, and the one used to verify the suite:
+
+```bash
+./scripts/fetch-odoo.sh                 # pinned shallow clone of Odoo 18 core
+pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
+./scripts/init-db.sh erp                # same module list, one command
+./scripts/run-local.sh -d erp           # serves on :8069
+./scripts/run-tests.sh all              # the full suite
+```
+
+## One trap
+
+Do not change `DB_PASSWORD` in `.env` on its own. `odoo.conf` carries
+`db_password = odoo`, and the config file wins over the environment — change one
+without the other and the connection breaks. Change both or neither.

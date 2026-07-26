@@ -224,6 +224,10 @@ automatically.
 
 ## Quickstart (Docker)
 
+> Never used Docker or a terminal? [`docs/getting-started.md`](docs/getting-started.md) walks the same
+> steps one at a time, including what to install first and what each
+> command is doing.
+
 ```bash
 cd construction-erp
 cp .env.example .env
