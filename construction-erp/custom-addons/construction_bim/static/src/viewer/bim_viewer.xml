@@ -94,7 +94,15 @@
                             committed — web-ifc's browser build alone is 6 MB.
                             Run this once, then reload:
                         </p>
-                        <pre>scripts/fetch-bim-libs.sh</pre>
+                        <pre>Windows:
+powershell -ExecutionPolicy Bypass -File scripts\fetch-bim-libs.ps1
+
+Mac or Linux:
+./scripts/fetch-bim-libs.sh</pre>
+                        <button class="btn btn-primary"
+                                t-on-click="reloadViewer">
+                            <i class="fa fa-refresh"/> Reload viewer
+                        </button>
                         <p class="o_bim_muted">
                             Everything else on this model — the element index and
                             its linked records — works without them.
@@ -105,6 +113,10 @@
                         <i class="fa fa-exclamation-triangle"/>
                         <h2>The model could not be drawn</h2>
                         <p t-esc="state.error"/>
+                        <button class="btn btn-primary"
+                                t-on-click="reloadViewer">
+                            <i class="fa fa-refresh"/> Try again
+                        </button>
                     </div>
 
                     <div t-if="state.sectionOn" class="o_bim_section">

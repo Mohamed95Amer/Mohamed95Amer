@@ -364,6 +364,14 @@ class MajalAiConversation(models.Model):
             field = record._fields.get(field_name)
             if not field:
                 continue
+            try:
+                record.check_field_access_rights("read", [field_name])
+            except AccessError:
+                # Some optional Project features protect individual fields
+                # with their own groups (for example project.stage_id). Majal
+                # must respect that boundary and continue with the fields the
+                # current user is actually allowed to see.
+                continue
             value = record[field_name]
             if not value:
                 continue

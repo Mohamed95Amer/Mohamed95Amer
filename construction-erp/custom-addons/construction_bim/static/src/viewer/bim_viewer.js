@@ -152,6 +152,10 @@ export class BimViewer extends Component {
         this.THREE = await import(`${LIB}/three/three.module.min.js`);
     }
 
+    reloadViewer() {
+        window.location.reload();
+    }
+
     async buildScene() {
         const THREE = this.THREE;
         const canvas = this.canvasRef.el;

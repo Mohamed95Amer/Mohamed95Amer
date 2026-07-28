@@ -233,6 +233,32 @@ class MajalAiProvider(models.Model):
                 _("This provider key cannot be decrypted with the server master key.")
             ) from exc
 
+    @api.model
+    def _tls_verify(self):
+        """Return the CA bundle used only for outbound AI provider calls.
+
+        Corporate networks and secured Windows hosts may terminate TLS with a
+        locally trusted certificate authority that is not present in the
+        Linux container. Administrators can mount that CA bundle explicitly.
+        The conventional path in the persistent Majal data volume is detected
+        automatically so container recreation does not undo the fix.
+        """
+        configured = os.environ.get("MAJAL_AI_CA_BUNDLE", "").strip()
+        candidates = [configured] if configured else [
+            "/var/lib/odoo/majal-ai-ca.pem",
+        ]
+        for path in candidates:
+            if path and os.path.isfile(path):
+                return path
+        if configured:
+            raise UserError(
+                _(
+                    "The configured Majal AI certificate bundle was not found "
+                    "on the server."
+                )
+            )
+        return True
+
     def action_clear_api_key(self):
         if not (
             self.env.user.has_group("base.group_system")
@@ -309,6 +335,18 @@ class MajalAiProvider(models.Model):
             raise UserError(
                 _("The AI provider took too long to respond. Please try again.")
             ) from exc
+        except requests.exceptions.SSLError as exc:
+            _logger.warning(
+                "Majal AI TLS verification failed provider=%s",
+                self.code,
+            )
+            raise UserError(
+                _(
+                    "The Majal server could not verify the AI provider's secure "
+                    "connection. Ask an administrator to configure the trusted "
+                    "CA bundle."
+                )
+            ) from exc
         except requests.RequestException as exc:
             _logger.warning(
                 "Majal AI provider request failed provider=%s error=%s",
@@ -347,6 +385,7 @@ class MajalAiProvider(models.Model):
             json=payload,
             headers=headers,
             timeout=self.timeout_seconds,
+            verify=self._tls_verify(),
         )
         self._raise_provider_error(response)
         data = response.json()
@@ -382,6 +421,7 @@ class MajalAiProvider(models.Model):
             json=payload,
             headers={"Content-Type": "application/json"},
             timeout=self.timeout_seconds,
+            verify=self._tls_verify(),
         )
         self._raise_provider_error(response)
         data = response.json()
@@ -412,6 +452,7 @@ class MajalAiProvider(models.Model):
                 "anthropic-version": "2023-06-01",
             },
             timeout=self.timeout_seconds,
+            verify=self._tls_verify(),
         )
         self._raise_provider_error(response)
         data = response.json()

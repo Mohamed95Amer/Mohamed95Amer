@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 
 from cryptography.fernet import Fernet
 
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -107,7 +107,61 @@ class TestMajalAi(TransactionCase):
                 "x" * 8001, self.local.id
             )
 
+    def test_context_skips_project_fields_restricted_to_an_optional_group(self):
+        project_user = self.env["res.users"].create(
+            {
+                "name": "AI Project User Without Project Stages",
+                "login": "majal-ai-project-no-stages",
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        [
+                            self.env.ref("base.group_user").id,
+                            self.env.ref("project.group_project_user").id,
+                        ],
+                    )
+                ],
+            }
+        )
+        self.assertNotIn(
+            self.env.ref("project.group_project_stages"),
+            project_user.groups_id,
+        )
+        project = self.env["project.project"].create(
+            {
+                "name": "Restricted Stage Project",
+                "is_construction": True,
+                "project_code": "AI-STAGE",
+            }
+        )
+        summary = (
+            self.env["majal.ai.conversation"]
+            .with_user(project_user)
+            ._record_summary(project.with_user(project_user))
+        )
+        self.assertIn("AI-STAGE", summary)
+
+    def test_tls_bundle_uses_persistent_path_and_rejects_missing_configuration(self):
+        provider = self.env["majal.ai.provider"]
+        with patch.dict(os.environ, {"MAJAL_AI_CA_BUNDLE": ""}):
+            with patch("os.path.isfile", return_value=True):
+                self.assertEqual(
+                    provider._tls_verify(),
+                    "/var/lib/odoo/majal-ai-ca.pem",
+                )
+        with patch.dict(
+            os.environ,
+            {"MAJAL_AI_CA_BUNDLE": "/missing/majal-ca.pem"},
+        ):
+            with patch("os.path.isfile", return_value=False):
+                with self.assertRaises(UserError):
+                    provider._tls_verify()
+
     def test_local_provider_chat_is_audited(self):
+        # Provider records are editable configuration, so this test must not
+        # depend on whatever enabled state the live database currently has.
+        self.local.enabled = True
         response = Mock()
         response.ok = True
         response.json.return_value = {

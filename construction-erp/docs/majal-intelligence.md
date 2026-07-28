@@ -56,6 +56,22 @@ API key. Existing keys are never returned to the browser.
 If the master key is lost or changed, stored provider keys cannot be decrypted.
 Clear each key and enter it again after restoring the correct server key.
 
+### Secured networks and custom certificate authorities
+
+Some company networks inspect HTTPS traffic with a certificate authority that
+Windows trusts but the Majal Linux container does not. If provider calls report
+a secure-connection or certificate error, export the approved CA certificates
+as a PEM bundle and copy it into the persistent Majal data volume:
+
+```powershell
+docker compose cp .\majal-ai-ca.pem odoo:/var/lib/odoo/majal-ai-ca.pem
+docker compose restart odoo
+```
+
+Majal detects that path automatically and uses it only for outbound AI provider
+calls. Never disable TLS verification. To use a different path inside the
+container, set `MAJAL_AI_CA_BUNDLE` in `.env`.
+
 ## Security behavior
 
 - Majal searches through the current user's environment, so normal access

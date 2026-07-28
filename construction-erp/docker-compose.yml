@@ -24,6 +24,7 @@ services:
       PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       ODOO_ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env}
       MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:-}
+      MAJAL_AI_CA_BUNDLE: ${MAJAL_AI_CA_BUNDLE:-}
     entrypoint:
       - /bin/bash
       - /usr/local/bin/majal-entrypoint
