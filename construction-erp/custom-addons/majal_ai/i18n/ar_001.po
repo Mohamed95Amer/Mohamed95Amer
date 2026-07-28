@@ -233,3 +233,11 @@ msgstr "تم بلوغ الحد اليومي لطلبات ذكاء مجال."
 #. module: majal_ai
 msgid "This company has reached its monthly AI token allowance."
 msgstr "بلغت هذه الشركة الحد الشهري لاستخدام الذكاء الاصطناعي."
+
+#. module: majal_ai
+msgid "Intelligence Manager"
+msgstr "مدير ذكاء مجال"
+
+#. module: majal_ai
+msgid "Only Intelligence Managers can remove provider keys."
+msgstr "يمكن لمديري ذكاء مجال فقط إزالة مفاتيح المزودين."

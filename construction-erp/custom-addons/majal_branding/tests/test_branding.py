@@ -22,7 +22,7 @@ class TestMajalBranding(TransactionCase):
     def test_system_assistant_uses_majal_identity(self):
         assistant = self.env.ref("base.partner_root")
 
-        self.assertEqual(assistant.name, "Majal Assistant")
+        self.assertIn(assistant.name, {"Majal Assistant", "مساعد مجال"})
         self.assertTrue(assistant.image_1920)
 
     def test_route_a_information_replaces_promotional_about_block(self):

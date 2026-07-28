@@ -93,10 +93,13 @@ class MajalAiProvider(models.Model):
         string="New API Key",
         compute="_compute_api_key_input",
         inverse="_inverse_api_key_input",
-        groups="base.group_system",
+        groups="base.group_system,majal_ai.group_ai_manager",
         help="Stored encrypted using MAJAL_AI_MASTER_KEY. Existing keys are never displayed.",
     )
-    api_key_encrypted = fields.Text(copy=False, groups="base.group_system")
+    api_key_encrypted = fields.Text(
+        copy=False,
+        groups="base.group_system,majal_ai.group_ai_manager",
+    )
     api_key_hint = fields.Char(compute="_compute_key_state")
     has_api_key = fields.Boolean(compute="_compute_key_state")
     is_ready = fields.Boolean(compute="_compute_key_state")
@@ -231,8 +234,13 @@ class MajalAiProvider(models.Model):
             ) from exc
 
     def action_clear_api_key(self):
-        if not self.env.user.has_group("base.group_system"):
-            raise AccessError(_("Only system administrators can remove provider keys."))
+        if not (
+            self.env.user.has_group("base.group_system")
+            or self.env.user.has_group("majal_ai.group_ai_manager")
+        ):
+            raise AccessError(
+                _("Only Intelligence Managers can remove provider keys.")
+            )
         self.write({"api_key_encrypted": False})
         return True
 

@@ -10,7 +10,7 @@
               action="action_ai_workspace"
               sequence="7"
               groups="base.group_user"
-              web_icon="majal_ai,static/description/icon.svg"/>
+              web_icon="construction_ui,static/description/apps/intelligence.svg"/>
 
     <menuitem id="menu_ai_workspace"
               name="Assistant"
@@ -23,19 +23,19 @@
               name="Configuration"
               parent="menu_ai_root"
               sequence="90"
-              groups="base.group_system"/>
+              groups="majal_ai.group_ai_manager,base.group_system"/>
 
     <menuitem id="menu_ai_providers"
               name="Providers"
               parent="menu_ai_configuration"
               action="action_ai_providers"
               sequence="10"
-              groups="base.group_system"/>
+              groups="majal_ai.group_ai_manager,base.group_system"/>
 
     <menuitem id="menu_ai_usage"
               name="Usage &amp; Audit"
               parent="menu_ai_configuration"
               action="action_ai_usage"
               sequence="20"
-              groups="base.group_system"/>
+              groups="majal_ai.group_ai_manager,base.group_system"/>
 </odoo>

@@ -28,6 +28,22 @@ class TestMajalAi(TransactionCase):
                 "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
             }
         )
+        cls.ai_manager = cls.env["res.users"].create(
+            {
+                "name": "AI Manager",
+                "login": "majal-ai-manager",
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        [
+                            cls.env.ref("base.group_user").id,
+                            cls.env.ref("majal_ai.group_ai_manager").id,
+                        ],
+                    )
+                ],
+            }
+        )
 
     def test_provider_catalog_is_sanitized(self):
         data = self.env["majal.ai.conversation"].bootstrap()
@@ -48,6 +64,18 @@ class TestMajalAi(TransactionCase):
             self.assertNotIn("sk-private-value", self.kimi.api_key_encrypted)
             self.assertEqual(self.kimi._get_api_key(), "sk-private-value")
             self.assertFalse(self.kimi.api_key_input)
+
+    def test_intelligence_manager_can_configure_but_regular_users_cannot(self):
+        master_key = Fernet.generate_key().decode()
+        with patch.dict(os.environ, {"MAJAL_AI_MASTER_KEY": master_key}):
+            self.kimi.with_user(self.ai_manager).write(
+                {"api_key_input": "manager-private-value"}
+            )
+            self.assertTrue(self.kimi.has_api_key)
+            self.kimi.with_user(self.ai_manager).action_clear_api_key()
+            self.assertFalse(self.kimi.api_key_encrypted)
+        with self.assertRaises(AccessError):
+            self.kimi.with_user(self.user_a).write({"enabled": True})
 
     def test_conversations_are_private(self):
         conversation = self.env["majal.ai.conversation"].with_user(

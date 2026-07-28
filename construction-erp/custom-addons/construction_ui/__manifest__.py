@@ -1,12 +1,13 @@
 {
     "name": "Majal Experience",
     "summary": "Majal construction and facilities workspaces",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Majal",
     "depends": [
         "web",
+        "website",
         "mail",
         "board",
         "project_todo",

@@ -65,4 +65,26 @@
             </xpath>
         </field>
     </record>
+
+    <record id="settings_icon_website" model="ir.ui.view">
+        <field name="name">settings.icon.website.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="website.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='website']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/website.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="settings_icon_general" model="ir.ui.view">
+        <field name="name">settings.icon.general.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='general_settings']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/general.svg</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
