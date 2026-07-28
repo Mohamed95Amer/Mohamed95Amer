@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ai_provider_admin,majal.ai.provider administrator,model_majal_ai_provider,base.group_system,1,1,1,1
+access_ai_conversation_user,majal.ai.conversation user,model_majal_ai_conversation,base.group_user,1,1,1,1
+access_ai_conversation_admin,majal.ai.conversation administrator,model_majal_ai_conversation,base.group_system,1,1,1,1
+access_ai_message_user,majal.ai.message user,model_majal_ai_message,base.group_user,1,0,1,0
+access_ai_message_admin,majal.ai.message administrator,model_majal_ai_message,base.group_system,1,1,1,1
+access_ai_usage_user,majal.ai.usage user,model_majal_ai_usage,base.group_user,1,0,0,0
+access_ai_usage_admin,majal.ai.usage administrator,model_majal_ai_usage,base.group_system,1,1,1,1

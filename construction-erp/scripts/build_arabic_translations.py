@@ -33,6 +33,7 @@ MODULES = [
     "construction_submittal",
     "construction_ui",
     "majal_branding",
+    "majal_ai",
     "facility_asset",
     "facility_floorplan",
     "facility_workorder",

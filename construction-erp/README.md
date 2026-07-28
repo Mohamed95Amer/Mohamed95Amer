@@ -71,6 +71,13 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   Discuss, activities, assistant artwork, empty states, email, portal, browser
   metadata and the installable PWA. It also provides Help and the Route A
   open-source notice/source-offer page.
+- **majal_ai** — **Majal Intelligence**, a bilingual, permission-aware copilot
+  for construction portfolios and facilities operations. Local Ollama is the
+  free default; Kimi, OpenAI, Gemini and Claude are company-managed BYOK
+  options behind one provider-neutral gateway. Answers cite the Majal records
+  used, conversations are private, usage is audited and limited, and the first
+  release is deliberately read-only for safety. See
+  [`docs/majal-intelligence.md`](docs/majal-intelligence.md).
 - **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate

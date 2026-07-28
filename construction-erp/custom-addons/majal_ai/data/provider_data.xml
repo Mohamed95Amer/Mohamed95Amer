@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="provider_local" model="majal.ai.provider">
+        <field name="name">Local AI (Free)</field>
+        <field name="code">local</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">http://host.docker.internal:11434/v1/chat/completions</field>
+        <field name="model_name">qwen3:8b</field>
+        <field name="enabled" eval="True"/>
+        <field name="sequence">1</field>
+        <field name="daily_request_limit">100</field>
+        <field name="monthly_token_limit">0</field>
+    </record>
+
+    <record id="provider_kimi" model="majal.ai.provider">
+        <field name="name">Kimi</field>
+        <field name="code">kimi</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.moonshot.ai/v1/chat/completions</field>
+        <field name="model_name">kimi-k3</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="provider_openai" model="majal.ai.provider">
+        <field name="name">OpenAI</field>
+        <field name="code">openai</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.openai.com/v1/chat/completions</field>
+        <field name="model_name">gpt-5.6-luna</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="provider_gemini" model="majal.ai.provider">
+        <field name="name">Gemini</field>
+        <field name="code">gemini</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://generativelanguage.googleapis.com/v1beta/models</field>
+        <field name="model_name">gemini-3.5-flash-lite</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="provider_anthropic" model="majal.ai.provider">
+        <field name="name">Claude</field>
+        <field name="code">anthropic</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.anthropic.com/v1/messages</field>
+        <field name="model_name">claude-sonnet-5</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">40</field>
+    </record>
+</odoo>

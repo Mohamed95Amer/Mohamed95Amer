@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="majal_ai.Workspace">
+        <div class="o_majal_ai" t-att-class="{'o_majal_ai--sidebar-open': state.sidebarOpen}">
+            <t t-if="state.loading and !state.providers.length">
+                <div class="o_majal_ai_loading">
+                    <div class="o_majal_ai_spinner"/>
+                    <span>Preparing Majal Intelligence…</span>
+                </div>
+            </t>
+            <t t-else="">
+                <aside class="o_majal_ai_sidebar">
+                    <div class="o_majal_ai_brand">
+                        <div class="o_majal_ai_mark">
+                            <i class="fa fa-magic"/>
+                        </div>
+                        <div>
+                            <strong>Majal Intelligence</strong>
+                            <span>Construction &amp; facilities copilot</span>
+                        </div>
+                        <button class="o_majal_ai_close btn" t-on-click="toggleSidebar"
+                                title="Close conversations">
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+                    <button class="o_majal_ai_new" t-on-click="newConversation">
+                        <i class="fa fa-plus"/>
+                        <span>New conversation</span>
+                    </button>
+                    <div class="o_majal_ai_history_title">Recent conversations</div>
+                    <div class="o_majal_ai_history">
+                        <t t-foreach="state.conversations" t-as="conversation"
+                           t-key="conversation.id">
+                            <button class="o_majal_ai_history_item"
+                                    t-att-class="{'is-active': state.conversationId === conversation.id}"
+                                    t-on-click="() => this.openConversation(conversation)">
+                                <span class="o_majal_ai_history_icon">
+                                    <i t-att-class="conversation.scope === 'facilities' ? 'fa fa-wrench' : conversation.scope === 'construction' ? 'fa fa-building' : 'fa fa-line-chart'"/>
+                                </span>
+                                <span class="o_majal_ai_history_name"
+                                      t-esc="conversation.name"/>
+                                <span class="o_majal_ai_history_delete"
+                                      role="button"
+                                      title="Archive"
+                                      t-on-click="(event) => this.archiveConversation(conversation, event)">
+                                    <i class="fa fa-trash-o"/>
+                                </span>
+                            </button>
+                        </t>
+                        <div t-if="!state.conversations.length"
+                             class="o_majal_ai_history_empty">
+                            Your conversations will appear here.
+                        </div>
+                    </div>
+                    <div class="o_majal_ai_privacy">
+                        <i class="fa fa-shield"/>
+                        <span>Read-only assistance · Permission-aware · Audited</span>
+                    </div>
+                </aside>
+
+                <button class="o_majal_ai_backdrop" t-on-click="toggleSidebar"
+                        aria-label="Close conversations"/>
+
+                <main class="o_majal_ai_main">
+                    <header class="o_majal_ai_header">
+                        <button class="o_majal_ai_mobile_menu btn"
+                                t-on-click="toggleSidebar" title="Conversations">
+                            <i class="fa fa-bars"/>
+                        </button>
+                        <div class="o_majal_ai_header_title">
+                            <span class="o_majal_ai_eyebrow">Ask your operation</span>
+                            <h1>
+                                <t t-if="state.scope === 'construction'">Construction Intelligence</t>
+                                <t t-elif="state.scope === 'facilities'">Facilities Intelligence</t>
+                                <t t-else="">Portfolio Intelligence</t>
+                            </h1>
+                        </div>
+                        <div class="o_majal_ai_provider_picker">
+                            <t t-foreach="state.providers" t-as="provider"
+                               t-key="provider.id">
+                                <button class="o_majal_ai_provider"
+                                        t-att-class="{
+                                            'is-active': state.providerId === provider.id,
+                                            'is-unavailable': !provider.ready,
+                                        }"
+                                        t-att-title="provider.note"
+                                        t-on-click="() => this.selectProvider(provider)">
+                                    <span class="o_majal_ai_provider_dot"
+                                          t-att-data-provider="provider.code"/>
+                                    <span t-esc="provider.name"/>
+                                    <i t-if="provider.ready" class="fa fa-check-circle"/>
+                                    <i t-else="" class="fa fa-lock"/>
+                                </button>
+                            </t>
+                        </div>
+                    </header>
+
+                    <section class="o_majal_ai_scopebar">
+                        <div class="o_majal_ai_scopes" role="tablist">
+                            <button t-att-class="{'is-active': state.scope === 'portfolio'}"
+                                    t-on-click="() => this.setScope('portfolio')">
+                                <i class="fa fa-line-chart"/> Portfolio
+                            </button>
+                            <button t-att-class="{'is-active': state.scope === 'construction'}"
+                                    t-on-click="() => this.setScope('construction')">
+                                <i class="fa fa-building"/> Construction
+                            </button>
+                            <button t-att-class="{'is-active': state.scope === 'facilities'}"
+                                    t-on-click="() => this.setScope('facilities')">
+                                <i class="fa fa-wrench"/> Facilities
+                            </button>
+                        </div>
+                        <select t-if="state.scope === 'construction'"
+                                class="o_majal_ai_context_select"
+                                t-on-change="onProjectChange">
+                            <option value="">All accessible projects</option>
+                            <t t-foreach="state.projects" t-as="project" t-key="project.id">
+                                <option t-att-value="project.id"
+                                        t-att-selected="state.projectId === project.id">
+                                    <t t-esc="project.name"/>
+                                </option>
+                            </t>
+                        </select>
+                        <select t-if="state.scope === 'facilities'"
+                                class="o_majal_ai_context_select"
+                                t-on-change="onEquipmentChange">
+                            <option value="">All accessible assets</option>
+                            <t t-foreach="state.equipment" t-as="asset" t-key="asset.id">
+                                <option t-att-value="asset.id"
+                                        t-att-selected="state.equipmentId === asset.id">
+                                    <t t-esc="asset.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </section>
+
+                    <section class="o_majal_ai_messages" t-ref="messageArea">
+                        <div t-if="!state.messages.length" class="o_majal_ai_welcome">
+                            <div class="o_majal_ai_welcome_mark">
+                                <span/>
+                                <i class="fa fa-magic"/>
+                            </div>
+                            <span class="o_majal_ai_welcome_kicker">MAJAL INTELLIGENCE</span>
+                            <h2>Turn operational data into the next clear action.</h2>
+                            <p>
+                                Ask in Arabic or English. Majal uses only records you can
+                                access and links answers back to their source.
+                            </p>
+                            <div class="o_majal_ai_suggestions">
+                                <t t-foreach="state.suggestions" t-as="suggestion"
+                                   t-key="suggestion.label">
+                                    <button t-on-click="() => this.useSuggestion(suggestion)">
+                                        <i t-att-class="suggestion.scope === 'facilities' ? 'fa fa-wrench' : suggestion.scope === 'construction' ? 'fa fa-building' : 'fa fa-line-chart'"/>
+                                        <span t-esc="suggestion.label"/>
+                                        <i class="fa fa-arrow-right"/>
+                                    </button>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div t-foreach="state.messages" t-as="message" t-key="message.id"
+                             class="o_majal_ai_message"
+                             t-att-class="'is-' + message.role">
+                            <div class="o_majal_ai_avatar">
+                                <i t-att-class="message.role === 'assistant' ? 'fa fa-magic' : 'fa fa-user'"/>
+                            </div>
+                            <div class="o_majal_ai_message_body">
+                                <div class="o_majal_ai_message_meta">
+                                    <strong t-esc="message.role === 'assistant' ? 'Majal Intelligence' : 'You'"/>
+                                    <span t-if="message.role === 'assistant'">AI-generated · Verify important decisions</span>
+                                </div>
+                                <div class="o_majal_ai_message_content"
+                                     t-esc="message.content"/>
+                                <div t-if="message.citations?.length"
+                                     class="o_majal_ai_citations">
+                                    <span>Sources</span>
+                                    <button t-foreach="message.citations"
+                                            t-as="citation"
+                                            t-key="citation.number"
+                                            t-on-click="() => this.openCitation(citation)">
+                                        <b t-esc="'[' + citation.number + ']'"/>
+                                        <span t-esc="citation.label"/>
+                                        <i class="fa fa-external-link"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div t-if="state.sending"
+                             class="o_majal_ai_message is-assistant is-thinking">
+                            <div class="o_majal_ai_avatar"><i class="fa fa-magic"/></div>
+                            <div class="o_majal_ai_thinking">
+                                <span/><span/><span/>
+                                <em>Reviewing your Majal records…</em>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer class="o_majal_ai_composer_wrap">
+                        <div class="o_majal_ai_context_note">
+                            <span>
+                                <i class="fa fa-database"/>
+                                <t t-if="selectedProjectName" t-esc="selectedProjectName"/>
+                                <t t-elif="selectedEquipmentName" t-esc="selectedEquipmentName"/>
+                                <t t-else="">All records available in this scope</t>
+                            </span>
+                            <span t-if="selectedProvider">
+                                <i class="fa fa-microchip"/>
+                                <t t-esc="selectedProvider.name"/> ·
+                                <t t-esc="selectedProvider.model"/>
+                            </span>
+                        </div>
+                        <div class="o_majal_ai_composer">
+                            <textarea rows="1"
+                                      placeholder="Ask Majal about projects, assets, risks or operations…"
+                                      t-att-value="state.question"
+                                      t-on-input="onQuestionInput"
+                                      t-on-keydown="onKeydown"
+                                      t-att-disabled="state.sending"/>
+                            <button t-on-click="send"
+                                    t-att-disabled="state.sending || !state.question.trim() || !selectedProvider?.ready"
+                                    title="Send">
+                                <i class="fa fa-arrow-up"/>
+                            </button>
+                        </div>
+                        <div class="o_majal_ai_disclaimer">
+                            Majal may make mistakes. Review safety, contractual and financial advice.
+                        </div>
+                    </footer>
+                </main>
+            </t>
+        </div>
+    </t>
+</templates>

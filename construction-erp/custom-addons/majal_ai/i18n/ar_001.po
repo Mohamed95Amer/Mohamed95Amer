@@ -1,0 +1,235 @@
+# Translation of Majal Intelligence.
+msgid ""
+msgstr ""
+"Project-Id-Version: Majal 18.0\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: majal_ai
+msgid "Majal Intelligence"
+msgstr "ذكاء مجال"
+
+#. module: majal_ai
+msgid "Construction & facilities copilot"
+msgstr "مساعد الإنشاءات وإدارة المرافق"
+
+#. module: majal_ai
+msgid "New conversation"
+msgstr "محادثة جديدة"
+
+#. module: majal_ai
+msgid "Recent conversations"
+msgstr "المحادثات الأخيرة"
+
+#. module: majal_ai
+msgid "Your conversations will appear here."
+msgstr "ستظهر محادثاتك هنا."
+
+#. module: majal_ai
+msgid "Read-only assistance · Permission-aware · Audited"
+msgstr "مساعدة للقراءة فقط · تراعي الصلاحيات · خاضعة للتدقيق"
+
+#. module: majal_ai
+msgid "Ask your operation"
+msgstr "اسأل عن عملياتك"
+
+#. module: majal_ai
+msgid "Portfolio Intelligence"
+msgstr "ذكاء محفظة المشاريع"
+
+#. module: majal_ai
+msgid "Construction Intelligence"
+msgstr "ذكاء الإنشاءات"
+
+#. module: majal_ai
+msgid "Facilities Intelligence"
+msgstr "ذكاء إدارة المرافق"
+
+#. module: majal_ai
+msgid "Portfolio"
+msgstr "المحفظة"
+
+#. module: majal_ai
+msgid "Construction"
+msgstr "الإنشاءات"
+
+#. module: majal_ai
+msgid "Facilities"
+msgstr "إدارة المرافق"
+
+#. module: majal_ai
+msgid "All accessible projects"
+msgstr "كل المشاريع المتاحة"
+
+#. module: majal_ai
+msgid "All accessible assets"
+msgstr "كل الأصول المتاحة"
+
+#. module: majal_ai
+msgid "Turn operational data into the next clear action."
+msgstr "حوّل بيانات العمليات إلى الخطوة التالية الواضحة."
+
+#. module: majal_ai
+msgid ""
+"Ask in Arabic or English. Majal uses only records you can access and links "
+"answers back to their source."
+msgstr ""
+"اسأل بالعربية أو الإنجليزية. يستخدم مجال السجلات التي تملك صلاحية الوصول "
+"إليها فقط، ويربط الإجابات بمصادرها."
+
+#. module: majal_ai
+msgid "AI-generated · Verify important decisions"
+msgstr "مولّد بالذكاء الاصطناعي · راجع القرارات المهمة"
+
+#. module: majal_ai
+msgid "Sources"
+msgstr "المصادر"
+
+#. module: majal_ai
+msgid "Reviewing your Majal records…"
+msgstr "تتم مراجعة سجلات مجال…"
+
+#. module: majal_ai
+msgid "All records available in this scope"
+msgstr "كل السجلات المتاحة في هذا النطاق"
+
+#. module: majal_ai
+msgid "Ask Majal about projects, assets, risks or operations…"
+msgstr "اسأل مجال عن المشاريع أو الأصول أو المخاطر أو العمليات…"
+
+#. module: majal_ai
+msgid ""
+"Majal may make mistakes. Review safety, contractual and financial advice."
+msgstr "قد يخطئ مجال. راجع نصائح السلامة والعقود والشؤون المالية."
+
+#. module: majal_ai
+msgid "Give me an executive portfolio briefing"
+msgstr "أعطني موجزاً تنفيذياً عن محفظة المشاريع"
+
+#. module: majal_ai
+msgid "Summarize overdue RFIs, defects and submittals"
+msgstr "لخّص طلبات المعلومات والعيوب والاعتمادات المتأخرة"
+
+#. module: majal_ai
+msgid "Which assets and work orders need attention?"
+msgstr "ما الأصول وأوامر العمل التي تحتاج إلى اهتمام؟"
+
+#. module: majal_ai
+msgid "Draft a preventive-maintenance action plan"
+msgstr "أنشئ مسودة خطة عمل للصيانة الوقائية"
+
+#. module: majal_ai
+msgid "Local AI (Free)"
+msgstr "الذكاء المحلي (مجاني)"
+
+#. module: majal_ai
+msgid "Local AI"
+msgstr "الذكاء المحلي"
+
+#. module: majal_ai
+msgid "Kimi"
+msgstr "كيمي"
+
+#. module: majal_ai
+msgid "OpenAI"
+msgstr "أوبن إيه آي"
+
+#. module: majal_ai
+msgid "Gemini"
+msgstr "جيمناي"
+
+#. module: majal_ai
+msgid "Claude"
+msgstr "كلود"
+
+#. module: majal_ai
+msgid "AI Providers"
+msgstr "مزودو الذكاء الاصطناعي"
+
+#. module: majal_ai
+msgid "Usage & Audit"
+msgstr "الاستخدام والتدقيق"
+
+#. module: majal_ai
+msgid "Configuration"
+msgstr "الإعدادات"
+
+#. module: majal_ai
+msgid "Assistant"
+msgstr "المساعد"
+
+#. module: majal_ai
+msgid "Provider"
+msgstr "المزود"
+
+#. module: majal_ai
+msgid "Connection"
+msgstr "الاتصال"
+
+#. module: majal_ai
+msgid "Usage safeguards"
+msgstr "ضوابط الاستخدام"
+
+#. module: majal_ai
+msgid "New API Key"
+msgstr "مفتاح API جديد"
+
+#. module: majal_ai
+msgid "Remove API Key"
+msgstr "إزالة مفتاح API"
+
+#. module: majal_ai
+msgid "Configured"
+msgstr "تم الإعداد"
+
+#. module: majal_ai
+msgid "Not configured"
+msgstr "غير مُعد"
+
+#. module: majal_ai
+msgid ""
+"Free local processing. Start Ollama on the Majal server or host computer."
+msgstr "معالجة محلية مجانية. شغّل Ollama على خادم مجال أو الجهاز المضيف."
+
+#. module: majal_ai
+msgid "Bring your own API key. Provider usage charges and terms apply."
+msgstr "استخدم مفتاح API الخاص بك. تُطبق رسوم وشروط المزود."
+
+#. module: majal_ai
+msgid "The selected AI provider is not enabled or fully configured."
+msgstr "مزود الذكاء الاصطناعي المحدد غير مفعّل أو غير مكتمل الإعداد."
+
+#. module: majal_ai
+msgid ""
+"Local AI is not reachable. Start Ollama and confirm that the configured "
+"model has been downloaded."
+msgstr ""
+"لا يمكن الوصول إلى الذكاء المحلي. شغّل Ollama وتأكد من تنزيل النموذج "
+"المُعد."
+
+#. module: majal_ai
+msgid "The provider rejected the configured API key."
+msgstr "رفض المزود مفتاح API المُعد."
+
+#. module: majal_ai
+msgid "The provider rate limit has been reached."
+msgstr "تم بلوغ حد طلبات المزود."
+
+#. module: majal_ai
+msgid "You can only access your own AI conversations."
+msgstr "يمكنك الوصول إلى محادثات الذكاء الاصطناعي الخاصة بك فقط."
+
+#. module: majal_ai
+msgid "Questions are limited to 8,000 characters."
+msgstr "الأسئلة محدودة بـ 8,000 حرف."
+
+#. module: majal_ai
+msgid "Your daily Majal Intelligence request limit has been reached."
+msgstr "تم بلوغ الحد اليومي لطلبات ذكاء مجال."
+
+#. module: majal_ai
+msgid "This company has reached its monthly AI token allowance."
+msgstr "بلغت هذه الشركة الحد الشهري لاستخدام الذكاء الاصطناعي."
