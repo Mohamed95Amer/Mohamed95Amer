@@ -1,4 +1,4 @@
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import HttpCase, TransactionCase, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -51,3 +51,13 @@ class TestMajalBranding(TransactionCase):
 
         self.assertIn("/majal/help", str(styles["document_link_start"]))
         self.assertIn("/majal/help", str(styles["slides_link_start"]))
+
+
+@tagged("post_install", "-at_install")
+class TestMajalPublicRoutes(HttpCase):
+    def test_database_selector_recovers_to_majal_login(self):
+        response = self.url_open("/web/database/selector", timeout=15)
+
+        self.assertIn("/web/login", response.url)
+        self.assertIn("db=erp", response.url)
+        self.assertNotIn("/web/database/selector", response.url)
