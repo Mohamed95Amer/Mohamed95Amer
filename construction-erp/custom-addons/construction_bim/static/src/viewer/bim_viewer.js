@@ -62,6 +62,7 @@ export class BimViewer extends Component {
             loading: true,
             librariesMissing: false,
             error: false,
+            compatibilityMode: false,
             progress: _t("Reading the model…"),
             info: {},
             selected: null,
@@ -175,8 +176,7 @@ export class BimViewer extends Component {
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xeef1ef);
-        this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.setupRenderer(canvas);
 
         this.scene.add(new THREE.AmbientLight(0xffffff, 1.6));
         const key = new THREE.DirectionalLight(0xffffff, 1.4);
@@ -199,6 +199,65 @@ export class BimViewer extends Component {
         canvas.addEventListener("click", this.onPick.bind(this));
         this.drawPins();
         this.render();
+    }
+
+    /**
+     * Prefer WebGL, but never make a user's GPU configuration a prerequisite
+     * for reaching the model and its linked records.
+     *
+     * Low-power, non-antialiased WebGL succeeds on more managed laptops and
+     * remote desktop sessions. When the browser still refuses a GPU context,
+     * the same THREE geometry is projected by a small Canvas 2D renderer.
+     */
+    setupRenderer(canvas) {
+        const THREE = this.THREE;
+        const forceCompatibility = new URLSearchParams(window.location.search)
+            .get("bim_renderer") === "software"
+            || window.sessionStorage.getItem("majal_bim_software") === "1";
+        try {
+            if (forceCompatibility) {
+                throw new Error("Compatibility renderer requested");
+            }
+            const attributes = {
+                alpha: false,
+                antialias: false,
+                depth: true,
+                failIfMajorPerformanceCaveat: false,
+                powerPreference: "low-power",
+                preserveDrawingBuffer: false,
+                stencil: false,
+            };
+            const context = canvas.getContext("webgl2", attributes)
+                || canvas.getContext("webgl", attributes)
+                || canvas.getContext("experimental-webgl", attributes);
+            if (!context) {
+                throw new Error("The browser did not provide a WebGL context");
+            }
+            this.renderer = new THREE.WebGLRenderer({
+                canvas,
+                context,
+                antialias: false,
+            });
+            this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        } catch {
+            this.renderer = null;
+            this.softwareContext = canvas.getContext("2d");
+            if (!this.softwareContext) {
+                throw new Error(_t(
+                    "This browser could not create either a WebGL or Canvas 2D context."
+                ));
+            }
+            this.state.compatibilityMode = true;
+        }
+    }
+
+    toggleCompatibility() {
+        if (this.state.compatibilityMode) {
+            window.sessionStorage.removeItem("majal_bim_software");
+        } else {
+            window.sessionStorage.setItem("majal_bim_software", "1");
+        }
+        window.location.reload();
     }
 
     // ------------------------------------------------------------------
@@ -818,6 +877,9 @@ export class BimViewer extends Component {
      * the slider is smooth on a model too big to re-mesh per frame.
      */
     toggleSection() {
+        if (this.state.compatibilityMode) {
+            return;
+        }
         this.state.sectionOn = !this.state.sectionOn;
         this.updateSection();
     }
@@ -1474,11 +1536,17 @@ export class BimViewer extends Component {
 
     resize() {
         const canvas = this.canvasRef.el;
-        if (!canvas || !this.renderer) {
+        if (!canvas || (!this.renderer && !this.softwareContext)) {
             return;
         }
         const { clientWidth, clientHeight } = canvas.parentElement;
-        this.renderer.setSize(clientWidth, clientHeight, false);
+        if (this.renderer) {
+            this.renderer.setSize(clientWidth, clientHeight, false);
+        } else {
+            const ratio = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.max(1, Math.floor(clientWidth * ratio));
+            canvas.height = Math.max(1, Math.floor(clientHeight * ratio));
+        }
         this.camera.aspect = clientWidth / Math.max(clientHeight, 1);
         this.camera.updateProjectionMatrix();
         this.render();
@@ -1487,6 +1555,158 @@ export class BimViewer extends Component {
     render() {
         if (this.renderer) {
             this.renderer.render(this.scene, this.camera);
+        } else if (this.softwareContext) {
+            this.renderCompatibilityView();
+        }
+    }
+
+    /**
+     * A deliberately small software renderer for browsers where WebGL is
+     * blocked or unavailable. It is not intended to replace the GPU renderer;
+     * it preserves orbit, zoom, element selection, status colours and pins so
+     * the BIM record remains usable instead of becoming an error screen.
+     */
+    renderCompatibilityView() {
+        const THREE = this.THREE;
+        const canvas = this.canvasRef.el;
+        const context = this.softwareContext;
+        if (!THREE || !canvas || !context || !this.camera || !this.modelGroup) {
+            return;
+        }
+
+        const width = canvas.width;
+        const height = canvas.height;
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, width, height);
+        context.fillStyle = "#eef1ef";
+        context.fillRect(0, 0, width, height);
+
+        this.scene.updateMatrixWorld(true);
+        this.camera.updateMatrixWorld(true);
+
+        let triangleCount = 0;
+        for (const meshes of this.meshesByExpressId.values()) {
+            for (const mesh of meshes) {
+                const positions = mesh.geometry.getAttribute("position");
+                const indices = mesh.geometry.index;
+                triangleCount += Math.floor(
+                    (indices?.count || positions?.count || 0) / 3);
+            }
+        }
+        // A compatibility view must stay responsive even for a large export.
+        // Sampling is only needed beyond this point; ordinary coordination
+        // models and the bundled demo are drawn in full.
+        const stride = Math.max(1, Math.ceil(triangleCount / 50000));
+        const triangles = [];
+        const light = new THREE.Vector3(0.35, 0.8, 0.45).normalize();
+
+        for (const [expressID, meshes] of this.meshesByExpressId) {
+            for (const mesh of meshes) {
+                if (!mesh.visible) {
+                    continue;
+                }
+                mesh.updateMatrixWorld(true);
+                const positions = mesh.geometry.getAttribute("position");
+                const indices = mesh.geometry.index;
+                const count = indices?.count || positions?.count || 0;
+                const material = Array.isArray(mesh.material)
+                    ? mesh.material[0] : mesh.material;
+                const base = material?.color
+                    || new THREE.Color(BUCKET_COLOURS.none);
+                const opacity = material?.opacity ?? 1;
+
+                for (let offset = 0; offset + 2 < count; offset += 3 * stride) {
+                    const aIndex = indices ? indices.getX(offset) : offset;
+                    const bIndex = indices ? indices.getX(offset + 1) : offset + 1;
+                    const cIndex = indices ? indices.getX(offset + 2) : offset + 2;
+                    const worldA = new THREE.Vector3().fromBufferAttribute(
+                        positions, aIndex).applyMatrix4(mesh.matrixWorld);
+                    const worldB = new THREE.Vector3().fromBufferAttribute(
+                        positions, bIndex).applyMatrix4(mesh.matrixWorld);
+                    const worldC = new THREE.Vector3().fromBufferAttribute(
+                        positions, cIndex).applyMatrix4(mesh.matrixWorld);
+                    const projectedA = worldA.clone().project(this.camera);
+                    const projectedB = worldB.clone().project(this.camera);
+                    const projectedC = worldC.clone().project(this.camera);
+                    if (
+                        [projectedA, projectedB, projectedC].every(
+                            (point) => point.z < -1 || point.z > 1)
+                    ) {
+                        continue;
+                    }
+                    const points = [projectedA, projectedB, projectedC].map(
+                        (point) => ({
+                            x: (point.x * 0.5 + 0.5) * width,
+                            y: (-point.y * 0.5 + 0.5) * height,
+                        })
+                    );
+                    const area = Math.abs(
+                        (points[1].x - points[0].x)
+                            * (points[2].y - points[0].y)
+                        - (points[1].y - points[0].y)
+                            * (points[2].x - points[0].x)
+                    );
+                    if (area < 0.15) {
+                        continue;
+                    }
+                    const normal = worldB.clone().sub(worldA)
+                        .cross(worldC.clone().sub(worldA)).normalize();
+                    const shade = 0.62 + 0.38 * Math.abs(normal.dot(light));
+                    triangles.push({
+                        points,
+                        depth: (
+                            projectedA.z + projectedB.z + projectedC.z
+                        ) / 3,
+                        colour: [
+                            Math.round(Math.min(1, base.r * shade) * 255),
+                            Math.round(Math.min(1, base.g * shade) * 255),
+                            Math.round(Math.min(1, base.b * shade) * 255),
+                        ],
+                        opacity,
+                        expressID,
+                    });
+                }
+            }
+        }
+
+        triangles.sort((a, b) => b.depth - a.depth);
+        for (const triangle of triangles) {
+            const [r, g, b] = triangle.colour;
+            context.beginPath();
+            context.moveTo(triangle.points[0].x, triangle.points[0].y);
+            context.lineTo(triangle.points[1].x, triangle.points[1].y);
+            context.lineTo(triangle.points[2].x, triangle.points[2].y);
+            context.closePath();
+            context.fillStyle = `rgba(${r}, ${g}, ${b}, ${triangle.opacity})`;
+            context.fill();
+            context.strokeStyle = `rgba(38, 62, 58, ${Math.min(
+                0.28, triangle.opacity)})`;
+            context.lineWidth = 0.6;
+            context.stroke();
+        }
+
+        // Keep site annotations visible in compatibility mode. The actual
+        // selection remains THREE's CPU raycaster, so clicking the marker or
+        // model still opens the same records.
+        for (const pin of this.visiblePins) {
+            if (!pin.position || pin.position.length < 3) {
+                continue;
+            }
+            const point = new THREE.Vector3(...pin.position).project(this.camera);
+            if (point.z < -1 || point.z > 1) {
+                continue;
+            }
+            const x = (point.x * 0.5 + 0.5) * width;
+            const y = (-point.y * 0.5 + 0.5) * height;
+            const radius = Math.max(5, Math.min(width, height) * 0.009);
+            context.beginPath();
+            context.arc(x, y, radius, 0, Math.PI * 2);
+            context.fillStyle = pin.bucket === "blocked" ? "#c0483c"
+                : pin.bucket === "done" ? "#2f7d5c" : "#d8a13a";
+            context.fill();
+            context.strokeStyle = "#ffffff";
+            context.lineWidth = Math.max(2, radius * 0.28);
+            context.stroke();
         }
     }
 

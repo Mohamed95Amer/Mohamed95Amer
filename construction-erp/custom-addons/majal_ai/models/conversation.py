@@ -34,6 +34,14 @@ class MajalAiConversation(models.Model):
     provider_id = fields.Many2one(
         "majal.ai.provider", required=True, ondelete="restrict",
     )
+    channel_id = fields.Many2one(
+        "discuss.channel",
+        string="Majal Chat",
+        ondelete="set null",
+        copy=False,
+        index=True,
+        help="Discuss conversation that uses this Intelligence history.",
+    )
     scope = fields.Selection(
         [
             ("portfolio", "Portfolio"),

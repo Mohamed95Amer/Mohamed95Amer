@@ -85,6 +85,30 @@
 .o_bim_error > .fa { color: #97382f; }
 .o_bim_muted { color: var(--bim-muted); font-size: .84rem; }
 
+.o_bim_compatibility {
+    position: absolute;
+    z-index: 3;
+    top: 14px;
+    left: 50%;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    width: calc(100% - 28px);
+    max-width: 560px;
+    padding: 9px 13px;
+    color: #173c3b;
+    background: rgba(247, 251, 248, .96);
+    border: 1px solid #a9c4bc;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(18, 58, 60, .12);
+    transform: translateX(-50%);
+    pointer-events: none;
+
+    > .fa { margin-top: 2px; color: #2f7d5c; }
+    span { font-size: .76rem; line-height: 1.35; }
+    strong { display: block; font-size: .8rem; }
+}
+
 .o_bim_selection {
     position: absolute;
     left: 16px;

@@ -1,7 +1,7 @@
 {
     "name": "Majal Intelligence",
     "summary": "Secure bilingual AI copilot for construction and facilities",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Productivity/AI",
     "license": "LGPL-3",
     "author": "Majal",

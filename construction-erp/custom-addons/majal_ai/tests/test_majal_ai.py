@@ -193,3 +193,68 @@ class TestMajalAi(TransactionCase):
         )
         self.assertEqual(usage.status, "success")
         self.assertEqual(usage.total_tokens, 27)
+
+    def test_direct_majal_chat_uses_intelligence_history(self):
+        providers = self.env["majal.ai.provider"].search(
+            [("company_id", "=", self.env.company.id)]
+        )
+        providers.write({"enabled": False})
+        self.local.enabled = True
+        assistant = self.env.ref("base.partner_root")
+        channel = self.env["discuss.channel"].with_user(self.user_a).channel_get(
+            [assistant.id, self.user_a.partner_id.id]
+        )
+        conversation = self.env["majal.ai.conversation"].with_user(
+            self.user_a
+        ).create(
+            {
+                "name": "Majal chat history",
+                "provider_id": self.local.id,
+                "channel_id": channel.id,
+            }
+        )
+        fake_result = {
+            "conversation_id": conversation.id,
+            "assistant_message": {
+                "content": "**Two projects** need attention. [1]",
+                "citations": [
+                    {"number": 1, "label": "Tower project"},
+                ],
+            },
+        }
+        with patch(
+            "odoo.addons.majal_ai.models.conversation.MajalAiConversation.ask",
+            return_value=fake_result,
+        ) as ask:
+            answer = self.env["mail.bot"].with_user(self.user_a)._get_answer(
+                channel,
+                "<p>What needs attention?</p>",
+                {"body": "<p>What needs attention?</p>"},
+            )
+        self.assertIn("need attention", str(answer))
+        self.assertIn("<strong>Two projects</strong>", str(answer))
+        self.assertNotIn("**Two projects**", str(answer))
+        self.assertIn("Tower project", str(answer))
+        self.assertIn("Continue in Majal Intelligence", str(answer))
+        ask.assert_called_once_with(
+            "What needs attention?",
+            self.local.id,
+            "portfolio",
+            conversation.id,
+        )
+
+    def test_direct_majal_chat_explains_when_no_provider_is_ready(self):
+        self.env["majal.ai.provider"].search(
+            [("company_id", "=", self.env.company.id)]
+        ).write({"enabled": False})
+        assistant = self.env.ref("base.partner_root")
+        channel = self.env["discuss.channel"].with_user(self.user_a).channel_get(
+            [assistant.id, self.user_a.partner_id.id]
+        )
+        answer = self.env["mail.bot"].with_user(self.user_a)._get_answer(
+            channel,
+            "<p>Give me a portfolio briefing</p>",
+            {"body": "<p>Give me a portfolio briefing</p>"},
+        )
+        self.assertIn("not configured", str(answer))
+        self.assertIn("Open Majal Intelligence", str(answer))

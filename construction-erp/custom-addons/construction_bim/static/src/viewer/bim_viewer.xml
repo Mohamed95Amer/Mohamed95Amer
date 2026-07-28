@@ -19,7 +19,8 @@
                         <option t-foreach="storeys" t-as="level" t-key="level"
                                 t-att-value="level" t-esc="level"/>
                     </select>
-                    <button t-att-class="{'active': state.placing}"
+                    <button t-if="!state.compatibilityMode"
+                            t-att-class="{'active': state.placing}"
                             t-on-click="startPlacing"
                             title="Click the model to drop a pin">
                         <i class="fa fa-map-marker"/> Pin
@@ -34,7 +35,8 @@
                             title="Hide the selected element">
                         <i class="fa fa-eye-slash"/> Hide
                     </button>
-                    <button t-att-class="{'active': state.sectionOn}"
+                    <button t-if="!state.compatibilityMode"
+                            t-att-class="{'active': state.sectionOn}"
                             t-on-click="toggleSection" title="Cut through the model">
                         <i class="fa fa-scissors"/> Section
                     </button>
@@ -47,7 +49,14 @@
                     <button t-on-click="fitView" title="Frame the selection">
                         <i class="fa fa-expand"/> Fit
                     </button>
-                    <select t-if="state.info.federation and state.info.federation.length"
+                    <button t-on-click="toggleCompatibility"
+                            t-att-class="{'active': state.compatibilityMode}"
+                            title="Use a graphics-safe model view">
+                        <i class="fa fa-shield"/>
+                        <t t-if="state.compatibilityMode">Full 3D</t>
+                        <t t-else="">Safe view</t>
+                    </button>
+                    <select t-if="!state.compatibilityMode and state.info.federation and state.info.federation.length"
                             class="o_bim_select o_bim_overlay_select"
                             t-on-change="(ev) => this.onOverlayPicked(ev.target.value)">
                         <option value="">Overlay a model…</option>
@@ -80,6 +89,18 @@
             <div class="o_bim_body">
                 <div class="o_bim_stage">
                     <canvas t-ref="canvas"/>
+
+                    <div t-if="state.compatibilityMode"
+                         class="o_bim_compatibility"
+                         role="status">
+                        <i class="fa fa-shield"/>
+                        <span>
+                            <strong>Compatibility view</strong>
+                            Your browser blocked GPU rendering. The model,
+                            navigation, status colours and linked records remain
+                            available.
+                        </span>
+                    </div>
 
                     <div t-if="state.loading" class="o_bim_overlay">
                         <i class="fa fa-cube fa-spin"/>
