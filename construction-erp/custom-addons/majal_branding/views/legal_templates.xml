@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="open_source_notices" name="Majal Open-Source Notices">
+        <t t-call="web.frontend_layout">
+            <t t-set="title">Open-source notices</t>
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <main class="o_majal_legal_page">
+                <article class="o_majal_legal_card">
+                    <a href="/web/login" class="o_majal_legal_brand" aria-label="Majal sign in">
+                        <img src="/majal_branding/static/description/icon.svg" alt="" width="48" height="48"/>
+                        <span>
+                            <strong t-esc="product_name"/>
+                            <small>Construction &amp; Facilities</small>
+                        </span>
+                    </a>
+
+                    <h1>Open-source notices</h1>
+                    <p>
+                        Majal combines original construction and facilities workflows
+                        with maintained open-source components. Those components remain
+                        available under their respective licences.
+                    </p>
+
+                    <section>
+                        <h2>Platform components</h2>
+                        <ul>
+                            <li>Odoo 18 Community Edition — GNU LGPL version 3.</li>
+                            <li>Odoo Community Association modules — LGPL-3 or AGPL-3 as declared by each module.</li>
+                            <li>Majal Facilities Contracts and Parts &amp; Stores — AGPL-3.</li>
+                            <li>Other bundled community modules — licences declared in their module manifests.</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Corresponding source</h2>
+                        <p>
+                            The corresponding source for the deployed Route A release,
+                            including build instructions and pinned third-party sources,
+                            is available from the Majal source repository.
+                        </p>
+                        <a class="btn btn-primary"
+                           href="https://github.com/Mohamed95Amer/Mohamed95Amer"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            View corresponding source
+                        </a>
+                    </section>
+
+                    <section>
+                        <h2>Licence texts</h2>
+                        <p>
+                            The complete licence and copyright notices are distributed
+                            with the source of each component. This page is an offer of
+                            source, not a change to any component's licence.
+                        </p>
+                    </section>
+
+                    <p t-if="support_email" class="o_majal_legal_support">
+                        Questions:
+                        <a t-att-href="'mailto:%s' % support_email" t-esc="support_email"/>
+                    </p>
+                </article>
+            </main>
+        </t>
+    </template>
+
+    <template id="help_and_support" name="Majal Help and Support">
+        <t t-call="web.frontend_layout">
+            <t t-set="title">Help &amp; Support</t>
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <main class="o_majal_help_page">
+                <article class="o_majal_help_card">
+                    <a href="/web/login" class="o_majal_legal_brand" aria-label="Majal sign in">
+                        <img src="/majal_branding/static/description/icon.svg" alt="" width="48" height="48"/>
+                        <span>
+                            <strong t-esc="product_name"/>
+                            <small>Help &amp; Support</small>
+                        </span>
+                    </a>
+
+                    <h1>How can we help?</h1>
+                    <p>
+                        Use the channel agreed for your Majal deployment. Include the
+                        project or facility, the page you were using and the time the
+                        issue occurred.
+                    </p>
+
+                    <div class="o_majal_help_grid">
+                        <a t-if="support_url"
+                           class="o_majal_help_tile text-decoration-none"
+                           t-att-href="support_url"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa fa-life-ring" aria-hidden="true"/>
+                            <h2>Support portal</h2>
+                            <p>Open a request and follow its progress.</p>
+                        </a>
+                        <a t-if="support_email"
+                           class="o_majal_help_tile text-decoration-none"
+                           t-att-href="'mailto:%s' % support_email">
+                            <i class="fa fa-envelope-o" aria-hidden="true"/>
+                            <h2>Email support</h2>
+                            <p t-esc="support_email"/>
+                        </a>
+                        <a class="o_majal_help_tile text-decoration-none"
+                           href="/majal/legal/open-source">
+                            <i class="fa fa-code-fork" aria-hidden="true"/>
+                            <h2>Open-source notices</h2>
+                            <p>Review third-party licences and corresponding source.</p>
+                        </a>
+                        <a t-if="privacy_url"
+                           class="o_majal_help_tile text-decoration-none"
+                           t-att-href="privacy_url"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            <i class="fa fa-shield" aria-hidden="true"/>
+                            <h2>Privacy</h2>
+                            <p>Review how information is handled.</p>
+                        </a>
+                    </div>
+
+                    <p t-if="not support_url and not support_email" class="alert alert-info mt-4 mb-0">
+                        An administrator can add the support URL and email in
+                        Settings → Majal System Information.
+                    </p>
+                </article>
+            </main>
+        </t>
+    </template>
+</odoo>

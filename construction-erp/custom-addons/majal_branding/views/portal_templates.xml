@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="majal_portal_record_sidebar"
+              inherit_id="portal.portal_record_sidebar"
+              name="Majal Portal Footer"
+              priority="110">
+        <xpath expr="//div[hasclass('text-muted')][a[contains(@href, 'odoo.com')]]" position="replace">
+            <div class="d-none d-lg-flex mt-5 small text-center text-muted justify-content-center gap-2">
+                <span>Majal</span>
+                <span aria-hidden="true">·</span>
+                <a href="/majal/legal/open-source">Open-source notices</a>
+            </div>
+        </xpath>
+    </template>
+</odoo>

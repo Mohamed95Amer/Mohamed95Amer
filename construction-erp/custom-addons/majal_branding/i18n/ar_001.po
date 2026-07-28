@@ -1,0 +1,194 @@
+# Translation of Majal Brand System.
+msgid ""
+msgstr ""
+"Project-Id-Version: Majal 18.0\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: majal_branding
+msgid "Majal Assistant"
+msgstr "مساعد مجال"
+
+#. module: majal_branding
+#. odoo-javascript
+#: code:addons/majal_branding/static/src/user_menu/user_menu.js:0
+msgid "Help & Support"
+msgstr "المساعدة والدعم"
+
+#. module: majal_branding
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+#: code:addons/majal_branding/static/src/user_menu/user_menu.js:0
+msgid "Open-source notices"
+msgstr "إشعارات المصادر المفتوحة"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Majal System Information"
+msgstr "معلومات نظام مجال"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Product identity"
+msgstr "هوية المنتج"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_product_name
+msgid "Product name"
+msgstr "اسم المنتج"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_tagline
+msgid "Tagline"
+msgstr "العبارة التعريفية"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Client support"
+msgstr "دعم العميل"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_support_email
+msgid "Support email"
+msgstr "البريد الإلكتروني للدعم"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_support_url
+msgid "Support URL"
+msgstr "رابط الدعم"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_privacy_url
+msgid "Privacy URL"
+msgstr "رابط الخصوصية"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_terms_url
+msgid "Terms URL"
+msgstr "رابط الشروط"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Brand colours"
+msgstr "ألوان الهوية"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_nav_color
+msgid "Navigation colour"
+msgstr "لون شريط التنقل"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_primary_color
+msgid "Primary colour"
+msgstr "اللون الأساسي"
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_config_settings__majal_accent_color
+msgid "Accent colour"
+msgstr "اللون المميز"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Release and legal"
+msgstr "الإصدار والمعلومات القانونية"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Managed construction and facilities service"
+msgstr "خدمة مُدارة للإنشاءات وإدارة المرافق"
+
+#. module: majal_branding
+#. odoo-javascript
+#: code:addons/majal_branding/static/src/activity_menu/activity_menu.xml:0
+msgid "All caught up"
+msgstr "تم إنجاز كل شيء"
+
+#. module: majal_branding
+#. odoo-javascript
+#: code:addons/majal_branding/static/src/activity_menu/activity_menu.xml:0
+msgid "There are no activities waiting for you."
+msgstr "لا توجد أنشطة تنتظر إجراءك."
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+msgid "How can we help?"
+msgstr "كيف يمكننا مساعدتك؟"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+msgid "Support portal"
+msgstr "بوابة الدعم"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+msgid "Open a request and follow its progress."
+msgstr "افتح طلب دعم وتابع تقدمه."
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+msgid "Email support"
+msgstr "الدعم عبر البريد الإلكتروني"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+msgid "Privacy"
+msgstr "الخصوصية"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.help_and_support
+msgid "Review how information is handled."
+msgstr "راجع كيفية التعامل مع المعلومات."
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+msgid "Platform components"
+msgstr "مكونات المنصة"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+msgid "Corresponding source"
+msgstr "المصدر البرمجي المطابق"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+msgid "View corresponding source"
+msgstr "عرض المصدر البرمجي المطابق"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+msgid "Licence texts"
+msgstr "نصوص التراخيص"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+msgid "Questions:"
+msgstr "للاستفسارات:"
+
+#. module: majal_branding
+#: code:addons/majal_branding/models/res_config_settings.py:0
+msgid "Majal colours must use the format #RRGGBB."
+msgstr "يجب إدخال ألوان مجال بالصيغة ‎#RRGGBB‎."
+
+#. module: majal_branding
+#: model:ir.model.fields,field_description:majal_branding.field_res_users__odoobot_state
+msgid "Assistant Status"
+msgstr "حالة المساعد"
+
+#. module: majal_branding
+#: code:addons/majal_branding/models/assistant.py:0
+msgid ""
+"Majal keeps project, site and facility conversations together so decisions "
+"stay connected to the work."
+msgstr ""
+"يجمع مجال محادثات المشروع والموقع والمرفق في مكان واحد حتى تظل القرارات "
+"مرتبطة بالعمل."
+
+#. module: majal_branding
+#: code:addons/majal_branding/models/assistant.py:0
+msgid "Ask for help at any time, or open Help & Support from your profile."
+msgstr "اطلب المساعدة في أي وقت، أو افتح المساعدة والدعم من ملفك الشخصي."

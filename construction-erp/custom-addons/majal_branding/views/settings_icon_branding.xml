@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="settings_icon_purchase" model="ir.ui.view">
+        <field name="name">settings.icon.purchase.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='purchase']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/purchase.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="settings_icon_stock" model="ir.ui.view">
+        <field name="name">settings.icon.stock.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='stock']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/inventory.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="settings_icon_maintenance" model="ir.ui.view">
+        <field name="name">settings.icon.maintenance.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="maintenance.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='maintenance']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/maintenance.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="settings_icon_account" model="ir.ui.view">
+        <field name="name">settings.icon.account.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='account']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/finance.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="settings_icon_project" model="ir.ui.view">
+        <field name="name">settings.icon.project.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="project.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='project']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/projects.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="settings_icon_hr" model="ir.ui.view">
+        <field name="name">settings.icon.hr.majal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='hr']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/people.svg</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

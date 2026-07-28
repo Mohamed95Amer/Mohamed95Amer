@@ -32,6 +32,7 @@ MODULES = [
     "construction_subcontractor",
     "construction_submittal",
     "construction_ui",
+    "majal_branding",
     "facility_asset",
     "facility_floorplan",
     "facility_workorder",

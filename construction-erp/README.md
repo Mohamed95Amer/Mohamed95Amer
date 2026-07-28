@@ -67,6 +67,10 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   them, their defects, inspections, tasks, RFIs and permits — on one thumb-sized
   screen, ordered by how much trouble it causes to ignore. See
   [`docs/screens.md`](docs/screens.md).
+- **majal_branding** — client-ready Majal identity across Settings, About,
+  Discuss, activities, assistant artwork, empty states, email, portal, browser
+  metadata and the installable PWA. It also provides Help and the Route A
+  open-source notice/source-offer page.
 - **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate

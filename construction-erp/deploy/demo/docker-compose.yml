@@ -1,0 +1,78 @@
+name: majal-demo
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: majal_admin
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
+      POSTGRES_DB: postgres
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./postgres/init-majal.sh:/docker-entrypoint-initdb.d/10-majal-app.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U majal_admin -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    networks:
+      - private
+
+  majal:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: majal_app
+      PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      ODOO_ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env}
+    entrypoint:
+      - /bin/bash
+      - /usr/local/bin/majal-entrypoint
+    command:
+      - odoo
+    expose:
+      - "8069"
+    volumes:
+      - ../../scripts/docker-entrypoint-majal.sh:/usr/local/bin/majal-entrypoint:ro
+      - ../../custom-addons:/mnt/custom-addons:ro
+      - ../../oca-addons:/mnt/oca-addons:ro
+      - ../../third-party-addons:/mnt/third-party-addons:ro
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - majal-data:/var/lib/odoo
+    restart: unless-stopped
+    networks:
+      - private
+
+  edge:
+    image: caddy:2.10
+    depends_on:
+      - majal
+    environment:
+      DEMO_HOST: ${DEMO_HOST:?Set DEMO_HOST in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    networks:
+      - private
+
+networks:
+  private:
+    driver: bridge
+
+volumes:
+  db-data:
+  majal-data:
+  caddy-data:
+  caddy-config:

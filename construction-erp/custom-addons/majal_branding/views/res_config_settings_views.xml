@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_majal_branding" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.majal.branding</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="100"/>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='general_settings']" position="attributes">
+                <attribute name="logo">/construction_ui/static/description/apps/settings.svg</attribute>
+            </xpath>
+
+            <xpath expr="//setting[@id='partner_autocomplete']" position="attributes">
+                <attribute name="title">Suggest matching company information while editing a contact.</attribute>
+                <attribute name="help">Suggest public company details for faster contact entry</attribute>
+            </xpath>
+            <xpath expr="//block[@id='pwa_settings']/setting/field[@name='web_app_name']" position="attributes">
+                <attribute name="placeholder">Majal</attribute>
+            </xpath>
+
+            <xpath expr="//div[@id='about']" position="replace">
+                <div id="majal_system_information">
+                    <block title="Majal System Information" name="majal_system_information">
+                        <setting string="Product identity" help="These values are used by the browser, installed mobile app and client-facing pages.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="majal_product_name" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_product_name"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="majal_tagline" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_tagline"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Client support" help="Show the correct support and policy destinations for this deployment.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="majal_support_email" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_support_email" placeholder="support@example.com"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="majal_support_url" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_support_url" placeholder="https://support.example.com"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="majal_privacy_url" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_privacy_url" placeholder="https://example.com/privacy"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="majal_terms_url" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_terms_url" placeholder="https://example.com/terms"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Brand colours" help="Use six-digit hexadecimal values. Status colours remain semantic for safety and accessibility.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="majal_nav_color" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_nav_color" placeholder="#173240"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="majal_primary_color" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_primary_color" placeholder="#346D75"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="majal_accent_color" class="col-lg-3 o_light_label"/>
+                                    <field name="majal_accent_color" placeholder="#C59B52"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Release and legal" help="Majal Route A includes an accessible open-source notice and source offer for covered components.">
+                            <div class="o_majal_system_card mt-2">
+                                <strong>Majal Route A</strong>
+                                <span>Managed construction and facilities service</span>
+                                <a href="/majal/legal/open-source" target="_blank" rel="noopener noreferrer">
+                                    Open-source notices
+                                </a>
+                            </div>
+                        </setting>
+                    </block>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

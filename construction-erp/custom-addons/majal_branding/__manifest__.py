@@ -1,0 +1,38 @@
+{
+    "name": "Majal Brand System",
+    "summary": "Client-ready Majal identity, product information and PWA",
+    "version": "18.0.1.0.0",
+    "category": "Hidden/Tools",
+    "license": "LGPL-3",
+    "author": "Majal",
+    "depends": [
+        "base_setup",
+        "mail",
+        "mail_bot",
+        "portal",
+        "construction_ui",
+    ],
+    "data": [
+        "data/branding_defaults.xml",
+        "data/assistant_data.xml",
+        "data/assistant_messages.xml",
+        "views/res_config_settings_views.xml",
+        "views/settings_icon_branding.xml",
+        "views/web_templates.xml",
+        "views/mail_templates.xml",
+        "views/portal_templates.xml",
+        "views/legal_templates.xml",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "majal_branding/static/src/user_menu/user_menu.js",
+            "majal_branding/static/src/activity_menu/activity_menu.xml",
+            "majal_branding/static/src/scss/backend.scss",
+        ],
+        "web.assets_frontend": [
+            "majal_branding/static/src/scss/public.scss",
+        ],
+    },
+    "application": False,
+    "installable": True,
+}

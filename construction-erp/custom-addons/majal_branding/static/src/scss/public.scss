@@ -1,0 +1,138 @@
+.o_majal_product_footer {
+    color: #687983;
+    font-size: .8rem;
+
+    span:first-child {
+        color: #173240;
+        font-weight: 800;
+    }
+}
+
+.o_majal_login_footer a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.o_majal_legal_page,
+.o_majal_help_page {
+    min-height: 100vh;
+    padding: 42px 18px;
+    color: #263842;
+    background:
+        radial-gradient(circle at 85% 10%, rgba(197, 155, 82, .14), transparent 28%),
+        linear-gradient(145deg, #edf3f3, #f7f8f8 52%, #eef1f2);
+}
+
+.o_majal_legal_card,
+.o_majal_help_card {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 48px);
+    border: 1px solid #dce4e7;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 24px 70px rgba(12, 31, 41, .12);
+
+    h1 {
+        margin-top: 32px;
+        color: #173240;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        letter-spacing: -.035em;
+    }
+
+    h2 {
+        margin-top: 28px;
+        color: #244657;
+        font-size: 1.08rem;
+    }
+
+    p,
+    li {
+        color: #5c6d76;
+        line-height: 1.7;
+    }
+
+    .btn-primary {
+        border-color: #346d75;
+        background: #346d75;
+    }
+}
+
+.o_majal_legal_brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: #173240;
+    text-decoration: none;
+
+    img {
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(12, 31, 41, .14);
+    }
+
+    span {
+        display: flex;
+        flex-direction: column;
+    }
+
+    strong {
+        font-size: 1.15rem;
+    }
+
+    small {
+        color: #687983;
+    }
+}
+
+.o_majal_legal_support {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid #dce4e7;
+}
+
+.o_majal_help_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 26px;
+}
+
+.o_majal_help_tile {
+    min-height: 130px;
+    padding: 18px;
+    border: 1px solid #dce4e7;
+    border-radius: 14px;
+    background: #f8fafa;
+
+    i {
+        color: #346d75;
+        font-size: 1.35rem;
+    }
+
+    h2 {
+        margin: 12px 0 5px;
+    }
+
+    p {
+        margin: 0;
+        font-size: .9rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .o_majal_legal_page,
+    .o_majal_help_page {
+        padding: 12px;
+    }
+
+    .o_majal_legal_card,
+    .o_majal_help_card {
+        border-radius: 16px;
+    }
+
+    .o_majal_help_grid {
+        grid-template-columns: 1fr;
+    }
+}

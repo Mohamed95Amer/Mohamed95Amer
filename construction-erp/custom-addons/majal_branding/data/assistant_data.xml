@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="base.partner_root" model="res.partner">
+        <field name="name">Majal Assistant</field>
+        <field name="image_1920" type="base64" file="majal_branding/static/src/img/majal-assistant.png"/>
+    </record>
+    <record id="base.user_root" model="res.users">
+        <field name="name">Majal Assistant</field>
+    </record>
+</odoo>

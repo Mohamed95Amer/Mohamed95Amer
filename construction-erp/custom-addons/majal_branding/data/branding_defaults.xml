@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="param_product_name" model="ir.config_parameter">
+        <field name="key">majal.product_name</field>
+        <field name="value">Majal</field>
+    </record>
+    <record id="param_tagline" model="ir.config_parameter">
+        <field name="key">majal.tagline</field>
+        <field name="value">Construction &amp; Facilities</field>
+    </record>
+    <record id="param_nav_color" model="ir.config_parameter">
+        <field name="key">majal.nav_color</field>
+        <field name="value">#173240</field>
+    </record>
+    <record id="param_primary_color" model="ir.config_parameter">
+        <field name="key">majal.primary_color</field>
+        <field name="value">#346D75</field>
+    </record>
+    <record id="param_accent_color" model="ir.config_parameter">
+        <field name="key">majal.accent_color</field>
+        <field name="value">#C59B52</field>
+    </record>
+    <record id="param_web_app_name" model="ir.config_parameter">
+        <field name="key">web.web_app_name</field>
+        <field name="value">Majal</field>
+    </record>
+</odoo>
