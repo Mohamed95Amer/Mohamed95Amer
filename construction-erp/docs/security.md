@@ -20,6 +20,13 @@ does not implement a second password or session system.
   CPU and wall-clock limits remain configured.
 - `majal_security` installs Odoo's password policy, passkey and TOTP/email-MFA
   modules. New or changed passwords must contain at least 12 characters.
+- `majal_administration` provides six rank-checked client roles, prevents
+  client administrators from editing raw technical groups, blocks
+  deactivation of the last Platform Owner, and keeps immutable administration
+  events.
+- Majal creates seven local database-and-filestore recovery tiers with
+  integrity checks. Restore requires a short-lived Platform Owner request and
+  a separate offline deployment-operator action.
 
 ## Administrator actions before internet exposure
 
@@ -33,8 +40,9 @@ does not implement a second password or session system.
    TLS there, rate-limit authentication, and block direct access to port 8069.
 6. Replace or remove demo users and demo data. Do not expose this demo database
    to the internet.
-7. Configure encrypted, tested backups with an off-machine copy and a restore
-   drill.
+7. Configure encrypted off-machine replication for Majal recovery points and
+   run a documented restore drill. Local recovery points alone do not protect
+   against host or account loss.
 
 ## Authorization policy
 

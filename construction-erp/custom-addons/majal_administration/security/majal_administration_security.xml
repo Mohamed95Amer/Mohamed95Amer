@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_majal_administration" model="ir.module.category">
+        <field name="name">Majal Administration</field>
+        <field name="sequence">7</field>
+    </record>
+
+    <record id="group_facilities_user" model="res.groups">
+        <field name="name">Facilities Field User</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_facilities_supervisor" model="res.groups">
+        <field name="name">Facilities Supervisor</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('group_facilities_user'))]"/>
+    </record>
+    <record id="group_facilities_manager" model="res.groups">
+        <field name="name">Facilities Manager</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids"
+               eval="[(4, ref('group_facilities_supervisor')), (4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <record id="group_user_administrator" model="res.groups">
+        <field name="name">Client User Administrator</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Can invite, deactivate and assign approved Majal roles without technical-system access.</field>
+    </record>
+    <record id="group_backup_operator" model="res.groups">
+        <field name="name">Recovery Point Operator</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('group_user_administrator'))]"/>
+    </record>
+    <record id="group_platform_owner" model="res.groups">
+        <field name="name">Platform Owner</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids"
+               eval="[(4, ref('base.group_system')), (4, ref('group_backup_operator'))]"/>
+        <field name="comment">The protected top-level Majal role. Keep at least two named owners in production.</field>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- The standard Facilities application is now available to Majal facilities
+         users. Record rules and ACLs still separate field and manager capabilities. -->
+    <record id="facility_asset.menu_facility_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_facilities_user')])]"/>
+    </record>
+</odoo>

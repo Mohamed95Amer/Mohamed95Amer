@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16
+    restart: unless-stopped
     environment:
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
@@ -15,6 +16,7 @@ services:
 
   odoo:
     build: .
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy

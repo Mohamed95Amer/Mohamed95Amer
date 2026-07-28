@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_user_invite_wizard_form" model="ir.ui.view">
+        <field name="name">majal.user.invite.wizard.form</field>
+        <field name="model">majal.user.invite.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Client User">
+                <div class="alert alert-info" role="alert">
+                    Select a business role and workspace. Majal applies the approved
+                    permissions automatically.
+                </div>
+                <group>
+                    <group string="Identity">
+                        <field name="name" placeholder="Full name"/>
+                        <field name="login" placeholder="name@company.com"/>
+                        <field name="email" placeholder="name@company.com"/>
+                        <field name="temporary_password"
+                               placeholder="12+ characters; upper, lower and number"/>
+                    </group>
+                    <group string="Access">
+                        <field name="role_id"/>
+                        <field name="industry_scope"/>
+                    </group>
+                </group>
+                <div class="alert alert-warning" role="alert">
+                    Share the temporary password once through a secure channel.
+                    It is cleared from this wizard after creation.
+                </div>
+                <footer>
+                    <button name="action_create_user" type="object"
+                            string="Create User" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_invite_user" model="ir.actions.act_window">
+        <field name="name">Create Client User</field>
+        <field name="res_model">majal.user.invite.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4, ref('majal_administration.group_user_administrator'))]"/>
+    </record>
+</odoo>

@@ -78,6 +78,12 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   used, conversations are private, usage is audited and limited, and the first
   release is deliberately read-only for safety. See
   [`docs/majal-intelligence.md`](docs/majal-intelligence.md).
+- **majal_administration** — client-safe user administration and verified
+  recovery. Six Majal business roles replace raw permission grids; users can
+  be scoped to Construction, Facilities or both. The seven-slot recovery
+  policy protects the database and uploaded documents, verifies every archive
+  with SHA-256, and uses an audited two-step offline restore. See
+  [`docs/administration-and-recovery.md`](docs/administration-and-recovery.md).
 - **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate
@@ -245,7 +251,7 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_bim,construction_whatsapp,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_inventory,facility_portal,facility_floorplan,construction_ui,om_account_accountant \
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_bim,construction_whatsapp,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_inventory,facility_portal,facility_floorplan,construction_ui,majal_branding,majal_ai,majal_administration,om_account_accountant \
   --stop-after-init
 docker compose restart odoo
 ```

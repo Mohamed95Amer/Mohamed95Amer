@@ -1,0 +1,38 @@
+{
+    "name": "Majal Administration",
+    "summary": "Client access administration and verified recovery points",
+    "version": "18.0.1.0.0",
+    "category": "Majal/Administration",
+    "license": "LGPL-3",
+    "author": "Majal",
+    "depends": [
+        "base_setup",
+        "auth_signup",
+        "mail",
+        "construction_base",
+        "facility_asset",
+        "project",
+        "majal_branding",
+    ],
+    "data": [
+        "security/majal_administration_security.xml",
+        "security/ir.model.access.csv",
+        "data/access_roles.xml",
+        "data/backup_cron.xml",
+        "views/user_access_views.xml",
+        "views/backup_views.xml",
+        "views/res_config_settings_views.xml",
+        "views/menus.xml",
+        "wizards/user_invite_wizard_views.xml",
+        "wizards/user_access_wizard_views.xml",
+        "wizards/restore_request_wizard_views.xml",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "majal_administration/static/src/scss/administration.scss",
+        ],
+    },
+    "application": True,
+    "installable": True,
+    "post_init_hook": "post_init_hook",
+}
