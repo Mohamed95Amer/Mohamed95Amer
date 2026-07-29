@@ -1,4 +1,4 @@
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -23,6 +23,28 @@ class TestFacilityInventory(TransactionCase):
         cls.filter = cls.env["product.product"].create({
             "name": "Panel filter", "type": "consu",
             "is_storable": True, "standard_price": 20.0,
+        })
+        cls.technician = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Parts Technician",
+            "login": "parts-technician-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+        cls.facility_manager = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Parts Manager",
+            "login": "parts-manager-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(
+                6,
+                0,
+                [cls.env.ref("maintenance.group_equipment_manager").id],
+            )],
         })
 
     def _stock_up(self, location, product, qty):
@@ -141,6 +163,15 @@ class TestFacilityInventory(TransactionCase):
         request = self._work_order()
         line = self._part(request, qty=1)
         line.unlink()
+        self.assertFalse(line.exists())
+
+    def test_technician_cannot_delete_planned_part_evidence(self):
+        request = self._work_order(user_id=self.technician.id)
+        line = self._part(request, qty=1)
+        line.with_user(self.technician).write({"quantity": 2})
+        with self.assertRaises(AccessError):
+            line.with_user(self.technician).unlink()
+        line.with_user(self.facility_manager).unlink()
         self.assertFalse(line.exists())
 
     def test_zero_quantity_is_refused(self):

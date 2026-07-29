@@ -42,6 +42,14 @@
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
+    <!-- Standard HR Officer implies Maintenance Administrator. In Majal these
+         are independent commercial capabilities; HR access must never grant
+         control of facility assets or work-order configuration. -->
+    <record id="hr.group_hr_user" model="res.groups">
+        <field name="implied_ids"
+               eval="[(3, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
     <!-- The standard Facilities application is now available to Majal facilities
          users. Record rules and ACLs still separate field and manager capabilities. -->
     <record id="facility_asset.menu_facility_root" model="ir.ui.menu">

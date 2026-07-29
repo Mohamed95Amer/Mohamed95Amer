@@ -11,6 +11,9 @@ class TestSubmittal(TransactionCase):
             {
                 "name": "Consultant Reviewer",
                 "login": "reviewer@example.com",
+                "email": "reviewer@example.com",
+                "company_id": cls.env.company.id,
+                "company_ids": [(6, 0, [cls.env.company.id])],
                 "groups_id": [
                     (4, cls.env.ref("base.group_user").id),
                     (4, cls.env.ref(

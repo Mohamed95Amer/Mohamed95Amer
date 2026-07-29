@@ -1,0 +1,116 @@
+# Translation of Majal Documents to Arabic
+msgid ""
+msgstr ""
+"Project-Id-Version: Majal Documents 18.0\n"
+"Language: ar_001\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0?0:n==1?1:n==2?2:n%100>=3 && n%100<=10?3:n%100>=11 && n%100<=99?4:5;\n"
+
+#. module: majal_documents
+msgid "Majal Documents"
+msgstr "مستندات مجال"
+
+#. module: majal_documents
+msgid "Controlled Documents"
+msgstr "المستندات الخاضعة للرقابة"
+
+#. module: majal_documents
+msgid "Waiting for My Approval"
+msgstr "بانتظار موافقتي"
+
+#. module: majal_documents
+msgid "Structured Sheets"
+msgstr "الجداول المنظمة"
+
+#. module: majal_documents
+msgid "Document Templates"
+msgstr "قوالب المستندات"
+
+#. module: majal_documents
+msgid "Document Editor"
+msgstr "محرر المستند"
+
+#. module: majal_documents
+msgid "Submit for Approval"
+msgstr "إرسال للموافقة"
+
+#. module: majal_documents
+msgid "Approve Exact Revision"
+msgstr "اعتماد المراجعة المحددة"
+
+#. module: majal_documents
+msgid "Reject"
+msgstr "رفض"
+
+#. module: majal_documents
+msgid "Issue"
+msgstr "إصدار"
+
+#. module: majal_documents
+msgid "Start New Revision"
+msgstr "بدء مراجعة جديدة"
+
+#. module: majal_documents
+msgid "Preview PDF"
+msgstr "معاينة PDF"
+
+#. module: majal_documents
+msgid "Revision & Approval"
+msgstr "المراجعة والاعتماد"
+
+#. module: majal_documents
+msgid "Approval Evidence"
+msgstr "دليل الاعتماد"
+
+#. module: majal_documents
+msgid "Sheet Editor"
+msgstr "محرر الجدول"
+
+#. module: majal_documents
+msgid "Freeze Revision"
+msgstr "تثبيت المراجعة"
+
+#. module: majal_documents
+msgid "Export CSV"
+msgstr "تصدير CSV"
+
+#. module: majal_documents
+msgid "Document Identity"
+msgstr "هوية المستند"
+
+#. module: majal_documents
+msgid "Legal Identity"
+msgstr "الهوية القانونية"
+
+#. module: majal_documents
+msgid "Document Contact"
+msgstr "بيانات اتصال المستندات"
+
+#. module: majal_documents
+msgid "Internal Sign-off"
+msgstr "الاعتماد الداخلي"
+
+#. module: majal_documents
+msgid "Document Footer"
+msgstr "تذييل المستند"
+
+#. module: majal_documents
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: majal_documents
+msgid "Awaiting Approval"
+msgstr "بانتظار الموافقة"
+
+#. module: majal_documents
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: majal_documents
+msgid "Issued"
+msgstr "صادر"
+
+#. module: majal_documents
+msgid "Rejected"
+msgstr "مرفوض"

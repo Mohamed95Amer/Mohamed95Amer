@@ -59,8 +59,15 @@ class FacilityPortal(CustomerPortal):
     @http.route(["/my/facility/request/new"], type="http", auth="user",
                 website=True)
     def portal_new_request_form(self, **kw):
+        company_ids = request.env.user.company_ids.ids
         equipment = request.env["maintenance.equipment"].sudo().search(
-            [("portal_selectable", "=", True)], limit=80, order="name")
+            [
+                ("portal_selectable", "=", True),
+                ("company_id", "in", company_ids),
+            ],
+            limit=80,
+            order="name",
+        )
         return request.render("facility_portal.portal_new_request", {
             "equipments": equipment,
             "page_name": "facility_request",
@@ -80,6 +87,7 @@ class FacilityPortal(CustomerPortal):
             "name": name,
             "description": post.get("description") or "",
             "portal_reporter_id": partner.id,
+            "company_id": request.env.user.company_id.id,
             # Raised through the portal by an occupant, so it is corrective by
             # definition — planned work never arrives this way.
             "maintenance_type": "corrective",
@@ -91,6 +99,7 @@ class FacilityPortal(CustomerPortal):
             offered = request.env["maintenance.equipment"].sudo().search([
                 ("id", "=", int(equipment_id)),
                 ("portal_selectable", "=", True),
+                ("company_id", "in", request.env.user.company_ids.ids),
             ], limit=1)
             if offered:
                 values["equipment_id"] = offered.id

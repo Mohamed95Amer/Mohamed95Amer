@@ -56,8 +56,15 @@ class TestMajalBranding(TransactionCase):
 @tagged("post_install", "-at_install")
 class TestMajalPublicRoutes(HttpCase):
     def test_database_selector_recovers_to_majal_login(self):
-        response = self.url_open("/web/database/selector", timeout=15)
+        response = self.url_open(
+            "/web/database/selector",
+            timeout=15,
+            allow_redirects=False,
+        )
 
-        self.assertIn("/web/login", response.url)
-        self.assertIn("db=erp", response.url)
-        self.assertNotIn("/web/database/selector", response.url)
+        self.assertEqual(response.status_code, 303)
+        location = response.headers["Location"]
+        self.assertIn("/web/login", location)
+        db_name = self.env.cr.dbname
+        self.assertIn(f"db={db_name}", location)
+        self.assertNotIn("/web/database/selector", location)

@@ -123,6 +123,7 @@ class ConstructionProgressClaim(models.Model):
         self._populate_lines()
 
     def action_submit(self):
+        self = self.with_context(majal_workflow_transition=True)
         self.filtered(lambda c: c.state == "draft").state = "submitted"
 
     def _approval_amount(self):
@@ -135,6 +136,7 @@ class ConstructionProgressClaim(models.Model):
         return True
 
     def action_certify(self):
+        self = self.with_context(majal_workflow_transition=True)
         for claim in self:
             if claim.state != "submitted":
                 raise UserError(self.env._(
@@ -148,6 +150,7 @@ class ConstructionProgressClaim(models.Model):
             claim.state = "certified"
 
     def action_create_invoice(self):
+        self = self.with_context(majal_workflow_transition=True)
         for claim in self:
             if claim.state != "certified":
                 raise UserError(self.env._(
@@ -208,6 +211,7 @@ class ConstructionProgressClaim(models.Model):
         }
 
     def action_mark_paid(self):
+        self = self.with_context(majal_workflow_transition=True)
         self.filtered(lambda c: c.state == "invoiced").state = "paid"
 
 

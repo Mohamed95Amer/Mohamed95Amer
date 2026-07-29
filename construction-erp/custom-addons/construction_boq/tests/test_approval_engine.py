@@ -15,6 +15,8 @@ class ApprovalCase(TransactionCase):
         def user(login, group):
             return cls.env["res.users"].create({
                 "name": login, "login": login, "email": f"{login}@majal.test",
+                "company_id": cls.env.company.id,
+                "company_ids": [(6, 0, [cls.env.company.id])],
                 "groups_id": [(6, 0, [
                     cls.env.ref("base.group_user").id,
                     cls.env.ref(group).id,

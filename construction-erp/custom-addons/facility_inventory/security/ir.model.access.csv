@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_request_part_user,facility.request.part user,model_facility_request_part,base.group_user,1,1,1,1
+access_request_part_user,facility.request.part user,model_facility_request_part,base.group_user,1,1,1,0
+access_request_part_manager,facility.request.part manager,model_facility_request_part,maintenance.group_equipment_manager,1,1,1,1
 access_parts_summary_user,facility.parts.summary user,model_facility_parts_summary,base.group_user,1,0,0,0

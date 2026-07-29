@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <function model="res.company" name="write">
-        <value eval="[ref('base.main_company')]"/>
-        <value eval="{'name': 'مجال'}"/>
-    </function>
+    <!-- Product branding and the client's legal identity are separate.
+         Never overwrite res.company.name during a module upgrade. -->
     <function model="res.users" name="write">
         <value eval="[ref('base.user_root')]"/>
         <value eval="{'name': 'مساعد مجال'}"/>

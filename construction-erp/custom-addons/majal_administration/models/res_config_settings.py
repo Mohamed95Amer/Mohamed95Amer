@@ -1,4 +1,5 @@
-from odoo import _, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ResConfigSettings(models.TransientModel):
@@ -10,10 +11,16 @@ class ResConfigSettings(models.TransientModel):
         default=512,
     )
 
+    @api.constrains("majal_backup_min_free_mb")
+    def _check_majal_backup_min_free_mb(self):
+        for settings in self:
+            if not 64 <= settings.majal_backup_min_free_mb <= 1048576:
+                raise ValidationError(
+                    _("Minimum free storage must be between 64 MB and 1 TB.")
+                )
+
     def action_open_majal_users(self):
-        return self.env.ref(
-            "majal_administration.action_majal_client_users"
-        ).read()[0]
+        return self.env["res.users"].action_open_majal_client_users()
 
     def action_open_majal_backups(self):
         return self.env.ref(

@@ -22,6 +22,9 @@ class TestMyDay(TransactionCase):
         })
         cls.engineer = cls.env["res.users"].create({
             "name": "Site Engineer", "login": "myday.engineer",
+            "email": "myday.engineer@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
             "groups_id": [(6, 0, [
                 cls.env.ref("construction_base.group_construction_site_engineer").id,
                 cls.env.ref("base.group_user").id,
@@ -29,6 +32,9 @@ class TestMyDay(TransactionCase):
         })
         cls.other = cls.env["res.users"].create({
             "name": "Somebody Else", "login": "myday.other",
+            "email": "myday.other@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
             "groups_id": [(6, 0, [
                 cls.env.ref("construction_base.group_construction_site_engineer").id,
                 cls.env.ref("base.group_user").id,
@@ -109,6 +115,9 @@ class TestMyDay(TransactionCase):
         work no matter how late that is."""
         manager = self.env["res.users"].create({
             "name": "Approver", "login": "myday.approver",
+            "email": "myday.approver@majal.test",
+            "company_id": self.env.company.id,
+            "company_ids": [(6, 0, [self.env.company.id])],
             "groups_id": [(6, 0, [
                 self.env.ref("construction_base.group_construction_manager").id,
                 self.env.ref("base.group_user").id,

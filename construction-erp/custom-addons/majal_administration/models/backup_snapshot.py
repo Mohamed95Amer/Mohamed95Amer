@@ -340,7 +340,7 @@ class MajalBackupSnapshot(models.Model):
                 if today.month in {1, 4, 7, 10}:
                     self._copy_slot("today", "quarterly")
 
-            self.env["majal.admin.audit"].sudo()._log(
+            self.env["majal.admin.audit"]._log(
                 "backup_created",
                 _("Verified recovery point created (%s).") % snapshot.size_display,
                 snapshot=snapshot,
@@ -393,7 +393,7 @@ class MajalBackupSnapshot(models.Model):
                 "error_message": False,
             }
         )
-        self.env["majal.admin.audit"].sudo()._log(
+        self.env["majal.admin.audit"]._log(
             "backup_verified",
             _("Recovery point %s was verified.") % self.display_name,
             snapshot=self,
@@ -470,6 +470,7 @@ class MajalRestoreRequest(models.Model):
             ("expired", "Expired"),
             ("cancelled", "Cancelled"),
             ("completed", "Completed"),
+            ("failed", "Failed"),
         ],
         default="prepared",
         required=True,
@@ -481,6 +482,7 @@ class MajalRestoreRequest(models.Model):
         "res.users", required=True, readonly=True, default=lambda self: self.env.user
     )
     completed_at = fields.Datetime(readonly=True)
+    marker_name = fields.Char(readonly=True)
     company_id = fields.Many2one(
         "res.company",
         required=True,
@@ -488,11 +490,26 @@ class MajalRestoreRequest(models.Model):
         default=lambda self: self.env.company,
     )
 
+    def _marker_path(self):
+        self.ensure_one()
+        marker_name = self.marker_name or "restore-request-%s.json" % self.id
+        if os.path.basename(marker_name) != marker_name:
+            raise ValidationError(_("Invalid restore request marker."))
+        return os.path.join(self.snapshot_id._backup_root(), marker_name)
+
+    def _invalidate_marker(self):
+        for restore_request in self:
+            path = restore_request._marker_path()
+            for candidate in (path, path + ".running"):
+                if os.path.isfile(candidate):
+                    os.remove(candidate)
+
     def action_cancel(self):
         for request in self:
             if request.state == "prepared":
+                request._invalidate_marker()
                 request.write({"state": "cancelled"})
-                request.env["majal.admin.audit"].sudo()._log(
+                request.env["majal.admin.audit"]._log(
                     "restore_cancelled",
                     _("Protected restore request %s was cancelled.") % request.name,
                     snapshot=request.snapshot_id,
@@ -507,4 +524,61 @@ class MajalRestoreRequest(models.Model):
                 ("expires_at", "<", fields.Datetime.now()),
             ]
         )
+        expired._invalidate_marker()
         expired.write({"state": "expired"})
+        return len(expired)
+
+    @api.model
+    def _cron_restore_maintenance(self):
+        self.expire_old_requests()
+        root = self.env["majal.backup.snapshot"]._backup_root()
+        for filename in os.listdir(root):
+            if not (
+                filename.startswith("restore-receipt-")
+                and filename.endswith(".json")
+            ):
+                continue
+            path = os.path.join(root, filename)
+            try:
+                with open(path, encoding="utf-8") as stream:
+                    receipt = json.load(stream)
+                request_record = self.sudo().browse(
+                    int(receipt.get("request_id", 0))
+                ).exists()
+                status = receipt.get("status")
+                if request_record:
+                    request_record.write(
+                        {
+                            "state": (
+                                "completed"
+                                if status == "completed"
+                                else "failed"
+                            ),
+                            "completed_at": fields.Datetime.now(),
+                        }
+                    )
+                snapshot = (
+                    request_record.snapshot_id
+                    if request_record
+                    else self.env["majal.backup.snapshot"].sudo().search(
+                        [("slot", "=", receipt.get("slot"))], limit=1
+                    )
+                )
+                self.env["majal.admin.audit"]._log(
+                    (
+                        "restore_completed"
+                        if status == "completed"
+                        else "restore_failed"
+                    ),
+                    _(
+                        "Offline restore %(status)s for %(slot)s.",
+                        status=status,
+                        slot=receipt.get("slot"),
+                    ),
+                    snapshot=snapshot,
+                    new_values=receipt,
+                )
+                os.remove(path)
+            except Exception:
+                _logger.exception("Could not reconcile restore receipt %s", path)
+        return True

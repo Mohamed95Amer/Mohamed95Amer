@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="field_app" name="Majal Field">
+        <html t-att-lang="user_lang" t-att-dir="'rtl' if is_arabic else 'ltr'">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+                <meta name="theme-color" content="#173240"/>
+                <meta name="majal-user-key" t-att-content="user_key"/>
+                <meta name="majal-language" t-att-content="user_lang"/>
+                <title>Majal Field</title>
+                <link rel="icon" href="/majal_field_offline/static/description/icon.svg"/>
+                <link rel="stylesheet" href="/majal_field_offline/static/src/css/field_app.css"/>
+                <script defer="defer" src="/majal_field_offline/static/src/js/field_app.js"></script>
+            </head>
+            <body>
+                <header class="mf-header">
+                    <div>
+                        <span class="mf-kicker">MAJAL FIELD</span>
+                        <h1>Good work, <t t-esc="user_name"/></h1>
+                        <p><t t-esc="company_name"/></p>
+                    </div>
+                    <div class="mf-network" id="networkBadge">Checking…</div>
+                </header>
+
+                <main>
+                    <section class="mf-syncbar">
+                        <div>
+                            <strong id="lastUpdated">Preparing workspace…</strong>
+                            <span id="queueSummary">0 changes waiting</span>
+                        </div>
+                        <button id="syncNow" class="mf-button mf-primary">Sync now</button>
+                    </section>
+
+                    <nav class="mf-tabs" aria-label="Field workspace">
+                        <button data-tab="overview" class="is-active">Overview</button>
+                        <button data-tab="defects">Defects</button>
+                        <button data-tab="inspections">Inspections</button>
+                        <button data-tab="workorders">Work Orders</button>
+                        <button data-tab="assets">Assets</button>
+                        <button data-tab="drawings">Drawings</button>
+                    </nav>
+
+                    <section id="overview" class="mf-panel is-active">
+                        <div id="metricGrid" class="mf-metrics"></div>
+                        <div class="mf-actions">
+                            <button id="openDefect" class="mf-action">
+                                <span>＋</span><strong>New defect</strong>
+                                <small>Saved safely as a draft</small>
+                            </button>
+                            <button id="openDailyLog" class="mf-action">
+                                <span>☀</span><strong>Daily log</strong>
+                                <small>Record notes and weather</small>
+                            </button>
+                        </div>
+                        <div class="mf-card mf-safety">
+                            <strong>Offline safety boundary</strong>
+                            <p>Approvals, signatures, financial posting, stock moves,
+                               deletions, sending and BIM stay online-only.</p>
+                        </div>
+                    </section>
+
+                    <section id="defects" class="mf-panel">
+                        <div class="mf-section-title"><h2>Assigned defects</h2></div>
+                        <div id="defectList" class="mf-list"></div>
+                    </section>
+
+                    <section id="inspections" class="mf-panel">
+                        <div class="mf-section-title"><h2>My inspections</h2></div>
+                        <div id="inspectionList" class="mf-list"></div>
+                    </section>
+
+                    <section id="workorders" class="mf-panel">
+                        <div class="mf-section-title"><h2>My work orders</h2></div>
+                        <div id="workorderList" class="mf-list"></div>
+                    </section>
+
+                    <section id="assets" class="mf-panel">
+                        <div class="mf-section-title"><h2>Assigned assets</h2></div>
+                        <div id="assetList" class="mf-list"></div>
+                    </section>
+
+                    <section id="drawings" class="mf-panel">
+                        <div class="mf-section-title"><h2>Current drawings</h2></div>
+                        <div id="drawingList" class="mf-list"></div>
+                    </section>
+
+                    <section class="mf-card mf-queue">
+                        <div class="mf-section-title">
+                            <h2>Sync queue</h2>
+                            <button id="clearDevice" class="mf-link">Clear this device</button>
+                        </div>
+                        <div id="queueList"></div>
+                    </section>
+                </main>
+
+                <dialog id="defectDialog">
+                    <form method="dialog" id="defectForm">
+                        <div class="mf-dialog-head">
+                            <div><span class="mf-kicker">OFFLINE DRAFT</span><h2>New defect</h2></div>
+                            <button type="button" data-close-dialog="defectDialog"
+                                    class="mf-close" aria-label="Close">×</button>
+                        </div>
+                        <label>Project<select name="project_id" id="defectProject" required="required"><option value="">Loading…</option></select></label>
+                        <label>Title<input name="name" required="required" maxlength="160"/></label>
+                        <label>Location<input name="location" maxlength="160"/></label>
+                        <label>Severity
+                            <select name="severity">
+                                <option value="low">Low</option>
+                                <option value="medium" selected="selected">Medium</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </label>
+                        <label>Description<textarea name="description" rows="4"/></label>
+                        <div class="mf-dialog-actions">
+                            <button type="button" data-close-dialog="defectDialog" class="mf-button">Cancel</button>
+                            <button value="default" class="mf-button mf-primary">Save offline</button>
+                        </div>
+                    </form>
+                </dialog>
+
+                <dialog id="dailyLogDialog">
+                    <form method="dialog" id="dailyLogForm">
+                        <div class="mf-dialog-head">
+                            <div><span class="mf-kicker">OFFLINE DRAFT</span><h2>Daily log</h2></div>
+                            <button type="button" data-close-dialog="dailyLogDialog"
+                                    class="mf-close" aria-label="Close">×</button>
+                        </div>
+                        <label>Project<select name="project_id" id="dailyProject" required="required"><option value="">Loading…</option></select></label>
+                        <label>Date<input type="date" name="log_date" required="required"/></label>
+                        <label>Weather
+                            <select name="weather">
+                                <option value="sunny">Sunny</option>
+                                <option value="cloudy">Cloudy</option>
+                                <option value="rain">Rain</option>
+                                <option value="storm">Storm</option>
+                                <option value="hot">Hot</option>
+                                <option value="windy">Windy</option>
+                            </select>
+                        </label>
+                        <label>Temperature °C<input type="number" name="temperature" step="0.1"/></label>
+                        <label>Notes<textarea name="notes" rows="5"/></label>
+                        <div class="mf-dialog-actions">
+                            <button type="button" data-close-dialog="dailyLogDialog" class="mf-button">Cancel</button>
+                            <button value="default" class="mf-button mf-primary">Save offline</button>
+                        </div>
+                    </form>
+                </dialog>
+
+                <div id="toast" class="mf-toast" role="status" aria-live="polite"></div>
+            </body>
+        </html>
+    </template>
+</odoo>

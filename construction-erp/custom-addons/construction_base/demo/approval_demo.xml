@@ -17,7 +17,7 @@
     <record id="user_demo_qs" model="res.users">
         <field name="name">Nadia Karim</field>
         <field name="login">nadia.qs</field>
-        <field name="password">nadia.qs</field>
+        <field name="password">MajalDemo!2026</field>
         <field name="email">nadia.qs@example.com</field>
         <field name="groups_id" eval="[(6, 0, [
             ref('base.group_user'),
@@ -28,7 +28,7 @@
     <record id="user_demo_pm" model="res.users">
         <field name="name">Omar Farouk</field>
         <field name="login">omar.pm</field>
-        <field name="password">omar.pm</field>
+        <field name="password">MajalDemo!2026</field>
         <field name="email">omar.pm@example.com</field>
         <field name="groups_id" eval="[(6, 0, [
             ref('base.group_user'),
@@ -39,7 +39,7 @@
     <record id="user_demo_director" model="res.users">
         <field name="name">Hala Mansour</field>
         <field name="login">hala.director</field>
-        <field name="password">hala.director</field>
+        <field name="password">MajalDemo!2026</field>
         <field name="email">hala.director@example.com</field>
         <field name="groups_id" eval="[(6, 0, [
             ref('base.group_user'),

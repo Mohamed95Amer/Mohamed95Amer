@@ -24,6 +24,10 @@ does not implement a second password or session system.
   client administrators from editing raw technical groups, blocks
   deactivation of the last Platform Owner, and keeps immutable administration
   events.
+- Twelve optional capability tiers grant only explicitly selected Procurement,
+  Inventory, Finance, HR, Website or AI Administration access. One tier is
+  allowed per family, every tier has a minimum Majal role, and high-risk
+  Finance/HR/Website administration requires Platform Owner approval.
 - Majal creates seven local database-and-filestore recovery tiers with
   integrity checks. Restore requires a short-lived Platform Owner request and
   a separate offline deployment-operator action.
@@ -48,6 +52,12 @@ does not implement a second password or session system.
 
 - Internal staff receive only the modules and project/facility records needed
   for their work.
+- A Majal role change is a strict allowlist. Optional business access is
+  retained only when it remains explicitly selected as a valid capability
+  pack; removing the pack removes its technical groups.
+- HR access is deliberately separated from upstream Maintenance
+  Administration, preventing an HR Officer pack from silently granting
+  facility-equipment control.
 - Portal users stay on portal routes and must never receive internal-user
   groups.
 - Asset QR/NFC routes require an authenticated user and normal record access.

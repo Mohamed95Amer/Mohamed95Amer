@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_majal_field_app" model="ir.actions.act_url">
+        <field name="name">Majal Field</field>
+        <field name="url">/majal/field/</field>
+        <field name="target">self</field>
+    </record>
+    <menuitem id="menu_majal_field_root"
+              name="Majal Field"
+              action="action_majal_field_app"
+              sequence="12"
+              web_icon="construction_ui,static/description/apps/tasks.svg"
+              groups="base.group_user"/>
+</odoo>

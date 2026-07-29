@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_document_template_list" model="ir.ui.view">
+        <field name="name">majal.document.template.list</field>
+        <field name="model">majal.document.template</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="document_type"/>
+                <field name="language"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_document_template_form" model="ir.ui.view">
+        <field name="name">majal.document.template.form</field>
+        <field name="model">majal.document.template</field>
+        <field name="arch" type="xml">
+            <form string="Document Template">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Template name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="document_type"/>
+                            <field name="language"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Editor" name="editor">
+                            <div class="alert alert-info" role="alert">
+                                Build reusable English or Arabic content. Placeholders are
+                                replaced with escaped client, project and recipient values.
+                            </div>
+                            <field name="body_html" widget="html"
+                                   class="o_majal_document_editor"/>
+                        </page>
+                        <page string="Placeholders" name="placeholders">
+                            <field name="placeholder_help" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_document_templates" model="ir.actions.act_window">
+        <field name="name">Document Templates</field>
+        <field name="res_model">majal.document.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

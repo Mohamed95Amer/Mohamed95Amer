@@ -1,5 +1,9 @@
 param(
     [Parameter(Mandatory = $true)]
+    [ValidateRange(1, 2147483647)]
+    [int]$RequestId,
+
+    [Parameter(Mandatory = $true)]
     [ValidateSet("today", "yesterday", "day_before", "weekly", "fortnight", "monthly", "quarterly")]
     [string]$Slot,
 
@@ -45,7 +49,7 @@ try {
         -e MAJAL_DB_APP_PASSWORD `
         --entrypoint python3 odoo `
         /mnt/custom-addons/majal_administration/scripts/restore_database.py `
-        --slot $Slot --code $Code
+        --request-id $RequestId --slot $Slot --code $Code
     if ($LASTEXITCODE -ne 0) {
         throw "Protected restore did not complete. The recovery executor attempted an automatic rollback."
     }

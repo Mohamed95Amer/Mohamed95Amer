@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_majal_document" model="ir.actions.report">
+        <field name="name">Controlled Document</field>
+        <field name="model">majal.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">majal_documents.report_majal_document</field>
+        <field name="report_file">majal_documents.report_majal_document</field>
+        <field name="print_report_name">'%s-R%02d' % (object.reference, object.current_revision or 0)</field>
+        <field name="binding_model_id" ref="model_majal_document"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_majal_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page" t-att-dir="'rtl' if doc.language == 'ar_001' else 'ltr'">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h2 t-field="doc.name"/>
+                                <div class="text-muted">
+                                    <span t-field="doc.reference"/>
+                                    <span> · R</span>
+                                    <span t-esc="'%02d' % (doc.current_revision or 0)"/>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <strong t-field="doc.company_id.name"/>
+                                <div t-if="doc.company_id.majal_registration_number">
+                                    Reg: <span t-field="doc.company_id.majal_registration_number"/>
+                                </div>
+                                <div t-if="doc.company_id.majal_tax_registration_number">
+                                    Tax: <span t-field="doc.company_id.majal_tax_registration_number"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-borderless mb-4">
+                            <tbody>
+                                <tr>
+                                    <th>Document Date</th>
+                                    <td t-field="doc.document_date"/>
+                                    <th t-if="doc.project_id">Project</th>
+                                    <td t-if="doc.project_id" t-field="doc.project_id.name"/>
+                                </tr>
+                                <tr t-if="doc.recipient_id">
+                                    <th>Recipient</th>
+                                    <td colspan="3" t-field="doc.recipient_id.name"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="majal-document-body" t-field="doc.current_version_id.body_html"/>
+
+                        <div t-if="doc.state in ('approved', 'issued')"
+                             class="mt-5 p-3 border rounded">
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>Internally approved exact revision</strong>
+                                    <div>
+                                        Approved by <span t-field="doc.approved_by_id.name"/>
+                                        on <span t-field="doc.approved_at"/>
+                                    </div>
+                                    <small class="text-muted">
+                                        SHA-256: <span t-field="doc.approval_checksum"/>
+                                    </small>
+                                    <div t-if="doc.requires_qualified_signature"
+                                         class="text-danger mt-2">
+                                        External qualified electronic signature required before
+                                        this document is treated as legally executed.
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end"
+                                     t-if="doc.company_id.majal_approval_mark">
+                                    <img t-att-src="image_data_uri(doc.company_id.majal_approval_mark)"
+                                         style="max-height: 75px; max-width: 160px;"
+                                         alt="Internal approval mark"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 text-muted small"
+                             t-if="doc.company_id.majal_document_footer"
+                             t-field="doc.company_id.majal_document_footer"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

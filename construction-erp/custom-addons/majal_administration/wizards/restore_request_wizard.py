@@ -45,6 +45,11 @@ class MajalRestoreRequestWizard(models.TransientModel):
         code = secrets.token_urlsafe(12)
         token_hash = hashlib.sha256(code.encode()).hexdigest()
         expires_at = fields.Datetime.now() + timedelta(hours=2)
+        existing = self.env["majal.restore.request"].search(
+            [("state", "=", "prepared")]
+        )
+        if existing:
+            existing.action_cancel()
         request_record = self.env["majal.restore.request"].create(
             {
                 "name": "RESTORE-%s" % fields.Datetime.now().strftime("%Y%m%d-%H%M%S"),
@@ -62,7 +67,9 @@ class MajalRestoreRequestWizard(models.TransientModel):
             "token_hash": token_hash,
             "expires_at": expires_at.isoformat(),
         }
-        marker_path = os.path.join(snapshot._backup_root(), "restore-request.json")
+        marker_name = "restore-request-%s.json" % request_record.id
+        request_record.write({"marker_name": marker_name})
+        marker_path = os.path.join(snapshot._backup_root(), marker_name)
         temporary = marker_path + ".new"
         with open(temporary, "w", encoding="utf-8") as marker_stream:
             json.dump(marker, marker_stream, indent=2, sort_keys=True)
@@ -72,7 +79,8 @@ class MajalRestoreRequestWizard(models.TransientModel):
         command = (
             "powershell -ExecutionPolicy Bypass "
             "-File scripts\\restore-majal.ps1 "
-            "-Slot %s -Code %s" % (snapshot.slot, code)
+            "-RequestId %s -Slot %s -Code %s"
+            % (request_record.id, snapshot.slot, code)
         )
         self.write(
             {
@@ -82,7 +90,7 @@ class MajalRestoreRequestWizard(models.TransientModel):
                 "expires_at": expires_at,
             }
         )
-        self.env["majal.admin.audit"].sudo()._log(
+        self.env["majal.admin.audit"]._log(
             "restore_prepared",
             _("Protected restore prepared from %s.") % snapshot.display_name,
             snapshot=snapshot,

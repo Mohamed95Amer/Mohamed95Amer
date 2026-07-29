@@ -27,6 +27,7 @@
     "demo": [
         "demo/facility_demo.xml",
     ],
+    "pre_init_hook": "pre_init_secure_asset_tags",
     "application": True,
     "installable": True,
 }

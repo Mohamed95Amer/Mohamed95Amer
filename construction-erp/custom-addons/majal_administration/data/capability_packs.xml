@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="capability_procurement_user" model="majal.capability.pack">
+        <field name="name">Procurement User</field>
+        <field name="code">procurement_user</field>
+        <field name="family">procurement</field>
+        <field name="tier_rank">10</field>
+        <field name="minimum_role_rank">10</field>
+        <field name="group_ids" eval="[(6, 0, [ref('purchase.group_purchase_user')])]"/>
+        <field name="description">Prepare and process purchase documents without procurement administration.</field>
+    </record>
+    <record id="capability_procurement_manager" model="majal.capability.pack">
+        <field name="name">Procurement Manager</field>
+        <field name="code">procurement_manager</field>
+        <field name="family">procurement</field>
+        <field name="tier_rank">20</field>
+        <field name="minimum_role_rank">30</field>
+        <field name="group_ids" eval="[(6, 0, [ref('purchase.group_purchase_manager')])]"/>
+        <field name="description">Manage procurement configuration, suppliers and purchase operations.</field>
+    </record>
+
+    <record id="capability_inventory_user" model="majal.capability.pack">
+        <field name="name">Inventory User</field>
+        <field name="code">inventory_user</field>
+        <field name="family">inventory</field>
+        <field name="tier_rank">10</field>
+        <field name="minimum_role_rank">10</field>
+        <field name="group_ids" eval="[(6, 0, [ref('stock.group_stock_user')])]"/>
+        <field name="description">Process assigned receipts, deliveries and internal stock movements.</field>
+    </record>
+    <record id="capability_inventory_manager" model="majal.capability.pack">
+        <field name="name">Inventory Manager</field>
+        <field name="code">inventory_manager</field>
+        <field name="family">inventory</field>
+        <field name="tier_rank">20</field>
+        <field name="minimum_role_rank">30</field>
+        <field name="group_ids" eval="[(6, 0, [ref('stock.group_stock_manager')])]"/>
+        <field name="description">Manage warehouses, inventory configuration and stock operations.</field>
+    </record>
+
+    <record id="capability_finance_readonly" model="majal.capability.pack">
+        <field name="name">Finance Read-only</field>
+        <field name="code">finance_readonly</field>
+        <field name="family">finance</field>
+        <field name="tier_rank">10</field>
+        <field name="minimum_role_rank">20</field>
+        <field name="group_ids" eval="[(6, 0, [ref('account.group_account_readonly')])]"/>
+        <field name="description">Review accounting information without posting or configuration rights.</field>
+    </record>
+    <record id="capability_finance_accountant" model="majal.capability.pack">
+        <field name="name">Finance Accountant</field>
+        <field name="code">finance_accountant</field>
+        <field name="family">finance</field>
+        <field name="tier_rank">20</field>
+        <field name="minimum_role_rank">30</field>
+        <field name="group_ids" eval="[(6, 0, [ref('account.group_account_user')])]"/>
+        <field name="description">Operate accounting workflows without finance-system administration.</field>
+    </record>
+    <record id="capability_finance_manager" model="majal.capability.pack">
+        <field name="name">Finance Administrator</field>
+        <field name="code">finance_manager</field>
+        <field name="family">finance</field>
+        <field name="tier_rank">30</field>
+        <field name="minimum_role_rank">40</field>
+        <field name="platform_owner_only" eval="True"/>
+        <field name="group_ids"
+               eval="[(6, 0, [ref('account.group_account_user'), ref('account.group_account_manager')])]"/>
+        <field name="description">Full finance configuration and accounting administration. Platform Owner approval is required.</field>
+    </record>
+
+    <record id="capability_hr_officer" model="majal.capability.pack">
+        <field name="name">HR Officer</field>
+        <field name="code">hr_officer</field>
+        <field name="family">hr</field>
+        <field name="tier_rank">10</field>
+        <field name="minimum_role_rank">30</field>
+        <field name="group_ids" eval="[(6, 0, [ref('hr.group_hr_user')])]"/>
+        <field name="description">Manage employee records without HR or facilities administration.</field>
+    </record>
+    <record id="capability_hr_manager" model="majal.capability.pack">
+        <field name="name">HR Administrator</field>
+        <field name="code">hr_manager</field>
+        <field name="family">hr</field>
+        <field name="tier_rank">20</field>
+        <field name="minimum_role_rank">40</field>
+        <field name="platform_owner_only" eval="True"/>
+        <field name="group_ids" eval="[(6, 0, [ref('hr.group_hr_manager')])]"/>
+        <field name="description">Full employee and HR configuration. Platform Owner approval is required.</field>
+    </record>
+
+    <record id="capability_website_editor" model="majal.capability.pack">
+        <field name="name">Website Editor</field>
+        <field name="code">website_editor</field>
+        <field name="family">website</field>
+        <field name="tier_rank">10</field>
+        <field name="minimum_role_rank">30</field>
+        <field name="group_ids" eval="[(6, 0, [ref('website.group_website_restricted_editor')])]"/>
+        <field name="description">Edit approved website content with restricted design permissions.</field>
+    </record>
+    <record id="capability_website_designer" model="majal.capability.pack">
+        <field name="name">Website Designer</field>
+        <field name="code">website_designer</field>
+        <field name="family">website</field>
+        <field name="tier_rank">20</field>
+        <field name="minimum_role_rank">40</field>
+        <field name="platform_owner_only" eval="True"/>
+        <field name="group_ids" eval="[(6, 0, [ref('website.group_website_designer')])]"/>
+        <field name="description">Edit website structure and design. Platform Owner approval is required.</field>
+    </record>
+
+    <record id="capability_ai_administrator" model="majal.capability.pack">
+        <field name="name">AI Administration</field>
+        <field name="code">ai_administrator</field>
+        <field name="family">ai</field>
+        <field name="tier_rank">10</field>
+        <field name="minimum_role_rank">30</field>
+        <field name="group_ids" eval="[(6, 0, [ref('majal_ai.group_ai_manager')])]"/>
+        <field name="description">Manage the current company's Majal Intelligence provider settings and review usage.</field>
+    </record>
+</odoo>

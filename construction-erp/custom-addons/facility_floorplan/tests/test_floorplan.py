@@ -1,4 +1,4 @@
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -17,6 +17,28 @@ class TestFloorplan(TransactionCase):
         cls.plan = cls.env["facility.floorplan"].create(
             {"name": "L3 Plan", "location_id": cls.floor.id}
         )
+        cls.technician = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Floorplan Technician",
+            "login": "floorplan-technician-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+        cls.facility_manager = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Floorplan Manager",
+            "login": "floorplan-manager-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(
+                6,
+                0,
+                [cls.env.ref("maintenance.group_equipment_manager").id],
+            )],
+        })
 
     def test_coordinate_constraint(self):
         with self.assertRaises(ValidationError):
@@ -89,3 +111,21 @@ class TestFloorplan(TransactionCase):
 
     def test_floorplan_count_on_location(self):
         self.assertEqual(self.floor.floorplan_count, 1)
+
+    def test_technician_can_update_pin_but_cannot_delete_evidence(self):
+        with self.assertRaises(AccessError):
+            self.plan.with_user(self.technician).write({"name": "Changed plan"})
+        pin = self.env["facility.pin"].create({
+            "name": "Inspection note",
+            "floorplan_id": self.plan.id,
+            "pos_x": 0.2,
+            "pos_y": 0.3,
+            "pin_type": "note",
+        })
+        pin.with_user(self.technician).write(
+            {"name": "Inspection note checked"}
+        )
+        with self.assertRaises(AccessError):
+            pin.with_user(self.technician).unlink()
+        pin.with_user(self.facility_manager).unlink()
+        self.assertFalse(pin.exists())
