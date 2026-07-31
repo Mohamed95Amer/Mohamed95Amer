@@ -1,0 +1,62 @@
+name: MajalOps External Health
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: ${{ vars.ENABLE_EXTERNAL_HEALTH == 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Probe public health endpoint
+        id: probe
+        continue-on-error: true
+        env:
+          HEALTH_URL: ${{ vars.MAJALOPS_HEALTH_URL }}
+        run: curl --fail --show-error --silent --max-time 20 --retry 2 "$HEALTH_URL"
+
+      - name: Send configured failure notifications
+        if: steps.probe.outcome == 'failure'
+        env:
+          HEALTH_URL: ${{ vars.MAJALOPS_HEALTH_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.ALERT_SLACK_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.ALERT_DISCORD_WEBHOOK_URL }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.ALERT_TEAMS_WEBHOOK_URL }}
+          GENERIC_WEBHOOK_URL: ${{ secrets.ALERT_GENERIC_WEBHOOK_URL }}
+          SMTP_HOST: ${{ secrets.ALERT_SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.ALERT_SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.ALERT_SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.ALERT_SMTP_PASSWORD }}
+          EMAIL_FROM: ${{ secrets.ALERT_EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+        run: |
+          message="MajalOps external health check failed: ${HEALTH_URL}"
+          [[ -z "$SLACK_WEBHOOK_URL" ]] || curl -fsS -H 'Content-Type: application/json' \
+            -d "$(jq -n --arg text "$message" '{text:$text}')" "$SLACK_WEBHOOK_URL"
+          [[ -z "$DISCORD_WEBHOOK_URL" ]] || curl -fsS -H 'Content-Type: application/json' \
+            -d "$(jq -n --arg content "$message" '{content:$content}')" "$DISCORD_WEBHOOK_URL"
+          [[ -z "$TEAMS_WEBHOOK_URL" ]] || curl -fsS -H 'Content-Type: application/json' \
+            -d "$(jq -n --arg text "$message" '{type:"message",attachments:[{contentType:"application/vnd.microsoft.card.adaptive",content:{type:"AdaptiveCard",version:"1.4",body:[{type:"TextBlock",text:$text,wrap:true}]}}]}')" "$TEAMS_WEBHOOK_URL"
+          [[ -z "$GENERIC_WEBHOOK_URL" ]] || curl -fsS -H 'Content-Type: application/json' \
+            -d "$(jq -n --arg text "$message" --arg severity critical '{text:$text,severity:$severity,source:"github-actions"}')" "$GENERIC_WEBHOOK_URL"
+          if [[ -n "$EMAIL_TO" && -n "$SMTP_HOST" ]]; then
+            python3 - <<'PY'
+          import os, smtplib, ssl
+          from email.message import EmailMessage
+          msg = EmailMessage()
+          msg["Subject"] = "MajalOps external health failure"
+          msg["From"] = os.environ["EMAIL_FROM"]
+          msg["To"] = os.environ["EMAIL_TO"]
+          msg.set_content(f"MajalOps external health check failed: {os.environ['HEALTH_URL']}")
+          with smtplib.SMTP(os.environ["SMTP_HOST"], int(os.environ.get("SMTP_PORT") or 587), timeout=20) as smtp:
+              smtp.starttls(context=ssl.create_default_context())
+              smtp.login(os.environ["SMTP_USERNAME"], os.environ["SMTP_PASSWORD"])
+              smtp.send_message(msg)
+          PY
+          fi
+          exit 1

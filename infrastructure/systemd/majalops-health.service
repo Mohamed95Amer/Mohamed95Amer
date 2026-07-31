@@ -1,0 +1,9 @@
+[Unit]
+Description=MajalOps health supervision and bounded recovery
+After=majalops-platform.service
+Wants=majalops-platform.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/majalops/infrastructure/scripts/auto-recover.sh
+Nice=10

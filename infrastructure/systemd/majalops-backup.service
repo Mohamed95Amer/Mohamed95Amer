@@ -1,0 +1,12 @@
+[Unit]
+Description=MajalOps encrypted local and off-site backup
+After=majalops-platform.service network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/majalops/restic.env
+
+[Service]
+Type=oneshot
+ExecStart=/opt/majalops/infrastructure/scripts/backup-offsite.sh
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7

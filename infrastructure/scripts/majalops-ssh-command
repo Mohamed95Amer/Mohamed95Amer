@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+original="${SSH_ORIGINAL_COMMAND:-}"
+read -r -a args <<< "$original"
+[[ "${args[0]:-}" == "sudo" && "${args[1]:-}" == "/usr/local/sbin/majalops-deploy" ]] || {
+    printf 'This key is restricted to MajalOps deployment automation.\n' >&2
+    exit 1
+}
+case "${args[2]:-}" in
+    registry-login)
+        [[ "${#args[@]}" -eq 4 ]] || exit 1
+        exec sudo /usr/local/sbin/majalops-deploy registry-login "${args[3]}"
+        ;;
+    update)
+        [[ "${#args[@]}" -eq 4 ]] || exit 1
+        exec sudo /usr/local/sbin/majalops-deploy update "${args[3]}"
+        ;;
+    health)
+        [[ "${#args[@]}" -eq 3 ]] || exit 1
+        exec sudo /usr/local/sbin/majalops-deploy health
+        ;;
+    *) exit 1 ;;
+esac

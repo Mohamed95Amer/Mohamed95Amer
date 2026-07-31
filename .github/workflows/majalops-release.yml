@@ -1,0 +1,210 @@
+name: MajalOps Release and Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version component to increment
+        required: true
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+      deploy:
+        description: Deploy the immutable image after release
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: majalops-release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+  attestations: write
+  id-token: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  version:
+    runs-on: ubuntu-24.04
+    environment: release
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: version
+        name: Calculate the next semantic version
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          set -euo pipefail
+          latest="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)"
+          latest="${latest:-v0.0.0}"
+          IFS=. read -r major minor patch <<<"${latest#v}"
+          case "$BUMP" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+            *) echo "Unknown bump: $BUMP" >&2; exit 1 ;;
+          esac
+          version="${major}.${minor}.${patch}"
+          git rev-parse "v${version}" >/dev/null 2>&1 && {
+            echo "Tag v${version} already exists" >&2
+            exit 1
+          }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - id: image
+        name: Calculate lowercase GHCR image name
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/majalops-platform"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
+  build:
+    runs-on: ubuntu-24.04
+    needs: version
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+      image_ref: ${{ steps.ref.outputs.image_ref }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Fetch pinned BIM browser libraries
+        working-directory: construction-erp
+        run: ./scripts/fetch-bim-libs.sh
+
+      - name: Resolve the Odoo base image digest
+        id: base
+        run: |
+          set -euo pipefail
+          docker pull odoo:18.0
+          digest="$(docker image inspect --format '{{index .RepoDigests 0}}' odoo:18.0)"
+          [[ "$digest" == *@sha256:* ]]
+          echo "image=$digest" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infrastructure/docker/Dockerfile.platform
+          push: true
+          platforms: linux/amd64
+          build-args: |
+            ODOO_BASE_IMAGE=${{ steps.base.outputs.image }}
+            VCS_REF=${{ github.sha }}
+            BUILD_VERSION=${{ needs.version.outputs.version }}
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+          tags: |
+            ${{ needs.version.outputs.image }}:${{ needs.version.outputs.version }}
+            ${{ needs.version.outputs.image }}:sha-${{ github.sha }}
+            ${{ needs.version.outputs.image }}:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ needs.version.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          sbom: true
+          provenance: mode=max
+
+      - id: ref
+        run: |
+          image_ref="${{ needs.version.outputs.image }}@${{ steps.build.outputs.digest }}"
+          echo "image_ref=$image_ref" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$image_ref" > image-reference.txt
+
+      - name: Preserve immutable image reference for automation
+        uses: actions/upload-artifact@v4
+        with:
+          name: majalops-image-reference
+          path: image-reference.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - uses: actions/attest@v4
+        with:
+          subject-name: ${{ needs.version.outputs.image }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
+  publish-release:
+    runs-on: ubuntu-24.04
+    needs: [version, build]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Create signed-by-GitHub annotated tag
+        env:
+          TAG: ${{ needs.version.outputs.tag }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag -a "$TAG" -m "MajalOps $VERSION"
+          git push origin "$TAG"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.version.outputs.tag }}
+          IMAGE_REF: ${{ needs.build.outputs.image_ref }}
+        run: |
+          printf "Container image: \`%s\`\n\nSource: \`%s\`\n" "$IMAGE_REF" "$GITHUB_SHA" > release-notes.md
+          gh release create "$TAG" --verify-tag --generate-notes --notes-file release-notes.md
+
+  deploy:
+    if: ${{ inputs.deploy }}
+    runs-on: ubuntu-24.04
+    needs: [version, build, publish-release]
+    environment: platform
+    steps:
+      - name: Configure strict SSH trust
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PLATFORM_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.PLATFORM_KNOWN_HOSTS }}
+        run: |
+          install -d -m 0700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/majalops_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 0600 ~/.ssh/majalops_deploy ~/.ssh/known_hosts
+
+      - name: Deploy immutable image
+        env:
+          HOST: ${{ vars.PLATFORM_HOST }}
+          PORT: ${{ vars.PLATFORM_SSH_PORT }}
+          USER: ${{ vars.PLATFORM_SSH_USER }}
+          IMAGE_REF: ${{ needs.build.outputs.image_ref }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ssh_args=(-i ~/.ssh/majalops_deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -p "${PORT:-22}")
+          target="${USER:-majaldeploy}@${HOST:?PLATFORM_HOST is required}"
+          # Values expand locally by design; the server-side wrapper validates both allow-listed formats.
+          # shellcheck disable=SC2029
+          printf '%s' "$GH_TOKEN" | ssh "${ssh_args[@]}" "$target" \
+            "sudo /usr/local/sbin/majalops-deploy registry-login ${GITHUB_ACTOR}"
+          # shellcheck disable=SC2029
+          ssh "${ssh_args[@]}" "$target" \
+            "sudo /usr/local/sbin/majalops-deploy update ${IMAGE_REF}"
+          ssh "${ssh_args[@]}" "$target" \
+            "sudo /usr/local/sbin/majalops-deploy health"

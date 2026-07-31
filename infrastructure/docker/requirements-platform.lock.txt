@@ -1,0 +1,6 @@
+# Production-only lock generated from official PyPI metadata on 2026-07-31.
+# The Odoo base image is itself pinned by digest in the release workflow.
+pypdf==6.14.2 --hash=sha256:3f07891af76dc002657e04993ab9b4de81de29f9013b9761d0b7968bff12e946
+openupgradelib==3.13.5 --hash=sha256:cd297238a106d0accff2ded89e507157582f91d64c5e956c43910fec93af6379
+xlsxwriter==3.2.9 --hash=sha256:9a5db42bc5dff014806c58a20b9eae7322a134abb6fce3c92c181bfb275ec5b3
+xlrd==2.0.2 --hash=sha256:ea762c3d29f4cca48d82df517b6d89fbce4db3107f9d78713e48cd321d5c9aa9

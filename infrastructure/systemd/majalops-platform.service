@@ -1,0 +1,18 @@
+[Unit]
+Description=MajalOps platform containers
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/majalops/platform.env
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/majalops/infrastructure/scripts/platform-compose.sh up -d
+ExecReload=/opt/majalops/infrastructure/scripts/platform-compose.sh up -d
+ExecStop=/opt/majalops/infrastructure/scripts/platform-compose.sh stop
+TimeoutStartSec=300
+TimeoutStopSec=180
+
+[Install]
+WantedBy=multi-user.target

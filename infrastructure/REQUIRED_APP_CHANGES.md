@@ -1,0 +1,10 @@
+# Required application changes outside the infrastructure boundary
+
+Phase 2 intentionally leaves existing Majal/Odoo application modules, API code, local Compose, and Claude's API documentation untouched. Infrastructure now supplies the production image/configuration, release workflow, BIM build fetch, private networks, TLS, monitoring, backups, and recovery.
+
+| File that would need changing | Exact reason | Proposed change | Risk | Can wait? |
+|---|---|---|---|---|
+| A Majal-owned controller in the application addon selected by the API owner | Caddy currently exposes `/healthz` by internally checking `/web/login`. This proves TLS, routing, process availability, and is paired with a direct PostgreSQL exporter, but it does not prove Majal module/business readiness in one response. | Add a rate-limited unauthenticated shallow endpoint returning only `ok`, plus an authenticated deep endpoint for database/module/job checks. Do not disclose version, database name, traceback, or provider configuration. Update Caddy only after that endpoint is tested. | A deep public check can disclose internals or become a denial-of-service target. | Yes for platform launch; required before paying-customer production use. |
+| Application migration contract and release metadata (owner to select exact location after API work) | Infrastructure refuses unpinned releases and backs up before updates, but it cannot infer whether an addon upgrade is backward-compatible with the current database. | Publish a machine-readable migration flag per release (`none`, `forward-compatible`, or `restore-required`) and add a tested pre/post migration command where needed. Keep destructive migrations out of automatic rollback. | Rolling code back across an incompatible schema can corrupt or strand data. | Yes for the first empty demo deployment; required before the first schema-changing upgrade. |
+
+All other previously listed infrastructure gaps were resolved under `infrastructure/` without modifying existing application/deployment files.

@@ -1,0 +1,11 @@
+[Unit]
+Description=Verify MajalOps off-site backup repository
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/majalops/restic.env
+
+[Service]
+Type=oneshot
+ExecStart=/opt/majalops/infrastructure/scripts/restic-check.sh
+Nice=19
+IOSchedulingClass=idle
