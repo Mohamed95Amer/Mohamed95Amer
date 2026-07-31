@@ -1,0 +1,31 @@
+<!--
+  The maskable variant of the Majal icon.
+
+  A maskable icon is not the app icon with a flag on it. The platform crops it
+  to a shape of its choosing — a circle on most Android launchers — and keeps
+  only the central 80%, so this file differs from icon.svg in two ways that
+  both matter:
+
+  * the background is full-bleed, with no rounded corners. icon.svg has rx="28",
+    which leaves the corners transparent; under a squircle mask those show as
+    notches cut out of the icon.
+  * the mark is scaled to 0.78 about the centre. In icon.svg the ground line
+    runs from x=20 to x=108 at y=99, which is 56 units from the centre — the
+    safe circle has a radius of 51.2, so both ends of it would be sliced off.
+
+  Keep the two in step: if the mark in icon.svg changes, change it here too.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="majal-bg-maskable" x1="16" y1="8" x2="112" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#244657"/>
+      <stop offset="1" stop-color="#102833"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" fill="url(#majal-bg-maskable)"/>
+  <g transform="translate(64 64) scale(0.78) translate(-64 -64)">
+    <path d="M25 92V46L64 24l39 22v46" fill="none" stroke="#C59B52" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M42 92V56h44v36M20 99h88" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M64 56v36" stroke="#fff" stroke-width="8"/>
+  </g>
+</svg>

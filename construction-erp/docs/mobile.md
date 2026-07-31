@@ -63,25 +63,55 @@ amounts:
 
 ## Plan
 
-### Phase 1 — fix the field screens (small, highest value)
+### Phase 1 — fix the field screens (small, highest value) — **done**
 
-- ~~Give the inspection checklist a card layout.~~ **Done in this change.** The
-  mechanism is worth knowing for the rest: Odoo's `loadSubViews` picks the
-  `kanban` sub-view of a one2many whenever the screen is small, so a phone
-  layout is a sub-view, not CSS and not JavaScript.
-- Same treatment for raising a defect: title, photo, location, severity are
-  what a person fills standing in a room; the rest can collapse.
-- Add `capture="environment"` to photo fields so the camera opens directly
-  instead of the gallery picker.
-- Add `web_responsive` to the install list — it is already vendored at a pinned
-  SHA.
+- ~~Give the inspection checklist a card layout.~~ **Done.** The mechanism is
+  worth knowing for the rest: Odoo's `loadSubViews` picks the `kanban`
+  sub-view of a one2many whenever the screen is small, so a phone layout is a
+  sub-view, not CSS and not JavaScript.
+- ~~Same treatment for raising a defect.~~ **Done.** Not a sub-view this time,
+  because the defect form is a top-level form with no small-screen variant to
+  select. Groups stack on a phone, so the field order *is* the screen order,
+  and the photo was tenth — below nine fields and a description, on a screen
+  where the photo is the entire point of a snag. The raising path is now
+  title → photo → location → severity → project → description, which measures
+  as one screen at 390 × 664 with nothing below the fold; trade, phase, who
+  fixes it and by when moved to an Assignment tab, and the rectified photo to
+  a Rectification tab. The empty reference heading is hidden until save,
+  where it was costing a third of a screen above the first thing you type.
+- ~~Add `capture="environment"` to photo fields.~~ **Not done, deliberately.**
+  The premise turned out to be wrong. Odoo 18 already appends an invalid
+  `dummy/allowAndroidCamera` mimetype to the accept list, with a comment in
+  `image_field.xml` saying it exists precisely so Android 13+ offers Camera
+  instead of opening the gallery directly. That is the problem this bullet was
+  written to solve, already solved upstream — and solved the other way round:
+  `capture` does not add the camera, it removes everything else, leaving no
+  way to attach a photo taken ten minutes earlier. If forcing the camera is
+  ever wanted it should be for inspection evidence, where "taken now" is the
+  point, and it should be an argued product decision rather than a blanket
+  attribute on every photo field.
+- ~~Add `web_responsive` to the install list.~~ **Done** — searchable app
+  drawer and sticky list headers, verified installing cleanly alongside the
+  other 34 modules.
 
-### Phase 2 — make the installed app ours (small)
+### Phase 2 — make the installed app ours (small) — **done**
 
-- Override the web manifest: Majal name, short name, brand colours, icons, and
-  `start_url` pointing at the field workspace rather than `/odoo`, so opening
-  it lands on today's work rather than a menu.
-- Add a maskable icon so Android does not letterbox it.
+Mostly already built, and the audit found one thing that was wrong rather than
+missing:
+
+- The manifest override was in place: Majal name and short name, brand
+  colours, description, `start_url` on the construction workspace rather than
+  `/odoo`, and Construction/Facilities shortcuts for the long-press menu.
+- **The maskable icon was declared, not drawn.** A single entry claimed
+  `purpose: "any maskable"` while pointing at `icon.svg` — which has
+  `rx="28"`, so a launcher's own mask turns its transparent corners into
+  notches, and whose ground line runs from x=20 to x=108 at y=99, putting both
+  ends 56 units from the centre when the safe circle has a radius of 51.2.
+  Android would have sliced them off. There are now two entries: `icon.svg`
+  for `any`, and `icon-maskable.svg` — full bleed, mark scaled to 0.78 about
+  the centre — for `maskable`. A test parses the served SVG and asserts both
+  properties, because the first version of that test matched the comment
+  explaining the rule instead of the markup obeying it.
 
 No new dependency: this is overriding what Odoo already serves.
 
