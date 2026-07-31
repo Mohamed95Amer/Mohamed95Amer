@@ -107,3 +107,63 @@ class TestFacilityAsset(TransactionCase):
         self.asset.tag_status = "retired"
         with self.assertRaises(AccessError):
             self.asset.record_tag_scan("qr")
+
+    def test_tag_token_unique_constraint_is_actually_on_the_table(self):
+        # It was not, on any database that already held assets when this
+        # module was installed: Odoo fills a new column's default with one
+        # UPDATE, so every pre-existing row shared a token, the constraint
+        # failed to apply, and the error was logged and passed over.
+        self.env.cr.execute(
+            """
+            SELECT 1 FROM pg_constraint
+             WHERE conrelid = 'maintenance_equipment'::regclass
+               AND conname = 'maintenance_equipment'
+                             '_facility_asset_tag_token_unique'
+            """
+        )
+        self.assertTrue(self.env.cr.fetchone())
+
+    def test_duplicate_tokens_are_cleared_before_the_constraint(self):
+        other = self.env["maintenance.equipment"].create(
+            {"name": "AHU-02", "facility_location_id": self.room.id})
+        equipment = self.env["maintenance.equipment"]
+
+        # The constraint this repair exists to make possible is in the way of
+        # arranging the damage it repairs. Dropping it inside the test
+        # transaction is undone with the rollback.
+        self.env.cr.execute(
+            "ALTER TABLE maintenance_equipment DROP CONSTRAINT "
+            "maintenance_equipment_facility_asset_tag_token_unique"
+        )
+        self.env.cr.execute(
+            "UPDATE maintenance_equipment SET tag_token = %s WHERE id IN %s",
+            ("shared-token", (self.asset.id, other.id)),
+        )
+        self.assertTrue(equipment._deduplicate_tag_tokens())
+        self.env.cr.execute(
+            "SELECT tag_token FROM maintenance_equipment WHERE id IN %s",
+            ((self.asset.id, other.id),),
+        )
+        tokens = [row[0] for row in self.env.cr.fetchall()]
+        self.assertEqual(len(set(tokens)), 2)
+        self.assertNotIn("shared-token", tokens)
+
+        # And the whole table can now carry the constraint again.
+        self.env.cr.execute(
+            "ALTER TABLE maintenance_equipment ADD CONSTRAINT "
+            "maintenance_equipment_facility_asset_tag_token_unique "
+            "UNIQUE (tag_token)"
+        )
+
+    def test_a_null_token_is_filled_in(self):
+        equipment = self.env["maintenance.equipment"]
+        self.env.cr.execute(
+            "UPDATE maintenance_equipment SET tag_token = NULL WHERE id = %s",
+            (self.asset.id,),
+        )
+        self.assertTrue(equipment._deduplicate_tag_tokens())
+        self.env.cr.execute(
+            "SELECT tag_token FROM maintenance_equipment WHERE id = %s",
+            (self.asset.id,),
+        )
+        self.assertTrue(self.env.cr.fetchone()[0])
