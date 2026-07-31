@@ -15,6 +15,75 @@ msgstr "مساعد مجال"
 #. module: majal_branding
 #. odoo-javascript
 #: code:addons/majal_branding/static/src/user_menu/user_menu.js:0
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+#: model_terms:ir.ui.view,arch_db:majal_branding.majal_login_legal_link
+#: model_terms:ir.ui.view,arch_db:majal_branding.majal_portal_record_sidebar
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "About Majal"
+msgstr "عن مجال"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+#: model_terms:ir.ui.view,arch_db:majal_branding.majal_login_legal_link
+#: model_terms:ir.ui.view,arch_db:majal_branding.majal_portal_record_sidebar
+#: model_terms:ir.ui.view,arch_db:majal_branding.res_config_settings_view_form_majal_branding
+msgid "Third-party licences"
+msgstr "تراخيص المكونات الخارجية"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.open_source_notices
+msgid "Third-party licences & notices"
+msgstr "تراخيص وإشعارات المكونات الخارجية"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "One operational system for the built environment"
+msgstr "نظام تشغيلي واحد للبيئة المبنية"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Construction control"
+msgstr "التحكم في الإنشاءات"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Projects, engineering, site records, programme, commercial position, quality, and safety."
+msgstr "المشاريع والهندسة وسجلات الموقع والبرنامج والموقف التجاري والجودة والسلامة."
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Facilities operations"
+msgstr "عمليات إدارة المرافق"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Assets, work orders, preventive maintenance, service levels, contracts, and parts."
+msgstr "الأصول وأوامر العمل والصيانة الوقائية ومستويات الخدمة والعقود وقطع الغيار."
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Controlled by role"
+msgstr "تحكم حسب الدور"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Company, project, facility, and responsibility boundaries keep each team focused."
+msgstr "حدود الشركة والمشروع والمرفق والمسؤولية تبقي كل فريق ضمن نطاق عمله."
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Built for decisions"
+msgstr "مصمم لاتخاذ القرار"
+
+#. module: majal_branding
+#: model_terms:ir.ui.view,arch_db:majal_branding.about_majal
+msgid "Management dashboards surface risk, margin, delivery, safety, and service performance."
+msgstr "تُظهر لوحات الإدارة المخاطر والهامش والتسليم والسلامة وأداء الخدمة."
+
+#. module: majal_branding
+#. odoo-javascript
+#: code:addons/majal_branding/static/src/user_menu/user_menu.js:0
 msgid "Help & Support"
 msgstr "المساعدة والدعم"
 

@@ -1,3 +1,7 @@
+IMPORTANT — newer checkpoint available:
+Use handoff\next-tool-2026-07-31\COPY_THIS_PROMPT.txt instead of this older
+29 July prompt. Read handoff\next-tool-2026-07-31\START_HERE.md first.
+
 Continue the Majal construction and facilities product in:
 
 C:\Users\hossi\Documents\Odoo\construction-erp

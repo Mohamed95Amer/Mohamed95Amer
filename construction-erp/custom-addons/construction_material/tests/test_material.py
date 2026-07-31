@@ -1,4 +1,4 @@
-from odoo import fields
+from odoo import Command, fields
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
@@ -32,6 +32,15 @@ class TestConstructionMaterial(TransactionCase):
             "cost_material": 60,
         })
         cls.boq.action_approve()
+        cls.site_user = cls.env["res.users"].create({
+            "name": "Material Site User",
+            "login": "material.site.user@test.invalid",
+            "company_id": cls.env.company.id,
+            "company_ids": [Command.set(cls.env.company.ids)],
+            "groups_id": [Command.set([
+                cls.env.ref("construction_base.group_construction_user").id,
+            ])],
+        })
 
     def _stock_up(self, qty, product=None):
         """Put stock into the project's site store."""
@@ -100,6 +109,35 @@ class TestConstructionMaterial(TransactionCase):
         self._stock_up(50)
         issue = self._issue(10)
         self.assertEqual(issue.total_value, 600)   # 10 x 60
+
+    def test_site_user_can_open_issue_without_raw_stock_move_access(self):
+        """The issue form must not read stock.move for a site-only user.
+
+        Raw inventory moves contain warehouse-wide information and remain a
+        stock-user capability.  The construction docket itself is still fully
+        readable, while the technical movement page is removed from the view
+        before the client asks the server for ``move_ids``.
+        """
+        self._stock_up(20)
+        issue = self._issue(5)
+        visible = issue.with_user(self.site_user).read([
+            "reference", "project_id", "line_ids", "total_value", "state",
+        ])[0]
+        self.assertEqual(visible["state"], "done")
+        self.assertEqual(visible["total_value"], 300)
+
+        line_values = issue.line_ids.with_user(self.site_user).read([
+            "product_id", "qty_on_hand", "quantity", "uom_id", "value",
+        ])
+        self.assertEqual(line_values[0]["qty_on_hand"], 15)
+
+        form_view = self.env.ref(
+            "construction_material.view_material_issue_form"
+        )
+        arch = self.env["construction.material.issue"].with_user(
+            self.site_user
+        ).get_view(view_id=form_view.id, view_type="form")["arch"]
+        self.assertNotIn('name="move_ids"', arch)
 
     def test_empty_issue_cannot_be_confirmed(self):
         issue = self.env["construction.material.issue"].create({

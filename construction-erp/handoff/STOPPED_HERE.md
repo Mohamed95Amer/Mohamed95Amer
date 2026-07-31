@@ -2,6 +2,11 @@
 
 Last updated: 2026-07-29
 
+> A newer checkpoint exists at
+> [`next-tool-2026-07-31/START_HERE.md`](next-tool-2026-07-31/START_HERE.md).
+> Use that file for the current stopping point; the details below are retained
+> as the earlier audited baseline.
+
 ## Current state
 
 - Project folder: `C:\Users\hossi\Documents\Odoo\construction-erp`

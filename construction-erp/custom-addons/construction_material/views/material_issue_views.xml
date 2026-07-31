@@ -52,6 +52,7 @@
                             <field name="note" placeholder="Docket notes..."/>
                         </page>
                         <page string="Stock Moves" name="moves"
+                              groups="stock.group_stock_user"
                               invisible="state != 'done'">
                             <field name="move_ids" readonly="1">
                                 <list>

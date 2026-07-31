@@ -53,7 +53,9 @@
               priority="110">
         <xpath expr="//div[hasclass('o_majal_login_footer')]" position="inside">
             <span aria-hidden="true"> · </span>
-            <a href="/majal/legal/open-source">Open-source notices</a>
+            <a href="/majal/about">About Majal</a>
+            <span aria-hidden="true"> · </span>
+            <a href="/majal/legal/open-source">Third-party licences</a>
         </xpath>
     </template>
 </odoo>

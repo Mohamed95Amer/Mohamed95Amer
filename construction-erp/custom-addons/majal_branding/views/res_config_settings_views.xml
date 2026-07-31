@@ -69,12 +69,15 @@
                                 </div>
                             </div>
                         </setting>
-                        <setting string="Release and legal" help="Majal Route A includes an accessible open-source notice and source offer for covered components.">
+                        <setting string="Release and legal" help="Majal includes an accessible third-party licence notice and source offer for covered components.">
                             <div class="o_majal_system_card mt-2">
-                                <strong>Majal Route A</strong>
+                                <strong>Majal product information</strong>
                                 <span>Managed construction and facilities service</span>
+                                <a href="/majal/about" target="_blank" rel="noopener noreferrer">
+                                    About Majal
+                                </a>
                                 <a href="/majal/legal/open-source" target="_blank" rel="noopener noreferrer">
-                                    Open-source notices
+                                    Third-party licences
                                 </a>
                             </div>
                         </setting>

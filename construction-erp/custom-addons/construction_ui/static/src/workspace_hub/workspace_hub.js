@@ -21,6 +21,8 @@ const TRANSLATABLE_CONFIG_KEYS = new Set([
     "eyebrow",
     "description",
     "workflow",
+    "label",
+    "hint",
 ]);
 
 const localizeConfig = (value, key = null) => {

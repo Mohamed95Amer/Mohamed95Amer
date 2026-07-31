@@ -8,7 +8,9 @@
             <div class="d-none d-lg-flex mt-5 small text-center text-muted justify-content-center gap-2">
                 <span>Majal</span>
                 <span aria-hidden="true">·</span>
-                <a href="/majal/legal/open-source">Open-source notices</a>
+                <a href="/majal/about">About Majal</a>
+                <span aria-hidden="true">·</span>
+                <a href="/majal/legal/open-source">Third-party licences</a>
             </div>
         </xpath>
     </template>

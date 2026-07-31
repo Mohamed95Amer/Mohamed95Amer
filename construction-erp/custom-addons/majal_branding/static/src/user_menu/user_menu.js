@@ -22,11 +22,11 @@ userMenuItems.add("majal_help", () => ({
     sequence: 10,
 }));
 
-userMenuItems.add("majal_open_source", () => ({
+userMenuItems.add("majal_about", () => ({
     type: "item",
-    id: "majal_open_source",
-    description: _t("Open-source notices"),
-    href: "/majal/legal/open-source",
-    callback: () => browser.open("/majal/legal/open-source", "_blank"),
+    id: "majal_about",
+    description: _t("About Majal"),
+    href: "/majal/about",
+    callback: () => browser.open("/majal/about", "_blank"),
     sequence: 20,
 }));

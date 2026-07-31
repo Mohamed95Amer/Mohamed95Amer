@@ -3,6 +3,13 @@
 Use this folder to continue the Majal work with Codex, Claude Code, Cursor, or
 another coding tool.
 
+> **Latest checkpoint:** start with
+> [`next-tool-2026-07-31/START_HERE.md`](next-tool-2026-07-31/START_HERE.md)
+> and give the next tool the contents of
+> [`next-tool-2026-07-31/COPY_THIS_PROMPT.txt`](next-tool-2026-07-31/COPY_THIS_PROMPT.txt).
+> Those files include the UI, Arabic, dashboard, material-access and
+> company-switcher work completed after the older checkpoint below.
+
 ## Where the project is
 
 - Repository:

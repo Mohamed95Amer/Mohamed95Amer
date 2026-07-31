@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="open_source_notices" name="Majal Open-Source Notices">
+    <template id="about_majal" name="About Majal">
         <t t-call="web.frontend_layout">
-            <t t-set="title">Open-source notices</t>
+            <t t-set="title">About Majal</t>
             <t t-set="no_header" t-value="True"/>
             <t t-set="no_footer" t-value="True"/>
             <main class="o_majal_legal_page">
@@ -15,11 +15,62 @@
                         </span>
                     </a>
 
-                    <h1>Open-source notices</h1>
+                    <h1>One operational system for the built environment</h1>
+                    <p t-esc="tagline"/>
+
+                    <div class="o_majal_help_grid">
+                        <section class="o_majal_help_tile">
+                            <i class="fa fa-building-o" aria-hidden="true"/>
+                            <h2>Construction control</h2>
+                            <p>Projects, engineering, site records, programme, commercial position, quality, and safety.</p>
+                        </section>
+                        <section class="o_majal_help_tile">
+                            <i class="fa fa-wrench" aria-hidden="true"/>
+                            <h2>Facilities operations</h2>
+                            <p>Assets, work orders, preventive maintenance, service levels, contracts, and parts.</p>
+                        </section>
+                        <section class="o_majal_help_tile">
+                            <i class="fa fa-shield" aria-hidden="true"/>
+                            <h2>Controlled by role</h2>
+                            <p>Company, project, facility, and responsibility boundaries keep each team focused.</p>
+                        </section>
+                        <section class="o_majal_help_tile">
+                            <i class="fa fa-line-chart" aria-hidden="true"/>
+                            <h2>Built for decisions</h2>
+                            <p>Management dashboards surface risk, margin, delivery, safety, and service performance.</p>
+                        </section>
+                    </div>
+
+                    <p class="o_majal_legal_support">
+                        <a href="/majal/help">Help &amp; Support</a>
+                        <span aria-hidden="true"> · </span>
+                        <a href="/majal/legal/open-source">Third-party licences</a>
+                    </p>
+                </article>
+            </main>
+        </t>
+    </template>
+
+    <template id="open_source_notices" name="Majal Third-Party Licences">
+        <t t-call="web.frontend_layout">
+            <t t-set="title">Third-party licences</t>
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <main class="o_majal_legal_page">
+                <article class="o_majal_legal_card">
+                    <a href="/web/login" class="o_majal_legal_brand" aria-label="Majal sign in">
+                        <img src="/majal_branding/static/description/icon.svg" alt="" width="48" height="48"/>
+                        <span>
+                            <strong t-esc="product_name"/>
+                            <small>Construction &amp; Facilities</small>
+                        </span>
+                    </a>
+
+                    <h1>Third-party licences &amp; notices</h1>
                     <p>
-                        Majal combines original construction and facilities workflows
-                        with maintained open-source components. Those components remain
-                        available under their respective licences.
+                        This legal page identifies maintained external components used
+                        by Majal. It is separate from the Majal product identity and does
+                        not change the branding or ownership of the Majal solution.
                     </p>
 
                     <section>
@@ -107,7 +158,7 @@
                         <a class="o_majal_help_tile text-decoration-none"
                            href="/majal/legal/open-source">
                             <i class="fa fa-code-fork" aria-hidden="true"/>
-                            <h2>Open-source notices</h2>
+                            <h2>Third-party licences</h2>
                             <p>Review third-party licences and corresponding source.</p>
                         </a>
                         <a t-if="privacy_url"

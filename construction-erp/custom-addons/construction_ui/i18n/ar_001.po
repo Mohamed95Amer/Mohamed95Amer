@@ -586,7 +586,7 @@ msgstr "ضمن سير العمل"
 #: model:ir.ui.menu,name:construction_hse.menu_hse_incidents
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "Incidents & Near Misses"
-msgstr "الحوادث وحوادث الوشك"
+msgstr "الحوادث وشبه الحوادث"
 
 #. module: construction_ui
 #. odoo-javascript
@@ -6311,7 +6311,7 @@ msgstr "الحوادث"
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "Near Misses"
-msgstr "حوادث الوشك"
+msgstr "شبه الحوادث"
 
 #. module: construction_ui
 #. odoo-javascript
@@ -7547,7 +7547,7 @@ msgstr "وشك حادث"
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "Near misses"
-msgstr "حوادث وشك"
+msgstr "شبه الحوادث"
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8306,6 +8306,9 @@ msgstr "لوحة المشروع"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: model:ir.actions.client,name:construction_ui.action_my_day
+#: model:ir.ui.menu,name:construction_ui.menu_facility_my_day
+#: model:ir.ui.menu,name:construction_ui.menu_my_day
 msgid "My Day"
 msgstr "يومي"
 
@@ -8320,6 +8323,239 @@ msgstr "صباح الخير"
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
 msgid "Good afternoon"
 msgstr "مساء الخير"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:construction_base.menu_approvals_root
+msgid "Approvals"
+msgstr "الاعتمادات"
+
+#. module: construction_ui
+#: model:ir.actions.client,name:construction_ui.action_majal_dashboard_hub
+msgid "Management Dashboards"
+msgstr "لوحات الإدارة"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:spreadsheet_dashboard.spreadsheet_dashboard_menu_dashboard
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Analytical Workbooks"
+msgstr "مصنفات التحليل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "MAJAL CONTROL CENTRE"
+msgstr "مركز تحكم مجال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Management dashboards"
+msgstr "لوحات الإدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Start with the company-wide position, then move directly into the operation that needs attention."
+msgstr "ابدأ بصورة الشركة كاملة، ثم انتقل مباشرة إلى العملية التي تحتاج إلى التدخل."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Live operational view"
+msgstr "عرض تشغيلي مباشر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Preparing the management picture…"
+msgstr "جارٍ إعداد صورة الإدارة…"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "READY VIEWS"
+msgstr "عروض جاهزة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Choose a dashboard"
+msgstr "اختر لوحة إدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Each view is filtered by your company, role, and assigned work."
+msgstr "يُرشَّح كل عرض حسب شركتك ودورك والأعمال المسندة إليك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "OWNER VIEW"
+msgstr "عرض المالك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Executive Portfolio"
+msgstr "محفظة الإدارة التنفيذية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Compare contract value, margin, programme, quality, safety, and material performance across every project."
+msgstr "قارن قيمة العقود والهامش والبرنامج والجودة والسلامة وأداء المواد عبر جميع المشاريع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "CONSTRUCTION"
+msgstr "الإنشاءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Construction Operations"
+msgstr "عمليات الإنشاءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open projects, site records, engineering workflows, commercial controls, and the daily risk picture."
+msgstr "افتح المشاريع وسجلات الموقع ومسارات الهندسة والضوابط التجارية وصورة المخاطر اليومية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "FACILITIES"
+msgstr "إدارة المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Facilities Operations"
+msgstr "عمليات إدارة المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Monitor assets, locations, work orders, preventive maintenance, service levels, contracts, and parts."
+msgstr "راقب الأصول والمواقع وأوامر العمل والصيانة الوقائية ومستويات الخدمة والعقود وقطع الغيار."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "COMMERCIAL"
+msgstr "التجاري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Commercial Exposure"
+msgstr "الانكشاف التجاري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "See unapproved change, certification, billing, commitment, and forecast-margin exposure before month end."
+msgstr "راجع التغييرات غير المعتمدة والتصديق والفوترة والالتزامات وانكشاف الهامش المتوقع قبل نهاية الشهر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "PERSONAL CONTROL"
+msgstr "المتابعة الشخصية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "One prioritised queue for approvals, overdue actions, assigned defects, inspections, and work orders."
+msgstr "قائمة واحدة مرتبة للاعتمادات والإجراءات المتأخرة والعيوب والفحوص وأوامر العمل المسندة إليك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "SELF-SERVICE"
+msgstr "تحليل ذاتي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open configurable spreadsheet dashboards for finance, sales, inventory, and other installed business areas."
+msgstr "افتح لوحات جداول قابلة للضبط للمالية والمبيعات والمخزون ومجالات الأعمال المثبتة الأخرى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Live projects"
+msgstr "المشاريع الجارية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s at risk"
+msgstr "%s معرضة للخطر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Contract portfolio"
+msgstr "محفظة العقود"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s certified"
+msgstr "%s مصدق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Programme exceptions"
+msgstr "استثناءات البرنامج"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s days worst slip"
+msgstr "أكبر تأخير %s يومًا"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open defects"
+msgstr "العيوب المفتوحة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s overdue RFIs"
+msgstr "%s طلب معلومات متأخر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Facility assets"
+msgstr "أصول المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Across %s locations"
+msgstr "عبر %s مواقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open work orders"
+msgstr "أوامر العمل المفتوحة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s SLA breaches"
+msgstr "%s تجاوز لمستوى الخدمة"
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8402,3 +8638,81 @@ msgstr "طلبات المعلومات في عهدتي"
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
 msgid "Permits I supervise"
 msgstr "التصاريح التي أشرف عليها"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SAFETY LEARNING"
+msgstr "التعلّم من السلامة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record what happened, find why, and close the actions that stop it happening again."
+msgstr "سجّل ما حدث، وحدد السبب، وأغلق الإجراءات التي تمنع تكراره."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Counts towards LTIFR"
+msgstr "يُحتسب ضمن معدل إصابات الوقت الضائع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Notifiable to the regulator"
+msgstr "يستلزم الإبلاغ للجهة الرقابية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Free lessons — keep them coming"
+msgstr "دروس بلا إصابات — استمر في الإبلاغ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Investigation or actions outstanding"
+msgstr "التحقيق أو الإجراءات ما زالت مفتوحة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture the event while the detail is fresh."
+msgstr "سجّل الواقعة بينما التفاصيل حديثة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Investigate"
+msgstr "التحقيق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Establish the root cause, not the culprit."
+msgstr "حدّد السبب الجذري، لا تبحث عن مُلام."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Close the corrective actions and the loop."
+msgstr "أغلق الإجراءات التصحيحية واستكمل الدورة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "HIGH-RISK CONTROL"
+msgstr "ضبط الأعمال عالية المخاطر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SITE BRIEFING"
+msgstr "إحاطة الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Management indicators"
+msgstr "مؤشرات الإدارة"

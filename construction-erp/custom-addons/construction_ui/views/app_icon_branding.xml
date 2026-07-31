@@ -15,6 +15,7 @@
     </record>
     <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
         <field name="web_icon">construction_ui,static/description/apps/dashboards.svg</field>
+        <field name="action" ref="construction_ui.action_majal_dashboard_hub"/>
     </record>
     <record id="account.menu_finance" model="ir.ui.menu">
         <field name="web_icon">construction_ui,static/description/apps/finance.svg</field>

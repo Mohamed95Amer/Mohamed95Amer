@@ -336,3 +336,10 @@
         margin-inline-start: 0;
     }
 }
+// The client workspace is intentionally single-company from the user's
+// perspective. Keep a CSS fallback in addition to the registry/template
+// overrides so the switcher cannot flash while assets initialise.
+.o_switch_company_menu,
+.o_burger_menu_companies {
+    display: none !important;
+}
