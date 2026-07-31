@@ -4,7 +4,12 @@ from odoo.tests import TransactionCase, tagged
 @tagged("post_install", "-at_install")
 class TestMajalAppIcons(TransactionCase):
     def test_every_installed_top_level_app_uses_a_majal_icon(self):
-        allowed_modules = {"construction_ui", "majal_ai"}
+        # Modules allowed to supply an app icon. The rule is that no app shows
+        # a stock Odoo icon, not that the icons all live in one module — so a
+        # Majal module shipping its own Majal-styled asset belongs here. Kept
+        # explicit rather than matching on a "majal_" prefix, since the point
+        # is to notice a new app arriving with an unbranded icon.
+        allowed_modules = {"construction_ui", "majal_ai", "majal_administration"}
         top_level_apps = self.env["ir.ui.menu"].search(
             [("parent_id", "=", False), ("web_icon", "!=", False)]
         )

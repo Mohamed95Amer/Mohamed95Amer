@@ -80,7 +80,12 @@ class TestFacilityAsset(TransactionCase):
         self.assertTrue(self.asset.tag_token)
         self.assertNotEqual(self.asset.barcode, second.barcode)
         self.assertNotEqual(self.asset.tag_token, second.tag_token)
-        self.assertIn("/web/login?db=erp&redirect=", self.asset.qr_tag_url)
+        # The database this is running against, not a name somebody happened
+        # to develop on: the test database is generated per run, so asserting
+        # "erp" passes only on one machine and fails everywhere else.
+        self.assertIn(
+            f"/web/login?db={self.env.cr.dbname}&redirect=",
+            self.asset.qr_tag_url)
         self.assertIn(
             f"%2Fmajal%2Fasset%2F{self.asset.tag_token}%2Fqr",
             self.asset.qr_tag_url)

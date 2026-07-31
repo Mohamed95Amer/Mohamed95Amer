@@ -59,5 +59,7 @@ class TestMajalPublicRoutes(HttpCase):
         response = self.url_open("/web/database/selector", timeout=15)
 
         self.assertIn("/web/login", response.url)
-        self.assertIn("db=erp", response.url)
+        # The live database name, not a developer's: the test database is
+        # generated per run, so "erp" only ever passed by coincidence.
+        self.assertIn(f"db={self.env.cr.dbname}", response.url)
         self.assertNotIn("/web/database/selector", response.url)
