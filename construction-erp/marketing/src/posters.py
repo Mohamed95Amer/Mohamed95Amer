@@ -2,6 +2,16 @@
 
 Six pieces, one idea each. Print items are exported CMYK with 3 mm bleed and
 crop marks; screen items are exported at their exact pixel dimensions.
+
+    1  A3   the commercial spine, tender to handover        (print + 300dpi PNG)
+    2  A3   the same spine in Arabic, composed right-to-left (print + 300dpi PNG)
+    3  1080 x 1350   the BIM before/after                   (real screenshots)
+    4  1080 x 1350   approvals — the check is in the method  (real screenshot)
+    5  1920 x 1080   waiting for a signature                 (real screenshot)
+    6  1080 x 1350   My Day / the field                      (real screenshot)
+
+Every screenshot placed here is a real capture of the running product, cropped
+but never redrawn, retouched or distorted.
 """
 
 import os
@@ -10,7 +20,7 @@ from reportlab.pdfgen import canvas as rl_canvas
 
 from majal_brand import (
     AR, AR_B, AR_L, AR_SB, BASE, DISPLAY, DISPLAY_R, FACTS, MM, MONO, MONO_B,
-    ROOT, SPINE, TEXT, TEXT_B, TEXT_I, Canvas, register_fonts, snap,
+    ROOT, SPINE, TEXT, TEXT_B, TEXT_I, Canvas, ar, register_fonts, snap,
 )
 
 OUT = os.path.join(ROOT, "posters")
@@ -44,10 +54,9 @@ def crop_marks(cv, bleed, page_w, page_h, color="rule_dark"):
                      color=color, lw=0.35)
 
 
-def footer_dark(cv, x, y, w, right_note=None, tint="rule_dark"):
+def footer_dark(cv, x, y, w, right_note=None, tint="rule_dark", ms=13.0):
     """The system footer: mark, wordmark, source line, url. One rule above."""
     cv.hline(x, y, w, color=tint, lw=0.5)
-    ms = 13.0
     cv.mark(x, y + 9, ms)
     cv.text(x + ms + 7, y + 9 + ms * 0.74, "MAJAL", font=DISPLAY, size=ms * 1.02,
             color="surface", track=ms * 0.045)
@@ -56,6 +65,51 @@ def footer_dark(cv, x, y, w, right_note=None, tint="rule_dark"):
     cv.label(x + w, y + 9 + ms * 0.40 + 11, right_note or
              "open source · %s · %s" % (FACTS["base"], FACTS["licence"]),
              size=6.0, color="muted", track=1.3, align="right")
+
+
+CAP = 0.72          # BigShoulders cap height as a fraction of point size
+
+
+def headline(cv, x, y, lines, max_w, max_h, color="surface", align="left",
+             ratio=0.86, track=0.012, pad=None):
+    """The display voice.
+
+    One size for the whole block, constrained by BOTH the measure and a height
+    budget — a display face set only to a width will happily grow until it eats
+    the page, which is exactly the failure this system must not have. `y` is the
+    rule the block hangs from; the cap line sits `pad` below it. Returns the
+    last baseline.
+    """
+    n = len(lines)
+    by_w = min(fit(cv, l, DISPLAY, max_w, track_ratio=track) for l in lines)
+    # cap top -> last baseline = CAP*size + (n-1)*ratio*size
+    by_h = max_h / (CAP + (n - 1) * ratio)
+    size = min(by_w, by_h)
+    lead = size * ratio
+    pad = size * 0.20 if pad is None else pad
+    first = y + pad + size * CAP
+    for i, l in enumerate(lines):
+        cv.text(x, first + i * lead, l, font=DISPLAY, size=size, color=color,
+                track=size * track, align=align)
+    return first + (n - 1) * lead
+
+
+def ar_headline(cv, x, y, lines, max_w, max_h, color="surface", ratio=1.12,
+                pad=None, font=None):
+    """The Arabic display voice, composed from the right edge. Same two-way
+    constraint; Arabic needs looser leading because the script carries marks
+    above and below the line."""
+    font = font or AR_B
+    n = len(lines)
+    by_w = min(fit(cv, ar(l), font, max_w) for l in lines)
+    by_h = max_h / (0.74 + (n - 1) * ratio)
+    size = min(by_w, by_h)
+    lead = size * ratio
+    pad = size * 0.24 if pad is None else pad
+    first = y + pad + size * 0.74
+    for i, l in enumerate(lines):
+        cv.ar_text(x, first + i * lead, l, font=font, size=size, color=color)
+    return first + (n - 1) * lead
 
 
 # --------------------------------------------------------------------------
@@ -97,7 +151,7 @@ def poster_a3(path, rtl=False, print_mode=False, bleed_mm=0.0):
 
     c = rl_canvas.Canvas(path, pagesize=(pw, ph))
     c.setTitle("Majal — one system from tender to handover" if not rtl
-               else "Majal — poster (Arabic)")
+               else "مجال — نظام واحد من المناقصة إلى التسليم")
     cv = Canvas(c, pw, ph, print_mode=print_mode)
 
     # ground: full bleed, one slow rake of light
@@ -123,32 +177,18 @@ def poster_a3(path, rtl=False, print_mode=False, bleed_mm=0.0):
     cv.hline(x0, top + 20, colw, color="rule_dark", lw=0.6)
 
     # --- headline --------------------------------------------------------
+    HEAD_H = 62 * MM                 # the display block's height budget
     if rtl:
-        ar_lines = [
-            "نظام واحد",
-            "من المناقصة",
-            "إلى التسليم",
-        ]
-        size = min(fit(cv, __import__("majal_brand").ar(l), AR_B, colw * 0.94)
-                   for l in ar_lines)
-        lead = snap(size * 1.16)
-        y = top + 20 + snap(size * 0.98)
-        for i, l in enumerate(ar_lines):
-            cv.ar_text(lead_edge, y + i * lead, l, font=AR_B, size=size,
-                       color="surface")
-        head_bottom = y + (len(ar_lines) - 1) * lead
+        head_bottom = ar_headline(cv, lead_edge, top + 20,
+                                  ["نظام واحد", "من المناقصة", "إلى التسليم"],
+                                  colw * 0.92, HEAD_H)
     else:
-        lines = ["ONE SYSTEM", "FROM TENDER", "TO HANDOVER"]
-        size = min(fit(cv, l, DISPLAY, colw, track_ratio=0.012) for l in lines)
-        lead = snap(size * 0.84)
-        y = top + 20 + snap(size * 0.76)
-        for i, l in enumerate(lines):
-            cv.text(lead_edge, y + i * lead, l, font=DISPLAY, size=size,
-                    color="surface", track=size * 0.012, align=align)
-        head_bottom = y + (len(lines) - 1) * lead
+        head_bottom = headline(cv, lead_edge, top + 20,
+                               ["ONE SYSTEM", "FROM TENDER", "TO HANDOVER"],
+                               colw, HEAD_H)
 
     # --- standfirst ------------------------------------------------------
-    sy = snap(head_bottom + 30 * MM)
+    sy = snap(head_bottom + 16 * MM)
     if rtl:
         cv.ar_para(lead_edge, sy,
                    "دفتر واحد يربط العطاء بالجدول، والجدول بعقود الباطن، "
@@ -167,15 +207,22 @@ def poster_a3(path, rtl=False, print_mode=False, bleed_mm=0.0):
     notes = AR_SPINE_NOTE if rtl else SPINE_NOTE
 
     foot_y = bleed + th - 26 * MM
+    # the Arabic sheet carries the evidence plate; the English one carries the
+    # register the spine begins in. Both reserve the same band.
+    plate_name = "rtl-tiles" if rtl else "exposure-tiles"
+    plate_w = colw
+    plate_h = cv.img_h_for_w(plate_name, plate_w)
+    plate_y = snap(foot_y - 22 * MM - plate_h)
+
     spine_top = snap(sy + 26 * MM)
-    spine_bot = snap(foot_y - 30 * MM)
+    spine_bot = snap(plate_y - 30 * MM)
     step = (spine_bot - spine_top) / (len(stages) - 1)
 
     sx = (x1 - 4 * MM) if rtl else (x0 + 4 * MM)
     cv.vline(sx, spine_top, spine_bot - spine_top, color="accent", lw=0.9)
-    # the line runs on past the last node, into the footer rule: a load path
-    # does not stop where the diagram stops
-    cv.vline(sx, spine_bot, foot_y - spine_bot, color="accent", lw=0.9,
+    # the line runs on past the last node, into the plate: a load path does not
+    # stop where the diagram stops
+    cv.vline(sx, spine_bot, plate_y - spine_bot, color="accent", lw=0.9,
              alpha=0.32)
 
     tx = sx - 11 * MM if rtl else sx + 11 * MM
@@ -203,8 +250,18 @@ def poster_a3(path, rtl=False, print_mode=False, bleed_mm=0.0):
                     leading=snap(9.2 * 1.55), color="muted",
                     max_w=text_w * 0.86, align=align)
         cv.label(x1 if not rtl else x0, yy + 5.0, mod, size=6.4,
-                 color="rule_dark", track=1.2,
+                 color="whisper", track=1.2,
                  align="left" if rtl else "right")
+
+    # --- the evidence ----------------------------------------------------
+    cv.plate(plate_name, x0, plate_y, w=plate_w)
+    if rtl:
+        cv.ar_text(x1, plate_y - 9, "من المنتج نفسه — الانكشاف التجاري بالعربية",
+                   font=AR, size=9.0, color="muted")
+    else:
+        cv.label(x0, plate_y - 9,
+                 "from the product — portfolio commercial exposure",
+                 size=6.8, color="muted", track=1.6)
 
     # --- footer ----------------------------------------------------------
     cv.hline(x0, foot_y, colw, color="rule_dark", lw=0.5)
@@ -244,92 +301,87 @@ def poster_a3(path, rtl=False, print_mode=False, bleed_mm=0.0):
 
 
 # --------------------------------------------------------------------------
-# 3. 1080 x 1350 — BIM
+# 3. 1080 x 1350 — the BIM before/after
 # --------------------------------------------------------------------------
 
 def poster_bim(path):
     pw, ph = 540.0, 675.0
     c = rl_canvas.Canvas(path, pagesize=(pw, ph))
-    c.setTitle("Majal — an RFI can point at a wall")
+    c.setTitle("Majal — colour everything and you have said nothing")
     cv = Canvas(c, pw, ph)
     cv.raking_light(0, 0, pw, ph, lift=0.18)
 
-    M = 40.0
+    M = 38.0
     x0, x1 = M, pw - M
     colw = x1 - x0
 
-    cv.label(x0, 46, "Majal — BIM coordination", size=7.4, color="accent",
-             track=3.0)
-    cv.hline(x0, 56, colw, color="rule_dark", lw=0.6)
+    cv.label(x0, 44, "Majal — BIM", size=7.4, color="accent", track=3.0)
+    cv.hline(x0, 54, colw, color="rule_dark", lw=0.6)
 
-    lines = ["AN RFI CAN", "POINT AT", "A WALL."]
-    size = min(fit(cv, l, DISPLAY, colw, track_ratio=0.012) for l in lines)
-    lead = snap(size * 0.83)
-    y = 56 + snap(size * 0.78)
-    for i, l in enumerate(lines):
-        cv.text(x0, y + i * lead, l, font=DISPLAY, size=size, color="surface",
-                track=size * 0.012)
-    hb = y + 2 * lead
+    hb = headline(cv, x0, 54, ["COLOUR", "EVERYTHING,", "SAY NOTHING."],
+                  colw, 112.0)
 
-    # --- the element field -----------------------------------------------
-    # An abstract axonometric lattice: patient repetition, one marked element.
-    fy = snap(hb + 40)
-    fh = 210.0
-    cols, rows = 11, 7
-    cw, ch = colw / cols, fh / rows
-    skew = 0.42
-    mark_c, mark_r = 7, 3
+    end = cv.para(x0, snap(hb + 30),
+                  "The authoring tool's colours describe the model. They do not "
+                  "describe your job. Majal's default is one neutral material "
+                  "and a set of edges, so the only thing that reads as coloured "
+                  "is the thing somebody has to act on.",
+                  font=TEXT, size=9.8, leading=snap(9.8 * 1.6),
+                  color="accent_pale", max_w=colw * 0.97)
 
-    for r in range(rows):
-        for cx in range(cols):
-            px = x0 + cx * cw + (rows - 1 - r) * skew * cw * 0.42
-            py = fy + r * ch
-            w_, h_ = cw * 0.62, ch * 0.50
-            hot = (cx == mark_c and r == mark_r)
-            if px + w_ > x1 + 0.5:
-                continue
-            cv.rect(px, py, w_, h_, stroke="accent" if hot else "rule_dark",
-                    lw=1.0 if hot else 0.45)
-            if hot:
-                cv.rect(px, py, w_, h_, fill="accent", alpha=0.16)
+    # --- the pair --------------------------------------------------------
+    # The plate is sized from the space that is actually left, not from the
+    # measure — a picture sized only to a column is how a page overflows.
+    foot_y = ph - 64
+    gap = 14.0
+    py = snap(end + 34)
+    facts_h = 2 * 30 + 30            # two rows of notation plus its rule
+    avail_h = foot_y - 22 - facts_h - 44 - py
+    iw = min((colw - gap) / 2, cv.img_w_for_h("bim-original", avail_h))
+    ih = cv.img_h_for_w("bim-original", iw)
+    px0 = x0 + (colw - (2 * iw + gap)) / 2.0
 
-    # the link: node on the element, leader out to the record
-    hx = x0 + mark_c * cw + (rows - 1 - mark_r) * skew * cw * 0.42 + cw * 0.31
-    hy = fy + mark_r * ch + ch * 0.25
-    cv.node(hx, hy, 2.4)
-    cv.ring(hx, hy, 5.6, lw=0.6)
-    lx = x0 + 14
-    ly = fy + fh + 30
-    cv.path([(hx, hy + 5.6), (hx, ly), (lx, ly)], color="accent", lw=0.7,
-            alpha=0.8)
-    cv.node(lx, ly, 2.0)
-    cv.label(lx + 10, ly + 3.0, "globalid  ·  2o2gzsjxd6chvyzvj9$k1w",
-             size=6.6, color="accent", track=1.1)
+    for i, (name, tag, note) in enumerate([
+            ("bim-original", "original colours from the file",
+             "Every class shouting at once."),
+            ("bim-viewer", "shaded — one material",
+             "The default in Majal."),
+    ]):
+        px = px0 + i * (iw + gap)
+        cv.label(px, py - 8, "%02d" % (i + 1), size=6.4, color="accent",
+                 track=1.6)
+        cv.plate(name, px, py, w=iw,
+                 tick_color="accent" if i else "rule_dark")
+        cv.label(px, py + ih + 15, tag, size=6.3,
+                 color="accent" if i else "muted", track=1.3)
+        cv.text(px, py + ih + 28, note, font=TEXT_I, size=8.2, color="muted")
 
-    # --- standfirst ------------------------------------------------------
-    sy = snap(ly + 34)
-    end = cv.para(x0, sy,
-                  "Every element in an IFC file carries a GlobalId. Majal keys "
-                  "its links on that identity, so an RFI, a defect, a task or a "
-                  "bill item stays attached to the element it was raised "
-                  "against — through re-issue after re-issue.",
-                  font=TEXT, size=10.4, leading=snap(10.4 * 1.62),
-                  color="accent_pale", max_w=colw * 0.94)
+    # the two frames are the same crop of the same model at the same camera
+    cv.label(px0, py + ih + 44,
+             "same model · same camera · same crop · rev A",
+             size=6.0, color="whisper", track=1.6)
 
-    cy = snap(end + 30)
-    cv.hline(x0, cy - 12, colw, color="rule_dark", lw=0.5)
+    # --- what it is for, and where it stops. Limits are set in the same type
+    # as capabilities; a specification that hides its edges is not one.
+    fy = snap(py + ih + 68)
+    cv.hline(x0, fy - 14, colw, color="rule_dark", lw=0.5)
+    half = colw / 2
     for i, (k, v) in enumerate([
-            ("index", "property sets & quantities"),
-            ("exchange", FACTS["bcf"] + " round-trip"),
-            ("4d", "dates from the programme"),
-            ("clash", "bounding-box, stated as such")]):
-        col = x0 + (colw / 2) * (i % 2)
-        row = cy + (i // 2) * 30
-        cv.label(col, row, k, size=6.4, color="accent", track=1.8)
-        cv.text(col, row + 13, v, font=TEXT, size=8.6, color="muted")
+            ("keyed on", "IFC GlobalId — links survive re-issue"),
+            ("index", "elements, property sets, quantities"),
+            ("exchange", "%s round-trip · no IFC writing" % FACTS["bcf"]),
+            ("limits", "bounding-box clash, not triangle-precise · "
+                       "DWG is not supported"),
+    ]):
+        col, row_i = (0, i) if i < 2 else (1, i - 2)
+        cx = x0 + col * half
+        row = fy + row_i * 30
+        cv.label(cx, row, k, size=6.3, color="accent", track=1.7)
+        cv.para(cx, row + 12, v, font=TEXT, size=8.2,
+                leading=snap(8.2 * 1.45), color="muted", max_w=half - 16)
 
-    footer_dark(cv, x0, ph - 84, colw,
-                right_note="docs/bim.md states the limits")
+    footer_dark(cv, x0, foot_y, colw,
+                right_note="docs/bim.md states every limit")
     c.showPage()
     c.save()
 
@@ -345,68 +397,63 @@ def poster_approvals(path):
     cv = Canvas(c, pw, ph)
     cv.raking_light(0, 0, pw, ph, lift=0.18)
 
-    M = 40.0
+    M = 38.0
     x0, x1 = M, pw - M
     colw = x1 - x0
 
-    cv.label(x0, 46, "Majal — delegation of authority", size=7.4,
+    cv.label(x0, 44, "Majal — delegation of authority", size=7.4,
              color="accent", track=3.0)
-    cv.hline(x0, 56, colw, color="rule_dark", lw=0.6)
+    cv.hline(x0, 54, colw, color="rule_dark", lw=0.6)
 
-    lines = ["THE CHECK", "IS IN THE", "METHOD."]
-    size = min(fit(cv, l, DISPLAY, colw, track_ratio=0.012) for l in lines)
-    lead = snap(size * 0.83)
-    y = 56 + snap(size * 0.78)
-    for i, l in enumerate(lines):
-        cv.text(x0, y + i * lead, l, font=DISPLAY, size=size, color="surface",
-                track=size * 0.012)
-    hb = y + 2 * lead
+    hb = headline(cv, x0, 54, ["THE CHECK", "IS IN THE", "METHOD."], colw,
+                  112.0)
 
-    sy = snap(hb + 34)
-    end = cv.para(x0, sy,
-                  "A groups attribute on a button hides the control. It does not "
-                  "stop the method being called. Majal checks the approval rule "
-                  "inside the action that commits the document — so it holds "
-                  "from a button, a script or the RPC console.",
-                  font=TEXT, size=10.4, leading=snap(10.4 * 1.62),
-                  color="accent_pale", max_w=colw * 0.94)
+    end = cv.para(x0, snap(hb + 30),
+                  "A groups attribute on a button hides the control. It does "
+                  "not stop the method being called. Majal checks the approval "
+                  "rule inside the action that commits the document — so it "
+                  "holds from a button, a script or the RPC console.",
+                  font=TEXT, size=10.0, leading=snap(10.0 * 1.6),
+                  color="accent_pale", max_w=colw * 0.97)
 
     # --- the ladder ------------------------------------------------------
-    ly = snap(end + 42)
+    ly = snap(end + 34)
     bands = [("up to 50,000", 1, "Project manager"),
              ("50,000 – 250,000", 2, "Project manager, commercial manager"),
              ("above 250,000", 3, "Project manager, commercial manager, board")]
-    rowh = 62.0
+    rowh = 54.0
     for i, (band, n, who) in enumerate(bands):
         ry = ly + i * rowh
         cv.hline(x0, ry, colw, color="rule_dark", lw=0.5)
-        cv.label(x0, ry + 17, band, size=8.0, color="surface", track=1.6,
+        cv.label(x0, ry + 16, band, size=7.6, color="surface", track=1.5,
                  font=MONO_B)
-        cv.text(x0, ry + 33, who, font=TEXT, size=8.8, color="muted")
-        # signatures required, as marks
+        cv.text(x0, ry + 31, who, font=TEXT, size=8.4, color="muted")
         for s in range(3):
-            mx = x1 - 12 - (2 - s) * 20
+            mx = x1 - 11 - (2 - s) * 19
             if s < n:
-                cv.node(mx, ry + 20, 3.4)
-                cv.ring(mx, ry + 20, 7.0, lw=0.6)
+                cv.node(mx, ry + 19, 3.2)
+                cv.ring(mx, ry + 19, 6.6, lw=0.6)
             else:
-                cv.ring(mx, ry + 20, 7.0, color="rule_dark", lw=0.5)
-        cv.label(x1, ry + 40, "%d signature%s" % (n, "" if n == 1 else "s"),
-                 size=6.4, color="accent", track=1.4, align="right")
+                cv.ring(mx, ry + 19, 6.6, color="rule_dark", lw=0.5)
+        cv.label(x1, ry + 37, "%d signature%s" % (n, "" if n == 1 else "s"),
+                 size=6.2, color="accent", track=1.3, align="right")
     cv.hline(x0, ly + 3 * rowh, colw, color="rule_dark", lw=0.5)
+    cv.label(x0, ly + 3 * rowh + 14,
+             "an example rule set for variation orders · rules are data, not code",
+             size=6.2, color="muted", track=1.2)
 
-    cv.label(x0, ly + 3 * rowh + 16,
-             "example rule set, shipped as demo data · variation orders",
-             size=6.4, color="muted", track=1.3)
+    # --- the consequence, shown ------------------------------------------
+    py = snap(ly + 3 * rowh + 42)
+    pw_img = colw
+    ph_img = cv.img_h_for_w("approval-inbox", pw_img)
+    cv.plate("approval-inbox", x0, py, w=pw_img)
+    cv.caption(x0, py + ph_img + 16,
+               "Because every step is a record, “waiting for me” is one query "
+               "rather than a tour of every register — one inbox across every "
+               "wired document type.",
+               max_w=colw, size=8.0)
 
-    cv.para(x0, snap(ly + 3 * rowh + 42),
-            "Segregation of duties, ordered steps, a captured reason, and "
-            "delegation that records whose authority was used — with one "
-            "“waiting for me” inbox across every kind of document.",
-            font=TEXT, size=9.2, leading=snap(9.2 * 1.6), color="accent_pale",
-            max_w=colw * 0.94)
-
-    footer_dark(cv, x0, ph - 84, colw,
+    footer_dark(cv, x0, ph - 64, colw,
                 right_note="%s document types wired to the approval engine"
                            % FACTS["approval_wired"])
     c.showPage()
@@ -414,139 +461,119 @@ def poster_approvals(path):
 
 
 # --------------------------------------------------------------------------
-# 5. 1920 x 1080 — open source
+# 5. 1920 x 1080 — waiting for a signature
 # --------------------------------------------------------------------------
 
-def banner_open_source(path):
+def banner_exposure(path):
     pw, ph = 960.0, 540.0
     c = rl_canvas.Canvas(path, pagesize=(pw, ph))
-    c.setTitle("Majal — 37 modules, one database")
+    c.setTitle("Majal — the board's question, not the site's")
     cv = Canvas(c, pw, ph)
     cv.raking_light(0, 0, pw, ph, lift=0.16)
 
-    M = 58.0
+    M = 50.0
     x0, x1 = M, pw - M
-    split = x0 + (x1 - x0) * 0.545
+    foot_y = ph - 62
 
-    cv.label(x0, 60, "Majal — construction & facilities ERP", size=7.6,
-             color="accent", track=3.0)
-    cv.hline(x0, 70, x1 - x0, color="rule_dark", lw=0.6)
-
-    lines = ["%s MODULES." % FACTS["modules"], "ONE DATABASE."]
-    size = min(fit(cv, l, DISPLAY, split - x0 - 26, track_ratio=0.010)
-               for l in lines)
-    lead = snap(size * 0.84)
-    y = 70 + snap(size * 0.78)
-    for i, l in enumerate(lines):
-        cv.text(x0, y + i * lead, l, font=DISPLAY, size=size, color="surface",
-                track=size * 0.010)
-    hb = y + lead
-
-    end = cv.para(x0, snap(hb + 40),
-                  "Tender, bill of quantities, programme, drawings, snags, "
-                  "permits, BIM, payment certificates and the facilities work "
-                  "orders that follow handover — all in one Odoo 18 Community "
-                  "database, under an open-source licence you can read.",
-                  font=TEXT, size=10.6, leading=snap(10.6 * 1.62),
-                  color="accent_pale", max_w=split - x0 - 30)
-
-    fy = snap(end + 40)
-    for i, (k, v) in enumerate([
-            ("licence", "%s (two modules AGPL-3)" % FACTS["licence"]),
-            ("deploy", "docker compose, self-hosted"),
-            ("tests", "%s automated tests" % FACTS["tests"]),
-            ("languages", "english + arabic (RTL)")]):
-        row = fy + i * 26
-        cv.label(x0, row, k, size=6.4, color="accent", track=1.8)
-        cv.text(x0 + 78, row, v, font=TEXT, size=9.0, color="muted")
-
-    # --- the accumulation: one tick per module ---------------------------
-    gx = split + 34
+    # The screen sets the right-hand column and the whole composition is hung
+    # off it: text measure is whatever is left, not the other way round.
+    gy = 84.0
+    gx = x0 + 234.0
     gw = x1 - gx
-    cols = 7
-    cell = gw / cols
-    from majal_brand import MODULE_GROUPS
-    flat = [(g, m) for g, mods in MODULE_GROUPS for m in mods]
-    gy = 108.0
-    cv.label(gx, gy - 16, "every module in the suite", size=6.4,
-             color="muted", track=1.8)
-    for i, (grp, (mod, _desc)) in enumerate(flat):
-        r, cc = divmod(i, cols)
-        px = gx + cc * cell
-        py = gy + r * 30
-        cv.rect(px, py, cell - 7, 20, stroke="rule_dark", lw=0.45)
-        cv.rect(px, py, 2.4, 20, fill="accent",
-                alpha=0.30 + 0.14 * (i % 5))
-    n_rows = (len(flat) + cols - 1) // cols
-    ly = gy + n_rows * 30 + 6
-    cv.hline(gx, ly, gw - 7, color="rule_dark", lw=0.5)
-    for i, (grp, mods) in enumerate(MODULE_GROUPS):
-        cv.label(gx, ly + 18 + i * 15, "%s — %d" % (grp, len(mods)),
-                 size=6.6, color="accent_pale", track=1.4, font=MONO)
+    gh = cv.img_h_for_w("exposure", gw)
+    tw = gx - 26 - x0
 
-    footer_dark(cv, x0, ph - 78, x1 - x0,
-                right_note=FACTS["source"])
+    cv.label(x0, 54, "Majal — commercial exposure", size=7.4, color="accent",
+             track=2.6)
+    cv.hline(x0, 64, x1 - x0, color="rule_dark", lw=0.6)
+
+    hb = headline(cv, x0, 64, ["WAITING", "FOR A", "SIGNATURE."], tw, 118.0)
+
+    end = cv.para(x0, snap(hb + 24),
+                  "A dashboard of counts answers how busy you are. This answers "
+                  "what you are exposed to.",
+                  font=TEXT, size=9.6, leading=snap(9.6 * 1.6),
+                  color="accent_pale", max_w=tw)
+
+    fy = snap(end + 26)
+    row = fy
+    for k, v in [
+            ("measures", "contract value, approved variations against it, "
+                         "retention held, certified but not invoiced"),
+            ("ordered by", "how far variations have moved the contract"),
+            ("actionable", "pending approval steps, worst value first")]:
+        cv.label(x0, row, k, size=6.2, color="accent", track=1.7)
+        last = cv.para(x0, row + 13, v, font=TEXT, size=8.4,
+                       leading=snap(8.4 * 1.5), color="muted", max_w=tw)
+        row = snap(last + 20)
+
+    cv.label(gx, gy - 9, "commercial exposure · portfolio view", size=6.2,
+             color="whisper", track=1.6)
+    cv.plate("exposure", gx, gy, w=gw)
+    cv.label(gx, gy + gh + 14,
+             "three live projects · the shipped demo dataset",
+             size=6.0, color="whisper", track=1.5)
+
+    footer_dark(cv, x0, foot_y, x1 - x0,
+                right_note="%s custom modules · one database" % FACTS["modules"])
     c.showPage()
     c.save()
 
 
 # --------------------------------------------------------------------------
-# 6. 1080 x 1080 — My Day / field
+# 6. 1080 x 1350 — My Day / the field
 # --------------------------------------------------------------------------
 
 def poster_my_day(path):
-    pw, ph = 540.0, 540.0
+    pw, ph = 540.0, 675.0
     c = rl_canvas.Canvas(path, pagesize=(pw, ph))
-    c.setTitle("Majal — everything that is yours, on one screen")
+    c.setTitle("Majal — a day that fits on a phone")
     cv = Canvas(c, pw, ph)
     cv.raking_light(0, 0, pw, ph, lift=0.18)
 
     M = 38.0
     x0, x1 = M, pw - M
-    right_w = 168.0
-    split = x1 - right_w - 26
+    colw = x1 - x0
 
-    cv.label(x0, 44, "Majal — My Day", size=7.4, color="accent", track=3.0)
-    cv.hline(x0, 54, x1 - x0, color="rule_dark", lw=0.6)
+    # the phone sits on the right and sets the column for everything else
+    foot_y = ph - 64
+    phone_top = 92.0
+    phone_h = foot_y - 26 - phone_top
+    phone_w = cv.img_w_for_h("defect-mobile", phone_h)
+    phone_x = x1 - phone_w
+    tw = phone_x - 22 - x0
 
-    lines = ["EVERYTHING", "THAT IS", "YOURS."]
-    size = min(fit(cv, l, DISPLAY, split - x0, track_ratio=0.012)
-               for l in lines)
-    lead = snap(size * 0.83)
-    y = 54 + snap(size * 0.80)
-    for i, l in enumerate(lines):
-        cv.text(x0, y + i * lead, l, font=DISPLAY, size=size, color="surface",
-                track=size * 0.012)
-    hb = y + 2 * lead
+    cv.label(x0, 44, "Majal — the field", size=7.4, color="accent", track=3.0)
+    cv.hline(x0, 54, colw, color="rule_dark", lw=0.6)
 
-    end = cv.para(x0, snap(hb + 30),
-                  "Approvals waiting on you, your defects, inspections, tasks, "
-                  "RFIs and permits — on one screen, ordered by how much "
-                  "trouble it causes to ignore them.",
-                  font=TEXT, size=9.8, leading=snap(9.8 * 1.6),
-                  color="accent_pale", max_w=split - x0)
+    hb = headline(cv, x0, 54, ["A DAY", "THAT FITS", "ON A", "PHONE."],
+                  tw, 132.0)
 
-    fy = snap(end + 30)
-    for i, (k, v) in enumerate([
-            ("measured at", "390 × 664 viewport"),
-            ("row height", "64 px — a thumb, in gloves"),
-            ("empty day", "says so, rather than five zeroes")]):
-        row = fy + i * 26
+    end = cv.para(x0, snap(hb + 24),
+                  "Raise a defect where you found it: photo, location, "
+                  "severity, and the subcontractor who has to fix it — "
+                  "on the screen you already have in your hand.",
+                  font=TEXT, size=9.4, leading=snap(9.4 * 1.6),
+                  color="accent_pale", max_w=tw)
+
+    fy = snap(end + 28)
+    row = fy
+    for k, v in [
+            ("measured at", "a real 390 px viewport"),
+            ("my day", "approvals first — somebody else is stopped"),
+            ("then", "defects, inspections, tasks, RFIs, permits"),
+            ("offline", "draft, checklist and scan actions only; "
+                        "approvals and financial posting stay online")]:
         cv.label(x0, row, k, size=6.2, color="accent", track=1.7)
-        cv.text(x0, row + 12, v, font=TEXT, size=8.8, color="muted")
+        last = cv.para(x0, row + 13, v, font=TEXT, size=8.4,
+                       leading=snap(8.4 * 1.5), color="muted", max_w=tw)
+        row = snap(last + 20)
 
-    # phone-proportioned slot, 390 x 664 aspect
-    slot_x = split + 26
-    slot_h = ph - 108 - 84
-    slot_w = slot_h * 390.0 / 664.0
-    if slot_w > right_w:
-        slot_w = right_w
-        slot_h = slot_w * 664.0 / 390.0
-    cv.screenshot_slot(x1 - slot_w, 82, slot_w, slot_h, "S-01",
-                       "My Day on a phone, top of list",
-                       on_dark=True, target="1170 × 1992 px")
+    cv.plate("defect-mobile", phone_x, phone_top, h=phone_h)
+    cv.label(phone_x, phone_top - 9, "raising a defect · 390 px", size=6.2,
+             color="whisper", track=1.5)
 
-    footer_dark(cv, x0, ph - 66, x1 - x0,
+    footer_dark(cv, x0, foot_y, colw,
                 right_note="installable to the home screen")
     c.showPage()
     c.save()
@@ -559,12 +586,12 @@ def build():
     os.makedirs(OUT, exist_ok=True)
     made = []
 
-    # A3, screen-RGB (rasterised to PNG) and print-CMYK with bleed + marks
+    # A3, screen-RGB (rasterised to a 300 dpi PNG) and print-CMYK with bleed
     for rtl, tag in ((False, "en"), (True, "ar")):
         base = "majal-poster-a3-tender-to-handover-%s" % tag
         rgb = os.path.join(OUT, base + ".rgb.pdf")
         poster_a3(rgb, rtl=rtl, print_mode=False, bleed_mm=0)
-        pr = os.path.join(OUT, base + "-print.pdf")
+        pr = os.path.join(OUT, base + "-print-cmyk-3mm-bleed.pdf")
         poster_a3(pr, rtl=rtl, print_mode=True, bleed_mm=3)
         made.append((rgb, base + ".png", 300.0 / 72.0))
         made.append((pr, None, None))
@@ -572,8 +599,8 @@ def build():
     screen = [
         (poster_bim, "majal-social-1080x1350-bim", 2.0),
         (poster_approvals, "majal-social-1080x1350-approvals", 2.0),
-        (banner_open_source, "majal-banner-1920x1080-open-source", 2.0),
-        (poster_my_day, "majal-social-1080x1080-my-day", 2.0),
+        (banner_exposure, "majal-banner-1920x1080-exposure", 2.0),
+        (poster_my_day, "majal-social-1080x1350-my-day", 2.0),
     ]
     for fn, name, zoom in screen:
         p = os.path.join(OUT, name + ".rgb.pdf")

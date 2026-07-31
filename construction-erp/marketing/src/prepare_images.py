@@ -40,9 +40,9 @@ CROPS = {
     "boq": ("shot-boq.png", (0, 0, 2880, 500)),
     # BIM: the 3D canvas plus the class legend, identical box in all three so
     # the before/after pair is genuinely comparable.
-    "bim-original": ("shot-bim-original.png", (240, 300, 1000, 890)),
-    "bim-viewer": ("shot-bim-viewer.png", (240, 300, 1000, 890)),
-    "bim-legend": ("shot-bim-legend.png", (240, 300, 1000, 890)),
+    "bim-original": ("shot-bim-original.png", (330, 320, 800, 800)),
+    "bim-viewer": ("shot-bim-viewer.png", (330, 320, 800, 800)),
+    "bim-legend": ("shot-bim-legend.png", (330, 320, 800, 800)),
     # BIM viewer with its own chrome — toolbar, mode control, side panel.
     "bim-full": ("shot-bim-viewer.png", (0, 45, 1440, 900)),
     # Arabic RTL, full frame down to the end of the by-project table.

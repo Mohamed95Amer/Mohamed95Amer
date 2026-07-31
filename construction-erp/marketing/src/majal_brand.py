@@ -43,6 +43,7 @@ HEX.update({
     "rule_light": "#d5dcdf",    # hairlines on paper
     "accent_pale": "#e6d3ae",   # gold at low emphasis on dark grounds only
     "ink_soft": "#4d616c",      # secondary reading tone on paper
+    "whisper": "#4a6a78",       # the quietest legible mark on the dark ground
 })
 
 
@@ -70,6 +71,7 @@ CMYK = {
     "ink_soft":     (0.62, 0.40, 0.34, 0.22),
     "rule_dark":    (0.78, 0.50, 0.38, 0.30),
     "rule_light":   (0.10, 0.05, 0.06, 0.02),
+    "whisper":      (0.68, 0.42, 0.34, 0.22),
 }
 
 
@@ -140,11 +142,6 @@ def register_fonts():
 import arabic_reshaper  # noqa: E402
 from bidi.algorithm import get_display  # noqa: E402
 
-_reshaper = arabic_reshaper.ArabicReshaper(
-    arabic_reshaper.config_for_string("")
-)
-
-
 def ar(text):
     """Arabic logical string -> shaped, visually ordered string."""
     return get_display(arabic_reshaper.reshape(text))
@@ -175,6 +172,34 @@ class Canvas:
         self.h = height
         self.unit = unit
         self.pal = Palette(print_mode)
+        # Every mark this canvas makes is recorded, so a layout can be checked
+        # against its own safe area instead of being checked by eye. The class
+        # of bug this catches — a block that grew past the footer — is the one
+        # that ruins an otherwise finished page.
+        self.ink = []
+
+    def _seen(self, x, y, w=0.0, h=0.0, what=""):
+        self.ink.append((x, y, x + w, y + h, what))
+
+    def bounds(self):
+        if not self.ink:
+            return None
+        return (min(i[0] for i in self.ink), min(i[1] for i in self.ink),
+                max(i[2] for i in self.ink), max(i[3] for i in self.ink))
+
+    def overflows(self, x0, y0, x1, y1, tol=0.75, kinds=("text:", "image:")):
+        """Marks that stray outside the safe area, worst first. Grounds and
+        full-bleed fields are excluded by default — they are meant to run off
+        the edge; type and screenshots are not."""
+        out = []
+        for ax, ay, bx, by, what in self.ink:
+            if kinds and not what.startswith(kinds):
+                continue
+            d = max(x0 - ax, ay and (y0 - ay) or 0, bx - x1, by - y1)
+            if d > tol:
+                out.append((round(d, 1), what, round(ax), round(ay),
+                            round(bx), round(by)))
+        return sorted(out, reverse=True)
 
     # -- coordinate helpers -------------------------------------------------
     def y(self, top_y):
@@ -191,6 +216,7 @@ class Canvas:
             c.setLineWidth(lw)
         c.rect(x, self.y(y + h), w, h, fill=1 if fill else 0, stroke=1 if stroke else 0)
         c.restoreState()
+        self._seen(x, y, w, h, "rect")
 
     def raking_light(self, x, y, w, h, base="nav", steps=44, lift=0.16):
         """A single slow rake of light across the ground, as if it fell once
@@ -312,17 +338,23 @@ class Canvas:
         """Draw a single line. `y` is the BASELINE, measured from the top."""
         c = self.c
         c.saveState()
-        c.setFillColor(self.pal(color, alpha) if isinstance(color, str) else color)
-        c.setFont(font, size)
-        if track:
-            c.setCharSpace(track)
+        col = self.pal(color, alpha) if isinstance(color, str) else color
         w = pdfmetrics.stringWidth(s, font, size) + track * max(0, len(s) - 1)
         if align == "right":
             x -= w
         elif align == "center":
             x -= w / 2
-        c.drawString(x, self.y(y), s)
+        t = c.beginText()
+        t.setTextOrigin(x, self.y(y))
+        t.setFont(font, size)
+        t.setFillColor(col)
+        if track:
+            t.setCharSpace(track)
+        t.textOut(s)
+        c.drawText(t)
         c.restoreState()
+        # a line of type occupies from roughly its ascender to its descender
+        self._seen(x, y - size * 0.78, w, size * 1.02, "text:" + s[:34])
         return w
 
     def width(self, s, font=TEXT, size=9, track=0.0):
@@ -423,6 +455,7 @@ class Canvas:
         self.c.drawImage(os.path.join(IMG_DIR, name + ".png"),
                          x, self.y(y + h), width=w, height=h,
                          preserveAspectRatio=True, anchor="nw", mask=None)
+        self._seen(x, y, w, h, "image:" + name)
         return w, h
 
     def plate(self, name, x, y, w=None, h=None, edge="rule_dark", ticks=True,
