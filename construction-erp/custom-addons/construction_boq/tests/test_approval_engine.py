@@ -1,4 +1,7 @@
-from odoo.exceptions import UserError, ValidationError
+from datetime import timedelta
+
+from odoo import fields
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -375,3 +378,157 @@ class TestApprovalInbox(ApprovalCase):
 
         self.assertEqual(first_request.state, "approved")
         self.assertEqual(second_request.state, "approved")
+
+
+@tagged("post_install", "-at_install")
+class TestApprovalCannotBeRoutedAround(ApprovalCase):
+    """The engine is only worth having if the ordinary ways past it are shut.
+
+    Each of these was open. The entitlement check existed and was correct; it
+    simply was not the only road to the outcome.
+    """
+
+    def test_a_user_cannot_sign_a_step_by_writing_to_it(self):
+        """The bypass: `_can_be_signed_by` guards `_decide`, and `_decide` was
+        one of two ways to set the state. The other was a plain write, which
+        every construction user held the rights for."""
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+        step = request.step_ids[0]
+
+        with self.assertRaises(AccessError):
+            step.with_user(self.engineer).write({"state": "approved"})
+
+        self.assertEqual(step.state, "pending")
+        self.assertEqual(request.state, "pending")
+
+    def test_a_user_cannot_approve_the_whole_request_by_writing_to_it(self):
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+
+        with self.assertRaises(AccessError):
+            request.with_user(self.engineer).write({"state": "approved"})
+
+        self.assertEqual(request.state, "pending")
+
+    def test_signing_through_the_proper_door_still_works(self):
+        """The point of removing the write access is that nothing legitimate
+        needed it — the decision path elevates itself after the check."""
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+
+        request.step_ids.with_user(self.pm).action_approve()
+
+        self.assertEqual(request.state, "approved")
+        self.assertEqual(request.step_ids[0].decided_by_id, self.pm)
+
+    def test_a_user_cannot_lend_themselves_somebody_elses_authority(self):
+        """A delegation naming somebody else as the approver and yourself as
+        the delegate is a way to take their signature, not to cover for them."""
+        with self.assertRaises(ValidationError):
+            self.env["construction.approval.delegation"].with_user(
+                self.engineer).create({
+                    "user_id": self.pm.id,
+                    "delegate_id": self.engineer.id,
+                    "date_from": "2020-01-01",
+                    "date_to": "2099-01-01",
+                })
+
+    def test_handing_over_your_own_approvals_is_still_allowed(self):
+        delegation = self.env["construction.approval.delegation"].with_user(
+            self.pm).create({
+                "user_id": self.pm.id,
+                "delegate_id": self.engineer.id,
+                "date_from": "2020-01-01",
+                "date_to": "2099-01-01",
+            })
+        self.assertTrue(delegation)
+
+    def test_only_the_requester_or_a_manager_can_withdraw(self):
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+
+        with self.assertRaises(UserError):
+            request.with_user(self.engineer).action_cancel()
+
+        request.with_user(self.qs).action_cancel()
+        self.assertEqual(request.state, "cancelled")
+
+
+@tagged("post_install", "-at_install")
+class TestApprovalGoesStale(ApprovalCase):
+    """An approval is of a document at a value, not of a document for ever."""
+
+    def setUp(self):
+        super().setUp()
+        self._rule([("Project manager", "construction_base.group_construction_pm")],
+                   amount_from=0, amount_to=50000, name="Small")
+        self._rule([("Project manager", "construction_base.group_construction_pm"),
+                    ("Board", "construction_base.group_construction_manager")],
+                   amount_from=50000, amount_to=0, name="Large")
+        self.line = self.env["construction.boq.line"].create({
+            "name": "Works", "boq_id": self.boq.id,
+            "quantity": 1.0, "unit_rate": 10000.0,
+        })
+
+    def test_editing_past_the_threshold_after_approval_needs_approving_again(self):
+        """The cheapest way past a two-signature threshold was to get a small
+        version signed and then edit it upward."""
+        request = self.boq.with_user(self.qs).action_request_approval()
+        request.step_ids.with_user(self.pm).action_approve()
+        self.assertEqual(self.boq.state, "approved")
+
+        self.boq.state = "draft"
+        self.line.unit_rate = 400000.0
+
+        with self.assertRaises(UserError):
+            self.boq.with_user(self.pm).action_approve()
+
+    def test_an_edit_inside_the_same_band_does_not_reopen_it(self):
+        """Sending a document round again for a rounding change is how people
+        learn to route around the engine."""
+        request = self.boq.with_user(self.qs).action_request_approval()
+        request.step_ids.with_user(self.pm).action_approve()
+
+        self.boq.state = "draft"
+        self.line.unit_rate = 11000.0
+
+        self.boq.with_user(self.pm).action_approve()
+        self.assertEqual(self.boq.state, "approved")
+
+
+@tagged("post_install", "-at_install")
+class TestWaitingDays(ApprovalCase):
+    """It was stored, depended on nothing that changes, and so was always 0."""
+
+    def test_a_step_outstanding_for_a_fortnight_says_so(self):
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+        # Backdating is arranging the fixture, not exercising the engine — and
+        # a requester no longer holds write on their own request, which is the
+        # point of the change above.
+        request.sudo().requested_on = fields.Datetime.now() - timedelta(days=14)
+        request.step_ids.invalidate_recordset()
+
+        self.assertEqual(request.step_ids[0].waiting_days, 14)
+
+    def test_the_over_a_week_filter_finds_it(self):
+        """The filter is a domain on a field with no column, so it only works
+        if the search method translates it back to a date."""
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+        request.sudo().requested_on = fields.Datetime.now() - timedelta(days=14)
+
+        found = self.env["construction.approval.step"].search(
+            [("waiting_days", ">", 7)])
+
+        self.assertIn(request.step_ids[0], found)
+
+    def test_a_fresh_step_is_not_caught_by_it(self):
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+
+        found = self.env["construction.approval.step"].search(
+            [("waiting_days", ">", 7)])
+
+        self.assertNotIn(request.step_ids[0], found)

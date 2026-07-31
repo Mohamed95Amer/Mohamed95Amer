@@ -190,7 +190,21 @@ class ConstructionApprovable(models.AbstractModel):
             latest = self.env["construction.approval.request"].sudo().search([
                 ("res_model", "=", record._name), ("res_id", "=", record.id),
                 ("state", "=", "approved"),
-            ], limit=1)
+            ], order="decided_on desc, id desc", limit=1)
+            # An approval is of a document at a value, not of a document
+            # forever. Without this, the cheapest way past a three-signature
+            # threshold is to get a small version approved and then edit it:
+            # the historical request still says "approved", and the chain that
+            # a quarter-million variation is supposed to climb never runs.
+            if latest and not latest._still_covers(record):
+                raise UserError(self.env._(
+                    "%(document)s changed after it was approved — it was "
+                    "cleared at %(approved)s and now stands at %(current)s, "
+                    "so %(rule)s applies again.",
+                    document=record.display_name,
+                    approved=latest.amount,
+                    current=record._approval_amount(),
+                    rule=rule.name))
             if not latest:
                 # A permit and a bill both arrive here, and only one of them
                 # has a value. Saying "applies at this value" about a permit
