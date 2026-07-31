@@ -91,7 +91,14 @@ class ResUsers(models.Model):
         protected = {"groups_id", "majal_role_id", "majal_industry_scope"} & set(vals)
         if (
             protected
-            and not self.env.context.get("majal_role_application")
+            # Elevation, not a context key. This guard used to stand down when
+            # `majal_role_application` was in the context — and context is
+            # supplied by the caller, so a User Administrator could set it over
+            # RPC and write groups_id directly, which is the exact thing the
+            # guard exists to stop. `env.su` cannot be asked for from outside:
+            # it is only true when server-side code has called sudo(), which is
+            # what _majal_apply_role does on the sanctioned path.
+            and not self.env.su
             and self.env.user.has_group(
                 "majal_administration.group_user_administrator"
             )
@@ -128,6 +135,17 @@ class ResUsers(models.Model):
             )
         if target and (
             target.has_group("majal_administration.group_platform_owner")
+            # A technical administrator outranks every Majal role, and until
+            # now outranked none of them: an account holding base.group_system
+            # with no majal_role_id passed both tests below — the first because
+            # it is not a platform owner, the second because it has no role to
+            # compare. A Company Administrator could then apply a role to it,
+            # and _majal_apply_role strips base.group_system and
+            # base.group_erp_manager on the way through. That is a demotion of
+            # the person who administers the system, performed by somebody who
+            # is not allowed to administer them.
+            or target.has_group("base.group_system")
+            or target.has_group("base.group_erp_manager")
             or (
                 target.majal_role_id
                 and target.majal_role_id.rank >= actor_role.rank
@@ -175,7 +193,8 @@ class ResUsers(models.Model):
         current_ids = set(self.groups_id.ids)
         desired_ids = self._majal_group_ids_for(role, scope)
         new_ids = (current_ids - managed_ids) | desired_ids
-        self.sudo().with_context(majal_role_application=True).write(
+        # sudo() is what tells write() this is the sanctioned path.
+        self.sudo().write(
             {
                 "majal_role_id": role.id,
                 "majal_industry_scope": scope,

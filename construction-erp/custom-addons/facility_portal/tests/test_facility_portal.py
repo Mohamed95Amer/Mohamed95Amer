@@ -70,3 +70,32 @@ class TestFacilityPortal(TransactionCase):
         """Opt in, not opt out: a new asset must not leak the moment it exists."""
         fresh = self.env["maintenance.equipment"].create({"name": "New pump"})
         self.assertFalse(fresh.portal_selectable)
+
+    def test_an_occupant_cannot_read_the_asset_register(self):
+        """The portal never needed this, and it was handing over the lot.
+
+        Every route that shows equipment does so through sudo() and filters on
+        portal_selectable, so the read grant on maintenance.equipment was doing
+        no work for the portal — it was only reachable by a portal user calling
+        the ORM directly. What it exposed was the whole asset register: every
+        location, every purchase value, and tag_token, which is the secret in
+        the QR sticker's URL. Anyone able to read the token can forge the
+        scan link for an asset they have never stood in front of.
+        """
+        asset = self.env["maintenance.equipment"].create(
+            {"name": "Chiller 3", "portal_selectable": True})
+
+        with self.assertRaises(AccessError):
+            self.env["maintenance.equipment"].with_user(
+                self.user_a).browse(asset.id).read(["name"])
+
+    def test_the_portal_can_still_offer_equipment_to_raise_a_request_against(self):
+        """Removing the grant must not break the one place it appeared to be
+        used: the new-request form, which sudo()s on purpose."""
+        asset = self.env["maintenance.equipment"].create(
+            {"name": "Chiller 4", "portal_selectable": True})
+
+        offered = self.env["maintenance.equipment"].sudo().search(
+            [("portal_selectable", "=", True)])
+
+        self.assertIn(asset, offered)

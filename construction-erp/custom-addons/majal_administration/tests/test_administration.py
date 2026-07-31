@@ -69,6 +69,71 @@ class TestMajalAdministration(TransactionCase):
                 }
             )
 
+    def test_context_flag_does_not_unlock_raw_groups(self):
+        # The guard used to stand down whenever `majal_role_application` was in
+        # the context, and context travels with the RPC call — so whoever was
+        # being guarded could simply ask for the exemption.
+        #
+        # It takes a technical administrator to reach the hole: group_user_
+        # administrator implies only base.group_user, so an ordinary Company
+        # Administrator is stopped by Odoo's own res.users ACL long before this
+        # guard is consulted. Give the actor base.group_erp_manager and the ACL
+        # steps aside, leaving this guard as the only thing between a Majal
+        # user administrator and a raw groups_id write.
+        administrator = self.users.create(
+            {
+                "name": "Delegated User Administrator",
+                "login": "delegated-user-admin@majal.local",
+                "company_id": self.env.company.id,
+                "company_ids": [(6, 0, [self.env.company.id])],
+                "groups_id": [
+                    (
+                        4,
+                        self.env.ref(
+                            "majal_administration.group_user_administrator"
+                        ).id,
+                    ),
+                    (4, self.env.ref("base.group_erp_manager").id),
+                ],
+            }
+        )
+        self.assertFalse(
+            administrator.has_group(
+                "majal_administration.group_platform_owner"
+            )
+        )
+        with self.assertRaises(AccessError):
+            self.field_user.with_user(administrator).with_context(
+                majal_role_application=True
+            ).write(
+                {"groups_id": [(4, self.env.ref("base.group_system").id)]}
+            )
+        self.assertFalse(self.field_user.has_group("base.group_system"))
+
+    def test_company_admin_cannot_touch_technical_administrator(self):
+        # No majal_role_id, so the rank comparison has nothing to compare, and
+        # not a platform owner either: this account used to pass both target
+        # guards. Applying a role to it strips base.group_system on the way
+        # through, which demotes the person who administers the system.
+        technical = self.users.create(
+            {
+                "name": "Technical Administrator",
+                "login": "technical-admin@majal.local",
+                "company_id": self.env.company.id,
+                "company_ids": [(6, 0, [self.env.company.id])],
+                "groups_id": [
+                    (4, self.env.ref("base.group_user").id),
+                    (4, self.env.ref("base.group_system").id),
+                ],
+            }
+        )
+        self.assertFalse(technical.majal_role_id)
+        with self.assertRaises(AccessError):
+            technical.with_user(self.company_admin)._majal_apply_role(
+                self.field_role, "construction"
+            )
+        self.assertTrue(technical.has_group("base.group_system"))
+
     def test_owner_demotion_removes_technical_administration(self):
         promoted = self.users.create(
             {
