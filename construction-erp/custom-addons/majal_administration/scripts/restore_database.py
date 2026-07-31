@@ -37,6 +37,28 @@ def fail(message):
     raise SystemExit(1)
 
 
+def rollback_filestore(filestore, safety_filestore, moved_filestore):
+    """Put the original filestore back, or leave it strictly alone.
+
+    The whole rollback turns on `moved_filestore`. If it is True the original
+    was renamed aside and whatever sits at `filestore` is the half-restored
+    copy, which is disposable. If it is False the restore failed before the
+    rename — so `filestore` still holds the *only* copy of every attachment in
+    the system, and deleting it destroys them with no way back.
+
+    Deleting first and restoring second is what made that possible: the delete
+    was unconditional and the restore was not. Both are conditional now.
+    """
+    if not moved_filestore:
+        return False
+    if os.path.isdir(filestore):
+        shutil.rmtree(filestore)
+    if os.path.isdir(safety_filestore):
+        os.replace(safety_filestore, filestore)
+        return True
+    return False
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with open(path, "rb") as stream:
@@ -226,10 +248,7 @@ def main():
                         "ALTER DATABASE %s RENAME TO %s;"
                         % (safety_ident, database_ident),
                     )
-                if os.path.isdir(filestore):
-                    shutil.rmtree(filestore)
-                if moved_filestore and os.path.isdir(safety_filestore):
-                    os.replace(safety_filestore, filestore)
+                rollback_filestore(filestore, safety_filestore, moved_filestore)
             except Exception as rollback_error:
                 fail(
                     "Restore and automatic rollback both failed. Restore error: %s; "
