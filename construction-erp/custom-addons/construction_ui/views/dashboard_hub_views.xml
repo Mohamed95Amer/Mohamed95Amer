@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_majal_dashboard_hub" model="ir.actions.client">
+        <field name="name">Management Dashboards</field>
+        <field name="tag">construction_ui.dashboard_hub</field>
+    </record>
+
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_dashboard" model="ir.ui.menu">
+        <field name="name">Analytical Workbooks</field>
+    </record>
+</odoo>

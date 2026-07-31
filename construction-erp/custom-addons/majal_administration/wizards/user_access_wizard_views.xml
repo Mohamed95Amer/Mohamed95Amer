@@ -11,9 +11,19 @@
                 </div>
                 <group>
                     <field name="user_id"/>
+                    <field name="assignable_role_ids" invisible="1"/>
+                    <field name="assignable_capability_pack_ids" invisible="1"/>
                     <field name="role_id"/>
                     <field name="industry_scope"/>
+                    <field name="capability_pack_ids"
+                           widget="many2many_tags"
+                           options="{'no_create': True, 'no_edit': True}"/>
                 </group>
+                <div class="alert alert-info" role="alert">
+                    Capability packs are optional and audited. Select only one
+                    tier per business area. High-risk packs require Platform
+                    Owner approval.
+                </div>
                 <footer>
                     <button name="action_apply" type="object"
                             string="Apply Access" class="btn-primary"/>

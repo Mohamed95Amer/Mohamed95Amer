@@ -58,13 +58,18 @@ class TestMajalBranding(TransactionCase):
 @tagged("post_install", "-at_install")
 class TestMajalPublicRoutes(HttpCase):
     def test_database_selector_recovers_to_majal_login(self):
-        response = self.url_open("/web/database/selector", timeout=15)
+        response = self.url_open(
+            "/web/database/selector",
+            timeout=15,
+            allow_redirects=False,
+        )
 
-        self.assertIn("/web/login", response.url)
-        # The live database name, not a developer's: the test database is
-        # generated per run, so "erp" only ever passed by coincidence.
-        self.assertIn(f"db={self.env.cr.dbname}", response.url)
-        self.assertNotIn("/web/database/selector", response.url)
+        self.assertEqual(response.status_code, 303)
+        location = response.headers["Location"]
+        self.assertIn("/web/login", location)
+        db_name = self.env.cr.dbname
+        self.assertIn(f"db={db_name}", location)
+        self.assertNotIn("/web/database/selector", location)
 
     def test_manifest_offers_a_maskable_icon_that_survives_the_crop(self):
         manifest = self.url_open(

@@ -1,7 +1,11 @@
+import importlib.util
+import tempfile
 from contextlib import contextmanager
+from pathlib import Path
 from unittest.mock import patch
 
 import odoo
+
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase
 
@@ -30,6 +34,15 @@ class _BorrowingRegistry:
     def cursor(self):
         self.requests += 1
         return _borrowed(self._cursor)
+_RESTORE_SCRIPT_PATH = (
+    Path(__file__).resolve().parents[1] / "scripts" / "restore_database.py"
+)
+_RESTORE_SCRIPT_SPEC = importlib.util.spec_from_file_location(
+    "majal_restore_database_script",
+    _RESTORE_SCRIPT_PATH,
+)
+_RESTORE_SCRIPT = importlib.util.module_from_spec(_RESTORE_SCRIPT_SPEC)
+_RESTORE_SCRIPT_SPEC.loader.exec_module(_RESTORE_SCRIPT)
 
 
 class TestMajalAdministration(TransactionCase):
@@ -43,6 +56,10 @@ class TestMajalAdministration(TransactionCase):
             "majal_administration.role_company_admin"
         )
         cls.field_role = cls.env.ref("majal_administration.role_field_user")
+        cls.manager_role = cls.env.ref("majal_administration.role_manager")
+        cls.operations_role = cls.env.ref(
+            "majal_administration.role_operations_manager"
+        )
         cls.users = cls.env["res.users"].with_context(no_reset_password=True)
 
         cls.company_admin = cls.users.create(
@@ -85,6 +102,46 @@ class TestMajalAdministration(TransactionCase):
             self.field_user.with_user(self.company_admin)._majal_apply_role(
                 self.owner_role, "both"
             )
+
+    def test_company_admin_wizard_hides_ungrantable_choices(self):
+        wizard = self.env["majal.user.invite.wizard"].with_user(
+            self.company_admin
+        ).new({"role_id": self.field_role.id})
+        role_ids = set(wizard.assignable_role_ids._origin.ids)
+        capability_ids = set(
+            wizard.assignable_capability_pack_ids._origin.ids
+        )
+        self.assertIn(self.field_role.id, role_ids)
+        self.assertNotIn(self.admin_role.id, role_ids)
+        self.assertNotIn(self.owner_role.id, role_ids)
+        self.assertIn(
+            self.env.ref(
+                "majal_administration.capability_procurement_user"
+            ).id,
+            capability_ids,
+        )
+        self.assertNotIn(
+            self.env.ref(
+                "majal_administration.capability_finance_manager"
+            ).id,
+            capability_ids,
+        )
+
+    def test_platform_owner_wizard_can_offer_owner_approved_tier(self):
+        wizard = self.env["majal.user.invite.wizard"].new(
+            {"role_id": self.operations_role.id}
+        )
+        role_ids = set(wizard.assignable_role_ids._origin.ids)
+        capability_ids = set(
+            wizard.assignable_capability_pack_ids._origin.ids
+        )
+        self.assertIn(self.owner_role.id, role_ids)
+        self.assertIn(
+            self.env.ref(
+                "majal_administration.capability_finance_manager"
+            ).id,
+            capability_ids,
+        )
 
     def test_company_admin_cannot_write_raw_groups(self):
         with self.assertRaises(AccessError):
@@ -228,9 +285,300 @@ class TestMajalAdministration(TransactionCase):
 
         parameter.set_param("majal.backup_dump_timeout_s", "soon")
         self.assertEqual(snapshots._dump_timeout(), 3600)
+    def test_role_change_strips_unapproved_legacy_groups(self):
+        purchase_manager = self.env.ref("purchase.group_purchase_manager")
+        self.field_user.sudo().write(
+            {"groups_id": [(4, purchase_manager.id)]}
+        )
+        self.assertTrue(purchase_manager in self.field_user.groups_id)
+        self.field_user._majal_apply_role(self.field_role, "construction")
+        self.assertFalse(purchase_manager in self.field_user.groups_id)
+
+    def test_company_admin_cannot_manage_another_company(self):
+        other_company = self.env["res.company"].create({"name": "Other Tenant"})
+        outsider = self.users.sudo().create(
+            {
+                "name": "Other Tenant User",
+                "login": "other-tenant-user@majal.local",
+                "company_id": other_company.id,
+                "company_ids": [(6, 0, [other_company.id])],
+            }
+        )
+        with self.assertRaises(AccessError):
+            outsider.with_user(self.company_admin)._majal_apply_role(
+                self.field_role, "construction"
+            )
 
     def test_backup_path_cannot_escape_data_volume(self):
         parameter = self.env["ir.config_parameter"].sudo()
         parameter.set_param("majal.backup_root", "/tmp/outside-majal-data")
         with self.assertRaises(ValidationError):
             self.env["majal.backup.snapshot"]._backup_root()
+
+    def test_restore_scalar_ignores_client_locale_warnings(self):
+        output = (
+            b"perl: warning: Setting locale failed.\n"
+            b"perl: warning: Falling back to the standard locale.\n"
+            b"prepared|token-hash|1785312000\n"
+        )
+        self.assertEqual(
+            _RESTORE_SCRIPT.scalar_output(output),
+            "prepared|token-hash|1785312000",
+        )
+
+    def test_restore_dump_removes_only_transaction_timeout(self):
+        source = (
+            b"SET statement_timeout = 0;\n"
+            b"SET transaction_timeout = 0;\n"
+            b"SET lock_timeout = 0;\n"
+            b"CREATE TABLE recovery_test (id integer);\n"
+        )
+        with tempfile.TemporaryDirectory(prefix="majal-restore-test-") as work:
+            source_path = Path(work) / "dump.sql"
+            destination_path = Path(work) / "dump-compatible.sql"
+            source_path.write_bytes(source)
+            _RESTORE_SCRIPT.prepare_compatible_dump(
+                source_path,
+                destination_path,
+            )
+            self.assertEqual(
+                destination_path.read_bytes(),
+                (
+                    b"SET statement_timeout = 0;\n"
+                    b"SET lock_timeout = 0;\n"
+                    b"CREATE TABLE recovery_test (id integer);\n"
+                ),
+            )
+
+    def test_company_admin_assigns_and_removes_user_capability_pack(self):
+        procurement = self.env.ref(
+            "majal_administration.capability_procurement_user"
+        )
+        self.field_user.with_user(self.company_admin)._majal_apply_role(
+            self.field_role,
+            "construction",
+            procurement,
+        )
+        self.assertEqual(
+            self.field_user.majal_capability_pack_ids,
+            procurement,
+        )
+        self.assertTrue(
+            self.field_user.has_group("purchase.group_purchase_user")
+        )
+        self.assertFalse(
+            self.field_user.has_group("purchase.group_purchase_manager")
+        )
+        self.assertFalse(self.field_user.has_group("stock.group_stock_user"))
+
+        self.field_user.with_user(self.company_admin)._majal_apply_role(
+            self.field_role,
+            "construction",
+            self.env["majal.capability.pack"],
+        )
+        self.assertFalse(self.field_user.majal_capability_pack_ids)
+        self.assertFalse(
+            self.field_user.has_group("purchase.group_purchase_user")
+        )
+
+    def test_all_catalogued_capability_tiers_map_to_expected_groups(self):
+        supervisor_role = self.env.ref(
+            "majal_administration.role_supervisor"
+        )
+        cases = [
+            (
+                "capability_procurement_user",
+                self.field_role,
+                "purchase.group_purchase_user",
+            ),
+            (
+                "capability_procurement_manager",
+                self.manager_role,
+                "purchase.group_purchase_manager",
+            ),
+            (
+                "capability_inventory_user",
+                self.field_role,
+                "stock.group_stock_user",
+            ),
+            (
+                "capability_inventory_manager",
+                self.manager_role,
+                "stock.group_stock_manager",
+            ),
+            (
+                "capability_finance_readonly",
+                supervisor_role,
+                "account.group_account_readonly",
+            ),
+            (
+                "capability_finance_accountant",
+                self.manager_role,
+                "account.group_account_user",
+            ),
+            (
+                "capability_finance_manager",
+                self.operations_role,
+                "account.group_account_manager",
+            ),
+            (
+                "capability_hr_officer",
+                self.manager_role,
+                "hr.group_hr_user",
+            ),
+            (
+                "capability_hr_manager",
+                self.operations_role,
+                "hr.group_hr_manager",
+            ),
+            (
+                "capability_website_editor",
+                self.manager_role,
+                "website.group_website_restricted_editor",
+            ),
+            (
+                "capability_website_designer",
+                self.operations_role,
+                "website.group_website_designer",
+            ),
+            (
+                "capability_ai_administrator",
+                self.manager_role,
+                "majal_ai.group_ai_manager",
+            ),
+        ]
+        self.assertEqual(
+            self.env["majal.capability.pack"].search_count([]),
+            len(cases),
+        )
+        for external_id, role, expected_group in cases:
+            with self.subTest(capability=external_id):
+                pack = self.env.ref(
+                    "majal_administration.%s" % external_id
+                )
+                self.field_user._majal_apply_role(
+                    role,
+                    "both",
+                    pack,
+                )
+                self.assertEqual(
+                    self.field_user.majal_capability_pack_ids,
+                    pack,
+                )
+                self.assertTrue(
+                    self.field_user.has_group(expected_group),
+                    "%s did not grant %s" % (external_id, expected_group),
+                )
+                unrelated_groups = (
+                    self.env["majal.capability.pack"]
+                    .search([("family", "!=", pack.family)])
+                    .mapped("group_ids")
+                )
+                self.assertFalse(
+                    unrelated_groups & self.field_user.groups_id,
+                    "%s leaked an unrelated capability group"
+                    % external_id,
+                )
+
+    def test_capability_family_allows_only_one_tier(self):
+        procurement_user = self.env.ref(
+            "majal_administration.capability_procurement_user"
+        )
+        procurement_manager = self.env.ref(
+            "majal_administration.capability_procurement_manager"
+        )
+        with self.assertRaises(ValidationError):
+            self.field_user._majal_apply_role(
+                self.manager_role,
+                "construction",
+                procurement_user | procurement_manager,
+            )
+
+    def test_capability_enforces_minimum_majal_role(self):
+        procurement_manager = self.env.ref(
+            "majal_administration.capability_procurement_manager"
+        )
+        with self.assertRaises(ValidationError):
+            self.field_user._majal_apply_role(
+                self.field_role,
+                "construction",
+                procurement_manager,
+            )
+
+    def test_company_admin_cannot_grant_owner_only_capability(self):
+        finance_manager = self.env.ref(
+            "majal_administration.capability_finance_manager"
+        )
+        with self.assertRaises(AccessError):
+            self.field_user.with_user(self.company_admin)._majal_apply_role(
+                self.operations_role,
+                "both",
+                finance_manager,
+            )
+
+    def test_platform_owner_can_grant_finance_administration(self):
+        finance_manager = self.env.ref(
+            "majal_administration.capability_finance_manager"
+        )
+        self.field_user._majal_apply_role(
+            self.operations_role,
+            "both",
+            finance_manager,
+        )
+        self.assertTrue(
+            self.field_user.has_group("account.group_account_user")
+        )
+        self.assertTrue(
+            self.field_user.has_group("account.group_account_manager")
+        )
+
+    def test_hr_pack_does_not_grant_facilities_administration(self):
+        hr_officer = self.env.ref(
+            "majal_administration.capability_hr_officer"
+        )
+        self.field_user.with_user(self.company_admin)._majal_apply_role(
+            self.manager_role,
+            "construction",
+            hr_officer,
+        )
+        self.assertTrue(self.field_user.has_group("hr.group_hr_user"))
+        self.assertFalse(
+            self.field_user.has_group("maintenance.group_equipment_manager")
+        )
+        self.assertFalse(
+            self.field_user.has_group(
+                "majal_administration.group_facilities_manager"
+            )
+        )
+
+    def test_raw_capability_pack_write_is_protected(self):
+        inventory = self.env.ref(
+            "majal_administration.capability_inventory_user"
+        )
+        with self.assertRaises(AccessError):
+            self.field_user.with_user(self.company_admin).write({
+                "majal_capability_pack_ids": [(4, inventory.id)],
+            })
+
+    def test_invite_wizard_applies_selected_capability_pack(self):
+        inventory = self.env.ref(
+            "majal_administration.capability_inventory_user"
+        )
+        wizard = self.env["majal.user.invite.wizard"].with_user(
+            self.company_admin
+        ).create({
+            "name": "Inventory Technician",
+            "login": "inventory-technician-pack@majal.test",
+            "email": "inventory-technician-pack@majal.test",
+            "role_id": self.field_role.id,
+            "industry_scope": "facilities",
+            "capability_pack_ids": [(6, 0, inventory.ids)],
+            "temporary_password": "MajalPack!2026",
+        })
+        action = wizard.action_create_user()
+        invited = self.env["res.users"].sudo().browse(action["res_id"])
+        self.assertEqual(invited.majal_capability_pack_ids, inventory)
+        self.assertTrue(invited.has_group("stock.group_stock_user"))
+        self.assertFalse(invited.has_group("stock.group_stock_manager"))
+        wizard.flush_recordset(["temporary_password"])
+        self.assertFalse(wizard.temporary_password)

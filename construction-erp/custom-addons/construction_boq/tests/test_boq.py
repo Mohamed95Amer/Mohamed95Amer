@@ -1,4 +1,4 @@
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -46,6 +46,21 @@ class TestBoq(TransactionCase):
         self.boq.action_lock()
         with self.assertRaises(UserError):
             self.line.write({"unit_rate": 999})
+
+    def test_direct_state_write_is_blocked(self):
+        user = self.env["res.users"].create({
+            "name": "regular", "login": "regular@majal.test",
+            "email": "regular@majal.test",
+            "company_id": self.env.company.id,
+            "company_ids": [(6, 0, [self.env.company.id])],
+            "groups_id": [(6, 0, [
+                self.env.ref("base.group_user").id,
+                self.env.ref("construction_base.group_construction_commercial").id,
+            ])],
+        })
+        with self.assertRaises(AccessError):
+            self.boq.with_user(user).write({"state": "approved"})
+        self.assertEqual(self.boq.state, "draft")
 
     def test_new_revision_copies_structure(self):
         self.boq.action_approve()

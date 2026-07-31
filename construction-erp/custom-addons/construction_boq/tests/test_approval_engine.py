@@ -18,6 +18,8 @@ class ApprovalCase(TransactionCase):
         def user(login, group):
             return cls.env["res.users"].create({
                 "name": login, "login": login, "email": f"{login}@majal.test",
+                "company_id": cls.env.company.id,
+                "company_ids": [(6, 0, [cls.env.company.id])],
                 "groups_id": [(6, 0, [
                     cls.env.ref("base.group_user").id,
                     cls.env.ref(group).id,
@@ -398,6 +400,35 @@ class TestApprovalCannotBeRoutedAround(ApprovalCase):
 
         with self.assertRaises(AccessError):
             step.with_user(self.engineer).write({"state": "approved"})
+
+        self.assertEqual(step.state, "pending")
+        self.assertEqual(request.state, "pending")
+
+    def test_asking_for_the_exemption_does_not_grant_it(self):
+        """The step model's write guard once stood down for a context key.
+
+        Context travels with the RPC call, so `majal_approval_transition` was
+        something the guarded party could simply ask for — the guard held only
+        against callers who did not know to set it. It is now `env.su`, which
+        cannot be requested from outside: it is true only where server-side
+        code has already called sudo(), which `_decide` does after the
+        entitlement check rather than before it.
+
+        The actor is a manager, and that is the point. An ordinary user is
+        stopped by the ACL long before the guard is consulted, so testing with
+        one passes whether the guard works or not — as the first version of
+        this test did. Managers hold write on steps, which leaves this guard as
+        the only thing between them and a signature on a step reserved for
+        somebody else, recorded as legitimate.
+        """
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        request = self.boq.with_user(self.qs).action_request_approval()
+        step = request.step_ids[0]
+
+        with self.assertRaises(AccessError):
+            step.with_user(self.boss).with_context(
+                majal_approval_transition=True
+            ).write({"state": "approved"})
 
         self.assertEqual(step.state, "pending")
         self.assertEqual(request.state, "pending")

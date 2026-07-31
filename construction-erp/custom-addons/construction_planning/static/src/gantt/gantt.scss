@@ -274,11 +274,50 @@ $name-w: 300px;
 
 // Arabic / RTL: the time axis still runs left-to-right — a programme read
 // right-to-left would invert the direction of time itself.
-html[dir="rtl"] .o_prog_gantt {
-    .o_prog_names { border-right: 0; border-left: 1px solid $g-line; }
-    .o_prog_name_row { text-align: right; }
+html[dir="rtl"] .o_prog_gantt,
+body.o_rtl .o_prog_gantt {
+    // The surrounding controls and activity register follow Arabic reading
+    // order, but the timeline keeps chronological time flowing left-to-right.
+    // Setting the body explicitly avoids the browser reversing the two flex
+    // panes (and therefore detaching activity names from their bars).
+    .o_prog_toolbar,
+    .o_prog_summary,
+    .o_prog_legend {
+        /* rtl:ignore */
+        direction: rtl;
+    }
+    .o_prog_body {
+        /* rtl:ignore */
+        direction: ltr;
+        flex-direction: row;
+    }
+    .o_prog_names {
+        /* rtl:ignore */
+        direction: rtl;
+        /* rtl:ignore */
+        border-right: 1px solid $g-line;
+        /* rtl:ignore */
+        border-left: 0;
+    }
+    .o_prog_name_row {
+        /* rtl:ignore */
+        text-align: right;
+    }
     .o_prog_slip { margin-right: auto; margin-left: 0; }
-    .o_prog_scroller, .o_prog_canvas { direction: ltr; }
+    .o_prog_scroller,
+    .o_prog_canvas,
+    .o_prog_ticks,
+    .o_prog_grid {
+        /* rtl:ignore */
+        direction: ltr;
+    }
+    .o_prog_tick,
+    .o_prog_wbs,
+    .o_prog_slip { unicode-bidi: isolate; }
+    .o_prog_legend .o_swatch {
+        margin-right: 0;
+        margin-left: 5px;
+    }
 }
 
 @media (max-width: 767.98px) {

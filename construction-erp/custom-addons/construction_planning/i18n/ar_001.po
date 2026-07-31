@@ -390,6 +390,112 @@ msgid "Working days the activity occupies. Ignored for milestones."
 msgstr "عدد أيام العمل التي يستغرقها النشاط، ولا تُحتسب للمعالم الرئيسية."
 
 #. module: construction_planning
+#: model:ir.actions.client,name:construction_planning.action_programme_gantt
+#: model:ir.ui.menu,name:construction_planning.menu_programme_gantt
+msgid "Programme Gantt"
+msgstr "مخطط البرنامج الزمني"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Day"
+msgstr "يوم"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Week"
+msgstr "أسبوع"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Month"
+msgstr "شهر"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Quarter"
+msgstr "ربع سنة"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Critical only"
+msgstr "المسار الحرج فقط"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "On critical path"
+msgstr "على المسار الحرج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Behind baseline"
+msgstr "متأخر عن خط الأساس"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Worst slip"
+msgstr "أكبر تأخير"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Complete"
+msgstr "مكتمل"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Loading programme…"
+msgstr "جارٍ تحميل البرنامج الزمني…"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "The programme could not be loaded."
+msgstr "تعذر تحميل البرنامج الزمني."
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid ""
+"No scheduled activities. Set planned start and finish dates on the project's "
+"tasks, then run the schedule to compute the critical path."
+msgstr ""
+"لا توجد أنشطة مجدولة. حدد تاريخي البداية والنهاية المخططين لمهام المشروع، "
+"ثم شغّل الجدولة لحساب المسار الحرج."
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Today"
+msgstr "اليوم"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "On programme"
+msgstr "وفق البرنامج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Milestone"
+msgstr "معلم رئيسي"
+
+#. module: construction_planning
 #: model:ir.model.fields,help:construction_planning.field_project_task__finish_variance_days
 msgid ""
 "Working days the scheduled finish has slipped (+) or gained (-) against the "

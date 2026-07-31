@@ -16,7 +16,7 @@ class FacilityLocation(models.Model):
     parent_id = fields.Many2one(
         "facility.location", string="Parent Location", ondelete="cascade",
         index=True)
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many("facility.location", "parent_id")
     complete_name = fields.Char(
         compute="_compute_complete_name", recursive=True, store=True)

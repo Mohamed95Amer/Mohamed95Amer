@@ -1,0 +1,112 @@
+# Translation of Majal Field Offline to Arabic
+msgid ""
+msgstr ""
+"Project-Id-Version: Majal Field Offline 18.0\n"
+"Language: ar_001\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0?0:n==1?1:n==2?2:n%100>=3 && n%100<=10?3:n%100>=11 && n%100<=99?4:5;\n"
+
+#. module: majal_field_offline
+msgid "Majal Field"
+msgstr "مجال الميداني"
+
+#. module: majal_field_offline
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#. module: majal_field_offline
+msgid "Defects"
+msgstr "الملاحظات"
+
+#. module: majal_field_offline
+msgid "Inspections"
+msgstr "الفحوصات"
+
+#. module: majal_field_offline
+msgid "Work Orders"
+msgstr "أوامر العمل"
+
+#. module: majal_field_offline
+msgid "Assets"
+msgstr "الأصول"
+
+#. module: majal_field_offline
+msgid "Drawings"
+msgstr "الرسومات"
+
+#. module: majal_field_offline
+msgid "Sync now"
+msgstr "مزامنة الآن"
+
+#. module: majal_field_offline
+msgid "Assigned defects"
+msgstr "الملاحظات المسندة"
+
+#. module: majal_field_offline
+msgid "My inspections"
+msgstr "فحوصاتي"
+
+#. module: majal_field_offline
+msgid "My work orders"
+msgstr "أوامر العمل الخاصة بي"
+
+#. module: majal_field_offline
+msgid "Assigned assets"
+msgstr "الأصول المسندة"
+
+#. module: majal_field_offline
+msgid "Current drawings"
+msgstr "الرسومات الحالية"
+
+#. module: majal_field_offline
+msgid "New defect"
+msgstr "ملاحظة جديدة"
+
+#. module: majal_field_offline
+msgid "Daily log"
+msgstr "السجل اليومي"
+
+#. module: majal_field_offline
+msgid "Save offline"
+msgstr "حفظ دون اتصال"
+
+#. module: majal_field_offline
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: majal_field_offline
+msgid "Project"
+msgstr "المشروع"
+
+#. module: majal_field_offline
+msgid "Title"
+msgstr "العنوان"
+
+#. module: majal_field_offline
+msgid "Location"
+msgstr "الموقع"
+
+#. module: majal_field_offline
+msgid "Severity"
+msgstr "الخطورة"
+
+#. module: majal_field_offline
+msgid "Description"
+msgstr "الوصف"
+
+#. module: majal_field_offline
+msgid "Weather"
+msgstr "الطقس"
+
+#. module: majal_field_offline
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: majal_field_offline
+msgid "Sync queue"
+msgstr "قائمة المزامنة"
+
+#. module: majal_field_offline
+msgid "Clear this device"
+msgstr "مسح بيانات هذا الجهاز"

@@ -138,6 +138,7 @@ class ConstructionPermit(models.Model):
     # Workflow
     # ------------------------------------------------------------------
     def action_submit(self):
+        self = self.with_context(majal_workflow_transition=True)
         for permit in self:
             if permit.state != "draft":
                 raise UserError(self.env._("Only a draft permit can be submitted."))
@@ -172,6 +173,7 @@ class ConstructionPermit(models.Model):
         return True
 
     def action_approve(self):
+        self = self.with_context(majal_workflow_transition=True)
         for permit in self:
             if permit.state != "submitted":
                 raise UserError(
@@ -191,9 +193,11 @@ class ConstructionPermit(models.Model):
             })
 
     def action_reject(self):
+        self = self.with_context(majal_workflow_transition=True)
         self.filtered(lambda p: p.state == "submitted").state = "rejected"
 
     def action_start_work(self):
+        self = self.with_context(majal_workflow_transition=True)
         for permit in self:
             if permit.state != "approved":
                 raise UserError(
@@ -206,12 +210,15 @@ class ConstructionPermit(models.Model):
             permit.state = "active"
 
     def action_suspend(self):
+        self = self.with_context(majal_workflow_transition=True)
         self.filtered(lambda p: p.state in ("approved", "active")).state = "suspended"
 
     def action_resume(self):
+        self = self.with_context(majal_workflow_transition=True)
         self.filtered(lambda p: p.state == "suspended").state = "approved"
 
     def action_close(self):
+        self = self.with_context(majal_workflow_transition=True)
         now = fields.Datetime.now()
         for permit in self.filtered(
                 lambda p: p.state in ("approved", "active", "suspended")):
@@ -222,6 +229,7 @@ class ConstructionPermit(models.Model):
             })
 
     def action_reset(self):
+        self = self.with_context(majal_workflow_transition=True)
         self.filtered(lambda p: p.state in ("rejected", "expired")).state = "draft"
 
     @api.model
@@ -232,7 +240,7 @@ class ConstructionPermit(models.Model):
         today, which is precisely the failure a permit system exists to
         prevent.
         """
-        expired = self.search([
+        expired = self.with_context(majal_workflow_transition=True).search([
             ("state", "in", ["approved", "active", "suspended"]),
             ("valid_to", "<", fields.Datetime.now()),
         ])

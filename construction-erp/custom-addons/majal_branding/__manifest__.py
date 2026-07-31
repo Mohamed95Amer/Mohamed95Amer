@@ -25,6 +25,8 @@
     ],
     "assets": {
         "web.assets_backend": [
+            "majal_branding/static/src/company_switcher/company_switcher.js",
+            "majal_branding/static/src/company_switcher/company_switcher.xml",
             "majal_branding/static/src/user_menu/user_menu.js",
             "majal_branding/static/src/activity_menu/activity_menu.xml",
             "majal_branding/static/src/scss/backend.scss",

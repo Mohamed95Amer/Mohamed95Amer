@@ -1,6 +1,6 @@
 import re
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -15,7 +15,11 @@ class MajalUserInviteWizard(models.TransientModel):
         "majal.access.role",
         string="Access level",
         required=True,
-        domain="[('active', '=', True)]",
+        domain="[('id', 'in', assignable_role_ids)]",
+    )
+    assignable_role_ids = fields.Many2many(
+        "majal.access.role",
+        compute="_compute_assignable_access",
     )
     industry_scope = fields.Selection(
         [
@@ -27,10 +31,36 @@ class MajalUserInviteWizard(models.TransientModel):
         required=True,
         default="both",
     )
+    capability_pack_ids = fields.Many2many(
+        "majal.capability.pack",
+        string="Optional capability packs",
+        domain="[('id', 'in', assignable_capability_pack_ids)]",
+        help="Add only the commercial capabilities this user requires.",
+    )
+    assignable_capability_pack_ids = fields.Many2many(
+        "majal.capability.pack",
+        compute="_compute_assignable_access",
+    )
     temporary_password = fields.Char(
-        required=True,
         help="Share this once through a secure channel. Majal never displays it again.",
     )
+
+    @api.depends("role_id")
+    def _compute_assignable_access(self):
+        users = self.env["res.users"]
+        roles = users._majal_assignable_roles()
+        for wizard in self:
+            wizard.assignable_role_ids = roles
+            wizard.assignable_capability_pack_ids = (
+                users._majal_assignable_capability_packs(wizard.role_id)
+            )
+
+    @api.onchange("role_id")
+    def _onchange_role_id_capability_packs(self):
+        allowed = self.env[
+            "res.users"
+        ]._majal_assignable_capability_packs(self.role_id)
+        self.capability_pack_ids &= allowed
 
     def action_create_user(self):
         self.ensure_one()
@@ -65,11 +95,24 @@ class MajalUserInviteWizard(models.TransientModel):
             }
         )
         target = users.browse(user.id)
-        target._majal_apply_role(self.role_id, self.industry_scope)
-        self.env["majal.admin.audit"].sudo()._log(
+        target._majal_apply_role(
+            self.role_id,
+            self.industry_scope,
+            self.capability_pack_ids,
+        )
+        self.env["majal.admin.audit"]._log(
             "user_invited",
             _("Client user %s was created.") % target.name,
             target_user=target,
+            new_values={
+                "login": login,
+                "company_id": self.env.company.id,
+                "role": self.role_id.code,
+                "scope": self.industry_scope,
+                "capabilities": sorted(
+                    self.capability_pack_ids.mapped("code")
+                ),
+            },
         )
         self.write({"temporary_password": False})
         return {

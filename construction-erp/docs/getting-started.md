@@ -80,12 +80,17 @@ construction_hse,construction_tender,construction_material,construction_dashboar
 construction_meeting,construction_bim,construction_whatsapp,construction_portal,\
 facility_asset,facility_workorder,facility_sla,facility_contract,\
 facility_inventory,facility_portal,facility_floorplan,construction_ui,\
-om_account_accountant --stop-after-init
+majal_branding,majal_administration,majal_ai,majal_documents,\
+majal_field_offline,majal_security,om_account_accountant \
+--load-language=ar_001 --stop-after-init
 ```
 
 About ten minutes, and it will look frozen for long stretches. It is not. It is
 building the demo company: the Al Noor Tower project, its bill of quantities, a
 certified payment certificate, and one variation left waiting for a signature.
+The `--load-language=ar_001` option installs the Arabic interface catalog as
+part of the same operation; merely activating Arabic later does not populate
+all module translations.
 
 ## 7. Open it
 
@@ -116,6 +121,43 @@ and not yet approved" into the contract.
 The password is the login with `.majal` on the end — long enough for the
 twelve-character policy `majal_security` applies. These accounts exist in
 demo data only.
+
+### Full Majal acceptance dataset
+
+For an isolated demo or QA database only, install:
+
+```powershell
+docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp -i majal_demo --stop-after-init
+```
+
+This creates two synthetic companies and nine Majal personas. Their password
+is `MajalDemo!2026`. Never install `majal_demo` in a client production
+database or expose these credentials on the internet.
+
+After restarting, open **Majal Field** once while online to prepare its offline
+field pack. Controlled templates, documents and sheets are under
+**Majal Documents**.
+
+## Assigning optional business capabilities
+
+Open **Administration → Users & Access**, select a client user and choose
+**Change Access**. The dialog contains the six Majal roles, Construction /
+Facilities scope and optional capability packs.
+
+Available families are Procurement, Inventory, Finance, Human Resources,
+Website and AI Administration. Select only one tier per family. Majal checks
+the minimum business role, removes technical access when a pack is removed,
+and records the old and new capability codes in the immutable administration
+audit.
+
+Finance Administrator, HR Administrator and Website Designer are high-risk
+tiers and require a Platform Owner. Company Administrators can assign the
+lower approved tiers only to users below their own role and inside their
+current company.
+
+The read-only **Administration → Capability Catalog** explains every tier.
+Never add Purchase, Stock, Accounting, HR, Website or technical groups through
+the upstream raw permission grid.
 
 ## Turning on the 3D model viewer
 

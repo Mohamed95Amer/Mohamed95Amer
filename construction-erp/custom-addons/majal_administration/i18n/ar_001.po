@@ -1,3 +1,6 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_administration
 #
 msgid ""
 msgstr ""
@@ -12,6 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "%(role)s cannot receive these capability packs: %(packs)s."
+msgstr "لا يمكن للدور %(role)s الحصول على حزم الصلاحيات التالية: %(packs)s."
 
 #. module: majal_administration
 #. odoo-python
@@ -48,6 +57,11 @@ msgid "<span class=\"o_form_label\">Client user</span>"
 msgstr ""
 
 #. module: majal_administration
+#: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_capability_pack_form
+msgid "<span class=\"o_form_label\">Optional capability</span>"
+msgstr ""
+
+#. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_backup_snapshot_form
 msgid "<span class=\"o_form_label\">Recovery point</span>"
 msgstr ""
@@ -62,6 +76,12 @@ msgstr ""
 #: code:addons/majal_administration/wizards/user_invite_wizard.py:0
 msgid "A user with this login already exists."
 msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__ai
+#: model:majal.capability.pack,name:majal_administration.capability_ai_administrator
+msgid "AI Administration"
+msgstr "إدارة الذكاء الاصطناعي"
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_invite_wizard_form
@@ -94,7 +114,8 @@ msgstr "مستوى الصلاحية"
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_client_user_form
 msgid ""
 "Access levels are controlled through Majal roles. Raw technical\n"
-"                        permissions are intentionally hidden from client administrators."
+"                        permissions are intentionally hidden. Optional capability packs\n"
+"                        are explicit, role-limited and recorded in the administration audit."
 msgstr ""
 
 #. module: majal_administration
@@ -104,6 +125,7 @@ msgstr ""
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__active
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__active
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_client_user_search
 msgid "Active"
 msgstr "نشط"
@@ -114,10 +136,33 @@ msgid "Actor"
 msgstr ""
 
 #. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__actor_name
+msgid "Actor Name"
+msgstr ""
+
+#. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Add a second Platform Owner before deactivating this account."
 msgstr ""
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Add a second Platform Owner before deleting this account."
+msgstr ""
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Add a second Platform Owner before removing this owner's access."
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,help:majal_administration.field_majal_user_access_wizard__capability_pack_ids
+#: model:ir.model.fields,help:majal_administration.field_majal_user_invite_wizard__capability_pack_ids
+msgid "Add only the commercial capabilities this user requires."
+msgstr "أضف فقط الصلاحيات التجارية التي يحتاجها هذا المستخدم."
 
 #. module: majal_administration
 #: model:ir.ui.menu,name:majal_administration.menu_majal_administration_root
@@ -163,6 +208,18 @@ msgid "Archive size"
 msgstr "حجم الأرشيف"
 
 #. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__assignable_capability_pack_ids
+#: model:ir.model.fields,field_description:majal_administration.field_majal_user_invite_wizard__assignable_capability_pack_ids
+msgid "Assignable Capability Pack"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__assignable_role_ids
+#: model:ir.model.fields,field_description:majal_administration.field_majal_user_invite_wizard__assignable_role_ids
+msgid "Assignable Role"
+msgstr ""
+
+#. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_backup_snapshot__state__empty
 msgid "Awaiting schedule"
 msgstr "بانتظار الموعد المجدول"
@@ -190,6 +247,11 @@ msgid "Backup Now"
 msgstr "نسخ احتياطي الآن"
 
 #. module: majal_administration
+#: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_capability_pack_form
+msgid "Business boundary"
+msgstr "نطاق الصلاحية"
+
+#. module: majal_administration
 #: model:res.groups,comment:majal_administration.group_user_administrator
 msgid ""
 "Can invite, deactivate and assign approved Majal roles without technical-"
@@ -207,6 +269,32 @@ msgstr "إلغاء"
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_restore_request__state__cancelled
 msgid "Cancelled"
 msgstr "ملغي"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Capabilities: %s"
+msgstr "الصلاحيات: %s"
+
+#. module: majal_administration
+#: model:ir.actions.act_window,name:majal_administration.action_majal_capability_packs
+#: model:ir.ui.menu,name:majal_administration.menu_majal_capability_packs
+#: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_capability_pack_list
+msgid "Capability Catalog"
+msgstr "دليل حزم الصلاحيات"
+
+#. module: majal_administration
+#: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_capability_pack_form
+msgid "Capability Pack"
+msgstr "حزمة صلاحيات"
+
+#. module: majal_administration
+#: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_access_wizard_form
+msgid ""
+"Capability packs are optional and audited. Select only one\n"
+"                    tier per business area. High-risk packs require Platform\n"
+"                    Owner approval."
+msgstr ""
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_client_user_form
@@ -261,6 +349,7 @@ msgstr "إغلاق"
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__code
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__code
 msgid "Code"
 msgstr "الرمز"
 
@@ -282,6 +371,17 @@ msgstr "مسؤول الشركة"
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Company Administrators can assign Operations Manager or lower."
 msgstr ""
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Company Administrators can only manage users in their current company."
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,help:majal_administration.field_majal_capability_pack__platform_owner_only
+msgid "Company Administrators cannot grant this high-risk capability."
+msgstr "لا يمكن لمسؤولي الشركة منح هذه الصلاحية عالية المخاطر."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_restore_request__state__completed
@@ -364,6 +464,7 @@ msgstr "أنشأها"
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__create_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__create_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__create_uid
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__create_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__create_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__create_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__create_uid
@@ -375,6 +476,7 @@ msgstr "أنشئ بواسطة"
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__create_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__create_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__create_date
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__create_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__create_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__create_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__create_date
@@ -411,6 +513,7 @@ msgstr "إلغاء التفعيل"
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__description
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__description
 msgid "Description"
 msgstr "الوصف"
 
@@ -418,6 +521,7 @@ msgstr "الوصف"
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__display_name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__display_name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__display_name
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__display_name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__display_name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__display_name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__display_name
@@ -434,6 +538,27 @@ msgstr "تنزيل"
 #: model:ir.model.constraint,message:majal_administration.constraint_majal_access_role_majal_role_code_unique
 msgid "Each Majal role code must be unique."
 msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.constraint,message:majal_administration.constraint_majal_capability_pack_majal_capability_family_tier_unique
+msgid "Each capability family can define a tier only once."
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.constraint,message:majal_administration.constraint_majal_capability_pack_majal_capability_code_unique
+msgid "Each capability pack code must be unique."
+msgstr ""
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_website_editor
+msgid "Edit approved website content with restricted design permissions."
+msgstr "تحرير محتوى الموقع المعتمد بصلاحيات تصميم محدودة."
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_website_designer
+msgid ""
+"Edit website structure and design. Platform Owner approval is required."
+msgstr "تحرير بنية الموقع وتصميمه. تتطلب موافقة مالك المنصة."
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_invite_wizard__email
@@ -460,6 +585,12 @@ msgstr "رسالة الخطأ"
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__event_type
 msgid "Event Type"
 msgstr "نوع الفعالية"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/tenant_security.py:0
+msgid "Every construction project must belong to a company."
+msgstr ""
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_restore_request__state__expired
@@ -495,10 +626,69 @@ msgid "Facilities Supervisor"
 msgstr "إدارة المرافق Supervisor"
 
 #. module: majal_administration
+#: model:ir.model,name:majal_administration.model_facility_location
+msgid "Facility Location"
+msgstr "موقع المرفق"
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_facility_location__manager_user_id
+msgid "Facility Manager"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_facility_location__member_user_ids
+msgid "Facility Team"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_restore_request__state__failed
+msgid "Failed"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__family
+msgid "Family"
+msgstr "المجموعة"
+
+#. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_access_role__code__field_user
 #: model:majal.access.role,name:majal_administration.role_field_user
 msgid "Field User / Technician"
 msgstr "مستخدم ميداني / فني"
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__finance
+msgid "Finance"
+msgstr "المالية"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_finance_accountant
+msgid "Finance Accountant"
+msgstr "محاسب مالي"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_finance_manager
+msgid "Finance Administrator"
+msgstr "مسؤول النظام المالي"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_finance_readonly
+msgid "Finance Read-only"
+msgstr "المالية للقراءة فقط"
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_hr_manager
+msgid ""
+"Full employee and HR configuration. Platform Owner approval is required."
+msgstr ""
+"إدارة كاملة للموظفين وإعدادات الموارد البشرية. تتطلب موافقة مالك المنصة."
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_finance_manager
+msgid ""
+"Full finance configuration and accounting administration. Platform Owner "
+"approval is required."
+msgstr "إدارة كاملة لإعدادات المالية والمحاسبة. تتطلب موافقة مالك المنصة."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_invite_wizard_form
@@ -517,9 +707,25 @@ msgid "Group By"
 msgstr "تجميع حسب"
 
 #. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_hr_manager
+msgid "HR Administrator"
+msgstr "مدير الموارد البشرية"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_hr_officer
+msgid "HR Officer"
+msgstr "مسؤول موارد بشرية"
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__hr
+msgid "Human Resources"
+msgstr "الموارد البشرية"
+
+#. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__id
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__id
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__id
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__id
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__id
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__id
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__id
@@ -539,14 +745,42 @@ msgid "Inactive"
 msgstr "غير نشط "
 
 #. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Inactive capability packs cannot be assigned: %s"
+msgstr "لا يمكن تعيين حزم الصلاحيات غير النشطة: %s"
+
+#. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_backup_snapshot_form
 msgid "Integrity"
 msgstr ""
 
 #. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/backup_snapshot.py:0
+msgid "Invalid restore request marker."
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__inventory
+msgid "Inventory"
+msgstr "المخزون"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_inventory_manager
+msgid "Inventory Manager"
+msgstr "مدير المخزون"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_inventory_user
+msgid "Inventory User"
+msgstr "مستخدم المخزون"
+
+#. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__write_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__write_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__write_uid
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__write_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__write_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__write_uid
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__write_uid
@@ -558,6 +792,7 @@ msgstr "آخر تحديث بواسطة"
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__write_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__write_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__write_date
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__write_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__write_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__write_date
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__write_date
@@ -611,6 +846,21 @@ msgid "Majal Administration Audit"
 msgstr ""
 
 #. module: majal_administration
+#: model:ir.model,name:majal_administration.model_majal_capability_pack
+msgid "Majal Optional Capability Pack"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_project_project__majal_manager_id
+msgid "Majal Project Manager"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_project_project__majal_member_ids
+msgid "Majal Project Team"
+msgstr ""
+
+#. module: majal_administration
 #: model:ir.model,name:majal_administration.model_majal_restore_request
 msgid "Majal Protected Restore Request"
 msgstr ""
@@ -633,14 +883,53 @@ msgid ""
 msgstr ""
 
 #. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/tenant_security.py:0
+msgid "Majal security path %(path)s is invalid on %(model)s."
+msgstr ""
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/tenant_security.py:0
+msgid "Majal security path %(path)s is not relational."
+msgstr ""
+
+#. module: majal_administration
 #: model:ir.actions.server,name:majal_administration.ir_cron_majal_daily_recovery_point_ir_actions_server
 msgid "Majal: Daily verified recovery point"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.actions.server,name:majal_administration.ir_cron_majal_restore_maintenance_ir_actions_server
+msgid "Majal: Expire and reconcile restore requests"
 msgstr ""
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.res_config_settings_view_form_majal_administration
 msgid "Manage Client Users"
 msgstr "إدارة مستخدمي العميل"
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_hr_officer
+msgid "Manage employee records without HR or facilities administration."
+msgstr "إدارة سجلات الموظفين دون صلاحيات إدارة الموارد البشرية أو المرافق."
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_procurement_manager
+msgid "Manage procurement configuration, suppliers and purchase operations."
+msgstr "إدارة إعدادات المشتريات والموردين وعمليات الشراء."
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_ai_administrator
+msgid ""
+"Manage the current company's Majal Intelligence provider settings and review"
+" usage."
+msgstr "إدارة إعدادات مزود ذكاء مجال للشركة الحالية ومراجعة الاستخدام."
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_inventory_manager
+msgid "Manage warehouses, inventory configuration and stock operations."
+msgstr "إدارة المستودعات وإعدادات المخزون وعمليات المخزون."
 
 #. module: majal_administration
 #: model:majal.access.role,description:majal_administration.role_company_admin
@@ -650,9 +939,35 @@ msgid ""
 msgstr ""
 
 #. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__marker_name
+msgid "Marker Name"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,help:majal_administration.field_majal_capability_pack__minimum_role_rank
+msgid "Minimum Majal access-level rank required for this capability."
+msgstr "الحد الأدنى لمستوى صلاحية مجال المطلوب لمنح هذه الحزمة."
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__minimum_role_rank
+msgid "Minimum Role Rank"
+msgstr "الحد الأدنى لمستوى الدور"
+
+#. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_res_config_settings__majal_backup_min_free_mb
 msgid "Minimum free storage (MB)"
 msgstr "الحد الأدنى للمساحة الحرة (ميجابايت)"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_config_settings.py:0
+msgid "Minimum free storage must be between 64 MB and 1 TB."
+msgstr ""
+
+#. module: majal_administration
+#: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_capability_pack_list
+msgid "Minimum role rank"
+msgstr "الحد الأدنى لمستوى الدور"
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__module_count
@@ -667,6 +982,7 @@ msgstr "نقطة شهرية"
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_access_role__name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__name
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request__name
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_invite_wizard__name
 msgid "Name"
@@ -678,10 +994,26 @@ msgid "Needs Attention"
 msgstr "يحتاج إلى متابعة"
 
 #. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__new_values
+msgid "New Values"
+msgstr ""
+
+#. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Not created yet"
 msgstr "لم تُنشأ بعد"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/backup_snapshot.py:0
+msgid "Offline restore %(status)s for %(slot)s."
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__old_values
+msgid "Old Values"
+msgstr ""
 
 #. module: majal_administration
 #. odoo-python
@@ -707,6 +1039,11 @@ msgid "Only one recovery point is retained per slot."
 msgstr ""
 
 #. module: majal_administration
+#: model:ir.model.fields,help:majal_administration.field_majal_capability_pack__tier_rank
+msgid "Only one tier can be selected from each capability family."
+msgstr "يمكن اختيار مستوى واحد فقط من كل مجموعة صلاحيات."
+
+#. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/wizards/restore_request_wizard.py:0
 msgid "Only verified recovery points can be restored."
@@ -716,6 +1053,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:majal_administration.res_config_settings_view_form_majal_administration
 msgid "Open Recovery Points"
 msgstr "فتح نقاط الاستعادة"
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_finance_accountant
+msgid "Operate accounting workflows without finance-system administration."
+msgstr "تشغيل إجراءات المحاسبة دون صلاحيات إدارة النظام المالي."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_access_role__code__operations_manager
@@ -729,11 +1071,29 @@ msgid "Operator Command"
 msgstr ""
 
 #. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__capability_pack_ids
+#: model:ir.model.fields,field_description:majal_administration.field_majal_user_invite_wizard__capability_pack_ids
+#: model:ir.model.fields,field_description:majal_administration.field_res_users__majal_capability_pack_ids
+msgid "Optional capability packs"
+msgstr "حزم الصلاحيات الاختيارية"
+
+#. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_access_role__code__platform_owner
 #: model:majal.access.role,name:majal_administration.role_platform_owner
 #: model:res.groups,name:majal_administration.group_platform_owner
 msgid "Platform Owner"
 msgstr "مالك المنصة"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Platform Owner approval is required for: %s"
+msgstr "موافقة مالك المنصة مطلوبة لمنح: %s"
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__platform_owner_only
+msgid "Platform Owner approval required"
+msgstr "تتطلب موافقة مالك المنصة"
 
 #. module: majal_administration
 #: model:ir.model,name:majal_administration.model_majal_restore_request_wizard
@@ -758,6 +1118,12 @@ msgid "Prepare Restore Request"
 msgstr "تجهيز طلب الاستعادة"
 
 #. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_procurement_user
+msgid ""
+"Prepare and process purchase documents without procurement administration."
+msgstr "إعداد ومعالجة مستندات الشراء دون صلاحيات إدارة المشتريات."
+
+#. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_restore_request__state__prepared
 msgid "Prepared"
 msgstr ""
@@ -766,6 +1132,31 @@ msgstr ""
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_backup_snapshot__state__pending
 msgid "Preparing"
 msgstr "قيد التجهيز"
+
+#. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_inventory_user
+msgid "Process assigned receipts, deliveries and internal stock movements."
+msgstr "معالجة الاستلامات والتسليمات وحركات المخزون الداخلية المعينة."
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__procurement
+msgid "Procurement"
+msgstr "المشتريات"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_procurement_manager
+msgid "Procurement Manager"
+msgstr "مدير المشتريات"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_procurement_user
+msgid "Procurement User"
+msgstr "مستخدم المشتريات"
+
+#. module: majal_administration
+#: model:ir.model,name:majal_administration.model_project_project
+msgid "Project"
+msgstr "المشروع"
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_access_role__code__manager
@@ -784,6 +1175,11 @@ msgstr ""
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Protected restore request %s was cancelled."
 msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__group_ids
+msgid "Protected technical grants"
+msgstr "الصلاحيات التقنية المحمية"
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_restore_request_wizard_form
@@ -874,6 +1270,16 @@ msgid "Restore Cancelled"
 msgstr ""
 
 #. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_admin_audit__event_type__restore_completed
+msgid "Restore Completed"
+msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_admin_audit__event_type__restore_failed
+msgid "Restore Failed"
+msgstr ""
+
+#. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_admin_audit__event_type__restore_prepared
 msgid "Restore Prepared"
 msgstr ""
@@ -902,6 +1308,11 @@ msgid ""
 msgstr ""
 
 #. module: majal_administration
+#: model:majal.capability.pack,description:majal_administration.capability_finance_readonly
+msgid "Review accounting information without posting or configuration rights."
+msgstr "مراجعة المعلومات المحاسبية دون صلاحيات الترحيل أو الإعداد."
+
+#. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__checksum
 msgid "SHA-256"
 msgstr ""
@@ -923,6 +1334,17 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Select a valid workspace access scope."
+msgstr ""
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Select only one access tier from each capability family."
+msgstr "اختر مستوى صلاحية واحداً فقط من كل مجموعة."
+
+#. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__sequence
+msgid "Sequence"
 msgstr ""
 
 #. module: majal_administration
@@ -1070,6 +1492,11 @@ msgid "Three-month checkpoint"
 msgstr "نقطة كل ثلاثة أشهر"
 
 #. module: majal_administration
+#: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__tier_rank
+msgid "Tier Rank"
+msgstr "مستوى الحزمة"
+
+#. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_backup_snapshot__slot__today
 msgid "Today"
 msgstr "اليوم"
@@ -1143,6 +1570,7 @@ msgstr ""
 
 #. module: majal_administration
 #: model:ir.actions.act_window,name:majal_administration.action_majal_client_users
+#: model:ir.actions.server,name:majal_administration.action_majal_client_users_scoped
 #: model:ir.ui.menu,name:majal_administration.menu_majal_client_users
 msgid "Users & Access"
 msgstr "المستخدمون والصلاحيات"
@@ -1189,6 +1617,21 @@ msgstr "إعادة التحقق"
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Verify this recovery point before downloading it."
 msgstr ""
+
+#. module: majal_administration
+#: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__website
+msgid "Website"
+msgstr "الموقع الإلكتروني"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_website_designer
+msgid "Website Designer"
+msgstr "مصمم الموقع"
+
+#. module: majal_administration
+#: model:majal.capability.pack,name:majal_administration.capability_website_editor
+msgid "Website Editor"
+msgstr "محرر الموقع"
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_backup_snapshot__slot__weekly
@@ -1239,6 +1682,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "You cannot deactivate your own account."
+msgstr ""
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "You cannot manage a user who belongs to another company."
 msgstr ""
 
 #. module: majal_administration

@@ -1,0 +1,83 @@
+Continue the Majal Construction & Facilities system from the local handoff.
+
+Repository:
+C:\Users\hossi\Documents\Odoo\construction-erp
+
+Before taking any action, read these files completely:
+1. handoff\next-tool-2026-07-31\START_HERE.md
+2. handoff\next-tool-2026-07-31\CHECKPOINT.md
+3. handoff\README.md
+4. docs\validation-2026-07-29.md
+5. docs\full-system-audit-2026-07-28.md
+6. docs\documents-and-offline.md
+
+Important safety rules:
+- Preserve every existing local modification.
+- Do not run git reset, git clean, checkout away changes, or switch branches.
+- Do not touch or upgrade the live database named erp.
+- Use the isolated database majal_upgrade_20260729 or a new disposable DB.
+- Do not install majal_demo in production.
+- Do not commit or push until I explicitly approve it.
+- Do not remove legally required third-party licence attribution.
+- Never expose database passwords or Platform Owner credentials.
+
+Expected Git branch:
+codex/odoo19-ui-enhancement
+
+Current committed checkpoint:
+7eafa3c
+
+Branch decision:
+- Treat codex/odoo19-ui-enhancement as the sole canonical continuation branch.
+- Freeze claude/odoo-construction-facilities-i324s2.
+- Do not port the PowerShell BIM-fetch fix back to the Claude branch.
+- Do not merge, force-update, or continue work on the Claude branch.
+- Leave draft PR #6 unchanged until the latest local Codex work passes the full
+  suite and I approve commit/push.
+- After approval, create a replacement PR from the Codex branch to main, then
+  close PR #6 as superseded. Do not perform either GitHub write yet.
+
+Newest uncommitted work includes:
+- Arabic navigation corrections;
+- the wording الحوادث وشبه الحوادث;
+- corrected Arabic Programme Gantt layout;
+- a populated management dashboard hub;
+- Majal product-facing About/legal presentation;
+- full company-switcher removal on desktop and mobile;
+- a least-privilege material-issue stock-balance fix and regression tests.
+
+Validation evidence:
+- earlier integrated full suite: 482 tests, 0 failures, 0 errors;
+- latest focused suite: 27 tests, 0 failures, 0 errors;
+- the latest full suite still needs to be rerun before release.
+
+Local preview:
+http://127.0.0.1:8079/web/login?db=majal_upgrade_20260729
+
+Preview container:
+majal-clone-preview
+
+Reviewer account:
+preview@majal.local
+MajalReview!2026
+
+External friend reviewer:
+friend.tester@majal.local
+MajalFriend!2026
+
+The external friend is an Operations Manager for Construction and Facilities,
+with Procurement Manager, Inventory Manager, Finance Accountant, HR Officer,
+Website Editor and AI Administration capabilities. Do not promote this account
+to Platform Owner.
+
+Docker Desktop and the previous temporary Cloudflare tunnel are stopped at the
+handoff checkpoint. Start Docker, start construction-erp-db-1 and
+majal-clone-preview, confirm port 8079, and create a fresh quick-tunnel URL only
+if an external test link is requested. Never tunnel port 8069.
+
+First response to me:
+1. show the current branch and git status;
+2. summarize the preserved uncommitted work;
+3. confirm the live erp database will not be touched;
+4. propose the next smallest safe validation step;
+5. do not modify anything until this orientation is complete.

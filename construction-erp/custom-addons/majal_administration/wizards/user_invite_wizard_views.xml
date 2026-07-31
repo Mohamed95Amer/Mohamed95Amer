@@ -18,8 +18,13 @@
                                placeholder="12+ characters; upper, lower and number"/>
                     </group>
                     <group string="Access">
+                        <field name="assignable_role_ids" invisible="1"/>
+                        <field name="assignable_capability_pack_ids" invisible="1"/>
                         <field name="role_id"/>
                         <field name="industry_scope"/>
+                        <field name="capability_pack_ids"
+                               widget="many2many_tags"
+                               options="{'no_create': True, 'no_edit': True}"/>
                     </group>
                 </group>
                 <div class="alert alert-warning" role="alert">

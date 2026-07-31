@@ -423,6 +423,36 @@ msgid "Reference"
 msgstr "المرجع"
 
 #. module: construction_base
+#: model:ir.ui.menu,name:construction_base.menu_approvals_root
+msgid "Approvals"
+msgstr "الاعتمادات"
+
+#. module: construction_base
+#: model:ir.ui.menu,name:construction_base.menu_approval_rules
+msgid "Rules"
+msgstr "قواعد الاعتماد"
+
+#. module: construction_base
+#: model:ir.ui.menu,name:construction_base.menu_approval_delegation
+msgid "Delegation"
+msgstr "تفويض الصلاحيات"
+
+#. module: construction_base
+#: model:ir.ui.menu,name:construction_base.menu_approval_inbox
+msgid "Waiting for Me"
+msgstr "بانتظار اعتمادي"
+
+#. module: construction_base
+#: model:ir.actions.act_window,name:construction_base.action_approval_rule
+msgid "Approval Rules"
+msgstr "قواعد الاعتماد"
+
+#. module: construction_base
+#: model:ir.actions.act_window,name:construction_base.action_approval_delegation
+msgid "Approval Delegation"
+msgstr "تفويض الاعتماد"
+
+#. module: construction_base
 #: model:ir.model.fields,field_description:construction_base.field_project_project__retention_percent
 msgid "Retention (%)"
 msgstr "نسبة الاحتجاز (%)"

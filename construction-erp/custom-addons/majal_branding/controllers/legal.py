@@ -7,6 +7,10 @@ class MajalLegal(http.Controller):
         params = request.env["ir.config_parameter"].sudo()
         return {
             "product_name": params.get_param("majal.product_name", "Majal"),
+            "tagline": params.get_param(
+                "majal.tagline",
+                "Construction and facilities, in one operational system.",
+            ),
             "support_email": params.get_param("majal.support_email", ""),
             "support_url": params.get_param("majal.support_url", ""),
             "privacy_url": params.get_param("majal.privacy_url", ""),
@@ -25,6 +29,21 @@ class MajalLegal(http.Controller):
     def open_source_notices(self, **kwargs):
         return request.render(
             "majal_branding.open_source_notices",
+            self._brand_values(),
+        )
+
+    @http.route(
+        "/majal/about",
+        type="http",
+        auth="public",
+        methods=["GET"],
+        readonly=True,
+        sitemap=False,
+        website=True,
+    )
+    def about_majal(self, **kwargs):
+        return request.render(
+            "majal_branding.about_majal",
             self._brand_values(),
         )
 

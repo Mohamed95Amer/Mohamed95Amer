@@ -19,9 +19,25 @@ workspace scope:
 | Field User / Technician | Assigned operational work | None | None |
 
 Every role can be scoped to **Construction**, **Facilities Management**, or
-**Construction & Facilities**. Majal removes the previously managed industry
-groups before applying the new role, while leaving unrelated explicit business
-groups untouched.
+**Construction & Facilities**. Role application is a strict allowlist:
+unapproved legacy Purchase, Inventory, Accounting, HR, Website and technical
+groups are removed.
+
+Optional business access is granted only through audited capability packs:
+
+| Family | Standard tier | Higher tier | Minimum / approval boundary |
+|---|---|---|---|
+| Procurement | User | Manager | User: Field; Manager: Project/Facility Manager |
+| Inventory | User | Manager | User: Field; Manager: Project/Facility Manager |
+| Finance | Read-only / Accountant | Administrator | Administrator: Operations Manager + Platform Owner approval |
+| Human Resources | Officer | Administrator | Officer: Manager; Administrator: Operations Manager + Platform Owner approval |
+| Website | Editor | Designer | Editor: Manager; Designer: Operations Manager + Platform Owner approval |
+| AI Administration | Manager | — | Project/Facility Manager |
+
+Only one tier from each family may be selected. Removing a pack removes its
+technical groups. HR packs are explicitly isolated from Facilities
+Administration even though the upstream HR role normally implies Maintenance
+Administrator.
 
 Controls enforced on the server:
 
@@ -84,7 +100,7 @@ therefore two-step:
    the exact command shown by Majal:
 
    ```powershell
-   powershell -ExecutionPolicy Bypass -File scripts\restore-majal.ps1 -Slot today -Code ONE_TIME_CODE
+   powershell -ExecutionPolicy Bypass -File scripts\restore-majal.ps1 -RequestId REQUEST_ID -Slot today -Code ONE_TIME_CODE
    ```
 
 The script stops the application, validates the code, expiry, archive path,

@@ -19,6 +19,28 @@ class TestFacilityAsset(TransactionCase):
         cls.asset = cls.env["maintenance.equipment"].create({
             "name": "AHU-01", "facility_location_id": cls.room.id,
             "criticality": "high"})
+        cls.technician = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Facility Technician",
+            "login": "facility-technician-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+        cls.facility_manager = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Facility Manager",
+            "login": "facility-manager-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(
+                6,
+                0,
+                [cls.env.ref("maintenance.group_equipment_manager").id],
+            )],
+        })
 
     def test_location_hierarchy(self):
         self.assertEqual(self.room.complete_name, "Tower / L3 / Plant Room")
@@ -167,3 +189,39 @@ class TestFacilityAsset(TransactionCase):
             (self.asset.id,),
         )
         self.assertTrue(self.env.cr.fetchone()[0])
+    def test_technician_cannot_delete_work_order_evidence(self):
+        request = self.env["maintenance.request"].create({
+            "name": "Assigned AHU repair",
+            "equipment_id": self.asset.id,
+            "user_id": self.technician.id,
+        })
+        request.with_user(self.technician).write({"description": "Inspected"})
+        with self.assertRaises(AccessError):
+            request.with_user(self.technician).unlink()
+        self.assertTrue(request.exists())
+        request.with_user(self.facility_manager).unlink()
+        self.assertFalse(request.exists())
+
+    def test_technician_records_readings_but_cannot_configure_or_delete(self):
+        meter = self.env["facility.asset.meter"].create({
+            "name": "Runtime",
+            "equipment_id": self.asset.id,
+            "uom": "hours",
+        })
+        with self.assertRaises(AccessError):
+            self.env["facility.asset.meter"].with_user(self.technician).create({
+                "name": "Unapproved meter",
+                "equipment_id": self.asset.id,
+                "uom": "hours",
+            })
+        reading = self.env["facility.asset.meter.reading"].with_user(
+            self.technician
+        ).create({
+            "meter_id": meter.id,
+            "date": date.today(),
+            "value": 310,
+        })
+        with self.assertRaises(AccessError):
+            reading.with_user(self.technician).unlink()
+        reading.with_user(self.facility_manager).unlink()
+        self.assertFalse(reading.exists())

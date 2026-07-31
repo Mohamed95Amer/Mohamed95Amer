@@ -80,10 +80,25 @@ Community** app (`om_account_accountant` + 7 companion modules). See
   [`docs/majal-intelligence.md`](docs/majal-intelligence.md).
 - **majal_administration** — client-safe user administration and verified
   recovery. Six Majal business roles replace raw permission grids; users can
-  be scoped to Construction, Facilities or both. The seven-slot recovery
-  policy protects the database and uploaded documents, verifies every archive
-  with SHA-256, and uses an audited two-step offline restore. See
+  be scoped to Construction, Facilities or both. Twelve audited optional
+  capability tiers add Procurement, Inventory, Finance, HR, Website and AI
+  Administration without preserving arbitrary legacy groups. High-risk
+  Finance, HR and Website administration requires Platform Owner approval.
+  The seven-slot recovery policy protects the database and uploaded documents,
+  verifies every archive with SHA-256, and uses an audited two-step offline restore. See
   [`docs/administration-and-recovery.md`](docs/administration-and-recovery.md).
+- **majal_documents** — client-branded English/Arabic document templates,
+  sanitized rich-text editing, immutable revisions, SHA-256-bound named
+  approvals, PDF output and structured commercial sheets. Internal approval
+  is explicitly separated from qualified electronic signatures. See
+  [`docs/documents-and-offline.md`](docs/documents-and-offline.md).
+- **majal_field_offline** — a dedicated mobile field PWA for assigned work,
+  with per-user device storage, idempotent synchronization and visible
+  `write_date` conflicts. Only safe draft/checklist/scan actions work offline;
+  approvals, financial posting, deletes and BIM remain online.
+- **majal_demo** — opt-in two-company acceptance data and nine role personas.
+  It is for isolated demo/QA databases only and must never be installed for a
+  production client.
 - **construction_progress_billing** — **Interim Payment Certificates (IPC)**:
   certify cumulative BOQ work done, withhold retention (percent, capped),
   and raise the net customer invoice; per-line % complete, Payment Certificate
@@ -251,8 +266,8 @@ cp .env.example .env
 docker compose up -d --build
 # initialize a database with the construction suite + accounting + demo data
 docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d erp \
-  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_bim,construction_whatsapp,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_inventory,facility_portal,facility_floorplan,construction_ui,majal_branding,majal_ai,majal_administration,om_account_accountant \
-  --stop-after-init
+  -i construction_base,construction_boq,construction_drawing,construction_rfi,construction_submittal,construction_pin,construction_planning,construction_defect,construction_daily_log,construction_form,construction_progress_billing,construction_change_order,construction_subcontractor,construction_report,construction_hse,construction_tender,construction_material,construction_dashboard,construction_meeting,construction_bim,construction_whatsapp,construction_portal,facility_asset,facility_workorder,facility_sla,facility_contract,facility_inventory,facility_portal,facility_floorplan,construction_ui,majal_branding,majal_ai,majal_administration,majal_documents,majal_field_offline,majal_security,om_account_accountant \
+  --load-language=ar_001 --stop-after-init
 docker compose restart odoo
 ```
 

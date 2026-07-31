@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_majal_documents" model="ir.ui.view">
+        <field name="name">res.company.form.majal.documents</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Document Identity" name="majal_document_identity">
+                    <div class="alert alert-info" role="alert">
+                        These legal details and the company logo appear on newly generated
+                        documents. Existing approved revisions keep their own checksum.
+                    </div>
+                    <group>
+                        <group string="Legal Identity">
+                            <field name="majal_trading_name"/>
+                            <field name="majal_registration_number"/>
+                            <field name="majal_tax_registration_number"/>
+                            <field name="majal_license_number"/>
+                        </group>
+                        <group string="Document Contact">
+                            <field name="majal_document_email"/>
+                            <field name="majal_document_phone"/>
+                            <field name="majal_document_website"/>
+                            <field name="majal_document_address"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Internal Sign-off">
+                            <field name="majal_authorized_signatory"/>
+                            <field name="majal_authorized_signatory_title"/>
+                            <field name="majal_approval_mark" widget="image"/>
+                        </group>
+                        <group string="Footer">
+                            <field name="majal_document_footer" widget="html"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="majal_branding.BurgerMenuWithoutCompanySwitcher"
+       t-inherit="web.BurgerMenu"
+       t-inherit-mode="extension"
+       owl="1">
+        <xpath expr="//MobileSwitchCompanyMenu" position="replace"/>
+    </t>
+</templates>

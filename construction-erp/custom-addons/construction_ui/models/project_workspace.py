@@ -1,5 +1,5 @@
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 
 class MajalProjectDocument(models.Model):
@@ -59,6 +59,66 @@ class MajalProjectDocument(models.Model):
     approved_date = fields.Datetime(readonly=True)
     decision_note = fields.Text()
 
+    _decision_fields = {
+        "state",
+        "submitted_by_id",
+        "submitted_date",
+        "approved_by_id",
+        "approved_date",
+        "decision_note",
+    }
+    _controlled_content_fields = {
+        "name",
+        "document_type",
+        "partner_id",
+        "date_document",
+        "amount",
+        "attachment_ids",
+        "description",
+        "project_id",
+    }
+
+    def write(self, vals):
+        if (
+            self._decision_fields & set(vals)
+            and not self.env.context.get("majal_document_transition")
+            and not self.env.su
+        ):
+            raise AccessError(
+                _("Document decisions can only be changed through workflow actions.")
+            )
+        if (
+            self._controlled_content_fields & set(vals)
+            and not self.env.context.get("majal_document_transition")
+            and any(record.state not in ("draft", "rejected") for record in self)
+        ):
+            raise UserError(
+                _("Return this document to draft or create a revision before editing it.")
+            )
+        return super().write(vals)
+
+    def unlink(self):
+        if any(record.state != "draft" for record in self) and not self.env.su:
+            raise UserError(_("Submitted project documents cannot be deleted."))
+        return super().unlink()
+
+    def _check_named_approver(self):
+        for record in self:
+            if record.approver_id and record.approver_id != self.env.user:
+                raise AccessError(
+                    _("Only %s can decide this document.") % record.approver_id.name
+                )
+            if not record.approver_id and not self.env.user.has_group(
+                "construction_base.group_construction_pm"
+            ):
+                raise AccessError(
+                    _("A Project Manager or the named approver must decide this document.")
+                )
+            if record.submitted_by_id == self.env.user:
+                raise AccessError(
+                    _("The person who submitted a document cannot approve it.")
+                )
+
     def _is_open_for_overdue(self):
         self.ensure_one()
         return self.state not in ("approved", "rejected", "closed")
@@ -67,7 +127,7 @@ class MajalProjectDocument(models.Model):
         for record in self:
             if record.state not in ("draft", "rejected"):
                 raise UserError(_("Only draft or rejected documents can be submitted."))
-            record.write(
+            record.with_context(majal_document_transition=True).write(
                 {
                     "state": "submitted",
                     "submitted_by_id": self.env.user.id,
@@ -79,13 +139,18 @@ class MajalProjectDocument(models.Model):
             )
 
     def action_review(self):
-        self.filtered(lambda record: record.state == "submitted").state = "under_review"
+        records = self.filtered(lambda record: record.state == "submitted")
+        records._check_named_approver()
+        records.with_context(majal_document_transition=True).write(
+            {"state": "under_review"}
+        )
 
     def action_approve(self):
+        self._check_named_approver()
         for record in self:
             if record.state not in ("submitted", "under_review"):
                 raise UserError(_("Only submitted documents can be approved."))
-            record.write(
+            record.with_context(majal_document_transition=True).write(
                 {
                     "state": "approved",
                     "approved_by_id": self.env.user.id,
@@ -95,10 +160,11 @@ class MajalProjectDocument(models.Model):
             )
 
     def action_reject(self):
+        self._check_named_approver()
         for record in self:
             if record.state not in ("submitted", "under_review"):
                 raise UserError(_("Only submitted documents can be returned."))
-            record.write(
+            record.with_context(majal_document_transition=True).write(
                 {
                     "state": "rejected",
                     "approved_by_id": False,
@@ -108,10 +174,18 @@ class MajalProjectDocument(models.Model):
             )
 
     def action_close(self):
-        self.filtered(lambda record: record.state == "approved").state = "closed"
+        if not self.env.user.has_group("construction_base.group_construction_pm"):
+            raise AccessError(_("Only a Project Manager can close documents."))
+        self.filtered(lambda record: record.state == "approved").with_context(
+            majal_document_transition=True
+        ).write({"state": "closed"})
 
     def action_reset_draft(self):
-        self.filtered(lambda record: record.state in ("rejected", "closed")).state = "draft"
+        if not self.env.user.has_group("construction_base.group_construction_pm"):
+            raise AccessError(_("Only a Project Manager can reset documents."))
+        self.filtered(lambda record: record.state in ("rejected", "closed")).with_context(
+            majal_document_transition=True
+        ).write({"state": "draft"})
 
 
 class ProjectProject(models.Model):
@@ -219,13 +293,65 @@ class ConstructionDrawingRevision(models.Model):
     approved_date = fields.Datetime(readonly=True)
     approval_note = fields.Text(string="Review / Sign-off Note")
 
+    _approval_decision_fields = {
+        "approval_state",
+        "submitted_by_id",
+        "submitted_date",
+        "approved_by_id",
+        "approved_date",
+    }
+
+    def write(self, vals):
+        if (
+            self._approval_decision_fields & set(vals)
+            and not self.env.context.get("majal_drawing_transition")
+            and not self.env.su
+        ):
+            raise AccessError(
+                _("Drawing sign-off can only be changed through workflow actions.")
+            )
+        if (
+            {"attachment_id", "sheet_file"} & set(vals)
+            and not self.env.context.get("majal_drawing_transition")
+            and any(revision.approval_state not in ("draft", "rejected") for revision in self)
+        ):
+            raise UserError(
+                _("Create a new drawing revision instead of replacing a submitted sheet.")
+            )
+        return super().write(vals)
+
+    def unlink(self):
+        if (
+            any(revision.approval_state != "draft" for revision in self)
+            and not self.env.su
+        ):
+            raise UserError(_("Submitted drawing revisions cannot be deleted."))
+        return super().unlink()
+
+    def _check_signoff_authority(self):
+        for revision in self:
+            if revision.approver_id and revision.approver_id != self.env.user:
+                raise AccessError(
+                    _("Only %s can sign off this drawing.") % revision.approver_id.name
+                )
+            if not revision.approver_id and not self.env.user.has_group(
+                "construction_base.group_construction_pm"
+            ):
+                raise AccessError(
+                    _("A Project Manager or the named approver must sign off this drawing.")
+                )
+            if revision.submitted_by_id == self.env.user:
+                raise AccessError(
+                    _("The person who submitted a drawing cannot sign it off.")
+                )
+
     def action_submit_approval(self):
         for revision in self:
             if revision.approval_state not in ("draft", "rejected"):
                 raise UserError(_("Only draft or returned revisions can be submitted."))
             if not revision.attachment_id:
                 raise UserError(_("Upload the drawing PDF before requesting sign-off."))
-            revision.write(
+            revision.with_context(majal_drawing_transition=True).write(
                 {
                     "approval_state": "submitted",
                     "submitted_by_id": self.env.user.id,
@@ -234,10 +360,11 @@ class ConstructionDrawingRevision(models.Model):
             )
 
     def action_approve_revision(self):
+        self._check_signoff_authority()
         for revision in self:
             if revision.approval_state != "submitted":
                 raise UserError(_("Only submitted revisions can be signed off."))
-            revision.write(
+            revision.with_context(majal_drawing_transition=True).write(
                 {
                     "approval_state": "approved",
                     "approved_by_id": self.env.user.id,
@@ -246,12 +373,18 @@ class ConstructionDrawingRevision(models.Model):
             )
 
     def action_reject_revision(self):
-        self.filtered(lambda revision: revision.approval_state == "submitted").write(
+        records = self.filtered(lambda revision: revision.approval_state == "submitted")
+        records._check_signoff_authority()
+        records.with_context(majal_drawing_transition=True).write(
             {"approval_state": "rejected", "approved_by_id": False, "approved_date": False}
         )
 
     def action_reset_approval(self):
-        self.filtered(lambda revision: revision.approval_state == "rejected").approval_state = "draft"
+        if not self.env.user.has_group("construction_base.group_construction_pm"):
+            raise AccessError(_("Only a Project Manager can reset drawing sign-off."))
+        self.filtered(lambda revision: revision.approval_state == "rejected").with_context(
+            majal_drawing_transition=True
+        ).write({"approval_state": "draft"})
 
     def action_make_current(self):
         if any(revision.approval_state != "approved" for revision in self):

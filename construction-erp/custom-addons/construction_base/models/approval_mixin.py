@@ -14,7 +14,7 @@ worth, and what kind it is.
 import logging
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -34,7 +34,40 @@ class ConstructionApprovable(models.AbstractModel):
     approval_blocked = fields.Boolean(
         compute="_compute_approval",
         help="True while an approval is outstanding, so a form can stop "
-             "offering the button that needs it.")
+        "offering the button that needs it.")
+
+    def write(self, values):
+        if (
+            "state" in values
+            and not self.env.su
+            and not self.env.context.get("majal_workflow_transition")
+        ):
+            raise AccessError(
+                self.env._(
+                    "Use the document workflow actions to change status. "
+                    "Direct state changes are blocked."
+                )
+            )
+        return super().write(values)
+
+    def unlink(self):
+        if not self.env.su:
+            protected = self.filtered(
+                lambda record: (
+                    record._open_approval_request()
+                    or (
+                        "state" in record._fields
+                        and record.state not in ("draft", "rejected", "cancelled")
+                    )
+                )
+            )
+            if protected:
+                raise AccessError(
+                    self.env._(
+                        "Submitted workflow records are retained as audit evidence."
+                    )
+                )
+        return super().unlink()
 
     # ------------------------------------------------------------------
     # Hooks for the inheriting model

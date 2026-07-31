@@ -813,7 +813,7 @@ msgstr "الحوادث"
 #: model:ir.actions.act_window,name:construction_hse.action_incident
 #: model:ir.ui.menu,name:construction_hse.menu_hse_incidents
 msgid "Incidents & Near Misses"
-msgstr "الحوادث وحوادث الوشك"
+msgstr "الحوادث وشبه الحوادث"
 
 #. module: construction_hse
 #. odoo-python
@@ -1124,12 +1124,12 @@ msgstr "وشك حادث"
 #: model:ir.model.fields,field_description:construction_hse.field_project_project__hse_near_miss_count
 #: model_terms:ir.ui.view,arch_db:construction_hse.view_incident_search
 msgid "Near Misses"
-msgstr "حوادث الوشك"
+msgstr "شبه الحوادث"
 
 #. module: construction_hse
 #: model_terms:ir.ui.view,arch_db:construction_hse.view_project_safety_list
 msgid "Near misses"
-msgstr "حوادث وشك"
+msgstr "شبه الحوادث"
 
 #. modules: construction_bim, construction_hse, construction_material,
 #. construction_meeting, construction_tender

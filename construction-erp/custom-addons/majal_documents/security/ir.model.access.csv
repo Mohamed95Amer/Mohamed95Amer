@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_document_user,majal.document user,model_majal_document,base.group_user,1,1,1,1
+access_majal_document_version_user,majal.document.version user,model_majal_document_version,base.group_user,1,0,0,0
+access_majal_document_template_user,majal.document.template user,model_majal_document_template,base.group_user,1,1,1,1
+access_majal_sheet_user,majal.sheet user,model_majal_sheet,base.group_user,1,1,1,1
+access_majal_sheet_line_user,majal.sheet.line user,model_majal_sheet_line,base.group_user,1,1,1,1

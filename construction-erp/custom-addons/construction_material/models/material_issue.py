@@ -164,7 +164,7 @@ class ConstructionMaterialIssueLine(models.Model):
         compute="_compute_value", store=True, currency_field="currency_id")
     currency_id = fields.Many2one(related="issue_id.currency_id")
     qty_on_hand = fields.Float(
-        compute="_compute_qty_on_hand", string="On Site",
+        compute="_compute_qty_on_hand", compute_sudo=True, string="On Site",
         help="Quantity of this product currently in the site store.")
 
     @api.depends("product_id")

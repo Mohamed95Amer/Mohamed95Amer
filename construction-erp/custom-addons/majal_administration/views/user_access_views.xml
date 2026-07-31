@@ -15,6 +15,9 @@
                 <field name="login"/>
                 <field name="majal_role_id"/>
                 <field name="majal_industry_scope"/>
+                <field name="majal_capability_pack_ids"
+                       widget="many2many_tags"
+                       optional="show"/>
                 <field name="majal_access_summary" optional="hide"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="active"/>
@@ -55,13 +58,17 @@
                         <group string="Majal Access">
                             <field name="majal_role_id" readonly="1"/>
                             <field name="majal_industry_scope" readonly="1"/>
+                            <field name="majal_capability_pack_ids"
+                                   widget="many2many_tags"
+                                   readonly="1"/>
                             <field name="lang" readonly="1"/>
                             <field name="tz" readonly="1"/>
                         </group>
                     </group>
                     <div class="alert alert-info mt-3" role="alert">
                         Access levels are controlled through Majal roles. Raw technical
-                        permissions are intentionally hidden from client administrators.
+                        permissions are intentionally hidden. Optional capability packs
+                        are explicit, role-limited and recorded in the administration audit.
                     </div>
                 </sheet>
             </form>
@@ -96,6 +103,14 @@
         <field name="search_view_id" ref="view_majal_client_user_search"/>
         <field name="domain">[('share', '=', False), ('login', 'not in', ['default', '__system__'])]</field>
         <field name="context">{'active_test': False}</field>
+        <field name="groups_id" eval="[(4, ref('group_user_administrator'))]"/>
+    </record>
+
+    <record id="action_majal_client_users_scoped" model="ir.actions.server">
+        <field name="name">Users &amp; Access</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_majal_client_users()</field>
         <field name="groups_id" eval="[(4, ref('group_user_administrator'))]"/>
     </record>
 </odoo>

@@ -9,7 +9,7 @@ answer "what is waiting on me" across fourteen different kinds of document.
 from datetime import timedelta
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 STEP_STATES = [
     ("pending", "Waiting"),
@@ -47,6 +47,39 @@ class ConstructionApprovalRequest(models.Model):
     step_ids = fields.One2many("construction.approval.step", "request_id")
     current_step_id = fields.Many2one(
         "construction.approval.step", compute="_compute_current_step")
+
+    _protected_transition_fields = {
+        "state",
+        "decided_on",
+        "requested_by_id",
+        "requested_on",
+        "res_model",
+        "res_id",
+        "record_reference",
+        "rule_id",
+        "amount",
+        "project_id",
+    }
+
+    def write(self, vals):
+        if (
+            self._protected_transition_fields & set(vals)
+            and not self.env.su
+        ):
+            raise AccessError(
+                self.env._(
+                    "Approval state and decision evidence can only be changed "
+                    "through the approval actions."
+                )
+            )
+        return super().write(vals)
+
+    def unlink(self):
+        if not self.env.su:
+            raise AccessError(
+                self.env._("Approval requests are immutable audit evidence.")
+            )
+        return super().unlink()
 
     @api.depends("record_reference", "res_model")
     def _compute_name(self):
@@ -97,7 +130,9 @@ class ConstructionApprovalRequest(models.Model):
         self.ensure_one()
         if self.step_ids.filtered(lambda s: s.state == "pending"):
             return False
-        self.write({"state": "approved", "decided_on": fields.Datetime.now()})
+        self.sudo().write(
+            {"state": "approved", "decided_on": fields.Datetime.now()}
+        )
         record = self._record()
         if record is not None:
             # Elevated deliberately. The approver's authority is to decide, not
@@ -110,9 +145,11 @@ class ConstructionApprovalRequest(models.Model):
 
     def _reject(self, reason):
         self.ensure_one()
-        self.step_ids.filtered(lambda s: s.state == "pending").write(
+        self.step_ids.filtered(lambda s: s.state == "pending").sudo().write(
             {"state": "skipped"})
-        self.write({"state": "rejected", "decided_on": fields.Datetime.now()})
+        self.sudo().write(
+            {"state": "rejected", "decided_on": fields.Datetime.now()}
+        )
         record = self._record()
         if record is not None:
             record.sudo()._on_approval_refused(self, reason)
@@ -135,7 +172,9 @@ class ConstructionApprovalRequest(models.Model):
             request = request.sudo()
             request.step_ids.filtered(lambda s: s.state == "pending").write(
                 {"state": "skipped"})
-            request.state = "cancelled"
+            request.sudo().write(
+                {"state": "cancelled"}
+            )
 
 
 class ConstructionApprovalStep(models.Model):
@@ -175,6 +214,38 @@ class ConstructionApprovalStep(models.Model):
     waiting_days = fields.Integer(
         compute="_compute_waiting_days", search="_search_waiting_days",
         help="How long this decision has been outstanding.")
+
+    _protected_decision_fields = {
+        "state",
+        "decided_by_id",
+        "delegated_from_id",
+        "decided_on",
+        "reason",
+        "request_id",
+        "group_id",
+        "user_id",
+        "sequence",
+    }
+
+    def write(self, vals):
+        if (
+            self._protected_decision_fields & set(vals)
+            and not self.env.su
+        ):
+            raise AccessError(
+                self.env._(
+                    "Approval decisions can only be recorded through Approve "
+                    "or Reject."
+                )
+            )
+        return super().write(vals)
+
+    def unlink(self):
+        if not self.env.su:
+            raise AccessError(
+                self.env._("Approval steps are immutable audit evidence.")
+            )
+        return super().unlink()
 
     @api.depends("requested_on", "state")
     def _compute_waiting_days(self):

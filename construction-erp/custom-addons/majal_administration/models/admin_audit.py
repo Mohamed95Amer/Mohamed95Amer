@@ -17,6 +17,8 @@ class MajalAdminAudit(models.Model):
             ("backup_verified", "Recovery Point Verified"),
             ("restore_prepared", "Restore Prepared"),
             ("restore_cancelled", "Restore Cancelled"),
+            ("restore_completed", "Restore Completed"),
+            ("restore_failed", "Restore Failed"),
         ],
         required=True,
         index=True,
@@ -35,18 +37,32 @@ class MajalAdminAudit(models.Model):
     snapshot_id = fields.Many2one("majal.backup.snapshot", readonly=True)
     summary = fields.Char(required=True, readonly=True)
     company_id = fields.Many2one("res.company", required=True, readonly=True)
+    old_values = fields.Json(readonly=True)
+    new_values = fields.Json(readonly=True)
 
     @api.model
-    def _log(self, event_type, summary, target_user=None, snapshot=None):
-        return self.create(
+    def _log(
+        self,
+        event_type,
+        summary,
+        target_user=None,
+        snapshot=None,
+        old_values=None,
+        new_values=None,
+    ):
+        actor = self.env.user
+        company = self.env.company
+        return self.sudo().create(
             {
                 "event_type": event_type,
-                "actor_id": self.env.user.id,
-                "actor_name": self.env.user.name,
+                "actor_id": actor.id,
+                "actor_name": actor.name,
                 "target_user_id": target_user.id if target_user else False,
                 "snapshot_id": snapshot.id if snapshot else False,
                 "summary": summary,
-                "company_id": self.env.company.id,
+                "company_id": company.id,
+                "old_values": old_values or {},
+                "new_values": new_values or {},
             }
         )
 

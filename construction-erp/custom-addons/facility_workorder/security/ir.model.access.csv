@@ -5,4 +5,5 @@ access_jobplan_task_all,job.plan.task read,model_facility_job_plan_task,base.gro
 access_jobplan_task_mgr,job.plan.task mgr,model_facility_job_plan_task,maintenance.group_equipment_manager,1,1,1,1
 access_pmplan_all,pm.plan read,model_facility_pm_plan,base.group_user,1,0,0,0
 access_pmplan_mgr,pm.plan mgr,model_facility_pm_plan,maintenance.group_equipment_manager,1,1,1,1
-access_reqtask_user,request.task user,model_facility_request_task,base.group_user,1,1,1,1
+access_reqtask_user,request.task user,model_facility_request_task,base.group_user,1,1,1,0
+access_reqtask_manager,request.task manager,model_facility_request_task,maintenance.group_equipment_manager,1,1,1,1

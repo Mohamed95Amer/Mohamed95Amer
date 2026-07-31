@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="construction_ui.DashboardHub">
+    <main class="o_majal_dashboard_hub">
+        <section class="o_mdh_hero">
+            <div>
+                <span class="o_mdh_eyebrow">MAJAL CONTROL CENTRE</span>
+                <h1>Management dashboards</h1>
+                <p>Start with the company-wide position, then move directly into the operation that needs attention.</p>
+            </div>
+            <div class="o_mdh_status">
+                <span class="o_mdh_status_dot"/>
+                Live operational view
+            </div>
+        </section>
+
+        <div t-if="state.loading" class="o_mdh_loading">
+            <i class="fa fa-circle-o-notch fa-spin" aria-hidden="true"/>
+            Preparing the management picture…
+        </div>
+
+        <t t-else="">
+            <section class="o_mdh_kpis" aria-label="Management indicators">
+                <article t-foreach="kpis" t-as="kpi" t-key="kpi.label"
+                         class="o_mdh_kpi"
+                         t-att-class="{ o_alert: kpi.alert }">
+                    <span class="o_mdh_kpi_label" t-esc="kpi.label"/>
+                    <strong t-esc="kpi.value"/>
+                    <small t-esc="kpi.note"/>
+                </article>
+            </section>
+
+            <section class="o_mdh_section_head">
+                <div>
+                    <span class="o_mdh_eyebrow">READY VIEWS</span>
+                    <h2>Choose a dashboard</h2>
+                </div>
+                <p>Each view is filtered by your company, role, and assigned work.</p>
+            </section>
+
+            <section class="o_mdh_cards">
+                <button t-foreach="cards" t-as="card" t-key="card.key"
+                        type="button"
+                        class="o_mdh_card"
+                        t-att-class="'o_tone_' + card.tone"
+                        t-on-click="() => this.openAction(card.action)">
+                    <span class="o_mdh_card_icon">
+                        <i t-att-class="'fa ' + card.icon" aria-hidden="true"/>
+                    </span>
+                    <span class="o_mdh_card_body">
+                        <small t-esc="card.eyebrow"/>
+                        <strong t-esc="card.title"/>
+                        <span t-esc="card.description"/>
+                    </span>
+                    <i class="fa fa-arrow-right o_mdh_card_arrow" aria-hidden="true"/>
+                </button>
+            </section>
+        </t>
+    </main>
+</t>
+
+</templates>

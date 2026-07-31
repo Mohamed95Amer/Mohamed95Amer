@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -18,6 +19,28 @@ class TestPreventiveMaintenance(TransactionCase):
         })
         cls.meter = cls.env["facility.asset.meter"].create(
             {"name": "Hours", "equipment_id": cls.asset.id, "uom": "hours"})
+        cls.technician = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Checklist Technician",
+            "login": "checklist-technician-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+        cls.facility_manager = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Checklist Manager",
+            "login": "checklist-manager-access@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(
+                6,
+                0,
+                [cls.env.ref("maintenance.group_equipment_manager").id],
+            )],
+        })
 
     def _reading(self, value, day=None):
         self.env["facility.asset.meter.reading"].create({
@@ -83,3 +106,18 @@ class TestPreventiveMaintenance(TransactionCase):
         self.assertEqual(req.checklist_progress, 0)
         req.checklist_ids[0].done = True
         self.assertEqual(req.checklist_progress, 50)
+
+    def test_technician_updates_checklist_but_cannot_delete_it(self):
+        request = self.env["maintenance.request"].create({
+            "name": "Assigned checklist",
+            "equipment_id": self.asset.id,
+            "job_plan_id": self.job.id,
+            "user_id": self.technician.id,
+        })
+        task = request.checklist_ids[0]
+        task.with_user(self.technician).write({"done": True})
+        self.assertTrue(task.done)
+        with self.assertRaises(AccessError):
+            task.with_user(self.technician).unlink()
+        task.with_user(self.facility_manager).unlink()
+        self.assertFalse(task.exists())
