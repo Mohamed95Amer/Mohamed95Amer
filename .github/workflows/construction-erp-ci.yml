@@ -110,8 +110,28 @@ jobs:
           # init-db also installs third-party accounting, which is not ours.
           init_ours = {m for m in init if m in on_disk}
 
-          missing_from_tests = on_disk - tests
-          missing_from_init = on_disk - init_ours
+          # Modules deliberately left out, and why. This list is the whole
+          # point of the check: a new module missing from the scripts is
+          # almost always an oversight, so the exceptions have to be stated
+          # rather than tolerated.
+          #
+          #   majal_demo — an opt-in acceptance dataset. Its post_init_hook
+          #   creates a second company and a set of persona logins sharing one
+          #   password. Installing that into every test database and every
+          #   developer's init would seed both with data nobody asked for, and
+          #   it carries no tests of its own. auto_install is False for the
+          #   same reason.
+          intentionally_excluded = {"majal_demo"}
+
+          missing_from_tests = on_disk - tests - intentionally_excluded
+          missing_from_init = on_disk - init_ours - intentionally_excluded
+
+          # An exception that no longer names a real module is a stale
+          # exception, and the next one added under it inherits the silence.
+          stale = intentionally_excluded - on_disk
+          if stale:
+              print("excluded but not on disk:", sorted(stale))
+              sys.exit(1)
           if missing_from_tests:
               print("not in scripts/run-tests.sh:", sorted(missing_from_tests))
           if missing_from_init:
