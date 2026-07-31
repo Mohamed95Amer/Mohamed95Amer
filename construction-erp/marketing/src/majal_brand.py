@@ -15,6 +15,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 FONT_DIR = os.path.join(ROOT, "assets", "fonts")
+IMG_DIR = os.path.join(ROOT, "assets", "img")
 
 MM = 72.0 / 25.4  # points per millimetre
 
@@ -393,6 +394,61 @@ class Canvas:
             self.text(x, y + i * leading, ar(ln), font=font, size=size,
                       color=color, align="right", alpha=alpha)
         return y + (len(lines) - 1) * leading
+
+    # -- real product screenshots ------------------------------------------
+    def img_size(self, name):
+        """Native pixel size of a prepared screenshot."""
+        from PIL import Image
+        with Image.open(os.path.join(IMG_DIR, name + ".png")) as im:
+            return im.size
+
+    def img_h_for_w(self, name, w):
+        iw, ih = self.img_size(name)
+        return w * ih / float(iw)
+
+    def img_w_for_h(self, name, h):
+        iw, ih = self.img_size(name)
+        return h * iw / float(ih)
+
+    def image(self, name, x, y, w=None, h=None):
+        """Place a real screenshot. Exactly one of w/h is given; the other is
+        derived from the file, so nothing is ever distorted. Returns (w, h)."""
+        iw, ih = self.img_size(name)
+        if w is None and h is None:
+            raise ValueError("give a width or a height")
+        if w is None:
+            w = h * iw / float(ih)
+        if h is None:
+            h = w * ih / float(iw)
+        self.c.drawImage(os.path.join(IMG_DIR, name + ".png"),
+                         x, self.y(y + h), width=w, height=h,
+                         preserveAspectRatio=True, anchor="nw", mask=None)
+        return w, h
+
+    def plate(self, name, x, y, w=None, h=None, edge="rule_dark", ticks=True,
+              tick_color="accent", lw=0.6):
+        """A screenshot set squarely on the ground inside a hairline, with
+        drafting registration ticks at the corners. No device frames, no tilt,
+        no drop shadow — a real artefact placed square and allowed to be itself.
+        """
+        w, h = self.image(name, x, y, w, h)
+        self.rect(x, y, w, h, stroke=edge, lw=lw)
+        if ticks:
+            t = min(w, h) * 0.045
+            for (cx, cy, dx, dy) in ((x, y, 1, 1), (x + w, y, -1, 1),
+                                     (x, y + h, 1, -1), (x + w, y + h, -1, -1)):
+                self.hline(cx if dx > 0 else cx - t, cy, t,
+                           color=tick_color, lw=0.9)
+                self.vline(cx, cy if dy > 0 else cy - t, t,
+                           color=tick_color, lw=0.9)
+        return w, h
+
+    def caption(self, x, y, s, max_w, color="muted", size=7.4, align="left",
+                font=None):
+        """Figure caption. Italic reading face, small, on the baseline grid."""
+        return self.para(x, y, s, font=font or TEXT_I, size=size,
+                         leading=snap(size * 1.5, self.unit), color=color,
+                         max_w=max_w, align=align)
 
     # -- screenshot placeholder --------------------------------------------
     def screenshot_slot(self, x, y, w, h, slot_id, caption, on_dark=False,

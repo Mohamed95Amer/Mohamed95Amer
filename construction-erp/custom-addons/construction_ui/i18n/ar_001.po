@@ -8453,7 +8453,7 @@ msgstr "التجاري"
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
 msgid "Commercial Exposure"
-msgstr "الانكشاف التجاري"
+msgstr "الموقف التجاري"
 
 #. module: construction_ui
 #. odoo-javascript
