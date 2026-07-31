@@ -90,7 +90,7 @@ h4 { font-size: 1rem; margin-top: 1.6em; text-transform: none; }
 
 h2:first-child, h3:first-child { margin-top: 0; }
 
-p, ul, ol, dl { margin: 0 0 1.1em; }
+p, ul, ol, dl { margin: 0 0 1.1em; overflow-wrap: break-word; }
 li { margin-bottom: .4em; }
 li > ul, li > ol { margin-top: .4em; }
 
@@ -118,7 +118,11 @@ code, kbd, samp {
   padding: .12em .38em;
   border-radius: 4px;
   border: 1px solid var(--line);
+  /* Paths, module names and manifest keys are long and unbreakable. Let them
+     break inside a narrow column rather than pushing the page sideways. */
+  overflow-wrap: break-word;
 }
+pre code { overflow-wrap: normal; }
 
 pre {
   background: var(--code-bg);
@@ -339,7 +343,7 @@ section.band.tinted { background: var(--surface-2); }
   padding: 1.35rem 1.4rem;
   box-shadow: var(--shadow);
 }
-.card h3 { margin-top: 0; }
+.card h2, .card h3 { margin-top: 0; font-size: clamp(1.1rem, 1.02rem + .38vw, 1.25rem); }
 .card > :last-child { margin-bottom: 0; }
 .card .eyebrow {
   font-size: .72rem;
@@ -353,7 +357,7 @@ section.band.tinted { background: var(--surface-2); }
 
 a.card { text-decoration: none; color: inherit; display: block; }
 a.card:hover { border-color: var(--primary); color: inherit; }
-a.card h3 { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
+a.card h2, a.card h3 { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---------- figures ---------- */
 
