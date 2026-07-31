@@ -177,6 +177,32 @@ class MajalBackupSnapshot(models.Model):
         return digest.hexdigest()
 
     @api.model
+    def _dump_timeout(self):
+        """Seconds to allow pg_dump before giving up.
+
+        This used to be `limit_time_real`, which is the budget for a single
+        HTTP request — 120 seconds in both shipped configs. A database large
+        enough to be worth backing up will exceed that, and the dump is killed
+        mid-write, so the nightly backup starts failing precisely as the data
+        becomes valuable. The two numbers answer different questions and the
+        dump gets its own.
+        """
+        configured = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("majal.backup_dump_timeout_s", "3600")
+        )
+        try:
+            timeout = int(configured)
+        except (TypeError, ValueError):
+            _logger.warning(
+                "majal.backup_dump_timeout_s is not a number (%r); using 3600",
+                configured,
+            )
+            return 3600
+        return timeout if timeout > 0 else None
+
+    @api.model
     def _build_archive(self, destination):
         root = self._backup_root()
         minimum_free_mb = int(
@@ -210,7 +236,7 @@ class MajalBackupSnapshot(models.Model):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.PIPE,
                 check=False,
-                timeout=odoo.tools.config.get("limit_time_real", 120),
+                timeout=self._dump_timeout(),
             )
             if result.returncode:
                 message = result.stderr.decode("utf-8", errors="replace")[-1500:]
@@ -348,19 +374,45 @@ class MajalBackupSnapshot(models.Model):
             return snapshot
         except Exception as error:
             _logger.exception("Majal recovery point creation failed")
-            failure = self.sudo().search([("slot", "=", "today")], limit=1)
-            if failure:
-                failure.sudo().write(
-                    {
-                        "state": "error",
-                        "error_message": str(error)[:2000],
-                    }
-                )
+            self._record_failure(error)
             raise
         finally:
             self.env.cr.execute(
                 "SELECT pg_advisory_unlock(hashtext('majal_verified_backup'))"
             )
+
+    @api.model
+    def _record_failure(self, error):
+        """Mark today's slot as failed, on a cursor that survives the raise.
+
+        Writing this on `self.env.cr` was pointless: the exception propagates
+        out of the cron, Odoo rolls the transaction back, and the row the
+        write touched returns to whatever it said before. So a backup could
+        fail every night and the screen whose entire job is to say "your last
+        recovery point is stale" would go on showing a healthy one — the
+        silence being indistinguishable from success is what makes it worth
+        fixing.
+
+        A second cursor is a second transaction, committed before the caller
+        re-raises, so the record of the failure outlives the rollback.
+        """
+        try:
+            with odoo.registry(self.env.cr.dbname).cursor() as cursor:
+                environment = api.Environment(cursor, odoo.SUPERUSER_ID, {})
+                failure = environment["majal.backup.snapshot"].search(
+                    [("slot", "=", "today")], limit=1
+                )
+                if failure:
+                    failure.write(
+                        {
+                            "state": "error",
+                            "error_message": str(error)[:2000],
+                        }
+                    )
+        except Exception:
+            # Never let the bookkeeping displace the original failure: it is
+            # the more useful of the two and it is the one being raised.
+            _logger.exception("Could not record the recovery point failure")
 
     @api.model
     def _cron_create_recovery_points(self):

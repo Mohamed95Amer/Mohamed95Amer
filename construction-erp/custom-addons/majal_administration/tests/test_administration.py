@@ -1,5 +1,35 @@
+from contextlib import contextmanager
+from unittest.mock import patch
+
+import odoo
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase
+
+
+@contextmanager
+def _borrowed(cursor):
+    """Hand out an existing cursor without closing it on the way out."""
+    yield cursor
+
+
+class _BorrowingRegistry:
+    """Stands in for odoo.registry(db) and lends the test's own cursor.
+
+    _record_failure asks the registry for a cursor precisely so its write
+    lands outside the transaction that is about to be rolled back. A test
+    cannot follow it there — a genuinely separate transaction cannot see the
+    snapshot this test created and has not committed. So the cursor is
+    swapped for the test's own, which keeps the write observable, and the
+    request count records that a second cursor was asked for at all.
+    """
+
+    def __init__(self, cursor):
+        self._cursor = cursor
+        self.requests = 0
+
+    def cursor(self):
+        self.requests += 1
+        return _borrowed(self._cursor)
 
 
 class TestMajalAdministration(TransactionCase):
@@ -150,6 +180,54 @@ class TestMajalAdministration(TransactionCase):
         self.assertFalse(
             promoted.has_group("majal_administration.group_platform_owner")
         )
+
+    def test_failed_backup_is_recorded_outside_the_rolled_back_transaction(self):
+        snapshots = self.env["majal.backup.snapshot"].sudo()
+        today = snapshots.search([("slot", "=", "today")], limit=1)
+        if not today:
+            today = snapshots.create({"name": "Today", "slot": "today"})
+        today.write({"state": "verified"})
+
+        registry = _BorrowingRegistry(self.env.cr)
+        with patch.object(odoo, "registry", return_value=registry):
+            snapshots._record_failure(RuntimeError("pg_dump went missing"))
+
+        self.assertEqual(registry.requests, 1)
+        # The write went through a second Environment, so this one's cache
+        # still holds the value from before it.
+        today.invalidate_recordset()
+        self.assertEqual(today.state, "error")
+        self.assertIn("pg_dump went missing", today.error_message)
+
+    def test_recording_a_failure_never_displaces_the_original_error(self):
+        # The bookkeeping is the less useful of the two errors and must not
+        # replace the one on its way up.
+        snapshots = self.env["majal.backup.snapshot"].sudo()
+        with patch.object(
+            odoo, "registry", side_effect=RuntimeError("no registry")
+        ):
+            snapshots._record_failure(RuntimeError("the real failure"))
+
+    def test_dump_timeout_is_not_the_http_request_budget(self):
+        snapshots = self.env["majal.backup.snapshot"].sudo()
+        parameter = self.env["ir.config_parameter"].sudo()
+
+        # limit_time_real is 120 in both shipped configs; the default here has
+        # to be a database-dump number, not a web-request one.
+        self.assertGreater(
+            snapshots._dump_timeout(),
+            odoo.tools.config.get("limit_time_real", 120),
+        )
+
+        parameter.set_param("majal.backup_dump_timeout_s", "900")
+        self.assertEqual(snapshots._dump_timeout(), 900)
+
+        # No timeout at all is a legitimate answer for a very large database.
+        parameter.set_param("majal.backup_dump_timeout_s", "0")
+        self.assertIsNone(snapshots._dump_timeout())
+
+        parameter.set_param("majal.backup_dump_timeout_s", "soon")
+        self.assertEqual(snapshots._dump_timeout(), 3600)
 
     def test_backup_path_cannot_escape_data_volume(self):
         parameter = self.env["ir.config_parameter"].sudo()

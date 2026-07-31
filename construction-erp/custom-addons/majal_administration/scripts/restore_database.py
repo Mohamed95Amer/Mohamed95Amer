@@ -143,7 +143,14 @@ def main():
     app_password = os.environ.get("MAJAL_DB_APP_PASSWORD")
     host = os.environ.get("HOST", "db")
     admin_user = os.environ.get("MAJAL_DB_ADMIN_USER", "odoo")
-    app_user = os.environ.get("USER", "majal_app")
+    # Not $USER. That is the container's OS username, which has nothing to do
+    # with the Postgres role Odoo owns its data as — and because it is set by
+    # the environment rather than by this stack, the documented "majal_app"
+    # fallback only applies on the machines that happen to leave it unset. The
+    # restore then connects as the wrong role and the failure arrives as a
+    # permission error deep inside a restore, which is the worst moment to be
+    # diagnosing one.
+    app_user = os.environ.get("MAJAL_DB_APP_USER", "majal_app")
     if not admin_password or not app_password:
         fail("Database recovery credentials were not supplied.")
 
