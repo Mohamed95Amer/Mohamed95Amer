@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Features — Majal construction &amp; facilities ERP</title>
+<meta name="description" content="What Majal does: BOQ and progress billing, variations, drawings, RFIs and submittals, CPM planning, HSE, tenders, subcontracts, IFC/BIM with clash detection and BCF, server-enforced approvals, QR/NFC asset tags, work orders and SLAs, spare parts, document control, the offline field app, portals, Arabic/RTL and verified recovery.">
+<meta name="theme-color" content="#173240">
+<link rel="stylesheet" href="/assets/css/majal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/features.html" aria-current="page">Features</a></li>
+        <li><a href="/insights/">Insights</a></li>
+        <li><a href="/about.html">Open source</a></li>
+        <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
+        <li><a href="/about.html#demo">Demo<span class="soon">soon</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>Features</h1>
+    <p class="lede">
+      Everything below is built and shipping in the repository unless the text says
+      otherwise. Where something is capped, approximate or deliberately absent, it says so —
+      a system that is vague about its limits gets trusted for things it cannot do, and the
+      first person to find out is whoever was relying on it.
+    </p>
+  </div>
+</div>
+
+<section class="band">
+  <div class="wrap">
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ul>
+        <li><a href="#commercial">Commercial: BOQ, variations, billing, CVR</a></li>
+        <li><a href="#construction">Construction delivery</a></li>
+        <li><a href="#planning">Planning &amp; programme</a></li>
+        <li><a href="#hse">Health, safety &amp; site records</a></li>
+        <li><a href="#procurement">Tenders &amp; subcontracts</a></li>
+        <li><a href="#materials">Materials &amp; site stores</a></li>
+        <li><a href="#bim">BIM and IFC</a></li>
+        <li><a href="#approvals">Approvals &amp; control</a></li>
+        <li><a href="#facilities">Facilities management</a></li>
+        <li><a href="#tags">QR &amp; NFC asset tags</a></li>
+        <li><a href="#mobile">Mobile &amp; field</a></li>
+        <li><a href="#documents">Document control</a></li>
+        <li><a href="#portal">Portals</a></li>
+        <li><a href="#platform">Platform, language &amp; recovery</a></li>
+        <li><a href="#modules">The full module list</a></li>
+      </ul>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ COMMERCIAL ============ -->
+<section class="band" id="commercial">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Commercial: BOQ, variations, progress billing, CVR</h2>
+
+      <h3>Bill of quantities</h3>
+      <p>
+        Hierarchical sections and priced lines, each carrying a budget cost breakdown across
+        material, labour, equipment, subcontract and overhead — so totals and margin are
+        derived from a structure somebody can argue with, not a single lump rate. Bills lock
+        on approval and revise by version.
+      </p>
+
+      <h3>Interim payment certificates</h3>
+      <p>
+        Certify cumulative work done against BOQ lines as a percentage complete, withhold
+        retention as a percentage with a cap, and raise the <em>net</em> customer invoice.
+        The certificate itself prints as a Payment Certificate PDF.
+      </p>
+
+      <h3>Change events and variation orders</h3>
+      <p>
+        A change event — often raised from an RFI or an instruction — becomes a priced
+        variation order. On approval its lines are appended to the bill of quantities,
+        adjusting the contract value <em>even when the bill is locked</em>, and they flow
+        into the next payment certificate. The alternative, a variation tracked in a
+        spreadsheet beside the bill, is how contract value and certified value stop agreeing.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-boq.png"
+           alt="A bill of quantities in Majal: hierarchical sections with priced lines, quantity, rate and amount columns, the budget cost split, and the running section and bill totals.">
+      <figcaption>
+        <strong>Bill of quantities.</strong> Sections and priced lines with the
+        material / labour / equipment / subcontract / overhead budget split behind each rate.
+        Lines linked to BIM model elements gain a model quantity and a variance column beside
+        the billed quantity — the model never overwrites the bill, because the quantity
+        somebody is being paid against is a commercial position, not a number a re-export
+        gets to change.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Cost Value Reconciliation</h3>
+      <p>
+        The monthly commercial control: contract value and certified value against budget,
+        committed and incurred cost — giving earned margin, forecast final margin, and the
+        movement against the margin the job was tendered at. Overspend already signed away in
+        subcontracts appears in the forecast rather than surfacing at final account. Prints
+        as a CVR PDF.
+      </p>
+
+      <h3>Commercial exposure and the executive dashboard</h3>
+      <p>
+        Portfolio-level: contract value across live projects, approved variations as a
+        percentage of contract (amber above 10%, red above 20% — a prompt to ask, not a
+        verdict), retention held, and certified-but-not-invoiced. Closed projects drop out,
+        because a board asks about live exposure.
+      </p>
+      <p>
+        The executive dashboard gathers commercial (CVR), programme (CPM slip), quality,
+        safety (LTIFR) and material figures for every project in one call and compares any
+        selection of them, with a worst-first watchlist. Portfolio rates are re-derived from
+        their components rather than averaged — an average of rates is a different number
+        from the rate, and usually a flattering one.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSTRUCTION ============ -->
+<section class="band tinted" id="construction">
+  <div class="wrap">
+    <h2>Construction delivery</h2>
+    <div class="grid">
+
+      <article class="card">
+        <h3>Drawings</h3>
+        <p>
+          A drawing register with revision control and a supersede workflow, plus bulk
+          multi-page PDF upload that parses number and revision from filenames. PDF is a
+          supported format on purpose; see <a href="#bim">why not DWG</a>.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>RFIs</h3>
+        <p>
+          Draft → submitted → answered → closed, with ball-in-court that flips automatically
+          as the document moves, overdue reminders by cron, and references to the drawings
+          the question is about.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Submittals</h3>
+        <p>
+          A submittal register with revision cycles — <em>Revise &amp; Resubmit</em> spawns
+          the next revision rather than editing the one that was reviewed — and multi-reviewer
+          approval chains built on OCA <code>base_tier_validation</code>.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Pins on plan</h3>
+        <p>
+          Sheet PDFs render on a canvas via Odoo's bundled pdf.js, with normalised pin
+          coordinates, status colouring, tap-to-open, and three taps from a point on a
+          drawing to a task, RFI, defect or note.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Defects and punch lists</h3>
+        <p>
+          Snagging and defects-liability items, pinnable on drawings, assignable to
+          subcontractors, with severity, kanban and a Punch List PDF. Back-charges on a
+          subcontractor's payment certificate link to the defect that caused them.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Inspections and forms</h3>
+        <p>
+          No-code checklist and inspection templates, recurring inspections, photo and
+          signature evidence, and PDF field reports. On a small screen the checklist becomes
+          one card per question with radio buttons rather than a table that truncates
+          "Wall finish…" to nothing useful.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Daily logs</h3>
+        <p>
+          A digital site diary: weather, manpower, equipment, activities and delays, with
+          computed totals and a PDF. The labour hours recorded here are what LTIFR is
+          computed from, so the safety statistic has a source rather than an estimate.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Meetings and minutes</h3>
+        <p>
+          Meeting series (progress, site, technical, HSE, client) with attendance, discussion
+          and actions. Open actions carry into the next meeting automatically while keeping
+          the meeting they were first raised at and a <strong>carry count</strong> — so an
+          item's real age survives the move, and the one nobody is doing stops being invisible.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLANNING ============ -->
+<section class="band" id="planning">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Planning &amp; programme</h2>
+      <p>
+        A Primavera-style programme rather than a task list: a work breakdown structure,
+        typed dependencies — finish-to-start, start-to-start, finish-to-finish,
+        start-to-finish — each with a lag, and a critical path engine that computes early
+        and late dates, total float and the critical path itself. Baselines record what was
+        agreed, and variance is measured against them. The Gantt is drawn with OCA
+        <code>web_timeline</code>.
+      </p>
+      <p>
+        The programme is also what drives 4D in the BIM viewer. There is no second schedule
+        kept inside the model: a date moved in the Gantt is a date moved in the 4D view, with
+        nothing to re-link and nothing to keep in step.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HSE ============ -->
+<section class="band tinted" id="hse">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Health, safety and site records</h2>
+      <ul class="ticks">
+        <li>
+          <strong>Permits to work</strong> — hot work, confined space, work at height,
+          excavation, lifting. A permit cannot be approved until every mandatory precaution
+          is confirmed, and it auto-expires the moment its validity window closes rather than
+          waiting for somebody to notice. Permit-to-Work PDF.
+        </li>
+        <li>
+          <strong>Incidents and near misses</strong> — root-cause investigation and
+          corrective actions that gate closure, so an incident cannot be closed with its
+          actions still open.
+        </li>
+        <li>
+          <strong>Toolbox talks</strong> — with a signed attendance record.
+        </li>
+        <li>
+          <strong>LTIFR</strong> — computed from the labour hours already recorded on the
+          daily site logs, not typed in separately.
+        </li>
+      </ul>
+      <p>
+        Permits, logs and inspections are worth nothing in money and matter enormously, so
+        their approval rules match on <em>kind</em> rather than value: hot work and confined
+        space want the safety manager, everything else the project manager.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCUREMENT ============ -->
+<section class="band" id="procurement">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Tenders and subcontractors</h2>
+
+      <h3>Tender packages and bid levelling</h3>
+      <p>
+        A tender package pulls its scope from the BOQ, so the budget travels with it. Bidders
+        are invited, and submissions are compared <strong>line by line</strong> — because a
+        bid with unpriced lines has not offered the whole scope, and bid totals alone hide
+        exactly that. Awarding writes the winning price straight into a subcontract, so it
+        lands in the CVR as committed cost, and marks the other bids unsuccessful. Bid
+        Levelling Sheet PDF.
+      </p>
+
+      <h3>Subcontracts</h3>
+      <p>
+        Subcontracts sit on the BOQ. Subcontractor payment certificates are the payable
+        mirror of the interim payment certificate, with their own retention, and
+        <strong>back-charges linked to defects</strong> — so the cost of somebody else's snag
+        is deducted with a reference to the snag. Certificates generate vendor bills. Payment
+        Certificate PDF.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATERIALS ============ -->
+<section class="band tinted" id="materials">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Materials and site stores</h2>
+      <p>
+        Built on Odoo stock rather than a parallel inventory. Each project gets a real stock
+        location. Material issues book stock out of the store into the works against a BOQ
+        item, and <strong>waste is recorded as scrap with a reason</strong> — offcut, damage,
+        spillage, over-order, loss.
+      </p>
+      <p>
+        The material position view puts budgeted, consumed, wasted and on-site quantities on
+        one row per product, so over-consumption — the early signal of waste, theft or a
+        mis-measured quantity — is visible against what was priced, while there is still a
+        month left to do something about it. Issue Docket PDF.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BIM ============ -->
+<section class="band" id="bim">
+  <div class="wrap">
+    <div class="prose">
+      <h2>BIM and IFC</h2>
+      <p>
+        A model that can be spun around is a picture. Majal's BIM module exists to make it a
+        record. Every element in an IFC file carries a <strong>GlobalId</strong>, a
+        22-character GUID authoring tools promise to keep stable across exports, so an RFI
+        raised against a wall stays attached to that wall through revision after revision.
+        Everything else follows from that one identity.
+      </p>
+
+      <h3>What is indexed, and where</h3>
+      <p>
+        The IFC STEP form (ISO-10303-21) is read server-side with no third-party library:
+        elements with their GlobalId, IFC type, name and containing storey; property sets
+        stored as rows rather than a blob, so "every door with a 60-minute fire rating" is a
+        query; and quantities stored as columns, so a takeoff totals by <code>read_group</code>
+        rather than by parsing a thousand JSON documents. Values are kept as text, because
+        IFC's own typing is inconsistent between authoring tools and coercing it here would
+        silently lose whichever the model actually said.
+      </p>
+      <p>
+        <strong>Geometry is not parsed on the server.</strong> It is drawn in the browser by
+        web-ifc, which keeps the server free of a graphics toolchain and means a model can be
+        indexed on a machine with no GPU.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-bim-viewer.png"
+           alt="The Majal BIM viewer showing an IFC model shaded in a single neutral material with drawn edges, a storey filter and section-cut controls at the side, and a selected element's IFC properties listed in a panel.">
+      <figcaption>
+        <strong>The viewer.</strong> Storey filtering, isolate and hide, a live section cut,
+        IFC properties on selection, and 3D pins that create the task, RFI or defect they
+        stand for and store the camera they were dropped from. The default shading is one
+        neutral material and a set of edges — <a href="/insights/bim-colour.html">the reason
+        is worth reading</a>.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Quantities against the bill</h3>
+      <p>
+        Every BOQ line linked to model elements gains a model quantity and a variance against
+        the billed quantity. Which measure answers a line is taken from its unit of measure —
+        cubic metres to volume, square metres to area — mapped by unit-of-measure category
+        xmlid rather than by category name, which is translated and would stop matching in
+        Arabic. A unit the model cannot measure (hours, lump sum) is left blank rather than
+        guessed, because a wrong default reads as a real variance. A separate quantity takeoff
+        totals the model by type and storey.
+      </p>
+
+      <h3>4D</h3>
+      <p>
+        A date slider drives element visibility from the dates of the programme tasks elements
+        are linked to. An element with no task is treated as existing throughout, because a
+        model is not a complete programme and hiding everything nobody has scheduled would
+        leave an empty screen on day one.
+      </p>
+
+      <h3>BCF 2.1 round-trip</h3>
+      <p>
+        Issues leave as <code>.bcfzip</code> archives and come back the same way, because the
+        people who answer them work in Solibri, Navisworks, Revit, Tekla, BIMcollab or Revizto
+        and will not log in here to read a pin. Topics are matched on <strong>GUID</strong>,
+        so a file round-tripped through a reviewer's tool updates the issues rather than
+        duplicating every one. A pin's camera is exported as the viewpoint; a pin with no
+        saved view still exports a camera standing back from the point, because a topic that
+        opens inside a wall is a topic nobody can read. The selected component is written by
+        IfcGuid, which is what lands the topic on the right wall in the other tool. A topic
+        raised here as a defect stays a defect on import.
+      </p>
+      <p class="note">
+        <span class="label">Implemented / not implemented</span>
+        Topics, comments, viewpoints and component selection are implemented. BCF's project
+        and extension schemas — which describe a server-side issue-tracking API rather than a
+        file — and the BCF REST API are not.
+      </p>
+
+      <h3>Revision comparison and federation</h3>
+      <p>
+        Two revisions of the same discipline are differenced on GlobalId: added, removed,
+        renamed, moved storey, changed quantity. Removals that carried an RFI, defect, task or
+        bill item are flagged, because that is the one a design manager has to deal with today.
+        This is an <em>index</em> comparison, not a geometric one — two walls can have
+        identical quantities and sit a metre apart, and this will not notice.
+      </p>
+      <p>
+        Several models load into one scene, each tinted by discipline and toggled
+        independently. Overlays are for coordination, not record-keeping: pins and links stay
+        with the host model, because "which model is this pin on" has to have one answer.
+      </p>
+
+      <h3>Clash detection</h3>
+      <p>
+        A clash test names two models and a tolerance, runs in the browser where the geometry
+        is, and records its results in Majal. Elements are bucketed into a uniform grid sized
+        from the median element, because every-element-against-every-element on two
+        ten-thousand-element models is a hundred million comparisons and the browser would
+        simply stop.
+      </p>
+      <p>
+        The status workflow is the part that matters over weeks. A clash somebody approved as
+        "seen, not a problem" stays approved through every future run — without that, a
+        box-overlap test is unusable by the second week. A clash the latest run no longer
+        finds resolves itself, flagged as closed by the run rather than by a person. A
+        resolved clash that comes back is reopened, because that is news. Pairs are matched
+        irrespective of which model was A. Any clash becomes an RFI with a pin at the
+        intersection point in one click.
+      </p>
+
+      <h3>Limitations, stated plainly</h3>
+      <div class="table-scroll">
+        <table>
+          <caption>From the BIM design notes in the repository.</caption>
+          <thead>
+            <tr><th scope="col">Limitation</th><th scope="col">What it means in practice</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Clash testing is bounding-box, not triangle-precise</td>
+              <td>A duct passing cleanly through a door opening has overlapping boxes and will be reported. Approving it is how you tell the system so.</td>
+            </tr>
+            <tr>
+              <td>Clash results are capped at 2000 per run</td>
+              <td>A run finding fifty thousand overlaps has found nothing anybody can act on. The skipped count is kept.</td>
+            </tr>
+            <tr>
+              <td>Units are not read from <code>IfcUnitAssignment</code></td>
+              <td>Quantities are reported in whatever unit the file was written in, and the takeoff will not say which. Check the authoring tool's export settings. Applies to the clash tolerance too.</td>
+            </tr>
+            <tr>
+              <td>Comparison is by index, not geometry</td>
+              <td>Identity, storey, name and measured quantity are compared. Position is not.</td>
+            </tr>
+            <tr>
+              <td>No IFC writing</td>
+              <td>The module reads models and writes BCF. It never edits or re-exports an IFC file.</td>
+            </tr>
+            <tr>
+              <td>Large models</td>
+              <td>Indexing is line-based and cheap but capped at 300&nbsp;MB per file. The browser viewer is the real limit — split federated towers by discipline.</td>
+            </tr>
+            <tr>
+              <td>DWG is not supported</td>
+              <td>The only complete readers are Autodesk's and the Open Design Alliance's, neither redistributable under LGPL-3. A DWG reader that opens a drawing and silently drops layers is worse than none. IFC for models, PDF for drawings — every tool that produces DWG exports both.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPROVALS ============ -->
+<section class="band tinted" id="approvals">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Approvals and control</h2>
+      <p>
+        Fourteen modules had each grown their own approve button — a state field and a
+        <code>groups="…"</code> attribute in a view. Two things were wrong with that, and the
+        second is serious. A threshold could not be expressed at all: a variation of five
+        thousand and one of five million took the same single click from the same person. And
+        the rule was a <em>UI instruction</em> — <code>groups</code> hides a button, it does
+        not stop the method being called.
+      </p>
+      <p>
+        A document becomes approvable by inheriting <code>construction.approvable</code> and
+        answering two questions: what it is worth, and what kind it is. A rule matches a
+        model, optionally a kind and a project, and a band of value, to a chain of steps. Each
+        step is a record — which is what makes a single inbox across many document types
+        possible: "waiting on me" is a query over steps, not a tour of every model.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-approval-inbox.png"
+           alt="The Waiting for Me approval inbox: a single list mixing variation orders, payment certificates, permits to work and bills of quantities, each row showing document type, value, requester, step position and how long it has been outstanding.">
+      <figcaption>
+        <strong>One inbox across every wired document type.</strong> Because a signature is a
+        step record rather than a state flag on fourteen different models, an approver opens
+        one list instead of touring the registers. Rows carry the value, the position in the
+        chain, and how long the step has been outstanding.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>The controls</h3>
+      <ul class="ticks">
+        <li><strong>The check is in the method.</strong> <code>_check_approved()</code> is called from <code>action_approve</code> itself, so the rule holds wherever the call comes from — a button, a script, the RPC console, or a screen nobody has written yet.</li>
+        <li><strong>Segregation of duties.</strong> On by default: the person who raised the document cannot sign it. It can be turned off where it does not apply — a daily log approved by the person who wrote it is normal.</li>
+        <li><strong>Order.</strong> A step cannot be signed while an earlier one is outstanding, so a chain cannot be signed from the bottom up.</li>
+        <li><strong>A reason is required to reject.</strong> A rejection without one guarantees a second cycle.</li>
+        <li><strong>Refusals explain themselves.</strong> "Project manager has to approve this first", not "access denied", which teaches nobody what to do next.</li>
+        <li><strong>Delegation with attribution.</strong> A delegation names who is covering and for how long; the delegate's inbox fills with the approver's outstanding steps; and each signature records whose authority was used — decided-by and delegated-from are separate fields. The usual field fix is sharing a login, which destroys the audit trail exactly where it matters.</li>
+      </ul>
+
+      <h3>An example delegation of authority</h3>
+      <div class="table-scroll">
+        <table>
+          <caption>Ships as demo data and is meant to be copied and edited, not treated as the product's opinion.</caption>
+          <thead>
+            <tr><th scope="col">Document</th><th scope="col">Band</th><th scope="col">Signatures</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Variation</td><td>up to 50,000</td><td>Project manager</td></tr>
+            <tr><td>Variation</td><td>50,000 – 250,000</td><td>Project manager, then commercial manager</td></tr>
+            <tr><td>Variation</td><td>above 250,000</td><td>Project manager, commercial manager, board</td></tr>
+            <tr><td>Bill of quantities</td><td>any</td><td>Commercial review, then project manager</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Bands are inclusive at the bottom and exclusive at the top, so 0–50,000 and
+        50,000–250,000 meet exactly once. A rule naming a project beats a company-wide one,
+        and a rule naming a kind beats one covering every kind — so a job with an unusual
+        delegation of authority gets its own rules without disturbing the others.
+      </p>
+
+      <h3>Where the check sits, per document</h3>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Document</th><th scope="col">Checked in</th><th scope="col">Matched on</th><th scope="col">The last signature</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bill of quantities</td><td><code>action_approve</code></td><td>sell total</td><td>approves the bill</td></tr>
+            <tr><td>Variation order</td><td><code>action_approve</code></td><td>absolute sell total</td><td>approves the variation</td></tr>
+            <tr><td>Payment certificate</td><td><code>action_certify</code></td><td>value of the period</td><td>certifies it</td></tr>
+            <tr><td>Permit to work</td><td><code>action_approve</code></td><td>kind only</td><td>issues the permit</td></tr>
+            <tr><td>Daily log</td><td><code>action_approve</code></td><td>kind only</td><td>approves the log</td></tr>
+            <tr><td>Inspection</td><td><code>action_approve</code></td><td>kind only</td><td>approves the inspection</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="note caution">
+        <span class="label">Deliberately not in the engine</span>
+        Six models are wired up, not every model — moving another across is a small, explicit
+        piece of work rather than something that happens by accident. A document no rule
+        covers keeps its old behaviour, because a suite that refused to work until rules were
+        written would only get the rules written badly and in a hurry. And there is no
+        approve-by-reply: the WhatsApp alert carries the document and the value and links into
+        an authenticated session, because a token in a message body that approves a
+        quarter-million variation is a signature anybody who sees the phone can forge.
+      </p>
+      <p><a href="/insights/approval-trails.html">The longer argument, with the test output that started it →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FACILITIES ============ -->
+<section class="band" id="facilities">
+  <div class="wrap">
+    <h2>Facilities management</h2>
+    <p class="prose">
+      Built on Odoo's Maintenance app and OCA modules rather than as a separate product.
+      This is Phase 4 of the roadmap and remains in active development; the modules below are
+      shipping.
+    </p>
+    <div class="grid">
+
+      <article class="card">
+        <h3>Asset registry</h3>
+        <p>
+          A site → building → floor → room location hierarchy, asset parent/child structure,
+          criticality, warranties with an expiry-alert cron, meters and readings, failure
+          codes (problem / cause / remedy), downtime on maintenance requests, and spare-part
+          lists.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Work orders and preventive maintenance</h3>
+        <p>
+          Job plans; preventive-maintenance plans that are calendar- or meter-based and
+          generate work orders by cron; a work-order checklist copied from the job plan; and
+          labour, parts and contractor costing on the order.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>SLAs on a business calendar</h3>
+        <p>
+          A policy matrix matched on priority, maintenance type, equipment category and asset
+          criticality — first match wins. Response and resolution clocks both run on a
+          business calendar, so a promise does not burn overnight. On-track / at-risk /
+          breached states, an escalation cron every fifteen minutes, and breach filters and
+          grouping on the work-order list.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Maintenance contracts</h3>
+        <p>
+          Annual maintenance contracts on OCA <code>contract</code>'s recurring billing: the
+          assets covered, the scope (preventive, corrective, parts) and <em>the SLA that was
+          sold</em>, which outranks the standing matrix for work on covered assets. Work
+          orders match themselves to their contract as they are raised, so absorbed cost and
+          recoverable out-of-scope cost stay apart and each contract shows a live margin
+          against what it has invoiced. PM-visit entitlement is counted on delivery.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Spare parts in real stores</h3>
+        <p>
+          Parts held in actual stock locations attached to facility locations and drawn down
+          by work orders. An asset takes parts from the nearest store above it in the
+          hierarchy, so parts cost stops being a number somebody typed and becomes what
+          actually left the shelf. The minimum quantity on the spare list finally means
+          something, and parts consumed on covered work under a contract that excludes them
+          show as recoverable.
+        </p>
+      </article>
+
+      <article class="card">
+        <h3>Floor plans</h3>
+        <p>
+          A 2D floor-plan PDF per location, with asset, maintenance-request and note pins
+          dropped on it — reusing the same plan viewer as construction drawings through a
+          shared pin mixin, rather than a second implementation that drifts.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAGS ============ -->
+<section class="band tinted" id="tags">
+  <div class="wrap">
+    <div class="prose">
+      <h2>QR and NFC asset tags</h2>
+      <p>
+        Every facility asset has a human-readable unique code such as
+        <code>AST-2026-00001</code>, independent QR and NFC destinations protected by an
+        unguessable token, an active / missing / retired tag state, optional storage of the
+        physical NFC tag UID, a printable 70 × 50&nbsp;mm label, an authenticated mobile
+        landing page, and append-only scan events recording asset, user, time, method and
+        assigned location. Tokens rotate when a label is lost or copied.
+      </p>
+      <p>
+        QR and NFC open <em>separate</em> Majal paths so scan history records which was used.
+        The NFC payload is the asset's tag URL encoded as an NFC Forum NDEF URI record. Both
+        tag URLs enter through Majal sign-in with a same-site return path: a new phone selects
+        the locked database, signs in, and then continues to the asset — without exposing the
+        database manager or bypassing record permissions.
+      </p>
+    </div>
+
+    <figure class="shot tall" style="max-width: 24rem;">
+      <img src="/assets/img/shot-asset-tag.png"
+           alt="The asset landing page reached by scanning a QR or NFC tag, on a phone: the asset code and name, its location in the hierarchy, warranty and open work, and buttons to confirm the scan, start a work order or record a meter reading.">
+      <figcaption>
+        <strong>What a scan opens.</strong> Tap the air-handling unit and see its warranty,
+        manuals and open work, confirm the physical scan, then start a work order or record a
+        meter reading. The tag token is an identifier, not a credential — possession of a
+        label never bypasses login or record rules.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Choosing the carrier</h3>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Need</th><th scope="col">Carrier</th><th scope="col">Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Fixed plant, rooms, panels, fire equipment</td><td>QR + NFC on one label</td><td>Any phone can scan QR; technicians get faster tap-to-open with NFC</td></tr>
+            <tr><td>Tools and returnable equipment, one at a time</td><td>Durable QR/NFC</td><td>Low cost and deliberate custody confirmation</td></tr>
+            <tr><td>Hundreds of items moving through gates</td><td>UHF RFID</td><td>Bulk reads without line of sight; NFC is intentionally short range</td></tr>
+            <tr><td>Vehicles and high-value mobile plant</td><td>BLE / GPS / cellular</td><td>Continuous or proximity location rather than manual scan events</td></tr>
+            <tr><td>Materials and batches shared with suppliers</td><td>GS1 QR / DataMatrix or RFID</td><td>Interoperable identifiers and EPCIS event exchange</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Majal's scan-event model is intentionally shaped to be compatible with GS1's EPCIS
+        <em>what, when, where and why</em>, and with GS1 Digital Link identifiers, so assets
+        can later be connected to supplier and owner information without reprinting the code.
+        UHF RFID, BLE and GS1 event exchange are carrier choices for your estate — Majal
+        implements the QR and NFC paths described above.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MOBILE ============ -->
+<section class="band" id="mobile">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Mobile and field</h2>
+      <p>
+        Measured in Chromium at a 390 × 664 viewport against a running instance, not inferred:
+        the backend home, defect list, inspection form and portal all fit without horizontal
+        overflow, and inspection form fields stack one per row. The app is installable to a
+        home screen today — Odoo 18 ships a manifest and service worker, and Majal overrides
+        them with its own name, colours, icons and a start URL on the construction workspace
+        rather than a generic backend root.
+      </p>
+    </div>
+
+    <figure class="shot tall" style="max-width: 24rem;">
+      <img src="/assets/img/shot-defect-mobile.png"
+           alt="Raising a defect on a phone-width screen: title field, then the photo capture control, then location, severity, project and description, all above the fold.">
+      <figcaption>
+        <strong>Raising a defect at 390&nbsp;px.</strong> Groups stack on a phone, so field
+        order <em>is</em> screen order — and the photo was tenth, below nine fields and a
+        description, on a screen where the photo is the entire point of a snag. The path is
+        now title → photo → location → severity → project → description, which measures as one
+        screen with nothing below the fold. Trade, phase, who fixes it and by when moved to an
+        Assignment tab.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Majal Field: bounded offline</h3>
+      <p>
+        Installable is not the same as offline, and Odoo's own service worker caches exactly
+        one page. Majal Field is a dedicated field PWA that stores only the current signed-in
+        user's field pack, with per-user device storage, idempotent synchronisation and
+        visible <code>write_date</code> conflicts. Opening it as another user purges the
+        previous user's local database and cache from that browser.
+      </p>
+      <p>
+        In airplane mode: assigned records and previously saved drawings remain available,
+        safe actions enter a local sync queue, going online triggers synchronisation, applied
+        operations disappear from the queue, and conflicts and rejected operations remain
+        visible for review. <em>Clear this device</em> removes cached records and
+        unsynchronised changes.
+      </p>
+      <p class="note caution">
+        <span class="label">The boundary is the point</span>
+        Only safe draft, checklist and scan actions work offline. Approvals, financial
+        posting, deletions and BIM stay online. A queued approval is a signature nobody can
+        date, and a queued posting is a ledger entry that may already be wrong by the time it
+        lands. <a href="/insights/offline-on-site.html">The full argument →</a>
+      </p>
+
+      <h3>The BIM viewer on a phone</h3>
+      <p>
+        Worth stating separately, because it is the part most likely to disappoint. web-ifc is
+        a 6&nbsp;MB WASM download before the model itself, and parsing happens on the device.
+        Pinch and pan work, and a single-discipline model of one floor is fine on a modern
+        handset. A federated whole-tower model is not, and no front-end work changes that — it
+        would need server-side geometry tiling, which is a project in its own right. On a
+        phone, treat the viewer as "look at this level"; coordination happens at a desk.
+      </p>
+
+      <h3>WhatsApp alerts</h3>
+      <p>
+        Operational alerts over Meta's WhatsApp Cloud API — permits about to expire, SLAs at
+        risk or breached, RFIs landing in someone's court, defects assigned to a
+        subcontractor, meeting actions carried too many times. They are queued by the events
+        that cause them and sent by cron, so a slow API never blocks a save. Delivery receipts
+        and replies come back through a webhook and land on the document they were about.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOCUMENTS ============ -->
+<section class="band tinted" id="documents">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Document control</h2>
+      <p>
+        Client-branded English and Arabic document templates with sanitised rich-text editing.
+        Submitting for approval creates an <strong>immutable HTML attachment and a
+        SHA-256</strong>; a different named approver approves <em>that exact revision</em>;
+        and issuing is allowed only while the approved checksum still equals the current
+        immutable revision. Changing a company logo or address affects new rendering but does
+        not alter the checksum or stored content of an approved revision.
+      </p>
+      <p>
+        Structured sheets cover BOQs, estimates, budgets, valuations, schedules and registers:
+        quantity × unit rate per line, <em>Freeze Revision</em> recording the canonical
+        SHA-256 and preventing edits, a manager-only <em>Start New Revision</em>, and CSV
+        export with a UTF-8 BOM for Arabic and formula-like text prefixed to prevent
+        spreadsheet formula injection.
+      </p>
+      <p class="note">
+        <span class="label">Said explicitly</span>
+        The optional company approval mark is an internal visual mark. It is
+        <strong>not</strong> a qualified electronic signature, and the documentation separates
+        the two rather than letting a client assume. The structured-sheet editor is
+        deliberately structured and auditable; it is not a lossless arbitrary XLSX or DOCX
+        editor.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTAL ============ -->
+<section class="band" id="portal">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Portals for the people who are not your staff</h2>
+      <p>
+        <strong>Construction portal</strong> — free Odoo portal accounts for subcontractors,
+        clients and consultants: self-service RFIs with ball-in-court, assigned defects with a
+        <em>ready for inspection</em> action, and subcontracts with their payment
+        certificates. Record rules scope every page to the user's own company.
+      </p>
+      <p>
+        <strong>Facilities portal</strong> — occupants report a fault against a piece of
+        equipment and follow its stage and SLA dates without a back-office login.
+      </p>
+      <p>
+        Portal users stay on portal routes and must never receive internal-user groups; that
+        is a stated rule in the security baseline, not an implementation detail.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLATFORM ============ -->
+<section class="band tinted" id="platform">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Platform, language, administration and recovery</h2>
+
+      <h3>Arabic and RTL</h3>
+      <p>
+        Arabic translations ship with the modules and the database is initialised with the
+        Arabic locale in the documented install. RTL is handled deliberately in the interface
+        layer rather than left to the browser's default mirroring. It also shows up in small
+        engineering decisions: BIM unit-of-measure categories are matched by xmlid rather than
+        by translated name, precisely so quantity matching does not stop working in Arabic;
+        and CSV exports carry a UTF-8 BOM so Arabic opens correctly in a spreadsheet.
+      </p>
+
+      <h3>Client administration without a permission grid</h3>
+      <p>
+        Six Majal roles — Platform Owner, Company Administrator, Operations Manager,
+        Project/Facility Manager, Engineer/Supervisor, Field User/Technician — replace the raw
+        technical group matrix, each scopeable to Construction, Facilities, or both. Twelve
+        audited optional capability tiers add Procurement, Inventory, Finance, HR, Website and
+        AI administration; one tier per family; each with a minimum role; and high-risk
+        Finance, HR and Website administration requires Platform Owner approval.
+      </p>
+      <p>
+        Enforced on the server: a Company Administrator cannot grant Company Administrator or
+        Platform Owner; no administrator can change an account at or above their own rank;
+        users cannot deactivate themselves; the last active Platform Owner cannot be
+        deactivated; client administrators cannot edit raw technical groups; and access and
+        activation changes land in an immutable administration audit. HR packs are explicitly
+        isolated from Facilities administration, because the upstream HR role normally implies
+        Maintenance Administrator.
+      </p>
+
+      <h3>Verified recovery</h3>
+      <p>
+        A daily job keeps seven curated archive slots — today, yesterday, the day before,
+        weekly, two-weekly, monthly and quarterly checkpoints. Each ZIP holds a
+        transaction-consistent <code>dump.sql</code>, the <code>filestore/</code> with every
+        uploaded drawing, photo and attachment, and a <code>manifest.json</code> recording
+        platform, PostgreSQL and installed-module versions — with a SHA-256 stored in Majal
+        and checked again before download or restore.
+      </p>
+      <p>
+        Restore is two-step by design, because a live web process must never be able to
+        replace its own database: a Platform Owner prepares a restore and gets a one-time code
+        that expires in two hours, and a deployment operator runs the script offline. The
+        script validates code, expiry, path, checksum and ZIP contents, restores into a
+        replacement database, restores the filestore, validates the installed-module table,
+        and rolls the original database and filestore back automatically if validation fails.
+      </p>
+      <p class="note caution">
+        <span class="label">Not a whole DR strategy</span>
+        Seven local points are fast operational rollback. Off-site encrypted copies,
+        immutability against application credentials, monitoring, client-specific RPO/RTO and
+        a rehearsed quarterly restore drill are all documented as things a deployer must add.
+        <a href="/insights/verified-recovery.html">Why the distinction matters →</a>
+      </p>
+
+      <h3>Security baseline</h3>
+      <p>
+        Majal uses Odoo's maintained authentication and authorisation primitives; it does not
+        implement a second password or session system. The shipped profile locks the database
+        selector to one database, disables database listing and the browser database manager,
+        runs the web application as a PostgreSQL role with no superuser, database-creation or
+        role-creation privileges, and installs Odoo's password policy, passkey and TOTP /
+        email-MFA modules with a 12-character minimum. The documentation is explicit that
+        email-based 2FA must not be enforced before mail delivery is verified, because doing
+        so can lock out every user.
+      </p>
+
+      <h3>Majal Intelligence</h3>
+      <p>
+        A permission-aware bilingual copilot that searches through the current user's
+        environment, so normal access controls and record rules stay active. Local Ollama is
+        the free default; Kimi, OpenAI, Gemini and Claude are company-managed bring-your-own-key
+        options behind one provider-neutral gateway, with keys encrypted at rest and never
+        returned to the browser. Conversations are private to their owner, usage is audited and
+        limited per user and company, provider endpoints are fixed so the server cannot be
+        turned into an outbound proxy, and operational records are treated as untrusted prompt
+        content.
+      </p>
+      <p class="note">
+        <span class="label">Deliberately read-only</span>
+        The first release can summarise and recommend. It cannot approve, sign, pay, close,
+        delete or modify operational records, and every answer is labelled as generated
+        material.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODULES ============ -->
+<section class="band" id="modules">
+  <div class="wrap">
+    <h2>The full module list</h2>
+    <p class="prose">
+      Thirty-seven Majal modules on top of pinned Odoo 18 Community, OCA and community
+      third-party addons. Licence is taken from each module's manifest.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col">Module</th><th scope="col">What it is</th><th scope="col">Licence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>construction_base</code></td><td>Security groups, project extensions, document-numbering mixin, the approval engine</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_boq</code></td><td>Bill of quantities with budget cost split, lock and revisions</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_drawing</code></td><td>Drawing register, revision control, supersede, bulk PDF upload</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_rfi</code></td><td>RFIs with ball-in-court and overdue reminders</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_submittal</code></td><td>Submittal register with revision cycles and tier-validated review</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_pin</code></td><td>Pins on drawing sheets with the OWL plan viewer</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_planning</code></td><td>WBS, typed dependencies, CPM engine, baselines, Gantt</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_defect</code></td><td>Punch lists and DLP defects, pinnable and assignable</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_daily_log</code></td><td>Digital site diary with computed totals and PDF</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_form</code></td><td>No-code checklists, recurring inspections, PDF field reports</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_progress_billing</code></td><td>Interim payment certificates with retention</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_change_order</code></td><td>Change events and variation orders that adjust the BOQ</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_subcontractor</code></td><td>Subcontracts, subcontractor certificates, defect-linked back-charges</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_tender</code></td><td>Tender packages, bid invitations, line-by-line levelling</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_material</code></td><td>Site stores, material issues, waste as scrap with a reason</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_report</code></td><td>Cost Value Reconciliation and Commercial Exposure</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_dashboard</code></td><td>Executive portfolio and project comparison</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_hse</code></td><td>Permits to work, incidents, toolbox talks, LTIFR</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_meeting</code></td><td>Meetings and minutes with carried actions and carry count</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_bim</code></td><td>IFC index, 3D viewer, 4D, BCF, comparison, federation, clash</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_whatsapp</code></td><td>Operational alerts over Meta's WhatsApp Cloud API</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_portal</code></td><td>Free portal for subcontractors, clients and consultants</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_ui</code></td><td>Majal workspaces, command centre, live KPIs, My Day</td><td>LGPL-3</td></tr>
+          <tr><td><code>facility_asset</code></td><td>CAFM asset registry, locations, meters, failure codes</td><td>LGPL-3</td></tr>
+          <tr><td><code>facility_workorder</code></td><td>Job plans, PM generation, work-order costing</td><td>LGPL-3</td></tr>
+          <tr><td><code>facility_sla</code></td><td>Response and resolution SLAs on a business calendar</td><td>LGPL-3</td></tr>
+          <tr><td><code>facility_contract</code></td><td>Annual maintenance contracts, cover, contract SLA, margin</td><td>AGPL-3</td></tr>
+          <tr><td><code>facility_inventory</code></td><td>Spare parts in real stores, consumed against work orders</td><td>AGPL-3</td></tr>
+          <tr><td><code>facility_portal</code></td><td>Occupant service requests and contractor visibility</td><td>LGPL-3</td></tr>
+          <tr><td><code>facility_floorplan</code></td><td>Asset, request and note pins on 2D floor plans</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_administration</code></td><td>Client access roles, capability packs, verified recovery points</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_security</code></td><td>Password policy, passkeys, configurable MFA</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_documents</code></td><td>Versioned branded documents and structured sheets</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_field_offline</code></td><td>Bounded offline field workspace with conflict-safe sync</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_ai</code></td><td>Majal Intelligence — bilingual, permission-aware, read-only copilot</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_branding</code></td><td>Majal identity, product information, PWA manifest and icons</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_demo</code></td><td>Opt-in two-company acceptance dataset and role personas — demo/QA databases only</td><td>LGPL-3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose">
+      Full accounting — financial statements, asset management, budgets, recurring payments,
+      customer follow-ups — comes from the LGPL-3 Odoo Mates community accounting suite rather
+      than being rewritten. Where a good free module already exists, Majal vendors and pins it.
+      <a href="/about.html">More on how the stack is assembled →</a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/features.html#construction">Construction</a></li>
+          <li><a href="/features.html#facilities">Facilities</a></li>
+          <li><a href="/features.html#bim">BIM</a></li>
+          <li><a href="/features.html#modules">Module list</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="https://docs.majalops.com">Documentation ↗</a></li>
+          <li><a href="/about.html#self-host">Self-hosting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="/about.html">About &amp; open source</a></li>
+          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub repository ↗</a></li>
+          <li><a href="/about.html#licence">Licensing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Try it</h2>
+        <ul>
+          <li><a href="/about.html#demo">Hosted demo — not live yet</a></li>
+          <li><a href="/about.html#self-host">Run it with Docker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <p>Majal is built on Odoo 18 Community Edition (LGPL-3) with pinned OCA and community modules. Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.</p>
+      <p>Procore, Fieldwire, PlanRadar, Maximo, Solibri, Navisworks, BIMcollab and Revizto are trademarks of their respective owners, referenced here only for comparison and interoperability.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

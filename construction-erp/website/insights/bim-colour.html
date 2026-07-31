@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A model that colours everything at once tells you nothing — Majal</title>
+<meta name="description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
+<meta name="theme-color" content="#173240">
+<link rel="stylesheet" href="/assets/css/majal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/insights/" aria-current="page">Insights</a></li>
+        <li><a href="/about.html">Open source</a></li>
+        <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
+        <li><a href="/about.html#demo">Demo<span class="soon">soon</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="prose">
+      <p class="meta">Insight · BIM</p>
+      <h1>A model that colours everything at once tells you nothing</h1>
+      <p class="lede">
+        Open a structural IFC in most viewers and you get confetti: twenty saturated tones,
+        every one of them meaning something, none of them answering a question. Majal's
+        default is one grey material and a set of edges. Here is the argument for that.
+      </p>
+    </div>
+  </div>
+</div>
+
+<article class="band">
+  <div class="wrap">
+    <div class="prose">
+
+      <h2>The file arrives pre-coloured, and that is the problem</h2>
+      <p>
+        A real structural export is not a neutral geometric description. Tekla writes
+        <code>Object coloring: ByObjectClass</code> into the header and ships a styled item per
+        class. Faithfully drawing the file's own colours therefore puts twenty saturated tones
+        on screen at once, and the model reads as confetti.
+      </p>
+      <p>
+        The deeper objection is that the colours are not true. Concrete is one colour in life.
+        A slab and a beam are not different colours on a site; they are different
+        <em>shapes</em>. Shape, shadow and edges are what tell them apart, and they do it
+        without a legend at all — nobody has ever needed a key to identify a stair.
+      </p>
+      <p>
+        So Majal's default is a single neutral material with drawn edges, and colour is kept
+        for answering a question you have actually asked.
+      </p>
+
+      <h2>Edges are a real decision, not a filter</h2>
+      <p>
+        Edge extraction has a threshold, and getting it wrong destroys the thing it was
+        supposed to help. Anything flatter than about 22 degrees is a tessellation seam inside
+        one face rather than a real corner — and drawing those turns a curved wall into a
+        wireframe. The angle is the difference between "this reads as a building" and "this
+        reads as a mesh".
+      </p>
+
+      <h2>What colour is for</h2>
+      <p>
+        In Majal, colour is spent on questions, one at a time:
+      </p>
+      <ul class="ticks">
+        <li>
+          <strong>Open items.</strong> Elements carrying linked records are drawn in the colour
+          of their <em>worst open item</em>. Not all records, not a count — the worst one, which
+          is the thing a person scanning a model is looking for.
+        </li>
+        <li>
+          <strong>4D.</strong> What is under construction on the chosen day gets one colour,
+          because the question the date slider answers is "is this up yet", not "how far along
+          is it". A gradient here would invite a reading the data does not support.
+        </li>
+        <li>
+          <strong>Discipline, when models are federated.</strong> Overlaid models are tinted so
+          a duct is recognisable as the mechanical model's duct without reading a legend.
+        </li>
+        <li>
+          <strong>Class, when you ask for it.</strong> Six hues and a neutral for the tail —
+          off by default, on when the question is "where are the columns".
+        </li>
+      </ul>
+
+      <h2>The honest thing about the class palette</h2>
+      <p>
+        The six-colour class palette was validated with a palette checker against the viewer's
+        own background: it passes the lightness band, the chroma floor, adjacent
+        colour-vision-deficiency separation and the normal-vision floor.
+      </p>
+      <p>
+        It does <strong>not</strong> pass an all-pairs check — and no six-colour set does. The
+        checker's own reference palette caps at three colours for that case. Every class being
+        on screen at once <em>is</em> the all-pairs case.
+      </p>
+      <p>
+        That is not a bug to be argued away; it is a constraint that dictates the design.
+        Because the palette cannot carry the load alone, colour is never the only encoding:
+      </p>
+      <ul class="ticks">
+        <li>the legend names each class and can isolate it, so ambiguity is one click from resolution;</li>
+        <li>the legend is ordered by count, so it doubles as a description of what is actually in this model;</li>
+        <li>and the geometry itself is the strongest cue of all — a stair is stair-shaped whatever colour it is.</li>
+      </ul>
+      <p>
+        The general rule: if your palette fails all-pairs, do not ship a view where all pairs
+        are on screen without a second channel. Most dashboards fail this test and ship anyway.
+      </p>
+
+      <figure class="shot">
+        <img src="/assets/img/shot-bim-legend.png"
+             alt="The BIM viewer's class legend beside the model: named element classes such as Wall, Slab, Beam and Column, each with its colour swatch and element count, ordered by count, with an isolate control on each row.">
+        <figcaption>
+          <strong>The legend does three jobs.</strong> It names each class in words a person
+          uses — <code>IFCWALLSTANDARDCASE</code> and <code>IFCWALL</code> are both "Wall" to
+          somebody looking at a building — it orders by count so it also describes what is in
+          the model, and each row can isolate its class, which is the answer to any legend
+          entry you cannot tell apart by colour.
+        </figcaption>
+      </figure>
+
+      <h2>Naming is part of the visual design</h2>
+      <p>
+        IFC type names are SCREAMING_CASE and frequently carry a variant suffix nobody wants in
+        a legend. <code>IFCWALLSTANDARDCASE</code>, <code>IFCWALLELEMENTEDCASE</code> and
+        <code>IFCWALL</code> are three schema distinctions and one real-world object. They map
+        to "Wall".
+      </p>
+      <p>
+        This is not cosmetic. A legend with three wall entries reads as three things, and the
+        reader spends attention working out that it is one. Collapsing the schema's variants
+        into the words a building person uses is the same kind of work as choosing the palette,
+        and it is more often skipped.
+      </p>
+
+      <h2>Why this matters beyond aesthetics</h2>
+      <p>
+        The purpose of Majal's BIM module is not to display a model — it is to make a model a
+        record. Elements are linked to RFIs, defects, tasks and bill items on their GlobalId, so
+        the links survive the model being re-issued. The viewer exists so somebody can
+        <em>see</em> those links.
+      </p>
+      <p>
+        A view that colours everything at once cannot do that job, because the one element
+        carrying an open RFI has nothing to stand out against. Restraint in the default view is
+        what makes the exception legible. That is the whole argument, and it applies well
+        outside BIM.
+      </p>
+
+      <div class="note">
+        <span class="label">In the product</span>
+        <p>
+          The viewer ships in <code>construction_bim</code>, drawing geometry in the browser
+          with web-ifc and three.js. The server never parses geometry.
+          <a href="/features.html#bim">See the feature summary, including the stated limits →</a>
+        </p>
+      </div>
+
+      <nav class="article-nav" aria-label="More insights">
+        <p><a href="/insights/">← All insights</a></p>
+        <p>Next: <a href="/insights/verified-recovery.html">"We take backups" is not a recovery position</a></p>
+      </nav>
+
+    </div>
+  </div>
+</article>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/features.html#bim">BIM</a></li>
+          <li><a href="/features.html#mobile">Mobile &amp; field</a></li>
+          <li><a href="/features.html#modules">Module list</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="https://docs.majalops.com">Documentation ↗</a></li>
+          <li><a href="/about.html#self-host">Self-hosting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="/about.html">About &amp; open source</a></li>
+          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub repository ↗</a></li>
+          <li><a href="/about.html#licence">Licensing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Try it</h2>
+        <ul>
+          <li><a href="/about.html#demo">Hosted demo — not live yet</a></li>
+          <li><a href="/about.html#self-host">Run it with Docker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <p>Majal is built on Odoo 18 Community Edition (LGPL-3) with pinned OCA and community modules. Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

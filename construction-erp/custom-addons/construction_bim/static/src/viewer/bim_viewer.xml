@@ -65,6 +65,33 @@
                             <t t-esc="entry.name"/>
                         </option>
                     </select>
+                    <select t-if="!state.compatibilityMode"
+                            class="o_bim_select o_bim_shading"
+                            t-on-change="onShadingChange"
+                            title="What the colours mean">
+                        <option value="shaded"
+                                t-att-selected="state.shading === 'shaded'">
+                            Shaded — one material
+                        </option>
+                        <option value="class"
+                                t-att-selected="state.shading === 'class'">
+                            Colour by element class
+                        </option>
+                        <option value="status"
+                                t-att-selected="state.shading === 'status'">
+                            Colour by record status
+                        </option>
+                        <option value="original"
+                                t-att-selected="state.shading === 'original'">
+                            Original colours from the file
+                        </option>
+                    </select>
+                    <button t-if="!state.compatibilityMode"
+                            t-on-click="toggleEdges"
+                            t-att-class="state.edgesOn ? 'o_bim_on' : ''"
+                            title="Draw the outline of every element">
+                        <i class="fa fa-square-o"/> Edges
+                    </button>
                     <button t-on-click="showEverything"
                             t-att-disabled="!state.hidden and !state.isolated and state.storey === 'all'"
                             title="Show everything again">
@@ -174,6 +201,36 @@ Mac or Linux:
                             <t t-esc="state.clashSummary.created"/> new ·
                             <t t-esc="state.clashSummary.resolved"/> resolved
                         </p>
+                    </div>
+
+                    <!-- What is in this model, and how much of it. Doubles as
+                         the legend and as the way to look at one class at a
+                         time, which is what makes the classes readable
+                         without relying on telling six colours apart. -->
+                    <div t-if="state.classes.length and !state.compatibilityMode"
+                         class="o_bim_legend">
+                        <div class="o_bim_legend_head">
+                            <span class="o_bim_eyebrow">IN THIS MODEL</span>
+                            <button t-if="anyClassHidden"
+                                    class="o_bim_legend_all"
+                                    t-on-click="showAllClasses">Show all</button>
+                        </div>
+                        <div t-foreach="state.classes" t-as="row" t-key="row.name"
+                             t-attf-class="o_bim_legend_row {{ row.visible ? '' : 'o_bim_off' }}">
+                            <button class="o_bim_legend_eye"
+                                    t-on-click="() => this.toggleClass(row.name)"
+                                    t-attf-title="Hide or show {{ row.name }}">
+                                <i t-attf-class="fa fa-{{ row.visible ? 'eye' : 'eye-slash' }}"/>
+                            </button>
+                            <button class="o_bim_legend_name"
+                                    t-on-click="() => this.isolateClass(row.name)"
+                                    t-attf-title="Show only {{ row.name }}">
+                                <span class="o_bim_swatch"
+                                      t-attf-style="background: {{ state.shading === 'class' ? row.colour : '#c9c6bd' }}"/>
+                                <span class="o_bim_legend_label" t-esc="row.name"/>
+                                <span class="o_bim_legend_count" t-esc="row.count"/>
+                            </button>
+                        </div>
                     </div>
 
                     <div t-if="state.overlays.length" class="o_bim_overlays">
