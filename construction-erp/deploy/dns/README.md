@@ -23,10 +23,29 @@ Check it from anywhere:
 dig +short NS majalops.com
 ```
 
-## 2. Import the records
+## 2. Add the mail records straight away
 
-`majalops.com.zone` in this folder is a BIND file ready for **DNS → Records →
-Import and Export → Import**.
+Two TXT records, typed by hand, no file needed — and they are worth having from
+the first day the zone is live, before anything else exists:
+
+| Type | Name | Content |
+|---|---|---|
+| TXT | `@` | `v=spf1 -all` |
+| TXT | `_dmarc` | `v=DMARC1; p=reject; rua=mailto:dmarc@majalops.com` |
+
+They say the domain sends no email and that anything claiming otherwise should
+be rejected. A new domain without them is a free `From:` address for anybody who
+fancies sending a Majal invoice.
+
+## 3. Import the rest — but not until there is a server
+
+**Do not import the A and CNAME records early.** With no server behind them the
+domain resolves to an address that answers nothing, so every visit hangs until
+it times out. A name that does not exist yet fails honestly and instantly; a
+name pointing at a dead address looks like your site is broken. Wait.
+
+When the server exists, `majalops.com.zone` in this folder is a BIND file ready
+for **DNS → Records → Import and Export → Import**.
 
 Before importing, replace the placeholder address. It is `203.0.113.10`, from
 the range RFC 5737 reserves for documentation — it routes nowhere, so a
