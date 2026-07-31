@@ -162,7 +162,7 @@ Only `4`, `3`, `6` are meaningful on many2many; `2` deletes the target record.
 
 Writing to a computed field without `inverse=` **silently does nothing** — no error
 is raised, the value is simply recomputed. The field tables in
-[models/](models/index.md) flag every computed and related field. Notable traps:
+models/ flag every computed and related field. Notable traps:
 
 - `construction.boq.amount_sell_total` and every `amount_*` on BOQ, claims,
   change orders, subcontract payments are computed. Change the lines, not the total.
