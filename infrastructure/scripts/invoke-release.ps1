@@ -26,21 +26,37 @@ $remoteSha = (& git -C $repoRoot rev-parse "origin/$Ref").Trim()
 if ($localSha -ne $remoteSha) { throw "Local HEAD is not equal to origin/$Ref. Push it before releasing." }
 
 $before = [DateTime]::UtcNow
-& gh workflow run majalops-release.yml --repo $Repository --ref $Ref -f "bump=$Bump" -f 'deploy=false'
-if ($LASTEXITCODE -ne 0) { throw 'Could not start the MajalOps release workflow.' }
+$requestTag = "majalops-release-request-$Bump-$($before.ToString('yyyyMMddHHmmss'))-$($localSha.Substring(0, 8))"
+& git -C $repoRoot tag $requestTag $localSha
+if ($LASTEXITCODE -ne 0) { throw "Could not create local release-request tag $requestTag." }
+try {
+    & git -C $repoRoot push origin "refs/tags/${requestTag}:refs/tags/${requestTag}"
+    if ($LASTEXITCODE -ne 0) { throw "Could not push release-request tag $requestTag." }
+} catch {
+    & git -C $repoRoot tag --delete $requestTag 2>$null
+    throw
+}
+& git -C $repoRoot tag --delete $requestTag | Out-Null
+if ($LASTEXITCODE -ne 0) { throw "Could not remove local release-request tag $requestTag." }
 
 $run = $null
-for ($attempt = 1; $attempt -le 20 -and $null -eq $run; $attempt++) {
+for ($attempt = 1; $attempt -le 30 -and $null -eq $run; $attempt++) {
     Start-Sleep -Seconds 3
-    $json = & gh run list --repo $Repository --workflow majalops-release.yml --branch $Ref `
-        --event workflow_dispatch --limit 10 --json databaseId,createdAt,headSha,status
+    $json = & gh run list --repo $Repository --event push --limit 50 `
+        --json databaseId,createdAt,headSha,headBranch,status,workflowName
     if ($LASTEXITCODE -ne 0) { throw 'Could not query GitHub workflow runs.' }
     $runs = @($json | ConvertFrom-Json)
     $run = $runs | Where-Object {
-        ([DateTime]$_.createdAt).ToUniversalTime() -ge $before.AddMinutes(-1) -and $_.headSha -eq $localSha
+        ([DateTime]$_.createdAt).ToUniversalTime() -ge $before.AddMinutes(-1) -and
+        $_.headSha -eq $localSha -and
+        $_.headBranch -eq $requestTag -and
+        $_.workflowName -eq 'MajalOps Release and Deploy'
     } | Sort-Object { [DateTime]$_.createdAt } -Descending | Select-Object -First 1
 }
-if ($null -eq $run) { throw 'The dispatched release run did not appear within 60 seconds.' }
+if ($null -eq $run) {
+    & git -C $repoRoot push origin ":refs/tags/$requestTag" 2>$null
+    throw 'The tag-triggered release run did not appear within 90 seconds.'
+}
 
 Write-Output "Waiting for GitHub release run $($run.databaseId)..."
 & gh run watch $run.databaseId --repo $Repository --exit-status

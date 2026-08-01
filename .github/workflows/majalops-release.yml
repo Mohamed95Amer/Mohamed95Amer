@@ -14,6 +14,9 @@ on:
         required: true
         type: boolean
         default: false
+  push:
+    tags:
+      - "majalops-release-request-*"
 
 concurrency:
   group: majalops-release
@@ -45,8 +48,17 @@ jobs:
         name: Calculate the next semantic version
         env:
           BUMP: ${{ inputs.bump }}
+          REQUEST_REF: ${{ github.ref_name }}
         run: |
           set -euo pipefail
+          if [[ -z "${BUMP:-}" ]]; then
+            case "$REQUEST_REF" in
+              majalops-release-request-major-*) BUMP="major" ;;
+              majalops-release-request-minor-*) BUMP="minor" ;;
+              majalops-release-request-patch-*) BUMP="patch" ;;
+              *) echo "Invalid release-request tag: $REQUEST_REF" >&2; exit 1 ;;
+            esac
+          fi
           latest="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)"
           latest="${latest:-v0.0.0}"
           IFS=. read -r major minor patch <<<"${latest#v}"
@@ -173,7 +185,7 @@ jobs:
           gh release create "$TAG" --verify-tag --generate-notes --notes-file release-notes.md
 
   deploy:
-    if: ${{ inputs.deploy }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy }}
     runs-on: ubuntu-24.04
     needs: [version, build, publish-release]
     environment: platform
@@ -208,3 +220,14 @@ jobs:
             "sudo /usr/local/sbin/majalops-deploy update ${IMAGE_REF}"
           ssh "${ssh_args[@]}" "$target" \
             "sudo /usr/local/sbin/majalops-deploy health"
+
+  cleanup-request-tag:
+    if: ${{ always() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/majalops-release-request-') }}
+    runs-on: ubuntu-24.04
+    needs: [version, build, publish-release]
+    steps:
+      - name: Remove one-time release request tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUEST_TAG: ${{ github.ref_name }}
+        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/tags/${REQUEST_TAG}"
