@@ -247,5 +247,5 @@ See [Errors](errors.md) for the full mapping and the Majal-specific messages.
 
 - [JSON-RPC](jsonrpc.md)
 - [Errors](errors.md)
-- Approvals
-- Models
+- [Approvals](approvals.md)
+- [Models](models/index.md)

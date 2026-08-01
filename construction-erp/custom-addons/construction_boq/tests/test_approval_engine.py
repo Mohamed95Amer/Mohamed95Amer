@@ -404,6 +404,30 @@ class TestApprovalCannotBeRoutedAround(ApprovalCase):
         self.assertEqual(step.state, "pending")
         self.assertEqual(request.state, "pending")
 
+    def test_a_forged_transition_key_does_not_unlock_the_document(self):
+        """The step guard was closed; this is the same hole one door along.
+
+        `majal_workflow_transition` used to be a plain True in the context, and
+        context is supplied by the caller — so anybody with write access to an
+        approvable document could set it and write `state` directly, skipping
+        _check_approved() entirely. The engine was enforced on the step and
+        left open on the document it protects.
+
+        The exemption is now a private Python object. RPC carries JSON, so a
+        remote caller can send the string, the number or the boolean of that
+        key and none of them are the object.
+        """
+        self._rule([("Project manager", "construction_base.group_construction_pm")])
+        self.boq.with_user(self.qs).action_request_approval()
+
+        for forged in (True, "WORKFLOW_TRANSITION", 1, {"": ""}):
+            with self.assertRaises(AccessError):
+                self.boq.with_user(self.qs).with_context(
+                    majal_workflow_transition=forged
+                ).write({"state": "approved"})
+
+        self.assertNotEqual(self.boq.state, "approved")
+
     def test_asking_for_the_exemption_does_not_grant_it(self):
         """The step model's write guard once stood down for a context key.
 

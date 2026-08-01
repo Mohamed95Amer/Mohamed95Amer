@@ -141,7 +141,7 @@ These are the product-specific refusals. Each one names the file that raises it.
 | `Only <requester> or a manager can withdraw this.` | `UserError` | `action_cancel` by anyone else |
 
 The guards stand down only for `env.su` (true superuser). There is **no** context
-key that bypasses them. Full detail in Approvals.
+key that bypasses them. Full detail in [Approvals](approvals.md).
 
 ### Approvable documents — `construction_base/models/approval_mixin.py`
 
@@ -209,7 +209,7 @@ These do not raise a distinctive message. They **filter**: a record outside your
 company, workspace scope or project assignment simply is not returned by `search`,
 and `read` on a known id raises the generic
 `AccessError: You are not allowed to access 'X' records.` Read
-Security model before concluding that a record is missing.
+[Security model](security.md) before concluding that a record is missing.
 
 ## Diagnosing "the record does not exist"
 
@@ -225,6 +225,6 @@ In order of likelihood:
 
 ## Next
 
-- Approvals
-- Security model
+- [Approvals](approvals.md)
+- [Security model](security.md)
 - [Conventions](conventions.md)

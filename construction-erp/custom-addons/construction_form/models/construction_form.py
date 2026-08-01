@@ -2,6 +2,9 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.addons.construction_base.models.approval_mixin import (
+    WORKFLOW_TRANSITION,
+)
 
 
 class ConstructionFormTemplate(models.Model):
@@ -252,7 +255,7 @@ class ConstructionFormInspection(models.Model):
             self.project_id = self.template_id.project_id
 
     def action_start(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for inspection in self.filtered(lambda i: i.state == "draft"):
             existing = inspection.answer_ids.mapped("question_id")
             commands = [
@@ -264,7 +267,7 @@ class ConstructionFormInspection(models.Model):
             inspection.state = "in_progress"
 
     def action_submit(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for inspection in self:
             missing = inspection.answer_ids.filtered(
                 lambda a: a.question_id.required and not a._has_answer())
@@ -287,17 +290,17 @@ class ConstructionFormInspection(models.Model):
         return True
 
     def action_approve(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for inspection in self.filtered(lambda i: i.state == "submitted"):
             inspection._check_approved()
             inspection.state = "approved"
 
     def action_reject(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         self.filtered(lambda i: i.state == "submitted").state = "rejected"
 
     def action_reset(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         self.state = "in_progress"
 
 

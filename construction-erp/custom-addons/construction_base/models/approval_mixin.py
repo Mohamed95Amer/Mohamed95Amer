@@ -19,6 +19,23 @@ from odoo.exceptions import AccessError, UserError
 _logger = logging.getLogger(__name__)
 
 
+
+# A value the caller cannot forge.
+#
+# This guard used to stand down for `majal_workflow_transition=WORKFLOW_TRANSITION` in the
+# context. Context travels with an RPC call, so anybody holding write access on
+# an approvable document could set that key and write `state` directly — which
+# skips _check_approved() and defeats the approval engine through the document
+# instead of through the step. It is the same hole that was removed from
+# res_users and from the approval step, arriving by a third door.
+#
+# RPC can only deliver JSON, so a context value can never be *identical* to a
+# private Python object. Server-side callers import this and pass it; a remote
+# caller can send the string, the number or the boolean and none of them are
+# this object.
+WORKFLOW_TRANSITION = object()
+
+
 class ConstructionApprovable(models.AbstractModel):
     _name = "construction.approvable"
     _description = "Approvable Document"
@@ -40,7 +57,8 @@ class ConstructionApprovable(models.AbstractModel):
         if (
             "state" in values
             and not self.env.su
-            and not self.env.context.get("majal_workflow_transition")
+            and self.env.context.get("majal_workflow_transition")
+            is not WORKFLOW_TRANSITION
         ):
             raise AccessError(
                 self.env._(

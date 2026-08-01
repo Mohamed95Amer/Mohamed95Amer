@@ -162,7 +162,7 @@ Only `4`, `3`, `6` are meaningful on many2many; `2` deletes the target record.
 
 Writing to a computed field without `inverse=` **silently does nothing** — no error
 is raised, the value is simply recomputed. The field tables in
-models/ flag every computed and related field. Notable traps:
+[models/](models/index.md) flag every computed and related field. Notable traps:
 
 - `construction.boq.amount_sell_total` and every `amount_*` on BOQ, claims,
   change orders, subcontract payments are computed. Change the lines, not the total.
@@ -173,9 +173,20 @@ models/ flag every computed and related field. Notable traps:
 - `maintenance.equipment.qr_tag_url` / `nfc_tag_url` are computed from `tag_token`.
 
 Related fields with `store=True` and no `readonly=False` behave the same way: write
-the source. The two Majal related fields that *are* writable are
-`maintenance.request.facility_contract_id` (`readonly=False`) and
-`construction.boq.line.bim_measure` (`readonly=False`).
+the source.
+
+Majal defines six stored computed fields that *are* writable, because they carry
+`readonly=False`. On these, the compute supplies a sensible default and your write
+sticks:
+
+| Model | Field | What the compute supplies |
+| --- | --- | --- |
+| `maintenance.request` | `facility_contract_id` | Matched from the asset and the request date |
+| `construction.boq.line` | `bim_measure` | Derived from the unit of measure |
+| `construction.material.issue.line` | `uom_id` | The product's unit |
+| `construction.material.issue.line` | `unit_cost` | The product's cost |
+| `facility.request.part` | `uom_id` | The product's unit |
+| `facility.request.part` | `unit_cost` | The product's cost, editable for a part bought in specially |
 
 ## Dates and time zones
 

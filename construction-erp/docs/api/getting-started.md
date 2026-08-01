@@ -189,4 +189,4 @@ make a call take noticeably longer rather than fail.
 
 - [Conventions](conventions.md) — domains, pagination, dates, multi-company
 - [XML-RPC reference](xmlrpc.md)
-- Approvals — read this before writing to any approvable document
+- [Approvals](approvals.md) — read this before writing to any approvable document

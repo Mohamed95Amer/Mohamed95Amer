@@ -194,10 +194,10 @@ authenticated session (`auth="user"`):
 - `POST /majal/field/api/bootstrap`
 - `POST /majal/field/api/sync`
 
-See Endpoints → Offline field app.
+See [Endpoints → Offline field app](endpoints/field-app.md).
 
 ## Next
 
 - [Errors](errors.md)
 - [Conventions](conventions.md)
-- Custom endpoints
+- [Custom endpoints](endpoints/index.md)
