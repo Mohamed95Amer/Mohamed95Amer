@@ -7,7 +7,7 @@ from unittest.mock import patch
 import odoo
 
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import HttpCase, TransactionCase, tagged
 
 
 @contextmanager
@@ -582,3 +582,59 @@ class TestMajalAdministration(TransactionCase):
         self.assertFalse(invited.has_group("stock.group_stock_manager"))
         wizard.flush_recordset(["temporary_password"])
         self.assertFalse(wizard.temporary_password)
+
+
+@tagged("post_install", "-at_install")
+class TestMajalHealth(HttpCase):
+    """The infrastructure side will point Caddy and monitoring at these."""
+
+    def test_shallow_probe_answers_ok_and_says_nothing_else(self):
+        response = self.url_open("/majal/health", timeout=15)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Cache-Control"], "no-store")
+        payload = response.json()
+        # The whole body. An unauthenticated endpoint is read by everybody
+        # who finds it, so the assertion is on the exact shape rather than on
+        # the presence of "ok" — a later addition of a version or a database
+        # name should fail here rather than ship.
+        self.assertEqual(payload, {"status": "ok"})
+
+    def test_shallow_probe_needs_no_session(self):
+        # auth="none": a liveness check that loads the public user and mints a
+        # session is doing work the check exists to avoid.
+        response = self.url_open("/majal/health", timeout=15)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("Set-Cookie", response.headers)
+
+    def test_shallow_probe_is_rate_limited(self):
+        from odoo.addons.majal_administration.controllers import health
+
+        health._hits.clear()
+        seen = set()
+        for _ in range(health.RATE_LIMIT + 5):
+            seen.add(self.url_open("/majal/health", timeout=15).status_code)
+
+        self.assertIn(429, seen)
+        health._hits.clear()
+
+    def test_deep_probe_is_not_public(self):
+        response = self.url_open("/majal/health/deep", timeout=15,
+                                 allow_redirects=False)
+        # Odoo sends an unauthenticated caller to the login page rather than
+        # answering. Either way it must not be the health payload.
+        self.assertNotEqual(response.status_code, 200)
+
+    def test_deep_probe_reports_the_parts_without_naming_the_deployment(self):
+        self.authenticate("admin", "admin")
+        response = self.url_open("/majal/health/deep", timeout=15)
+
+        payload = response.json()
+        self.assertEqual(set(payload), {"status", "checks"})
+        self.assertEqual(
+            set(payload["checks"]),
+            {"modules", "scheduler", "recovery_points"})
+        # No version, no database name, no traceback, no provider config.
+        body = response.text
+        self.assertNotIn(self.env.cr.dbname, body)
+        self.assertNotIn("Traceback", body)
