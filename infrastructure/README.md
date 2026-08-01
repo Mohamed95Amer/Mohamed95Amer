@@ -31,10 +31,10 @@ Generated credentials, private keys, provider output, and downloaded release ref
 
 ## One-command Phase 2 path
 
-After the four scoped credentials in `runbooks/phase2-owner-actions.md` are placed in the current PowerShell process:
+After creating the scoped credentials described in `runbooks/phase2-owner-actions.md`, use the masked-input launcher:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File infrastructure\scripts\invoke-phase2.ps1 `
+powershell -ExecutionPolicy Bypass -File infrastructure\scripts\start-phase2-secure.ps1 `
   -TlsEmail 'operations@majalops.com' `
   -EnableExternalHealth
 ```

@@ -41,31 +41,16 @@ $gh = powershell -ExecutionPolicy Bypass -File infrastructure\scripts\install-lo
 
 Choose **Login with a web browser**, paste the one-time code at <https://github.com/login/device>, and authorize GitHub CLI. Expected result: `gh auth status` reports `Mohamed95Amer` as authenticated.
 
-## 5. Put secrets only in the current PowerShell process
+## 5. Run the secure one-command automation
+
+Run from the repository root. The launcher requests each token using masked input, creates the semantic release, provisions the platform, and clears all token environment variables even if a step fails:
 
 ```powershell
-$env:HCLOUD_TOKEN='PASTE_HETZNER_TOKEN'
-$env:CLOUDFLARE_API_TOKEN='PASTE_CLOUDFLARE_TOKEN'
-$env:GHCR_USERNAME='Mohamed95Amer'
-$env:GHCR_TOKEN='PASTE_GITHUB_PACKAGE_TOKEN'
-```
-
-## 6. Run the one-command automation
-
-Replace the certificate-alert email below, then run from the repository root. The command automatically creates the semantic release and transfers its immutable digest into provisioning:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File infrastructure\scripts\invoke-phase2.ps1 `
+powershell -ExecutionPolicy Bypass -File infrastructure\scripts\start-phase2-secure.ps1 `
   -TlsEmail 'YOUR_CERTIFICATE_ALERT_EMAIL' `
   -EnableExternalHealth
 ```
 
 Expected result: Hetzner controls, DNS, Docker stack, Caddy HTTPS, PostgreSQL, monitoring, systemd recovery, and GitHub deployment settings are configured; the command ends with `MajalOps Phase 2 provisioning completed`.
-
-## 7. Remove bootstrap credentials
-
-```powershell
-Remove-Item Env:HCLOUD_TOKEN,Env:CLOUDFLARE_API_TOKEN,Env:GHCR_TOKEN -ErrorAction SilentlyContinue
-```
 
 Delete/revoke the 7-day GitHub package token after the first successful release deployment. Store the Hetzner and Cloudflare tokens in the restricted `MajalOps Platform` 1Password or Bitwarden vault, then rotate them according to the security runbook.
