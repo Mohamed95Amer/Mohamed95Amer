@@ -25,8 +25,10 @@ die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 [[ "$TLS_EMAIL" == *@*.* ]] || die "TLS_EMAIL is required."
 id "$ADMIN_USER" >/dev/null 2>&1 || die "Administrator $ADMIN_USER does not exist. Run bootstrap-server.sh first."
 
-password_auth="$(sshd -T | awk '$1 == "passwordauthentication" {print $2; exit}')"
-root_login="$(sshd -T | awk '$1 == "permitrootlogin" {print $2; exit}')"
+# Do not exit awk early here. With pipefail enabled, an early consumer exit can
+# make sshd receive SIGPIPE and turn a successful hardening check into exit 141.
+password_auth="$(sshd -T | awk '$1 == "passwordauthentication" {value=$2} END {print value}')"
+root_login="$(sshd -T | awk '$1 == "permitrootlogin" {value=$2} END {print value}')"
 [[ "$password_auth" == "no" ]] || die "SSH password authentication is not disabled. Complete SSH hardening first."
 [[ "$root_login" == "no" ]] || die "SSH root login is not disabled. Complete SSH hardening first."
 

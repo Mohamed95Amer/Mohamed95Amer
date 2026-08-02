@@ -134,12 +134,20 @@ chmod 0640 "$ALERTMANAGER_CONFIG"
 
 prometheus_image="${images[PROMETHEUS_IMAGE]}"
 alertmanager_image="${images[ALERTMANAGER_IMAGE]}"
-docker run --rm -v "${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml:ro" \
+alertmanager_uid="$(docker run --rm --entrypoint id "$alertmanager_image" -u)"
+alertmanager_gid="$(docker run --rm --entrypoint id "$alertmanager_image" -g)"
+[[ "$alertmanager_uid" =~ ^[0-9]+$ && "$alertmanager_gid" =~ ^[0-9]+$ ]] || \
+    die "Could not determine the Alertmanager runtime identity."
+chown "$alertmanager_uid:$alertmanager_gid" "$ALERTMANAGER_CONFIG" "$SECRETS_DIR"
+find "$SECRETS_DIR" -maxdepth 1 -type f -exec chown "$alertmanager_uid:$alertmanager_gid" {} +
+docker run --rm --entrypoint /bin/promtool \
+    -v "${PROMETHEUS_CONFIG}:/etc/prometheus/prometheus.yml:ro" \
     -v "${INSTALL_ROOT}/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro" \
-    "$prometheus_image" promtool check config /etc/prometheus/prometheus.yml
-docker run --rm -v "${ALERTMANAGER_CONFIG}:/etc/alertmanager/alertmanager.yml:ro" \
+    "$prometheus_image" check config /etc/prometheus/prometheus.yml
+docker run --rm --entrypoint /bin/amtool \
+    -v "${ALERTMANAGER_CONFIG}:/etc/alertmanager/alertmanager.yml:ro" \
     -v "${SECRETS_DIR}:/etc/alertmanager/secrets:ro" \
-    "$alertmanager_image" amtool check-config /etc/alertmanager/alertmanager.yml
+    "$alertmanager_image" check-config /etc/alertmanager/alertmanager.yml
 
 docker compose --env-file "$ENV_FILE" \
     -f "${INSTALL_ROOT}/docker/compose.platform.yml" \

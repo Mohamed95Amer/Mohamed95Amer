@@ -135,7 +135,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Could not configure restricted deployment iden
 
 $knownLines = & ssh-keygen -F "[$ServerIp]:$SshPort" 2>$null
 if (-not $knownLines) { $knownLines = & ssh-keygen -F $ServerIp 2>$null }
-$knownLines | Where-Object { $_ -and -not $_.StartsWith('#') } | Set-Content -LiteralPath (Join-Path $generatedDir 'known_hosts') -Encoding ascii
+$verifiedHostLines = @($knownLines | Where-Object { $_ -match '\sssh-ed25519\s' })
+if ($verifiedHostLines.Count -ne 1) {
+    throw 'Expected exactly one verified Ed25519 host-key entry for CI.'
+}
+$verifiedHostLines | Set-Content -LiteralPath (Join-Path $generatedDir 'known_hosts') -Encoding ascii
 
 Write-Output "Provisioning succeeded: https://$Domain"
 Write-Output "Next automated step: powershell -File infrastructure\scripts\configure-github.ps1 -ServerIp $ServerIp"

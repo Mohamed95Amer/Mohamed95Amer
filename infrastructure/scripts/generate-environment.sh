@@ -49,7 +49,10 @@ if [[ -z "$MAJAL_IMAGE" ]]; then
 fi
 [[ "$MAJAL_IMAGE" =~ @sha256:[a-fA-F0-9]{64}$ ]] || die "MAJAL_IMAGE must be a GHCR image pinned by sha256 digest."
 
-install -d -m 0700 "$(dirname "$ENV_FILE")"
+# The application bind-mounts a non-secret config from this directory while
+# the real environment file remains root-only (0600). Execute-only access lets
+# the container traverse to odoo.conf without permitting directory listings.
+install -d -m 0711 "$(dirname "$ENV_FILE")"
 install -d -m 0750 "$LOG_DIR"
 touch "$LOG_FILE"
 chmod 0640 "$LOG_FILE"
@@ -158,7 +161,10 @@ log_level = info
 log_handler = :INFO,werkzeug:WARNING
 without_demo = all
 EOF
-chmod 0600 "$odoo_tmp"
+# This file deliberately contains no credentials; the container entrypoint
+# appends the database-manager secret to a private runtime copy. The bind mount
+# must remain readable by the unprivileged `odoo` user inside the container.
+chmod 0644 "$odoo_tmp"
 chown root:root "$odoo_tmp"
 mv "$odoo_tmp" "$ODOO_CONFIG_FILE"
 

@@ -7,6 +7,7 @@ COMPOSE_FILE="${COMPOSE_FILE:-/opt/majalops/infrastructure/docker/compose.platfo
 ENV_FILE="${ENV_FILE:-/etc/majalops/platform.env}"
 CADDYFILE="${CADDYFILE:-/opt/majalops/infrastructure/caddy/Caddyfile}"
 HEALTH_URL="${HEALTH_URL:-https://platform.majalops.com/healthz}"
+HTTPS_READY_TIMEOUT_SECONDS="${HTTPS_READY_TIMEOUT_SECONDS:-180}"
 CONFIRM_INSTALL="${CONFIRM_INSTALL:-NO}"
 LOG_DIR="${LOG_DIR:-/var/log/majalops}"
 LOG_FILE="${LOG_FILE:-${LOG_DIR}/install-majal.log}"
@@ -34,9 +35,11 @@ trap on_exit EXIT
 [[ -f "$COMPOSE_FILE" ]] || die "COMPOSE_FILE not found: $COMPOSE_FILE"
 [[ -f "$ENV_FILE" ]] || die "ENV_FILE not found: $ENV_FILE"
 [[ -f "$CADDYFILE" ]] || die "CADDYFILE not found: $CADDYFILE"
+[[ "$HTTPS_READY_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] || die "HTTPS_READY_TIMEOUT_SECONDS must be an integer."
 [[ "$(stat -c '%a' "$ENV_FILE")" =~ ^(600|400)$ ]] || die "ENV_FILE must have mode 0600 or 0400."
 [[ "$(stat -c '%U' "$ENV_FILE")" == "root" ]] || die "ENV_FILE must be owned by root."
 command -v docker >/dev/null || die "docker is not installed."
+command -v curl >/dev/null || die "curl is not installed."
 docker compose version >/dev/null || die "Docker Compose plugin is not installed."
 
 if grep -Eq 'GENERATE_|REPLACE_|example\.invalid|CHANGE_ME' "$ENV_FILE"; then
@@ -72,6 +75,18 @@ docker run --rm \
     "$caddy_image" caddy validate --config /etc/caddy/Caddyfile
 
 compose up -d --wait --wait-timeout 900
+
+# Caddy becomes container-healthy before its first public ACME certificate is
+# necessarily available. Wait for that certificate instead of treating the
+# normal first-start issuance window as a failed deployment.
+https_deadline=$((SECONDS + HTTPS_READY_TIMEOUT_SECONDS))
+until curl --silent --show-error --fail --output /dev/null \
+    --max-time 15 --proto '=https' --tlsv1.2 "$HEALTH_URL"; do
+    (( SECONDS < https_deadline )) || die "HTTPS did not become ready within ${HTTPS_READY_TIMEOUT_SECONDS}s: $HEALTH_URL"
+    printf 'Waiting for HTTPS certificate and health endpoint: %s\n' "$HEALTH_URL"
+    sleep 5
+done
+
 HEALTH_URL="$HEALTH_URL" COMPOSE_FILE="$COMPOSE_FILE" ENV_FILE="$ENV_FILE" \
     "$(dirname "$0")/healthcheck.sh"
 
