@@ -7,7 +7,7 @@
             <title t-esc="title or majal_product_name"/>
         </xpath>
         <xpath expr="//link[@rel='shortcut icon']" position="attributes">
-            <attribute name="t-att-href">'/majal_branding/static/description/icon.svg'</attribute>
+            <attribute name="t-att-href">'/majal_branding/static/description/icon.svg?v=20260802'</attribute>
         </xpath>
         <xpath expr="//head" position="inside">
             <t t-set="majal_brand_colours"

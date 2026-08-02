@@ -27,6 +27,11 @@
 		Permissions-Policy "camera=(self), geolocation=(self), microphone=()"
 	}
 
+	# This host is the authenticated MajalOps platform, not a public marketing
+	# website. Keep the root entry point on the branded sign-in experience.
+	@platform_root path /
+	redir @platform_root /web/login 302
+
 	@health path /healthz
 	handle @health {
 		rewrite * /web/login
