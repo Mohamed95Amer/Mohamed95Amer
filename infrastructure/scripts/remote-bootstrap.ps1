@@ -43,10 +43,40 @@ if (-not $known) {
 $sshTarget = "$SshUser@$ServerIp"
 $sshArgs = @('-p', "$SshPort", '-i', $IdentityFile, '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes')
 $scpArgs = @('-P', "$SshPort", '-i', $IdentityFile, '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes')
+$remoteStaging = '/tmp/majalops-phase2-infrastructure'
 
 & ssh @sshArgs $sshTarget 'sudo -n true'
 if ($LASTEXITCODE -ne 0) {
-    throw "$SshUser cannot use non-interactive sudo."
+    Write-Output "Administrator $SshUser is not ready; starting the two-stage root bootstrap."
+    $rootTarget = "root@$ServerIp"
+    & ssh @sshArgs $rootTarget 'true'
+    if ($LASTEXITCODE -ne 0) { throw 'Root key-only SSH access is required for the initial administrator bootstrap.' }
+
+    & ssh @sshArgs $rootTarget "rm -rf '$remoteStaging'; mkdir -p '$remoteStaging'"
+    if ($LASTEXITCODE -ne 0) { throw 'Could not create the root bootstrap staging directory.' }
+    & scp @scpArgs -r "$infraRoot\*" "${rootTarget}:$remoteStaging/"
+    if ($LASTEXITCODE -ne 0) { throw 'Initial infrastructure upload as root failed.' }
+
+    $bootstrapStageOne = @"
+env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_keys' HOSTNAME_FQDN='majalops-platform-01' SERVER_TIMEZONE='UTC' SSH_PORT='$SshPort' HARDEN_SSH='0' bash '$remoteStaging/scripts/bootstrap-server.sh'
+"@
+    & ssh @sshArgs $rootTarget $bootstrapStageOne.Trim()
+    if ($LASTEXITCODE -ne 0) { throw 'Initial server bootstrap failed before SSH lockdown.' }
+
+    & ssh @sshArgs $sshTarget 'sudo -n true'
+    if ($LASTEXITCODE -ne 0) { throw "$SshUser key-only SSH and non-interactive sudo validation failed before lockdown." }
+
+    $bootstrapStageTwo = @"
+env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_keys' HOSTNAME_FQDN='majalops-platform-01' SERVER_TIMEZONE='UTC' SSH_PORT='$SshPort' HARDEN_SSH='1' CONFIRM_ADMIN_SSH_TESTED='YES' bash '$remoteStaging/scripts/bootstrap-server.sh'
+"@
+    & ssh @sshArgs $rootTarget $bootstrapStageTwo.Trim()
+    if ($LASTEXITCODE -ne 0) { throw 'SSH lockdown stage failed.' }
+
+    & ssh @sshArgs $sshTarget 'sudo -n true'
+    if ($LASTEXITCODE -ne 0) { throw "$SshUser failed final key-only SSH and sudo validation." }
+    & ssh @sshArgs $rootTarget 'true' 2>$null
+    if ($LASTEXITCODE -eq 0) { throw 'Root SSH remained available after lockdown.' }
+    Write-Output "Created and verified $SshUser, then disabled root and password SSH login."
 }
 
 if ([string]::IsNullOrWhiteSpace($ghcrUsername) -or [string]::IsNullOrWhiteSpace($ghcrToken)) {
@@ -55,7 +85,6 @@ if ([string]::IsNullOrWhiteSpace($ghcrUsername) -or [string]::IsNullOrWhiteSpace
 $ghcrToken | & ssh @sshArgs $sshTarget "sudo docker login ghcr.io -u '$ghcrUsername' --password-stdin"
 if ($LASTEXITCODE -ne 0) { throw 'Private GHCR login failed.' }
 
-$remoteStaging = '/tmp/majalops-phase2-infrastructure'
 & ssh @sshArgs $sshTarget "sudo rm -rf '$remoteStaging'; mkdir -p '$remoteStaging'"
 if ($LASTEXITCODE -ne 0) { throw 'Could not create remote staging directory.' }
 

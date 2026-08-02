@@ -71,6 +71,10 @@ fi
 usermod -aG sudo,ssh-admins "$ADMIN_USER"
 passwd -l "$ADMIN_USER" >/dev/null 2>&1 || true
 
+printf '%s ALL=(ALL:ALL) NOPASSWD: ALL\n' "$ADMIN_USER" > "/etc/sudoers.d/90-majalops-${ADMIN_USER}"
+chmod 0440 "/etc/sudoers.d/90-majalops-${ADMIN_USER}"
+visudo -cf "/etc/sudoers.d/90-majalops-${ADMIN_USER}" >/dev/null
+
 [[ -s "$ADMIN_AUTHORIZED_KEYS_FILE" ]] || \
     die "No public keys found at $ADMIN_AUTHORIZED_KEYS_FILE. Root SSH has not been changed."
 install -d -m 0700 -o "$ADMIN_USER" -g "$ADMIN_USER" "/home/${ADMIN_USER}/.ssh"

@@ -64,6 +64,9 @@ Write-Output 'STEP 2/5: Creating or updating Cloudflare DNS and zone security se
     -ConfigureZoneSettings -RemoveStaleAAAA
 
 Write-Output 'STEP 3/5: Provisioning the platform through strict host-key SSH.'
+& (Join-Path $scripts 'ensure-ssh-access.ps1') `
+    -ServerId ([long]$values.HETZNER_SERVER_ID) -ServerIp $serverIp `
+    -IdentityFile $IdentityFile -AdminUser $SshUser -SshPort $SshPort
 & (Join-Path $scripts 'remote-bootstrap.ps1') `
     -ServerIp $serverIp -TlsEmail $TlsEmail -MajalImage $MajalImage `
     -Domain $Domain -SshUser $SshUser -AdminUser $SshUser `
