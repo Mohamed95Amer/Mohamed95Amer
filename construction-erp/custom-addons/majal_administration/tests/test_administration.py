@@ -586,23 +586,63 @@ class TestMajalAdministration(TransactionCase):
 
 @tagged("post_install", "-at_install")
 class TestMajalHealth(HttpCase):
-    """The infrastructure side will point Caddy and monitoring at these."""
+    """The infrastructure side points Caddy and monitoring at these.
+
+    Four callers matter and are all covered below: nobody, an ordinary
+    internal user, an authorised monitoring account, and an administrator.
+    """
+
+    # Anything that would tell a reader where this runs, what it runs on, or
+    # what it is made of. Asserted against response bodies rather than eyeballed,
+    # so a future field that leaks one of these fails the suite.
+    FORBIDDEN = (
+        "odoo", "postgres", "psql", "traceback", "ghcr", "sha256",
+        "/srv", "/var", "/etc", "/mnt", "container", "docker", "caddy",
+        "password", "secret", "token", "api_key", "hetzner", "cloudflare",
+        "exception", "file \"", "line ", "localhost", "127.0.0.1",
+    )
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        users = cls.env["res.users"].with_context(no_reset_password=True)
+        cls.plain_user = users.create({
+            "name": "Ordinary Internal User",
+            "login": "health-ordinary@majal.test",
+            "password": "health-ordinary-pw-2026",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
+        cls.monitor = users.create({
+            "name": "Monitoring Agent",
+            "login": "health-monitor@majal.test",
+            "password": "health-monitor-pw-2026",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+            "groups_id": [(6, 0, [cls.env.ref(
+                "majal_administration.group_platform_monitor").id])],
+        })
+
+    def _assert_discloses_nothing(self, response):
+        body = response.text.lower()
+        for token in self.FORBIDDEN:
+            self.assertNotIn(token, body)
+        self.assertNotIn(self.env.cr.dbname.lower(), body)
+
+    # ---- the public probe -------------------------------------------------
 
     def test_shallow_probe_answers_ok_and_says_nothing_else(self):
         response = self.url_open("/majal/health", timeout=15)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["Cache-Control"], "no-store")
-        payload = response.json()
-        # The whole body. An unauthenticated endpoint is read by everybody
-        # who finds it, so the assertion is on the exact shape rather than on
-        # the presence of "ok" — a later addition of a version or a database
-        # name should fail here rather than ship.
-        self.assertEqual(payload, {"status": "ok"})
+        # The whole body, not just the presence of "ok". A later addition of a
+        # version or a database name should fail here rather than ship.
+        self.assertEqual(response.json(), {"status": "ok"})
+        self._assert_discloses_nothing(response)
 
     def test_shallow_probe_needs_no_session(self):
-        # auth="none": a liveness check that loads the public user and mints a
-        # session is doing work the check exists to avoid.
         response = self.url_open("/majal/health", timeout=15)
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("Set-Cookie", response.headers)
@@ -618,23 +658,87 @@ class TestMajalHealth(HttpCase):
         self.assertIn(429, seen)
         health._hits.clear()
 
-    def test_deep_probe_is_not_public(self):
+    def test_rate_limiter_storage_is_bounded(self):
+        from odoo.addons.majal_administration.controllers import health
+
+        health._hits.clear()
+        health._hits["a-caller-that-went-away"] = [0.0]
+        # A caller whose window has expired is dropped rather than kept
+        # forever, so the map cannot grow without bound across a long uptime.
+        self.assertFalse(health._rate_limited("a-caller-that-went-away"))
+        self.assertEqual(list(health._hits), ["a-caller-that-went-away"])
+        self.assertEqual(len(health._hits["a-caller-that-went-away"]), 1)
+        health._hits.clear()
+
+    # ---- the deep probe, by caller ---------------------------------------
+
+    def test_deep_probe_refuses_an_unauthenticated_caller(self):
         response = self.url_open("/majal/health/deep", timeout=15,
                                  allow_redirects=False)
-        # Odoo sends an unauthenticated caller to the login page rather than
-        # answering. Either way it must not be the health payload.
         self.assertNotEqual(response.status_code, 200)
+        self.assertNotIn("checks", response.text)
 
-    def test_deep_probe_reports_the_parts_without_naming_the_deployment(self):
-        self.authenticate("admin", "admin")
+    def test_deep_probe_refuses_an_ordinary_internal_user(self):
+        # Having a login is not a reason to be handed a map of where the
+        # platform is weak.
+        self.authenticate("health-ordinary@majal.test", "health-ordinary-pw-2026")
+        response = self.url_open("/majal/health/deep", timeout=15)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json(), {"status": "forbidden"})
+        # And no hint about which group would have worked.
+        self.assertNotIn("group", response.text.lower())
+
+    def test_deep_probe_answers_an_authorised_monitor(self):
+        self.authenticate("health-monitor@majal.test", "health-monitor-pw-2026")
         response = self.url_open("/majal/health/deep", timeout=15)
 
         payload = response.json()
         self.assertEqual(set(payload), {"status", "checks"})
-        self.assertEqual(
-            set(payload["checks"]),
-            {"modules", "scheduler", "recovery_points"})
-        # No version, no database name, no traceback, no provider config.
-        body = response.text
-        self.assertNotIn(self.env.cr.dbname, body)
-        self.assertNotIn("Traceback", body)
+        self.assertEqual(set(payload["checks"]),
+                         {"modules", "scheduler", "recovery_points"})
+        self.assertIn(payload["status"], {"ok", "degraded"})
+        self._assert_discloses_nothing(response)
+
+    def test_deep_probe_answers_an_administrator(self):
+        # Platform Owner reaches it by implication, not by a second grant.
+        self.authenticate("admin", "admin")
+        response = self.url_open("/majal/health/deep", timeout=15)
+
+        self.assertEqual(set(response.json()), {"status", "checks"})
+        self._assert_discloses_nothing(response)
+
+    def test_monitor_group_grants_nothing_but_the_probe(self):
+        # The point of a dedicated group: these credentials end up in a
+        # monitoring config file, so they must be worth as little as possible.
+        self.assertFalse(self.monitor.has_group(
+            "majal_administration.group_user_administrator"))
+        self.assertFalse(self.monitor.has_group(
+            "majal_administration.group_backup_operator"))
+        self.assertFalse(self.monitor.has_group(
+            "majal_administration.group_platform_owner"))
+        self.assertFalse(self.monitor.has_group("base.group_system"))
+
+    def test_degraded_checks_answer_503(self):
+        # A monitor should not have to parse the body to know something is
+        # wrong; the status code carries it.
+        #
+        # The stand-in goes on the module function rather than on the route
+        # method: the router binds a route's function object once at
+        # registration, so patching MajalHealth.deep changes an attribute
+        # nothing subsequently reads. The first version of this test did
+        # exactly that and passed nothing through.
+        from odoo.addons.majal_administration.controllers import health
+
+        self.authenticate("health-monitor@majal.test", "health-monitor-pw-2026")
+        with patch.object(
+            health, "_gather_checks",
+            return_value=(False, {"modules": "pending",
+                                  "scheduler": "current",
+                                  "recovery_points": "verified"}),
+        ):
+            response = self.url_open("/majal/health/deep", timeout=15)
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["status"], "degraded")
+        self._assert_discloses_nothing(response)

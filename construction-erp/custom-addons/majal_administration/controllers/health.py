@@ -62,6 +62,56 @@ def _json(payload, status=200):
     )
 
 
+def _gather_checks(env):
+    """The three questions the deep probe answers.
+
+    A module-level function rather than inline in the route, because the
+    router binds a route's function object once at registration: anything
+    that wants to stand in for this logic — a test driving the degraded
+    path, a future subclass — has to be reachable by name at call time.
+    """
+    checks = {}
+    healthy = True
+
+    try:
+        pending = env["ir.module.module"].sudo().search_count(
+            [("state", "in", ("to install", "to upgrade", "to remove"))])
+        checks["modules"] = "settled" if not pending else "pending"
+        healthy = healthy and not pending
+    except Exception:
+        _logger.exception("Deep health check could not read module states")
+        checks["modules"] = "unknown"
+        healthy = False
+
+    try:
+        # A cron that has stopped is how a system dies quietly: nothing
+        # errors, the backups and the SLA escalations simply stop.
+        stalled = env["ir.cron"].sudo().search_count([
+            ("active", "=", True),
+            ("nextcall", "<", env.cr.now()),
+        ])
+        checks["scheduler"] = "current" if not stalled else "behind"
+        healthy = healthy and not stalled
+    except Exception:
+        _logger.exception("Deep health check could not read cron state")
+        checks["scheduler"] = "unknown"
+        healthy = False
+
+    try:
+        snapshots = env["majal.backup.snapshot"].sudo()
+        failed = snapshots.search_count([("state", "=", "error")])
+        verified = snapshots.search_count([("state", "=", "verified")])
+        checks["recovery_points"] = (
+            "failing" if failed else "verified" if verified else "none")
+        healthy = healthy and not failed
+    except Exception:
+        _logger.exception("Deep health check could not read recovery points")
+        checks["recovery_points"] = "unknown"
+        healthy = False
+
+    return healthy, checks
+
+
 class MajalHealth(http.Controller):
     """Two probes, deliberately different in what they cost and what they say.
 
@@ -113,50 +163,30 @@ class MajalHealth(http.Controller):
     def deep(self, **_kwargs):
         """Is this system fit to take work.
 
-        Authenticated, because the answer names what is wrong. Still no
-        version, database name, traceback or provider configuration: an
-        authenticated account is not automatically an account that should
-        learn the shape of the deployment, and a monitoring agent's
-        credentials are one leak away from being an attacker's.
+        auth="user" only gets you as far as being somebody. Being an ordinary
+        internal user is not a reason to learn that the scheduler is behind or
+        that recovery points are failing — that is a map of where the platform
+        is weak, and the people who need it are a monitoring agent and whoever
+        runs the platform, not everyone with a login.
+
+        The group is Platform Monitor, which grants nothing else, so an
+        unattended monitoring account can be issued exactly this and no more.
+        Recovery Point Operator and Platform Owner reach it by implication.
+
+        The answer still names no version, database, container, path,
+        traceback or provider configuration: a monitoring agent's credentials
+        live in a configuration file and are one leak away from being
+        somebody else's.
         """
-        checks = {}
-        healthy = True
+        if not request.env.user.has_group(
+            "majal_administration.group_platform_monitor"
+        ):
+            # Refused in the same shape as everything else here, and with no
+            # hint about which group would have worked. A caller learns that
+            # they may not ask, not what to acquire in order to.
+            return _json({"status": "forbidden"}, status=403)
 
-        try:
-            pending = request.env["ir.module.module"].sudo().search_count(
-                [("state", "in", ("to install", "to upgrade", "to remove"))])
-            checks["modules"] = "settled" if not pending else "pending"
-            healthy = healthy and not pending
-        except Exception:
-            _logger.exception("Deep health check could not read module states")
-            checks["modules"] = "unknown"
-            healthy = False
-
-        try:
-            # A cron that has stopped is how a system dies quietly: nothing
-            # errors, the backups and the SLA escalations simply stop.
-            stalled = request.env["ir.cron"].sudo().search_count([
-                ("active", "=", True),
-                ("nextcall", "<", request.env.cr.now()),
-            ])
-            checks["scheduler"] = "current" if not stalled else "behind"
-            healthy = healthy and not stalled
-        except Exception:
-            _logger.exception("Deep health check could not read cron state")
-            checks["scheduler"] = "unknown"
-            healthy = False
-
-        try:
-            snapshots = request.env["majal.backup.snapshot"].sudo()
-            failed = snapshots.search_count([("state", "=", "error")])
-            verified = snapshots.search_count([("state", "=", "verified")])
-            checks["recovery_points"] = (
-                "failing" if failed else "verified" if verified else "none")
-            healthy = healthy and not failed
-        except Exception:
-            _logger.exception("Deep health check could not read recovery points")
-            checks["recovery_points"] = "unknown"
-            healthy = False
+        healthy, checks = _gather_checks(request.env)
 
         payload = {"status": "ok" if healthy else "degraded", "checks": checks}
         return _json(payload, status=200 if healthy else 503)
