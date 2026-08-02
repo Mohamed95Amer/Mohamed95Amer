@@ -167,8 +167,22 @@ $rescueSshArgs = @('-p', "$SshPort", '-i', $IdentityFile, '-o', 'BatchMode=yes',
 & ssh.exe @rescueSshArgs "root@$ServerIp" "printf '%s' '$repairScriptBase64' | base64 -d | bash"
 if ($LASTEXITCODE -ne 0) { throw 'Could not inject the administrator key into the installed Ubuntu system.' }
 
-$diskBoot = Invoke-HetznerApi -Method POST -Path "/servers/$ServerId/actions/reboot"
-Wait-HetznerAction -ActionId ([long]$diskBoot.action.id)
+try {
+    $diskBoot = Invoke-HetznerApi -Method POST -Path "/servers/$ServerId/actions/reboot"
+    Wait-HetznerAction -ActionId ([long]$diskBoot.action.id)
+} catch {
+    Write-Warning "Hetzner API reboot failed after verified key injection; falling back to Rescue SSH reboot: $($_.Exception.Message)"
+    $previousPreference = $ErrorActionPreference
+    $rebootExitCode = 255
+    try {
+        $ErrorActionPreference = 'Continue'
+        & ssh.exe @rescueSshArgs "root@$ServerIp" 'sync; systemctl reboot' *> $null
+        $rebootExitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousPreference
+    }
+    if ($rebootExitCode -notin @(0, 255)) { throw 'Could not reboot from the Rescue environment.' }
+}
 $rootReady = $false
 for ($attempt = 1; $attempt -le 60 -and -not $rootReady; $attempt++) {
     Start-Sleep -Seconds 5
