@@ -28,7 +28,16 @@ $serverLookup = Invoke-HetznerApi -Method GET -Path "/servers?name=$([uri]::Esca
 if (@($serverLookup.servers).Count -ne 1) { throw "Expected exactly one Hetzner server named $ServerName." }
 $server = $serverLookup.servers[0]
 if ($server.server_type.name -ne 'cpx22') { throw "Expected CPX22, found $($server.server_type.name)." }
-if ($server.datacenter.location.name -ne 'nbg1') { throw "Expected Nuremberg nbg1, found $($server.datacenter.location.name)." }
+$serverLocation = if ($null -ne $server.PSObject.Properties['location']) {
+    [string]$server.location.name
+} elseif ($null -ne $server.PSObject.Properties['datacenter']) {
+    # Compatibility with Hetzner responses from before the July 2026 schema removal.
+    [string]$server.datacenter.location.name
+} else {
+    ''
+}
+if ([string]::IsNullOrWhiteSpace($serverLocation)) { throw 'Hetzner did not return a server location.' }
+if ($serverLocation -ne 'nbg1') { throw "Expected Nuremberg nbg1, found $serverLocation." }
 if ($server.image.os_flavor -ne 'ubuntu' -or $server.image.os_version -notlike '24.04*') {
     throw "Expected Ubuntu 24.04, found $($server.image.description)."
 }
@@ -85,7 +94,7 @@ $generatedContent = @(
     "SERVER_IPV4=$($server.public_net.ipv4.ip)"
     "SERVER_IPV6=$ipv6"
     "SERVER_TYPE=$($server.server_type.name)"
-    "SERVER_LOCATION=$($server.datacenter.location.name)"
+    "SERVER_LOCATION=$serverLocation"
 ) -join [Environment]::NewLine
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText(
