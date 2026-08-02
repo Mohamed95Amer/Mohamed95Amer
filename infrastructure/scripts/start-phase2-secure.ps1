@@ -3,6 +3,7 @@ param(
     [string] $TlsEmail = '',
     [string] $Domain = 'platform.majalops.com',
     [string] $MajalImage = '',
+    [string] $IdentityFile = 'C:\Users\hossi\.ssh\majalops_admin',
     [ValidateSet('patch', 'minor', 'major')] [string] $ReleaseBump = 'patch',
     [switch] $EnableExternalHealth
 )
@@ -92,6 +93,7 @@ try {
         -TlsEmail $TlsEmail `
         -Domain $Domain `
         -MajalImage $MajalImage `
+        -IdentityFile $IdentityFile `
         -ReleaseBump $ReleaseBump `
         -EnableExternalHealth:$EnableExternalHealth
 } finally {
