@@ -76,9 +76,14 @@ $publicKey = (Get-Content -LiteralPath $publicKeyFile -Raw).Trim()
 if ($publicKey -notmatch '^ssh-ed25519\s+[A-Za-z0-9+/=]+(?:\s+.*)?$') {
     throw 'The recovery public key is not a valid single-line Ed25519 public key.'
 }
+$publicKeyParts = @($publicKey -split '\s+')
+$publicKeyIdentity = "$($publicKeyParts[0]) $($publicKeyParts[1])"
 
 $keyLookup = Invoke-HetznerApi -Method GET -Path '/ssh_keys?per_page=50'
-$matchingKeys = @($keyLookup.ssh_keys | Where-Object { ([string]$_.public_key).Trim() -eq $publicKey })
+$matchingKeys = @($keyLookup.ssh_keys | Where-Object {
+    $remoteParts = @(([string]$_.public_key).Trim() -split '\s+')
+    $remoteParts.Count -ge 2 -and "$($remoteParts[0]) $($remoteParts[1])" -eq $publicKeyIdentity
+})
 if ($matchingKeys.Count -gt 1) { throw 'Multiple Hetzner SSH keys match the local public key.' }
 if ($matchingKeys.Count -eq 1) {
     $sshKeyId = [long]$matchingKeys[0].id
