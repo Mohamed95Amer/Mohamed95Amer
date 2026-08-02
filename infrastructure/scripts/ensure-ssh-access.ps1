@@ -48,10 +48,18 @@ function Wait-HetznerAction {
 
 function Test-KeyOnlySsh {
     param([string] $User, [string] $KnownHosts = $knownHostsFile, [string] $Command = 'true')
-    & ssh.exe -p $SshPort -i $IdentityFile -o BatchMode=yes -o StrictHostKeyChecking=yes `
-        -o "UserKnownHostsFile=$KnownHosts" -o KexAlgorithms=curve25519-sha256 `
-        -o HostKeyAlgorithms=ssh-ed25519 "$User@$ServerIp" $Command 2>$null
-    return ($LASTEXITCODE -eq 0)
+    $previousPreference = $ErrorActionPreference
+    $exitCode = 255
+    try {
+        $ErrorActionPreference = 'Continue'
+        & ssh.exe -p $SshPort -i $IdentityFile -o BatchMode=yes -o StrictHostKeyChecking=yes `
+            -o "UserKnownHostsFile=$KnownHosts" -o KexAlgorithms=curve25519-sha256 `
+            -o HostKeyAlgorithms=ssh-ed25519 "$User@$ServerIp" $Command *> $null
+        $exitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousPreference
+    }
+    return ($exitCode -eq 0)
 }
 
 if (Test-KeyOnlySsh -User $AdminUser -Command 'sudo -n true') {
@@ -100,7 +108,13 @@ $rescueKnownHosts = Join-Path $generatedDir 'rescue_known_hosts'
 $rescueReady = $false
 for ($attempt = 1; $attempt -le 48 -and -not $rescueReady; $attempt++) {
     Start-Sleep -Seconds 5
-    $scanLines = @(& $scanner -T 10 -p $SshPort -t ed25519 $ServerIp 2>$null)
+    $previousPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $scanLines = @(& $scanner -T 10 -p $SshPort -t ed25519 $ServerIp 2>$null)
+    } finally {
+        $ErrorActionPreference = $previousPreference
+    }
     $hostKey = @($scanLines | Where-Object { $_ -match '^\S+\s+ssh-ed25519\s+' } | Select-Object -First 1)
     if ($hostKey.Count -eq 0) { continue }
     Set-Content -LiteralPath $rescueKnownHosts -Value $hostKey[0] -Encoding ascii
