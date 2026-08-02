@@ -6,6 +6,7 @@ umask 077
 COMPOSE_FILE="${COMPOSE_FILE:-/opt/majalops/infrastructure/docker/compose.platform.yml}"
 ENV_FILE="${ENV_FILE:-/etc/majalops/platform.env}"
 APP_SERVICE="${APP_SERVICE:-majal}"
+EDGE_SERVICE="${EDGE_SERVICE:-caddy}"
 TARGET_IMAGE="${TARGET_IMAGE:-}"
 HEALTH_URL="${HEALTH_URL:-https://platform.majalops.com/healthz}"
 CONFIRM_UPDATE="${CONFIRM_UPDATE:-NO}"
@@ -73,6 +74,7 @@ rollback_on_failure() {
     printf 'ERROR: %s Restoring previous image reference.\n' "$message" >&2
     cp -a "$env_backup" "$ENV_FILE"
     compose up -d --wait --wait-timeout 900 --no-deps "$APP_SERVICE" || true
+    compose restart "$EDGE_SERVICE" || true
     printf 'Previous image requested: %s\n' "$current_image" >&2
     exit 1
 }
@@ -82,8 +84,19 @@ compose pull "$APP_SERVICE" || rollback_on_failure "Image pull failed."
 compose up -d --wait --wait-timeout 900 --no-deps "$APP_SERVICE" || \
     rollback_on_failure "Application recreation or readiness failed."
 
-if ! HEALTH_URL="$HEALTH_URL" COMPOSE_FILE="$COMPOSE_FILE" ENV_FILE="$ENV_FILE" \
-    "$(dirname "$0")/healthcheck.sh"; then
+compose restart "$EDGE_SERVICE" || rollback_on_failure "Edge proxy restart failed."
+
+health_ok=0
+for attempt in $(seq 1 12); do
+    if HEALTH_URL="$HEALTH_URL" COMPOSE_FILE="$COMPOSE_FILE" ENV_FILE="$ENV_FILE" \
+        "$(dirname "$0")/healthcheck.sh"; then
+        health_ok=1
+        break
+    fi
+    printf 'Health verification retry %s/12 after proxy reconnection.\n' "$attempt"
+    sleep 5
+done
+if [[ "$health_ok" != "1" ]]; then
     rollback_on_failure "Health checks failed."
 fi
 
