@@ -29,7 +29,7 @@ function ConvertFrom-MajalSecureString {
     }
 }
 
-$firstSecure = Read-Host 'New password (16+; letters, numbers, @ % _ + = , . : ! ? -)' -AsSecureString
+$firstSecure = Read-Host 'New password (16+; no spaces, apostrophes, or backslashes)' -AsSecureString
 $secondSecure = Read-Host 'Confirm the new password' -AsSecureString
 $first = $null
 $second = $null
@@ -42,8 +42,8 @@ try {
     if ($first.Contains("`r") -or $first.Contains("`n")) {
         throw 'The password cannot contain line breaks.'
     }
-    if ($first -notmatch '^[A-Za-z0-9@%_+=,.:!?-]+$') {
-        throw 'Use letters, numbers, and these safe symbols only: @ % _ + = , . : ! ? -'
+    if ($first -notmatch '^[\x21-\x26\x28-\x5B\x5D-\x7E]+$') {
+        throw "Use printable English characters without spaces, apostrophes ('), or backslashes (\)."
     }
 
     $bytes = [Text.Encoding]::UTF8.GetBytes($first)

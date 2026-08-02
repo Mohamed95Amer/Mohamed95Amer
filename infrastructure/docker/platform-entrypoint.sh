@@ -35,9 +35,18 @@ missing_modules=1
 if [[ "$table_exists" == "0" ]]; then
     new_database=1
 else
+    # psql does not perform variable interpolation inside a command supplied
+    # with -c. Feed the query on stdin so :'modules' is safely SQL-quoted.
     missing_modules="$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -At \
-        -v modules="$MODULES" -c \
-        "SELECT count(*) FROM unnest(string_to_array(:'modules', ',')) wanted(name) LEFT JOIN ir_module_module module ON module.name = wanted.name AND module.state = 'installed' WHERE module.id IS NULL")"
+        -v modules="$MODULES" <<'SQL'
+SELECT count(*)
+FROM unnest(string_to_array(:'modules', ',')) wanted(name)
+LEFT JOIN ir_module_module module
+    ON module.name = wanted.name
+   AND module.state = 'installed'
+WHERE module.id IS NULL;
+SQL
+)"
 fi
 
 if [[ "$new_database" == "1" || "$missing_modules" != "0" ]]; then

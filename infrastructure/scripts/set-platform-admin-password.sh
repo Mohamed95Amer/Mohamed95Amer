@@ -16,24 +16,29 @@ command -v base64 >/dev/null || die "base64 is required."
 command -v docker >/dev/null || die "docker is required."
 
 IFS= read -r password_b64 || die "No password payload was received."
+# Windows PowerShell writes CRLF when piping text to ssh; remove the transport CR.
+password_b64="${password_b64%$'\r'}"
 [[ "$password_b64" =~ ^[A-Za-z0-9+/]+={0,2}$ ]] || die "Invalid password payload."
 password="$(printf '%s' "$password_b64" | base64 --decode)" || die "Invalid password payload."
 (( ${#password} >= 16 )) || die "The password must contain at least 16 characters."
 [[ "$password" != *$'\n'* && "$password" != *$'\r'* ]] || die "The password cannot contain line breaks."
-[[ "$password" =~ ^[A-Za-z0-9@%_+=,.:!?-]+$ ]] || \
-    die "Use letters, numbers, and these safe symbols only: @ % _ + = , . : ! ? -"
+LC_ALL=C
+[[ "$password" != *[[:space:]]* ]] || die "The password cannot contain spaces."
+[[ "$password" != *"'"* ]] || die "The password cannot contain apostrophes."
+[[ "$password" != *'\'* ]] || die "The password cannot contain backslashes."
+[[ "$password" != *[![:print:]]* ]] || die "Use printable English characters only."
 
 tmp="${ENV_FILE}.tmp.$$"
 found=0
 while IFS= read -r line || [[ -n "$line" ]]; do
     if [[ "$line" == MAJAL_INITIAL_ADMIN_PASSWORD=* ]]; then
-        printf 'MAJAL_INITIAL_ADMIN_PASSWORD=%s\n' "$password" >> "$tmp"
+        printf "MAJAL_INITIAL_ADMIN_PASSWORD='%s'\n" "$password" >> "$tmp"
         found=1
     else
         printf '%s\n' "$line" >> "$tmp"
     fi
 done < "$ENV_FILE"
-(( found == 1 )) || printf 'MAJAL_INITIAL_ADMIN_PASSWORD=%s\n' "$password" >> "$tmp"
+(( found == 1 )) || printf "MAJAL_INITIAL_ADMIN_PASSWORD='%s'\n" "$password" >> "$tmp"
 chmod 0600 "$tmp"
 chown root:root "$tmp"
 mv "$tmp" "$ENV_FILE"
