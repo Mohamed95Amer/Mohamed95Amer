@@ -3,7 +3,7 @@ set -Eeuo pipefail
 IFS=$'\n\t'
 
 original="${SSH_ORIGINAL_COMMAND:-}"
-read -r -a args <<< "$original"
+IFS=' ' read -r -a args <<< "$original"
 [[ "${args[0]:-}" == "sudo" && "${args[1]:-}" == "/usr/local/sbin/majalops-deploy" ]] || {
     printf 'This key is restricted to MajalOps deployment automation.\n' >&2
     exit 1
