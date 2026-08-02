@@ -124,7 +124,7 @@ for ($attempt = 1; $attempt -le 48 -and -not $rescueReady; $attempt++) {
     if ($hostKey.Count -eq 0) { continue }
     Set-Content -LiteralPath $rescueKnownHosts -Value $hostKey[0] -Encoding ascii
     $rescueReady = Test-KeyOnlySsh -User 'root' -KnownHosts $rescueKnownHosts `
-        -Command 'test -x /usr/bin/chroot-prepare'
+        -Command 'command -v chroot-prepare >/dev/null 2>&1'
 }
 if (-not $rescueReady) { throw 'The Hetzner Rescue System did not become reachable with the registered SSH key.' }
 $rescueFingerprint = (& ssh-keygen -lf $rescueKnownHosts -E sha256).Trim()
