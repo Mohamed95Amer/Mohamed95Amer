@@ -2,6 +2,7 @@
 param(
     [string] $TlsEmail = '',
     [string] $Domain = 'platform.majalops.com',
+    [string] $MajalImage = '',
     [ValidateSet('patch', 'minor', 'major')] [string] $ReleaseBump = 'patch',
     [switch] $EnableExternalHealth
 )
@@ -32,6 +33,19 @@ function Read-SecretEnvironmentVariable {
 }
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+$releaseEnv = Join-Path (Join-Path $PSScriptRoot '..\.generated') 'release.env'
+if ([string]::IsNullOrWhiteSpace($MajalImage) -and (Test-Path -LiteralPath $releaseEnv)) {
+    foreach ($line in Get-Content -LiteralPath $releaseEnv) {
+        if ($line -match '^MAJAL_IMAGE=(.+)$') {
+            $MajalImage = $Matches[1].Trim()
+            break
+        }
+    }
+}
+if (-not [string]::IsNullOrWhiteSpace($MajalImage) -and
+    $MajalImage -notmatch '^ghcr\.io/mohamed95amer/majalops-platform@sha256:[a-fA-F0-9]{64}$') {
+    throw 'MajalImage must be an immutable MajalOps GHCR image digest.'
+}
 if ([string]::IsNullOrWhiteSpace($TlsEmail)) {
     $TlsEmail = Read-Host -Prompt 'Certificate alert email'
 }
@@ -48,6 +62,7 @@ try {
     & (Join-Path $PSScriptRoot 'invoke-phase2.ps1') `
         -TlsEmail $TlsEmail `
         -Domain $Domain `
+        -MajalImage $MajalImage `
         -ReleaseBump $ReleaseBump `
         -EnableExternalHealth:$EnableExternalHealth
 } finally {
