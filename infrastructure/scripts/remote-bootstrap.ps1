@@ -97,14 +97,25 @@ env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_ke
 if ([string]::IsNullOrWhiteSpace($ghcrUsername) -or [string]::IsNullOrWhiteSpace($ghcrToken)) {
     throw 'Set GHCR_USERNAME and GHCR_TOKEN in this PowerShell process. The token needs read:packages and is never passed on the command line.'
 }
-$ghcrToken | & ssh @sshArgs $sshTarget "sudo docker login ghcr.io -u '$ghcrUsername' --password-stdin"
-if ($LASTEXITCODE -ne 0) { throw 'Private GHCR login failed.' }
 
 & ssh @sshArgs $sshTarget "sudo rm -rf '$remoteStaging'; mkdir -p '$remoteStaging'"
 if ($LASTEXITCODE -ne 0) { throw 'Could not create remote staging directory.' }
 
-& scp @scpArgs -r "$infraRoot\*" "${sshTarget}:$remoteStaging/"
-if ($LASTEXITCODE -ne 0) { throw 'Infrastructure upload failed.' }
+$runtimeDirectories = @('scripts', 'docker', 'caddy', 'monitoring', 'systemd', 'configs', 'backups')
+foreach ($directory in $runtimeDirectories) {
+    $localDirectory = Join-Path $infraRoot $directory
+    if (-not (Test-Path -LiteralPath $localDirectory -PathType Container)) {
+        throw "Required infrastructure directory is missing: $localDirectory"
+    }
+    & scp @scpArgs -r $localDirectory "${sshTarget}:$remoteStaging/"
+    if ($LASTEXITCODE -ne 0) { throw "Infrastructure upload failed for $directory." }
+}
+
+& ssh @sshArgs $sshTarget "sudo bash '$remoteStaging/scripts/install-docker.sh'"
+if ($LASTEXITCODE -ne 0) { throw 'Production Docker installation failed.' }
+
+$ghcrToken | & ssh @sshArgs $sshTarget "sudo docker login ghcr.io -u '$ghcrUsername' --password-stdin"
+if ($LASTEXITCODE -ne 0) { throw 'Private GHCR login failed.' }
 
 $remoteCommand = @"
 sudo env CONFIRM_PROVISION=YES ADMIN_USER='$AdminUser' SSH_PORT='$SshPort' MAJAL_DOMAIN='$Domain' TLS_EMAIL='$TlsEmail' MAJAL_IMAGE='$MajalImage' bash '$remoteStaging/scripts/provision-platform.sh'
