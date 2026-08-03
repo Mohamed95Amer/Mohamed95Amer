@@ -1,0 +1,318 @@
+/* Majal home page.
+ *
+ * Standalone by design: the other pages keep majal.css, and this file carries
+ * its own header and footer rules so the two cascades never meet. A shared
+ * stylesheet with a second one layered on top is where spacing quietly
+ * cancels itself out.
+ *
+ * The palette is a drafting room rather than a brand deck — cool paper with a
+ * blue-grey bias toward the teal, ink dark enough to sit a rendered model on,
+ * and the gold spent once per screen instead of scattered. */
+
+@font-face {
+  font-family: "Big Shoulders";
+  src: url("../fonts/BigShoulders-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("../fonts/InstrumentSans-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("../fonts/InstrumentSans-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  --ink:        #10222a;
+  --ink-soft:   #1b3540;
+  --paper:      #eceef0;
+  --surface:    #ffffff;
+  --teal:       #2f7a80;
+  --teal-deep:  #235f66;
+  --gold:       #c59b52;
+  --rule:       #ccd6d9;
+  --text:       #16262d;
+  --muted:      #5d6f76;
+  --on-ink:     #e7edef;
+  --on-ink-dim: #a9bcc3;
+
+  --display: "Big Shoulders", "Arial Narrow", system-ui, sans-serif;
+  --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --wrap: 74rem;
+  --step: clamp(1rem, 0.6rem + 1.6vw, 1.6rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --paper:   #0d1c22;
+    --surface: #142932;
+    --text:    #e4ebed;
+    --muted:   #9db0b7;
+    --rule:    #26424c;
+    --teal:    #4d9aa1;
+    --ink:     #081419;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1c22; --surface: #142932; --text: #e4ebed;
+  --muted: #9db0b7; --rule: #26424c; --teal: #4d9aa1; --ink: #081419;
+}
+:root[data-theme="light"] {
+  --paper: #eceef0; --surface: #ffffff; --text: #16262d;
+  --muted: #5d6f76; --rule: #ccd6d9; --teal: #2f7a80; --ink: #10222a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--text);
+  font: 400 clamp(1rem, 0.96rem + 0.2vw, 1.075rem)/1.65 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--teal-deep); }
+
+.wrap { width: min(100% - 2.5rem, var(--wrap)); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--ink); color: var(--on-ink); padding: .7rem 1rem;
+}
+.skip:focus { left: 1rem; top: 1rem; z-index: 50; }
+
+:where(a, button, summary):focus-visible {
+  outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 2px;
+}
+
+/* ---- header ---------------------------------------------------------- */
+
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in srgb, var(--ink) 94%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.topbar .wrap {
+  display: flex; align-items: center; gap: 1.5rem;
+  min-height: 4rem; flex-wrap: wrap;
+}
+.brand {
+  font: 700 1.35rem/1 var(--display);
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--on-ink); text-decoration: none;
+  display: flex; align-items: baseline; gap: .55rem;
+}
+.brand .rule-mark {
+  width: 1.4rem; height: .5rem; background: var(--gold);
+  display: inline-block; transform: translateY(-.1rem);
+}
+.topnav { margin-left: auto; display: flex; gap: 1.4rem; flex-wrap: wrap; }
+.topnav a {
+  color: var(--on-ink-dim); text-decoration: none;
+  font-size: .88rem; letter-spacing: .02em;
+}
+.topnav a:hover, .topnav a[aria-current] { color: var(--on-ink); }
+
+/* ---- hero ------------------------------------------------------------ */
+
+/* `.hero` is a <section>, so it inherits the generic section padding below
+   unless it says otherwise — that left a dead band under the header. */
+.hero {
+  padding: 0;
+  background: var(--ink); color: var(--on-ink);
+  display: grid; align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+}
+.hero-body {
+  display: flex; align-items: center;
+  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 3.5rem);
+  justify-self: end; width: min(100%, 38rem);
+}
+/* Full strength, not a washed-out backdrop: the model is the argument. */
+.hero-figure { position: relative; overflow: hidden; background: #cfd6d8; }
+.hero-figure img {
+  width: 100%; height: 100%; min-height: clamp(18rem, 46vh, 30rem);
+  object-fit: cover; object-position: 42% 50%;
+}
+/* No fade across the joining edge: the viewer's own background is light, so
+   a dark gradient over it reads as a smudge rather than a transition. A clean
+   butt joint is better than a dirty blend. */
+
+@media (max-width: 56rem) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-body { width: 100%; justify-self: stretch; order: 1; }
+  .hero-figure { order: 2; }
+}
+.eyebrow {
+  font: 700 .78rem/1 var(--body);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 1rem;
+}
+.hero h1 {
+  font: 700 clamp(2.6rem, 1.4rem + 5vw, 5rem)/0.94 var(--display);
+  letter-spacing: -.005em; text-transform: uppercase;
+  margin: 0 0 1rem; max-width: 15ch; text-wrap: balance;
+}
+.hero p {
+  margin: 0 0 1.75rem; max-width: 46ch;
+  color: var(--on-ink-dim); font-size: 1.08rem;
+}
+.cta-row { display: flex; gap: .8rem; flex-wrap: wrap; }
+.btn {
+  font: 700 .95rem/1 var(--body); letter-spacing: .02em;
+  padding: .85rem 1.5rem; text-decoration: none;
+  border: 1px solid transparent; display: inline-block;
+}
+.btn-primary { background: var(--gold); color: #21170a; }
+.btn-primary:hover { background: #d5ad66; }
+.btn-ghost { border-color: rgba(255, 255, 255, .35); color: var(--on-ink); }
+.btn-ghost:hover { border-color: var(--on-ink); }
+
+/* ---- the strip: six words each, not paragraphs ----------------------- */
+
+.strip { background: var(--ink-soft); color: var(--on-ink); }
+.strip ul {
+  list-style: none; margin: 0; padding: 1.4rem 0;
+  display: grid; gap: .3rem 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.strip li {
+  font-size: .9rem; color: var(--on-ink-dim);
+  padding-left: 1.1rem; position: relative;
+}
+.strip li::before {
+  content: ""; position: absolute; left: 0; top: .62em;
+  width: .5rem; height: 1px; background: var(--gold);
+}
+
+/* ---- sections -------------------------------------------------------- */
+
+section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
+.section-head { max-width: 40ch; margin-bottom: 2.5rem; }
+.section-head h2 {
+  font: 700 clamp(1.9rem, 1.2rem + 2.6vw, 3rem)/1 var(--display);
+  text-transform: uppercase; letter-spacing: .01em;
+  margin: 0 0 .6rem; text-wrap: balance;
+}
+.section-head p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+/* ---- BIM before / after ---------------------------------------------- */
+
+.bim { background: var(--ink); color: var(--on-ink); }
+.bim .section-head h2 { color: var(--on-ink); }
+.bim .section-head p { color: var(--on-ink-dim); }
+.compare {
+  display: grid; gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+}
+.compare figure { margin: 0; }
+.compare img {
+  width: 100%; aspect-ratio: 8 / 7; object-fit: contain;
+  background: #f0f2f3; border: 1px solid rgba(255, 255, 255, .14);
+}
+.compare figcaption {
+  margin-top: .7rem; font-size: .85rem; color: var(--on-ink-dim);
+  display: flex; gap: .55rem; align-items: baseline;
+}
+.tagword {
+  font: 700 .72rem/1 var(--body); letter-spacing: .14em;
+  text-transform: uppercase; padding: .3rem .5rem;
+  background: rgba(255, 255, 255, .1); color: var(--on-ink);
+  flex: 0 0 auto;
+}
+.tagword.is-after { background: var(--gold); color: #21170a; }
+
+/* ---- capability cards: picture first, words on request --------------- */
+
+.cards {
+  display: grid; gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  /* Each card sizes to its own content: with the default stretch, opening one
+     disclosure grew every card in that row and left the others hollow. */
+  align-items: start;
+}
+.card {
+  background: var(--surface); border: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+}
+.card > img {
+  width: 100%; aspect-ratio: 16 / 7; object-fit: cover; object-position: 50% 50%;
+  background: #f4f6f7; border-bottom: 1px solid var(--rule);
+}
+/* The phone capture is portrait and its point is that everything fits one
+   screen, so it is shown whole rather than cropped to the landscape ratio. */
+.card > img[src*="defect-mobile"] {
+  aspect-ratio: 4 / 3; object-fit: contain; padding: .75rem 0;
+}
+.card-body { padding: 1.15rem 1.25rem 1.35rem; }
+.card h3 {
+  font: 700 1.4rem/1.05 var(--display); text-transform: uppercase;
+  letter-spacing: .02em; margin: 0 0 .35rem;
+}
+.card .claim { margin: 0; color: var(--text); font-size: .98rem; }
+
+details.more { margin-top: .85rem; }
+details.more > summary {
+  cursor: pointer; list-style: none;
+  font: 700 .8rem/1 var(--body); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--teal-deep);
+  display: inline-flex; align-items: center; gap: .45rem;
+  padding: .3rem 0;
+}
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::after {
+  content: ""; width: .5rem; height: .5rem;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-.1rem); transition: transform .18s ease;
+}
+details.more[open] > summary::after { transform: rotate(-135deg) translateY(-.15rem); }
+details.more > summary:hover { color: var(--teal); }
+details.more p {
+  margin: .7rem 0 0; color: var(--muted); font-size: .93rem;
+}
+
+/* ---- split bands (Arabic, mobile) ------------------------------------ */
+
+.split {
+  display: grid; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+.split img { border: 1px solid var(--rule); }
+.split-text h2 {
+  font: 700 clamp(1.8rem, 1.2rem + 2.2vw, 2.7rem)/1 var(--display);
+  text-transform: uppercase; margin: 0 0 .7rem;
+}
+.split-text p { color: var(--muted); margin: 0 0 .5rem; }
+.phone { max-width: 17rem; margin-inline: auto; }
+
+/* ---- footer ---------------------------------------------------------- */
+
+.site-footer {
+  background: var(--ink); color: var(--on-ink-dim);
+  padding: 3rem 0 2.5rem; font-size: .88rem;
+}
+.footer-grid {
+  display: grid; gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.site-footer h4 {
+  font: 700 .78rem/1 var(--body); letter-spacing: .14em;
+  text-transform: uppercase; color: var(--on-ink); margin: 0 0 .8rem;
+}
+.site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+.site-footer a { color: var(--on-ink-dim); text-decoration: none; }
+.site-footer a:hover { color: var(--on-ink); text-decoration: underline; }
+.footer-note {
+  margin-top: 2.5rem; padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  color: #8ea1a9; max-width: 60ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
