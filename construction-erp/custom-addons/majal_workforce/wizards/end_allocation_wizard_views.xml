@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_end_allocation_wizard_form" model="ir.ui.view">
+        <field name="name">majal.end.allocation.wizard.form</field>
+        <field name="model">majal.end.allocation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="End Allocations">
+                <group>
+                    <field name="allocation_ids" widget="many2many_tags"
+                           readonly="1"/>
+                    <field name="date_end"/>
+                    <field name="has_pending" invisible="1"/>
+                </group>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not has_pending">
+                    <field name="pending_warning" nolabel="1" readonly="1"/>
+                </div>
+                <group invisible="not has_pending">
+                    <field name="delegate_id"/>
+                </group>
+                <footer>
+                    <button name="action_end" type="object"
+                            string="End" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_end_allocation" model="ir.actions.act_window">
+        <field name="name">End Allocations</field>
+        <field name="res_model">majal.end.allocation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_majal_allocation"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'default_allocation_ids': active_ids}</field>
+    </record>
+</odoo>

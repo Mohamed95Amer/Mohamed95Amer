@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_workforce" model="ir.ui.view">
+        <field name="name">project.project.form.workforce</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="construction_base.view_project_form_construction"/>
+        <field name="arch" type="xml">
+            <!-- Right after Construction: the team is the second thing anybody
+                 wants after the contract, and this is where allocation happens
+                 rather than on a screen somewhere else. -->
+            <xpath expr="//page[@name='construction']" position="after">
+                <page string="Team" name="majal_team"
+                      invisible="not is_construction">
+                    <field name="allocation_ids"
+                           context="{'default_project_id': id}">
+                        <list editable="bottom"
+                              decoration-muted="state == 'ended'"
+                              decoration-info="state == 'planned'">
+                            <field name="employee_id"/>
+                            <field name="role_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="allocation_percent"
+                                   widget="percentage"/>
+                            <field name="user_id" readonly="1"
+                                   optional="show"/>
+                            <field name="is_overallocated" optional="hide"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'active'"
+                                   decoration-info="state == 'planned'"/>
+                        </list>
+                    </field>
+                    <div class="text-muted mt-2">
+                        Anyone here with a system account can see this
+                        project's records. People without one are recorded on
+                        the job and count towards its headcount.
+                    </div>
+                    <group string="Derived access" col="2">
+                        <!-- Shown readonly so an administrator can see what
+                             the allocations produced and trust it, rather
+                             than wondering whether it worked. -->
+                        <field name="majal_member_ids" readonly="1"
+                               widget="many2many_tags"
+                               string="Who can see this project"/>
+                        <field name="majal_manager_id"
+                               string="Record owner"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

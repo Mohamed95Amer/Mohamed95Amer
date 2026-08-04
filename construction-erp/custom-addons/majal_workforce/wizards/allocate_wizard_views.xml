@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_allocate_wizard_form" model="ir.ui.view">
+        <field name="name">majal.allocate.wizard.form</field>
+        <field name="model">majal.allocate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Allocate People">
+                <group>
+                    <group string="Where">
+                        <field name="project_id" readonly="location_id"/>
+                        <field name="location_id" readonly="project_id"/>
+                        <field name="role_id"/>
+                    </group>
+                    <group string="When">
+                        <field name="date_start"/>
+                        <field name="date_end"
+                               placeholder="leave empty while they are on it"/>
+                        <field name="allocation_percent" widget="percentage"/>
+                    </group>
+                </group>
+                <group string="Who">
+                    <field name="copy_from_project_id"
+                           placeholder="or bring a whole team across"/>
+                    <field name="employee_ids" widget="many2many_tags"
+                           nolabel="1" colspan="2"/>
+                </group>
+                <div class="alert alert-info" role="status"
+                     invisible="not warning">
+                    <field name="warning" nolabel="1" readonly="1"/>
+                </div>
+                <footer>
+                    <button name="action_allocate" type="object"
+                            string="Allocate" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_allocate_wizard" model="ir.actions.act_window">
+        <field name="name">Allocate People</field>
+        <field name="res_model">majal.allocate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Reachable straight from a selection in the employee list, which is
+         where somebody placing a crew actually starts. -->
+    <record id="action_majal_allocate_from_employees" model="ir.actions.act_window">
+        <field name="name">Allocate to Work</field>
+        <field name="res_model">majal.allocate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'default_employee_ids': active_ids}</field>
+    </record>
+</odoo>
