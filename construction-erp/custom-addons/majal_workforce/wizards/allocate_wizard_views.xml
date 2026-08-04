@@ -15,7 +15,7 @@
                         <field name="date_start"/>
                         <field name="date_end"
                                placeholder="leave empty while they are on it"/>
-                        <field name="allocation_percent" widget="percentage"/>
+                        <field name="allocation_percent"/>
                     </group>
                 </group>
                 <group string="Who">

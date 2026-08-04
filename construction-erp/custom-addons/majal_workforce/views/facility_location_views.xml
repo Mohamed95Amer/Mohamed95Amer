@@ -18,7 +18,7 @@
                                string="Covers everything below"/>
                         <field name="date_start"/>
                         <field name="date_end"/>
-                        <field name="allocation_percent" widget="percentage"/>
+                        <field name="allocation_percent"/>
                         <field name="state" widget="badge"
                                decoration-success="state == 'active'"
                                decoration-info="state == 'planned'"/>

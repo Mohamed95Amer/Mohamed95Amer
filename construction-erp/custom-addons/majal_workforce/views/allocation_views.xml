@@ -13,7 +13,7 @@
                 <field name="location_id" optional="show"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
-                <field name="allocation_percent" widget="percentage" optional="show"/>
+                <field name="allocation_percent" optional="show"/>
                 <field name="user_id" optional="hide"/>
                 <field name="is_overallocated" optional="hide"/>
                 <field name="is_retained" optional="hide"/>
@@ -72,8 +72,7 @@
                             <field name="state" readonly="1"/>
                         </group>
                         <group string="Load and access">
-                            <field name="allocation_percent"
-                                   widget="percentage"/>
+                            <field name="allocation_percent"/>
                             <field name="grants_access"/>
                             <field name="is_overallocated" invisible="1"/>
                             <field name="is_retained" invisible="1"/>

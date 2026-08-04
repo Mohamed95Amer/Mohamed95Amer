@@ -20,8 +20,7 @@
                             <field name="role_id"/>
                             <field name="date_start"/>
                             <field name="date_end"/>
-                            <field name="allocation_percent"
-                                   widget="percentage"/>
+                            <field name="allocation_percent"/>
                             <field name="user_id" readonly="1"
                                    optional="show"/>
                             <field name="is_overallocated" optional="hide"/>

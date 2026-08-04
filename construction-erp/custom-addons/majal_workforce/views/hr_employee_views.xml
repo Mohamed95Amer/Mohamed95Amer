@@ -17,8 +17,7 @@
                     <div class="alert alert-warning" role="alert"
                          invisible="not majal_is_overallocated">
                         Committed to more than a full week right now
-                        (<field name="majal_current_percent" widget="percentage"
-                                readonly="1" nolabel="1"/>).
+                        (<field name="majal_current_percent" readonly="1" nolabel="1"/>).
                     </div>
                     <field name="majal_allocation_ids"
                            context="{'default_employee_id': id}">
@@ -31,7 +30,7 @@
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="allocation_percent"
-                                   widget="percentage" sum="Allocated"/>
+                                   sum="Allocated"/>
                             <field name="state" widget="badge"
                                    decoration-success="state == 'active'"
                                    decoration-info="state == 'planned'"/>
@@ -49,7 +48,7 @@
         <field name="inherit_id" ref="hr.view_employee_tree"/>
         <field name="arch" type="xml">
             <field name="job_id" position="after">
-                <field name="majal_current_percent" widget="percentage"
+                <field name="majal_current_percent"
                        string="Allocated" optional="show"/>
             </field>
         </field>
