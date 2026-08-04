@@ -50,6 +50,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "views/register_search_views.xml",
         "views/construction_home_views.xml",
         "views/my_day_views.xml",
         "views/facility_home_views.xml",

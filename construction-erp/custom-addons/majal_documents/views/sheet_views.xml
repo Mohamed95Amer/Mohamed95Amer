@@ -94,6 +94,31 @@
         </field>
     </record>
 
+    <!-- Filters and grouping: a sheet register grows without limit, and
+         "which of these are still open" is the question asked of it most. -->
+    <record id="view_majal_sheet_search" model="ir.ui.view">
+        <field name="name">majal.sheet.search</field>
+        <field name="model">majal.sheet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_frozen" string="Frozen"
+                        domain="[('state', '=', 'frozen')]"/>
+                <filter name="filter_archived" string="Archived"
+                        domain="[('state', '=', 'archived')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_month" string="Month"
+                            context="{'group_by': 'sheet_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="action_majal_sheets" model="ir.actions.act_window">
         <field name="name">Structured Sheets</field>
         <field name="res_model">majal.sheet</field>
