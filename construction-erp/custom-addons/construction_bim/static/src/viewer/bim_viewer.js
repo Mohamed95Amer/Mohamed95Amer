@@ -157,6 +157,7 @@ export class BimViewer extends Component {
         });
 
         this.linkedByGlobalId = new Map();
+        this.elementByGlobalId = new Map();
         this.meshesByExpressId = new Map();
         this.storeyByExpressId = new Map();
         this.globalIdByExpressId = new Map();
@@ -169,10 +170,16 @@ export class BimViewer extends Component {
         onWillStart(async () => {
             this.state.info = await this.orm.call(
                 "construction.bim.model", "viewer_payload", [this.modelId]);
-            for (const element of this.state.info.linked || []) {
-                this.linkedByGlobalId.set(element.global_id, element);
+            this.state.elements = this.state.info.elements || [];
+            // The list shows every element; this map drives the colouring, and
+            // must stay linked-only or the whole model reads as "attached to
+            // something".
+            for (const element of this.state.elements) {
+                this.elementByGlobalId.set(element.global_id, element);
+                if (element.is_linked) {
+                    this.linkedByGlobalId.set(element.global_id, element);
+                }
             }
-            this.state.elements = this.state.info.linked || [];
             this.state.pins = this.state.info.pins || [];
             this.pinTypes = this.state.info.pin_types || [];
             this.storeys = this.state.info.storeys || [];
@@ -1432,7 +1439,7 @@ export class BimViewer extends Component {
         this.state.selected = {
             expressID,
             globalId,
-            element: globalId ? this.linkedByGlobalId.get(globalId) : null,
+            element: globalId ? this.elementByGlobalId.get(globalId) : null,
             properties: this.propertiesOf(expressID, globalId),
             psets: [],
         };
@@ -1469,7 +1476,7 @@ export class BimViewer extends Component {
         // recomputed from the mesh: a volume measured off a triangulated
         // surface is not the volume the model was exported with, and it is the
         // exported one a bill is checked against.
-        const indexed = globalId ? this.linkedByGlobalId.get(globalId) : null;
+        const indexed = globalId ? this.elementByGlobalId.get(globalId) : null;
         for (const [key, label] of [
             ["quantity_count", _t("Count")],
             ["quantity_length", _t("Length")],
@@ -1653,6 +1660,12 @@ export class BimViewer extends Component {
 
     setTab(tab) {
         this.state.tab = tab;
+        if (tab === "pins" && this.state.filter === "none") {
+            // "Unlinked" is an element-only bucket; a pin always stands for
+            // something, so leaving it selected would show an empty pin list
+            // with no filter button visible to explain why.
+            this.state.filter = "all";
+        }
     }
 
     /** Where the camera is, in the shape the pin stores. */

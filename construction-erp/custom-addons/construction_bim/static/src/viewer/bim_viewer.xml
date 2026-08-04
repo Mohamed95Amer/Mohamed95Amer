@@ -305,11 +305,14 @@ Mac or Linux:
                         <t t-elif="state.selected.element">
                             <span class="o_bim_eyebrow"
                                   t-esc="state.selected.element.ifc_type"/>
-                            <strong t-esc="state.selected.element.name"/>
-                            <p t-esc="state.selected.element.link_summary"/>
+                            <strong t-esc="state.selected.element.name or state.selected.element.ifc_type"/>
+                            <p t-if="state.selected.element.is_linked"
+                               t-esc="state.selected.element.link_summary"/>
+                            <p t-else="">Nothing attached to this element yet.</p>
                             <button class="btn btn-sm btn-primary"
                                     t-on-click="() => this.openElement(state.selected.element)">
-                                Open linked records
+                                <t t-if="state.selected.element.is_linked">Open linked records</t>
+                                <t t-else="">Open element</t>
                             </button>
                         </t>
                         <t t-else="">
@@ -376,6 +379,9 @@ Mac or Linux:
                                 t-on-click="() => this.setFilter('open')">Open</button>
                         <button t-att-class="{'active': state.filter === 'done'}"
                                 t-on-click="() => this.setFilter('done')">Done</button>
+                        <button t-if="state.tab === 'elements'"
+                                t-att-class="{'active': state.filter === 'none'}"
+                                t-on-click="() => this.setFilter('none')">Unlinked</button>
                     </div>
 
                     <t t-if="state.tab === 'pins'">
@@ -419,18 +425,25 @@ Mac or Linux:
                                 t-on-click="() => this.openElement(element)">
                             <span class="o_bim_dot"/>
                             <span>
-                                <strong t-esc="element.name"/>
-                                <small t-esc="element.link_summary"/>
+                                <!-- Plenty of IFC elements are exported
+                                     unnamed. The type is what identifies them
+                                     to a human, so it stands in rather than
+                                     leaving a blank row. -->
+                                <strong t-esc="element.name or element.ifc_type"/>
+                                <small t-esc="element.link_summary or element.ifc_type"/>
                                 <em t-if="element.storey" t-esc="element.storey"/>
                             </span>
                         </button>
                     </div>
                     <div t-else="" class="o_bim_empty">
-                        <i class="fa fa-link"/>
-                        <p>
-                            Nothing linked yet. Attach an RFI, a defect, a task
-                            or a bill item to an element and it will be coloured
-                            in the model.
+                        <i class="fa fa-cube"/>
+                        <p t-if="state.elements.length">
+                            No element matches the current filter.
+                        </p>
+                        <p t-else="">
+                            No elements indexed for this model yet. Upload an
+                            IFC file and index it, and every element in it
+                            appears here.
                         </p>
                     </div>
                 </aside>
