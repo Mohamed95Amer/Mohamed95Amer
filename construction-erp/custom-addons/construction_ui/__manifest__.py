@@ -60,6 +60,9 @@
         "views/majal_branding.xml",
         "views/app_icon_branding.xml",
     ],
+    "demo": [
+        "data/demo_avatars.xml",
+    ],
     "assets": {
         "web.assets_backend": [
             "construction_ui/static/src/app_launcher/app_launcher.xml",
@@ -79,6 +82,8 @@
             "construction_ui/static/src/dashboard_hub/dashboard_hub.js",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.xml",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.scss",
+            "construction_ui/static/src/systray/approvals_systray.js",
+            "construction_ui/static/src/systray/approvals_systray.xml",
             "construction_ui/static/src/sidebar/majal_sidebar.js",
             "construction_ui/static/src/sidebar/majal_sidebar.xml",
             "construction_ui/static/src/sidebar/majal_sidebar.scss",

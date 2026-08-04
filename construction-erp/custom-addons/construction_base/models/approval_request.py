@@ -355,6 +355,30 @@ class ConstructionApprovalStep(models.Model):
         return candidates.filtered(lambda s: s._can_be_signed_by(user))
 
     @api.model
+    def systray_inbox_count(self):
+        """How many approvals are waiting on the caller, for the top bar.
+
+        Public because the systray calls it over RPC, and safe to be: it takes
+        no arguments and answers only for `self.env.user`, so the worst a
+        caller can learn by asking is the size of their own queue.
+        """
+        return len(self._waiting_on(self.env.user))
+
+    @api.model
+    def systray_inbox_action(self):
+        """The same inbox the menu opens, reached from the counter.
+
+        `views` is spelled out because this one is handed straight to
+        doAction by the browser rather than being resolved from a server
+        action first. Without it the client throws while preprocessing and
+        the click does nothing visible — the counter looks broken rather
+        than the action.
+        """
+        action = self._inbox_action()
+        action["views"] = [(False, "list"), (False, "form")]
+        return action
+
+    @api.model
     def _inbox_action(self):
         steps = self._waiting_on(self.env.user)
         return {
