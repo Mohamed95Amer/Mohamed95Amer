@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="construction_ui.MajalSidebar">
+    <aside class="o_majal_sidebar d-print-none"
+           t-att-class="{ o_majal_sidebar_collapsed: state.collapsed }"
+           t-if="!ui.isSmall">
+
+      <!-- The app rail. On a phone the burger menu already does this, so the
+           whole sidebar stands down rather than competing with it. -->
+      <div class="o_majal_rail" role="tablist" aria-label="Applications">
+        <t t-foreach="apps" t-as="app" t-key="app.id">
+          <button type="button"
+                  class="o_majal_rail_app"
+                  t-att-class="{ active: isCurrentApp(app) }"
+                  t-att-aria-pressed="isCurrentApp(app) ? 'true' : 'false'"
+                  t-att-title="app.name"
+                  t-att-data-menu-xmlid="app.xmlid"
+                  t-on-click="() => this.onMenuSelected(app)">
+            <img t-if="app.webIconData" t-att-src="app.webIconData" t-att-alt="app.name"/>
+            <span t-else="" class="o_majal_rail_initial" t-esc="app.name.slice(0, 2)"/>
+          </button>
+        </t>
+        <div class="o_majal_rail_spacer"/>
+        <button type="button" class="o_majal_tuck"
+                t-att-title="state.collapsed ? 'Show the menu' : 'Hide the menu'"
+                t-att-aria-label="state.collapsed ? 'Show the menu' : 'Hide the menu'"
+                t-att-aria-expanded="state.collapsed ? 'false' : 'true'"
+                t-on-click="() => this.toggleCollapsed()">
+          <i class="fa" t-att-class="state.collapsed ? 'fa-angle-double-right' : 'fa-angle-double-left'"/>
+        </button>
+      </div>
+
+      <!-- The tree for whichever app is open. -->
+      <div class="o_majal_tree_wrap">
+        <div class="o_majal_sidebar_head">
+          <span class="o_majal_sidebar_app" t-if="currentApp" t-esc="currentApp.name"/>
+        </div>
+
+        <nav class="o_majal_tree" role="menu">
+          <t t-foreach="sections" t-as="section" t-key="section.id">
+
+            <!-- A section that leads somewhere on its own. -->
+            <a t-if="isLeaf(section)"
+               class="o_majal_item"
+               t-att-class="{ active: isActive(section) }"
+               t-att-href="href(section)"
+               t-att-data-menu-xmlid="section.xmlid"
+               t-on-click.prevent="() => this.onMenuSelected(section)">
+              <span class="o_majal_bullet"/>
+              <span class="o_majal_label" t-esc="section.name"/>
+            </a>
+
+            <!-- A section holding others. -->
+            <t t-else="">
+              <button type="button"
+                      class="o_majal_item o_majal_group"
+                      t-att-aria-expanded="isOpen(section) ? 'true' : 'false'"
+                      t-att-title="section.name"
+                      t-att-data-menu-xmlid="section.xmlid"
+                      t-on-click="() => this.toggleSection(section)">
+                <span class="o_majal_bullet"/>
+                <span class="o_majal_label" t-esc="section.name"/>
+                <i class="o_majal_caret fa fa-angle-right"/>
+              </button>
+
+              <div class="o_majal_children"
+                   t-att-class="{ show: !state.collapsed and isOpen(section) }">
+                <t t-foreach="section.childrenTree" t-as="child" t-key="child.id">
+                  <a t-if="isLeaf(child)"
+                     class="o_majal_item o_majal_child"
+                     t-att-class="{ active: isActive(child) }"
+                     t-att-href="href(child)"
+                     t-att-data-menu-xmlid="child.xmlid"
+                     t-on-click.prevent="() => this.onMenuSelected(child)">
+                    <span class="o_majal_label" t-esc="child.name"/>
+                  </a>
+                  <t t-else="">
+                    <div class="o_majal_subhead" t-esc="child.name"/>
+                    <t t-foreach="child.childrenTree" t-as="leaf" t-key="leaf.id">
+                      <a class="o_majal_item o_majal_child o_majal_deep"
+                         t-att-class="{ active: isActive(leaf) }"
+                         t-att-href="href(leaf)"
+                         t-att-data-menu-xmlid="leaf.xmlid"
+                         t-on-click.prevent="() => this.onMenuSelected(leaf)">
+                        <span class="o_majal_label" t-esc="leaf.name"/>
+                      </a>
+                    </t>
+                  </t>
+                </t>
+              </div>
+            </t>
+
+          </t>
+        </nav>
+      </div>
+    </aside>
+  </t>
+
+  <!-- Put the sidebar beside the action, not above it. -->
+  <t t-inherit="web.WebClient" t-inherit-mode="extension">
+    <xpath expr="//ActionContainer" position="before">
+      <MajalSidebar t-if="!state.fullscreen"/>
+    </xpath>
+  </t>
+
+</templates>

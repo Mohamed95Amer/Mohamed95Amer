@@ -1,0 +1,294 @@
+// The navigation, stood on its side.
+//
+// The top bar can hold about nine entries; Construction alone has eighteen
+// sections and forty-five screens under them. Everything past the ninth used
+// to live behind a "+" or a hover menu. A column has room for all of it, keeps
+// the section you are inside expanded around you, and folds to an icon rail
+// when a Gantt or a BIM model wants the width back.
+//
+// The navbar is kept, not replaced: it still carries the breadcrumbs, the
+// search and the systray. It gives up only the section menu it could never fit.
+
+$sidebar-navy: #173240;
+$sidebar-navy-deep: #102530;
+$sidebar-primary: #346d75;
+$sidebar-accent: #c59b52;
+$sidebar-text: #c3d3d8;
+$sidebar-dim: #7e959e;
+$sidebar-width: 264px;
+$sidebar-rail: 52px;
+
+.o_majal_sidebar {
+    position: fixed;
+    top: var(--o-navbar-height, 46px);
+    left: 0;
+    bottom: 0;
+    z-index: 4;
+    display: flex;
+    width: $sidebar-width;
+    font-size: 13.5px;
+    background: $sidebar-navy;
+    box-shadow: 1px 0 0 rgba(0, 0, 0, .18);
+
+    // The rail carries the apps, so it never scrolls away from the tree.
+    .o_majal_rail {
+        flex: 0 0 $sidebar-rail;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 8px 0;
+        overflow-y: auto;
+        background: $sidebar-navy-deep;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar { display: none; }
+    }
+
+    .o_majal_rail_app {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        color: $sidebar-dim;
+
+        img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+        }
+
+        &.active {
+            background: $sidebar-primary;
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $sidebar-accent;
+            outline-offset: 1px;
+        }
+    }
+
+    .o_majal_rail_initial {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    // Pushes the collapse control to the foot of the rail, where it stays put
+    // whether the tree beside it is open or not.
+    .o_majal_rail_spacer {
+        flex: 1 1 auto;
+        min-height: 12px;
+    }
+
+    .o_majal_tree_wrap {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .o_majal_sidebar_head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 12px 10px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .o_majal_sidebar_app {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: .01em;
+    }
+
+    .o_majal_tuck {
+        flex: 0 0 auto;
+        width: 38px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: $sidebar-dim;
+
+        &:hover {
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $sidebar-accent;
+            outline-offset: 1px;
+        }
+    }
+
+    .o_majal_tree {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 6px 6px 24px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, .18) transparent;
+
+        &::-webkit-scrollbar { width: 8px; }
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .16);
+            border-radius: 4px;
+        }
+    }
+
+    .o_majal_item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 7px 9px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: $sidebar-text;
+        text-align: start;
+        text-decoration: none;
+
+        &:hover {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $sidebar-accent;
+            outline-offset: -2px;
+        }
+
+        &.active {
+            background: $sidebar-primary;
+            color: #fff;
+
+            .o_majal_bullet { background: #fff; }
+        }
+
+        &[aria-expanded="true"] {
+            color: #fff;
+
+            .o_majal_caret { transform: rotate(90deg); }
+        }
+    }
+
+    .o_majal_bullet {
+        flex: 0 0 auto;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .32);
+    }
+
+    .o_majal_label {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .o_majal_caret {
+        flex: 0 0 auto;
+        font-size: 12px;
+        color: $sidebar-dim;
+        transition: transform .16s ease;
+    }
+
+    .o_majal_children {
+        display: none;
+        margin: 1px 0 4px 17px;
+        padding-left: 8px;
+        border-left: 1px solid rgba(255, 255, 255, .12);
+
+        &.show { display: block; }
+    }
+
+    .o_majal_child {
+        padding: 5px 9px;
+        font-size: 13px;
+        color: $sidebar-dim;
+
+        &:hover { color: #fff; }
+
+        &.active {
+            background: rgba(52, 109, 117, .6);
+            color: #fff;
+        }
+    }
+
+    .o_majal_deep { padding-inline-start: 20px; }
+
+    .o_majal_subhead {
+        padding: 8px 9px 3px;
+        color: rgba(255, 255, 255, .45);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Collapsed: down to the app rail alone.
+//
+// Sections carry no icons — only apps do — so a collapsed tree would be a
+// column of identical dots, which is decoration rather than navigation. The
+// apps stay, because those are the ones you can recognise at 38 pixels.
+// ---------------------------------------------------------------------------
+.o_majal_sidebar.o_majal_sidebar_collapsed {
+    width: $sidebar-rail;
+
+    .o_majal_tree_wrap { display: none; }
+}
+
+// ---------------------------------------------------------------------------
+// Make room for it, and take the section menu out of the bar it never fitted.
+// ---------------------------------------------------------------------------
+@include media-breakpoint-up(md) {
+    .o_web_client:has(.o_majal_sidebar) {
+        .o_action_manager { margin-inline-start: $sidebar-width; }
+
+        .o_main_navbar {
+            .o_menu_sections,
+            .o_menu_sections_more { display: none !important; }
+        }
+    }
+
+    .o_web_client:has(.o_majal_sidebar_collapsed) .o_action_manager {
+        margin-inline-start: $sidebar-rail;
+    }
+}
+
+// RTL: the column belongs on the right, and so does the shadow.
+:dir(rtl) .o_majal_sidebar {
+    left: auto;
+    right: 0;
+    box-shadow: -1px 0 0 rgba(0, 0, 0, .18);
+
+    .o_majal_children { border-left: 0; border-right: 1px solid rgba(255, 255, 255, .12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_majal_sidebar .o_majal_caret { transition: none; }
+}
