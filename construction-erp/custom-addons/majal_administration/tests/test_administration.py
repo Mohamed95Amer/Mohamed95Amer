@@ -584,6 +584,145 @@ class TestMajalAdministration(TransactionCase):
         self.assertFalse(wizard.temporary_password)
 
 
+class TestMajalAccessLevels(TransactionCase):
+    """A level is a permission grant a company is allowed to edit.
+
+    Which makes it the most dangerous editable record in the system: whoever
+    can put a group into a level can give that group to themselves. These
+    tests are mostly about what an administrator is stopped from doing.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.field_role = cls.env.ref("majal_administration.role_field_user")
+        cls.admin_role = cls.env.ref("majal_administration.role_company_admin")
+        cls.owner_role = cls.env.ref("majal_administration.role_platform_owner")
+        cls.users = cls.env["res.users"].with_context(no_reset_password=True)
+
+        cls.company_admin = cls.users.create({
+            "name": "Levels Admin",
+            "login": "levels-admin@majal.local",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+        })
+        cls.company_admin._majal_apply_role(cls.admin_role, "both")
+        cls.field_user = cls.users.create({
+            "name": "Levels Field User",
+            "login": "levels-field@majal.local",
+            "company_id": cls.env.company.id,
+            "company_ids": [(6, 0, [cls.env.company.id])],
+        })
+        cls.field_user._majal_apply_role(cls.field_role, "construction")
+
+    def _own_copy(self, role=None):
+        role = role or self.field_role
+        copy_action = role.with_user(
+            self.company_admin).action_majal_customise_for_company()
+        return self.env["majal.access.role"].browse(copy_action["res_id"])
+
+    def test_the_standard_levels_ship_with_the_permissions_they_grant(self):
+        """The mapping used to live in Python; if it is empty here, an
+        upgraded database hands every user a bare login and nothing else."""
+        self.assertIn(
+            self.env.ref("majal_administration.group_platform_owner"),
+            self.owner_role.group_ids,
+        )
+        self.assertIn(
+            self.env.ref("construction_base.group_construction_user"),
+            self.field_role.construction_group_ids,
+        )
+        self.assertIn(
+            self.env.ref("majal_administration.group_facilities_user"),
+            self.field_role.facility_group_ids,
+        )
+
+    def test_a_standard_level_cannot_be_edited_by_a_company(self):
+        with self.assertRaises(AccessError):
+            self.field_role.with_user(self.company_admin).write(
+                {"name": "Level 1"})
+
+    def test_a_company_can_rename_its_own_copy(self):
+        own = self._own_copy()
+        own.with_user(self.company_admin).write({"name": "Level 1 — Labourer"})
+        self.assertEqual(own.name, "Level 1 — Labourer")
+        # The standard level is untouched, so another company still sees it.
+        self.assertEqual(self.field_role.name, "Field User / Technician")
+
+    def test_customising_twice_reuses_the_same_copy(self):
+        first = self._own_copy()
+        second = self._own_copy()
+        self.assertEqual(first, second)
+
+    def test_a_company_copy_is_what_its_own_users_are_given(self):
+        own = self._own_copy()
+        planning = self.env.ref("construction_base.group_construction_pm")
+        own.sudo().write({"construction_group_ids": [(4, planning.id)]})
+        self.field_user.with_user(self.company_admin)._majal_apply_role(
+            self.field_role, "construction")
+        self.assertTrue(self.field_user.has_group(
+            "construction_base.group_construction_pm"))
+
+    def test_changing_a_level_updates_the_people_already_on_it(self):
+        """Otherwise a company edits a level, sees no change, and concludes
+        the permission never applied."""
+        own = self._own_copy()
+        planning = self.env.ref("construction_base.group_construction_pm")
+        self.assertFalse(self.field_user.has_group(
+            "construction_base.group_construction_pm"))
+        own.sudo().write({"construction_group_ids": [(4, planning.id)]})
+        self.assertTrue(self.field_user.has_group(
+            "construction_base.group_construction_pm"))
+
+    def test_a_level_cannot_be_used_to_grant_administration(self):
+        own = self._own_copy()
+        owner_group = self.env.ref(
+            "majal_administration.group_platform_owner")
+        with self.assertRaises(AccessError):
+            own.with_user(self.company_admin).write(
+                {"group_ids": [(4, owner_group.id)]})
+
+    def test_a_level_cannot_grant_a_permission_the_editor_lacks(self):
+        """The whole guard in one sentence: you cannot hand out what you do
+        not have. Without it, a Company Administrator writes Technical
+        Settings into a level, assigns themselves that level, and is now the
+        system administrator."""
+        own = self._own_copy()
+        payroll = self.env.ref("hr.group_hr_manager")
+        self.assertNotIn(payroll, self.company_admin.groups_id)
+        with self.assertRaises(AccessError):
+            own.with_user(self.company_admin).write(
+                {"group_ids": [(4, payroll.id)]})
+
+    def test_a_company_cannot_edit_another_companys_level(self):
+        other = self.env["res.company"].create({"name": "Other Contractor"})
+        theirs = self.field_role.sudo().copy({
+            "company_id": other.id, "name": "Their Level 1"})
+        with self.assertRaises(AccessError):
+            theirs.with_user(self.company_admin).write({"name": "Mine now"})
+
+    def test_a_level_at_or_above_the_editors_own_is_refused(self):
+        own_admin_level = self._own_copy(self.admin_role)
+        with self.assertRaises(AccessError):
+            own_admin_level.with_user(self.company_admin).write(
+                {"name": "Level 6"})
+
+    def test_only_one_standard_level_per_code(self):
+        with self.assertRaises(ValidationError):
+            self.env["majal.access.role"].sudo().create({
+                "name": "Duplicate field user",
+                "code": "field_user",
+                "rank": 10,
+            })
+
+    def test_a_company_is_offered_its_own_level_and_not_the_standard(self):
+        own = self._own_copy()
+        offered = self.env["res.users"].with_user(
+            self.company_admin)._majal_assignable_roles()
+        codes = offered.filtered(lambda r: r.code == "field_user")
+        self.assertEqual(codes, own)
+
+
 @tagged("post_install", "-at_install")
 class TestMajalHealth(HttpCase):
     """The infrastructure side points Caddy and monitoring at these.

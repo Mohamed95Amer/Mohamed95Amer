@@ -2,33 +2,6 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 
-ROLE_GROUPS = {
-    "platform_owner": ["majal_administration.group_platform_owner"],
-    "company_admin": ["majal_administration.group_user_administrator"],
-    "operations_manager": [],
-    "manager": [],
-    "supervisor": [],
-    "field_user": [],
-}
-
-CONSTRUCTION_GROUPS = {
-    "platform_owner": "construction_base.group_construction_manager",
-    "company_admin": "construction_base.group_construction_manager",
-    "operations_manager": "construction_base.group_construction_manager",
-    "manager": "construction_base.group_construction_pm",
-    "supervisor": "construction_base.group_construction_site_engineer",
-    "field_user": "construction_base.group_construction_user",
-}
-
-FACILITIES_GROUPS = {
-    "platform_owner": "majal_administration.group_facilities_manager",
-    "company_admin": "majal_administration.group_facilities_manager",
-    "operations_manager": "majal_administration.group_facilities_manager",
-    "manager": "majal_administration.group_facilities_manager",
-    "supervisor": "majal_administration.group_facilities_supervisor",
-    "field_user": "majal_administration.group_facilities_user",
-}
-
 MANAGED_GROUP_XMLIDS = set(
     [
         "majal_administration.group_platform_owner",
@@ -229,10 +202,21 @@ class ResUsers(models.Model):
     @api.model
     def _majal_assignable_roles(self):
         """Return only the roles the current administrator may grant."""
+        company = self.env.company
         roles = self.env["majal.access.role"].search(
-            [("active", "=", True)],
+            [
+                ("active", "=", True),
+                "|",
+                ("company_id", "=", False),
+                ("company_id", "=", company.id),
+            ],
             order="rank desc, name, id",
         )
+        # One row per level: a company that has customised a level should be
+        # offered its own version, not both and not somebody else's.
+        customised = set(roles.filtered("company_id").mapped("code"))
+        roles = roles.filtered(
+            lambda role: role.company_id or role.code not in customised)
         actor = self.env.user
         if actor.has_group("majal_administration.group_platform_owner"):
             return roles
@@ -356,34 +340,54 @@ class ResUsers(models.Model):
         return packs
 
     @api.model
-    def _majal_group_ids_for(self, role, scope, capability_packs=None):
-        if not role or role.code not in ROLE_GROUPS:
+    def _majal_group_ids_for(self, role, scope, capability_packs=None,
+                             company=None):
+        if not role:
             raise ValidationError(_("Select a valid Majal access level."))
         if scope not in {"construction", "facilities", "both"}:
             raise ValidationError(_("Select a valid workspace access scope."))
 
-        xmlids = ["base.group_user", *ROLE_GROUPS[role.code]]
+        # What a level grants is data a company can edit, so resolve to the
+        # copy that applies here rather than reading the record handed in: a
+        # user may still point at the standard level after their company has
+        # customised it.
+        level = role._majal_effective_for(company or self.env.company)
+        base_user = self.env.ref("base.group_user", raise_if_not_found=False)
+        groups = level.group_ids
         if scope in {"construction", "both"}:
-            xmlids.append(CONSTRUCTION_GROUPS[role.code])
-            if role.code in {
-                "platform_owner",
-                "company_admin",
-                "operations_manager",
-                "manager",
-            }:
-                xmlids.append("project.group_project_manager")
-            else:
-                xmlids.append("project.group_project_user")
+            groups |= level.construction_group_ids
         if scope in {"facilities", "both"}:
-            xmlids.append(FACILITIES_GROUPS[role.code])
-        group_ids = {
-            group.id
-            for xmlid in xmlids
-            if (group := self.env.ref(xmlid, raise_if_not_found=False))
-        }
+            groups |= level.facility_group_ids
+        group_ids = set(groups.ids)
+        if base_user:
+            # Never level-editable: an internal user who is not an internal
+            # user cannot log in to anything.
+            group_ids.add(base_user.id)
         packs = self._majal_capability_records(capability_packs)
         group_ids.update(packs.mapped("group_ids").ids)
         return group_ids
+
+    def _majal_reapply_current_access(self):
+        """Recompute this user's groups from the level they already hold.
+
+        Called when a level's contents change. Deliberately not routed through
+        `_majal_apply_role`: nobody is being granted a new level here, so the
+        actor checks there would either block a legitimate system recompute or
+        have to be waived — and waiving them is how that guard gets lost.
+        """
+        for user in self:
+            if not user.majal_role_id:
+                continue
+            desired = self._majal_group_ids_for(
+                user.majal_role_id,
+                user.majal_industry_scope,
+                user.majal_capability_pack_ids,
+                company=user.company_id,
+            )
+            if set(user.groups_id.ids) == desired:
+                continue
+            user.sudo().write({"groups_id": [(6, 0, sorted(desired))]})
+        return True
 
     def _majal_apply_role(self, role, scope, capability_packs=None):
         self.ensure_one()
@@ -394,7 +398,8 @@ class ResUsers(models.Model):
             else self._majal_capability_records(capability_packs)
         )
         packs = self._majal_validate_capability_packs(role, packs)
-        desired_ids = self._majal_group_ids_for(role, scope, packs)
+        desired_ids = self._majal_group_ids_for(
+            role, scope, packs, company=self.company_id)
         old_values = {
             "role": self.majal_role_id.code if self.majal_role_id else False,
             "scope": self.majal_industry_scope,

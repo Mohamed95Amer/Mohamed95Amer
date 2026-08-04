@@ -1,5 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_majal_role_user_admin,majal access role user admin,model_majal_access_role,majal_administration.group_user_administrator,1,0,0,0
+access_majal_role_user_admin,majal access role user admin,model_majal_access_role,majal_administration.group_user_administrator,1,1,0,0
 access_majal_capability_pack_user_admin,majal capability pack user admin,model_majal_capability_pack,majal_administration.group_user_administrator,1,0,0,0
 access_majal_snapshot_operator,majal backup snapshot operator,model_majal_backup_snapshot,majal_administration.group_backup_operator,1,0,0,0
 access_majal_restore_owner,majal restore request owner,model_majal_restore_request,majal_administration.group_platform_owner,1,1,1,0
