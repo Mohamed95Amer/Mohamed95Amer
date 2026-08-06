@@ -4,7 +4,7 @@
 **Client Retention · Renewals · Expansion · Key Account Management — UAE & GCC**
 
 Dubai, UAE • +971 50 908 1312 • Mohamed.m.amer95@gmail.com • linkedin.com/in/mohamedamer95
-Nationality: Egyptian • Visa Status: UAE Residence / Employment Visa • Languages: Arabic (Native), English (Fluent)
+Nationality: Egyptian • Visa Status: UAE Employment Visa (Work Permit) • Languages: Arabic (Native), English (Fluent)
 
 ---
 

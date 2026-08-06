@@ -29,7 +29,7 @@ Open the `.html` file in any browser → **Print** (Ctrl/Cmd + P) → **Save as 
 
 1. **No invented numbers.** Per your instruction, only the figures already on your CV are used (160+ accounts, 178% of Q1 target, 9 industries at PlanRadar). Nothing else was fabricated.
 2. **LinkedIn could not be accessed.** Your profile returned "403 Forbidden" to every method, so no extra details were pulled from it. If your LinkedIn lists certifications, courses, awards, or specific achievements, send them and I'll add them.
-3. **Visa status is an assumption.** I listed "UAE Residence / Employment Visa" and "Egyptian" nationality based on context — correct these if needed (edit the HTML/MD and re-export).
+3. **Visa status confirmed.** "UAE Employment Visa (Work Permit)" and "Egyptian" nationality, per your confirmation.
 
 ## Recommended next step (optional, high impact)
 

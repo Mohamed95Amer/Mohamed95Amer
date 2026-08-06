@@ -77,7 +77,7 @@ Same as above.
 
 ### Personal details «Naukrigulf commonly asks for these — fill directly, nothing assumed here beyond what's already on your CV»
 - Nationality: Egyptian
-- Visa status: UAE Residence / Employment Visa
+- Visa status: UAE Employment Visa (Work Permit)
 - Languages known: Arabic (Native), English (Fluent)
 - Date of birth: «NOTE: not on your CV — optional on most Gulf portals»
 - Marital status: «NOTE: optional field, your call whether to disclose»

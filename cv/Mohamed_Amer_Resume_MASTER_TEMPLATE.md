@@ -28,7 +28,7 @@
 «Pick the closest: Senior Customer Success Manager · Key Account Manager · Account Manager · Account Executive · Business Development Manager · Customer Success & Account Manager»
 
 Dubai, UAE • +971 50 908 1312 • Mohamed.m.amer95@gmail.com • linkedin.com/in/mohamedamer95
-Nationality: Egyptian • Visa: UAE Residence / Employment Visa • Languages: Arabic (Native), English (Fluent)
+Nationality: Egyptian • Visa: UAE Employment Visa (Work Permit) • Languages: Arabic (Native), English (Fluent)
 
 ---
 
