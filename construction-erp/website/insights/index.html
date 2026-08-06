@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insights — Majal</title>
+<meta name="description" content="Design notes from building Majal: server-side approval enforcement, what offline really costs on site, why a BIM viewer should not colour everything at once, and what a verified recovery point means.">
+<meta name="theme-color" content="#173240">
+<link rel="stylesheet" href="/assets/css/majal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/insights/" aria-current="page">Insights</a></li>
+        <li><a href="/about.html">Open source</a></li>
+        <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
+        <li><a href="/about.html#demo">Demo<span class="soon">soon</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="page-head">
+  <div class="wrap">
+    <h1>Insights</h1>
+    <p class="lede">
+      Four decisions from building Majal that were harder than they looked, written up
+      because the reasoning is more useful than the feature list. Each one comes out of the
+      design notes in the repository, and each one changed what shipped.
+    </p>
+  </div>
+</div>
+
+<section class="band">
+  <div class="wrap">
+    <div class="grid two">
+
+      <a class="card" href="/insights/approval-trails.html">
+        <span class="eyebrow">Control</span>
+        <h2>An approval trail is only as good as its enforcement point</h2>
+        <p>
+          Fourteen approve buttons, each guarded by a <code>groups</code> attribute in a view.
+          A quantity surveyor — the person who writes the bill — could approve the bill, and
+          it took four lines of console output to prove it. What that cost, and what replaced
+          it.
+        </p>
+      </a>
+
+      <a class="card" href="/insights/offline-on-site.html">
+        <span class="eyebrow">Field</span>
+        <h2>What "offline" actually costs on a construction site</h2>
+        <p>
+          Three different asks get called "a mobile app" and they cost very different amounts.
+          One of them is nearly free, one is a week, and one is the reason Fieldwire gets
+          bought. Telling them apart before quoting is most of the work.
+        </p>
+      </a>
+
+      <a class="card" href="/insights/bim-colour.html">
+        <span class="eyebrow">BIM</span>
+        <h2>A model that colours everything at once tells you nothing</h2>
+        <p>
+          A structural export arrives pre-coloured by object class, and drawing the file's own
+          colours puts twenty saturated tones on screen at once. Why Majal's default is one
+          grey material and a set of edges, and what colour is saved for.
+        </p>
+      </a>
+
+      <a class="card" href="/insights/verified-recovery.html">
+        <span class="eyebrow">Operations</span>
+        <h2>"We take backups" is not a recovery position</h2>
+        <p>
+          A backup you have never restored is a hypothesis. What a verified recovery point
+          actually requires: a checksum that is checked twice, a manifest, and a restore path
+          the running application is structurally unable to trigger.
+        </p>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/features.html#construction">Construction</a></li>
+          <li><a href="/features.html#facilities">Facilities</a></li>
+          <li><a href="/features.html#bim">BIM</a></li>
+          <li><a href="/features.html#modules">Module list</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="https://docs.majalops.com">Documentation ↗</a></li>
+          <li><a href="/about.html#self-host">Self-hosting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="/about.html">About &amp; open source</a></li>
+          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub repository ↗</a></li>
+          <li><a href="/about.html#licence">Licensing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Try it</h2>
+        <ul>
+          <li><a href="/about.html#demo">Hosted demo — not live yet</a></li>
+          <li><a href="/about.html#self-host">Run it with Docker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <p>Majal is built on Odoo 18 Community Edition (LGPL-3) with pinned OCA and community modules. Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.</p>
+      <p>Procore, Fieldwire, PlanRadar, Maximo, Solibri, Navisworks, BIMcollab and Revizto are trademarks of their respective owners, referenced here only for comparison and interoperability.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

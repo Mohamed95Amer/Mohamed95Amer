@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Odoo ships its demo accounts with stock photographs of people who have
+        nothing to do with this product, and they are the first thing anybody
+        evaluating Majal sees, top right of every screen. Clearing the photo
+        hands the account to the Majal avatar instead: initials on the product
+        palette, one per person.
+
+        Demo data on purpose. On a real deployment somebody's uploaded photo is
+        theirs, and an upgrade has no business removing it.
+    -->
+    <record id="base.user_admin" model="res.users">
+        <field name="image_1920" eval="False"/>
+    </record>
+    <record id="base.user_demo" model="res.users">
+        <field name="image_1920" eval="False"/>
+    </record>
+</odoo>

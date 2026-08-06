@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Product branding and the client's legal identity are separate.
-         Never overwrite res.company.name during a module upgrade. -->
-    <function model="res.users" name="write">
-        <value eval="[ref('base.user_root')]"/>
-        <value eval="{'name': 'مساعد مجال'}"/>
-    </function>
+         Never overwrite res.company.name during a module upgrade.
+
+         The system account's name is not set here. majal_branding owns it —
+         it names the assistant and gives it a face in one place, in English,
+         which is also the name majal_branding substitutes into message
+         bodies. This module used to write an Arabic name over the top, so on
+         an English database every chatter thread was authored by a name
+         nobody could read, contradicting the body of the very message it
+         signed. Two modules cannot both own one identity. -->
 
     <record id="construction_base.menu_construction_root" model="ir.ui.menu">
         <field name="name">Majal Construction</field>

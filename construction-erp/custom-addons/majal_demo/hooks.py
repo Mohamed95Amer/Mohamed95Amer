@@ -35,12 +35,12 @@ def _user(env, login, name, company, role_code, scope):
         "groups_id": [Command.set(sorted(group_ids))],
     }
     if user:
-        user.with_context(majal_role_application=True).write(values)
+        user.sudo().write(values)
     else:
         user = (
             env["res.users"]
             .sudo()
-            .with_context(majal_role_application=True, no_reset_password=True)
+            .with_context(no_reset_password=True)
             .create(values)
         )
     return user
@@ -625,7 +625,7 @@ def post_init_hook(env):
         env, "demo.owner@majal.local", "Demo Platform Owner",
         contracting, "platform_owner", "both"
     )
-    owner.sudo().with_context(majal_role_application=True).write(
+    owner.sudo().write(
         {"company_ids": [Command.set([contracting.id, facilities.id])]}
     )
     construction_users = {

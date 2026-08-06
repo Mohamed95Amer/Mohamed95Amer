@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_workforce" model="ir.ui.view">
+        <field name="name">hr.employee.form.workforce</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_majal_allocate" type="object"
+                        class="oe_stat_button" icon="fa-hard-hat">
+                    <field name="majal_allocation_count" widget="statinfo"
+                           string="Allocations"/>
+                </button>
+            </div>
+            <notebook position="inside">
+                <page string="Allocations" name="majal_allocations">
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not majal_is_overallocated">
+                        Committed to more than a full week right now
+                        (<field name="majal_current_percent" readonly="1" nolabel="1"/>).
+                    </div>
+                    <field name="majal_allocation_ids"
+                           context="{'default_employee_id': id}">
+                        <list editable="bottom"
+                              decoration-muted="state == 'ended'"
+                              decoration-info="state == 'planned'">
+                            <field name="project_id"/>
+                            <field name="location_id"/>
+                            <field name="role_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="allocation_percent"
+                                   sum="Allocated"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'active'"
+                                   decoration-info="state == 'planned'"/>
+                        </list>
+                    </field>
+                    <field name="majal_is_overallocated" invisible="1"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="view_employee_list_workforce" model="ir.ui.view">
+        <field name="name">hr.employee.list.workforce</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <field name="majal_current_percent"
+                       string="Allocated" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

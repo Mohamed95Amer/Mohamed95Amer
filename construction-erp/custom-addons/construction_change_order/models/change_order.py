@@ -1,5 +1,8 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.addons.construction_base.models.approval_mixin import (
+    WORKFLOW_TRANSITION,
+)
 
 
 class ConstructionChangeEvent(models.Model):
@@ -112,7 +115,7 @@ class ConstructionChangeOrder(models.Model):
             co.amount_cost_total = sign * sum(co.line_ids.mapped("amount_cost"))
 
     def action_submit(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for co in self:
             if co.state != "draft":
                 raise UserError(self.env._("Only draft VOs can be submitted."))
@@ -139,7 +142,7 @@ class ConstructionChangeOrder(models.Model):
         return True
 
     def action_approve(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for co in self:
             if co.state != "submitted":
                 raise UserError(self.env._("Only submitted VOs can be approved."))
@@ -154,7 +157,7 @@ class ConstructionChangeOrder(models.Model):
                 co.change_event_id.state = "converted"
 
     def action_reject(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         self.filtered(lambda c: c.state in ("draft", "submitted")).write(
             {"state": "rejected"})
 

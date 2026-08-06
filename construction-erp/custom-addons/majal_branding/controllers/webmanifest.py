@@ -51,12 +51,24 @@ class MajalWebManifest(webmanifest.WebManifest):
             "start_url": "/odoo/action-construction_ui.action_construction_home",
             "background_color": "#F4F6F7",
             "theme_color": self._colour("majal.nav_color", "#173240"),
+            # Two entries, not one with "any maskable" on it. A maskable icon
+            # is cropped by the launcher to its own shape, keeping the central
+            # 80%; icon.svg has rounded corners that leave transparent notches
+            # under that crop, and its ground line sits outside the safe
+            # circle. The variant is drawn for the crop, so each purpose gets
+            # the file that suits it.
             "icons": [
                 {
                     "src": "/majal_branding/static/description/icon.svg",
                     "sizes": "any",
                     "type": "image/svg+xml",
-                    "purpose": "any maskable",
+                    "purpose": "any",
+                },
+                {
+                    "src": "/majal_branding/static/description/icon-maskable.svg",
+                    "sizes": "any",
+                    "type": "image/svg+xml",
+                    "purpose": "maskable",
                 },
             ],
             "shortcuts": self._get_shortcuts(),
@@ -67,12 +79,23 @@ class MajalWebManifest(webmanifest.WebManifest):
         return "majal_branding/static/src/img/majal-assistant.png"
 
     def _get_scoped_app_icons(self, app_id):
-        return [{
-            "src": "/majal_branding/static/description/icon.svg",
-            "sizes": "any",
-            "type": "image/svg+xml",
-            "purpose": "any maskable",
-        }]
+        # Same split as the main manifest. Note the upstream caller takes
+        # icons[0] and, for an SVG, redraws it into a padded PNG for Safari —
+        # so the unmasked icon has to stay first.
+        return [
+            {
+                "src": "/majal_branding/static/description/icon.svg",
+                "sizes": "any",
+                "type": "image/svg+xml",
+                "purpose": "any",
+            },
+            {
+                "src": "/majal_branding/static/description/icon-maskable.svg",
+                "sizes": "any",
+                "type": "image/svg+xml",
+                "purpose": "maskable",
+            },
+        ]
 
     def _get_scoped_app_name(self, app_id):
         return self._parameter("majal.product_name", "Majal")

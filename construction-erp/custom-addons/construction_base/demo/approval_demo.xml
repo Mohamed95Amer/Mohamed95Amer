@@ -10,7 +10,9 @@
          walks its documents past them rather than round them.
 
          They are also what makes the approval inbox worth opening in a demo:
-         log in as any of them — the password matches the login — and there is
+         log in as any of them — the password is the login with `.majal` on
+         the end, which clears the twelve-character policy majal_security
+         sets — and there is
          a variation waiting for a signature. Demo data only; a real
          installation creates its approvers the ordinary way.
     -->

@@ -22,6 +22,64 @@ const BUCKET_COLOURS = {
 // along is it".
 const SCHEDULE_ACTIVE = 0x1f6f8b;
 
+// The default look: one material for everything, and edges to separate it.
+//
+// A real structural export arrives pre-coloured — Tekla writes
+// "Object coloring: ByObjectClass" into the header and ships a styled item per
+// class — so drawing the file's own colours puts twenty saturated tones on
+// screen at once and the model reads as confetti. Concrete is one colour in
+// life. Shape, shadow and edges are what tell a slab from a beam, and they do
+// it without a legend, so that is the default and colour is kept for answering
+// a question you have actually asked.
+const SHADED_TONE = 0xc9c6bd;
+const EDGE_TONE = 0x4a5560;
+// Anything flatter than this is a tessellation seam inside one face rather
+// than a real corner, and drawing those turns a curved wall into a wireframe.
+const EDGE_ANGLE = 22;
+
+// Classes, when you do ask. Six hues and a neutral for the tail.
+//
+// Validated with the data-viz palette checker against this scene's background
+// (#eef1ef): passes the lightness band, the chroma floor, adjacent CVD
+// separation and the normal-vision floor. It does NOT pass under --pairs all,
+// and no six-colour set does — the checker's own reference palette caps at
+// three for that case. Every class being on screen at once is exactly the
+// all-pairs case, which is why colour is never the only encoding here: the
+// legend names each class and can isolate it, and the geometry itself is the
+// strongest cue of all. A stair is stair-shaped whatever colour it is.
+const CLASS_COLOURS = [
+    0x2f7fc4,  // blue
+    0xc2622e,  // burnt orange
+    0x1b8f65,  // green
+    0xd19a1f,  // ochre
+    0xc05a92,  // magenta
+    0x7248c8,  // violet
+];
+const CLASS_OTHER = 0x8b949b;
+
+// IFC type names are SCREAMING_CASE and often carry a variant suffix that
+// nobody wants in a legend: IFCWALLSTANDARDCASE and IFCWALL are both "Wall" to
+// a person looking at a building.
+const CLASS_LABELS = {
+    IFCWALL: "Wall", IFCWALLSTANDARDCASE: "Wall", IFCWALLELEMENTEDCASE: "Wall",
+    IFCSLAB: "Slab", IFCSLABSTANDARDCASE: "Slab", IFCSLABELEMENTEDCASE: "Slab",
+    IFCBEAM: "Beam", IFCBEAMSTANDARDCASE: "Beam",
+    IFCCOLUMN: "Column", IFCCOLUMNSTANDARDCASE: "Column",
+    IFCSTAIR: "Stair", IFCSTAIRFLIGHT: "Stair flight",
+    IFCRAMP: "Ramp", IFCRAMPFLIGHT: "Ramp flight",
+    IFCFOOTING: "Footing", IFCPILE: "Pile",
+    IFCMEMBER: "Member", IFCMEMBERSTANDARDCASE: "Member",
+    IFCPLATE: "Plate", IFCPLATESTANDARDCASE: "Plate",
+    IFCRAILING: "Railing", IFCROOF: "Roof", IFCDOOR: "Door",
+    IFCWINDOW: "Window", IFCCOVERING: "Covering", IFCCURTAINWALL: "Curtain wall",
+    IFCBUILDINGELEMENTPROXY: "Generic element",
+    IFCREINFORCINGBAR: "Rebar", IFCREINFORCINGMESH: "Mesh",
+    IFCDISCRETEACCESSORY: "Accessory", IFCFASTENER: "Fastener",
+    IFCMECHANICALFASTENER: "Fastener",
+    IFCFLOWSEGMENT: "Duct / pipe", IFCFLOWFITTING: "Fitting",
+    IFCFLOWTERMINAL: "Terminal", IFCDISTRIBUTIONELEMENT: "Services",
+};
+
 // Overlaid models are tinted by discipline so a duct is recognisable as the
 // mechanical model's duct without reading a legend.
 const OVERLAY_COLOURS = {
@@ -86,6 +144,10 @@ export class BimViewer extends Component {
             overlays: [],
             clashTest: null,
             clashSummary: null,
+            // How the model is shaded, and the class legend that goes with it
+            shading: "shaded",
+            classes: [],
+            edgesOn: true,
             // 4D
             hasSchedule: false,
             fourD: false,
@@ -95,6 +157,7 @@ export class BimViewer extends Component {
         });
 
         this.linkedByGlobalId = new Map();
+        this.elementByGlobalId = new Map();
         this.meshesByExpressId = new Map();
         this.storeyByExpressId = new Map();
         this.globalIdByExpressId = new Map();
@@ -107,10 +170,16 @@ export class BimViewer extends Component {
         onWillStart(async () => {
             this.state.info = await this.orm.call(
                 "construction.bim.model", "viewer_payload", [this.modelId]);
-            for (const element of this.state.info.linked || []) {
-                this.linkedByGlobalId.set(element.global_id, element);
+            this.state.elements = this.state.info.elements || [];
+            // The list shows every element; this map drives the colouring, and
+            // must stay linked-only or the whole model reads as "attached to
+            // something".
+            for (const element of this.state.elements) {
+                this.elementByGlobalId.set(element.global_id, element);
+                if (element.is_linked) {
+                    this.linkedByGlobalId.set(element.global_id, element);
+                }
             }
-            this.state.elements = this.state.info.linked || [];
             this.state.pins = this.state.info.pins || [];
             this.pinTypes = this.state.info.pin_types || [];
             this.storeys = this.state.info.storeys || [];
@@ -178,10 +247,19 @@ export class BimViewer extends Component {
         this.scene.background = new THREE.Color(0xeef1ef);
         this.setupRenderer(canvas);
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 1.6));
-        const key = new THREE.DirectionalLight(0xffffff, 1.4);
-        key.position.set(1, 2, 1);
+        // Ambient light at 1.6 washed every surface to the same value, so a
+        // model rendered as one material looked like a flat silhouette and the
+        // only thing distinguishing two elements was the file's own colour.
+        // That is the whole reason the rainbow felt necessary. A sky/ground
+        // hemisphere plus a key and a soft fill gives each face a different
+        // value by its orientation, which is what makes concrete look solid.
+        this.scene.add(new THREE.HemisphereLight(0xf2f6f8, 0x6f6a60, 1.05));
+        const key = new THREE.DirectionalLight(0xffffff, 1.5);
+        key.position.set(0.8, 1.6, 1.1);
         this.scene.add(key);
+        const fill = new THREE.DirectionalLight(0xdfe7ec, 0.55);
+        fill.position.set(-1.2, 0.5, -0.9);
+        this.scene.add(fill);
 
         this.camera = new THREE.PerspectiveCamera(55, 1, 0.1, 5000);
         this.raycaster = new THREE.Raycaster();
@@ -529,10 +607,171 @@ export class BimViewer extends Component {
         const bounds = new this.THREE.Box3().setFromObject(built.group);
         this.indexGlobalIds();
         this.indexStoreys();
+        this.indexClasses();
         this.paintLinkedElements();
         this.indexSchedule();
+        // A model with records attached opens on those records — that is what
+        // the module is for, and it is not a rainbow: linked elements carry a
+        // bucket colour and everything else stays neutral. A model with none
+        // opens shaded, because the alternative was the exporter's own
+        // by-class colouring, which is where the confetti came from.
+        this.applyShading(this.linkedByGlobalId.size ? "status" : "shaded");
         this.modelBounds = bounds;
         return bounds;
+    }
+
+    /**
+     * Build the class legend: what is in this model, and how much of it.
+     *
+     * Ordered by count, because the legend doubles as a description of the
+     * model — "237 slabs, 224 walls, 95 stairs" is the first useful thing to
+     * know about a file you have just been sent. Only the six commonest
+     * classes get their own colour; the tail shares the neutral, which keeps
+     * the palette inside the set that was actually validated instead of
+     * inventing a seventh hue nobody can name.
+     */
+    indexClasses() {
+        const counts = new Map();
+        for (const [expressID, meshes] of this.meshesByExpressId) {
+            const name = meshes[0]?.userData.ifcClass || "Other";
+            if (!counts.has(name)) {
+                counts.set(name, { name, count: 0, ids: [] });
+            }
+            const entry = counts.get(name);
+            entry.count += 1;
+            entry.ids.push(expressID);
+        }
+        const ordered = [...counts.values()].sort((a, b) => b.count - a.count);
+        this.classIndex = new Map();
+        this.state.classes = ordered.map((entry, position) => {
+            const colour = position < CLASS_COLOURS.length
+                ? CLASS_COLOURS[position] : CLASS_OTHER;
+            this.classIndex.set(entry.name, { ...entry, colour });
+            return {
+                name: entry.name,
+                count: entry.count,
+                colour: `#${colour.toString(16).padStart(6, "0")}`,
+                visible: true,
+            };
+        });
+    }
+
+    /**
+     * Repaint every element for the chosen mode.
+     *
+     * The modes answer different questions and are deliberately not combined:
+     * "what is this made of" (shaded), "what kind of thing is it" (class),
+     * "does it have work outstanding" (status), and "what did the exporter
+     * think" (original). Showing two at once is how you get a picture nobody
+     * can read.
+     */
+    applyShading(mode) {
+        const THREE = this.THREE;
+        this.state.shading = mode;
+        for (const [expressID, meshes] of this.meshesByExpressId) {
+            for (const mesh of meshes) {
+                let colour;
+                if (mode === "original") {
+                    colour = mesh.userData.fileColour
+                        || new THREE.Color(SHADED_TONE);
+                } else if (mode === "class") {
+                    const entry = this.classIndex.get(mesh.userData.ifcClass);
+                    colour = new THREE.Color(entry ? entry.colour : CLASS_OTHER);
+                } else if (mode === "status") {
+                    const globalId = this.globalIdOf(expressID);
+                    const element = globalId
+                        && this.linkedByGlobalId.get(globalId);
+                    colour = new THREE.Color(
+                        element
+                            ? (BUCKET_COLOURS[element.link_bucket]
+                                || BUCKET_COLOURS.open)
+                            : BUCKET_COLOURS.none);
+                } else {
+                    colour = new THREE.Color(SHADED_TONE);
+                }
+                mesh.material.color.copy(colour);
+                mesh.userData.baseColour = colour.clone();
+            }
+        }
+        this.render();
+    }
+
+    onShadingChange(event) {
+        this.applyShading(event.target.value);
+    }
+
+    toggleEdges() {
+        this.state.edgesOn = !this.state.edgesOn;
+        for (const meshes of this.meshesByExpressId.values()) {
+            for (const mesh of meshes) {
+                if (mesh.userData.edges) {
+                    mesh.userData.edges.visible =
+                        this.state.edgesOn && mesh.visible;
+                }
+            }
+        }
+        this.render();
+    }
+
+    /**
+     * Show one class and ghost the rest.
+     *
+     * This is the answer to a legend that cannot be told apart by colour
+     * alone: you never have to. Clicking "Beam" leaves the beams solid and
+     * everything else a faint grey shell, so the class is identified by being
+     * the only thing you can see, and the rest of the building stays as
+     * context rather than disappearing.
+     */
+    isolateClass(name) {
+        const alreadyAlone = this.state.classes.every(
+            (entry) => (entry.name === name) === entry.visible);
+        if (alreadyAlone) {
+            this.showAllClasses();
+            return;
+        }
+        for (const entry of this.state.classes) {
+            entry.visible = entry.name === name;
+        }
+        this.applyClassVisibility();
+    }
+
+    toggleClass(name) {
+        const entry = this.state.classes.find((item) => item.name === name);
+        if (entry) {
+            entry.visible = !entry.visible;
+            this.applyClassVisibility();
+        }
+    }
+
+    showAllClasses() {
+        for (const entry of this.state.classes) {
+            entry.visible = true;
+        }
+        this.applyClassVisibility();
+    }
+
+    applyClassVisibility() {
+        const hidden = new Set(
+            this.state.classes.filter((entry) => !entry.visible)
+                .map((entry) => entry.name));
+        for (const meshes of this.meshesByExpressId.values()) {
+            for (const mesh of meshes) {
+                const out = hidden.has(mesh.userData.ifcClass);
+                if (out) {
+                    mesh.material.transparent = true;
+                    mesh.material.opacity = 0.06;
+                    mesh.material.depthWrite = false;
+                } else {
+                    mesh.material.opacity = 1;
+                    mesh.material.transparent = false;
+                    mesh.material.depthWrite = true;
+                }
+                if (mesh.userData.edges) {
+                    mesh.userData.edges.visible = this.state.edgesOn && !out;
+                }
+            }
+        }
+        this.render();
     }
 
     /**
@@ -580,8 +819,10 @@ export class BimViewer extends Component {
                 geometry.setIndex(new THREE.BufferAttribute(indices, 1));
 
                 const colour = item.color;
+                const fileColour = new THREE.Color(
+                    colour.x, colour.y, colour.z);
                 const material = new THREE.MeshLambertMaterial({
-                    color: tint || new THREE.Color(colour.x, colour.y, colour.z),
+                    color: tint || new THREE.Color(SHADED_TONE),
                     // An overlay is drawn see-through: coordination means
                     // looking at the duct and the beam at once, and an opaque
                     // second model just hides the first.
@@ -594,7 +835,18 @@ export class BimViewer extends Component {
                 object.matrixAutoUpdate = false;
                 object.userData.expressID = mesh.expressID;
                 object.userData.baseColour = material.color.clone();
+                // Kept so "Original (from file)" can put the export's own
+                // colours back. Discarding it would make that mode a lie.
+                object.userData.fileColour = fileColour;
+                object.userData.ifcClass = this.classOf(
+                    ifcModelId, mesh.expressID);
                 group.add(object);
+
+                const edges = this.buildEdges(geometry, object.matrix);
+                if (edges) {
+                    group.add(edges);
+                    object.userData.edges = edges;
+                }
 
                 const existing = meshesByExpressId.get(mesh.expressID) || [];
                 existing.push(object);
@@ -610,6 +862,68 @@ export class BimViewer extends Component {
             }
         }
         return { group, meshesByExpressId, globalIdByExpressId };
+    }
+
+    /**
+     * The IFC class of one element, as a readable word.
+     *
+     * web-ifc hands back a numeric type code; GetNameFromTypeCode turns it
+     * into IFCWALLSTANDARDCASE, and CLASS_LABELS turns that into "Wall".
+     * Anything unmapped keeps a tidied version of its own name rather than
+     * being dropped, because an unfamiliar class is still information — a
+     * model full of IFCREINFORCINGBAR is telling you something.
+     */
+    classOf(ifcModelId, expressID) {
+        try {
+            const code = this.api.GetLineType(ifcModelId, expressID);
+            const raw = this.api.GetNameFromTypeCode(code);
+            if (!raw) {
+                return "Other";
+            }
+            // web-ifc answers in PascalCase — "IfcSlab", not "IFCSLAB" — so
+            // the lookup is done on an upper-cased key. Matching the raw
+            // string missed every entry and left the legend reading
+            // "Ifcbuildingelementpart".
+            const key = raw.toUpperCase();
+            if (CLASS_LABELS[key]) {
+                return CLASS_LABELS[key];
+            }
+            const stripped = key.replace(/^IFC/, "").toLowerCase();
+            return stripped.charAt(0).toUpperCase() + stripped.slice(1);
+        } catch {
+            return "Other";
+        }
+    }
+
+    /**
+     * The outline of one element.
+     *
+     * This is the single change that makes a dense model readable. Without
+     * edges, twenty concrete elements in the same tone are one grey mass and
+     * the only way to see a beam is to colour it differently — which is how a
+     * model ends up with twenty colours and no meaning. With edges, one
+     * material is enough, because you can see where each element stops.
+     */
+    buildEdges(geometry, matrix) {
+        const THREE = this.THREE;
+        try {
+            const edges = new THREE.EdgesGeometry(geometry, EDGE_ANGLE);
+            if (!edges.attributes.position?.count) {
+                edges.dispose();
+                return null;
+            }
+            const lines = new THREE.LineSegments(
+                edges,
+                new THREE.LineBasicMaterial({
+                    color: EDGE_TONE, transparent: true, opacity: 0.42 }));
+            lines.matrix.copy(matrix);
+            lines.matrixAutoUpdate = false;
+            lines.userData.isEdge = true;
+            return lines;
+        } catch {
+            // A degenerate solid is not worth failing the whole model over.
+            return null;
+        }
     }
 
     globalIdOfModel(ifcModelId, expressID) {
@@ -818,6 +1132,10 @@ export class BimViewer extends Component {
     setPlayDate(value) {
         this.state.playDate = value;
         this.applySchedule();
+    }
+
+    get anyClassHidden() {
+        return this.state.classes.some((entry) => !entry.visible);
     }
 
     /** The slider and the date box drive the same thing from both ends. */
@@ -1121,7 +1439,7 @@ export class BimViewer extends Component {
         this.state.selected = {
             expressID,
             globalId,
-            element: globalId ? this.linkedByGlobalId.get(globalId) : null,
+            element: globalId ? this.elementByGlobalId.get(globalId) : null,
             properties: this.propertiesOf(expressID, globalId),
             psets: [],
         };
@@ -1158,7 +1476,7 @@ export class BimViewer extends Component {
         // recomputed from the mesh: a volume measured off a triangulated
         // surface is not the volume the model was exported with, and it is the
         // exported one a bill is checked against.
-        const indexed = globalId ? this.linkedByGlobalId.get(globalId) : null;
+        const indexed = globalId ? this.elementByGlobalId.get(globalId) : null;
         for (const [key, label] of [
             ["quantity_count", _t("Count")],
             ["quantity_length", _t("Length")],
@@ -1342,6 +1660,12 @@ export class BimViewer extends Component {
 
     setTab(tab) {
         this.state.tab = tab;
+        if (tab === "pins" && this.state.filter === "none") {
+            // "Unlinked" is an element-only bucket; a pin always stands for
+            // something, so leaving it selected would show an empty pin list
+            // with no filter button visible to explain why.
+            this.state.filter = "all";
+        }
     }
 
     /** Where the camera is, in the shape the pin stores. */

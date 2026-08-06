@@ -430,13 +430,13 @@ msgstr ""
 #: model:ir.actions.client,name:construction_report.action_exposure
 #: model:ir.ui.menu,name:construction_report.menu_exposure
 msgid "Commercial Exposure"
-msgstr "الانكشاف التجاري"
+msgstr "الموقف التجاري"
 
 #. module: construction_report
 #. odoo-javascript
 #: code:addons/construction_report/static/src/exposure/exposure.js:0
 msgid "Commercial exposure"
-msgstr "الانكشاف التجاري"
+msgstr "الموقف التجاري"
 
 #. module: construction_report
 #. odoo-javascript

@@ -84,7 +84,7 @@ class MajalUserInviteWizard(models.TransientModel):
         if users.sudo().search_count([("login", "=", login)]):
             raise ValidationError(_("A user with this login already exists."))
 
-        user = users.sudo().with_context(majal_role_application=True).create(
+        user = users.sudo().create(
             {
                 "name": self.name.strip(),
                 "login": login,

@@ -145,7 +145,21 @@
         <field name="tag">construction_ui.workspace.failure_codes</field>
     </record>
 
-    <!-- Every leaf menu opens a Majal dashboard before the detailed records. -->
+    <!--
+        Workspaces are places; registers are lists.
+
+        Every leaf menu used to open a workspace dashboard first, so reaching
+        a bill of quantities took two clicks and a full screen of chrome, and
+        the breadcrumb read "Submittals / Submittals". Worse, several pairs
+        landed on the same page: Forms and Form Templates both opened the
+        inspections hub, BOQ and BOQ Analysis both opened the BOQ hub, so two
+        different menu entries went to one identical screen.
+
+        So: a register menu opens its records. The five workspaces below keep
+        their dashboards, because a workspace is somewhere you arrive rather
+        than a list you scan, and the four sections carry an explicit
+        "Overview" child for the same page.
+    -->
     <record id="construction_base.menu_construction_projects" model="ir.ui.menu">
         <field name="action" ref="action_workspace_projects"/>
     </record>
@@ -187,120 +201,120 @@
               action="action_workspace_commercial_hub"
               sequence="1"/>
     <record id="construction_pin.menu_plan_viewer" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_plan_viewer"/>
+        <field name="action" ref="construction_pin.action_plan_viewer"/>
     </record>
     <record id="construction_daily_log.menu_construction_daily_log" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_daily_logs"/>
+        <field name="action" ref="construction_daily_log.action_construction_daily_log"/>
     </record>
     <record id="construction_form.menu_construction_forms" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_inspections"/>
+        <field name="action" ref="construction_form.action_form_inspections"/>
     </record>
     <record id="construction_form.menu_construction_form_templates" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_inspections"/>
+        <field name="action" ref="construction_form.action_form_templates"/>
     </record>
     <record id="construction_defect.menu_construction_defect" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_defects"/>
+        <field name="action" ref="construction_defect.action_construction_defect"/>
     </record>
     <record id="construction_drawing.menu_construction_drawing" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_drawings"/>
+        <field name="action" ref="construction_drawing.action_construction_drawing"/>
     </record>
     <record id="construction_drawing.menu_drawing_upload" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_drawings"/>
+        <field name="action" ref="construction_drawing.action_drawing_upload"/>
     </record>
     <record id="construction_rfi.menu_construction_rfi" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_rfis"/>
+        <field name="action" ref="construction_rfi.action_construction_rfi"/>
     </record>
     <record id="construction_submittal.menu_construction_submittal" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_submittals"/>
+        <field name="action" ref="construction_submittal.action_construction_submittal"/>
     </record>
     <record id="construction_planning.menu_construction_programme" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_programme"/>
+        <field name="action" ref="construction_planning.action_construction_planning"/>
     </record>
     <record id="construction_planning.menu_construction_dependencies" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_programme"/>
+        <field name="action" ref="construction_planning.action_task_links"/>
     </record>
     <record id="construction_boq.menu_construction_boq" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_boq"/>
+        <field name="action" ref="construction_boq.action_construction_boq"/>
     </record>
     <record id="construction_boq.menu_boq_line_analysis" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_boq"/>
+        <field name="action" ref="construction_boq.action_boq_line_analysis"/>
     </record>
     <record id="construction_change_order.menu_change_event" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_change_orders"/>
+        <field name="action" ref="construction_change_order.action_change_event"/>
     </record>
     <record id="construction_change_order.menu_change_order" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_change_orders"/>
+        <field name="action" ref="construction_change_order.action_change_order"/>
     </record>
     <record id="construction_progress_billing.menu_progress_claim" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_progress_billing"/>
+        <field name="action" ref="construction_progress_billing.action_progress_claim"/>
     </record>
     <record id="construction_hse.menu_hse_permits" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_permits"/>
+        <field name="action" ref="construction_hse.action_permit"/>
     </record>
     <record id="construction_hse.menu_hse_incidents" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_incidents"/>
+        <field name="action" ref="construction_hse.action_incident"/>
     </record>
     <record id="construction_hse.menu_hse_talks" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_toolbox_talks"/>
+        <field name="action" ref="construction_hse.action_toolbox_talk"/>
     </record>
     <record id="construction_tender.menu_tender" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_tenders"/>
+        <field name="action" ref="construction_tender.action_tender"/>
     </record>
     <record id="construction_material.menu_material_position" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_materials"/>
+        <field name="action" ref="construction_material.action_material_summary"/>
     </record>
     <record id="construction_report.menu_construction_cvr" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_cvr"/>
+        <field name="action" ref="construction_report.action_project_cvr"/>
     </record>
     <record id="construction_subcontractor.menu_subcontract" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_subcontracts"/>
+        <field name="action" ref="construction_subcontractor.action_subcontract"/>
     </record>
     <record id="construction_subcontractor.menu_sc_payment" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_subcontracts"/>
+        <field name="action" ref="construction_subcontractor.action_sc_payment"/>
     </record>
 
     <record id="construction_meeting.menu_meetings" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_meetings"/>
+        <field name="action" ref="construction_meeting.action_meeting"/>
     </record>
 
     <record id="construction_bim.menu_bim_elements" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_bim"/>
+        <field name="action" ref="construction_bim.action_bim_element"/>
     </record>
     <record id="construction_whatsapp.menu_whatsapp_messages" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_whatsapp"/>
+        <field name="action" ref="construction_whatsapp.action_whatsapp_message"/>
     </record>
 
     <record id="facility_inventory.menu_facility_parts" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_parts"/>
+        <field name="action" ref="facility_inventory.action_parts_summary"/>
     </record>
     <record id="facility_contract.menu_facility_contracts" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_maintenance_contracts"/>
+        <field name="action" ref="facility_contract.action_facility_contract"/>
     </record>
     <record id="facility_asset.menu_facility_assets" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_assets"/>
+        <field name="action" ref="maintenance.hr_equipment_action"/>
     </record>
     <record id="facility_asset.menu_facility_requests" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_work_orders"/>
+        <field name="action" ref="maintenance.hr_equipment_request_action"/>
     </record>
     <record id="facility_workorder.menu_facility_pm_plans" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_pm_plans"/>
+        <field name="action" ref="facility_workorder.action_pm_plan"/>
     </record>
     <record id="facility_workorder.menu_facility_job_plans" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_job_plans"/>
+        <field name="action" ref="facility_workorder.action_job_plan"/>
     </record>
     <record id="facility_asset.menu_facility_locations" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_locations"/>
+        <field name="action" ref="facility_asset.action_facility_location"/>
     </record>
     <record id="facility_floorplan.menu_facility_floorplans" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_floor_plans"/>
+        <field name="action" ref="facility_floorplan.action_facility_floorplan"/>
     </record>
     <record id="facility_asset.menu_facility_meters" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_meters"/>
+        <field name="action" ref="facility_asset.action_meter"/>
     </record>
     <record id="facility_asset.menu_facility_failure_codes" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_failure_codes"/>
+        <field name="action" ref="facility_asset.action_failure_code"/>
     </record>
     <record id="facility_asset.menu_facility_categories" model="ir.ui.menu">
-        <field name="action" ref="action_workspace_assets"/>
+        <field name="action" ref="maintenance.hr_equipment_category_action"/>
     </record>
 </odoo>

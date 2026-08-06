@@ -369,9 +369,14 @@ class TestBimModel(TransactionCase):
     # ------------------------------------------------------------------
     # Viewer payload
     # ------------------------------------------------------------------
-    def test_the_viewer_is_given_only_what_it_draws(self):
-        """The viewer colours linked elements; sending thousands of unlinked
-        ones would be a large payload conveying nothing."""
+    def test_the_viewer_is_given_every_element_not_only_linked_ones(self):
+        """The side list is the model's contents, not its workload.
+
+        Sending only linked elements meant a freshly indexed model showed its
+        element count in the header beside an empty list — the moment somebody
+        most needs to see what is in the file. Unlinked elements carry a
+        bucket of "none", so the filters still separate them.
+        """
         self.model.action_index()
         wall = self._element("2O2Fr$t4X7Zf8NOew3FLIE")
         wall.note = "Check setting out"
@@ -379,9 +384,12 @@ class TestBimModel(TransactionCase):
         payload = self.env["construction.bim.model"].viewer_payload(self.model.id)
         self.assertEqual(payload["id"], self.model.id)
         self.assertIn("file_url", payload)
-        self.assertEqual(len(payload["linked"]), 1)
-        self.assertEqual(payload["linked"][0]["global_id"],
-                         "2O2Fr$t4X7Zf8NOew3FLIE")
+        self.assertEqual(len(payload["elements"]), payload["element_count"])
+        by_global_id = {row["global_id"]: row for row in payload["elements"]}
+        self.assertTrue(by_global_id["2O2Fr$t4X7Zf8NOew3FLIE"]["is_linked"])
+        unlinked = [row for row in payload["elements"] if not row["is_linked"]]
+        self.assertTrue(unlinked, "the fixture should hold unlinked elements")
+        self.assertEqual({row["link_bucket"] for row in unlinked}, {"none"})
 
     def test_the_payload_of_a_missing_model_is_empty_not_an_error(self):
         self.assertEqual(

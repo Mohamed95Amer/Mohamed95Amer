@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 from odoo.tests import HttpCase, TransactionCase, tagged
 
 
@@ -68,3 +70,36 @@ class TestMajalPublicRoutes(HttpCase):
         db_name = self.env.cr.dbname
         self.assertIn(f"db={db_name}", location)
         self.assertNotIn("/web/database/selector", location)
+
+    def test_manifest_offers_a_maskable_icon_that_survives_the_crop(self):
+        manifest = self.url_open(
+            "/web/manifest.webmanifest", timeout=15
+        ).json()
+
+        by_purpose = {icon["purpose"]: icon["src"] for icon in manifest["icons"]}
+        self.assertEqual(set(by_purpose), {"any", "maskable"})
+        # "any maskable" on a single entry is the trap: it promises the
+        # launcher it may crop, using a file drawn on the assumption it will
+        # not.
+        self.assertNotIn(
+            "maskable", by_purpose["any"].split("/")[-1].replace(".svg", "")
+        )
+
+        maskable = self.url_open(by_purpose["maskable"], timeout=15).text
+        # Parsed, not string-matched: the first version of this test looked
+        # for rx="28" anywhere in the file and found it in the comment
+        # explaining why it must not be in the markup.
+        root = ElementTree.fromstring(maskable)
+        namespace = {"svg": "http://www.w3.org/2000/svg"}
+
+        # Full bleed. Rounded corners leave transparency that the launcher's
+        # own mask turns into notches cut out of the icon.
+        background = root.find("svg:rect", namespace)
+        self.assertIsNotNone(background)
+        self.assertIsNone(background.get("rx"))
+
+        # And the mark scaled into the safe zone: unscaled, the ground line
+        # ends 56 units from the centre and the safe radius is 51.2.
+        group = root.find("svg:g", namespace)
+        self.assertIsNotNone(group)
+        self.assertIn("scale(0.78)", group.get("transform", ""))

@@ -61,6 +61,52 @@ class MaintenanceEquipment(models.Model):
     def _new_tag_token(self):
         return secrets.token_urlsafe(24)
 
+    def _add_sql_constraints(self):
+        """Clear duplicate tokens before the unique constraint is applied.
+
+        Installing this module onto a database that already holds assets used
+        to leave the unique(tag_token) constraint off the table entirely.
+        Odoo fills a new column's default with a single UPDATE — one value,
+        every pre-existing row — so all of them briefly shared a token, the
+        constraint could not be created, and the error was logged and passed
+        over. _backfill_secure_asset_tags then gave each asset a distinct
+        token, so nothing looked wrong afterwards: the data was fine and only
+        the guarantee was missing, which is the kind of gap that is noticed
+        the day something else relies on it.
+
+        This runs immediately before the constraint is applied, which is the
+        one moment the column exists and the backfill has not happened yet.
+        """
+        self._deduplicate_tag_tokens()
+        return super()._add_sql_constraints()
+
+    @api.model
+    def _deduplicate_tag_tokens(self):
+        self.env.cr.execute(
+            """
+            SELECT id FROM maintenance_equipment
+             WHERE tag_token IS NULL
+                OR tag_token IN (
+                       SELECT tag_token FROM maintenance_equipment
+                        WHERE tag_token IS NOT NULL
+                        GROUP BY tag_token HAVING count(*) > 1
+                   )
+             ORDER BY id
+            """
+        )
+        rows = [row[0] for row in self.env.cr.fetchall()]
+        if not rows:
+            return False
+        # Raw SQL, not write(): this runs during schema setup, where the
+        # registry is half-built and the ORM cannot be trusted to load a
+        # model whose columns are still being created.
+        for identifier in rows:
+            self.env.cr.execute(
+                "UPDATE maintenance_equipment SET tag_token = %s WHERE id = %s",
+                (self._new_tag_token(), identifier),
+            )
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
         sequence = self.env["ir.sequence"]

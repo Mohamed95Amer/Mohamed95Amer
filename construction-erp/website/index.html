@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Majal — construction &amp; facilities management ERP</title>
+<meta name="description" content="Majal is an open-source construction and facilities management ERP on Odoo 18 Community. Bills of quantities, variations and payment certificates on the same database as the RFIs, defects and work orders that generate them.">
+<meta name="theme-color" content="#10222a">
+<link rel="stylesheet" href="/assets/css/home.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2310222a'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%232f7a80'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%232f7a80'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="rule-mark" aria-hidden="true"></span>Majal</a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="/" aria-current="page">Home</a>
+      <a href="/features.html">What it does</a>
+      <a href="/insights/">Insights</a>
+      <a href="/about.html">Open source</a>
+      <a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- The model is the most characteristic thing in this world, so it opens
+       the page. One sentence over it; everything else is further down. -->
+  <section class="hero">
+    <div class="hero-body">
+      <div>
+        <p class="eyebrow">Construction &amp; facilities management</p>
+        <h1>Build it, bill it, maintain it.</h1>
+        <p>One system for the bill of quantities, the variation and the
+           payment certificate — and the RFI, the snag and the work order that
+           caused them. Open source, on Odoo&nbsp;18 Community.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/features.html">See what it does</a>
+          <a class="btn btn-ghost" href="/about.html">Run it yourself</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-figure">
+      <img src="/assets/img/hero-bim.png" alt="A concrete structural model in the Majal BIM viewer, shaded in one material with every element outlined, beside a legend listing 237 slabs, 219 walls and 95 stairs.">
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="wrap">
+      <ul>
+        <li>Bills of quantities and payment certificates</li>
+        <li>Variations, RFIs, submittals, drawings</li>
+        <li>CPM programme and Gantt</li>
+        <li>IFC models, clash detection, 4D</li>
+        <li>Assets, work orders, SLAs</li>
+        <li>English and Arabic, right-to-left</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- The most visual thing the product does, and an argument that only
+       works as a picture. -->
+  <section class="bim">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>A model you can actually read</h2>
+        <p>Authoring tools export a colour per object class. Open a real
+           structural model and you get confetti. Majal draws one material and
+           the edges instead — then colours only when you ask a question.</p>
+      </div>
+      <div class="compare">
+        <figure>
+          <img src="/assets/img/compare-before.png" alt="The same structural model drawn in the exporter's own colours: acid green walls, a pink roof and purple footings.">
+          <figcaption><span class="tagword">Before</span> The file's own colours — twenty tones, no meaning.</figcaption>
+        </figure>
+        <figure>
+          <img src="/assets/img/compare-after.png" alt="The same model in one neutral material with every element outlined, so slabs, walls and stairs read separately.">
+          <figcaption><span class="tagword is-after">After</span> One material and edges. Shape does the work.</figcaption>
+        </figure>
+        <figure>
+          <img src="/assets/img/compare-legend.png" alt="The model coloured by element class, with a legend listing each class and its element count; clicking a class isolates it.">
+          <figcaption><span class="tagword">On demand</span> Colour by class, with counts. Click one to isolate it.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Picture first, one line of claim, and the paragraph only for whoever
+       wants it. -->
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>What you get</h2>
+        <p>Six screens that carry most of the work. Each one is real — these
+           are captures from a running system.</p>
+      </div>
+
+      <div class="cards">
+
+        <article class="card">
+          <img src="/assets/img/card-exposure.png" alt="The commercial exposure screen showing contract value, approved variations, retention held and certified-not-invoiced across three projects.">
+          <div class="card-body">
+            <h3>Where the money is</h3>
+            <p class="claim">Contract value, variations, retention held and
+               work certified but not yet billed — across every project, on one
+               screen.</p>
+            <details class="more">
+              <summary>Read more</summary>
+              <p>Retention is cash sitting with your client; certified-not-invoiced
+                 is work you have earned and not yet asked for. Both are
+                 usually discovered at month end from a spreadsheet. Here they
+                 are a live figure per project, ordered by how far variations
+                 have moved the contract.</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="/assets/img/card-approval-inbox.png" alt="The approval inbox listing documents waiting for the signed-in user, with value, chain step and days waiting.">
+          <div class="card-body">
+            <h3>One approval queue</h3>
+            <p class="claim">Every document waiting on you — variation, claim,
+               permit — in a single list with the value at stake.</p>
+            <details class="more">
+              <summary>Read more</summary>
+              <p>Rules are thresholds: below a figure one signature, above it
+                 three. The check runs on the server rather than on whether a
+                 button was drawn, so it holds whether the request came from
+                 the screen, a script or the API. An approver going on leave
+                 hands over their own authority and nobody else's.</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="/assets/img/card-boq.png" alt="A bill of quantities with sections, priced lines, a budget cost split and totals.">
+          <div class="card-body">
+            <h3>The bill, priced and tracked</h3>
+            <p class="claim">Sections and lines with sell and cost side by
+               side, so margin is visible before the job starts.</p>
+            <details class="more">
+              <summary>Read more</summary>
+              <p>Approved variations append to the bill as new lines rather
+                 than editing the original, so the contract value moves and the
+                 audit trail survives. Certified quantities write back from
+                 each payment certificate, which is what makes cost value
+                 reconciliation possible without a second spreadsheet.</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="/assets/img/card-dashboard.png" alt="The management dashboard with portfolio metrics: live projects, contract portfolio, programme exceptions, open defects, facility assets and open work orders.">
+          <div class="card-body">
+            <h3>The portfolio at a glance</h3>
+            <p class="claim">Live projects, contract value and percentage
+               certified, programme slip, open defects, SLA breaches.</p>
+            <details class="more">
+              <summary>Read more</summary>
+              <p>Each figure is a door: the dashboard leads straight into the
+                 records behind it, filtered by your company and your role.
+                 There are separate views for an owner, construction
+                 operations, facilities and commercial, because those four
+                 people are not asking the same question.</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="/assets/img/card-asset-tag.png" alt="A facility asset record for an air handling unit, showing its location, criticality, purchase value and the asset tag panel with code and tag status.">
+          <div class="card-body">
+            <h3>Assets that answer a phone</h3>
+            <p class="claim">Every asset carries a QR and NFC tag. Scan it on
+               site and you are on its record.</p>
+            <details class="more">
+              <summary>Read more</summary>
+              <p>The tag holds a secret token rather than a database id, so a
+                 sticker cannot be guessed at or moved onto another asset, and
+                 it can be rotated if a batch of labels goes astray. Scans are
+                 recorded — who, when, from which tag — which turns a sticker
+                 into evidence that somebody actually attended.</p>
+            </details>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="/assets/img/card-defect-mobile.png" alt="Raising a defect on a phone at 390 pixels wide: title, photo, location, severity, project and description all on one screen.">
+          <div class="card-body">
+            <h3>Built for a phone in a stairwell</h3>
+            <p class="claim">Raising a snag is a photo, a location and a
+               severity — one screen, no scrolling.</p>
+            <details class="more">
+              <summary>Read more</summary>
+              <p>The photo comes first because it is what you walked over to
+                 take. Everything decided later — who fixes it, by when, under
+                 which trade — is a tab away, where it costs the office nothing
+                 and the site nothing. Installs to a home screen as its own
+                 app.</p>
+            </details>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="bim">
+    <div class="wrap">
+      <div class="split">
+        <img src="/assets/img/shot-rtl-arabic.png" alt="The commercial exposure screen in Arabic, laid out right to left, with Arabic navigation and figures.">
+        <div class="split-text">
+          <p class="eyebrow">العربية</p>
+          <h2>Arabic, not translated Arabic</h2>
+          <p>The interface runs right-to-left — navigation, tables, forms and
+             reports — rather than Arabic words poured into a layout built for
+             English.</p>
+          <p><a class="btn btn-ghost" href="/features.html">See the rest</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="split">
+        <div class="split-text">
+          <h2>Your day, in order</h2>
+          <p>One prioritised queue for whoever opens it: approvals waiting on
+             you, actions running late, the defects and inspections assigned to
+             your name.</p>
+          <p><a class="btn btn-primary" href="/features.html">What it does</a></p>
+        </div>
+        <img class="phone" src="/assets/img/shot-my-day.png" alt="The My Day screen on a phone, showing a prioritised list led by approvals waiting for the user.">
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h4>Majal</h4>
+        <ul>
+          <li><a href="/features.html">What it does</a></li>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="/about.html">Open source &amp; self-hosting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Read</h4>
+        <ul>
+          <li><a href="/insights/bim-colour.html">Why a coloured model says nothing</a></li>
+          <li><a href="/insights/approval-trails.html">An approval trail worth having</a></li>
+          <li><a href="/insights/offline-on-site.html">What offline really costs</a></li>
+          <li><a href="/insights/verified-recovery.html">Verified recovery points</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">Source on GitHub</a></li>
+          <li><a href="https://docs.majalops.com">Documentation</a></li>
+          <li>Hosted demo — coming soon</li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-note">
+      Built on Odoo 18 Community with OCA components. Screenshots are captures
+      from a running system with demo data, not mock-ups. Licence notices and
+      the corresponding-source offer are on the open-source page.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

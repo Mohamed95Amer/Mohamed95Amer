@@ -402,10 +402,16 @@ class ConstructionBimModel(models.Model):
         model = self.browse(model_id).exists()
         if not model:
             return {}
+        # Every element, not only the linked ones. The side panel used to be
+        # fed a linked-only list while the header counted them all, so a model
+        # with nothing attached to it yet showed "120 elements" beside an empty
+        # list — the one state in which somebody most needs to see what is in
+        # the file. Unlinked elements already carry a link_bucket of "none",
+        # so the filters keep working; they were simply never sent.
         elements = self.env["construction.bim.element"].search_read(
-            [("model_id", "=", model.id), ("is_linked", "=", True)],
+            [("model_id", "=", model.id)],
             ["global_id", "name", "ifc_type", "storey", "link_summary",
-             "link_bucket", "quantity_volume", "quantity_area",
+             "link_bucket", "is_linked", "quantity_volume", "quantity_area",
              "quantity_length", "quantity_count"],
         )
         # Storeys drive the level filter. Read from the index rather than the
@@ -426,7 +432,7 @@ class ConstructionBimModel(models.Model):
             "linked_count": model.linked_count,
             "file_url": model._file_url(),
             "federation": self.federation_candidates(model.id),
-            "linked": elements,
+            "elements": elements,
             "storeys": sorted(s for s in storeys if s),
             "pins": self.env["construction.bim.pin"].pins_for_model(model.id),
             "pin_types": self.env["construction.bim.pin"]._pin_type_registry(),

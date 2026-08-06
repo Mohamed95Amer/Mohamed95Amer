@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About &amp; open source — Majal</title>
+<meta name="description" content="How Majal is assembled: Odoo 18 Community as the base, pinned OCA and community modules, thirty-seven Majal modules under LGPL-3 and AGPL-3, and how to run the whole thing yourself with Docker.">
+<meta name="theme-color" content="#173240">
+<link rel="stylesheet" href="/assets/css/majal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
+</head>
+<body class="on-page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/insights/">Insights</a></li>
+        <li><a href="/about.html" aria-current="page">Open source</a></li>
+        <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
+        <li><a href="#demo">Demo<span class="soon">soon</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="prose">
+      <h1>About Majal, and how it is put together</h1>
+      <p class="lede">
+        Majal is a construction and facilities-management suite built on Odoo 18 Community
+        Edition. The source is public, the upstream dependencies are pinned by commit, and
+        every module states its own licence in its manifest. This page says what is in the
+        stack, under what terms, and how to run it yourself.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ THE STACK ============ -->
+<section class="band" id="stack">
+  <div class="wrap">
+    <div class="prose">
+      <h2>What the stack is made of</h2>
+      <p>
+        Four layers, each pinned so a build can be reproduced rather than approximated.
+      </p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <caption>The four layers of a Majal build and where each one is pinned.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Layer</th>
+            <th scope="col">What it contributes</th>
+            <th scope="col">Pinned in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Odoo 18.0 Community Edition</td>
+            <td>The ERP backbone: accounting, purchasing, inventory, HR, timesheets, projects, maintenance, the portal and the web client</td>
+            <td><code>ODOO_PINNED_SHA</code>, fetched by <code>scripts/fetch-odoo.sh</code> — not committed</td>
+          </tr>
+          <tr>
+            <td>OCA modules</td>
+            <td>Field service, DMS, helpdesk, contracts, tier validation, MIS Builder, responsive web, Gantt timeline</td>
+            <td><code>oca-repos.yml</code> → vendored into <code>oca-addons/</code></td>
+          </tr>
+          <tr>
+            <td>Community third-party apps</td>
+            <td>Full accounting — financial statements, asset management, budgets, recurring payments, customer follow-ups — from the Odoo Mates community accounting suite</td>
+            <td><code>third-party-repos.yml</code> → vendored into <code>third-party-addons/</code></td>
+          </tr>
+          <tr>
+            <td>Majal modules</td>
+            <td>The product itself: 37 construction, facilities and platform modules</td>
+            <td><code>custom-addons/</code>, in this repository</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose">
+      <h3>Reuse over rebuild</h3>
+      <p>
+        Where a good free module already exists, Majal vendors and pins it instead of writing
+        another one. Full accounting is the clearest case: financial statements, asset
+        management, budgets, recurring payments and customer follow-ups are otherwise
+        Enterprise-only features, and the LGPL-3 Odoo Mates community accounting app supplies
+        them. Facilities work orders sit on Odoo's own <code>maintenance</code> app rather than
+        on a parallel model, and the Gantt is OCA's <code>web_timeline</code>.
+      </p>
+      <p>
+        The consequence worth naming: material control books stock through Odoo's real
+        inventory, and site stores are real stock locations. There is no second inventory
+        keeping its own opinion of what is on site.
+      </p>
+
+      <h3>Two libraries that are not committed</h3>
+      <p>
+        The 3D BIM viewer needs web-ifc and three.js, fetched once by
+        <code>scripts/fetch-bim-libs.sh</code> (or the PowerShell equivalent). web-ifc's browser
+        build alone is 6&nbsp;MB, so it is pinned and fetched rather than vendored. Everything
+        else about a BIM model — the element index and its linked RFIs, defects, tasks and bill
+        items — works without them, and the viewer says so on screen if they are missing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LICENSING ============ -->
+<section class="band tinted" id="licence">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Licensing</h2>
+      <p>
+        Odoo 18 Community Edition is licensed under the GNU LGPL version 3. OCA modules are
+        licensed individually under LGPL-3 or AGPL-3. The Odoo Mates community accounting
+        modules are LGPL-3.
+      </p>
+      <p>
+        Majal's own modules are declared LGPL-3, with two exceptions:
+        <code>facility_contract</code> and <code>facility_inventory</code> are declared AGPL-3,
+        because they build on OCA's AGPL-3 <code>contract</code> lineage. Every module's
+        <code>__manifest__.py</code> and its source headers state the licence that applies to
+        it; the module table on the
+        <a href="/features.html#modules">features page</a> lists all thirty-seven with their
+        declared licence.
+      </p>
+      <p>
+        The browser libraries used by the BIM viewer keep their upstream terms — web-ifc under
+        MPL-2.0 and three.js under MIT — and their pinned revisions are recorded in
+        <code>custom-addons/construction_bim/static/lib/SOURCES.md</code>.
+      </p>
+
+      <div class="note caution">
+        <span class="label">What AGPL means for a deployment</span>
+        <p>
+          Anyone who interacts with modified AGPL-covered software over a network must be
+          offered the corresponding source. For this build that offer is the repository below,
+          and the product links to the same offer from its own
+          <code>/majal/legal/open-source</code> page. A deployer running a different repository
+          or release has to update the offer and keep it available to remote users.
+        </p>
+      </div>
+
+      <p>
+        Odoo Enterprise code is not used and must not be copied without a valid subscription.
+        Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.
+      </p>
+      <p>
+        The full third-party notice lives in <code>NOTICE.md</code> in the repository. It is a
+        notice, not legal advice — a commercial deployment should get its exact combination and
+        distribution model reviewed.
+      </p>
+      <p>
+        <a href="https://github.com/Mohamed95Amer/Mohamed95Amer">The source and build
+        instructions ↗</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SELF-HOST ============ -->
+<section class="band" id="self-host">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Running it yourself</h2>
+      <p>
+        Majal is a normal Odoo add-ons tree. Nothing phones home, nothing needs a licence key,
+        and there is no feature gated behind a subscription. The two supported paths are Docker
+        and bare metal; there is also a devcontainer configuration if you would rather it boot
+        in a browser.
+      </p>
+
+      <h3>Docker</h3>
+      <p>
+        Clone the repository, copy <code>.env.example</code> to <code>.env</code>, and bring the
+        stack up:
+      </p>
+<pre><code>cd construction-erp
+cp .env.example .env
+docker compose up -d --build</code></pre>
+      <p>
+        Then initialise a database with the modules you want — the repository README carries the
+        full install list, including the accounting suite and
+        <code>--load-language=ar_001</code> for Arabic — and restart the container. Odoo comes up
+        on port 8069.
+      </p>
+
+      <h3>Bare metal</h3>
+<pre><code>cd construction-erp
+./scripts/fetch-odoo.sh                 # pinned shallow clone into vendor/odoo
+pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
+./scripts/init-db.sh erp                # create the database and install modules
+./scripts/run-local.sh -d erp           # run the server</code></pre>
+
+      <h3>Tests</h3>
+      <p>
+        The suite ships its own tests — 44 test modules containing over five hundred test
+        methods, run against a real database rather than mocked:
+      </p>
+<pre><code>./scripts/run-tests.sh all              # or a single module name</code></pre>
+      <p>
+        Several of them exist because a specific assumption turned out to be wrong. The
+        approval engine has a test asserting that a delegate holding only site-engineer rights
+        can approve a bill of quantities without holding write access to it; the PWA icon has a
+        test that parses the served SVG rather than trusting the comment above it.
+      </p>
+
+      <h3>Before you put it on the internet</h3>
+      <p>
+        Self-hosting an ERP is an operational commitment. The repository's security baseline
+        lists what has to be true before exposure: a real HTTPS <code>web.base.url</code>,
+        working outgoing mail <em>before</em> enabling email two-factor authentication, a
+        maintained reverse proxy with <code>proxy_mode</code> and TLS termination in front of
+        port 8069, demo users and demo data removed, and encrypted off-machine replication of
+        the recovery points. Local recovery points alone do not protect against losing the host
+        or the account.
+      </p>
+      <div class="note">
+        <span class="label">On demo data</span>
+        <p>
+          <code>majal_demo</code> installs a two-company acceptance dataset and nine role
+          personas. It is for isolated demo and QA databases and should never be installed for
+          a production client.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section class="band tinted" id="demo">
+  <div class="wrap">
+    <div class="prose">
+      <h2>The hosted demo</h2>
+      <p>
+        <strong>It is not live yet.</strong> <code>demo.majalops.com</code> is reserved and
+        planned; there is nothing running behind it today, and this page will say so until
+        there is. The same applies to <code>docs.majalops.com</code>, where the documentation
+        currently in <code>docs/</code> will be published.
+      </p>
+      <p>
+        Until then, the honest ways to see the product are to read the design notes in the
+        repository, work through the
+        <a href="/insights/">Insights</a> pieces — which are drawn from those notes — or run it
+        yourself with the Docker path above and install the demo data on an isolated database.
+      </p>
+
+      <dl class="facts">
+        <dt>Source</dt>
+        <dd><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">github.com/Mohamed95Amer/Mohamed95Amer ↗</a></dd>
+        <dt>Documentation</dt>
+        <dd><a href="https://docs.majalops.com">docs.majalops.com ↗</a> — planned; the source documentation is in <code>docs/</code> in the repository today</dd>
+        <dt>Hosted demo</dt>
+        <dd><span>demo.majalops.com — planned, not live</span></dd>
+        <dt>Base platform</dt>
+        <dd>Odoo 18.0 Community Edition, pinned by commit</dd>
+        <dt>Languages</dt>
+        <dd>English and Arabic, with RTL handled in the interface</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY ============ -->
+<section class="band" id="why">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Why it was built this way</h2>
+      <p>
+        Four platforms set the bar Majal was designed against, and the design notes are explicit
+        about what each of them does better. Procore is the enterprise system of record.
+        Fieldwire is the field-first tool crews actually open. PlanRadar is pin-on-plan
+        documentation. IBM Maximo is enterprise asset management.
+      </p>
+      <p>
+        The gap they share is the interesting one. Field tools capture excellent data and then
+        stop: the defect, the daily log and the inspection never reach the ledger, so the
+        commercial position is reassembled by hand every month in a spreadsheet. Odoo Community
+        supplies the ledger for nothing. What was missing — from every field tool and from Odoo
+        core alike — is the commercial layer between them: bill of quantities to subcontract to
+        variation to progress claim with retention, and the cost value reconciliation that ties
+        them together.
+      </p>
+      <p>
+        That is the piece Majal adds, and the reason the rest of it exists on the same database
+        rather than beside it.
+      </p>
+      <p><a href="/features.html">What that looks like in practice →</a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/features.html#construction">Construction</a></li>
+          <li><a href="/features.html#facilities">Facilities</a></li>
+          <li><a href="/features.html#bim">BIM</a></li>
+          <li><a href="/features.html#modules">Module list</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="https://docs.majalops.com">Documentation ↗</a></li>
+          <li><a href="/about.html#self-host">Self-hosting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="/about.html">About &amp; open source</a></li>
+          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub repository ↗</a></li>
+          <li><a href="/about.html#licence">Licensing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Try it</h2>
+        <ul>
+          <li><a href="/about.html#demo">Hosted demo — not live yet</a></li>
+          <li><a href="/about.html#self-host">Run it with Docker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <p>Majal is built on Odoo 18 Community Edition (LGPL-3) with pinned OCA and community modules. Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.</p>
+      <p>Procore, Fieldwire, PlanRadar, Maximo, Solibri, Navisworks, BIMcollab and Revizto are trademarks of their respective owners, referenced here only for comparison and interoperability.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

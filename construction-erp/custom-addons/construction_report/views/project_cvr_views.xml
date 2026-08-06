@@ -31,6 +31,16 @@
     <record id="view_project_cvr_form" model="ir.ui.view">
         <field name="name">project.project.cvr.form</field>
         <field name="model">project.project</field>
+        <!--
+            Odoo picks a model's default form by priority, then by *name*. At
+            the default priority this one won on the alphabet alone — "cvr"
+            sorts before "form" — so opening any construction project landed on
+            a read-only reconciliation report with create="false" edit="false"
+            and none of the project's own tabs. Demoted so the real project
+            form wins, and bound explicitly to the action below, which is the
+            only place it was ever meant to appear.
+        -->
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <form string="Cost Value Reconciliation" create="false" edit="false">
                 <sheet>
@@ -81,6 +91,9 @@
         <field name="view_mode">list,form</field>
         <field name="domain">[('is_construction', '=', True)]</field>
         <field name="view_id" ref="view_project_cvr_list"/>
+        <field name="views"
+               eval="[(ref('view_project_cvr_list'), 'list'),
+                      (ref('view_project_cvr_form'), 'form')]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No construction projects yet</p>
             <p>Cost Value Reconciliation compares the value certified to the

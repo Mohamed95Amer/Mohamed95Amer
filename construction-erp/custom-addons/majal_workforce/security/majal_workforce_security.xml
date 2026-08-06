@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+            A staffing plan is commercially sensitive: who is on which job,
+            how thinly people are spread, who is about to come off a project.
+            Without a rule here every internal user could read the lot, which
+            would be a worse leak than most of the records the allocations
+            govern.
+
+            Same shape as the rest of the product: operations managers and
+            above see their company's plan; everybody else sees their own
+            allocations and the teams of work they are already on.
+
+            One line, like every other rule in the codebase — domain_force is
+            evaluated as a single expression and a wrapped conditional does
+            not survive it.
+        -->
+        <record id="rule_majal_allocation" model="ir.rule">
+            <field name="name">Majal: workforce allocations</field>
+            <field name="model_id" ref="model_majal_allocation"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)] if (not user.majal_role_id or user.majal_role_id.rank &gt;= 40) else ['|', '|', ('user_id', '=', user.id), ('project_id.majal_member_ids', 'in', [user.id]), ('location_id.member_user_ids', 'in', [user.id])]</field>
+        </record>
+    </data>
+</odoo>

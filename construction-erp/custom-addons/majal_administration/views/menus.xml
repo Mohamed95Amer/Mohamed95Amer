@@ -10,6 +10,11 @@
               parent="menu_majal_administration_root"
               action="action_majal_client_users_scoped"
               sequence="10"/>
+    <menuitem id="menu_majal_access_levels"
+              name="Access Levels"
+              parent="menu_majal_administration_root"
+              action="action_majal_access_levels"
+              sequence="12"/>
     <menuitem id="menu_majal_capability_packs"
               name="Capability Catalog"
               parent="menu_majal_administration_root"

@@ -50,6 +50,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "views/register_search_views.xml",
         "views/construction_home_views.xml",
         "views/my_day_views.xml",
         "views/facility_home_views.xml",
@@ -59,6 +60,9 @@
         "views/login_branding.xml",
         "views/majal_branding.xml",
         "views/app_icon_branding.xml",
+    ],
+    "demo": [
+        "data/demo_avatars.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -79,6 +83,11 @@
             "construction_ui/static/src/dashboard_hub/dashboard_hub.js",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.xml",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.scss",
+            "construction_ui/static/src/systray/approvals_systray.js",
+            "construction_ui/static/src/systray/approvals_systray.xml",
+            "construction_ui/static/src/sidebar/majal_sidebar.js",
+            "construction_ui/static/src/sidebar/majal_sidebar.xml",
+            "construction_ui/static/src/sidebar/majal_sidebar.scss",
             "construction_ui/static/src/scss/backend.scss",
             "construction_ui/static/src/scss/rtl.scss",
         ],

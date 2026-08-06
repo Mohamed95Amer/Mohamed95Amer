@@ -6,6 +6,8 @@ as a record rather than as a state on the document is what lets one screen
 answer "what is waiting on me" across fourteen different kinds of document.
 """
 
+from datetime import timedelta
+
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError
 
@@ -62,7 +64,6 @@ class ConstructionApprovalRequest(models.Model):
     def write(self, vals):
         if (
             self._protected_transition_fields & set(vals)
-            and not self.env.context.get("majal_approval_transition")
             and not self.env.su
         ):
             raise AccessError(
@@ -74,7 +75,7 @@ class ConstructionApprovalRequest(models.Model):
         return super().write(vals)
 
     def unlink(self):
-        if not self.env.context.get("majal_approval_transition") and not self.env.su:
+        if not self.env.su:
             raise AccessError(
                 self.env._("Approval requests are immutable audit evidence.")
             )
@@ -109,12 +110,27 @@ class ConstructionApprovalRequest(models.Model):
             "target": "current",
         }
 
+    def _still_covers(self, record):
+        """Does this approval still answer for the document as it stands?
+
+        Judged by the rule the value falls under, not by an exact amount: a
+        variation nudged from 60,000 to 61,000 stays inside the band two people
+        signed off, and sending it round again for that would teach everyone to
+        route around the engine. Crossing into a band with a longer chain is a
+        different document as far as the delegation of authority is concerned,
+        and has to climb it.
+        """
+        self.ensure_one()
+        current_rule = self.env["construction.approval.rule"]._match(
+            record, record._approval_amount(), record._approval_kind())
+        return current_rule == self.rule_id
+
     def _advance(self):
         """Move on after a step was approved, and finish if none are left."""
         self.ensure_one()
         if self.step_ids.filtered(lambda s: s.state == "pending"):
             return False
-        self.with_context(majal_approval_transition=True).write(
+        self.sudo().write(
             {"state": "approved", "decided_on": fields.Datetime.now()}
         )
         record = self._record()
@@ -129,11 +145,9 @@ class ConstructionApprovalRequest(models.Model):
 
     def _reject(self, reason):
         self.ensure_one()
-        self.step_ids.filtered(lambda s: s.state == "pending").with_context(
-            majal_approval_transition=True
-        ).write(
+        self.step_ids.filtered(lambda s: s.state == "pending").sudo().write(
             {"state": "skipped"})
-        self.with_context(majal_approval_transition=True).write(
+        self.sudo().write(
             {"state": "rejected", "decided_on": fields.Datetime.now()}
         )
         record = self._record()
@@ -142,13 +156,23 @@ class ConstructionApprovalRequest(models.Model):
         return True
 
     def action_cancel(self):
-        """Withdraw a request — the document changed and the answer is stale."""
+        """Withdraw a request — the document changed and the answer is stale.
+
+        Whoever raised it may withdraw it, and so may a manager. Anybody else
+        withdrawing somebody's request is a way to make an approval quietly go
+        away, which is the opposite of what the request is for.
+        """
+        manager = self.env.user.has_group(
+            "construction_base.group_construction_manager")
         for request in self.filtered(lambda r: r.state == "pending"):
-            request.step_ids.filtered(lambda s: s.state == "pending").with_context(
-                majal_approval_transition=True
-            ).write(
+            if not manager and request.requested_by_id != self.env.user:
+                raise UserError(self.env._(
+                    "Only %(requester)s or a manager can withdraw this.",
+                    requester=request.requested_by_id.display_name))
+            request = request.sudo()
+            request.step_ids.filtered(lambda s: s.state == "pending").write(
                 {"state": "skipped"})
-            request.with_context(majal_approval_transition=True).write(
+            request.sudo().write(
                 {"state": "cancelled"}
             )
 
@@ -188,7 +212,7 @@ class ConstructionApprovalStep(models.Model):
     requested_on = fields.Datetime(related="request_id.requested_on", store=True)
     requested_by_id = fields.Many2one(related="request_id.requested_by_id", store=True)
     waiting_days = fields.Integer(
-        compute="_compute_waiting_days", store=True,
+        compute="_compute_waiting_days", search="_search_waiting_days",
         help="How long this decision has been outstanding.")
 
     _protected_decision_fields = {
@@ -206,7 +230,6 @@ class ConstructionApprovalStep(models.Model):
     def write(self, vals):
         if (
             self._protected_decision_fields & set(vals)
-            and not self.env.context.get("majal_approval_transition")
             and not self.env.su
         ):
             raise AccessError(
@@ -218,7 +241,7 @@ class ConstructionApprovalStep(models.Model):
         return super().write(vals)
 
     def unlink(self):
-        if not self.env.context.get("majal_approval_transition") and not self.env.su:
+        if not self.env.su:
             raise AccessError(
                 self.env._("Approval steps are immutable audit evidence.")
             )
@@ -226,12 +249,37 @@ class ConstructionApprovalStep(models.Model):
 
     @api.depends("requested_on", "state")
     def _compute_waiting_days(self):
+        """Not stored, because the answer changes without the record changing.
+
+        It was stored, and the dependencies were `requested_on` and `state` —
+        neither of which is the clock. So it computed once, at creation, when
+        the difference was zero, and stayed zero for ever. Everything built on
+        it was quietly dead: My Day never called anything urgent, the exposure
+        screen's Days column read 0 on a step outstanding for a month, and the
+        two "waiting over a week" filters matched nothing.
+        """
         now = fields.Datetime.now()
         for step in self:
             if step.state != "pending" or not step.requested_on:
                 step.waiting_days = 0
             else:
                 step.waiting_days = (now - step.requested_on).days
+
+    def _search_waiting_days(self, operator, value):
+        """Search it as what it really is: a date threshold.
+
+        A non-stored field has no column to filter on, so the domains in the
+        views are translated back into the `requested_on` cut-off they mean.
+        Note the inversion — waiting longer means requested *earlier*.
+        """
+        inverted = {
+            ">": "<", ">=": "<=", "<": ">", "<=": ">=", "=": "=", "!=": "!=",
+        }
+        if operator not in inverted:
+            raise ValueError("Unsupported operator for waiting_days: %s" % operator)
+        cutoff = fields.Datetime.now() - timedelta(days=value)
+        return [("state", "=", "pending"),
+                ("requested_on", inverted[operator], cutoff)]
 
     # ------------------------------------------------------------------
     # Who may sign
@@ -307,6 +355,30 @@ class ConstructionApprovalStep(models.Model):
         return candidates.filtered(lambda s: s._can_be_signed_by(user))
 
     @api.model
+    def systray_inbox_count(self):
+        """How many approvals are waiting on the caller, for the top bar.
+
+        Public because the systray calls it over RPC, and safe to be: it takes
+        no arguments and answers only for `self.env.user`, so the worst a
+        caller can learn by asking is the size of their own queue.
+        """
+        return len(self._waiting_on(self.env.user))
+
+    @api.model
+    def systray_inbox_action(self):
+        """The same inbox the menu opens, reached from the counter.
+
+        `views` is spelled out because this one is handed straight to
+        doAction by the browser rather than being resolved from a server
+        action first. Without it the client throws while preprocessing and
+        the click does nothing visible — the counter looks broken rather
+        than the action.
+        """
+        action = self._inbox_action()
+        action["views"] = [(False, "list"), (False, "form")]
+        return action
+
+    @api.model
     def _inbox_action(self):
         steps = self._waiting_on(self.env.user)
         return {
@@ -350,14 +422,21 @@ class ConstructionApprovalStep(models.Model):
             raise UserError(self.env._(
                 "Say why it is rejected. Without a reason it comes straight "
                 "back unchanged."))
-        self.with_context(majal_approval_transition=True).write({
+        # Elevated *after* the gate, never before it. Approvers no longer hold
+        # write access on steps and requests — that access was the bypass: a
+        # plain write({'state': 'approved'}) never reached _can_be_signed_by,
+        # so the entitlement check above could simply be stepped around. The
+        # authority to decide is expressed by passing that check; recording the
+        # decision is a consequence, and runs with the rights it needs.
+        signed = self.sudo()
+        signed.write({
             "state": decision,
             "decided_by_id": user.id,
             "delegated_from_id": self._delegator_for(user).id,
             "decided_on": fields.Datetime.now(),
             "reason": reason or self.reason,
         })
-        request = self.request_id
+        request = signed.request_id
         if decision == "rejected":
             request._reject(reason)
         else:

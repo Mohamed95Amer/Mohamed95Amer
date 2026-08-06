@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="construction_ui.ApprovalsSystray">
+    <div class="o_majal_approvals_systray">
+      <button type="button"
+              class="o_nav_entry border-0 bg-transparent"
+              t-att-title="state.count
+                ? state.count + ' approval(s) waiting for you'
+                : 'Nothing is waiting for your approval'"
+              t-on-click="() => this.onClick()">
+        <i class="fa fa-lg fa-check-square-o" role="img" aria-label="Approvals"/>
+        <span t-if="state.count"
+              class="o-mail-ActivityMenu-counter badge rounded-pill"
+              t-esc="state.count"/>
+      </button>
+    </div>
+  </t>
+
+</templates>

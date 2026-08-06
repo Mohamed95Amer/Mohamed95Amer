@@ -1,4 +1,7 @@
 from odoo import api, fields, models
+from odoo.addons.construction_base.models.approval_mixin import (
+    WORKFLOW_TRANSITION,
+)
 
 
 class ConstructionDailyLog(models.Model):
@@ -63,7 +66,7 @@ class ConstructionDailyLog(models.Model):
             log.total_delay_hours = sum(log.delay_ids.mapped("hours_lost"))
 
     def action_submit(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         self.filtered(lambda l: l.state == "draft").state = "submitted"
 
     def _approval_amount(self):
@@ -76,13 +79,13 @@ class ConstructionDailyLog(models.Model):
         return True
 
     def action_approve(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for log in self.filtered(lambda l: l.state == "submitted"):
             log._check_approved()
             log.state = "approved"
 
     def action_reset(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         self.state = "draft"
 
 

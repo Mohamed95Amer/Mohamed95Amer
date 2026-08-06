@@ -19,6 +19,23 @@ from odoo.exceptions import AccessError, UserError
 _logger = logging.getLogger(__name__)
 
 
+
+# A value the caller cannot forge.
+#
+# This guard used to stand down for `majal_workflow_transition=WORKFLOW_TRANSITION` in the
+# context. Context travels with an RPC call, so anybody holding write access on
+# an approvable document could set that key and write `state` directly — which
+# skips _check_approved() and defeats the approval engine through the document
+# instead of through the step. It is the same hole that was removed from
+# res_users and from the approval step, arriving by a third door.
+#
+# RPC can only deliver JSON, so a context value can never be *identical* to a
+# private Python object. Server-side callers import this and pass it; a remote
+# caller can send the string, the number or the boolean and none of them are
+# this object.
+WORKFLOW_TRANSITION = object()
+
+
 class ConstructionApprovable(models.AbstractModel):
     _name = "construction.approvable"
     _description = "Approvable Document"
@@ -40,7 +57,8 @@ class ConstructionApprovable(models.AbstractModel):
         if (
             "state" in values
             and not self.env.su
-            and not self.env.context.get("majal_workflow_transition")
+            and self.env.context.get("majal_workflow_transition")
+            is not WORKFLOW_TRANSITION
         ):
             raise AccessError(
                 self.env._(
@@ -223,7 +241,21 @@ class ConstructionApprovable(models.AbstractModel):
             latest = self.env["construction.approval.request"].sudo().search([
                 ("res_model", "=", record._name), ("res_id", "=", record.id),
                 ("state", "=", "approved"),
-            ], limit=1)
+            ], order="decided_on desc, id desc", limit=1)
+            # An approval is of a document at a value, not of a document
+            # forever. Without this, the cheapest way past a three-signature
+            # threshold is to get a small version approved and then edit it:
+            # the historical request still says "approved", and the chain that
+            # a quarter-million variation is supposed to climb never runs.
+            if latest and not latest._still_covers(record):
+                raise UserError(self.env._(
+                    "%(document)s changed after it was approved — it was "
+                    "cleared at %(approved)s and now stands at %(current)s, "
+                    "so %(rule)s applies again.",
+                    document=record.display_name,
+                    approved=latest.amount,
+                    current=record._approval_amount(),
+                    rule=rule.name))
             if not latest:
                 # A permit and a bill both arrive here, and only one of them
                 # has a value. Saying "applies at this value" about a permit

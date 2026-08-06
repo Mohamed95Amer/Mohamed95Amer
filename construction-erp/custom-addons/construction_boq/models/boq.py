@@ -1,5 +1,8 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.addons.construction_base.models.approval_mixin import (
+    WORKFLOW_TRANSITION,
+)
 
 
 class ConstructionBoq(models.Model):
@@ -105,7 +108,7 @@ class ConstructionBoq(models.Model):
         return True
 
     def action_approve(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         for boq in self:
             if boq.state != "draft":
                 raise UserError(self.env._("Only draft BOQs can be approved."))
@@ -117,11 +120,11 @@ class ConstructionBoq(models.Model):
             boq.state = "approved"
 
     def action_lock(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         self.filtered(lambda b: b.state == "approved").state = "locked"
 
     def action_new_revision(self):
-        self = self.with_context(majal_workflow_transition=True)
+        self = self.with_context(majal_workflow_transition=WORKFLOW_TRANSITION)
         """Create a new draft version copying sections and lines."""
         self.ensure_one()
         new = self.copy(

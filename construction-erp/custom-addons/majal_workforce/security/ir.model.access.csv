@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_allocation_user,majal allocation read,model_majal_allocation,base.group_user,1,0,0,0
+access_majal_allocation_manager,majal allocation manage,model_majal_allocation,construction_base.group_construction_manager,1,1,1,1
+access_majal_allocation_facility_manager,majal allocation manage facilities,model_majal_allocation,majal_administration.group_facilities_manager,1,1,1,1
+access_majal_allocation_role_user,majal allocation role read,model_majal_allocation_role,base.group_user,1,0,0,0
+access_majal_allocation_role_admin,majal allocation role manage,model_majal_allocation_role,majal_administration.group_user_administrator,1,1,1,1
+access_majal_allocate_wizard,majal allocate wizard,model_majal_allocate_wizard,construction_base.group_construction_manager,1,1,1,1
+access_majal_allocate_wizard_fm,majal allocate wizard facilities,model_majal_allocate_wizard,majal_administration.group_facilities_manager,1,1,1,1
+access_majal_end_allocation_wizard,majal end allocation wizard,model_majal_end_allocation_wizard,construction_base.group_construction_manager,1,1,1,1
+access_majal_end_allocation_wizard_fm,majal end allocation wizard facilities,model_majal_end_allocation_wizard,majal_administration.group_facilities_manager,1,1,1,1

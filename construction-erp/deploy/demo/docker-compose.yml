@@ -28,11 +28,23 @@ services:
       db:
         condition: service_healthy
     environment:
+      # HOST/USER/PASSWORD are the Odoo image's own names for the database
+      # connection; Odoo reads them directly.
       HOST: db
       USER: majal_app
       PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       ODOO_ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env}
       MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:?Set MAJAL_AI_MASTER_KEY in .env}
+      # And these are what restore_database.py needs. Without them a restore
+      # stops at "Database recovery credentials were not supplied" — which is
+      # a thing you find out on the day you are restoring. The admin role is
+      # named here too because the script's fallback is "odoo" while this
+      # stack's superuser is majal_admin, so the fallback connects as a role
+      # that does not exist.
+      MAJAL_DB_APP_USER: majal_app
+      MAJAL_DB_APP_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MAJAL_DB_ADMIN_USER: majal_admin
+      MAJAL_DB_ADMIN_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
     entrypoint:
       - /bin/bash
       - /usr/local/bin/majal-entrypoint

@@ -44,6 +44,28 @@ def fail(message):
     raise SystemExit(1)
 
 
+def rollback_filestore(filestore, safety_filestore, moved_filestore):
+    """Put the original filestore back, or leave it strictly alone.
+
+    The whole rollback turns on `moved_filestore`. If it is True the original
+    was renamed aside and whatever sits at `filestore` is the half-restored
+    copy, which is disposable. If it is False the restore failed before the
+    rename — so `filestore` still holds the *only* copy of every attachment in
+    the system, and deleting it destroys them with no way back.
+
+    Deleting first and restoring second is what made that possible: the delete
+    was unconditional and the restore was not. Both are conditional now.
+    """
+    if not moved_filestore:
+        return False
+    if os.path.isdir(filestore):
+        shutil.rmtree(filestore)
+    if os.path.isdir(safety_filestore):
+        os.replace(safety_filestore, filestore)
+        return True
+    return False
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with open(path, "rb") as stream:
@@ -204,7 +226,14 @@ def main():
     app_password = os.environ.get("MAJAL_DB_APP_PASSWORD")
     host = os.environ.get("HOST", "db")
     admin_user = os.environ.get("MAJAL_DB_ADMIN_USER", "odoo")
-    app_user = os.environ.get("USER", "majal_app")
+    # Not $USER. That is the container's OS username, which has nothing to do
+    # with the Postgres role Odoo owns its data as — and because it is set by
+    # the environment rather than by this stack, the documented "majal_app"
+    # fallback only applies on the machines that happen to leave it unset. The
+    # restore then connects as the wrong role and the failure arrives as a
+    # permission error deep inside a restore, which is the worst moment to be
+    # diagnosing one.
+    app_user = os.environ.get("MAJAL_DB_APP_USER", "majal_app")
     if not admin_password or not app_password:
         fail("Database recovery credentials were not supplied.")
 
@@ -347,10 +376,7 @@ def main():
                         "ALTER DATABASE %s RENAME TO %s;"
                         % (safety_ident, database_ident),
                     )
-                if os.path.isdir(filestore):
-                    shutil.rmtree(filestore)
-                if moved_filestore and os.path.isdir(safety_filestore):
-                    os.replace(safety_filestore, filestore)
+                rollback_filestore(filestore, safety_filestore, moved_filestore)
             except Exception as rollback_error:
                 write_receipt(
                     args.request_id,

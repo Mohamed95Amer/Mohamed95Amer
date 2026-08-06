@@ -109,16 +109,18 @@ ships four:
 | Login | Password | Who | What they see |
 |---|---|---|---|
 | `admin` | `admin` | Administrator | Everything, including Configuration → Approval Rules |
-| `omar.pm` | `omar.pm` | Project manager | A variation waiting for his signature — the first rung |
-| `hala.director` | `hala.director` | Commercial manager | Nothing yet: her rung comes after Omar signs |
-| `nadia.qs` | `nadia.qs` | Quantity surveyor | The bill and certificate she already signed |
+| `omar.pm` | `omar.pm.majal` | Project manager | A variation waiting for his signature — the first rung |
+| `hala.director` | `hala.director.majal` | Commercial manager | Nothing yet: her rung comes after Omar signs |
+| `nadia.qs` | `nadia.qs.majal` | Quantity surveyor | The bill and certificate she already signed |
 
 Worth doing first: log in as `omar.pm`, open **My Day**, approve the one thing
 waiting. Log in as `hala.director` and it is now on her screen and not his. Then
 as `admin`, open **Commercial Exposure**: the 197,400 has moved from "submitted
 and not yet approved" into the contract.
 
-These passwords exist in demo data only.
+The password is the login with `.majal` on the end — long enough for the
+twelve-character policy `majal_security` applies. These accounts exist in
+demo data only.
 
 ### Full Majal acceptance dataset
 
