@@ -86,6 +86,34 @@ class TestChangeOrder(TransactionCase):
         self.assertEqual(event.origin, "rfi")
         self.assertEqual(rfi.change_event_count, 1)
 
+    def test_view_change_events_opens_the_one_it_raised(self):
+        rfi = self.env["construction.rfi"].create({
+            "name": "Clash", "project_id": self.project.id,
+            "question": "<p>?</p>", "cost_impact": True})
+        created = rfi.action_raise_change_event()
+        event = self.env["construction.change.event"].browse(created["res_id"])
+
+        action = rfi.action_view_change_events()
+        self.assertEqual(action["res_model"], "construction.change.event")
+        self.assertEqual(action["view_mode"], "form")
+        self.assertEqual(action["res_id"], event.id)
+        self.assertEqual(action["domain"], [("source_rfi_id", "=", rfi.id)])
+
+    def test_view_change_events_lists_more_than_one(self):
+        rfi = self.env["construction.rfi"].create({
+            "name": "Clash", "project_id": self.project.id,
+            "question": "<p>?</p>", "cost_impact": True})
+        self.env["construction.change.event"].create({
+            "name": "First", "project_id": self.project.id,
+            "origin": "rfi", "source_rfi_id": rfi.id})
+        self.env["construction.change.event"].create({
+            "name": "Second", "project_id": self.project.id,
+            "origin": "rfi", "source_rfi_id": rfi.id})
+
+        action = rfi.action_view_change_events()
+        self.assertEqual(action["view_mode"], "list,form")
+        self.assertNotIn("res_id", action)
+
     def test_change_event_creates_co(self):
         event = self.env["construction.change.event"].create({
             "name": "New scope", "project_id": self.project.id,

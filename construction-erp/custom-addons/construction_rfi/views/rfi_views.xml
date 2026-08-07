@@ -88,6 +88,13 @@
                         domain="[('state', 'in', ('draft', 'submitted'))]"/>
                 <filter name="filter_overdue" string="Overdue"
                         domain="[('is_overdue', '=', True)]"/>
+                <!-- ball_in_court_id is a res.partner (it names whoever's turn
+                     it is, and that is not always somebody with a login) —
+                     ball_in_court_id.user_ids is the stock reverse of
+                     res.users.partner_id, so this reaches "am I that partner"
+                     without a new field. -->
+                <filter name="filter_mine" string="Waiting on Me"
+                        domain="[('ball_in_court_id.user_ids', 'in', [uid])]"/>
                 <filter name="group_project" string="Project"
                         context="{'group_by': 'project_id'}"/>
                 <filter name="group_state" string="Status"

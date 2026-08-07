@@ -24,6 +24,7 @@ class FacilityLocation(models.Model):
         "res.company", default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
     asset_count = fields.Integer(compute="_compute_asset_count")
+    open_request_count = fields.Integer(compute="_compute_open_request_count")
 
     @api.depends("name", "parent_id.complete_name")
     def _compute_complete_name(self):
@@ -42,6 +43,13 @@ class FacilityLocation(models.Model):
             loc.asset_count = self.env["maintenance.equipment"].search_count(
                 [("facility_location_id", "child_of", loc.id)])
 
+    def _compute_open_request_count(self):
+        for loc in self:
+            loc.open_request_count = self.env["maintenance.request"].search_count([
+                ("facility_location_id", "child_of", loc.id),
+                ("stage_id.done", "=", False),
+            ])
+
     @api.depends("complete_name")
     def _compute_display_name(self):
         for loc in self:
@@ -56,4 +64,17 @@ class FacilityLocation(models.Model):
             "view_mode": "list,form",
             "domain": [("facility_location_id", "child_of", self.id)],
             "context": {"default_facility_location_id": self.id},
+        }
+
+    def action_view_open_requests(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Open Work Orders — %s", self.name),
+            "res_model": "maintenance.request",
+            "view_mode": "list,form",
+            "domain": [
+                ("facility_location_id", "child_of", self.id),
+                ("stage_id.done", "=", False),
+            ],
         }

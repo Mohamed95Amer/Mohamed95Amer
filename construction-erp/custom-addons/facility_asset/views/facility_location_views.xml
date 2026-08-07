@@ -25,6 +25,12 @@
                             <field name="asset_count" widget="statinfo"
                                    string="Assets"/>
                         </button>
+                        <button name="action_view_open_requests" type="object"
+                                class="oe_stat_button" icon="fa-wrench"
+                                invisible="not open_request_count">
+                            <field name="open_request_count" widget="statinfo"
+                                   string="Open Work Orders"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Location name"/></h1>

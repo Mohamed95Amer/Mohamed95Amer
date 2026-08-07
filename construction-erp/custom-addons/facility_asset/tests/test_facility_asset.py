@@ -51,6 +51,27 @@ class TestFacilityAsset(TransactionCase):
         self.assertEqual(self.floor.asset_count, 1)
         self.assertEqual(self.room.asset_count, 1)
 
+    def test_open_request_count_rolls_up_and_excludes_done(self):
+        req = self.env["maintenance.request"].create(
+            {"name": "AHU down", "equipment_id": self.asset.id})
+        self.assertEqual(self.room.open_request_count, 1)
+        self.assertEqual(self.floor.open_request_count, 1)
+        self.assertEqual(self.site.open_request_count, 1)
+
+        done_stage = self.env["maintenance.stage"].search(
+            [("done", "=", True)], limit=1)
+        req.stage_id = done_stage
+        self.room.invalidate_recordset(["open_request_count"])
+        self.assertEqual(self.room.open_request_count, 0)
+
+    def test_view_open_requests_domain(self):
+        req = self.env["maintenance.request"].create(
+            {"name": "AHU down", "equipment_id": self.asset.id})
+        action = self.room.action_view_open_requests()
+        self.assertEqual(action["res_model"], "maintenance.request")
+        found = self.env["maintenance.request"].search(action["domain"])
+        self.assertEqual(found, req)
+
     def test_warranty_active(self):
         self.asset.warranty_date = date.today() + timedelta(days=10)
         self.assertTrue(self.asset.warranty_active)
