@@ -48,6 +48,65 @@ class TestConstructionDashboard(TransactionCase):
         self.assertGreaterEqual(portfolio["contract_value"], 3000)
         self.assertGreaterEqual(portfolio["projects"], 2)
 
+    def test_the_portfolio_total_matches_the_sum_of_its_own_rows(self):
+        """The one bug a reader would actually notice: the total disagreeing
+        with the rows above it.
+
+        CVR's real forecast margin nets committed subcontract cost against
+        only the BOQ budget those subcontracts actually cover
+        (project_cvr.py's expected_final_cost), not against the whole
+        project's budget. A portfolio total that re-derives from
+        contract - max(budget, committed) is a different, cruder formula, and
+        it silently diverges from the sum of the per-project rows the moment
+        any subcontract line names the BOQ line it covers — which is the
+        normal, correctly-configured case, exercised here.
+        """
+        project = self.env["project.project"].create(
+            {"name": "Dash Covered Budget", "is_construction": True})
+        boq = self.env["construction.boq"].create({"project_id": project.id})
+        line = self.env["construction.boq.line"].create({
+            "boq_id": boq.id, "name": "Steelwork", "quantity": 1,
+            "unit_rate": 5000, "cost_material": 4000,
+        })
+        boq.action_approve()
+        subcontractor = self.env["res.partner"].create(
+            {"name": "Dash Steel Sub"})
+        subcontract = self.env["construction.subcontract"].create({
+            "name": "Steel package", "project_id": project.id,
+            "subcontractor_id": subcontractor.id,
+            "line_ids": [(0, 0, {
+                "name": "Steelwork", "quantity": 1, "unit_rate": 4500,
+                "boq_line_id": line.id,
+            })],
+        })
+        subcontract.action_confirm()  # committed 4500 against a 4000 budget
+
+        data = self.dashboard.get_dashboard_data(project_ids=[project.id])
+        row = data["projects"][0]
+        # expected_final_cost = committed(4500) + (budget(4000) - covered(4000))
+        #                     = 4500, so forecast_margin = 5000 - 4500 = 500 —
+        # not 5000 - max(4000, 4500) = 500 by coincidence here, so widen the
+        # gap by adding an uncovered budget line the crude formula would miss.
+        line2 = self.env["construction.boq.line"].create({
+            "boq_id": boq.id, "name": "Finishes", "quantity": 1,
+            "unit_rate": 1000, "cost_material": 800,
+        })
+        self.env.invalidate_all()
+        data = self.dashboard.get_dashboard_data(project_ids=[project.id])
+        row = data["projects"][0]
+        # budget 4800, committed 4500, covered 4000
+        # honest: expected_final_cost = 4500 + (4800 - 4000) = 5300
+        #         forecast_margin = 6000 - 5300 = 700
+        # crude:  contract - max(budget, committed) = 6000 - 4800 = 1200
+        self.assertEqual(row["forecast_margin"], 700)
+
+        portfolio = data["portfolio"]
+        self.assertEqual(
+            portfolio["forecast_margin"], row["forecast_margin"],
+            "the portfolio total (one project here) must equal the sum of "
+            "its own rows, not a separately re-derived figure",
+        )
+
     def test_portfolio_rates_are_rederived_not_averaged(self):
         """Averaging two projects' percentages is only right when they are the
         same size; the portfolio rate has to come from its own components."""

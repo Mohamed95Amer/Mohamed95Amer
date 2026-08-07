@@ -160,13 +160,18 @@ class ConstructionDashboard(models.AbstractModel):
         total = lambda key: sum(r[key] for r in rows)  # noqa: E731
         contract = total("contract_value")
         certified = total("certified_value")
-        budget_cost = total("budget_cost")
-        committed = total("committed_cost")
         material_consumed = total("material_consumed")
         material_waste = total("material_waste")
         manhours = total("manhours")
         ltis = total("lti_count")
-        forecast_margin = contract - max(budget_cost, committed)
+        # Summed from each row's own cvr_forecast_margin rather than re-derived
+        # from summed inputs. CVR's real formula nets committed cost against
+        # only the budget it actually covers (project_cvr.py); the naive
+        # contract - max(budget, committed) used here previously was always
+        # the cruder fallback, so the portfolio total silently diverged from
+        # the sum of the rows above it whenever any subcontract line mapped to
+        # a BOQ line — the normal, well-configured case.
+        forecast_margin = total("forecast_margin")
 
         return {
             "projects": len(rows),
