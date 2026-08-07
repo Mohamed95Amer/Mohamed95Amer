@@ -59,11 +59,14 @@ class ConstructionAdvancePayment(models.Model):
     guarantee_reference = fields.Char(string="Guarantee Ref.")
     guarantee_bank = fields.Char(string="Issuing Bank")
     guarantee_expiry = fields.Date(string="Guarantee Expires")
+    # Two compute methods on purpose: a stored and a non-stored field must
+    # not share one, or reading the non-stored field recomputes and writes
+    # the stored one behind the caller's back.
     guarantee_lapsed = fields.Boolean(
-        compute="_compute_guarantee", store=True,
+        compute="_compute_guarantee_lapsed", store=True,
         help="The guarantee has expired while money is still outstanding — "
              "the advance is unsecured.")
-    guarantee_warning = fields.Char(compute="_compute_guarantee")
+    guarantee_warning = fields.Char(compute="_compute_guarantee_warning")
 
     amount_recovered = fields.Monetary(
         compute="_compute_recovery", string="Recovered to Date")
@@ -88,19 +91,26 @@ class ConstructionAdvancePayment(models.Model):
             advance.recovery_complete = advance.currency_id.compare_amounts(
                 recovered, advance.amount) >= 0 if advance.currency_id else False
 
+    def _is_guarantee_lapsed(self):
+        self.ensure_one()
+        return bool(
+            self.guarantee_expiry
+            and self.guarantee_expiry < fields.Date.context_today(self)
+            and self.state in ("approved", "invoiced", "paid"))
+
     @api.depends("guarantee_expiry", "amount", "state")
-    def _compute_guarantee(self):
-        today = fields.Date.context_today(self)
+    def _compute_guarantee_lapsed(self):
         for advance in self:
-            lapsed = bool(
-                advance.guarantee_expiry
-                and advance.guarantee_expiry < today
-                and advance.state in ("approved", "invoiced", "paid"))
-            advance.guarantee_lapsed = lapsed
+            advance.guarantee_lapsed = advance._is_guarantee_lapsed()
+
+    @api.depends("guarantee_expiry", "amount", "state")
+    def _compute_guarantee_warning(self):
+        for advance in self:
             advance.guarantee_warning = self.env._(
                 "The advance payment guarantee expired on %(date)s. Anything "
                 "still outstanding is unsecured.",
-                date=advance.guarantee_expiry) if lapsed else False
+                date=advance.guarantee_expiry
+            ) if advance._is_guarantee_lapsed() else False
 
     # ------------------------------------------------------------------
     # Guards

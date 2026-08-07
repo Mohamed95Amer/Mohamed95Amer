@@ -11,6 +11,7 @@
         "security/ir.model.access.csv",
         "data/form_data.xml",
         "views/form_views.xml",
+        "views/itp_views.xml",
         "report/form_report.xml",
     ],
     "demo": ["demo/form_demo.xml"],

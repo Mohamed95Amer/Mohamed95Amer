@@ -84,10 +84,13 @@ class ConstructionRetentionRelease(models.Model):
 
     # Stored so the register can filter on it, and so that moving a project's
     # taking-over date re-judges the certificates already raised against it.
+    # Two compute methods on purpose: a stored and a non-stored field must
+    # not share one, or reading the non-stored field recomputes and writes
+    # the stored one behind the caller's back.
     is_early = fields.Boolean(
         compute="_compute_is_early", store=True,
         help="Claimed before the milestone it names has been reached.")
-    early_warning = fields.Char(compute="_compute_is_early")
+    early_warning = fields.Char(compute="_compute_early_warning")
 
     # ------------------------------------------------------------------
     # Position
@@ -154,10 +157,18 @@ class ConstructionRetentionRelease(models.Model):
                  "project_id.date_dlp_end")
     def _compute_is_early(self):
         for release in self:
+            milestone, _label = release._milestone()
+            release.is_early = bool(
+                milestone and release.date_release
+                and release.date_release < milestone)
+
+    @api.depends("release_type", "date_release", "project_id.date_taking_over",
+                 "project_id.date_dlp_end")
+    def _compute_early_warning(self):
+        for release in self:
             milestone, label = release._milestone()
             early = bool(milestone and release.date_release
                          and release.date_release < milestone)
-            release.is_early = early
             release.early_warning = self.env._(
                 "Claimed before %(label)s on %(date)s.",
                 label=label, date=milestone) if early else False
