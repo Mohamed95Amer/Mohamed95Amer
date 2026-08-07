@@ -73,3 +73,17 @@ class TestRfi(TransactionCase):
             self.rfi.action_close()
         with self.assertRaises(UserError):
             self.rfi.action_answer()
+
+    def test_drawing_shows_the_rfis_that_cite_it(self):
+        drawing = self.env["construction.drawing"].create({
+            "name": "Ground Floor Plan", "number": "AR-101",
+            "project_id": self.project.id})
+        revision = self.env["construction.drawing.revision"].create(
+            {"drawing_id": drawing.id, "revision": "A"})
+        self.rfi.drawing_revision_ids = [(6, 0, [revision.id])]
+
+        self.assertEqual(drawing.citing_rfi_count, 1)
+        self.assertEqual(drawing.citing_rfi_ids, self.rfi)
+        action = drawing.action_view_citing_rfis()
+        found = self.env["construction.rfi"].search(action["domain"])
+        self.assertEqual(found, self.rfi)
