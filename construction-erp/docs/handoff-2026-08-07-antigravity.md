@@ -222,6 +222,42 @@ entries out of roughly thirty.
 
 ---
 
+## What I left incomplete — start here
+
+Four gaps in the work above. None break anything; all four are visible the
+first time somebody demos or ships these features.
+
+**1 · The four new models have no Arabic. ~101 translatable strings, zero
+translated.** `docs/client-demo.md` calls for an Arabic RTL tour, so
+retention releases, advance payments, transmittals and ITPs will be the only
+screens in the demo still in English. The three modules already carry
+`i18n/ar_001.po` with established construction terminology — follow it rather
+than inventing terms. Regenerate with `--i18n-export` and translate the new
+entries. **This is the most demo-visible gap of the four.**
+
+**2 · No demo data for any of the four.** A fresh install shows four empty
+registers. Every comparable module has a `demo/` file; these do not, because
+I seeded records by script into `sidebar_demo` to take screenshots and never
+turned that into committed demo data. The seeding logic is worth rebuilding
+as proper demo XML: a retention release drawing down a real certificate, an
+advance with a lapsed guarantee, a transmittal carrying a superseded
+revision, and an ITP with one open hold point. Those four states are exactly
+what makes the features legible in a demo.
+
+**3 · No printable report for retention release, advance payment or
+transmittal.** Progress claims have `report/progress_claim_report.xml`; these
+do not. **The transmittal is the glaring one — a transmittal is a cover note
+that gets printed, signed and returned.** Without a PDF the feature is half
+of what it should be. ITP would also normally print as a signed matrix.
+
+**4 · No approval rules ship for the two new money documents.** Retention
+release and advance payment both inherit `construction.approvable` and expose
+`_approval_amount()`, but no `construction.approval.rule` demo/data record
+routes them anywhere. They can be approved directly by anyone with the PM
+group until a rule exists. Compare `construction_change_order/demo/approval_rules_demo.xml`.
+
+---
+
 ## Needs a human before it touches a live job
 
 The retention and advance-recovery formulas follow standard forms but were
@@ -238,5 +274,21 @@ deduct from it.
 
 ## Still open elsewhere
 
-`docs/roadmap.md` and task #40 — two remaining forgeable-context guards in
-the approval engine. Untouched by this range.
+Two forgeable-context guards remain open in the approval engine — the
+pattern is the `majal_workflow_transition` / `majal_drawing_transition`
+context keys that gate state changes, where a caller supplying the key
+bypasses the check. See `construction_base/models/approval_mixin.py` and
+`docs/security.md`. Untouched by this range.
+
+---
+
+## Environment
+
+This range was developed in a Linux container with PostgreSQL 16 local and
+Odoo vendored at `vendor/odoo`. If that is not already set up:
+`scripts/fetch-odoo.sh` fetches Odoo, and `docs/getting-started.md` covers
+the rest. `scripts/run-tests.sh` and `scripts/run-local.sh` both assume a
+local Postgres reachable as `odoo/odoo` — check `vendor/odoo-local.conf`.
+
+Verify the suite runs green *before* changing anything. A failure inherited
+from a broken local setup is easy to mistake for a regression in this range.
