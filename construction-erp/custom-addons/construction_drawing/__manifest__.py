@@ -12,6 +12,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/drawing_views.xml",
+        "views/transmittal_views.xml",
         "wizard/drawing_upload_views.xml",
     ],
     "demo": [
