@@ -29,8 +29,15 @@ class ConstructionMyDay(models.AbstractModel):
         today = fields.Date.context_today(self)
         sections = []
 
+        # Every lookup below is guarded by has_access. This screen is the home
+        # screen for *everyone*, and the registers on it belong to different
+        # halves of the product: a facilities technician has no construction
+        # rights and a site engineer has no maintenance rights, so on any
+        # mixed install somebody is always reading a register they are not
+        # allowed to. Unguarded, that is an AccessError where a screen should
+        # be — the whole of My Day fails, not just the row.
         step = self.env["construction.approval.step"]
-        waiting = step._waiting_on(user)
+        waiting = step._waiting_on(user) if step.has_access("read") else step
         if waiting:
             sections.append({
                 "key": "approvals",
@@ -46,7 +53,9 @@ class ConstructionMyDay(models.AbstractModel):
 
         for entry in self._registers():
             model = self.env.get(entry["model"])
-            if model is None:
+            # `is None` covers a module that is not installed; has_access
+            # covers one that is installed but not this person's job.
+            if model is None or not model.has_access("read"):
                 continue
             domain = entry["domain"](user, today)
             count = model.search_count(domain)
@@ -153,6 +162,44 @@ class ConstructionMyDay(models.AbstractModel):
                 "urgent": lambda today: [
                     ("valid_to", "<=", fields.Datetime.now()),
                 ],
+            },
+            # Facilities. This screen was shared verbatim by both roots, so a
+            # facilities technician opened "My Day" and was shown a
+            # construction engineer's RFIs and permits and none of their own
+            # work orders. Nothing needs to know which kind of user is
+            # looking: _sections() drops any register that returns zero, so
+            # each person sees only the registers they actually appear in.
+            {
+                "key": "work_orders",
+                "label": self.env._("Work orders assigned to me"),
+                "model": "maintenance.request",
+                "icon": "fa-wrench",
+                "domain": lambda user, today: [
+                    ("user_id", "=", user.id),
+                    ("stage_id.done", "=", False),
+                ],
+                # The SLA clock, not the scheduled date: a work order is late
+                # when the promise is missed, which is the number the client
+                # holds the company to.
+                "urgent": lambda today: [
+                    ("sla_resolution_deadline", "<=", fields.Datetime.now()),
+                ],
+            },
+            {
+                # A PM plan names no person — it names an asset and a team —
+                # so this is the one register here scoped by team membership
+                # rather than by assignment. Falling due is a team's problem
+                # until someone picks it up.
+                "key": "pm_due",
+                "label": self.env._("Planned maintenance falling due"),
+                "model": "facility.pm.plan",
+                "icon": "fa-calendar-check-o",
+                "domain": lambda user, today: [
+                    ("trigger_type", "=", "calendar"),
+                    ("next_date", "<=", today),
+                    ("maintenance_team_id.member_ids", "in", user.id),
+                ],
+                "urgent": lambda today: [("next_date", "<", today)],
             },
         ]
 
