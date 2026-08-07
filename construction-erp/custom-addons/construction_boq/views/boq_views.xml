@@ -85,9 +85,9 @@
                                     <field name="uom_id"/>
                                     <field name="quantity"/>
                                     <field name="unit_rate"/>
-                                    <field name="unit_cost"/>
+                                    <field name="unit_cost" optional="hide"/>
                                     <field name="amount_sell" sum="Total"/>
-                                    <field name="amount_cost" sum="Total"/>
+                                    <field name="amount_cost" sum="Total" optional="hide"/>
                                     <field name="margin_amount" sum="Total" optional="show"/>
                                     <field name="margin_percent" optional="hide"/>
                                     <field name="qty_certified" optional="hide"/>
@@ -147,10 +147,10 @@
                 <field name="uom_id"/>
                 <field name="quantity"/>
                 <field name="unit_rate"/>
-                <field name="unit_cost"/>
+                <field name="unit_cost" optional="hide"/>
                 <field name="amount_sell" sum="Total"/>
-                <field name="amount_cost" sum="Total"/>
-                <field name="margin_amount" sum="Total"/>
+                <field name="amount_cost" sum="Total" optional="hide"/>
+                <field name="margin_amount" sum="Total" optional="show"/>
                 <field name="amount_certified" sum="Total" optional="show"/>
                 <field name="percent_complete" widget="progressbar"/>
                 <field name="is_variation" optional="show"/>
