@@ -285,16 +285,25 @@
                         </list>
                     </field>
                 </page>
-                <page string="Drawings &amp; Revisions" name="majal_drawings"
+                <!-- Drawings, RFIs and submittals were two tabs. They are
+                     one discipline done by one team, and they reference each
+                     other constantly — an RFI cites a drawing, a submittal
+                     answers one. Splitting them meant paging back and forth
+                     to follow a single question. -->
+                <page string="Engineering" name="majal_engineering"
                       invisible="not is_construction">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h4 class="mb-1">Controlled drawing register</h4>
-                            <span class="text-muted">Every drawing, revision, PDF and sign-off status in one place.</span>
-                        </div>
-                        <button name="action_majal_drawings" type="object"
-                                string="Open Full Drawing Register" class="btn-primary"/>
-                    </div>
+                    <group>
+                        <group string="Coordination">
+                            <field name="engineering_item_count" string="Open information records"/>
+                        </group>
+                        <group string="Quick Navigation">
+                            <button name="action_majal_drawings" type="object"
+                                    string="Open Drawing Register" class="btn-primary"/>
+                            <button name="action_majal_engineering" type="object"
+                                    string="Open Submittals"/>
+                        </group>
+                    </group>
+                    <separator string="Drawings"/>
                     <field name="drawing_ids" context="{'default_project_id': id}"
                            options="{'no_delete': True}">
                         <list delete="false">
@@ -305,18 +314,6 @@
                             <field name="revision_count"/>
                         </list>
                     </field>
-                </page>
-                <page string="Engineering Workflow" name="majal_engineering"
-                      invisible="not is_construction">
-                    <group>
-                        <group string="Coordination">
-                            <field name="engineering_item_count" string="Open information records"/>
-                        </group>
-                        <group string="Quick Navigation">
-                            <button name="action_majal_engineering" type="object"
-                                    string="Open Submittals" class="btn-primary"/>
-                        </group>
-                    </group>
                     <separator string="Requests for Information"/>
                     <field name="rfi_ids" context="{'default_project_id': id}"
                            options="{'no_delete': True}">
