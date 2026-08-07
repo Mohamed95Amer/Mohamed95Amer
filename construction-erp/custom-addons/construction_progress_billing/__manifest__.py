@@ -11,6 +11,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/progress_claim_views.xml",
+        "views/advance_payment_views.xml",
         "views/retention_release_views.xml",
         "report/progress_claim_report.xml",
     ],

@@ -60,15 +60,36 @@ class ConstructionProgressClaim(models.Model):
         string="Retention This Period")
     amount_net_cumulative = fields.Monetary(
         compute="_compute_amounts", store=True, recursive=True)
+    advance_id = fields.Many2one(
+        "construction.advance.payment", compute="_compute_advance", store=True,
+        string="Advance", help="The live advance being recovered here.")
+    advance_recovery_cumulative = fields.Monetary(
+        compute="_compute_amounts", store=True, recursive=True,
+        string="Advance Recovered (Cumulative)")
+    advance_recovery_this = fields.Monetary(
+        compute="_compute_amounts", store=True, recursive=True,
+        string="Advance Recovery This Period")
     amount_due = fields.Monetary(
         compute="_compute_amounts", store=True, recursive=True,
         string="Net Amount Due")
 
+    @api.depends("project_id")
+    def _compute_advance(self):
+        advance = self.env["construction.advance.payment"]
+        for claim in self:
+            claim.advance_id = advance.search([
+                ("project_id", "=", claim.project_id.id),
+                ("state", "not in", ("draft", "cancelled")),
+            ], limit=1)
+
     @api.depends(
         "line_ids.amount_cumulative", "retention_percent",
         "retention_cap_percent", "amount_contract",
+        "advance_id", "advance_id.amount", "advance_id.recovery_percent",
+        "advance_id.recovery_start_percent", "advance_id.state",
         "previous_claim_id.amount_work_done_cumulative",
-        "previous_claim_id.retention_cumulative")
+        "previous_claim_id.retention_cumulative",
+        "previous_claim_id.advance_recovery_cumulative")
     def _compute_amounts(self):
         for claim in self:
             cumulative = sum(claim.line_ids.mapped("amount_cumulative"))
@@ -84,9 +105,21 @@ class ConstructionProgressClaim(models.Model):
             claim.retention_this = retention - \
                 claim.previous_claim_id.retention_cumulative
             claim.amount_net_cumulative = cumulative - retention
+
+            # Advance recovery. The formula lives on the advance so there is
+            # one definition of it; the clamp at the advance amount is there,
+            # which is what stops a long job recovering more than was lent.
+            recovered = claim.advance_id._recovery_for(
+                cumulative, claim.amount_contract) if claim.advance_id else 0.0
+            claim.advance_recovery_cumulative = recovered
+            claim.advance_recovery_this = (
+                recovered
+                - claim.previous_claim_id.advance_recovery_cumulative)
+
             prev_net = (claim.previous_claim_id.amount_work_done_cumulative
                         - claim.previous_claim_id.retention_cumulative)
-            claim.amount_due = claim.amount_net_cumulative - prev_net
+            claim.amount_due = (claim.amount_net_cumulative - prev_net
+                                - claim.advance_recovery_this)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -177,16 +210,25 @@ class ConstructionProgressClaim(models.Model):
         # Invoice the net amount certified this period (work done less the
         # retention withheld). Retention stays tracked on the claim and is
         # billed later through a retention-release certificate.
-        retention_note = ""
+        # Both deductions are named on the invoice. A net figure with no
+        # explanation is the thing a client's accounts department queries,
+        # and answering it should not require opening the certificate.
+        deductions = []
         if self.retention_this:
-            retention_note = self.env._(
-                " (net of %(amt)s retention)",
-                amt=self.currency_id.round(self.retention_this))
+            deductions.append(self.env._(
+                "%(amt)s retention",
+                amt=self.currency_id.round(self.retention_this)))
+        if self.advance_recovery_this:
+            deductions.append(self.env._(
+                "%(amt)s advance recovery",
+                amt=self.currency_id.round(self.advance_recovery_this)))
+        note = self.env._(
+            " (net of %s)", " and ".join(deductions)) if deductions else ""
         lines = [
             (0, 0, {
                 "name": self.env._(
                     "Work executed to %(date)s — %(ref)s%(note)s",
-                    date=self.date_to, ref=self.reference, note=retention_note),
+                    date=self.date_to, ref=self.reference, note=note),
                 "quantity": 1,
                 "price_unit": self.amount_due,
                 "account_id": income.id,
