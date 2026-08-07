@@ -15,7 +15,7 @@ class TestCommercialExposure(TransactionCase):
         cls.env["construction.approval.rule"].search([]).write({"active": False})
         cls.project = cls.env["project.project"].create({
             "name": "Exposure Tower", "is_construction": True,
-            "project_code": "EXP", "contract_value": 1000000.0,
+            "project_code": "EXP",
             "construction_stage": "execution",
         })
         cls.boq = cls.env["construction.boq"].create(
@@ -24,6 +24,10 @@ class TestCommercialExposure(TransactionCase):
             "name": "Concrete", "boq_id": cls.boq.id,
             "quantity": 1000.0, "unit_rate": 1000.0,
         })
+        # Contract value now comes from the priced BOQ, the same source the
+        # Executive Dashboard reads — a draft BOQ has no CVR figures at all,
+        # so it has to be approved for "contract" to mean anything here.
+        cls.boq.action_approve()
 
     def _row(self):
         payload = self.env["construction.exposure"].exposure()
@@ -36,6 +40,31 @@ class TestCommercialExposure(TransactionCase):
         self.assertEqual(row["variations"], 0.0)
         self.assertEqual(row["retention"], 0.0)
         self.assertEqual(row["variation_percent"], 0.0)
+
+    def test_the_contract_value_agrees_with_the_executive_dashboard(self):
+        """The two board screens must never name a different number for the
+        same thing. Exposure used to read a manually-typed field nothing kept
+        in sync; the Dashboard has always read the BOQ. A variation is the
+        exact case that used to pull them apart — this project's static
+        contract_value field is left unset entirely, so any code path still
+        reading it would show zero rather than a stale number, and fail
+        loudly instead of quietly."""
+        variation = self.env["construction.change.order"].create({
+            "name": "Roof upgrade", "project_id": self.project.id,
+            "boq_id": self.boq.id, "change_type": "addition",
+            "line_ids": [(0, 0, {"name": "Roofing", "quantity": 1,
+                                 "unit_rate": 200000.0})],
+        })
+        variation.action_submit()
+        variation.action_approve()
+
+        row = self._row()
+        self.assertEqual(self.project.cvr_contract_value, 1200000.0)
+        self.assertEqual(row["contract"], self.project.cvr_contract_value)
+        # Variation % is against the 1,000,000 baseline, not the now-varied
+        # 1,200,000 total — dividing by the current total would understate
+        # every job with a history of change.
+        self.assertEqual(row["variation_percent"], 20.0)
 
     def test_approved_variations_are_counted_against_the_contract(self):
         variation = self.env["construction.change.order"].create({
