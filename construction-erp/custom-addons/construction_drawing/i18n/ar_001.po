@@ -302,3 +302,71 @@ msgid ""
 "Upload the sheet PDF here — it is stored as the revision's attachment and "
 "rendered by the plan viewer."
 msgstr "ارفع ملف اللوحة PDF هنا؛ سيُحفظ كمرفق للمراجعة ويعرضه عارض المخططات."
+
+#. Drawing transmittals — Phase 5. الرسم / المراجعة follow this file's
+#. existing terms; إحالة is the standard term for a transmittal note.
+msgid "Transmittal"
+msgstr "إحالة"
+
+msgid "Transmittals"
+msgstr "الإحالات"
+
+msgid "Drawing Transmittal"
+msgstr "إحالة رسومات"
+
+msgid "Transmittal Note"
+msgstr "مذكرة إحالة"
+
+msgid "Issued To"
+msgstr "صادر إلى"
+
+msgid "For the Attention Of"
+msgstr "لعناية"
+
+msgid "For Tender"
+msgstr "للمناقصة"
+
+msgid "For Approval"
+msgstr "للاعتماد"
+
+msgid "For Construction"
+msgstr "للتنفيذ"
+
+msgid "For Information"
+msgstr "للعلم"
+
+msgid "As-Built Record"
+msgstr "سجل كما نُفذ"
+
+msgid "Issued On"
+msgstr "تاريخ الإصدار"
+
+msgid "Drawings Issued"
+msgstr "الرسومات الصادرة"
+
+msgid "Issued"
+msgstr "صادر"
+
+msgid "Acknowledged"
+msgstr "تم الإقرار بالاستلام"
+
+msgid "Record Acknowledgement"
+msgstr "تسجيل الإقرار بالاستلام"
+
+msgid "Superseded Since"
+msgstr "أُلغي منذ الإصدار"
+
+msgid "Awaiting Acknowledgement"
+msgstr "بانتظار الإقرار بالاستلام"
+
+msgid "Contains Superseded"
+msgstr "يحتوي على مراجعات ملغاة"
+
+msgid "By Hand"
+msgstr "باليد"
+
+msgid "Courier"
+msgstr "بريد سريع"
+
+msgid "Acknowledgement of receipt"
+msgstr "الإقرار باستلام المستندات"

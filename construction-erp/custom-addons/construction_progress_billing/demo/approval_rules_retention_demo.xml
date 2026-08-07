@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Both of these move real money and neither had a rule, so until now
+         anybody in the PM group could sign one on their own. The bands mirror
+         the variation rules: the same document takes one signature or three
+         depending only on what it is worth.
+
+         Retention releases are deliberately tighter than variations. A
+         variation adds work and adds revenue; a retention release takes cash
+         out of a pot the client is holding as security, and the money is
+         gone once it is invoiced. -->
+
+    <record id="approval_rule_retention_small" model="construction.approval.rule">
+        <field name="name">Retention release up to 100,000</field>
+        <field name="model_id" ref="model_construction_retention_release"/>
+        <field name="amount_from">0</field>
+        <field name="amount_to">100000</field>
+        <field name="sequence">10</field>
+        <field name="step_ids" eval="[(0, 0, {
+            'sequence': 10,
+            'name': 'Commercial / QS',
+            'group_id': ref('construction_base.group_construction_commercial'),
+        })]"/>
+    </record>
+
+    <record id="approval_rule_retention_large" model="construction.approval.rule">
+        <field name="name">Retention release over 100,000</field>
+        <field name="model_id" ref="model_construction_retention_release"/>
+        <field name="amount_from">100000</field>
+        <field name="amount_to">0</field>
+        <field name="sequence">20</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Commercial / QS',
+                'group_id': ref('construction_base.group_construction_commercial'),
+            }),
+            (0, 0, {
+                'sequence': 20,
+                'name': 'Project manager',
+                'group_id': ref('construction_base.group_construction_pm'),
+            }),
+            (0, 0, {
+                'sequence': 30,
+                'name': 'Construction director',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+
+    <!-- An advance is agreed once, at the start, and is usually the largest
+         single payment on the job. It goes to the top regardless of size. -->
+    <record id="approval_rule_advance" model="construction.approval.rule">
+        <field name="name">Advance payment</field>
+        <field name="model_id" ref="model_construction_advance_payment"/>
+        <field name="amount_from">0</field>
+        <field name="amount_to">0</field>
+        <field name="sequence">10</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Commercial / QS',
+                'group_id': ref('construction_base.group_construction_commercial'),
+            }),
+            (0, 0, {
+                'sequence': 20,
+                'name': 'Construction director',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+</odoo>

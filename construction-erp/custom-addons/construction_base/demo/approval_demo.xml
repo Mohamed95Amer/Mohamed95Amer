@@ -48,4 +48,31 @@
             ref('construction_base.group_construction_manager'),
         ])]"/>
     </record>
+
+    <!-- The three above are approvers. These two are the people the system
+         is actually for: an engineer who raises documents but signs nothing
+         commercial, and a foreman whose whole day is My Day. Without them
+         there is no way to see what the product looks like from below the
+         approval chain, which is where most of its users sit. -->
+    <record id="user_demo_engineer" model="res.users">
+        <field name="name">Yusuf Rahman</field>
+        <field name="login">yusuf.engineer</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">yusuf.engineer@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_site_engineer'),
+        ])]"/>
+    </record>
+
+    <record id="user_demo_field" model="res.users">
+        <field name="name">Samir Haddad</field>
+        <field name="login">samir.site</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">samir.site@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_user'),
+        ])]"/>
+    </record>
 </odoo>

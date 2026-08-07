@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Al Noor is mid-execution, so an advance is the natural state to show:
+         paid up front, being recovered from every certificate. IPC1 has
+         already been certified by progress_claim_demo, so the recovery is a
+         real figure rather than a zero.
+
+         Taking-over is set a month out. That is what makes the retention
+         release below interesting: it is claimed early, which is a thing
+         contractors do, and the screen says so rather than accepting it
+         silently. One healthy document and one flagged one is the same
+         contrast the rest of the demo uses — a register where everything is
+         green demonstrates nothing. -->
+    <record id="construction_base.project_demo_alnoor" model="project.project">
+        <field name="date_taking_over" eval="(DateTime.today() + relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+        <field name="date_dlp_end" eval="(DateTime.today() + relativedelta(days=395)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Advance payment: 10% of the bill, recovered at 20% of each   -->
+    <!-- certificate, guarantee still live.                           -->
+    <!-- ============================================================ -->
+    <record id="advance_alnoor" model="construction.advance.payment">
+        <field name="name">Advance payment — mobilisation</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="date_advance" eval="(DateTime.today() + relativedelta(months=-4)).strftime('%Y-%m-%d')"/>
+        <field name="amount">1059200</field>
+        <field name="recovery_percent">20</field>
+        <field name="recovery_start_percent">0</field>
+        <field name="guarantee_reference">APG-2026-0417</field>
+        <field name="guarantee_bank">Emirates NBD</field>
+        <field name="guarantee_expiry" eval="(DateTime.today() + relativedelta(days=120)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- Through its own approval chain rather than straight to approved.
+         The rules loaded just before this now route an advance past QS and
+         the director, and nobody calls action_approve here: the last
+         signature does it, which is the behaviour worth demonstrating. -->
+    <function model="construction.advance.payment" name="action_submit">
+        <value eval="[ref('advance_alnoor')]"/>
+    </function>
+    <function model="construction.advance.payment" name="action_request_approval"
+              eval="[ref('advance_alnoor')]"/>
+
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_qs">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.advance.payment'),
+            ('res_id', '=', ref('advance_alnoor')),
+            ('state', '=', 'pending'),
+        ]"/>
+    </function>
+    <function model="construction.approval.step" name="action_approve"
+              uid="construction_base.user_demo_director">
+        <value model="construction.approval.step" search="[
+            ('res_model', '=', 'construction.advance.payment'),
+            ('res_id', '=', ref('advance_alnoor')),
+            ('state', '=', 'pending'),
+        ]"/>
+    </function>
+</odoo>

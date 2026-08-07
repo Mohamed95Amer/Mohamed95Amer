@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A transmittal is a cover note. It gets printed, signed by whoever
+         receives it, and sent back — that returned sheet is the evidence the
+         register exists to hold. Without this the feature was half of what
+         it should be. -->
+    <record id="action_report_transmittal" model="ir.actions.report">
+        <field name="name">Transmittal Note</field>
+        <field name="model">construction.transmittal</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_drawing.report_transmittal_document</field>
+        <field name="report_file">construction_drawing.report_transmittal_document</field>
+        <field name="binding_model_id" ref="model_construction_transmittal"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_transmittal_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="mb-1">Drawing Transmittal</h2>
+                        <h4 class="text-muted mb-4"><span t-field="doc.reference"/></h4>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>To:</strong>
+                                <span t-field="doc.recipient_id"/><br/>
+                                <t t-if="doc.recipient_attention">
+                                    <strong>For the attention of:</strong>
+                                    <span t-field="doc.recipient_attention"/><br/>
+                                </t>
+                                <strong>Project:</strong>
+                                <span t-field="doc.project_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Issued on:</strong>
+                                <span t-field="doc.date_issued"/><br/>
+                                <strong>Purpose:</strong>
+                                <span t-field="doc.purpose"/><br/>
+                                <strong>Sent by:</strong>
+                                <span t-field="doc.method"/>
+                                <t t-if="doc.date_required">
+                                    <br/><strong>Response due:</strong>
+                                    <span t-field="doc.date_required"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <t t-if="doc.name">
+                            <p><strong t-field="doc.name"/></p>
+                        </t>
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Drawing No.</th>
+                                    <th>Title</th>
+                                    <th>Rev.</th>
+                                    <th>Issued For</th>
+                                    <th class="text-end">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.revision_ids" t-as="rev">
+                                    <td><span t-field="rev.drawing_id.number"/></td>
+                                    <td><span t-field="rev.drawing_id.name"/></td>
+                                    <td><span t-field="rev.revision"/></td>
+                                    <td><span t-field="rev.issued_for"/></td>
+                                    <td class="text-end"><span t-field="rev.issue_date"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted">
+                            <span t-field="doc.revision_count"/> drawing(s) transmitted.
+                        </p>
+
+                        <t t-if="doc.notes">
+                            <h5 class="mt-4">Notes</h5>
+                            <p t-field="doc.notes"/>
+                        </t>
+
+                        <!-- The half that comes back. A cover note with
+                             nowhere to sign is just a list. -->
+                        <div class="mt-5 pt-3" style="border-top: 1px solid #dee2e6;">
+                            <h5>Acknowledgement of receipt</h5>
+                            <t t-if="doc.state == 'acknowledged'">
+                                <p>
+                                    Received by
+                                    <strong t-field="doc.acknowledged_by"/>
+                                    on
+                                    <strong t-field="doc.date_acknowledged"/>.
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <div class="row mt-4">
+                                    <div class="col-5">
+                                        Name<br/><br/>
+                                        <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                                    </div>
+                                    <div class="col-4">
+                                        Signature<br/><br/>
+                                        <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                                    </div>
+                                    <div class="col-3">
+                                        Date<br/><br/>
+                                        <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                                    </div>
+                                </div>
+                                <p class="text-muted mt-3">
+                                    Please sign and return one copy of this
+                                    transmittal to confirm receipt.
+                                </p>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

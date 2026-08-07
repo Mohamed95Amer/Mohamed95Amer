@@ -1038,3 +1038,83 @@ msgstr "نعم"
 #: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__yes_no
 msgid "Yes / No / N/A"
 msgstr "نعم / لا / لا ينطبق"
+
+#. Inspection and test plans — Phase 5. فحص follows this file's existing term.
+#. نقطة توقف / نقطة إشهاد are the standard ITP terms in Gulf practice.
+msgid "Inspection and Test Plan"
+msgstr "خطة الفحص والاختبار"
+
+msgid "Inspection & Test Plans"
+msgstr "خطط الفحص والاختبار"
+
+msgid "ITP Sign-Off"
+msgstr "اعتماد نقطة فحص"
+
+msgid "ITP Sign-Offs"
+msgstr "اعتمادات نقاط الفحص"
+
+msgid "ITP Inspection Point"
+msgstr "نقطة فحص في الخطة"
+
+msgid "Inspection Points"
+msgstr "نقاط الفحص"
+
+msgid "Hold Point"
+msgstr "نقطة توقف"
+
+msgid "Hold Points"
+msgstr "نقاط التوقف"
+
+msgid "Witness Point"
+msgstr "نقطة إشهاد"
+
+msgid "Surveillance"
+msgstr "مراقبة"
+
+msgid "Document Review"
+msgstr "مراجعة مستندات"
+
+msgid "Open Hold Points"
+msgstr "نقاط التوقف المفتوحة"
+
+msgid "Before the Work"
+msgstr "قبل العمل"
+
+msgid "During the Work"
+msgstr "أثناء العمل"
+
+msgid "On Completion"
+msgstr "عند الإنجاز"
+
+msgid "Verified By"
+msgstr "يتحقق منه"
+
+msgid "Contractor"
+msgstr "المقاول"
+
+msgid "Consultant / Engineer"
+msgstr "الاستشاري / المهندس"
+
+msgid "Client / Employer"
+msgstr "العميل / صاحب العمل"
+
+msgid "Third-Party / Authority"
+msgstr "طرف ثالث / جهة رسمية"
+
+msgid "Standard / Clause"
+msgstr "المعيار / البند"
+
+msgid "Released"
+msgstr "مُفرج عنه"
+
+msgid "Rejected"
+msgstr "مرفوض"
+
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+msgid "Waiver"
+msgstr "تنازل"
+
+msgid "Evidence"
+msgstr "الدليل"

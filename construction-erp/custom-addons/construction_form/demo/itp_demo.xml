@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A plan somebody in the industry would recognise, with the two point
+         types side by side so the difference is legible without reading the
+         help text: the rebar check stops the pour, the slump test only
+         invites the third party.
+
+         The points are separate records rather than inline lines because the
+         sign-offs below have to reference two of them by name. -->
+    <record id="itp_rc_substructure" model="construction.itp">
+        <field name="name">Reinforced concrete substructure</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">civil</field>
+        <field name="activity">RC foundations, pile caps and ground slab</field>
+        <field name="specification_ref">Spec 03300 — Cast-in-place concrete</field>
+        <field name="revision">A</field>
+    </record>
+
+    <record id="itp_point_setting_out" model="construction.itp.point">
+        <field name="itp_id" ref="itp_rc_substructure"/>
+        <field name="sequence">10</field>
+        <field name="name">Setting out and formation level survey</field>
+        <field name="stage">before</field>
+        <field name="point_type">witness</field>
+        <field name="responsible_party">consultant</field>
+        <field name="reference_standard">SBC 201</field>
+        <field name="acceptance_criteria">Levels within +/- 25mm of drawing; formation dry and proof-rolled.</field>
+    </record>
+
+    <record id="itp_point_rebar" model="construction.itp.point">
+        <field name="itp_id" ref="itp_rc_substructure"/>
+        <field name="sequence">20</field>
+        <field name="name">Reinforcement inspection before pour</field>
+        <field name="stage">before</field>
+        <field name="point_type">hold</field>
+        <field name="responsible_party">consultant</field>
+        <field name="reference_standard">SBC 304</field>
+        <field name="acceptance_criteria">Cover, bar size, spacing and lap lengths per drawing. No contamination, no standing water.</field>
+    </record>
+
+    <record id="itp_point_slump" model="construction.itp.point">
+        <field name="itp_id" ref="itp_rc_substructure"/>
+        <field name="sequence">30</field>
+        <field name="name">Concrete slump and cube sampling</field>
+        <field name="stage">during</field>
+        <field name="point_type">witness</field>
+        <field name="responsible_party">third_party</field>
+        <field name="reference_standard">BS EN 12350-2</field>
+        <field name="acceptance_criteria">Slump within design tolerance; one set of six cubes per 50 cubic metres.</field>
+    </record>
+
+    <record id="itp_point_cubes" model="construction.itp.point">
+        <field name="itp_id" ref="itp_rc_substructure"/>
+        <field name="sequence">40</field>
+        <field name="name">Cube crushing at 28 days</field>
+        <field name="stage">after</field>
+        <field name="point_type">hold</field>
+        <field name="responsible_party">third_party</field>
+        <field name="reference_standard">BS EN 12390-3</field>
+        <field name="acceptance_criteria">Characteristic strength met. No individual result below fck minus 4 MPa.</field>
+    </record>
+
+    <record id="itp_point_waterproofing" model="construction.itp.point">
+        <field name="itp_id" ref="itp_rc_substructure"/>
+        <field name="sequence">50</field>
+        <field name="name">Waterproofing continuity check before backfill</field>
+        <field name="stage">after</field>
+        <field name="point_type">hold</field>
+        <field name="responsible_party">consultant</field>
+        <field name="reference_standard">Spec 07100</field>
+        <field name="acceptance_criteria">Membrane continuous, laps sealed, no punctures. Photographed before cover.</field>
+    </record>
+
+    <function model="construction.itp" name="action_approve">
+        <value eval="[ref('itp_rc_substructure')]"/>
+    </function>
+
+    <!-- Sign-offs against a real pour: one witness point released, one hold
+         point still open. The open one is what makes the project's "open
+         hold points" count non-zero, which is the number a PM looks for. -->
+    <record id="itp_record_setting_out" model="construction.itp.record">
+        <field name="point_id" ref="itp_point_setting_out"/>
+        <field name="location">Pour F1 — grid A/1 to A/4</field>
+        <field name="date_required" eval="(DateTime.today() + relativedelta(days=-3)).strftime('%Y-%m-%d')"/>
+        <field name="notes">Levels checked with the consultant's surveyor.</field>
+    </record>
+
+    <record id="itp_record_rebar" model="construction.itp.record">
+        <field name="point_id" ref="itp_point_rebar"/>
+        <field name="location">Pour F1 — grid A/1 to A/4</field>
+        <field name="date_required" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+    </record>
+
+    <function model="construction.itp.record" name="action_release">
+        <value eval="[ref('itp_record_setting_out')]"/>
+    </function>
+</odoo>

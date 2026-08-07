@@ -370,3 +370,105 @@ msgstr "الأعمال المنفذة حتى تاريخه"
 #: code:addons/construction_progress_billing/models/progress_claim.py:0
 msgid "Work executed to %(date)s — %(ref)s%(note)s"
 msgstr "الأعمال المنفذة حتى %(date)s — %(ref)s%(note)s"
+
+#. Retention release and advance payment — added with the Phase 5 commercial
+#. documents. Terminology follows the entries already in this file:
+#. الاحتجاز for retention, شهادة for a certificate, معتمد/مسودة for states.
+msgid "Retention Release"
+msgstr "الإفراج عن الاحتجاز"
+
+msgid "Retention Release Certificate"
+msgstr "شهادة الإفراج عن الاحتجاز"
+
+msgid "Retention Releases"
+msgstr "الإفراج عن الاحتجازات"
+
+msgid "On Taking-Over"
+msgstr "عند التسلم الابتدائي"
+
+msgid "On DLP Expiry"
+msgstr "عند انتهاء فترة الصيانة"
+
+msgid "Other / By Agreement"
+msgstr "أخرى / بالاتفاق"
+
+msgid "Release Date"
+msgstr "تاريخ الإفراج"
+
+msgid "Release (%)"
+msgstr "نسبة الإفراج (%)"
+
+msgid "Retention Withheld"
+msgstr "الاحتجاز المحتجز"
+
+msgid "Already Released"
+msgstr "تم الإفراج عنه سابقاً"
+
+msgid "Available to Release"
+msgstr "المتاح للإفراج"
+
+msgid "Amount to Release"
+msgstr "المبلغ المطلوب الإفراج عنه"
+
+msgid "Retention Outstanding"
+msgstr "الاحتجاز المستحق"
+
+msgid "Retention Position"
+msgstr "موقف الاحتجاز"
+
+msgid "Claimed Early"
+msgstr "مطالب به مبكراً"
+
+msgid "Outstanding"
+msgstr "المستحق"
+
+msgid "Advance Payment"
+msgstr "الدفعة المقدمة"
+
+msgid "Advance Payments"
+msgstr "الدفعات المقدمة"
+
+msgid "Advance Payment Certificate"
+msgstr "شهادة الدفعة المقدمة"
+
+msgid "Advance Amount"
+msgstr "مبلغ الدفعة المقدمة"
+
+msgid "Advance Date"
+msgstr "تاريخ الدفعة المقدمة"
+
+msgid "Recovery Rate (%)"
+msgstr "نسبة الاسترداد (%)"
+
+msgid "Start Recovery After (% complete)"
+msgstr "بدء الاسترداد بعد (% الإنجاز)"
+
+msgid "Recovered to Date"
+msgstr "المسترد حتى تاريخه"
+
+msgid "Still Outstanding"
+msgstr "المتبقي المستحق"
+
+msgid "Recovery"
+msgstr "الاسترداد"
+
+msgid "Advance Payment Guarantee"
+msgstr "ضمان الدفعة المقدمة"
+
+msgid "Guarantee Ref."
+msgstr "مرجع الضمان"
+
+msgid "Issuing Bank"
+msgstr "البنك المُصدر"
+
+msgid "Guarantee Expires"
+msgstr "تاريخ انتهاء الضمان"
+
+msgid "Guarantee Lapsed"
+msgstr "الضمان منتهي"
+
+msgid "Advance Recovery This Period"
+msgstr "استرداد الدفعة المقدمة لهذه الفترة"
+
+msgid "Advance Recovered (Cumulative)"
+msgstr "الدفعة المقدمة المستردة (تراكمي)"

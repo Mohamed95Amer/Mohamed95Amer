@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A transmittal that has gone stale since it was issued. AR-101 Rev.A
+         is on it and drawing_demo has already superseded it with Rev.B, so
+         the amber banner and the "Contains Superseded" filter both have
+         something real to show. That staleness is the whole reason the
+         register exists — a register where every issue is still current
+         demonstrates nothing. -->
+    <record id="transmittal_alnoor_approval" model="construction.transmittal">
+        <field name="name">Level 3 coordination set</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="recipient_id" ref="construction_base.partner_demo_consultant"/>
+        <field name="recipient_attention">Eng. Khalid Al Amiri</field>
+        <field name="purpose">approval</field>
+        <field name="method">email</field>
+        <field name="date_issued" eval="(DateTime.today() + relativedelta(days=-21)).strftime('%Y-%m-%d')"/>
+        <field name="date_required" eval="(DateTime.today() + relativedelta(days=-7)).strftime('%Y-%m-%d')"/>
+        <field name="revision_ids" eval="[(6, 0, [
+            ref('drawing_ar101_reva'),
+            ref('drawing_me301_reva'),
+        ])]"/>
+        <field name="notes">Issued for consultant approval ahead of the level 3 pour.</field>
+    </record>
+
+    <function model="construction.transmittal" name="action_issue">
+        <value eval="[ref('transmittal_alnoor_approval')]"/>
+    </function>
+
+    <!-- A second one, acknowledged and still current, so the register shows
+         a healthy issue beside the stale one. -->
+    <record id="transmittal_alnoor_construction" model="construction.transmittal">
+        <field name="name">Structural issue for construction</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="recipient_id" ref="construction_base.partner_demo_sub_piling"/>
+        <field name="purpose">construction</field>
+        <field name="method">portal</field>
+        <field name="date_issued" eval="(DateTime.today() + relativedelta(days=-5)).strftime('%Y-%m-%d')"/>
+        <field name="revision_ids" eval="[(6, 0, [ref('drawing_st201_reva')])]"/>
+    </record>
+
+    <function model="construction.transmittal" name="action_issue">
+        <value eval="[ref('transmittal_alnoor_construction')]"/>
+    </function>
+    <function model="construction.transmittal" name="action_acknowledge">
+        <value eval="[ref('transmittal_alnoor_construction')]"/>
+    </function>
+</odoo>
