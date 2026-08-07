@@ -13,9 +13,30 @@
                             invisible="not sla_policy_id or sla_responded_on"/>
                 </header>
             </xpath>
-            <!-- A notebook page, not an appended group: `//sheet` position
-                 inside puts content after the notebook, where it sits below
-                 the fold and is missed. -->
+            <!-- The clock is the first thing a facilities manager needs off
+                 this screen, and a notebook page is one click too many for
+                 it. The page below keeps every stamp and deadline; this
+                 banner carries only the answer to "am I late", in the same
+                 three colours the register already uses. -->
+            <xpath expr="//sheet//div[hasclass('oe_title')]" position="before">
+                <div class="alert alert-danger d-flex align-items-center mb-3"
+                     role="alert" invisible="not sla_breached">
+                    <i class="fa fa-exclamation-triangle me-2"/>
+                    <span>SLA breached — resolve by
+                        <field name="sla_resolution_deadline" readonly="1"
+                               class="oe_inline fw-bold" nolabel="1"/>.
+                    </span>
+                </div>
+                <div class="alert alert-warning d-flex align-items-center mb-3"
+                     role="alert"
+                     invisible="sla_breached or sla_resolution_state != 'at_risk'">
+                    <i class="fa fa-clock-o me-2"/>
+                    <span>SLA at risk — resolve by
+                        <field name="sla_resolution_deadline" readonly="1"
+                               class="oe_inline fw-bold" nolabel="1"/>.
+                    </span>
+                </div>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Service Level" name="sla"
                       invisible="not sla_policy_id">
