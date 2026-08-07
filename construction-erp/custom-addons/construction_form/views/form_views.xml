@@ -30,10 +30,14 @@
                         <group><field name="code"/><field name="project_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group><field name="responsible_id"/><field name="recurring"/>
-                            <field name="recurrence_interval" invisible="not recurring"/>
-                            <field name="recurrence_unit" invisible="not recurring"/>
-                            <field name="next_run_date" invisible="not recurring"/>
+                        <group>
+                            <field name="responsible_id"/>
+                            <field name="recurring"/>
+                            <group invisible="not recurring" colspan="2">
+                                <field name="recurrence_interval"/>
+                                <field name="recurrence_unit"/>
+                                <field name="next_run_date"/>
+                            </group>
                         </group>
                     </group>
                     <notebook>

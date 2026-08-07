@@ -15,7 +15,7 @@
                 <field name="currency_id" invisible="1"/>
                 <field name="purchase_value"/>
                 <field name="expected_life_years"/>
-                <field name="warranty_active"/>
+                <field name="warranty_active" widget="boolean_toggle"/>
             </field>
             <xpath expr="//page[@name='product_information']" position="after">
                 <page string="Meters" name="meters">
