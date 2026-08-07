@@ -159,6 +159,16 @@ and check its dependencies are themselves stored.
 **Actions fetched by raw `orm.call` need explicit `views`.** Documented in
 `docs/screens.md`; it has broken clicks three times in this codebase.
 
+**Never hand-write `.po` entries.** Odoo's reader requires every entry to
+carry a `#. module: <name>` comment and crashes outright on the first one
+that does not — the whole database fails to build. `msgfmt` will not catch
+it, because it validates gettext rather than Odoo's convention, and neither
+will the test suite, because nothing in it loads a language. Export with
+`--i18n-export --modules=<mod> --language=ar_001` and fill in the msgstr.
+**`./scripts/init-db.sh <db>` is the only local check that exercises this
+path** — run it before pushing anything that touches translations, demo
+data or module manifests. It is what CI runs.
+
 ---
 
 ## Verification standard used here
@@ -238,9 +248,12 @@ have since been closed and are in the branch:
   note that comes back signed.
 - **Approval rules** routing both money documents. Neither could be signed by
   one person any more.
-- **Arabic** for all four models, following each module's existing
-  terminology. **Still wants a native-speaker pass** before a client sees it;
-  the terms were matched to the house glossary, not authored by one.
+- **Arabic** for all four models. Coverage is **66-75% per module**, not
+  100%: model names, field labels, selection values, states and menus are
+  translated, plus 61 common terms filled from the glossary the rest of the
+  repo already uses. **Error messages, help text and report body copy are
+  still English, and the whole set wants a native-speaker pass** — the terms
+  were matched to the house glossary, not authored by one.
 
 Demo logins are documented in `docs/demo-accounts.md`, including a verified
 access matrix and a tour of the new commercial documents. Seven roles now
