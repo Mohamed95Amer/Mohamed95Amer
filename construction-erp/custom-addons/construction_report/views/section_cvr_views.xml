@@ -6,17 +6,17 @@
         <field name="arch" type="xml">
             <list string="Section CVR" create="false"
                   decoration-danger="cvr_margin_variance &lt; 0">
-                <field name="boq_id"/>
+                <field name="boq_id" optional="hide"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="cvr_contract_value" sum="Value"/>
                 <field name="cvr_certified_value" sum="Certified"/>
                 <field name="cvr_percent_complete" string="% Cert."/>
-                <field name="cvr_budget_cost" sum="Budget"/>
-                <field name="cvr_committed_cost" sum="Committed"/>
+                <field name="cvr_budget_cost" sum="Budget" optional="hide"/>
+                <field name="cvr_committed_cost" sum="Committed" optional="hide"/>
                 <field name="cvr_forecast_margin" sum="Forecast margin"
                        decoration-danger="cvr_forecast_margin &lt; 0"/>
-                <field name="cvr_forecast_margin_percent" string="Margin %"/>
+                <field name="cvr_forecast_margin_percent" string="Margin %" optional="hide"/>
                 <field name="cvr_margin_variance" sum="Movement"
                        decoration-danger="cvr_margin_variance &lt; 0"
                        decoration-success="cvr_margin_variance &gt; 0"/>
