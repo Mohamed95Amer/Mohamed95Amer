@@ -1,7 +1,8 @@
 # Handover — UX/workflow audit, Phases 1–5
 
 **Branch:** `codex/odoo19-ui-enhancement`
-**Range:** `dfef409..fa4266b` — 19 commits, 70 files, +3717/−108
+**Range:** `dfef409..HEAD` — 22 commits
+**Docs:** this note, plus `docs/demo-accounts.md` for logins and a test tour
 **Suite:** 625 tests, 0 failed (was 553 at the start of the range)
 **Stack:** Odoo 18 Community, `custom-addons/`, Python 3.11, PostgreSQL 16
 
@@ -222,41 +223,28 @@ entries out of roughly thirty.
 
 ---
 
-## What I left incomplete — start here
+## Gaps that were open, and are now closed
 
-Four gaps in the work above. None break anything; all four are visible the
-first time somebody demos or ships these features.
+An earlier draft of this note listed four gaps in the audit range. All four
+have since been closed and are in the branch:
 
-**1 · The four new models have no Arabic. ~101 translatable strings, zero
-translated.** `docs/client-demo.md` calls for an Arabic RTL tour, so
-retention releases, advance payments, transmittals and ITPs will be the only
-screens in the demo still in English. The three modules already carry
-`i18n/ar_001.po` with established construction terminology — follow it rather
-than inventing terms. Regenerate with `--i18n-export` and translate the new
-entries. **This is the most demo-visible gap of the four.**
+- **Demo data** for all four Phase 5 models. Al Noor carries an advance being
+  recovered, a retention release claimed early, a stale transmittal and an
+  open hold point. The manifest load order is deliberate and commented: the
+  advance loads *before* the certificate, or the recovery it demonstrates is
+  zero.
+- **Printable reports** for transmittal, retention release and advance
+  payment. The transmittal PDF carries a signature block — it is a cover
+  note that comes back signed.
+- **Approval rules** routing both money documents. Neither could be signed by
+  one person any more.
+- **Arabic** for all four models, following each module's existing
+  terminology. **Still wants a native-speaker pass** before a client sees it;
+  the terms were matched to the house glossary, not authored by one.
 
-**2 · No demo data for any of the four.** A fresh install shows four empty
-registers. Every comparable module has a `demo/` file; these do not, because
-I seeded records by script into `sidebar_demo` to take screenshots and never
-turned that into committed demo data. The seeding logic is worth rebuilding
-as proper demo XML: a retention release drawing down a real certificate, an
-advance with a lapsed guarantee, a transmittal carrying a superseded
-revision, and an ITP with one open hold point. Those four states are exactly
-what makes the features legible in a demo.
-
-**3 · No printable report for retention release, advance payment or
-transmittal.** Progress claims have `report/progress_claim_report.xml`; these
-do not. **The transmittal is the glaring one — a transmittal is a cover note
-that gets printed, signed and returned.** Without a PDF the feature is half
-of what it should be. ITP would also normally print as a signed matrix.
-
-**4 · No approval rules ship for the two new money documents.** Retention
-release and advance payment both inherit `construction.approvable` and expose
-`_approval_amount()`, but no `construction.approval.rule` demo/data record
-routes them anywhere. They can be approved directly by anyone with the PM
-group until a rule exists. Compare `construction_change_order/demo/approval_rules_demo.xml`.
-
----
+Demo logins are documented in `docs/demo-accounts.md`, including a verified
+access matrix and a tour of the new commercial documents. Seven roles now
+exist on a plain demo install, where previously they were all approvers.
 
 ## Needs a human before it touches a live job
 
