@@ -2,20 +2,30 @@ from odoo import api, fields, models
 
 
 class FacilityLocation(models.Model):
+    """The asset register's spine.
+
+    Renaming a location, or moving it under a different parent, silently
+    changes which assets roll up where — and therefore what every asset
+    count, cost rollup and PM route above it means. ISO 55000 and a client
+    QA audit both ask who did that and when, so the master data carries a
+    tracked chatter even though the readings and scans beneath it do not.
+    """
+
     _name = "facility.location"
     _description = "Facility Location"
+    _inherit = ["mail.thread"]
     _parent_store = True
     _order = "complete_name"
 
-    name = fields.Char(required=True)
-    code = fields.Char()
+    name = fields.Char(required=True, tracking=True)
+    code = fields.Char(tracking=True)
     location_type = fields.Selection(
         [("site", "Site"), ("building", "Building"), ("floor", "Floor"),
          ("room", "Room"), ("zone", "Zone")],
-        default="building", required=True)
+        default="building", required=True, tracking=True)
     parent_id = fields.Many2one(
         "facility.location", string="Parent Location", ondelete="cascade",
-        index=True)
+        index=True, tracking=True)
     parent_path = fields.Char(index=True)
     child_ids = fields.One2many("facility.location", "parent_id")
     complete_name = fields.Char(

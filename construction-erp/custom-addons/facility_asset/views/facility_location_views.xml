@@ -53,6 +53,7 @@
                         </list>
                     </field>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

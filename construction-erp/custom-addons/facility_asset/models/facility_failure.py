@@ -2,16 +2,24 @@ from odoo import fields, models
 
 
 class FacilityFailureCode(models.Model):
+    """Failure taxonomy, tracked because reporting history depends on it.
+
+    Renaming or retyping a code silently rewrites what every historical
+    work order appears to have been about, which is exactly the kind of
+    change an ISO 9001 audit asks to see justified.
+    """
+
     _name = "facility.failure.code"
     _description = "Failure Code"
+    _inherit = ["mail.thread"]
     _order = "failure_type, code, name"
 
-    name = fields.Char(required=True)
-    code = fields.Char()
+    name = fields.Char(required=True, tracking=True)
+    code = fields.Char(tracking=True)
     failure_type = fields.Selection(
         [("problem", "Problem"), ("cause", "Cause"), ("remedy", "Remedy")],
-        default="problem", required=True)
-    active = fields.Boolean(default=True)
+        default="problem", required=True, tracking=True)
+    active = fields.Boolean(default=True, tracking=True)
 
 
 class MaintenanceRequest(models.Model):

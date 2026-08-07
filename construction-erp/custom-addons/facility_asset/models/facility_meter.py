@@ -2,13 +2,26 @@ from odoo import api, fields, models
 
 
 class FacilityAssetMeter(models.Model):
+    """A meter's definition, tracked; its readings are not.
+
+    Changing a meter's unit reinterprets every reading ever taken against
+    it — a meter-triggered PM plan set to fire every 2000 hours starts
+    firing every 2000 kWh — and nothing else records that it happened.
+    The readings themselves are high-volume and already carry who and
+    when on the row, so they stay chatter-free.
+    """
+
     _name = "facility.asset.meter"
     _description = "Asset Meter"
+    _inherit = ["mail.thread"]
 
-    name = fields.Char(required=True, help="e.g. Running Hours, kWh, Cycles.")
+    name = fields.Char(required=True, tracking=True,
+                       help="e.g. Running Hours, kWh, Cycles.")
     equipment_id = fields.Many2one(
-        "maintenance.equipment", required=True, ondelete="cascade", index=True)
-    uom = fields.Char(string="Unit", help="hours / kWh / cycles …")
+        "maintenance.equipment", required=True, ondelete="cascade", index=True,
+        tracking=True)
+    uom = fields.Char(string="Unit", tracking=True,
+                      help="hours / kWh / cycles …")
     reading_ids = fields.One2many("facility.asset.meter.reading", "meter_id")
     current_value = fields.Float(compute="_compute_current_value", store=True)
     last_reading_date = fields.Date(compute="_compute_current_value", store=True)
