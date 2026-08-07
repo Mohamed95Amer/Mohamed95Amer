@@ -68,6 +68,18 @@
                         context="{'group_by': 'location_type'}"/>
                 <filter name="group_parent" string="Parent"
                         context="{'group_by': 'parent_id'}"/>
+                <!-- The site → building → floor → room tree is the spine of a
+                     CAFM system and the register had no way to show it: the
+                     model is _parent_store with a parent_path, but the only
+                     way down was opening a location and using its inline
+                     child list. Community has no hierarchy view, so the
+                     hierarchized search panel is where the tree lives. -->
+                <searchpanel>
+                    <field name="parent_id" icon="fa-sitemap" enable_counters="1"
+                           hierarchize="1" limit="0" string="Location"/>
+                    <field name="location_type" icon="fa-building-o"
+                           enable_counters="1" string="Type"/>
+                </searchpanel>
             </search>
         </field>
     </record>
