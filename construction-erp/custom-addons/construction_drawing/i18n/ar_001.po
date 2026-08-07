@@ -1,17 +1,80 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* construction_drawing
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-24 17:50+0000\n"
-"PO-Revision-Date: 2026-07-24 17:50+0000\n"
-"Last-Translator: Majal\n"
-"Language-Team: Majal\n"
-"Language: ar_001\n"
+"POT-Creation-Date: 2026-08-07 21:11+0000\n"
+"PO-Revision-Date: 2026-08-07 21:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid ""
+"%(doc)s has already been issued. What was sent, to whom and when cannot be "
+"changed afterwards — cancel it and raise a new transmittal."
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid ""
+"<br/>\n"
+"                                <strong>Purpose:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid ""
+"<br/>\n"
+"                                <strong>Sent by:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "<br/><strong>Response due:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "<strong>For the attention of:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "<strong>Issued on:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "<strong>Project:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "<strong>To:</strong>"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.actions.act_window,help:construction_drawing.action_transmittal
+msgid ""
+"A transmittal is the record that a drawing was sent — to whom,\n"
+"               for what purpose, and on what date. When a claim turns on which\n"
+"               revision the site was working to, this is the answer."
+msgstr ""
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "A transmittal with no drawings on it records nothing."
+msgstr ""
 
 #. module: construction_drawing
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_form
@@ -19,14 +82,59 @@ msgid "AR-101"
 msgstr "AR-101"
 
 #. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__state__acknowledged
+msgid "Acknowledged"
+msgstr "تم الإقرار بالاستلام"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__acknowledged_by
+msgid "Acknowledged By"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "Acknowledgement of receipt"
+msgstr "الإقرار باستلام المستندات"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_needaction
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Anything the covering note should say…"
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_revision__issued_for__approval
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_upload__issued_for__approval
 msgid "Approval"
 msgstr "للاعتماد"
 
-#. modules: construction_drawing, construction_rfi
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__architectural
-#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__architectural
 msgid "Architectural"
 msgstr "معماري"
 
@@ -35,6 +143,27 @@ msgstr "معماري"
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_upload__issued_for__asbuilt
 msgid "As-Built"
 msgstr "حسب التنفيذ"
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__purpose__asbuilt
+msgid "As-Built Record"
+msgstr "سجل كما نُفذ"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_attachment_count
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_search
+msgid "Awaiting Acknowledgement"
+msgstr "بانتظار الإقرار بالاستلام"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__ball_in_court_id
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
 
 #. module: construction_drawing
 #: model:ir.model,name:construction_drawing.model_construction_drawing_upload
@@ -47,13 +176,21 @@ msgstr "رفع الرسومات بالجملة"
 msgid "Bulk Upload Drawings"
 msgstr "رفع الرسومات بالجملة"
 
-#. modules: construction_boq, construction_drawing, construction_pin
-#. odoo-javascript
-#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
-#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__method__hand
+msgid "By Hand"
+msgstr "باليد"
+
+#. module: construction_drawing
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
 msgid "Cancel"
 msgstr "إلغاء"
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__state__cancelled
+msgid "Cancelled"
+msgstr "ملغي"
 
 #. module: construction_drawing
 #. odoo-python
@@ -65,24 +202,52 @@ msgstr ""
 "لا يمكن حذف المراجعة الحالية مع وجود مراجعات مستبدلة. عيّن مراجعة أخرى "
 "كمراجعة حالية أولاً."
 
-#. modules: construction_drawing, construction_rfi
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__civil
-#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__civil
 msgid "Civil"
 msgstr "مدني"
 
-#. modules: construction_base, construction_drawing
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_revision__issued_for__construction
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_upload__issued_for__construction
-#: model:ir.module.category,name:construction_base.module_category_construction
-#: model_terms:ir.ui.view,arch_db:construction_base.view_project_form_construction
 msgid "Construction"
 msgstr "الإنشاءات"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_search
+msgid "Contains Superseded"
+msgstr "يحتوي على مراجعات ملغاة"
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__method__courier
+msgid "Courier"
+msgstr "بريد سريع"
 
 #. module: construction_drawing
 #: model:ir.model.fields,help:construction_drawing.field_construction_drawing_upload__split_pages
 msgid "Create one sheet per PDF page instead of one per file."
 msgstr "أنشئ لوحة لكل صفحة PDF بدلاً من لوحة لكل ملف."
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__create_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__create_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__create_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__create_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__create_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__create_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__create_date
+msgid "Created on"
+msgstr "أنشئ في"
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_revision__state__current
@@ -94,50 +259,108 @@ msgstr "الحالي "
 msgid "Current Revision"
 msgstr "المراجعة الحالية"
 
-#. modules: construction_drawing, construction_rfi
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__date_acknowledged
+msgid "Date Acknowledged"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid ""
+"Date<br/><br/>\n"
+"                                        <span style=\"border-bottom: 1px solid #000; display: block;\"> </span>"
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__discipline
-#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__discipline
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_search
 msgid "Discipline"
 msgstr "التخصص"
 
-#. modules: construction_drawing, construction_pin, construction_ui
-#. odoo-javascript
-#: model:ir.model,name:construction_pin.model_construction_drawing
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__display_name
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__display_name
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__display_name
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__display_name
+msgid "Display Name"
+msgstr "اسم العرض "
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: construction_drawing
+#: model:ir.model,name:construction_drawing.model_construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__drawing_id
-#: model:ir.model.fields,field_description:construction_ui.field_project_project__drawing_ids
-#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
 msgid "Drawing"
 msgstr "الرسم"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "Drawing No."
+msgstr ""
 
 #. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__number
 msgid "Drawing Number"
 msgstr "رقم الرسم"
 
-#. modules: construction_drawing, construction_ui
-#. odoo-javascript
+#. module: construction_drawing
 #: model:ir.actions.act_window,name:construction_drawing.action_construction_drawing
-#: model:ir.actions.client,name:construction_ui.action_workspace_drawings
-#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "Drawing Register"
 msgstr "سجل الرسومات"
+
+#. module: construction_drawing
+#: model:ir.model,name:construction_drawing.model_construction_drawing_revision
+msgid "Drawing Revision"
+msgstr "مراجعة رسم"
+
+#. module: construction_drawing
+#: model:ir.model,name:construction_drawing.model_construction_transmittal
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "Drawing Transmittal"
+msgstr "إحالة رسومات"
 
 #. module: construction_drawing
 #: model:ir.model.constraint,message:construction_drawing.constraint_construction_drawing_number_project_uniq
 msgid "Drawing number must be unique within a project."
 msgstr "يجب أن يكون رقم الرسم فريداً داخل المشروع."
 
-#. modules: construction_drawing, construction_rfi, construction_ui
-#. odoo-python
-#. odoo-javascript
-#: code:addons/construction_ui/models/project_workspace.py:0
+#. module: construction_drawing
 #: model:ir.ui.menu,name:construction_drawing.menu_construction_drawing
-#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
-#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
-#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_list
 msgid "Drawings"
 msgstr "الرسومات"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__revision_ids
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Drawings Issued"
+msgstr "الرسومات الصادرة"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "Drawings — %s"
+msgstr ""
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__electrical
@@ -145,18 +368,101 @@ msgid "Electrical"
 msgstr "كهربائي"
 
 #. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__method__email
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_follower_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_partner_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء) "
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__purpose__approval
+msgid "For Approval"
+msgstr "للاعتماد"
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__purpose__construction
+msgid "For Construction"
+msgstr "للتنفيذ"
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__purpose__information
+msgid "For Information"
+msgstr "للعلم"
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__purpose__tender
+msgid "For Tender"
+msgstr "للمناقصة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__recipient_attention
+msgid "For the Attention Of"
+msgstr "لعناية"
+
+#. module: construction_drawing
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_form
 msgid "Ground Floor Plan"
 msgstr "مخطط الطابق الأرضي"
 
-#. modules: construction_drawing, facility_floorplan
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__has_message
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة "
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__has_sheet
-#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__has_sheet
 msgid "Has Sheet"
 msgstr "توجد لوحة"
 
-#. modules: construction_boq, construction_drawing
-#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_needaction
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_has_error
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_has_sms_error
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__message_has_error
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. module: construction_drawing
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
 msgid "Import"
 msgstr "استيراد"
@@ -168,20 +474,76 @@ msgid "Imported Revisions"
 msgstr "المراجعات المستوردة"
 
 #. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_is_follower
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Issue"
+msgstr "الصرف"
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__issue_date
 msgid "Issue Date"
 msgstr "تاريخ الإصدار"
 
 #. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__is_issued
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__state__issued
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_form_transmittal
+msgid "Issued"
+msgstr "صادر"
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__issued_for
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__issued_for
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
 msgid "Issued For"
 msgstr "غرض الإصدار"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__date_issued
+msgid "Issued On"
+msgstr "تاريخ الإصدار"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__recipient_id
+msgid "Issued To"
+msgstr "صادر إلى"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "Issued to %(who)s %(how)s — %(count)s drawing(s) %(purpose)s."
+msgstr ""
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__landscape
 msgid "Landscape"
 msgstr "بالعرض"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__write_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__write_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__write_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__write_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__write_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__write_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
 
 #. module: construction_drawing
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_form
@@ -194,14 +556,115 @@ msgid "Mechanical"
 msgstr "ميكانيكي"
 
 #. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_has_error
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__method
+msgid "Method"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid ""
+"Name<br/><br/>\n"
+"                                        <span style=\"border-bottom: 1px solid #000; display: block;\"> </span>"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__notes
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: construction_drawing
+#: model_terms:ir.actions.act_window,help:construction_drawing.action_transmittal
+msgid "Nothing issued yet"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء "
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_needaction_counter
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_has_error_counter
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_drawing
 #. odoo-python
 #: code:addons/construction_drawing/models/drawing.py:0
 msgid "Only PDF files can be uploaded as drawing sheets."
 msgstr "يمكن رفع ملفات PDF فقط للوحات الرسومات."
 
-#. modules: construction_drawing, facility_floorplan
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "Only a draft transmittal can be issued."
+msgstr ""
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "Only an issued transmittal can be acknowledged."
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__attachment_id
-#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__attachment_id
 msgid "PDF Attachment"
 msgstr "مرفق PDF"
 
@@ -211,22 +674,103 @@ msgid "PDF Files"
 msgstr "ملفات PDF"
 
 #. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid ""
+"Please sign and return one copy of this\n"
+"                                    transmittal to confirm receipt."
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__plumbing
 msgid "Plumbing/Drainage"
 msgstr "صحي / صرف"
 
-#. modules: construction_drawing, construction_pin, construction_submittal,
-#. construction_ui
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__method__portal
+msgid "Portal"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_transmittal__method__post
+msgid "Post"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__project_id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__project_id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__project_id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__project_id
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_search
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_search
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__purpose
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_search
+msgid "Purpose"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__rating_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__rating_ids
+msgid "Ratings"
+msgstr "التقييمات "
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "Received by"
+msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_search
+msgid "Recipient"
+msgstr "المستلم"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Record Acknowledgement"
+msgstr "تسجيل الإقرار بالاستلام"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__reference
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Response Due"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "Rev."
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__revision_ids
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__revision
-#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__revision_id
-#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__revision
-#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
 msgid "Revision"
 msgstr "المراجعة"
 
 #. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__revision_count
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__revision_count
 msgid "Revision Count"
 msgstr "عدد المراجعات"
 
@@ -236,9 +780,26 @@ msgstr "عدد المراجعات"
 msgid "Revisions"
 msgstr "المراجعات"
 
-#. modules: construction_drawing, facility_floorplan
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__superseded_count
+msgid ""
+"Revisions on this transmittal that are no longer current. The recipient is "
+"working to something out of date unless a later transmittal reached them."
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing_revision__is_issued
+msgid "Sent to somebody on a transmittal."
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__sheet_filename
-#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__sheet_filename
 msgid "Sheet Filename"
 msgstr "اسم ملف اللوحة"
 
@@ -249,28 +810,70 @@ msgid "Sheet PDF"
 msgstr "ملف اللوحة PDF"
 
 #. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid ""
+"Signature<br/><br/>\n"
+"                                        <span style=\"border-bottom: 1px solid #000; display: block;\"> </span>"
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__split_pages
 msgid "Split multi-page PDFs"
 msgstr "تقسيم ملفات PDF متعددة الصفحات"
 
-#. modules: construction_defect, construction_drawing, construction_rfi
-#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__structural
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__state
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__structural
-#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__structural
 msgid "Structural"
 msgstr "إنشائي"
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid "Subject"
+msgstr "الموضوع"
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_revision__state__superseded
 msgid "Superseded"
 msgstr "مستبدلة"
 
-#. modules: construction_base, construction_drawing
-#: model:ir.model.fields.selection,name:construction_base.selection__project_project__construction_stage__tender
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__superseded_count
+msgid "Superseded Since"
+msgstr "أُلغي منذ الإصدار"
+
+#. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_revision__issued_for__tender
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing_upload__issued_for__tender
 msgid "Tender"
 msgstr "العطاء"
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__recipient_attention
+msgid "The individual at the recipient, where the contract names one."
+msgstr ""
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid ""
+"The recipient has confirmed receipt. Cancelling would delete the "
+"acknowledgement — issue a superseding transmittal instead."
+msgstr ""
 
 #. module: construction_drawing
 #: model:ir.model.fields,help:construction_drawing.field_construction_drawing_revision__attachment_id
@@ -282,13 +885,45 @@ msgstr "ملف PDF الخاص بلوحة هذه المراجعة."
 msgid "This revision already exists for the drawing."
 msgstr "هذه المراجعة موجودة بالفعل لهذا الرسم."
 
-#. modules: construction_defect, construction_drawing, construction_pin
-#. odoo-javascript
-#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+#. module: construction_drawing
 #: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__name
-#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
 msgid "Title"
 msgstr "اللقب "
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "Transmittal"
+msgstr "إحالة"
+
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__transmittal_count
+msgid "Transmittal Count"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.actions.report,name:construction_drawing.action_report_transmittal
+msgid "Transmittal Note"
+msgstr "مذكرة إحالة"
+
+#. module: construction_drawing
+#: model:ir.actions.act_window,name:construction_drawing.action_transmittal
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__transmittal_ids
+#: model:ir.ui.menu,name:construction_drawing.menu_transmittal
+msgid "Transmittals"
+msgstr "الإحالات"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "Transmittals — %s"
+msgstr ""
+
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
 
 #. module: construction_drawing
 #. odoo-python
@@ -303,70 +938,44 @@ msgid ""
 "rendered by the plan viewer."
 msgstr "ارفع ملف اللوحة PDF هنا؛ سيُحفظ كمرفق للمراجعة ويعرضه عارض المخططات."
 
-#. Drawing transmittals — Phase 5. الرسم / المراجعة follow this file's
-#. existing terms; إحالة is the standard term for a transmittal note.
-msgid "Transmittal"
-msgstr "إحالة"
+#. module: construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__website_message_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_transmittal__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني "
 
-msgid "Transmittals"
-msgstr "الإحالات"
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__website_message_ids
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني "
 
-msgid "Drawing Transmittal"
-msgstr "إحالة رسومات"
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__purpose
+msgid ""
+"What the recipient is being asked to do with these drawings. The contractual"
+" weight of an issue depends on it."
+msgstr ""
 
-msgid "Transmittal Note"
-msgstr "مذكرة إحالة"
+#. module: construction_drawing
+#: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__acknowledged_by
+msgid "Who at the recipient confirmed receipt."
+msgstr ""
 
-msgid "Issued To"
-msgstr "صادر إلى"
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "drawing(s) transmitted."
+msgstr ""
 
-msgid "For the Attention Of"
-msgstr "لعناية"
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_transmittal_form
+msgid ""
+"of these revisions have been superseded since this\n"
+"                            was issued. Check a later transmittal reached the\n"
+"                            recipient."
+msgstr ""
 
-msgid "For Tender"
-msgstr "للمناقصة"
-
-msgid "For Approval"
-msgstr "للاعتماد"
-
-msgid "For Construction"
-msgstr "للتنفيذ"
-
-msgid "For Information"
-msgstr "للعلم"
-
-msgid "As-Built Record"
-msgstr "سجل كما نُفذ"
-
-msgid "Issued On"
-msgstr "تاريخ الإصدار"
-
-msgid "Drawings Issued"
-msgstr "الرسومات الصادرة"
-
-msgid "Issued"
-msgstr "صادر"
-
-msgid "Acknowledged"
-msgstr "تم الإقرار بالاستلام"
-
-msgid "Record Acknowledgement"
-msgstr "تسجيل الإقرار بالاستلام"
-
-msgid "Superseded Since"
-msgstr "أُلغي منذ الإصدار"
-
-msgid "Awaiting Acknowledgement"
-msgstr "بانتظار الإقرار بالاستلام"
-
-msgid "Contains Superseded"
-msgstr "يحتوي على مراجعات ملغاة"
-
-msgid "By Hand"
-msgstr "باليد"
-
-msgid "Courier"
-msgstr "بريد سريع"
-
-msgid "Acknowledgement of receipt"
-msgstr "الإقرار باستلام المستندات"
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
+msgid "on"
+msgstr ""
