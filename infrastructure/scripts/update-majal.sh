@@ -81,6 +81,61 @@ rollback_on_failure() {
 
 compose config --quiet || rollback_on_failure "Compose validation failed."
 compose pull "$APP_SERVICE" || rollback_on_failure "Image pull failed."
+
+install_targets="${INSTALL_MODULES:-}"
+upgrade_targets="${UPGRADE_MODULES:-}"
+module_pattern='^([a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*)?$'
+
+[[ "$install_targets" =~ $module_pattern ]] || die "INSTALL_MODULES contains invalid characters."
+[[ "$upgrade_targets" =~ $module_pattern ]] || die "UPGRADE_MODULES contains invalid characters."
+
+db_name="$(env_value POSTGRES_DB)"
+db_user="$(env_value POSTGRES_USER)"
+db_pass="$(env_value POSTGRES_PASSWORD)"
+
+# Query requested INSTALL_MODULES that are not currently installed
+uninstalled_modules=""
+if [[ -n "$install_targets" ]]; then
+    uninstalled_modules="$(compose run --rm -e PGPASSWORD="$db_pass" "$APP_SERVICE" psql -h db -U "$db_user" -d "$db_name" -At \
+        -v modules="$install_targets" <<'SQL'
+SELECT string_agg(wanted.name, ',')
+FROM unnest(string_to_array(:'modules', ',')) wanted(name)
+LEFT JOIN ir_module_module module
+    ON module.name = wanted.name AND module.state = 'installed'
+WHERE module.id IS NULL OR module.state != 'installed';
+SQL
+)" || rollback_on_failure "Install module state query failed."
+fi
+
+# Query requested UPGRADE_MODULES that are currently installed
+to_upgrade=""
+if [[ -n "$upgrade_targets" ]]; then
+    to_upgrade="$(compose run --rm -e PGPASSWORD="$db_pass" "$APP_SERVICE" psql -h db -U "$db_user" -d "$db_name" -At \
+        -v modules="$upgrade_targets" <<'SQL'
+SELECT string_agg(wanted.name, ',')
+FROM unnest(string_to_array(:'modules', ',')) wanted(name)
+JOIN ir_module_module module
+    ON module.name = wanted.name AND module.state = 'installed';
+SQL
+)" || rollback_on_failure "Upgrade module state query failed."
+fi
+
+if [[ -n "$uninstalled_modules" || -n "$to_upgrade" ]]; then
+    printf 'Executing single-invocation application module update/install step...\n'
+    migration_cmd=(odoo -d "$db_name")
+    if [[ -n "$uninstalled_modules" ]]; then
+        migration_cmd+=(-i "$uninstalled_modules")
+    fi
+    if [[ -n "$to_upgrade" ]]; then
+        migration_cmd+=(-u "$to_upgrade")
+    fi
+    migration_cmd+=(--stop-after-init)
+    compose run --rm "$APP_SERVICE" "${migration_cmd[@]}" || \
+        rollback_on_failure "Application module migration step failed."
+else
+    printf 'No module installation or upgrade required for this update.\n'
+fi
+
 compose up -d --wait --wait-timeout 900 --no-deps "$APP_SERVICE" || \
     rollback_on_failure "Application recreation or readiness failed."
 

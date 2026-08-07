@@ -14,6 +14,16 @@ on:
         required: true
         type: boolean
         default: false
+      install_modules:
+        description: Modules to install during deployment (comma-separated)
+        required: false
+        type: string
+        default: ''
+      upgrade_modules:
+        description: Modules to upgrade during deployment (comma-separated)
+        required: false
+        type: string
+        default: ''
   push:
     tags:
       - "majalops-release-request-*"
@@ -207,8 +217,13 @@ jobs:
           USER: ${{ vars.PLATFORM_SSH_USER }}
           IMAGE_REF: ${{ needs.build.outputs.image_ref }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INSTALL_MODS: ${{ inputs.install_modules }}
+          UPGRADE_MODS: ${{ inputs.upgrade_modules }}
         run: |
           set -euo pipefail
+          module_pattern='^([a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*)?$'
+          [[ "$INSTALL_MODS" =~ $module_pattern ]] || { echo "Invalid install_modules input" >&2; exit 1; }
+          [[ "$UPGRADE_MODS" =~ $module_pattern ]] || { echo "Invalid upgrade_modules input" >&2; exit 1; }
           ssh_args=(-i ~/.ssh/majalops_deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -p "${PORT:-22}")
           target="${USER:-majaldeploy}@${HOST:?PLATFORM_HOST is required}"
           # Values expand locally by design; the server-side wrapper validates both allow-listed formats.
@@ -217,7 +232,7 @@ jobs:
             "sudo /usr/local/sbin/majalops-deploy registry-login ${GITHUB_ACTOR}"
           # shellcheck disable=SC2029
           ssh "${ssh_args[@]}" "$target" \
-            "sudo /usr/local/sbin/majalops-deploy update ${IMAGE_REF}"
+            "sudo /usr/local/sbin/majalops-deploy update '${IMAGE_REF}' '${INSTALL_MODS}' '${UPGRADE_MODS}'"
           ssh "${ssh_args[@]}" "$target" \
             "sudo /usr/local/sbin/majalops-deploy health"
 
