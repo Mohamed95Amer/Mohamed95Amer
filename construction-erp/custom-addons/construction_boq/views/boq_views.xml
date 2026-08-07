@@ -129,7 +129,9 @@
                 <field name="amount_cost_total"/>
                 <field name="margin_percent" string="Margin %" optional="show"/>
                 <field name="percent_complete" widget="progressbar" optional="show"/>
-                <field name="state" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-muted="state == 'locked'"/>
                 <field name="currency_id" column_invisible="1"/>
             </list>
         </field>
