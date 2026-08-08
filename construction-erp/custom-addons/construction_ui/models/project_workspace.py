@@ -269,6 +269,22 @@ class ProjectProject(models.Model):
         return self._majal_open_records("construction.submittal", _("Engineering Approvals"))
 
 
+# A value the caller cannot forge.
+#
+# This guard used to stand down for `majal_drawing_transition=True` in the
+# context. Context travels with an RPC call, so anybody holding write access
+# on a drawing revision could set that key and write approval_state or
+# replace a submitted sheet directly — the same hole that was closed on
+# construction.approvable by WORKFLOW_TRANSITION in approval_mixin.py,
+# arriving by a second door on a model that mixin does not cover.
+#
+# RPC can only deliver JSON, so a context value can never be *identical* to a
+# private Python object. Internal transition code imports this and passes
+# it; a remote caller can send the string, the number or the boolean and
+# none of them are this object.
+DRAWING_TRANSITION = object()
+
+
 class ConstructionDrawingRevision(models.Model):
     _name = "construction.drawing.revision"
     _description = "Drawing Revision"
@@ -308,15 +324,15 @@ class ConstructionDrawingRevision(models.Model):
     def write(self, vals):
         if (
             self._approval_decision_fields & set(vals)
-            and not self.env.context.get("majal_drawing_transition")
             and not self.env.su
+            and self.env.context.get("majal_drawing_transition") is not DRAWING_TRANSITION
         ):
             raise AccessError(
                 _("Drawing sign-off can only be changed through workflow actions.")
             )
         if (
             {"attachment_id", "sheet_file"} & set(vals)
-            and not self.env.context.get("majal_drawing_transition")
+            and self.env.context.get("majal_drawing_transition") is not DRAWING_TRANSITION
             and any(revision.approval_state not in ("draft", "rejected") for revision in self)
         ):
             raise UserError(
@@ -355,7 +371,7 @@ class ConstructionDrawingRevision(models.Model):
                 raise UserError(_("Only draft or returned revisions can be submitted."))
             if not revision.attachment_id:
                 raise UserError(_("Upload the drawing PDF before requesting sign-off."))
-            revision.with_context(majal_drawing_transition=True).write(
+            revision.with_context(majal_drawing_transition=DRAWING_TRANSITION).write(
                 {
                     "approval_state": "submitted",
                     "submitted_by_id": self.env.user.id,
@@ -368,7 +384,7 @@ class ConstructionDrawingRevision(models.Model):
         for revision in self:
             if revision.approval_state != "submitted":
                 raise UserError(_("Only submitted revisions can be signed off."))
-            revision.with_context(majal_drawing_transition=True).write(
+            revision.with_context(majal_drawing_transition=DRAWING_TRANSITION).write(
                 {
                     "approval_state": "approved",
                     "approved_by_id": self.env.user.id,
@@ -379,7 +395,7 @@ class ConstructionDrawingRevision(models.Model):
     def action_reject_revision(self):
         records = self.filtered(lambda revision: revision.approval_state == "submitted")
         records._check_signoff_authority()
-        records.with_context(majal_drawing_transition=True).write(
+        records.with_context(majal_drawing_transition=DRAWING_TRANSITION).write(
             {"approval_state": "rejected", "approved_by_id": False, "approved_date": False}
         )
 
@@ -387,7 +403,7 @@ class ConstructionDrawingRevision(models.Model):
         if not self.env.user.has_group("construction_base.group_construction_pm"):
             raise AccessError(_("Only a Project Manager can reset drawing sign-off."))
         self.filtered(lambda revision: revision.approval_state == "rejected").with_context(
-            majal_drawing_transition=True
+            majal_drawing_transition=DRAWING_TRANSITION
         ).write({"approval_state": "draft"})
 
     def action_make_current(self):
