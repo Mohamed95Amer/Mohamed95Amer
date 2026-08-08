@@ -86,7 +86,8 @@ Write-Output 'STEP 3/5: Provisioning the platform through strict host-key SSH.'
 & (Join-Path $scripts 'remote-bootstrap.ps1') `
     -ServerIp $serverIp -TlsEmail $TlsEmail -MajalImage $MajalImage `
     -Domain $Domain -SshUser $SshUser -AdminUser $SshUser `
-    -SshPort $SshPort -IdentityFile $IdentityFile -EnvironmentName $EnvironmentName
+    -SshPort $SshPort -IdentityFile $IdentityFile -EnvironmentName $EnvironmentName `
+    -ServerName $ServerName
 
 Write-Output "STEP 4/5: Configuring the $EnvironmentName GitHub environment, variables and restricted deploy secrets."
 # configure-github.ps1's own -SshUser default ('majaldeploy') is the

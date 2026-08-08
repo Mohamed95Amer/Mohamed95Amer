@@ -8,8 +8,13 @@ param(
     [string] $AdminUser = 'majaladmin',
     [int] $SshPort = 22,
     [string] $IdentityFile = 'C:\Users\hossi\.ssh\majalops_admin',
-    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform'
+    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform',
+    [string] $ServerName = ''
 )
+
+if ([string]::IsNullOrWhiteSpace($ServerName)) {
+    $ServerName = if ($EnvironmentName -eq 'platform') { 'majalops-platform-01' } else { 'majalops-staging-01' }
+}
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -73,7 +78,7 @@ if (-not (Test-KeyOnlySsh -Target $sshTarget -Command 'sudo -n true')) {
     if ($LASTEXITCODE -ne 0) { throw 'Initial infrastructure upload as root failed.' }
 
     $bootstrapStageOne = @"
-env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_keys' HOSTNAME_FQDN='majalops-platform-01' SERVER_TIMEZONE='UTC' SSH_PORT='$SshPort' HARDEN_SSH='0' bash '$remoteStaging/scripts/bootstrap-server.sh'
+env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_keys' HOSTNAME_FQDN='$ServerName' SERVER_TIMEZONE='UTC' SSH_PORT='$SshPort' HARDEN_SSH='0' bash '$remoteStaging/scripts/bootstrap-server.sh'
 "@
     & ssh @sshArgs $rootTarget $bootstrapStageOne.Trim()
     if ($LASTEXITCODE -ne 0) { throw 'Initial server bootstrap failed before SSH lockdown.' }
@@ -83,7 +88,7 @@ env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_ke
     }
 
     $bootstrapStageTwo = @"
-env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_keys' HOSTNAME_FQDN='majalops-platform-01' SERVER_TIMEZONE='UTC' SSH_PORT='$SshPort' HARDEN_SSH='1' CONFIRM_ADMIN_SSH_TESTED='YES' bash '$remoteStaging/scripts/bootstrap-server.sh'
+env ADMIN_USER='$AdminUser' ADMIN_AUTHORIZED_KEYS_FILE='/root/.ssh/authorized_keys' HOSTNAME_FQDN='$ServerName' SERVER_TIMEZONE='UTC' SSH_PORT='$SshPort' HARDEN_SSH='1' CONFIRM_ADMIN_SSH_TESTED='YES' bash '$remoteStaging/scripts/bootstrap-server.sh'
 "@
     & ssh @sshArgs $rootTarget $bootstrapStageTwo.Trim()
     if ($LASTEXITCODE -ne 0) { throw 'SSH lockdown stage failed.' }
