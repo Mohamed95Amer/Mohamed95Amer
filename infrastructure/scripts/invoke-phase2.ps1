@@ -12,6 +12,7 @@ param(
     [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform',
     [string] $ServerName = '',
     [string] $FirewallName = '',
+    [ValidateSet('', 'cpx22', 'cx33')] [string] $ExpectedServerType = '',
     [switch] $EnableExternalHealth
 )
 
@@ -20,6 +21,11 @@ if ([string]::IsNullOrWhiteSpace($ServerName)) {
 }
 if ([string]::IsNullOrWhiteSpace($FirewallName)) {
     $FirewallName = "majalops-$EnvironmentName-firewall"
+}
+if ([string]::IsNullOrWhiteSpace($ExpectedServerType)) {
+    # Platform stays CPX22 (unchanged production expectation). Staging is
+    # CX33 by deliberate cost choice, not a resize of the platform server.
+    $ExpectedServerType = if ($EnvironmentName -eq 'platform') { 'cpx22' } else { 'cx33' }
 }
 
 $ErrorActionPreference = 'Stop'
@@ -57,8 +63,8 @@ if ($MajalImage -notmatch '^ghcr\.io/mohamed95amer/majalops-platform@sha256:[a-f
 }
 
 $scripts = $PSScriptRoot
-Write-Output "STEP 1/5: Applying Hetzner firewall, backup and deletion-protection controls to $ServerName ($EnvironmentName)."
-& (Join-Path $scripts 'configure-hetzner.ps1') -ServerName $ServerName -FirewallName $FirewallName -EnvironmentName $EnvironmentName -SshPort $SshPort
+Write-Output "STEP 1/5: Applying Hetzner firewall, backup and deletion-protection controls to $ServerName ($EnvironmentName, $ExpectedServerType)."
+& (Join-Path $scripts 'configure-hetzner.ps1') -ServerName $ServerName -FirewallName $FirewallName -EnvironmentName $EnvironmentName -ExpectedServerType $ExpectedServerType -SshPort $SshPort
 
 $serverEnv = Join-Path (Join-Path $scripts '..\.generated') 'server.env'
 $values = @{}

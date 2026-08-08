@@ -6,7 +6,8 @@ param(
     [string[]] $SshAllowedCidrs = @('0.0.0.0/0', '::/0'),
     [bool] $EnableBackups = $true,
     [bool] $EnableProtection = $true,
-    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform'
+    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform',
+    [ValidateSet('cpx22', 'cx33')] [string] $ExpectedServerType = 'cpx22'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -28,7 +29,9 @@ function Invoke-HetznerApi {
 $serverLookup = Invoke-HetznerApi -Method GET -Path "/servers?name=$([uri]::EscapeDataString($ServerName))"
 if (@($serverLookup.servers).Count -ne 1) { throw "Expected exactly one Hetzner server named $ServerName." }
 $server = $serverLookup.servers[0]
-if ($server.server_type.name -ne 'cpx22') { throw "Expected CPX22, found $($server.server_type.name)." }
+if ($server.server_type.name -ne $ExpectedServerType) {
+    throw "Expected $($ExpectedServerType.ToUpperInvariant()), found $($server.server_type.name)."
+}
 $serverLocation = if ($null -ne $server.PSObject.Properties['location']) {
     [string]$server.location.name
 } elseif ($null -ne $server.PSObject.Properties['datacenter']) {

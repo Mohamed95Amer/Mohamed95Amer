@@ -6,6 +6,7 @@ param(
     [string] $IdentityFile = 'C:\Users\hossi\.ssh\majalops_admin',
     [ValidateSet('patch', 'minor', 'major')] [string] $ReleaseBump = 'patch',
     [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform',
+    [ValidateSet('', 'cpx22', 'cx33')] [string] $ExpectedServerType = '',
     [switch] $EnableExternalHealth
 )
 
@@ -97,6 +98,7 @@ try {
         -IdentityFile $IdentityFile `
         -ReleaseBump $ReleaseBump `
         -EnvironmentName $EnvironmentName `
+        -ExpectedServerType $ExpectedServerType `
         -EnableExternalHealth:$EnableExternalHealth
 } finally {
     Remove-Item Env:HCLOUD_TOKEN -ErrorAction SilentlyContinue
