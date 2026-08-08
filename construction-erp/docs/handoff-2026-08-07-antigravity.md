@@ -1,7 +1,8 @@
 # Handover — UX/workflow audit, Phases 1–5
 
 **Branch:** `codex/odoo19-ui-enhancement`
-**Range:** `dfef409..HEAD` — 22 commits
+**Range:** `dfef409..a64e9e4` — 25 commits, 85 files, +7489/−442
+**CI:** all six checks green on `a64e9e4` (suite, install-with-demo, manifests)
 **Docs:** this note, plus `docs/demo-accounts.md` for logins and a test tour
 **Suite:** 625 tests, 0 failed (was 553 at the start of the range)
 **Stack:** Odoo 18 Community, `custom-addons/`, Python 3.11, PostgreSQL 16
