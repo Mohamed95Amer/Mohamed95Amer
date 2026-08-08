@@ -274,6 +274,10 @@ class ConstructionDrawingRevision(models.Model):
     _description = "Drawing Revision"
     _inherit = ["construction.drawing.revision", "mail.thread", "mail.activity.mixin"]
 
+    # A revision arrives superseded and is promoted to current only by
+    # action_make_current below, which refuses until it has been signed off.
+    # That is the point of this layer: an unsigned drawing must not silently
+    # become the one the site is building to.
     state = fields.Selection(default="superseded")
     approval_state = fields.Selection(
         [

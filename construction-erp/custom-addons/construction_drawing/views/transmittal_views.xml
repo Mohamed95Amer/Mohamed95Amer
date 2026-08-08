@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_transmittal_form" model="ir.ui.view">
+        <field name="name">construction.transmittal.form</field>
+        <field name="model">construction.transmittal</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_issue" type="object" string="Issue"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_acknowledge" type="object"
+                            string="Record Acknowledgement" class="btn-primary"
+                            invisible="state != 'issued'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('acknowledged', 'cancelled')"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,issued,acknowledged"/>
+                </header>
+                <sheet>
+                    <!-- A revision superseded since issue means the recipient
+                         is building to something out of date unless a later
+                         transmittal reached them. That is the whole reason
+                         this register exists. -->
+                    <div class="alert alert-warning d-flex align-items-center"
+                         role="alert"
+                         invisible="not superseded_count or state == 'cancelled'">
+                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <span>
+                            <field name="superseded_count" nolabel="1"
+                                   readonly="1" class="oe_inline"/>
+                            of these revisions have been superseded since this
+                            was issued. Check a later transmittal reached the
+                            recipient.
+                        </span>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_revisions" type="object"
+                                class="oe_stat_button" icon="fa-file-pdf-o"
+                                invisible="not revision_count">
+                            <field name="revision_count" widget="statinfo"
+                                   string="Drawings"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Subject"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"
+                                   readonly="state in ('issued', 'acknowledged')"/>
+                            <field name="recipient_id"
+                                   readonly="state in ('issued', 'acknowledged')"/>
+                            <field name="recipient_attention"
+                                   readonly="state in ('issued', 'acknowledged')"/>
+                            <field name="ball_in_court_id"/>
+                        </group>
+                        <group>
+                            <field name="purpose"
+                                   readonly="state in ('issued', 'acknowledged')"/>
+                            <field name="method"
+                                   readonly="state in ('issued', 'acknowledged')"/>
+                            <field name="date_issued"
+                                   readonly="state in ('issued', 'acknowledged')"/>
+                            <field name="date_required" string="Response Due"/>
+                            <field name="date_acknowledged"
+                                   invisible="state != 'acknowledged'"/>
+                            <field name="acknowledged_by"
+                                   invisible="state != 'acknowledged'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Drawings Issued" name="drawings">
+                            <field name="revision_ids"
+                                   readonly="state in ('issued', 'acknowledged')"
+                                   widget="many2many">
+                                <list>
+                                    <field name="display_name" string="Drawing"/>
+                                    <field name="revision"/>
+                                    <field name="issued_for"/>
+                                    <field name="issue_date"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'current'"
+                                           decoration-muted="state == 'superseded'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"
+                                   placeholder="Anything the covering note should say…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_transmittal_list" model="ir.ui.view">
+        <field name="name">construction.transmittal.list</field>
+        <field name="model">construction.transmittal</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-warning="superseded_count &gt; 0 and state != 'cancelled'"
+                  decoration-danger="is_overdue">
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="recipient_id"/>
+                <field name="purpose"/>
+                <field name="date_issued"/>
+                <field name="revision_count" string="Drawings"/>
+                <field name="method" optional="hide"/>
+                <field name="date_acknowledged" optional="hide"/>
+                <field name="superseded_count" optional="hide"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'issued'"
+                       decoration-success="state == 'acknowledged'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_transmittal_search" model="ir.ui.view">
+        <field name="name">construction.transmittal.search</field>
+        <field name="model">construction.transmittal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="recipient_id"/>
+                <filter name="filter_awaiting" string="Awaiting Acknowledgement"
+                        domain="[('state', '=', 'issued')]"/>
+                <filter name="filter_superseded" string="Contains Superseded"
+                        domain="[('superseded_count', '&gt;', 0)]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_recipient" string="Recipient"
+                        context="{'group_by': 'recipient_id'}"/>
+                <filter name="group_purpose" string="Purpose"
+                        context="{'group_by': 'purpose'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_transmittal" model="ir.actions.act_window">
+        <field name="name">Transmittals</field>
+        <field name="res_model">construction.transmittal</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_transmittal_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing issued yet</p>
+            <p>A transmittal is the record that a drawing was sent — to whom,
+               for what purpose, and on what date. When a claim turns on which
+               revision the site was working to, this is the answer.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_transmittal"
+              name="Transmittals"
+              parent="construction_base.menu_construction_engineering"
+              action="action_transmittal"
+              sequence="15"/>
+
+    <!-- On the drawing: has this revision actually reached anybody? -->
+    <record id="view_drawing_form_transmittal" model="ir.ui.view">
+        <field name="name">construction.drawing.form.transmittal</field>
+        <field name="model">construction.drawing</field>
+        <field name="inherit_id" ref="construction_drawing.view_drawing_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='revision_ids']/list/field[@name='state']"
+                   position="after">
+                <field name="is_issued" widget="boolean_toggle" readonly="1"
+                       string="Issued"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

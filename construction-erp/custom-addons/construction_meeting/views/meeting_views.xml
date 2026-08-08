@@ -18,6 +18,21 @@
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_open_actions" type="object"
+                                class="oe_stat_button" icon="fa-list-ul"
+                                invisible="not open_action_count">
+                            <field name="open_action_count" widget="statinfo"
+                                   string="Open Actions"/>
+                        </button>
+                        <button name="action_view_overdue_actions" type="object"
+                                class="oe_stat_button text-danger"
+                                icon="fa-exclamation-triangle"
+                                invisible="not overdue_action_count">
+                            <field name="overdue_action_count" widget="statinfo"
+                                   string="Overdue"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" placeholder="e.g. Weekly progress meeting no. 14"/></h1>
@@ -34,9 +49,6 @@
                             <field name="meeting_date"/>
                             <field name="location"/>
                             <field name="chaired_by_id"/>
-                            <field name="open_action_count"/>
-                            <field name="overdue_action_count"
-                                   decoration-danger="overdue_action_count &gt; 0"/>
                         </group>
                     </group>
                     <notebook>
@@ -99,7 +111,9 @@
                 <field name="attendee_count" string="Attendees"/>
                 <field name="open_action_count" string="Open actions"/>
                 <field name="overdue_action_count" string="Overdue"/>
-                <field name="state" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'issued'"
+                       decoration-muted="state == 'closed'"/>
             </list>
         </field>
     </record>

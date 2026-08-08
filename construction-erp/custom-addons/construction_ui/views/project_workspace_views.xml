@@ -208,7 +208,11 @@
                             <field name="date_document"/>
                             <field name="date_required"/>
                             <field name="amount"/>
-                            <field name="state" widget="badge"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state == 'submitted'"
+                                   decoration-success="state in ('approved', 'issued')"
+                                   decoration-danger="state == 'rejected'"
+                                   decoration-muted="state == 'cancelled'"/>
                         </list>
                     </field>
                 </page>
@@ -223,26 +227,19 @@
                             <field name="amount_cost_total" sum="Budget Cost"/>
                             <field name="margin_percent"/>
                             <field name="percent_complete"/>
-                            <field name="state" widget="badge"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'approved'"
+                                   decoration-muted="state == 'locked'"/>
                         </list>
                     </field>
                 </page>
-                <page string="Site Work" name="majal_site_work"
-                      invisible="not is_construction">
-                    <field name="form_inspection_ids" context="{'default_project_id': id}"
-                           options="{'no_delete': True}">
-                        <list delete="false">
-                            <field name="name"/>
-                            <field name="template_id"/>
-                            <field name="location"/>
-                            <field name="scheduled_date"/>
-                            <field name="inspector_id"/>
-                            <field name="score"/>
-                            <field name="state" widget="badge"/>
-                        </list>
-                    </field>
-                </page>
-                <page string="Quality &amp; QA" name="majal_quality"
+                <!-- "Site Work" held the inspections and "Quality & QA"
+                     held the snags, while Quality's own button was labelled
+                     "Open Inspections & QA Forms" — so a user had to guess
+                     which of the two tabs an inspection was on. They are one
+                     workflow (inspect, then raise what failed), so they are
+                     one page, in that order. -->
+                <page string="Quality &amp; Inspections" name="majal_quality"
                       invisible="not is_construction">
                     <group>
                         <group string="Field Quality">
@@ -255,6 +252,23 @@
                                     string="Open Snags &amp; Observations"/>
                         </group>
                     </group>
+                    <separator string="Inspections"/>
+                    <field name="form_inspection_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="name"/>
+                            <field name="template_id"/>
+                            <field name="location"/>
+                            <field name="scheduled_date"/>
+                            <field name="inspector_id"/>
+                            <field name="score"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state in ('in_progress', 'submitted')"
+                                   decoration-success="state == 'approved'"
+                                   decoration-danger="state == 'rejected'"/>
+                        </list>
+                    </field>
+                    <separator string="Snags &amp; Defects"/>
                     <field name="defect_ids" context="{'default_project_id': id}"
                            options="{'no_delete': True}">
                         <list delete="false">
@@ -264,20 +278,32 @@
                             <field name="trade"/>
                             <field name="severity" widget="badge"/>
                             <field name="assigned_user_id"/>
-                            <field name="state" widget="badge"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state in ('in_progress', 'ready')"
+                                   decoration-success="state == 'closed'"
+                                   decoration-danger="state == 'reopened'"/>
                         </list>
                     </field>
                 </page>
-                <page string="Drawings &amp; Revisions" name="majal_drawings"
+                <!-- Drawings, RFIs and submittals were two tabs. They are
+                     one discipline done by one team, and they reference each
+                     other constantly — an RFI cites a drawing, a submittal
+                     answers one. Splitting them meant paging back and forth
+                     to follow a single question. -->
+                <page string="Engineering" name="majal_engineering"
                       invisible="not is_construction">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h4 class="mb-1">Controlled drawing register</h4>
-                            <span class="text-muted">Every drawing, revision, PDF and sign-off status in one place.</span>
-                        </div>
-                        <button name="action_majal_drawings" type="object"
-                                string="Open Full Drawing Register" class="btn-primary"/>
-                    </div>
+                    <group>
+                        <group string="Coordination">
+                            <field name="engineering_item_count" string="Open information records"/>
+                        </group>
+                        <group string="Quick Navigation">
+                            <button name="action_majal_drawings" type="object"
+                                    string="Open Drawing Register" class="btn-primary"/>
+                            <button name="action_majal_engineering" type="object"
+                                    string="Open Submittals"/>
+                        </group>
+                    </group>
+                    <separator string="Drawings"/>
                     <field name="drawing_ids" context="{'default_project_id': id}"
                            options="{'no_delete': True}">
                         <list delete="false">
@@ -288,18 +314,6 @@
                             <field name="revision_count"/>
                         </list>
                     </field>
-                </page>
-                <page string="Engineering Workflow" name="majal_engineering"
-                      invisible="not is_construction">
-                    <group>
-                        <group string="Coordination">
-                            <field name="engineering_item_count" string="Open information records"/>
-                        </group>
-                        <group string="Quick Navigation">
-                            <button name="action_majal_engineering" type="object"
-                                    string="Open Submittals" class="btn-primary"/>
-                        </group>
-                    </group>
                     <separator string="Requests for Information"/>
                     <field name="rfi_ids" context="{'default_project_id': id}"
                            options="{'no_delete': True}">
@@ -308,7 +322,9 @@
                             <field name="name"/>
                             <field name="date_required"/>
                             <field name="ball_in_court_id"/>
-                            <field name="state" widget="badge"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state == 'submitted'"
+                                   decoration-success="state in ('answered', 'closed')"/>
                         </list>
                     </field>
                     <separator string="Technical Submittals"/>
@@ -320,7 +336,10 @@
                             <field name="submittal_type"/>
                             <field name="revision"/>
                             <field name="date_required"/>
-                            <field name="state" widget="badge"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state == 'submitted'"
+                                   decoration-success="state in ('approved', 'approved_as_noted')"
+                                   decoration-danger="state == 'revise_resubmit'"/>
                         </list>
                     </field>
                 </page>
@@ -345,7 +364,9 @@
                        decoration-success="approval_state == 'approved'"
                        decoration-danger="approval_state == 'rejected'"/>
                 <field name="approver_id"/>
-                <field name="state" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'current'"
+                       decoration-muted="state == 'superseded'"/>
             </list>
         </field>
     </record>
@@ -381,7 +402,9 @@
                             <field name="revision"/>
                             <field name="issued_for"/>
                             <field name="issue_date"/>
-                            <field name="state" widget="badge"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'current'"
+                                   decoration-muted="state == 'superseded'"/>
                         </group>
                         <group string="PDF &amp; Sign-off">
                             <field name="sheet_file" widget="binary" filename="sheet_filename"/>

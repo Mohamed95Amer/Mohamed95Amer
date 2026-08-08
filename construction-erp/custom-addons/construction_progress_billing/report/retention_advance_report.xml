@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Both of these are certificates a client signs. Printing them is not
+         a convenience: the signed sheet is what gets attached to the
+         application for payment. -->
+
+    <record id="action_report_retention_release" model="ir.actions.report">
+        <field name="name">Retention Release Certificate</field>
+        <field name="model">construction.retention.release</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_progress_billing.report_retention_release</field>
+        <field name="report_file">construction_progress_billing.report_retention_release</field>
+        <field name="binding_model_id" ref="model_construction_retention_release"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_retention_release">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="mb-1">Retention Release Certificate</h2>
+                        <h4 class="text-muted mb-4"><span t-field="doc.reference"/></h4>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="doc.project_id"/><br/>
+                                <strong>Client:</strong>
+                                <span t-field="doc.project_id.client_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Released against:</strong>
+                                <span t-field="doc.release_type"/><br/>
+                                <strong>Date:</strong>
+                                <span t-field="doc.date_release"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td>Retention withheld to date</td>
+                                    <td class="text-end">
+                                        <span t-field="doc.amount_withheld"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Less previously released</td>
+                                    <td class="text-end">
+                                        <span t-field="doc.amount_released_before"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Balance held</strong></td>
+                                    <td class="text-end"><strong>
+                                        <span t-field="doc.amount_available"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </strong></td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td><strong>Released by this certificate
+                                        (<span t-field="doc.percent"/>%)</strong></td>
+                                    <td class="text-end"><strong>
+                                        <span t-field="doc.amount_release"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <t t-if="doc.is_early">
+                            <p class="mt-3"><em>
+                                Claimed in advance of the contractual
+                                milestone.
+                            </em></p>
+                        </t>
+
+                        <div class="row mt-5 pt-3" style="border-top: 1px solid #dee2e6;">
+                            <div class="col-6">
+                                Certified by<br/><br/><br/>
+                                <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                            </div>
+                            <div class="col-6">
+                                Client / Engineer<br/><br/><br/>
+                                <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_advance_payment" model="ir.actions.report">
+        <field name="name">Advance Payment Certificate</field>
+        <field name="model">construction.advance.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_progress_billing.report_advance_payment</field>
+        <field name="report_file">construction_progress_billing.report_advance_payment</field>
+        <field name="binding_model_id" ref="model_construction_advance_payment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_advance_payment">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="mb-1">Advance Payment Certificate</h2>
+                        <h4 class="text-muted mb-4"><span t-field="doc.reference"/></h4>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="doc.project_id"/><br/>
+                                <strong>Client:</strong>
+                                <span t-field="doc.project_id.client_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong>
+                                <span t-field="doc.date_advance"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Advance amount</strong></td>
+                                    <td class="text-end"><strong>
+                                        <span t-field="doc.amount"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Recovery rate</td>
+                                    <td class="text-end">
+                                        <span t-field="doc.recovery_percent"/>%
+                                        of work certified
+                                    </td>
+                                </tr>
+                                <tr t-if="doc.recovery_start_percent">
+                                    <td>Recovery begins after</td>
+                                    <td class="text-end">
+                                        <span t-field="doc.recovery_start_percent"/>%
+                                        complete
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Recovered to date</td>
+                                    <td class="text-end">
+                                        <span t-field="doc.amount_recovered"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td><strong>Outstanding</strong></td>
+                                    <td class="text-end"><strong>
+                                        <span t-field="doc.amount_outstanding"
+                                              t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <t t-if="doc.guarantee_reference">
+                            <h5 class="mt-4">Advance payment guarantee</h5>
+                            <p>
+                                <span t-field="doc.guarantee_reference"/>
+                                <t t-if="doc.guarantee_bank">
+                                    issued by <span t-field="doc.guarantee_bank"/>
+                                </t>
+                                <t t-if="doc.guarantee_expiry">
+                                    , expiring <span t-field="doc.guarantee_expiry"/>
+                                </t>.
+                            </p>
+                            <t t-if="doc.guarantee_lapsed">
+                                <p><strong>
+                                    This guarantee has expired. Any amount
+                                    still outstanding is unsecured.
+                                </strong></p>
+                            </t>
+                        </t>
+
+                        <div class="row mt-5 pt-3" style="border-top: 1px solid #dee2e6;">
+                            <div class="col-6">
+                                Certified by<br/><br/><br/>
+                                <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                            </div>
+                            <div class="col-6">
+                                Client / Engineer<br/><br/><br/>
+                                <span style="border-bottom: 1px solid #000; display: block;">&#160;</span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

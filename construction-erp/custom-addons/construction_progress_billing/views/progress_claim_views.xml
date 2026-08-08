@@ -67,14 +67,19 @@
                                 <list editable="bottom" default_order="section_id">
                                     <field name="section_id"/>
                                     <field name="name"/>
+                                    <!-- Contract and previous quantities stay
+                                         visible: they are what the QS reads
+                                         across to decide the period figure.
+                                         Cumulative is just their sum. -->
                                     <field name="qty_contract"/>
-                                    <field name="unit_rate"/>
+                                    <field name="unit_rate" optional="hide"/>
                                     <field name="qty_previous"/>
                                     <field name="qty_this_period"/>
-                                    <field name="qty_cumulative"/>
+                                    <field name="qty_cumulative" optional="hide"/>
                                     <field name="pct_complete" widget="progressbar"/>
                                     <field name="amount_this" sum="This Period"/>
-                                    <field name="amount_cumulative" sum="Cumulative"/>
+                                    <field name="amount_cumulative" sum="Cumulative"
+                                           optional="show"/>
                                     <field name="currency_id" column_invisible="1"/>
                                 </list>
                             </field>
@@ -96,7 +101,7 @@
                 <field name="sequence_no"/>
                 <field name="date_to"/>
                 <field name="amount_this_period"/>
-                <field name="retention_this"/>
+                <field name="retention_this" optional="show"/>
                 <field name="amount_due"/>
                 <field name="state" widget="badge"
                        decoration-info="state in ('submitted', 'certified')"

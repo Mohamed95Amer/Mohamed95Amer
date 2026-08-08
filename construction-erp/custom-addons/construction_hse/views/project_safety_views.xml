@@ -7,15 +7,15 @@
             <list string="Safety Statistics" create="false"
                   decoration-danger="hse_lti_count &gt; 0">
                 <field name="name"/>
-                <field name="construction_stage"/>
+                <field name="construction_stage" optional="hide"/>
                 <field name="hse_manhours" sum="Manhours"/>
                 <field name="hse_incident_count" sum="Incidents"/>
-                <field name="hse_near_miss_count" sum="Near misses"/>
+                <field name="hse_near_miss_count" sum="Near misses" optional="hide"/>
                 <field name="hse_lti_count" sum="LTIs"/>
-                <field name="hse_days_lost" sum="Days lost"/>
+                <field name="hse_days_lost" sum="Days lost" optional="hide"/>
                 <field name="hse_ltifr" string="LTIFR"/>
                 <field name="hse_days_since_lti" string="Days since LTI"/>
-                <field name="hse_live_permit_count" string="Live permits"/>
+                <field name="hse_live_permit_count" string="Live permits" optional="hide"/>
                 <field name="hse_open_action_count" string="Open actions"/>
             </list>
         </field>

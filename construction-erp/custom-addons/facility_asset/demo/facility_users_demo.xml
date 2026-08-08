@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The facilities half of the product has no demo logins of its own —
+         the persona set lives in majal_demo, which is opt-in and installs a
+         whole second company. Two users here mean the FM screens can be seen
+         from the right seat without that.
+
+         maintenance.group_equipment_manager is the stock Maintenance manager
+         group, which is what facility_asset's own ACLs are written against. -->
+    <record id="user_demo_fm_manager" model="res.users">
+        <field name="name">Layla Nasser</field>
+        <field name="login">layla.fm</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">layla.fm@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('maintenance.group_equipment_manager'),
+        ])]"/>
+    </record>
+
+    <!-- A technician is a plain internal user: they close work orders and
+         record readings, and they must not be able to reconfigure assets or
+         delete evidence. facility_asset's tests assert exactly that. -->
+    <record id="user_demo_technician" model="res.users">
+        <field name="name">Tariq Aziz</field>
+        <field name="login">tariq.tech</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">tariq.tech@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+        ])]"/>
+    </record>
+</odoo>

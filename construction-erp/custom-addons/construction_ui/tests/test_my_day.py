@@ -149,3 +149,88 @@ class TestMyDay(TransactionCase):
         payload = self._my_day(manager)
         self.assertEqual(payload["sections"][0]["key"], "approvals")
         self.assertGreaterEqual(payload["sections"][0]["count"], 1)
+
+    def test_a_facilities_technician_sees_their_own_work_not_a_builders(self):
+        """The screen was shared verbatim by both roots, so a facilities
+        technician was shown construction registers and none of their own.
+
+        No role logic decides this: a register that returns nothing is
+        dropped, so each person sees only the registers they appear in.
+        """
+        technician = self.env["res.users"].create({
+            "name": "FM Technician", "login": "myday.fm",
+            "email": "myday.fm@majal.test",
+            "company_id": self.env.company.id,
+            "company_ids": [(6, 0, [self.env.company.id])],
+            "groups_id": [(6, 0, [
+                self.env.ref("maintenance.group_equipment_manager").id,
+                self.env.ref("base.group_user").id,
+            ])],
+        })
+        asset = self.env["maintenance.equipment"].create({"name": "AHU-7"})
+        self.env["maintenance.request"].create({
+            "name": "No cooling on level 3",
+            "equipment_id": asset.id,
+            "user_id": technician.id,
+        })
+        # A construction defect belonging to the engineer, to prove the two
+        # people do not see each other's work.
+        self._defect(self.engineer)
+
+        fm = self._my_day(technician)
+        self.assertIsNotNone(self._section(fm, "work_orders"))
+        self.assertEqual(self._section(fm, "work_orders")["count"], 1)
+        self.assertIsNone(self._section(fm, "defects"))
+
+        builder = self._my_day(self.engineer)
+        self.assertIsNotNone(self._section(builder, "defects"))
+        self.assertIsNone(self._section(builder, "work_orders"))
+
+    def test_planned_maintenance_due_reaches_the_team_not_one_person(self):
+        """A PM plan names an asset and a team, never a person."""
+        technician = self.env["res.users"].create({
+            "name": "PM Technician", "login": "myday.pm",
+            "email": "myday.pm@majal.test",
+            "company_id": self.env.company.id,
+            "company_ids": [(6, 0, [self.env.company.id])],
+            "groups_id": [(6, 0, [
+                self.env.ref("maintenance.group_equipment_manager").id,
+                self.env.ref("base.group_user").id,
+            ])],
+        })
+        team = self.env["maintenance.team"].create(
+            {"name": "Mechanical", "member_ids": [(6, 0, [technician.id])]})
+        asset = self.env["maintenance.equipment"].create({"name": "Chiller-2"})
+        from odoo import fields as odoo_fields
+        self.env["facility.pm.plan"].create({
+            "name": "Quarterly service", "equipment_id": asset.id,
+            "maintenance_team_id": team.id, "trigger_type": "calendar",
+            "next_date": odoo_fields.Date.subtract(
+                odoo_fields.Date.context_today(self.env.user), days=1),
+        })
+
+        section = self._section(self._my_day(technician), "pm_due")
+        self.assertIsNotNone(section)
+        self.assertEqual(section["count"], 1)
+        self.assertEqual(section["urgent"], 1)
+
+        # Somebody not on that team is not asked to do its work.
+        self.assertIsNone(self._section(self._my_day(self.other), "pm_due"))
+
+    def test_my_day_opens_for_a_user_with_no_construction_rights(self):
+        """My Day is the home screen for everyone, and its registers span
+        both halves of the product. A facilities technician has no rights on
+        approval steps or defects, so every lookup here reads something they
+        are not allowed to — unguarded that is an AccessError where a screen
+        should be, and the whole screen fails rather than one row.
+        """
+        outsider = self.env["res.users"].create({
+            "name": "No Construction Rights", "login": "myday.outsider",
+            "email": "myday.outsider@majal.test",
+            "company_id": self.env.company.id,
+            "company_ids": [(6, 0, [self.env.company.id])],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+        payload = self._my_day(outsider)   # must not raise
+        self.assertEqual(payload["user"], outsider.display_name)
+        self.assertIsInstance(payload["sections"], list)

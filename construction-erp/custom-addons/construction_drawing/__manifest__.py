@@ -12,10 +12,13 @@
     "data": [
         "security/ir.model.access.csv",
         "views/drawing_views.xml",
+        "views/transmittal_views.xml",
         "wizard/drawing_upload_views.xml",
+        "report/transmittal_report.xml",
     ],
     "demo": [
         "demo/drawing_demo.xml",
+        "demo/transmittal_demo.xml",
     ],
     "installable": True,
 }

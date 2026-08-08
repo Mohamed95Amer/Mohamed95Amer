@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_retention_release_form" model="ir.ui.view">
+        <field name="name">construction.retention.release.form</field>
+        <field name="model">construction.retention.release</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_request_approval" type="object"
+                            string="Request Approval" class="btn-primary"
+                            invisible="state != 'submitted' or approval_state != 'none'"/>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary"
+                            invisible="state != 'submitted' or approval_state != 'none'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_create_invoice" type="object"
+                            string="Create Invoice" class="btn-primary"
+                            invisible="state != 'approved'"/>
+                    <button name="action_mark_paid" type="object"
+                            string="Mark Paid" invisible="state != 'invoiced'"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state not in ('submitted', 'cancelled')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('invoiced', 'paid', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,invoiced,paid"/>
+                </header>
+                <sheet>
+                    <field name="approval_state" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="approval_state != 'pending'">
+                        <field name="approval_summary" nolabel="1" readonly="1"/>
+                    </div>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="approval_state != 'rejected'">
+                        This was rejected. Open the approval to see why.
+                    </div>
+                    <!-- Releasing before the milestone is a commercial
+                         decision, not an error: contracts get varied and
+                         money gets agreed early. It is said out loud rather
+                         than blocked. -->
+                    <div class="alert alert-warning d-flex align-items-center"
+                         role="alert" invisible="not is_early">
+                        <i class="fa fa-calendar-times-o me-2"/>
+                        <field name="early_warning" nolabel="1" readonly="1"
+                               class="oe_inline"/>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Description"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="release_type"/>
+                            <field name="date_release"/>
+                            <field name="is_early" invisible="1"/>
+                            <field name="move_payment_state"
+                                   invisible="not move_id"/>
+                        </group>
+                        <group string="Retention Position">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_withheld" readonly="1"/>
+                            <field name="amount_released_before" readonly="1"/>
+                            <field name="amount_available" readonly="1"/>
+                            <label for="percent"/>
+                            <div class="o_row">
+                                <field name="percent" class="oe_inline"/>
+                                <span class="oe_inline"> % of what is held</span>
+                            </div>
+                            <field name="amount_release"
+                                   class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_retention_release_list" model="ir.ui.view">
+        <field name="name">construction.retention.release.list</field>
+        <field name="model">construction.retention.release</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-warning="is_early and state != 'cancelled'">
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="release_type"/>
+                <field name="date_release"/>
+                <field name="amount_withheld" optional="hide"/>
+                <field name="amount_available" optional="hide"/>
+                <field name="amount_release" sum="Released"/>
+                <field name="is_early" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submitted'"
+                       decoration-success="state in ('approved', 'invoiced', 'paid')"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_retention_release_search" model="ir.ui.view">
+        <field name="name">construction.retention.release.search</field>
+        <field name="model">construction.retention.release</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <filter name="filter_open" string="Outstanding"
+                        domain="[('state', 'in', ('draft', 'submitted', 'approved'))]"/>
+                <filter name="filter_early" string="Claimed Early"
+                        domain="[('is_early', '=', True)]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_type" string="Milestone"
+                        context="{'group_by': 'release_type'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_retention_release" model="ir.actions.act_window">
+        <field name="name">Retention Releases</field>
+        <field name="res_model">construction.retention.release</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_retention_release_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No retention released yet</p>
+            <p>Every payment certificate withholds retention. This is where it
+               comes back — normally half at taking-over and half at the end of
+               the defects liability period.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_retention_release"
+              name="Retention Releases"
+              parent="construction_base.menu_construction_commercial"
+              action="action_retention_release"
+              sequence="25"/>
+
+    <!-- The retention position, where the money is owed: on the project. -->
+    <record id="view_project_form_retention" model="ir.ui.view">
+        <field name="name">project.project.form.retention</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_retention_releases" type="object"
+                        class="oe_stat_button" icon="fa-university"
+                        invisible="not is_construction or not retention_withheld">
+                    <div class="o_stat_info">
+                        <field name="retention_balance" widget="monetary"
+                               class="o_stat_value"/>
+                        <span class="o_stat_text">Retention Held</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

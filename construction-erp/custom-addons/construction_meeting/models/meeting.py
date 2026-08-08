@@ -75,6 +75,30 @@ class ConstructionMeeting(models.Model):
         self.ensure_one()
         return self.state != "closed"
 
+    def action_view_open_actions(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Open Actions — %s", self.reference),
+            "res_model": "construction.meeting.action",
+            "view_mode": "list,form",
+            "domain": [("meeting_id", "=", self.id), ("state", "!=", "closed")],
+        }
+
+    def action_view_overdue_actions(self):
+        self.ensure_one()
+        today = fields.Date.context_today(self)
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Overdue Actions — %s", self.reference),
+            "res_model": "construction.meeting.action",
+            "view_mode": "list,form",
+            "domain": [
+                ("meeting_id", "=", self.id), ("state", "!=", "closed"),
+                ("deadline", "!=", False), ("deadline", "<", today),
+            ],
+        }
+
     def action_issue(self):
         for meeting in self:
             if meeting.state != "draft":

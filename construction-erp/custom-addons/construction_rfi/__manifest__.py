@@ -12,6 +12,7 @@
         "security/ir.model.access.csv",
         "data/ir_cron_data.xml",
         "views/rfi_views.xml",
+        "views/drawing_views.xml",
     ],
     "demo": [
         "demo/rfi_demo.xml",

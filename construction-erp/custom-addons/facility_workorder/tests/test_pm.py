@@ -107,6 +107,15 @@ class TestPreventiveMaintenance(TransactionCase):
         req.checklist_ids[0].done = True
         self.assertEqual(req.checklist_progress, 50)
 
+    def test_asset_links_back_to_its_pm_plans(self):
+        plan = self.env["facility.pm.plan"].create({
+            "name": "Cal", "equipment_id": self.asset.id,
+            "job_plan_id": self.job.id, "trigger_type": "calendar"})
+        self.assertEqual(self.asset.pm_plan_count, 1)
+        action = self.asset.action_view_pm_plans()
+        found = self.env["facility.pm.plan"].search(action["domain"])
+        self.assertEqual(found, plan)
+
     def test_technician_updates_checklist_but_cannot_delete_it(self):
         request = self.env["maintenance.request"].create({
             "name": "Assigned checklist",

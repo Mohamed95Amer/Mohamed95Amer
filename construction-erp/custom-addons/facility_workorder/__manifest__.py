@@ -14,6 +14,7 @@
         "views/job_plan_views.xml",
         "views/pm_plan_views.xml",
         "views/maintenance_request_views.xml",
+        "views/maintenance_equipment_views.xml",
         "views/facility_menus.xml",
     ],
     "demo": [

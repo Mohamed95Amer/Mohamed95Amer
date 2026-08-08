@@ -89,6 +89,16 @@ class TestConstructionMeeting(TransactionCase):
         self.assertEqual(meeting.open_action_count, 2)
         self.assertEqual(meeting.overdue_action_count, 1)
 
+        open_action = meeting.action_view_open_actions()
+        self.assertEqual(
+            self.env["construction.meeting.action"].search_count(
+                open_action["domain"]), 2)
+
+        overdue_action = meeting.action_view_overdue_actions()
+        found = self.env["construction.meeting.action"].search(
+            overdue_action["domain"])
+        self.assertEqual(found, late)
+
     # ------------------------------------------------------------------
     # Carry forward — the point of the module
     # ------------------------------------------------------------------

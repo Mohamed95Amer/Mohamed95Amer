@@ -55,7 +55,22 @@ class ConstructionExposure(models.AbstractModel):
             ("project_id", "=", project.id), ("state", "=", "submitted"),
         ])
 
-        contract = project.contract_value or 0.0
+        # The current contract value, not the figure typed in once at kickoff.
+        # project.contract_value is a plain field nothing keeps in sync — not
+        # the BOQ, not an approved variation, nothing — so on any project with
+        # approved variations it quietly goes stale while this screen keeps
+        # showing it next to the Executive Dashboard, which already reads the
+        # BOQ-derived value below. Two board screens naming the same figure
+        # from two sources is exactly the class of bug that made the
+        # portfolio forecast-margin total disagree with its own rows; this is
+        # the same mistake at the most basic number either screen shows.
+        contract = project.cvr_contract_value or 0.0
+        # Variations as a share of what was originally agreed, not of the
+        # already-varied total — the current contract value already has
+        # approved_variations baked into it (variations append to the BOQ),
+        # so dividing by it would understate every job with a history of
+        # change. Subtracting them back out recovers the baseline.
+        baseline = contract - approved_variations
         certified = latest.amount_work_done_cumulative if latest else 0.0
         retention = latest.retention_cumulative if latest else 0.0
         uninvoiced = sum(
@@ -70,7 +85,7 @@ class ConstructionExposure(models.AbstractModel):
             "variations": approved_variations,
             "variations_pending": sum(pending.mapped("amount_sell_total")),
             "variation_percent": (
-                approved_variations / contract * 100 if contract else 0.0),
+                approved_variations / baseline * 100 if baseline else 0.0),
             "certified": certified,
             "certified_percent": certified / contract * 100 if contract else 0.0,
             "retention": retention,
@@ -85,12 +100,14 @@ class ConstructionExposure(models.AbstractModel):
         contract = total("contract")
         variations = total("variations")
         certified = total("certified")
+        baseline = contract - variations
         return {
             "projects": len(rows),
             "contract": contract,
             "variations": variations,
             "variations_pending": total("variations_pending"),
-            "variation_percent": variations / contract * 100 if contract else 0.0,
+            "variation_percent": (
+                variations / baseline * 100 if baseline else 0.0),
             "certified": certified,
             "certified_percent": certified / contract * 100 if contract else 0.0,
             "retention": total("retention"),

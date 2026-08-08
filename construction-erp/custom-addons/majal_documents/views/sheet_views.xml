@@ -13,7 +13,9 @@
                 <field name="revision"/>
                 <field name="amount_total" sum="Total"/>
                 <field name="currency_id" column_invisible="True"/>
-                <field name="state" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'frozen'"
+                       decoration-muted="state == 'archived'"/>
             </list>
         </field>
     </record>

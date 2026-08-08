@@ -51,6 +51,60 @@ class TestFacilityAsset(TransactionCase):
         self.assertEqual(self.floor.asset_count, 1)
         self.assertEqual(self.room.asset_count, 1)
 
+    def test_open_request_count_rolls_up_and_excludes_done(self):
+        req = self.env["maintenance.request"].create(
+            {"name": "AHU down", "equipment_id": self.asset.id})
+        self.assertEqual(self.room.open_request_count, 1)
+        self.assertEqual(self.floor.open_request_count, 1)
+        self.assertEqual(self.site.open_request_count, 1)
+
+        done_stage = self.env["maintenance.stage"].search(
+            [("done", "=", True)], limit=1)
+        req.stage_id = done_stage
+        self.room.invalidate_recordset(["open_request_count"])
+        self.assertEqual(self.room.open_request_count, 0)
+
+    def test_master_data_changes_leave_an_audit_trail(self):
+        """Re-parenting a location changes what every rollup above it means,
+        and retyping a failure code rewrites what past work orders appear to
+        have been about. Both must be answerable with "who, and when"."""
+        def tracked_after(record, vals):
+            """Fields recorded on the chatter by writing `vals` to `record`.
+
+            Two pieces of mail.thread behaviour have to be honoured to see a
+            trail from inside a test. Tracking is queued on the cursor's
+            precommit hook (`_track_finalize`), so nothing is posted until
+            the transaction is about to commit. And a record created in the
+            transaction is deliberately *discarded* from tracking — its
+            creation message already says what it is — so the create has to
+            be settled before an edit counts as a change.
+            """
+            self.env.cr.precommit.run()   # settle the create
+            record.write(vals)
+            self.env.cr.precommit.run()   # post the tracking for the edit
+            record.invalidate_recordset(["message_ids"])
+            return record.message_ids.tracking_value_ids.mapped("field_id.name")
+
+        self.assertIn(
+            "parent_id", tracked_after(self.room, {"parent_id": self.site.id}))
+
+        code = self.env["facility.failure.code"].create(
+            {"name": "No cooling", "failure_type": "problem"})
+        self.assertIn(
+            "failure_type", tracked_after(code, {"failure_type": "cause"}))
+
+        meter = self.env["facility.asset.meter"].create(
+            {"name": "Hours", "equipment_id": self.asset.id, "uom": "hours"})
+        self.assertIn("uom", tracked_after(meter, {"uom": "kWh"}))
+
+    def test_view_open_requests_domain(self):
+        req = self.env["maintenance.request"].create(
+            {"name": "AHU down", "equipment_id": self.asset.id})
+        action = self.room.action_view_open_requests()
+        self.assertEqual(action["res_model"], "maintenance.request")
+        found = self.env["maintenance.request"].search(action["domain"])
+        self.assertEqual(found, req)
+
     def test_warranty_active(self):
         self.asset.warranty_date = date.today() + timedelta(days=10)
         self.assertTrue(self.asset.warranty_active)

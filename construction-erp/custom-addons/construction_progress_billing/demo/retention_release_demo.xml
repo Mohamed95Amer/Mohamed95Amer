@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Loads after the certificate, because the pot it draws
+         down is the retention that certificate withheld. -->
+    <!-- ============================================================ -->
+    <!-- Retention release: half of what the certificates have held,  -->
+    <!-- claimed a month before taking-over, so the early banner is   -->
+    <!-- visible on the form and the "Claimed Early" filter has       -->
+    <!-- something to find.                                           -->
+    <!-- ============================================================ -->
+    <record id="retention_release_alnoor" model="construction.retention.release">
+        <field name="name">First moiety — on taking-over</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="release_type">taking_over</field>
+        <field name="date_release" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+        <field name="percent">50</field>
+    </record>
+</odoo>
