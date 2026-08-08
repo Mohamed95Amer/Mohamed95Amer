@@ -24,6 +24,12 @@ on:
         required: false
         type: string
         default: ''
+      target:
+        description: Deployment target (its own isolated server, DB, and secrets)
+        required: true
+        type: choice
+        options: [platform, staging]
+        default: platform
   push:
     tags:
       - "majalops-release-request-*"
@@ -198,12 +204,23 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy }}
     runs-on: ubuntu-24.04
     needs: [version, build, publish-release]
-    environment: platform
+    environment: ${{ inputs.target }}
     steps:
+      - id: target
+        name: Resolve the secret/variable prefix for this target
+        env:
+          TARGET: ${{ inputs.target }}
+        run: |
+          set -euo pipefail
+          [[ "$TARGET" == "platform" || "$TARGET" == "staging" ]] || {
+            echo "Unknown deployment target: $TARGET" >&2; exit 1;
+          }
+          echo "prefix=$(printf '%s' "$TARGET" | tr '[:lower:]' '[:upper:]')" >> "$GITHUB_OUTPUT"
+
       - name: Configure strict SSH trust
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.PLATFORM_SSH_PRIVATE_KEY }}
-          KNOWN_HOSTS: ${{ secrets.PLATFORM_KNOWN_HOSTS }}
+          SSH_PRIVATE_KEY: ${{ secrets[format('{0}_SSH_PRIVATE_KEY', steps.target.outputs.prefix)] }}
+          KNOWN_HOSTS: ${{ secrets[format('{0}_KNOWN_HOSTS', steps.target.outputs.prefix)] }}
         run: |
           install -d -m 0700 ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/majalops_deploy
@@ -212,20 +229,21 @@ jobs:
 
       - name: Deploy immutable image
         env:
-          HOST: ${{ vars.PLATFORM_HOST }}
-          PORT: ${{ vars.PLATFORM_SSH_PORT }}
-          USER: ${{ vars.PLATFORM_SSH_USER }}
+          HOST: ${{ vars[format('{0}_HOST', steps.target.outputs.prefix)] }}
+          PORT: ${{ vars[format('{0}_SSH_PORT', steps.target.outputs.prefix)] }}
+          USER: ${{ vars[format('{0}_SSH_USER', steps.target.outputs.prefix)] }}
           IMAGE_REF: ${{ needs.build.outputs.image_ref }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INSTALL_MODS: ${{ inputs.install_modules }}
           UPGRADE_MODS: ${{ inputs.upgrade_modules }}
+          TARGET: ${{ inputs.target }}
         run: |
           set -euo pipefail
           module_pattern='^([a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*)?$'
           [[ "$INSTALL_MODS" =~ $module_pattern ]] || { echo "Invalid install_modules input" >&2; exit 1; }
           [[ "$UPGRADE_MODS" =~ $module_pattern ]] || { echo "Invalid upgrade_modules input" >&2; exit 1; }
           ssh_args=(-i ~/.ssh/majalops_deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -p "${PORT:-22}")
-          target="${USER:-majaldeploy}@${HOST:?PLATFORM_HOST is required}"
+          target="${USER:-majaldeploy}@${HOST:?${TARGET^^}_HOST is required}"
           # Values expand locally by design; the server-side wrapper validates both allow-listed formats.
           # shellcheck disable=SC2029
           printf '%s' "$GH_TOKEN" | ssh "${ssh_args[@]}" "$target" \

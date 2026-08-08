@@ -7,7 +7,8 @@ param(
     [string] $SshUser = 'majaladmin',
     [string] $AdminUser = 'majaladmin',
     [int] $SshPort = 22,
-    [string] $IdentityFile = 'C:\Users\hossi\.ssh\majalops_admin'
+    [string] $IdentityFile = 'C:\Users\hossi\.ssh\majalops_admin',
+    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -123,9 +124,9 @@ sudo env CONFIRM_PROVISION=YES ADMIN_USER='$AdminUser' SSH_PORT='$SshPort' MAJAL
 & ssh @sshArgs $sshTarget $remoteCommand.Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Remote provisioning failed. Review /var/log/majalops/provision-platform.log.' }
 
-$deployKey = Join-Path $generatedDir 'majaldeploy_ed25519'
+$deployKey = Join-Path $generatedDir "majaldeploy_${EnvironmentName}_ed25519"
 if (-not (Test-Path -LiteralPath $deployKey)) {
-    & ssh-keygen -q -t ed25519 -N '' -C 'MajalOps GitHub deployment' -f $deployKey
+    & ssh-keygen -q -t ed25519 -N '' -C "MajalOps GitHub deployment ($EnvironmentName)" -f $deployKey
     if ($LASTEXITCODE -ne 0) { throw 'Could not generate restricted deployment key.' }
 }
 & scp @scpArgs "$deployKey.pub" "${sshTarget}:$remoteStaging/majaldeploy_ed25519.pub"
@@ -139,7 +140,7 @@ $verifiedHostLines = @($knownLines | Where-Object { $_ -match '\sssh-ed25519\s' 
 if ($verifiedHostLines.Count -ne 1) {
     throw 'Expected exactly one verified Ed25519 host-key entry for CI.'
 }
-$verifiedHostLines | Set-Content -LiteralPath (Join-Path $generatedDir 'known_hosts') -Encoding ascii
+$verifiedHostLines | Set-Content -LiteralPath (Join-Path $generatedDir "known_hosts_${EnvironmentName}") -Encoding ascii
 
 Write-Output "Provisioning succeeded: https://$Domain"
 Write-Output "Next automated step: powershell -File infrastructure\scripts\configure-github.ps1 -ServerIp $ServerIp"

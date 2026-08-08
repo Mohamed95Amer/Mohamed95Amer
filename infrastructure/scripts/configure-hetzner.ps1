@@ -5,7 +5,8 @@ param(
     [int] $SshPort = 22,
     [string[]] $SshAllowedCidrs = @('0.0.0.0/0', '::/0'),
     [bool] $EnableBackups = $true,
-    [bool] $EnableProtection = $true
+    [bool] $EnableProtection = $true,
+    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -52,7 +53,7 @@ $firewallLookup = Invoke-HetznerApi -Method GET -Path "/firewalls?name=$([uri]::
 if (@($firewallLookup.firewalls).Count -eq 0) {
     $created = Invoke-HetznerApi -Method POST -Path '/firewalls' -Body @{
         name = $FirewallName
-        labels = @{ owner = 'majalops'; environment = 'platform' }
+        labels = @{ owner = 'majalops'; environment = $EnvironmentName }
         rules = $rules
         apply_to = @(@{ type = 'server'; server = @{ id = $server.id } })
     }
@@ -81,7 +82,7 @@ if ($EnableBackups -and [string]::IsNullOrWhiteSpace([string]$server.backup_wind
     Write-Output 'Enabled Hetzner backups.'
 }
 [void](Invoke-HetznerApi -Method PUT -Path "/servers/$($server.id)" -Body @{
-    labels = @{ owner = 'majalops'; environment = 'platform'; data = 'no-customer-production' }
+    labels = @{ owner = 'majalops'; environment = $EnvironmentName; data = 'no-customer-production' }
 })
 
 $generatedDir = Join-Path (Resolve-Path (Join-Path $PSScriptRoot '..')).Path '.generated'

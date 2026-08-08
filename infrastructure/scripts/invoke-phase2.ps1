@@ -9,8 +9,18 @@ param(
     [string] $SshUser = 'majaladmin',
     [int] $SshPort = 22,
     [bool] $CloudflareProxied = $false,
+    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform',
+    [string] $ServerName = '',
+    [string] $FirewallName = '',
     [switch] $EnableExternalHealth
 )
+
+if ([string]::IsNullOrWhiteSpace($ServerName)) {
+    $ServerName = if ($EnvironmentName -eq 'platform') { 'majalops-platform-01' } else { 'majalops-staging-01' }
+}
+if ([string]::IsNullOrWhiteSpace($FirewallName)) {
+    $FirewallName = "majalops-$EnvironmentName-firewall"
+}
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -47,8 +57,8 @@ if ($MajalImage -notmatch '^ghcr\.io/mohamed95amer/majalops-platform@sha256:[a-f
 }
 
 $scripts = $PSScriptRoot
-Write-Output 'STEP 1/5: Applying Hetzner firewall, backup and deletion-protection controls.'
-& (Join-Path $scripts 'configure-hetzner.ps1') -SshPort $SshPort
+Write-Output "STEP 1/5: Applying Hetzner firewall, backup and deletion-protection controls to $ServerName ($EnvironmentName)."
+& (Join-Path $scripts 'configure-hetzner.ps1') -ServerName $ServerName -FirewallName $FirewallName -EnvironmentName $EnvironmentName -SshPort $SshPort
 
 $serverEnv = Join-Path (Join-Path $scripts '..\.generated') 'server.env'
 $values = @{}
@@ -70,12 +80,16 @@ Write-Output 'STEP 3/5: Provisioning the platform through strict host-key SSH.'
 & (Join-Path $scripts 'remote-bootstrap.ps1') `
     -ServerIp $serverIp -TlsEmail $TlsEmail -MajalImage $MajalImage `
     -Domain $Domain -SshUser $SshUser -AdminUser $SshUser `
-    -SshPort $SshPort -IdentityFile $IdentityFile
+    -SshPort $SshPort -IdentityFile $IdentityFile -EnvironmentName $EnvironmentName
 
-Write-Output 'STEP 4/5: Configuring GitHub environments, variables and restricted deploy secrets.'
+Write-Output "STEP 4/5: Configuring the $EnvironmentName GitHub environment, variables and restricted deploy secrets."
+# configure-github.ps1's own -SshUser default ('majaldeploy') is the
+# restricted forced-command deploy key user, deliberately distinct from
+# $SshUser above (the human admin account used for STEP 3's provisioning
+# SSH session) -- do not pass $SshUser through here.
 & (Join-Path $scripts 'configure-github.ps1') `
     -Repository $Repository -ServerIp $serverIp -SshPort "$SshPort" `
-    -HealthUrl "https://$Domain/healthz" -EnableExternalHealth:$EnableExternalHealth
+    -HealthUrl "https://$Domain/healthz" -EnvironmentName $EnvironmentName -EnableExternalHealth:$EnableExternalHealth
 
 Write-Output 'STEP 5/5: Running an external TLS health check.'
 $response = Invoke-WebRequest -UseBasicParsing -Uri "https://$Domain/healthz" -TimeoutSec 30

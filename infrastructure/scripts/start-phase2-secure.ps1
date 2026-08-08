@@ -5,6 +5,7 @@ param(
     [string] $MajalImage = '',
     [string] $IdentityFile = 'C:\Users\hossi\.ssh\majalops_admin',
     [ValidateSet('patch', 'minor', 'major')] [string] $ReleaseBump = 'patch',
+    [ValidateSet('platform', 'staging')] [string] $EnvironmentName = 'platform',
     [switch] $EnableExternalHealth
 )
 
@@ -95,6 +96,7 @@ try {
         -MajalImage $MajalImage `
         -IdentityFile $IdentityFile `
         -ReleaseBump $ReleaseBump `
+        -EnvironmentName $EnvironmentName `
         -EnableExternalHealth:$EnableExternalHealth
 } finally {
     Remove-Item Env:HCLOUD_TOKEN -ErrorAction SilentlyContinue
