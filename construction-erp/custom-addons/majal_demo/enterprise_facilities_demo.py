@@ -13,7 +13,7 @@ from odoo import Command, fields
 from odoo.tools.misc import file_open
 
 
-VERSION = "2026.08.3"
+VERSION = "2026.08.4"
 
 
 SITE_SPECS = [
@@ -172,7 +172,7 @@ def _locations(env, company, users):
     return result
 
 
-def _categories_and_team(env, company):
+def _categories_and_team(env, company, users):
     categories = {}
     for category_name in sorted({item[0] for item in ASSET_TYPES}):
         categories[category_name] = _one(
@@ -183,7 +183,14 @@ def _categories_and_team(env, company):
     team = _one(
         env["maintenance.team"],
         [("name", "=", "Majal Enterprise FM Command")],
-        {"name": "Majal Enterprise FM Command", "company_id": company.id},
+        {
+            "name": "Majal Enterprise FM Command",
+            "company_id": company.id,
+            "member_ids": [Command.set([
+                users["supervisor"].id,
+                users["tech"].id,
+            ])],
+        },
     )
     return categories, team
 
@@ -611,7 +618,7 @@ def seed_enterprise_facilities_demo(env):
         raise RuntimeError("The Majal facilities demo personas are missing.")
 
     locations = _locations(env, company, users)
-    categories, team = _categories_and_team(env, company)
+    categories, team = _categories_and_team(env, company, users)
     assets = _assets(env, company, locations, categories, team, users)
     readings, scans = _meters_and_scans(env, assets, users)
     job_plans, failures = _job_plans_and_failures(env)

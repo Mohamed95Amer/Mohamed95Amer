@@ -52,6 +52,8 @@ class ConstructionMyDay(models.AbstractModel):
             })
 
         for entry in self._registers():
+            if entry.get("group") and not user.has_group(entry["group"]):
+                continue
             model = self.env.get(entry["model"])
             # `is None` covers a module that is not installed; has_access
             # covers one that is installed but not this person's job.
@@ -72,6 +74,18 @@ class ConstructionMyDay(models.AbstractModel):
                     entry["label"], entry["model"], domain),
             })
         return sections
+
+    @api.model
+    def _candidate_ids(self, model_name, domain):
+        """Resolve relation membership without leaking inaccessible records.
+
+        Odoo expands an x2many membership leaf through the related model and
+        applies that model's record rules.  My Day spans applications, so a
+        perfectly valid task/PM query could fail on an unrelated ``res.users``
+        rule.  Sudo is used only to resolve candidate ids; the caller then
+        performs the real count and action with the current user's rules.
+        """
+        return self.env[model_name].sudo().search(domain).ids
 
     @api.model
     def _action_for(self, name, model, domain):
@@ -106,6 +120,7 @@ class ConstructionMyDay(models.AbstractModel):
                 "key": "defects",
                 "label": self.env._("Defects assigned to me"),
                 "model": "construction.defect",
+                "group": "construction_base.group_construction_user",
                 "icon": "fa-exclamation-triangle",
                 "domain": lambda user, today: [
                     ("assigned_user_id", "=", user.id),
@@ -117,6 +132,7 @@ class ConstructionMyDay(models.AbstractModel):
                 "key": "inspections",
                 "label": self.env._("My inspections"),
                 "model": "construction.form.inspection",
+                "group": "construction_base.group_construction_user",
                 "icon": "fa-clipboard",
                 "domain": lambda user, today: [
                     ("inspector_id", "=", user.id),
@@ -128,12 +144,17 @@ class ConstructionMyDay(models.AbstractModel):
                 "key": "tasks",
                 "label": self.env._("My tasks"),
                 "model": "project.task",
+                "group": "construction_base.group_construction_user",
                 "icon": "fa-tasks",
                 "domain": lambda user, today: [
-                    ("user_ids", "in", [user.id]),
-                    ("project_id.is_construction", "=", True),
-                    ("state", "in", ("01_in_progress", "02_changes_requested",
-                                     "03_approved")),
+                    ("id", "in", self._candidate_ids("project.task", [
+                        ("user_ids", "=", user.id),
+                        ("project_id.is_construction", "=", True),
+                        ("state", "in", (
+                            "01_in_progress", "02_changes_requested",
+                            "03_approved",
+                        )),
+                    ])),
                 ],
                 "urgent": lambda today: [("date_deadline", "<", today)],
             },
@@ -141,6 +162,7 @@ class ConstructionMyDay(models.AbstractModel):
                 "key": "rfis",
                 "label": self.env._("RFIs in my court"),
                 "model": "construction.rfi",
+                "group": "construction_base.group_construction_user",
                 "icon": "fa-question-circle",
                 "domain": lambda user, today: [
                     ("ball_in_court_id", "=", user.partner_id.id),
@@ -154,6 +176,7 @@ class ConstructionMyDay(models.AbstractModel):
                 "key": "permits",
                 "label": self.env._("Permits I supervise"),
                 "model": "construction.permit",
+                "group": "construction_base.group_construction_user",
                 "icon": "fa-fire-extinguisher",
                 "domain": lambda user, today: [
                     ("supervisor_id", "=", user.id),
@@ -195,9 +218,11 @@ class ConstructionMyDay(models.AbstractModel):
                 "model": "facility.pm.plan",
                 "icon": "fa-calendar-check-o",
                 "domain": lambda user, today: [
-                    ("trigger_type", "=", "calendar"),
-                    ("next_date", "<=", today),
-                    ("maintenance_team_id.member_ids", "in", [user.id]),
+                    ("id", "in", self._candidate_ids("facility.pm.plan", [
+                        ("trigger_type", "=", "calendar"),
+                        ("next_date", "<=", today),
+                        ("maintenance_team_id.member_ids", "=", user.id),
+                    ])),
                 ],
                 "urgent": lambda today: [("next_date", "<", today)],
             },
