@@ -139,9 +139,8 @@ class TestMajalOfflineSync(TransactionCase):
             }
         )
 
-        records = _construction_field_records(
-            self.env.with_user(facilities_user), facilities_user
-        )
+        facilities_env = self.env["res.users"].with_user(facilities_user).env
+        records = _construction_field_records(facilities_env, facilities_user)
 
         self.assertEqual(set(records), {"projects", "defects", "inspections", "drawings"})
         self.assertTrue(all(not recordset for recordset in records.values()))
