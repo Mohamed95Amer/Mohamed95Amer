@@ -21,11 +21,20 @@ env_value() {
     awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }' "$ENV_FILE"
 }
 
+resume_app_if_paused() {
+    local container
+    container="$(compose ps -q "$APP_SERVICE")"
+    [[ -n "$container" ]] || return 0
+    if [[ "$(docker inspect --format '{{.State.Paused}}' "$container")" == "true" ]]; then
+        compose unpause "$APP_SERVICE"
+    fi
+}
+
 app_paused=0
 cleanup() {
     local code=$?
     if (( app_paused == 1 )); then
-        compose unpause "$APP_SERVICE" >/dev/null 2>&1 || true
+        resume_app_if_paused >/dev/null 2>&1 || true
     fi
     if (( code != 0 )); then
         printf 'ERROR: backup failed (exit %s). Partial set: %s\n' "$code" "${work_dir:-not-created}" >&2
@@ -80,7 +89,7 @@ docker run --rm --volumes-from "$app_container" \
     -v "${work_dir}:/backup" "$BACKUP_HELPER_IMAGE" \
     tar --numeric-owner -C "$filestore_parent" -czf /backup/filestore.tar.gz "$filestore_name"
 
-compose unpause "$APP_SERVICE"
+resume_app_if_paused
 app_paused=0
 
 cat > "${work_dir}/metadata.txt" <<EOF
