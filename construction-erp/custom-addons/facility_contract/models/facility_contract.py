@@ -108,7 +108,10 @@ class FacilityMaintenanceContract(models.Model):
 
             revenue = sum(
                 move.amount_untaxed_signed
-                for move in contract._get_related_invoices()
+                # The Facilities Manager is entitled to this contract-level
+                # KPI without inheriting broad Accounting application access.
+                # Only the deliberate aggregate is exposed by this model.
+                for move in contract.sudo()._get_related_invoices()
                 if move.state == "posted"
             )
             contract.invoiced_revenue = revenue

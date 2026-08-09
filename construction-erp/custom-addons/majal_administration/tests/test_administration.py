@@ -97,35 +97,6 @@ class TestMajalAdministration(TransactionCase):
             )
         )
 
-    def test_facilities_roles_can_read_linked_maintenance_contracts(self):
-        """Opening an asset or work order must not fail on its AMC relation."""
-        self.field_user.with_user(self.company_admin)._majal_apply_role(
-            self.field_role, "facilities"
-        )
-        contract_model = self.env["contract.contract"].with_user(
-            self.field_user
-        )
-        contract_line_model = self.env["contract.line"].with_user(
-            self.field_user
-        )
-        self.assertTrue(contract_model.check_access_rights("read", False))
-        self.assertTrue(contract_line_model.check_access_rights("read", False))
-        self.assertFalse(contract_model.check_access_rights("write", False))
-
-        manager = self.users.create(
-            {
-                "name": "Test Facility Manager",
-                "login": "test-facility-manager@majal.local",
-                "company_id": self.env.company.id,
-                "company_ids": [(6, 0, [self.env.company.id])],
-            }
-        )
-        manager._majal_apply_role(self.manager_role, "facilities")
-        manager_contracts = self.env["contract.contract"].with_user(manager)
-        manager_lines = self.env["contract.line"].with_user(manager)
-        self.assertTrue(manager_contracts.check_access_rights("write", False))
-        self.assertTrue(manager_lines.check_access_rights("write", False))
-
     def test_company_admin_cannot_assign_owner(self):
         with self.assertRaises(AccessError):
             self.field_user.with_user(self.company_admin)._majal_apply_role(

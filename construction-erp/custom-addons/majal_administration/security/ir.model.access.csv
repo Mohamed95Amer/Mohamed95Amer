@@ -7,7 +7,3 @@ access_majal_audit_owner,majal admin audit owner,model_majal_admin_audit,majal_a
 access_majal_invite_wizard,majal user invite wizard,model_majal_user_invite_wizard,majal_administration.group_user_administrator,1,1,1,1
 access_majal_access_wizard,majal user access wizard,model_majal_user_access_wizard,majal_administration.group_user_administrator,1,1,1,1
 access_majal_restore_wizard,majal restore request wizard,model_majal_restore_request_wizard,majal_administration.group_platform_owner,1,1,1,1
-access_facility_contract_user,facility contract user,contract.model_contract_contract,majal_administration.group_facilities_user,1,0,0,0
-access_facility_contract_manager,facility contract manager,contract.model_contract_contract,majal_administration.group_facilities_manager,1,1,1,1
-access_facility_contract_line_user,facility contract line user,contract.model_contract_line,majal_administration.group_facilities_user,1,0,0,0
-access_facility_contract_line_manager,facility contract line manager,contract.model_contract_line,majal_administration.group_facilities_manager,1,1,1,1
