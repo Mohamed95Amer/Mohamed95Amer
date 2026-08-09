@@ -13,7 +13,7 @@ from odoo import Command, fields
 from odoo.tools.misc import file_open
 
 
-VERSION = "2026.08.2"
+VERSION = "2026.08.3"
 
 
 SITE_SPECS = [
@@ -59,7 +59,14 @@ def _valid(model, values):
 
 def _one(model, domain, values):
     record = model.sudo().search(domain, limit=1)
-    return record or model.sudo().create(_valid(model, values))
+    clean_values = _valid(model, values)
+    if record:
+        # A repeatable demo seed must converge old data on the current model,
+        # not merely avoid duplicates. This also lets the seed safely repair
+        # role assignments introduced by later product versions.
+        record.sudo().write(clean_values)
+        return record
+    return model.sudo().create(clean_values)
 
 
 def _users(env):
@@ -129,7 +136,10 @@ def _locations(env, company, users):
                         "parent_id": building.id,
                         "company_id": company.id,
                         "manager_user_id": users["supervisor"].id,
-                        "member_user_ids": [Command.set([users["tech"].id])],
+                        "member_user_ids": [Command.set([
+                            users["manager"].id,
+                            users["tech"].id,
+                        ])],
                     },
                 )
                 floors.append(floor)
@@ -144,6 +154,11 @@ def _locations(env, company, users):
                             "location_type": "zone",
                             "parent_id": floor.id,
                             "company_id": company.id,
+                            "manager_user_id": users["supervisor"].id,
+                            "member_user_ids": [Command.set([
+                                users["manager"].id,
+                                users["tech"].id,
+                            ])],
                         },
                     )
             result.append({
