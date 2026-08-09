@@ -13,7 +13,7 @@ from odoo import Command, fields
 from odoo.tools.misc import file_open
 
 
-VERSION = "2026.08.1"
+VERSION = "2026.08.2"
 
 
 SITE_SPECS = [
@@ -182,25 +182,32 @@ def _assets(env, company, locations, categories, team, users):
             category_name, label, criticality, meter_name, unit, value, life = asset_type
             barcode = f"MAJ-FM-{building_number:02d}-{type_number:03d}"
             asset = asset_model.sudo().search([("barcode", "=", barcode)], limit=1)
-            if not asset:
-                floor = bundle["floors"][(type_number - 1) % len(bundle["floors"])]
-                asset = asset_model.sudo().create(_valid(asset_model, {
-                    "name": f"{label} {bundle['building'].code}-{type_number:02d}",
-                    "company_id": company.id,
-                    "category_id": categories[category_name].id,
-                    "maintenance_team_id": team.id,
-                    "technician_user_id": users["tech"].id,
-                    "owner_user_id": users["manager"].id,
-                    "facility_location_id": floor.id,
-                    "criticality": criticality,
-                    "barcode": barcode,
-                    "nfc_uid": f"04-A7-{building_number:02X}-{type_number:04X}",
-                    "purchase_value": value + building_number * 7_500,
-                    "expected_life_years": life,
-                    "warranty_date": today + timedelta(days=120 + type_number * 19),
-                    "assign_date": today - timedelta(days=500 + type_number * 13),
-                    "portal_selectable": True,
-                }))
+            floor = bundle["floors"][(type_number - 1) % len(bundle["floors"])]
+            values = _valid(asset_model, {
+                "name": f"{label} {bundle['building'].code}-{type_number:02d}",
+                "company_id": company.id,
+                "category_id": categories[category_name].id,
+                "maintenance_team_id": team.id,
+                "technician_user_id": users["tech"].id,
+                "owner_user_id": users["manager"].id,
+                "facility_location_id": floor.id,
+                "criticality": criticality,
+                "barcode": barcode,
+                "nfc_uid": f"04-A7-{building_number:02X}-{type_number:04X}",
+                "purchase_value": value + building_number * 7_500,
+                "expected_life_years": life,
+                "warranty_date": today + timedelta(days=120 + type_number * 19),
+                "assign_date": today - timedelta(days=500 + type_number * 13),
+                "portal_selectable": True,
+            })
+            if asset:
+                # Demo seeds are also repair tools. Earlier versions created
+                # these rows before portfolio ownership was added; reconciling
+                # the managed fields makes reruns genuinely idempotent and
+                # keeps the Facility Manager's assignment-based view complete.
+                asset.sudo().write(values)
+            else:
+                asset = asset_model.sudo().create(values)
             assets.append({"asset": asset, "bundle": bundle, "meter_name": meter_name, "unit": unit})
     return assets
 
