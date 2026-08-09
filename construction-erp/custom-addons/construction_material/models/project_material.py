@@ -76,8 +76,36 @@ class ProjectMaterial(models.Model):
             )
 
     def _material_parent_location(self):
-        """View location every site store hangs under."""
-        return self.env.ref("construction_material.location_construction_sites")
+        """Return a company-compatible view location for this project's store.
+
+        The XML seed is created in the installing company.  In a multi-company
+        database, reusing it for another company makes ``stock.location`` reject
+        the child location during ``_check_company``.  Keep the shared seed for
+        its own company (and for a company-neutral seed), but create one stable
+        top-level view per additional company.
+        """
+        self.ensure_one()
+        company = self.company_id or self.env.company
+        seeded_parent = self.env.ref(
+            "construction_material.location_construction_sites"
+        )
+        if not seeded_parent.company_id or seeded_parent.company_id == company:
+            return seeded_parent
+
+        location_model = self.env["stock.location"].sudo()
+        company_parent = location_model.search([
+            ("name", "=", "Construction Sites"),
+            ("usage", "=", "view"),
+            ("company_id", "=", company.id),
+            ("location_id", "=", False),
+        ], limit=1)
+        if not company_parent:
+            company_parent = location_model.create({
+                "name": "Construction Sites",
+                "usage": "view",
+                "company_id": company.id,
+            })
+        return company_parent
 
     def ensure_site_location(self):
         """Create the site store on first use.
