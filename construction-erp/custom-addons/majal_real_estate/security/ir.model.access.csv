@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_development_user,majal.development user,model_majal_development,group_majal_real_estate_user,1,0,0,0
+access_majal_development_manager,majal.development manager,model_majal_development,group_majal_real_estate_manager,1,1,1,1
+access_majal_community_user,majal.community user,model_majal_community,group_majal_real_estate_user,1,0,0,0
+access_majal_community_manager,majal.community manager,model_majal_community,group_majal_real_estate_manager,1,1,1,1
+access_majal_building_user,majal.building user,model_majal_building,group_majal_real_estate_user,1,0,0,0
+access_majal_building_manager,majal.building manager,model_majal_building,group_majal_real_estate_manager,1,1,1,1
+access_majal_floor_user,majal.floor user,model_majal_floor,group_majal_real_estate_user,1,0,0,0
+access_majal_floor_manager,majal.floor manager,model_majal_floor,group_majal_real_estate_manager,1,1,1,1
+access_majal_unit_type_user,majal.unit.type user,model_majal_unit_type,group_majal_real_estate_user,1,0,0,0
+access_majal_unit_type_manager,majal.unit.type manager,model_majal_unit_type,group_majal_real_estate_manager,1,1,1,1
+access_majal_unit_user,majal.unit user,model_majal_unit,group_majal_real_estate_user,1,0,0,0
+access_majal_unit_manager,majal.unit manager,model_majal_unit,group_majal_real_estate_manager,1,1,1,1
+access_majal_unit_generate_wizard,majal.unit.generate.wizard,model_majal_unit_generate_wizard,group_majal_real_estate_manager,1,1,1,1

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_real_estate_root"
+              name="Real Estate"
+              web_icon="majal_real_estate,static/description/icon.png"
+              sequence="36"
+              groups="majal_real_estate.group_majal_real_estate_user"/>
+
+    <menuitem id="menu_majal_real_estate_developments"
+              name="Developments"
+              parent="menu_majal_real_estate_root"
+              action="action_majal_development"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_inventory"
+              name="Inventory"
+              parent="menu_majal_real_estate_root"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_units"
+              name="Units"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_unit"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_buildings"
+              name="Buildings"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_building"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_floors"
+              name="Floors"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_floor"
+              sequence="30"/>
+
+    <menuitem id="menu_majal_real_estate_communities"
+              name="Communities"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_community"
+              sequence="40"/>
+
+    <menuitem id="menu_majal_real_estate_config"
+              name="Configuration"
+              parent="menu_majal_real_estate_root"
+              sequence="90"
+              groups="majal_real_estate.group_majal_real_estate_manager"/>
+
+    <menuitem id="menu_majal_real_estate_unit_types"
+              name="Unit Types"
+              parent="menu_majal_real_estate_config"
+              action="action_majal_unit_type"
+              sequence="10"/>
+</odoo>

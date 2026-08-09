@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_unit_list" model="ir.ui.view">
+        <field name="name">majal.unit.list</field>
+        <field name="model">majal.unit</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="development_id"/>
+                <field name="building_id"/>
+                <field name="floor_id"/>
+                <field name="unit_category"/>
+                <field name="bedrooms"/>
+                <field name="bathrooms"/>
+                <field name="total_area"/>
+                <field name="view"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'available'"
+                       decoration-danger="status == 'sold'"
+                       decoration-warning="status == 'reserved'"/>
+                <field name="list_price" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_unit_form" model="ir.ui.view">
+        <field name="name">majal.unit.form</field>
+        <field name="model">majal.unit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="planned,available,reserved,sold,handed_over"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. A-1204"/></h1>
+                    </div>
+                    <group>
+                        <group string="Location">
+                            <field name="development_id"/>
+                            <field name="building_id"/>
+                            <field name="floor_id"
+                                   domain="[('building_id', '=', building_id)]"/>
+                            <field name="community_id" invisible="not community_id"/>
+                        </group>
+                        <group string="Type">
+                            <field name="unit_type_id"
+                                   domain="[('development_id', '=', development_id)]"/>
+                            <field name="unit_category"/>
+                            <field name="bedrooms"/>
+                            <field name="bathrooms"/>
+                        </group>
+                        <group string="Area (sqft)">
+                            <field name="suite_area"/>
+                            <field name="balcony_area"/>
+                            <field name="total_area"/>
+                        </group>
+                        <group string="Position">
+                            <field name="view"/>
+                            <field name="orientation"/>
+                            <field name="parking_ref"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="list_price"/>
+                            <field name="price_per_sqft"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_majal_unit_kanban" model="ir.ui.view">
+        <field name="name">majal.unit.kanban</field>
+        <field name="model">majal.unit</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="floor_id" records_draggable="0">
+                <field name="name"/>
+                <field name="status"/>
+                <field name="unit_category"/>
+                <field name="list_price"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card o_kanban_record p-2 border
+                            #{'border-success' if record.status.raw_value == 'available'
+                              else 'border-danger' if record.status.raw_value == 'sold'
+                              else 'border-warning' if record.status.raw_value == 'reserved'
+                              else 'border-secondary'}">
+                            <strong><field name="name"/></strong>
+                            <div><field name="unit_category"/></div>
+                            <div><field name="status" widget="badge"/></div>
+                            <div><field name="list_price" widget="monetary"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_majal_unit_search" model="ir.ui.view">
+        <field name="name">majal.unit.search</field>
+        <field name="model">majal.unit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="development_id"/>
+                <field name="building_id"/>
+                <field name="floor_id"/>
+                <field name="unit_type_id"/>
+                <filter string="Available" name="available" domain="[('status', '=', 'available')]"/>
+                <filter string="Reserved" name="reserved" domain="[('status', '=', 'reserved')]"/>
+                <filter string="Sold" name="sold" domain="[('status', '=', 'sold')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Development" name="group_development"
+                            context="{'group_by': 'development_id'}"/>
+                    <filter string="Building" name="group_building"
+                            context="{'group_by': 'building_id'}"/>
+                    <filter string="Floor" name="group_floor"
+                            context="{'group_by': 'floor_id'}"/>
+                    <filter string="Status" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_unit" model="ir.actions.act_window">
+        <field name="name">Units</field>
+        <field name="res_model">majal.unit</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_majal_unit_search"/>
+    </record>
+</odoo>
