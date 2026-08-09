@@ -24,6 +24,7 @@
         "views/majal_reservation_views.xml",
         "views/majal_commission_views.xml",
         "views/majal_lead_views.xml",
+        "views/majal_handover_views.xml",
         "views/portal_templates.xml",
         "wizards/majal_unit_generate_wizard_views.xml",
         "views/majal_real_estate_menus.xml",

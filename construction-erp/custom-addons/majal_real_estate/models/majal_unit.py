@@ -64,7 +64,13 @@ class MajalUnit(models.Model):
     list_price = fields.Monetary(tracking=True)
     price_per_sqft = fields.Monetary(compute="_compute_price_per_sqft", store=True)
 
+    owner_id = fields.Many2one(
+        "res.partner", string="Owner", tracking=True,
+        help="Set when the unit is handed over; who owns it now, as opposed "
+             "to who is developing or selling it.")
     reservation_ids = fields.One2many("majal.reservation", "unit_id", string="Reservations")
+    handover_ids = fields.One2many("majal.handover", "unit_id", string="Handovers")
+    handover_count = fields.Integer(compute="_compute_handover_count")
     reservation_count = fields.Integer(compute="_compute_reservation_fields")
     active_reservation_id = fields.Many2one(
         "majal.reservation", compute="_compute_reservation_fields",
@@ -94,6 +100,22 @@ class MajalUnit(models.Model):
             unit.reservation_count = len(reservations)
             unit.active_reservation_id = reservations.filtered(
                 lambda r: r.state == "confirmed")[:1]
+
+    @api.depends("handover_ids")
+    def _compute_handover_count(self):
+        for unit in self:
+            unit.handover_count = len(unit.handover_ids)
+
+    def action_view_handovers(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Handovers",
+            "res_model": "majal.handover",
+            "view_mode": "list,form",
+            "domain": [("unit_id", "=", self.id)],
+            "context": {"default_unit_id": self.id},
+        }
 
     def action_view_reservations(self):
         self.ensure_one()

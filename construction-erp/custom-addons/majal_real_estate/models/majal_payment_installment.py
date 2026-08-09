@@ -1,6 +1,8 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
+from .majal_payment_plan import TRIGGER_SELECTION
+
 
 class MajalPaymentInstallment(models.Model):
     """One dated, priced row of a buyer's schedule.
@@ -20,6 +22,10 @@ class MajalPaymentInstallment(models.Model):
     name = fields.Char(required=True)
     due_date = fields.Date(required=True)
     percentage = fields.Float()
+    # Kept from the plan line it came from so that a milestone tied to
+    # handover can still be recognised as such after generation -- which is
+    # what lets a construction delay move the dates it should move.
+    trigger = fields.Selection(TRIGGER_SELECTION)
     amount = fields.Monetary(required=True)
     amount_paid = fields.Monetary()
     amount_residual = fields.Monetary(compute="_compute_amount_residual", store=True)

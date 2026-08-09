@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_handover_form_construction" model="ir.ui.view">
+        <field name="name">majal.handover.form.construction</field>
+        <field name="model">majal.handover</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_handover_form"/>
+        <field name="arch" type="xml">
+            <button name="action_start_inspection" position="after">
+                <button name="action_import_site_defects" type="object"
+                        string="Import Site Punch Items"
+                        invisible="state in ('completed', 'cancelled')
+                                   or site_defect_count == 0"/>
+            </button>
+            <xpath expr="//page[@name='snags']/field[@name='snag_ids']/list/field[@name='state']"
+                   position="before">
+                <field name="defect_id" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='keys_handed']" position="before">
+                <field name="site_defect_count" string="Open Site Punch Items"
+                       invisible="site_defect_count == 0"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

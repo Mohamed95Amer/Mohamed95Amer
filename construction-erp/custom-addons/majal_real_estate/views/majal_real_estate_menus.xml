@@ -70,6 +70,17 @@
               action="action_majal_commission"
               sequence="30"/>
 
+    <menuitem id="menu_majal_real_estate_handover"
+              name="Handover"
+              parent="menu_majal_real_estate_root"
+              sequence="40"/>
+
+    <menuitem id="menu_majal_real_estate_handovers"
+              name="Handovers"
+              parent="menu_majal_real_estate_handover"
+              action="action_majal_handover"
+              sequence="10"/>
+
     <menuitem id="menu_majal_real_estate_config"
               name="Configuration"
               parent="menu_majal_real_estate_root"

@@ -350,6 +350,7 @@ class MajalReservation(models.Model):
                     "name": plan_line.name,
                     "due_date": reservation._installment_due_date(plan_line),
                     "percentage": plan_line.percentage,
+                    "trigger": plan_line.trigger,
                     "amount": amount,
                 })
             self.env["majal.payment.installment"].create(vals_list)

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_majal_property_manager" model="res.groups">
+        <field name="name">Property Manager</field>
+        <field name="category_id"
+               ref="majal_real_estate.module_category_majal_real_estate"/>
+        <field name="implied_ids"
+               eval="[(4, ref('majal_real_estate.group_majal_real_estate_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+</odoo>

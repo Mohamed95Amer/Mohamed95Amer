@@ -9,4 +9,5 @@ from . import majal_lead
 from . import majal_reservation
 from . import majal_payment_installment
 from . import majal_commission
+from . import majal_handover
 from . import res_partner

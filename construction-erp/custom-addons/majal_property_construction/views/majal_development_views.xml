@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_development_form_construction" model="ir.ui.view">
+        <field name="name">majal.development.form.construction</field>
+        <field name="model">majal.development</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_development_form"/>
+        <field name="arch" type="xml">
+            <field name="expected_handover_date" position="after">
+                <field name="project_id"/>
+                <field name="project_stage" invisible="not project_id"/>
+                <field name="project_taking_over_date" invisible="not project_id"/>
+                <button name="action_pull_handover_date" type="object"
+                        string="Pull handover date from construction"
+                        class="btn-link"
+                        invisible="not project_taking_over_date"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_majal_development_list_construction" model="ir.ui.view">
+        <field name="name">majal.development.list.construction</field>
+        <field name="model">majal.development</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_development_list"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="project_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>
