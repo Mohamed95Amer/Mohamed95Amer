@@ -1,6 +1,8 @@
 from odoo import Command, fields
 from odoo.tests.common import TransactionCase
 
+from ..controllers.field_app import _construction_field_records
+
 
 class TestMajalOfflineSync(TransactionCase):
     @classmethod
@@ -112,3 +114,34 @@ class TestMajalOfflineSync(TransactionCase):
         )[0]
         self.assertEqual(result["status"], "failed")
         self.assertEqual(defect.state, "open")
+
+    def test_facilities_user_does_not_probe_construction_models(self):
+        field_role = self.env["majal.access.role"].search(
+            [("code", "=", "field_user")], limit=1
+        )
+        facilities_user = self.env["res.users"].sudo().with_context(
+            no_reset_password=True, majal_role_application=True
+        ).create(
+            {
+                "name": "Facilities Field User",
+                "login": "facilities-field@majal.test",
+                "company_id": self.env.company.id,
+                "company_ids": [Command.set([self.env.company.id])],
+                "majal_role_id": field_role.id,
+                "majal_industry_scope": "facilities",
+                "groups_id": [
+                    Command.set(
+                        self.env["res.users"]._majal_group_ids_for(
+                            field_role, "facilities"
+                        )
+                    )
+                ],
+            }
+        )
+
+        records = _construction_field_records(
+            self.env.with_user(facilities_user), facilities_user
+        )
+
+        self.assertEqual(set(records), {"projects", "defects", "inspections", "drawings"})
+        self.assertTrue(all(not recordset for recordset in records.values()))
