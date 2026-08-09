@@ -38,8 +38,21 @@ $d-muted: #697983;
     background: linear-gradient(135deg, $d-navy 0%, #22485a 100%);
     color: white;
 
-    h1 { margin: 4px 0 6px; font-size: 1.5rem; font-weight: 700; }
-    p { margin: 0; color: rgba(255,255,255,.78); font-size: .87rem; }
+    // Set explicit foreground colours because backend theme heading rules can
+    // otherwise override inherited white and make this headline unreadable.
+    h1 {
+        margin: 4px 0 6px;
+        color: #f8fbfc !important;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -.015em;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, .32);
+    }
+    p {
+        margin: 0;
+        color: rgba(255,255,255,.86) !important;
+        font-size: .87rem;
+    }
 }
 
 .o_cdash_eyebrow {
