@@ -37,6 +37,9 @@ class MajalDevelopment(models.Model):
     country_id = fields.Many2one("res.country")
     city = fields.Char()
     land_area = fields.Float(string="Land Area (sqft)")
+    expected_handover_date = fields.Date(
+        tracking=True,
+        help="Used to date payment milestones that fall due on handover.")
     description = fields.Text()
 
     community_ids = fields.One2many("majal.community", "development_id", string="Communities")

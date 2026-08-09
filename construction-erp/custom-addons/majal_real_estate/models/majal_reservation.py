@@ -1,3 +1,5 @@
+from dateutil.relativedelta import relativedelta
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -25,7 +27,7 @@ class MajalReservation(models.Model):
 
     _name = "majal.reservation"
     _description = "Unit Reservation"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "portal.mixin"]
     _order = "reservation_date desc, id desc"
 
     name = fields.Char(
@@ -74,6 +76,28 @@ class MajalReservation(models.Model):
     cancel_reason = fields.Char(copy=False)
     notes = fields.Text()
 
+    lead_id = fields.Many2one("majal.lead", string="Originating Lead", index=True)
+
+    payment_plan_id = fields.Many2one(
+        "majal.payment.plan", tracking=True,
+        domain="['|', ('development_id', '=', False), "
+               "('development_id', '=', development_id)]")
+    installment_ids = fields.One2many(
+        "majal.payment.installment", "reservation_id", string="Schedule", copy=False)
+    amount_scheduled = fields.Monetary(compute="_compute_payment_totals", store=True)
+    amount_paid = fields.Monetary(compute="_compute_payment_totals", store=True)
+    amount_residual = fields.Monetary(compute="_compute_payment_totals", store=True)
+    overdue_count = fields.Integer(compute="_compute_overdue_count")
+    next_due_date = fields.Date(compute="_compute_next_due", store=True)
+
+    broker_id = fields.Many2one(
+        "res.partner", string="Broker", tracking=True,
+        domain="[('is_majal_broker', '=', True)]")
+    commission_rate = fields.Float(string="Commission (%)", tracking=True)
+    commission_amount = fields.Monetary(compute="_compute_commission_amount", store=True)
+    commission_ids = fields.One2many(
+        "majal.commission", "reservation_id", string="Commissions")
+
     def init(self):
         # Application-level checks cannot stop two concurrent transactions
         # from each seeing an available unit and both confirming. Only the
@@ -92,6 +116,39 @@ class MajalReservation(models.Model):
             reservation.display_name = (
                 f"{reservation.name} - {unit_name}" if unit_name else reservation.name)
 
+    def _compute_access_url(self):
+        super()._compute_access_url()
+        for reservation in self:
+            reservation.access_url = f"/my/reservation/{reservation.id}"
+
+    @api.depends("installment_ids.amount", "installment_ids.amount_paid")
+    def _compute_payment_totals(self):
+        for reservation in self:
+            reservation.amount_scheduled = sum(
+                reservation.installment_ids.mapped("amount"))
+            reservation.amount_paid = sum(
+                reservation.installment_ids.mapped("amount_paid"))
+            reservation.amount_residual = (
+                reservation.amount_scheduled - reservation.amount_paid)
+
+    @api.depends("installment_ids.due_date", "installment_ids.state")
+    def _compute_next_due(self):
+        for reservation in self:
+            unpaid = reservation.installment_ids.filtered(
+                lambda i: i.state != "paid").sorted("due_date")
+            reservation.next_due_date = unpaid[:1].due_date or False
+
+    def _compute_overdue_count(self):
+        for reservation in self:
+            reservation.overdue_count = len(
+                reservation.installment_ids.filtered("is_overdue"))
+
+    @api.depends("sale_price", "commission_rate")
+    def _compute_commission_amount(self):
+        for reservation in self:
+            reservation.commission_amount = (
+                reservation.sale_price * reservation.commission_rate / 100.0)
+
     @api.constrains("reservation_date", "expiry_date")
     def _check_dates(self):
         for reservation in self:
@@ -104,6 +161,13 @@ class MajalReservation(models.Model):
         for reservation in self:
             if reservation.unit_id:
                 reservation.sale_price = reservation.unit_id.list_price
+
+    @api.onchange("broker_id")
+    def _onchange_broker_id(self):
+        for reservation in self:
+            if reservation.broker_id:
+                reservation.commission_rate = (
+                    reservation.broker_id.broker_commission_rate)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -195,7 +259,112 @@ class MajalReservation(models.Model):
                         "Only a confirmed reservation can be converted to a sale."))
             reservation.state = "converted"
             reservation._set_unit_status("sold")
+            reservation._create_commission()
+            if reservation.lead_id and reservation.lead_id.state == "open":
+                reservation.lead_id.action_mark_won()
         return True
+
+    def _create_commission(self):
+        """Raise the broker's commission at conversion, not at booking --
+        a hold that lapses has earned nobody anything."""
+        self.ensure_one()
+        if not self.broker_id or not self.commission_amount:
+            return self.env["majal.commission"]
+        existing = self.commission_ids.filtered(
+            lambda c: c.broker_id == self.broker_id and c.state != "cancelled")
+        if existing:
+            return existing
+        return self.env["majal.commission"].create({
+            "reservation_id": self.id,
+            "broker_id": self.broker_id.id,
+            "sale_price": self.sale_price,
+            "rate": self.commission_rate,
+            "amount": self.commission_amount,
+        })
+
+    def _installment_due_date(self, plan_line):
+        self.ensure_one()
+        if plan_line.trigger == "booking":
+            return self.reservation_date
+        if plan_line.trigger == "days_after":
+            return self.reservation_date + relativedelta(days=plan_line.offset_days)
+        handover_date = self.development_id.expected_handover_date
+        if not handover_date:
+            raise UserError(
+                self.env._(
+                    "%(plan_line)s is due on handover, but %(development)s has no "
+                    "expected handover date. Set one before generating the schedule.",
+                    plan_line=plan_line.name,
+                    development=self.development_id.display_name,
+                )
+            )
+        return handover_date
+
+    def action_generate_schedule(self):
+        """Turn the plan's percentages into dated, priced installments.
+
+        Regenerating throws away the existing schedule, so it refuses once
+        money has been received against it -- silently deleting a paid
+        installment would erase the record of a payment.
+        """
+        for reservation in self:
+            if not reservation.payment_plan_id:
+                raise UserError(
+                    self.env._("Choose a payment plan before generating a schedule."))
+            if not reservation.sale_price:
+                raise UserError(
+                    self.env._(
+                        "Set the agreed price on %s before generating a schedule.",
+                        reservation.display_name,
+                    )
+                )
+            paid = reservation.installment_ids.filtered(lambda i: i.amount_paid)
+            if paid:
+                raise UserError(
+                    self.env._(
+                        "%s already has payments recorded against its schedule. "
+                        "Adjust the individual installments instead of "
+                        "regenerating it.",
+                        reservation.display_name,
+                    )
+                )
+            reservation.installment_ids.unlink()
+
+            currency = reservation.currency_id or self.env.company.currency_id
+            lines = reservation.payment_plan_id.line_ids.sorted(
+                lambda line: (line.sequence, line.id))
+            vals_list = []
+            running_total = 0.0
+            for position, plan_line in enumerate(lines):
+                amount = currency.round(
+                    reservation.sale_price * plan_line.percentage / 100.0)
+                if position == len(lines) - 1:
+                    # The last milestone absorbs rounding, so the schedule
+                    # always adds up to exactly what the buyer agreed to pay
+                    # rather than to a few fils either side of it.
+                    amount = currency.round(reservation.sale_price - running_total)
+                running_total += amount
+                vals_list.append({
+                    "reservation_id": reservation.id,
+                    "sequence": (position + 1) * 10,
+                    "name": plan_line.name,
+                    "due_date": reservation._installment_due_date(plan_line),
+                    "percentage": plan_line.percentage,
+                    "amount": amount,
+                })
+            self.env["majal.payment.installment"].create(vals_list)
+        return True
+
+    def action_view_schedule(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Payment Schedule"),
+            "res_model": "majal.payment.installment",
+            "view_mode": "list,form",
+            "domain": [("reservation_id", "=", self.id)],
+            "context": {"default_reservation_id": self.id},
+        }
 
     def action_reset_to_draft(self):
         for reservation in self:

@@ -46,11 +46,29 @@
               parent="menu_majal_real_estate_root"
               sequence="30"/>
 
+    <menuitem id="menu_majal_real_estate_leads"
+              name="Leads"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_lead"
+              sequence="5"/>
+
     <menuitem id="menu_majal_real_estate_reservations"
               name="Reservations"
               parent="menu_majal_real_estate_sales"
               action="action_majal_reservation"
               sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_installments"
+              name="Installments"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_payment_installment"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_commissions"
+              name="Commissions"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_commission"
+              sequence="30"/>
 
     <menuitem id="menu_majal_real_estate_config"
               name="Configuration"
@@ -63,4 +81,16 @@
               parent="menu_majal_real_estate_config"
               action="action_majal_unit_type"
               sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_payment_plans"
+              name="Payment Plans"
+              parent="menu_majal_real_estate_config"
+              action="action_majal_payment_plan"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_lead_stages"
+              name="Lead Stages"
+              parent="menu_majal_real_estate_config"
+              action="action_majal_lead_stage"
+              sequence="30"/>
 </odoo>

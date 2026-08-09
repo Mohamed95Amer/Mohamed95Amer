@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A starting pipeline. noupdate so that renaming or reordering these
+         in a live database is not undone by the next module upgrade. -->
+    <data noupdate="1">
+        <record id="lead_stage_new" model="majal.lead.stage">
+            <field name="name">New</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="lead_stage_qualified" model="majal.lead.stage">
+            <field name="name">Qualified</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="lead_stage_viewing" model="majal.lead.stage">
+            <field name="name">Viewing</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="lead_stage_negotiation" model="majal.lead.stage">
+            <field name="name">Negotiation</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="lead_stage_reserved" model="majal.lead.stage">
+            <field name="name">Reserved</field>
+            <field name="sequence">50</field>
+            <field name="is_won" eval="True"/>
+            <field name="fold" eval="True"/>
+        </record>
+    </data>
+</odoo>

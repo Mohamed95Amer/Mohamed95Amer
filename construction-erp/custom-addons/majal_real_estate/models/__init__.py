@@ -4,4 +4,9 @@ from . import majal_building
 from . import majal_floor
 from . import majal_unit_type
 from . import majal_unit
+from . import majal_payment_plan
+from . import majal_lead
 from . import majal_reservation
+from . import majal_payment_installment
+from . import majal_commission
+from . import res_partner

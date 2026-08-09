@@ -15,6 +15,9 @@
                 <field name="reservation_date"/>
                 <field name="expiry_date"/>
                 <field name="sale_price" sum="Total"/>
+                <field name="amount_residual" optional="show" string="Outstanding"/>
+                <field name="next_due_date" optional="hide"/>
+                <field name="broker_id" optional="hide"/>
                 <field name="reservation_fee" optional="hide"/>
                 <field name="currency_id" column_invisible="1"/>
                 <field name="state" widget="badge"
@@ -41,10 +44,23 @@
                     <button name="action_reset_to_draft" type="object"
                             string="Reset to Draft"
                             invisible="state not in ('cancelled', 'expired')"/>
+                    <button name="action_generate_schedule" type="object"
+                            string="Generate Schedule"
+                            invisible="state in ('cancelled', 'expired')
+                                       or not payment_plan_id"
+                            confirm="This replaces the current schedule. Continue?"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,confirmed,converted"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_schedule" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
+                                invisible="not installment_ids">
+                            <field name="overdue_count" widget="statinfo"
+                                   string="Overdue"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
@@ -60,6 +76,8 @@
                         <group string="Buyer">
                             <field name="partner_id" readonly="state != 'draft'"/>
                             <field name="user_id"/>
+                            <field name="lead_id" readonly="1"
+                                   invisible="not lead_id"/>
                         </group>
                         <group string="Hold Period">
                             <field name="reservation_date" readonly="state != 'draft'"/>
@@ -77,6 +95,58 @@
                                placeholder="Why was this reservation cancelled?"/>
                     </group>
                     <notebook>
+                        <page string="Payment Schedule" name="schedule">
+                            <group>
+                                <group>
+                                    <field name="payment_plan_id"/>
+                                </group>
+                                <group>
+                                    <field name="amount_scheduled"/>
+                                    <field name="amount_paid"/>
+                                    <field name="amount_residual"/>
+                                    <field name="next_due_date"/>
+                                </group>
+                            </group>
+                            <field name="installment_ids">
+                                <list editable="bottom" decoration-danger="is_overdue"
+                                      decoration-success="state == 'paid'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="due_date"/>
+                                    <field name="percentage"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="amount_paid" sum="Paid"/>
+                                    <field name="amount_residual" sum="Outstanding"/>
+                                    <field name="payment_date"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="is_overdue" column_invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'paid'"
+                                           decoration-warning="state == 'partial'"/>
+                                    <button name="action_mark_paid" type="object"
+                                            icon="fa-check" title="Mark as fully paid"
+                                            invisible="state == 'paid'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Broker" name="broker">
+                            <group>
+                                <group>
+                                    <field name="broker_id"/>
+                                    <field name="commission_rate"/>
+                                    <field name="commission_amount"/>
+                                </group>
+                            </group>
+                            <field name="commission_ids" readonly="1">
+                                <list>
+                                    <field name="broker_id"/>
+                                    <field name="rate" string="Rate %"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Notes" name="notes">
                             <field name="notes" nolabel="1"
                                    placeholder="Internal notes on this hold..."/>

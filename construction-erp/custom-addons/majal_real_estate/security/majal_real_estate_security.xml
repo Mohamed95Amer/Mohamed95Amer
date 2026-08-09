@@ -17,4 +17,34 @@
         <field name="implied_ids" eval="[(4, ref('group_majal_real_estate_user'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
+
+    <!-- A buyer sees their own paperwork and nothing else. The portal ACLs
+         grant read on these two models only; these rules are what stop one
+         buyer from reading another's. -->
+    <record id="rule_majal_reservation_portal" model="ir.rule">
+        <field name="name">Reservation: portal buyers see only their own</field>
+        <field name="model_id" ref="model_majal_reservation"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('partner_id', 'child_of', user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_majal_installment_portal" model="ir.rule">
+        <field name="name">Installment: portal buyers see only their own</field>
+        <field name="model_id" ref="model_majal_payment_installment"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('reservation_id.partner_id', 'child_of',
+              user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
 </odoo>

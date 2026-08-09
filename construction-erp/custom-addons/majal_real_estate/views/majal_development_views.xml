@@ -52,6 +52,7 @@
                             <field name="city"/>
                             <field name="country_id"/>
                             <field name="land_area"/>
+                            <field name="expected_handover_date"/>
                         </group>
                     </group>
                     <notebook>

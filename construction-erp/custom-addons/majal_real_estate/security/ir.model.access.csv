@@ -14,3 +14,17 @@ access_majal_unit_manager,majal.unit manager,model_majal_unit,group_majal_real_e
 access_majal_unit_generate_wizard,majal.unit.generate.wizard,model_majal_unit_generate_wizard,group_majal_real_estate_manager,1,1,1,1
 access_majal_reservation_user,majal.reservation user,model_majal_reservation,group_majal_real_estate_user,1,1,1,0
 access_majal_reservation_manager,majal.reservation manager,model_majal_reservation,group_majal_real_estate_manager,1,1,1,1
+access_majal_payment_plan_user,majal.payment.plan user,model_majal_payment_plan,group_majal_real_estate_user,1,0,0,0
+access_majal_payment_plan_manager,majal.payment.plan manager,model_majal_payment_plan,group_majal_real_estate_manager,1,1,1,1
+access_majal_payment_plan_line_user,majal.payment.plan.line user,model_majal_payment_plan_line,group_majal_real_estate_user,1,0,0,0
+access_majal_payment_plan_line_manager,majal.payment.plan.line manager,model_majal_payment_plan_line,group_majal_real_estate_manager,1,1,1,1
+access_majal_payment_installment_user,majal.payment.installment user,model_majal_payment_installment,group_majal_real_estate_user,1,1,1,1
+access_majal_payment_installment_manager,majal.payment.installment manager,model_majal_payment_installment,group_majal_real_estate_manager,1,1,1,1
+access_majal_commission_user,majal.commission user,model_majal_commission,group_majal_real_estate_user,1,0,0,0
+access_majal_commission_manager,majal.commission manager,model_majal_commission,group_majal_real_estate_manager,1,1,1,1
+access_majal_lead_user,majal.lead user,model_majal_lead,group_majal_real_estate_user,1,1,1,0
+access_majal_lead_manager,majal.lead manager,model_majal_lead,group_majal_real_estate_manager,1,1,1,1
+access_majal_lead_stage_user,majal.lead.stage user,model_majal_lead_stage,group_majal_real_estate_user,1,0,0,0
+access_majal_lead_stage_manager,majal.lead.stage manager,model_majal_lead_stage,group_majal_real_estate_manager,1,1,1,1
+access_majal_reservation_portal,majal.reservation portal,model_majal_reservation,base.group_portal,1,0,0,0
+access_majal_payment_installment_portal,majal.payment.installment portal,model_majal_payment_installment,base.group_portal,1,0,0,0
