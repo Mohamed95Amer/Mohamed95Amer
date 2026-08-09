@@ -14,7 +14,12 @@ RESERVED_GROUP_XMLIDS = (
     "base.group_erp_manager",
 )
 
-GROUP_FIELDS = ("group_ids", "construction_group_ids", "facility_group_ids")
+GROUP_FIELDS = (
+    "group_ids",
+    "construction_group_ids",
+    "facility_group_ids",
+    "real_estate_group_ids",
+)
 
 
 class MajalAccessRole(models.Model):
@@ -76,6 +81,13 @@ class MajalAccessRole(models.Model):
         "role_id",
         "group_id",
         string="Granted with facilities access",
+    )
+    real_estate_group_ids = fields.Many2many(
+        "res.groups",
+        "majal_access_role_real_estate_group_rel",
+        "role_id",
+        "group_id",
+        string="Granted with property access",
     )
     has_company_copy = fields.Boolean(compute="_compute_has_company_copy")
 

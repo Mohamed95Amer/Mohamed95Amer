@@ -9,7 +9,10 @@ class TestMajalAppIcons(TransactionCase):
         # Majal module shipping its own Majal-styled asset belongs here. Kept
         # explicit rather than matching on a "majal_" prefix, since the point
         # is to notice a new app arriving with an unbranded icon.
-        allowed_modules = {"construction_ui", "majal_ai", "majal_administration"}
+        allowed_modules = {
+            "construction_ui", "majal_ai", "majal_administration",
+            "majal_real_estate", "majal_property_ui",
+        }
         top_level_apps = self.env["ir.ui.menu"].search(
             [("parent_id", "=", False), ("web_icon", "!=", False)]
         )

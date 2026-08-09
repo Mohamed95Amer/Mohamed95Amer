@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Construction is 35 and Facilities 36; 37 is Odoo's own Dashboards
+         (spreadsheet_dashboard), which construction_ui pulls in, so Property
+         takes 38 to sit immediately after its siblings without a clash.
+         Owned here rather than in a UI override so a standalone install is
+         deterministic too. The name is likewise owned here: two modules must
+         not both claim one identity (see construction_ui/views/majal_branding.xml). -->
     <menuitem id="menu_majal_real_estate_root"
-              name="Real Estate"
-              web_icon="majal_real_estate,static/description/icon.png"
-              sequence="36"
+              name="Majal Property"
+              web_icon="majal_real_estate,static/description/icon.svg"
+              sequence="38"
               groups="majal_real_estate.group_majal_real_estate_user"/>
 
     <menuitem id="menu_majal_real_estate_developments"

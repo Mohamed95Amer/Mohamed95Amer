@@ -11,6 +11,7 @@
         <field name="group_ids" eval="[(6, 0, [ref('majal_administration.group_platform_owner')])]"/>
         <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_manager'), ref('project.group_project_manager')])]"/>
         <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
     </record>
     <record id="role_company_admin" model="majal.access.role">
         <field name="name">Company Administrator</field>
@@ -20,6 +21,7 @@
         <field name="group_ids" eval="[(6, 0, [ref('majal_administration.group_user_administrator')])]"/>
         <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_manager'), ref('project.group_project_manager')])]"/>
         <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
     </record>
     <record id="role_operations_manager" model="majal.access.role">
         <field name="name">Operations Manager</field>
@@ -28,6 +30,7 @@
         <field name="description">Leads the selected construction or facilities operation across projects and teams.</field>
         <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_manager'), ref('project.group_project_manager')])]"/>
         <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
     </record>
     <record id="role_manager" model="majal.access.role">
         <field name="name">Project / Facility Manager</field>
@@ -36,6 +39,7 @@
         <field name="description">Controls day-to-day delivery for the selected industry workspace.</field>
         <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_pm'), ref('project.group_project_manager')])]"/>
         <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
     </record>
     <record id="role_supervisor" model="majal.access.role">
         <field name="name">Engineer / Supervisor</field>
@@ -44,6 +48,7 @@
         <field name="description">Supervises site or facilities work and updates operational records.</field>
         <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_site_engineer'), ref('project.group_project_user')])]"/>
         <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_supervisor')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_user')])]"/>
     </record>
     <record id="role_field_user" model="majal.access.role">
         <field name="name">Field User / Technician</field>
@@ -52,6 +57,7 @@
         <field name="description">Works on assigned operational records with no administration access.</field>
         <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_user'), ref('project.group_project_user')])]"/>
         <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_user')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_user')])]"/>
     </record>
 
     <record id="base.user_admin" model="res.users">

@@ -95,6 +95,12 @@ FACILITY_ASSIGNMENT_MODELS = {
             "equipment_id.owner_user_id",
             "equipment_id.facility_location_id.manager_user_id",
             "equipment_id.facility_location_id.member_user_ids",
+            # A request reported against a place rather than a machine — every
+            # tenant-reported fault, and everything the portal raises — has no
+            # equipment to route through. Without these two paths the team who
+            # look after that location cannot see the job at all.
+            "facility_location_id.manager_user_id",
+            "facility_location_id.member_user_ids",
         ],
     },
     "facility.asset.scan": {

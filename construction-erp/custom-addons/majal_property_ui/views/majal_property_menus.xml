@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The platform convention: section menus open a workspace, leaf menus
+         open their own act_window, and every section carries an Overview child
+         at sequence 1 so the workspace stays reachable once you are inside a
+         register. Existing menus are re-pointed rather than replaced, so the
+         owning modules keep their ids.
+
+         Note: Odoo does not restore overridden field values on uninstall, so
+         removing this module leaves the menu tree as it stands here. -->
+
+    <menuitem id="menu_property_overview"
+              name="Overview"
+              parent="majal_real_estate.menu_majal_real_estate_root"
+              action="action_property_home"
+              sequence="1"/>
+
+    <menuitem id="menu_property_my_day"
+              name="My Day"
+              parent="majal_real_estate.menu_majal_real_estate_root"
+              action="construction_ui.action_my_day"
+              sequence="2"/>
+
+    <!-- Portfolio: the physical estate, previously scattered under Inventory. -->
+    <menuitem id="menu_property_portfolio"
+              name="Portfolio"
+              parent="majal_real_estate.menu_majal_real_estate_root"
+              action="action_workspace_property_portfolio"
+              sequence="10"/>
+
+    <menuitem id="menu_property_portfolio_overview"
+              name="Portfolio Overview"
+              parent="menu_property_portfolio"
+              action="action_workspace_property_portfolio"
+              sequence="1"/>
+
+    <record id="majal_real_estate.menu_majal_real_estate_developments" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_property_portfolio"/>
+        <field name="sequence">10</field>
+    </record>
+    <record id="majal_real_estate.menu_majal_real_estate_communities" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_property_portfolio"/>
+        <field name="sequence">20</field>
+    </record>
+    <record id="majal_real_estate.menu_majal_real_estate_buildings" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_property_portfolio"/>
+        <field name="sequence">30</field>
+    </record>
+    <record id="majal_real_estate.menu_majal_real_estate_floors" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_property_portfolio"/>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- Inventory keeps its id but becomes a workspace section. -->
+    <record id="majal_real_estate.menu_majal_real_estate_inventory" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_unit_inventory"/>
+        <field name="sequence">20</field>
+    </record>
+    <menuitem id="menu_property_inventory_overview"
+              name="Inventory Overview"
+              parent="majal_real_estate.menu_majal_real_estate_inventory"
+              action="action_workspace_unit_inventory"
+              sequence="1"/>
+
+    <record id="majal_real_estate.menu_majal_real_estate_sales" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_reservations"/>
+        <field name="sequence">30</field>
+    </record>
+    <menuitem id="menu_property_sales_overview"
+              name="Sales Overview"
+              parent="majal_real_estate.menu_majal_real_estate_sales"
+              action="action_workspace_reservations"
+              sequence="1"/>
+
+    <record id="majal_real_estate.menu_majal_real_estate_handover" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_handovers"/>
+        <field name="sequence">40</field>
+    </record>
+    <menuitem id="menu_property_handover_overview"
+              name="Handover Overview"
+              parent="majal_real_estate.menu_majal_real_estate_handover"
+              action="action_workspace_handovers"
+              sequence="1"/>
+
+    <record id="majal_property_operations.menu_majal_property_operations" model="ir.ui.menu">
+        <field name="action" ref="action_workspace_leases"/>
+        <field name="sequence">50</field>
+    </record>
+    <menuitem id="menu_property_leasing_overview"
+              name="Leasing Overview"
+              parent="majal_property_operations.menu_majal_property_operations"
+              action="action_workspace_leases"
+              sequence="1"/>
+
+    <!-- Every app in the suite calls this "Settings", not "Configuration". -->
+    <record id="majal_real_estate.menu_majal_real_estate_config" model="ir.ui.menu">
+        <field name="name">Settings</field>
+        <field name="sequence">90</field>
+    </record>
+</odoo>
