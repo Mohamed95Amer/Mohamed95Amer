@@ -186,4 +186,38 @@
         <field name="list_price">1135000</field>
         <field name="status">blocked</field>
     </record>
+
+    <record id="demo_buyer_khalid" model="res.partner">
+        <field name="name">Khalid Al Marzooqi</field>
+    </record>
+    <record id="demo_buyer_layla" model="res.partner">
+        <field name="name">Layla Haddad</field>
+    </record>
+
+    <!-- These carry their state directly rather than being confirmed through
+         the workflow, matching the unit statuses declared statically above:
+         A-1604 is reserved, A-1704 is sold. -->
+    <record id="demo_reservation_a1604" model="majal.reservation">
+        <field name="unit_id" ref="demo_unit_a1604"/>
+        <field name="partner_id" ref="demo_buyer_khalid"/>
+        <field name="reservation_date"
+               eval="(DateTime.today() - relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+        <field name="expiry_date"
+               eval="(DateTime.today() + relativedelta(days=8)).strftime('%Y-%m-%d')"/>
+        <field name="sale_price">1850000</field>
+        <field name="reservation_fee">50000</field>
+        <field name="state">confirmed</field>
+    </record>
+
+    <record id="demo_reservation_a1704" model="majal.reservation">
+        <field name="unit_id" ref="demo_unit_a1704"/>
+        <field name="partner_id" ref="demo_buyer_layla"/>
+        <field name="reservation_date"
+               eval="(DateTime.today() - relativedelta(days=40)).strftime('%Y-%m-%d')"/>
+        <field name="expiry_date"
+               eval="(DateTime.today() - relativedelta(days=26)).strftime('%Y-%m-%d')"/>
+        <field name="sale_price">1910000</field>
+        <field name="reservation_fee">50000</field>
+        <field name="state">converted</field>
+    </record>
 </odoo>

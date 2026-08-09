@@ -64,6 +64,13 @@ class MajalUnit(models.Model):
     list_price = fields.Monetary(tracking=True)
     price_per_sqft = fields.Monetary(compute="_compute_price_per_sqft", store=True)
 
+    reservation_ids = fields.One2many("majal.reservation", "unit_id", string="Reservations")
+    reservation_count = fields.Integer(compute="_compute_reservation_fields")
+    active_reservation_id = fields.Many2one(
+        "majal.reservation", compute="_compute_reservation_fields",
+        string="Current Hold",
+        help="The confirmed reservation currently holding this unit, if any.")
+
     _sql_constraints = [
         ("name_building_uniq", "unique(name, building_id)",
          "This unit code already exists in this building."),
@@ -79,6 +86,25 @@ class MajalUnit(models.Model):
         for unit in self:
             unit.price_per_sqft = (
                 unit.list_price / unit.total_area if unit.total_area else 0.0)
+
+    @api.depends("reservation_ids", "reservation_ids.state")
+    def _compute_reservation_fields(self):
+        for unit in self:
+            reservations = unit.reservation_ids
+            unit.reservation_count = len(reservations)
+            unit.active_reservation_id = reservations.filtered(
+                lambda r: r.state == "confirmed")[:1]
+
+    def action_view_reservations(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Reservations",
+            "res_model": "majal.reservation",
+            "view_mode": "list,form",
+            "domain": [("unit_id", "=", self.id)],
+            "context": {"default_unit_id": self.id},
+        }
 
     @api.onchange("unit_type_id")
     def _onchange_unit_type_id(self):

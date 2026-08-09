@@ -41,6 +41,17 @@
               action="action_majal_community"
               sequence="40"/>
 
+    <menuitem id="menu_majal_real_estate_sales"
+              name="Sales"
+              parent="menu_majal_real_estate_root"
+              sequence="30"/>
+
+    <menuitem id="menu_majal_real_estate_reservations"
+              name="Reservations"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_reservation"
+              sequence="10"/>
+
     <menuitem id="menu_majal_real_estate_config"
               name="Configuration"
               parent="menu_majal_real_estate_root"

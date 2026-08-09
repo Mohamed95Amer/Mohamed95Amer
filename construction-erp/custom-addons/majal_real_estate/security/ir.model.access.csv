@@ -12,3 +12,5 @@ access_majal_unit_type_manager,majal.unit.type manager,model_majal_unit_type,gro
 access_majal_unit_user,majal.unit user,model_majal_unit,group_majal_real_estate_user,1,0,0,0
 access_majal_unit_manager,majal.unit manager,model_majal_unit,group_majal_real_estate_manager,1,1,1,1
 access_majal_unit_generate_wizard,majal.unit.generate.wizard,model_majal_unit_generate_wizard,group_majal_real_estate_manager,1,1,1,1
+access_majal_reservation_user,majal.reservation user,model_majal_reservation,group_majal_real_estate_user,1,1,1,0
+access_majal_reservation_manager,majal.reservation manager,model_majal_reservation,group_majal_real_estate_manager,1,1,1,1
