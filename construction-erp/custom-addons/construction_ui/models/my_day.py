@@ -130,7 +130,7 @@ class ConstructionMyDay(models.AbstractModel):
                 "model": "project.task",
                 "icon": "fa-tasks",
                 "domain": lambda user, today: [
-                    ("user_ids", "in", user.id),
+                    ("user_ids", "in", [user.id]),
                     ("project_id.is_construction", "=", True),
                     ("state", "in", ("01_in_progress", "02_changes_requested",
                                      "03_approved")),
@@ -197,7 +197,7 @@ class ConstructionMyDay(models.AbstractModel):
                 "domain": lambda user, today: [
                     ("trigger_type", "=", "calendar"),
                     ("next_date", "<=", today),
-                    ("maintenance_team_id.member_ids", "in", user.id),
+                    ("maintenance_team_id.member_ids", "in", [user.id]),
                 ],
                 "urgent": lambda today: [("next_date", "<", today)],
             },
