@@ -100,6 +100,21 @@ class TestFacilityInventory(TransactionCase):
         room_store = self.plantroom.ensure_store()
         self.assertEqual(self.chiller._parts_store(), room_store)
 
+    def test_store_parent_is_company_compatible(self):
+        """A hosted tenant can create its store outside the install company."""
+        company = self.env["res.company"].create({"name": "FM Tenant Company"})
+        location = self.env["facility.location"].sudo().create({
+            "name": "Tenant Operations Tower",
+            "location_type": "building",
+            "company_id": company.id,
+        })
+
+        store = location.sudo().ensure_store()
+
+        self.assertEqual(store.company_id, company)
+        self.assertEqual(store.location_id.company_id, company)
+        self.assertEqual(store.location_id.usage, "view")
+
     # ------------------------------------------------------------------
     # Consuming parts
     # ------------------------------------------------------------------
