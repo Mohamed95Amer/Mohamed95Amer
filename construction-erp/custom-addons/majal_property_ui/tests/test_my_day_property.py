@@ -17,19 +17,31 @@ class TestPropertyMyDay(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env["construction.approval.rule"].search([]).write({"active": False})
+        # Present only where Construction is installed; Property is sold on
+        # its own, so this suite has to run without it.
+        rules = cls.env.get("construction.approval.rule")
+        if rules is not None:
+            rules.search([]).write({"active": False})
         cls.today = fields.Date.context_today(cls.env["majal.reservation"])
 
         cls.agent = cls._property_user("myday.agent", "Property Agent")
         cls.other_agent = cls._property_user("myday.other.agent", "Other Agent")
+        # A user from another suite, where one is installed. On a
+        # Property-only database the nearest equivalent is a plain employee,
+        # which tests the same thing: no property group, no property sections.
+        site_group = cls.env.ref(
+            "construction_base.group_construction_site_engineer",
+            raise_if_not_found=False)
         cls.site_engineer = cls.env["res.users"].create({
-            "name": "Site Engineer Only", "login": "myday.site.only",
+            "name": "Other Suite User", "login": "myday.site.only",
             "email": "myday.site.only@majal.test",
             "company_id": cls.env.company.id,
             "company_ids": [(6, 0, [cls.env.company.id])],
             "groups_id": [(6, 0, [
-                cls.env.ref("construction_base.group_construction_site_engineer").id,
-                cls.env.ref("base.group_user").id,
+                gid for gid in [
+                    site_group.id if site_group else None,
+                    cls.env.ref("base.group_user").id,
+                ] if gid
             ])],
         })
         # Deliberately plain: no property group, no construction group.

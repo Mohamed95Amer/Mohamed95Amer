@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- The client-action tag keeps construction_ui's prefix on purpose: the
-         hub component derives its workspace key by stripping exactly that
-         string. The record ids are ours, because the home page opens them as
+    <!-- The tag namespace is the shell's: the hub component derives a
+         workspace key by stripping exactly that prefix. The record ids are
+         ours, because the home page opens them as
          majal_property_ui.action_workspace_<key>. -->
 
     <record id="action_workspace_property_portfolio" model="ir.actions.client">
         <field name="name">Property Portfolio</field>
-        <field name="tag">construction_ui.workspace.property_portfolio</field>
+        <field name="tag">majal_suite_ui.workspace.property_portfolio</field>
     </record>
 
     <record id="action_workspace_unit_inventory" model="ir.actions.client">
         <field name="name">Unit Inventory</field>
-        <field name="tag">construction_ui.workspace.unit_inventory</field>
+        <field name="tag">majal_suite_ui.workspace.unit_inventory</field>
     </record>
 
     <record id="action_workspace_reservations" model="ir.actions.client">
         <field name="name">Sales &amp; Reservations</field>
-        <field name="tag">construction_ui.workspace.reservations</field>
+        <field name="tag">majal_suite_ui.workspace.reservations</field>
     </record>
 
     <record id="action_workspace_leads" model="ir.actions.client">
         <field name="name">Sales Leads</field>
-        <field name="tag">construction_ui.workspace.leads</field>
+        <field name="tag">majal_suite_ui.workspace.leads</field>
     </record>
 
     <record id="action_workspace_installments" model="ir.actions.client">
         <field name="name">Payments &amp; Collections</field>
-        <field name="tag">construction_ui.workspace.installments</field>
+        <field name="tag">majal_suite_ui.workspace.installments</field>
     </record>
 
     <record id="action_workspace_commissions" model="ir.actions.client">
         <field name="name">Broker Commissions</field>
-        <field name="tag">construction_ui.workspace.commissions</field>
+        <field name="tag">majal_suite_ui.workspace.commissions</field>
     </record>
 
     <record id="action_workspace_handovers" model="ir.actions.client">
         <field name="name">Handover &amp; Snagging</field>
-        <field name="tag">construction_ui.workspace.handovers</field>
+        <field name="tag">majal_suite_ui.workspace.handovers</field>
     </record>
 
     <record id="action_workspace_leases" model="ir.actions.client">
         <field name="name">Leasing &amp; Tenancy</field>
-        <field name="tag">construction_ui.workspace.leases</field>
+        <field name="tag">majal_suite_ui.workspace.leases</field>
     </record>
 
     <record id="action_workspace_rent_collection" model="ir.actions.client">
         <field name="name">Rent Collection</field>
-        <field name="tag">construction_ui.workspace.rent_collection</field>
+        <field name="tag">majal_suite_ui.workspace.rent_collection</field>
     </record>
 
     <record id="action_workspace_unit_requests" model="ir.actions.client">
         <field name="name">Tenant Requests</field>
-        <field name="tag">construction_ui.workspace.unit_requests</field>
+        <field name="tag">majal_suite_ui.workspace.unit_requests</field>
     </record>
 </odoo>

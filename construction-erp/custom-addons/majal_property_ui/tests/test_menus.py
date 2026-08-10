@@ -23,14 +23,15 @@ class TestPropertyMenus(TransactionCase):
         for key in PROPERTY_WORKSPACE_KEYS:
             action = self.env.ref(f"majal_property_ui.action_workspace_{key}")
             self.assertEqual(action._name, "ir.actions.client")
-            self.assertEqual(action.tag, f"construction_ui.workspace.{key}")
+            self.assertEqual(action.tag, f"majal_suite_ui.workspace.{key}")
 
-    def test_the_workspace_tag_prefix_is_the_hubs_own(self):
-        """The hub derives its config key by stripping exactly this prefix, so
-        a private namespace would resolve to an unknown workspace."""
+    def test_the_workspace_tag_prefix_is_the_shells_own(self):
+        """The hub component derives its config key by stripping exactly this
+        prefix, so a private namespace would resolve to an unknown workspace.
+        The prefix belongs to majal_suite_ui because the component does."""
         for key in PROPERTY_WORKSPACE_KEYS:
             tag = self.env.ref(f"majal_property_ui.action_workspace_{key}").tag
-            self.assertTrue(tag.startswith("construction_ui.workspace."))
+            self.assertTrue(tag.startswith("majal_suite_ui.workspace."))
 
     def test_the_root_menu_opens_the_property_home(self):
         root = self.env.ref("majal_real_estate.menu_majal_real_estate_root")

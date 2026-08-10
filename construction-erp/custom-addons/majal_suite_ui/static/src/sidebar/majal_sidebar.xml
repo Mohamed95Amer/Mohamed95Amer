@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-  <t t-name="construction_ui.MajalSidebar">
+  <t t-name="majal_suite_ui.MajalSidebar">
     <aside class="o_majal_sidebar d-print-none"
            t-att-class="{ o_majal_sidebar_collapsed: state.collapsed }"
            t-if="!ui.isSmall">

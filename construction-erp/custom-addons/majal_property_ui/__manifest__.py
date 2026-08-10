@@ -18,8 +18,10 @@ every other UI module in this repo makes.
     "license": "LGPL-3",
     "author": "Mohamed Amer",
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
+    # The shell only. Depending on construction_ui would drag all 21
+    # construction and 7 facilities modules into a Property-only sale.
     "depends": [
-        "construction_ui",
+        "majal_suite_ui",
         "majal_real_estate",
         "majal_property_operations",
     ],

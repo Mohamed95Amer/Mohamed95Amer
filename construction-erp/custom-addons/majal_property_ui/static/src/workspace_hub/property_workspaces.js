@@ -1,12 +1,11 @@
 /** @odoo-module **/
 
-import { registry } from "@web/core/registry";
 import {
     AREAS,
-    MajalWorkspaceHub,
     OPERATIONAL_METRICS,
     WORKSPACES,
-} from "@construction_ui/workspace_hub/workspace_hub";
+    registerWorkspaces,
+} from "@majal_suite_ui/workspace_hub/workspace_hub";
 
 // The Property suite joins Construction and Facilities as a third area. The
 // hero title and the back button follow from this one entry.
@@ -26,6 +25,9 @@ const isoDate = (offsetDays = 0) => {
 
 const propertyWorkspace = (values) => ({
     area: "real_estate",
+    // Which module owns this workspace's client action, so a tile opened
+    // from another suite resolves to the right place.
+    hubModule: "majal_property_ui",
     tone: "blue",
     allowCreate: true,
     domain: [],
@@ -286,9 +288,4 @@ Object.assign(OPERATIONAL_METRICS, {
     ],
 });
 
-// The tag prefix belongs to the hub component — workspaceKey is derived by
-// stripping exactly this string — so property workspaces reuse it rather than
-// inventing their own namespace.
-for (const key of Object.keys(PROPERTY_WORKSPACES)) {
-    registry.category("actions").add(`construction_ui.workspace.${key}`, MajalWorkspaceHub);
-}
+registerWorkspaces(Object.keys(PROPERTY_WORKSPACES));
