@@ -17,6 +17,7 @@ it in. Installed only where both are present.
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
     "depends": ["majal_administration", "majal_real_estate"],
     "data": ["data/access_roles.xml"],
+    "post_init_hook": "post_init_reapply_access",
     "installable": True,
     "auto_install": True,
 }

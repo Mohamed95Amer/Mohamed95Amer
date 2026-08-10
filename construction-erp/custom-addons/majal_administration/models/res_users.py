@@ -4,8 +4,14 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 # Which suites a scope opens. Named sets rather than literals repeated at
 # three call sites, because the next suite to join the platform should be one
 # entry here and not a hunt through the file.
+#
+# "both" is in all three. It was written when the platform had two suites and
+# meant "the whole platform"; Property arriving did not change that intent,
+# and reading it as construction-and-facilities-only silently took the
+# Property app away from every existing user -- including the administrator,
+# whose own group membership is rewritten from their level.
 FACILITY_SCOPES = {"facilities", "both", "property_facilities"}
-PROPERTY_SCOPES = {"real_estate", "property_facilities"}
+PROPERTY_SCOPES = {"real_estate", "both", "property_facilities"}
 CONSTRUCTION_SCOPES = {"construction", "both"}
 MAJAL_SCOPES = FACILITY_SCOPES | PROPERTY_SCOPES | CONSTRUCTION_SCOPES
 
@@ -56,7 +62,7 @@ class ResUsers(models.Model):
         [
             ("construction", "Construction"),
             ("facilities", "Facilities Management"),
-            ("both", "Construction & Facilities"),
+            ("both", "All Suites"),
             ("real_estate", "Property"),
             ("property_facilities", "Property & Facilities"),
         ],
