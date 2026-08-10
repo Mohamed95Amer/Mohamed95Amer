@@ -32,3 +32,7 @@ access_majal_handover_snag_user,majal.handover.snag user,model_majal_handover_sn
 access_majal_handover_snag_manager,majal.handover.snag manager,model_majal_handover_snag,group_majal_real_estate_manager,1,1,1,1
 access_majal_reservation_portal,majal.reservation portal,model_majal_reservation,base.group_portal,1,0,0,0
 access_majal_payment_installment_portal,majal.payment.installment portal,model_majal_payment_installment,base.group_portal,1,0,0,0
+access_majal_cheque_user,majal.cheque user,model_majal_cheque,group_majal_real_estate_user,1,1,1,0
+access_majal_cheque_manager,majal.cheque manager,model_majal_cheque,group_majal_real_estate_manager,1,1,1,1
+access_majal_property_document_user,majal.property.document user,model_majal_property_document,group_majal_real_estate_user,1,1,1,0
+access_majal_property_document_manager,majal.property.document manager,model_majal_property_document,group_majal_real_estate_manager,1,1,1,1

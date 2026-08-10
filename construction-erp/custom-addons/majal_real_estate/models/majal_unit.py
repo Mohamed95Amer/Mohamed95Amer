@@ -70,6 +70,9 @@ class MajalUnit(models.Model):
              "to who is developing or selling it.")
     reservation_ids = fields.One2many("majal.reservation", "unit_id", string="Reservations")
     handover_ids = fields.One2many("majal.handover", "unit_id", string="Handovers")
+    document_ids = fields.One2many(
+        "majal.property.document", "unit_id", string="Documents")
+    document_count = fields.Integer(compute="_compute_handover_count")
     handover_count = fields.Integer(compute="_compute_handover_count")
     reservation_count = fields.Integer(compute="_compute_reservation_fields")
     active_reservation_id = fields.Many2one(
@@ -101,10 +104,11 @@ class MajalUnit(models.Model):
             unit.active_reservation_id = reservations.filtered(
                 lambda r: r.state == "confirmed")[:1]
 
-    @api.depends("handover_ids")
+    @api.depends("handover_ids", "document_ids")
     def _compute_handover_count(self):
         for unit in self:
             unit.handover_count = len(unit.handover_ids)
+            unit.document_count = len(unit.document_ids)
 
     def action_view_handovers(self):
         self.ensure_one()

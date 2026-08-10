@@ -89,6 +89,9 @@ class MajalLease(models.Model):
     amount_residual = fields.Monetary(compute="_compute_rent_totals", store=True)
     next_due_date = fields.Date(compute="_compute_rent_totals", store=True)
 
+    inspection_ids = fields.One2many(
+        "majal.lease.inspection", "lease_id", string="Inspections")
+    inspection_count = fields.Integer(compute="_compute_inspection_count")
     renewed_from_id = fields.Many2one("majal.lease", readonly=True, copy=False)
     renewal_ids = fields.One2many("majal.lease", "renewed_from_id", string="Renewals")
     notes = fields.Text()
@@ -121,6 +124,22 @@ class MajalLease(models.Model):
             unpaid = lease.rent_line_ids.filtered(
                 lambda line: line.state != "paid").sorted("due_date")
             lease.next_due_date = unpaid[:1].due_date or False
+
+    @api.depends("inspection_ids")
+    def _compute_inspection_count(self):
+        for lease in self:
+            lease.inspection_count = len(lease.inspection_ids)
+
+    def action_view_inspections(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Inspections"),
+            "res_model": "majal.lease.inspection",
+            "view_mode": "list,form",
+            "domain": [("lease_id", "=", self.id)],
+            "context": {"default_lease_id": self.id},
+        }
 
     @api.constrains("start_date", "end_date")
     def _check_dates(self):

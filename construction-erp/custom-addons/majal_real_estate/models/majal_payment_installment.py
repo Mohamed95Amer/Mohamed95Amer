@@ -39,6 +39,7 @@ class MajalPaymentInstallment(models.Model):
         related="reservation_id.company_id", store=True, readonly=True)
 
     payment_date = fields.Date()
+    cheque_ids = fields.One2many("majal.cheque", "installment_id", string="Cheques")
     state = fields.Selection(
         [("pending", "Pending"), ("partial", "Partially Paid"), ("paid", "Paid")],
         compute="_compute_state", store=True, default="pending",

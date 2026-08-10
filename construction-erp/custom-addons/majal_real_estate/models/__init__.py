@@ -11,3 +11,5 @@ from . import majal_payment_installment
 from . import majal_commission
 from . import majal_handover
 from . import res_partner
+from . import majal_cheque
+from . import majal_property_document

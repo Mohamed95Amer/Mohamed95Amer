@@ -52,6 +52,23 @@ class MajalDevelopment(models.Model):
     unit_ids = fields.One2many("majal.unit", "development_id", string="Units")
 
     community_count = fields.Integer(compute="_compute_counts")
+    # Headline numbers for the development form. A portfolio is judged on
+    # three things -- what is left to sell, what has been collected, and how
+    # much of it is occupied -- and none of them were visible without
+    # opening three separate lists.
+    available_unit_count = fields.Integer(compute="_compute_portfolio_health")
+    sold_unit_count = fields.Integer(compute="_compute_portfolio_health")
+    sold_rate = fields.Float(
+        string="Sold %", compute="_compute_portfolio_health",
+        group_operator="avg")
+    occupancy_rate = fields.Float(
+        string="Occupied %", compute="_compute_portfolio_health",
+        group_operator="avg")
+    collection_rate = fields.Float(
+        string="Collected %", compute="_compute_portfolio_health",
+        group_operator="avg")
+    amount_sold = fields.Monetary(compute="_compute_portfolio_health")
+    amount_collected = fields.Monetary(compute="_compute_portfolio_health")
     building_count = fields.Integer(compute="_compute_counts")
     unit_count = fields.Integer(compute="_compute_counts")
 
@@ -66,6 +83,32 @@ class MajalDevelopment(models.Model):
             development.community_count = len(development.community_ids)
             development.building_count = len(development.building_ids)
             development.unit_count = len(development.unit_ids)
+
+    def _compute_portfolio_health(self):
+        Installment = self.env["majal.payment.installment"]
+        for development in self:
+            units = development.unit_ids
+            total = len(units)
+            sold = units.filtered(
+                lambda u: u.status in (
+                    "sold", "under_contract", "handover_due", "handed_over",
+                    "owner_occupied", "leased"))
+            occupied = units.filtered(
+                lambda u: u.status in ("leased", "owner_occupied", "handed_over"))
+            development.available_unit_count = len(
+                units.filtered(lambda u: u.status == "available"))
+            development.sold_unit_count = len(sold)
+            development.sold_rate = len(sold) / total * 100.0 if total else 0.0
+            development.occupancy_rate = (
+                len(occupied) / total * 100.0 if total else 0.0)
+
+            scheduled = Installment.search([
+                ("reservation_id.development_id", "=", development.id)])
+            billed = sum(scheduled.mapped("amount"))
+            received = sum(scheduled.mapped("amount_paid"))
+            development.amount_sold = billed
+            development.amount_collected = received
+            development.collection_rate = received / billed * 100.0 if billed else 0.0
 
     def action_view_buildings(self):
         self.ensure_one()

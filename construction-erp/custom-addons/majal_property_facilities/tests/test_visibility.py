@@ -8,6 +8,8 @@ exists, reads correctly in the ORM as admin, and is invisible to every
 technician who would ever work it.
 """
 
+from unittest import SkipTest
+
 from odoo.tests import TransactionCase, tagged
 
 
@@ -16,7 +18,14 @@ class TestFacilityVisibility(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.field_role = cls.env.ref("majal_administration.role_field_user")
+        # The record rules under test are majal_administration's. Property and
+        # Facilities are sold without it, and there is nothing to assert then.
+        cls.field_role = cls.env.ref(
+            "majal_administration.role_field_user", raise_if_not_found=False)
+        if not cls.field_role:
+            raise SkipTest(
+                "majal_administration is not installed; there are no "
+                "per-location access rules to test against.")
 
         cls.technician = cls._fm_user("bridge.tech", "Assigned Technician")
         cls.outsider = cls._fm_user("bridge.outsider", "Unassigned Technician")

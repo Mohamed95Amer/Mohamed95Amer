@@ -27,6 +27,7 @@ the work that fixes it.
         "data/majal_lease_data.xml",
         "views/majal_lease_views.xml",
         "views/majal_maintenance_request_views.xml",
+        "views/majal_lease_inspection_views.xml",
         "views/majal_unit_views.xml",
         "views/majal_property_operations_menus.xml",
     ],

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_cheque_list" model="ir.ui.view">
+        <field name="name">majal.cheque.list</field>
+        <field name="model">majal.cheque</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'bounced' or is_due"
+                  decoration-success="state == 'cleared'"
+                  decoration-muted="state in ('returned', 'cancelled')">
+                <field name="due_date"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="bank_name" optional="show"/>
+                <field name="unit_id" optional="show"/>
+                <field name="installment_id" optional="hide"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="is_due" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'cleared'"
+                       decoration-info="state == 'deposited'"
+                       decoration-danger="state == 'bounced'"/>
+                <button name="action_deposit" type="object" icon="fa-university"
+                        title="Deposit" invisible="state != 'held'"/>
+                <button name="action_clear" type="object" icon="fa-check"
+                        title="Mark cleared" invisible="state not in ('held', 'deposited')"/>
+                <button name="action_bounce" type="object" icon="fa-times"
+                        title="Bounced" invisible="state not in ('held', 'deposited', 'cleared')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_cheque_form" model="ir.ui.view">
+        <field name="name">majal.cheque.form</field>
+        <field name="model">majal.cheque</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_deposit" type="object" string="Deposit"
+                            class="btn-primary" invisible="state != 'held'"/>
+                    <button name="action_clear" type="object" string="Mark Cleared"
+                            class="btn-primary"
+                            invisible="state not in ('held', 'deposited')"/>
+                    <button name="action_bounce" type="object" string="Bounced"
+                            invisible="state not in ('held', 'deposited', 'cleared')"/>
+                    <button name="action_return" type="object" string="Return to Drawer"
+                            invisible="state not in ('held', 'deposited')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('cleared', 'cancelled')"/>
+                    <button name="action_reset_to_held" type="object" string="Reset"
+                            invisible="state in ('held', 'cleared')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="held,deposited,cleared"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="state != 'bounced'">
+                        This cheque bounced. Anything it had settled has been
+                        put back as outstanding.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Cheque No."/>
+                        <h1><field name="name" placeholder="e.g. 000451"/></h1>
+                    </div>
+                    <group>
+                        <group string="Instrument">
+                            <field name="partner_id"/>
+                            <field name="bank_name"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="due_date"/>
+                            <field name="deposited_date" invisible="not deposited_date"/>
+                            <field name="cleared_date" invisible="not cleared_date"/>
+                            <field name="is_due" invisible="1"/>
+                        </group>
+                        <group string="Settles">
+                            <field name="installment_id"/>
+                            <field name="unit_id"/>
+                        </group>
+                        <group string="If it failed" invisible="state != 'bounced'">
+                            <field name="bounce_reason"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_majal_cheque_search" model="ir.ui.view">
+        <field name="name">majal.cheque.search</field>
+        <field name="model">majal.cheque</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="unit_id"/>
+                <field name="bank_name"/>
+                <filter string="Due for Banking" name="due"
+                        domain="[('is_due', '=', True)]"/>
+                <filter string="In Hand" name="held" domain="[('state', '=', 'held')]"/>
+                <filter string="With the Bank" name="deposited"
+                        domain="[('state', '=', 'deposited')]"/>
+                <filter string="Bounced" name="bounced" domain="[('state', '=', 'bounced')]"/>
+                <separator/>
+                <filter string="Cleared" name="cleared" domain="[('state', '=', 'cleared')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Drawer" name="group_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Due Date" name="group_due"
+                            context="{'group_by': 'due_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_cheque" model="ir.actions.act_window">
+        <field name="name">Cheques</field>
+        <field name="res_model">majal.cheque</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_majal_cheque_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Record a cheque</p>
+            <p>
+                A cheque becomes a payment when it clears, and can fail after
+                it has been handed over. Clearing one here is what settles the
+                instalment or rent behind it.
+            </p>
+        </field>
+    </record>
+</odoo>

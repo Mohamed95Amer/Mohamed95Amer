@@ -64,6 +64,14 @@ class MajalDevelopment(models.Model):
         populating the field — but naming the FM team through an allocation
         is the more durable answer where both modules are present.
         """
+        # The assignment fields belong to majal_administration, not to
+        # facility_asset. A customer running Property and Facilities without
+        # the governance app has no per-location rules to satisfy, and
+        # writing fields that do not exist would break handover for them.
+        Location = self.env["facility.location"]
+        if not {"manager_user_id", "member_user_ids"} <= set(Location._fields):
+            return True
+
         for development in self:
             locations = development._mirrored_locations()
             if not locations:

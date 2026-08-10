@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_lease_inspection_list" model="ir.ui.view">
+        <field name="name">majal.lease.inspection.list</field>
+        <field name="model">majal.lease.inspection</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'done'">
+                <field name="inspection_date"/>
+                <field name="inspection_type"/>
+                <field name="unit_id"/>
+                <field name="tenant_id"/>
+                <field name="lease_id" optional="hide"/>
+                <field name="inspector_id" optional="show"/>
+                <field name="deduction_total" sum="Deductions"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_lease_inspection_form" model="ir.ui.view">
+        <field name="name">majal.lease.inspection.form</field>
+        <field name="model">majal.lease.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_copy_from_move_in" type="object"
+                            string="Copy Move-In Findings"
+                            invisible="state != 'draft' or inspection_type != 'move_out'"/>
+                    <button name="action_done" type="object" string="Complete"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="inspection_type != 'move_out'">
+                        A deduction has to point at something that was not
+                        like that when the tenant arrived, so start from the
+                        move-in findings rather than a fresh opinion.
+                    </div>
+                    <group>
+                        <group string="Tenancy">
+                            <field name="lease_id" readonly="state != 'draft'"/>
+                            <field name="unit_id"/>
+                            <field name="tenant_id"/>
+                            <field name="inspection_type" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Visit">
+                            <field name="inspection_date"/>
+                            <field name="inspector_id"/>
+                            <field name="keys_handed"/>
+                        </group>
+                        <group string="Meters">
+                            <field name="meter_electricity"/>
+                            <field name="meter_water"/>
+                        </group>
+                        <group string="Deposit" invisible="inspection_type != 'move_out'">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="deposit"/>
+                            <field name="deduction_total"/>
+                            <field name="deposit_refund"
+                                   class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Findings" name="findings">
+                            <field name="line_ids">
+                                <list editable="bottom"
+                                      decoration-danger="condition_out == 'damaged'"
+                                      decoration-warning="condition_out == 'poor'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="location"/>
+                                    <field name="condition_in"/>
+                                    <field name="condition_out"
+                                           column_invisible="parent.inspection_type != 'move_out'"/>
+                                    <field name="is_tenant_liable"
+                                           column_invisible="parent.inspection_type != 'move_out'"/>
+                                    <field name="deduction_amount"
+                                           column_invisible="parent.inspection_type != 'move_out'"
+                                           sum="Deductions"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_lease_inspection_search" model="ir.ui.view">
+        <field name="name">majal.lease.inspection.search</field>
+        <field name="model">majal.lease.inspection</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="unit_id"/>
+                <field name="tenant_id"/>
+                <field name="lease_id"/>
+                <filter string="Move In" name="move_in"
+                        domain="[('inspection_type', '=', 'move_in')]"/>
+                <filter string="Move Out" name="move_out"
+                        domain="[('inspection_type', '=', 'move_out')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="group_type"
+                            context="{'group_by': 'inspection_type'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_lease_inspection" model="ir.actions.act_window">
+        <field name="name">Inspections</field>
+        <field name="res_model">majal.lease.inspection</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_lease_inspection_search"/>
+    </record>
+
+    <record id="view_majal_lease_form_inspections" model="ir.ui.view">
+        <field name="name">majal.lease.form.inspections</field>
+        <field name="model">majal.lease</field>
+        <field name="inherit_id" ref="majal_property_operations.view_majal_lease_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_inspections" type="object"
+                            class="oe_stat_button" icon="fa-clipboard"
+                            invisible="not inspection_ids">
+                        <field name="inspection_count" widget="statinfo"
+                               string="Inspections"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='rent']/field[@name='rent_line_ids']/list/field[@name='state']"
+                   position="after">
+                <field name="cheque_ids" widget="many2many_tags" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

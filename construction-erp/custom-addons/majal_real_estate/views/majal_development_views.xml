@@ -13,6 +13,9 @@
                 <field name="community_count"/>
                 <field name="building_count"/>
                 <field name="unit_count"/>
+                <field name="sold_rate" widget="progressbar" string="Sold %"/>
+                <field name="collection_rate" widget="progressbar" string="Collected %"/>
+                <field name="currency_id" column_invisible="1"/>
             </list>
         </field>
     </record>
@@ -53,6 +56,19 @@
                             <field name="country_id"/>
                             <field name="land_area"/>
                             <field name="expected_handover_date"/>
+                        </group>
+                    </group>
+                    <group string="Portfolio Health" name="health">
+                        <group>
+                            <field name="sold_rate" widget="progressbar"/>
+                            <field name="occupancy_rate" widget="progressbar"/>
+                            <field name="collection_rate" widget="progressbar"/>
+                        </group>
+                        <group>
+                            <field name="available_unit_count"/>
+                            <field name="sold_unit_count"/>
+                            <field name="amount_sold"/>
+                            <field name="amount_collected"/>
                         </group>
                     </group>
                     <notebook>

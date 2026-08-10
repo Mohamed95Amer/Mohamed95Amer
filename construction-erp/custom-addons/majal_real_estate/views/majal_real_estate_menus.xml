@@ -70,6 +70,12 @@
               action="action_majal_payment_installment"
               sequence="20"/>
 
+    <menuitem id="menu_majal_real_estate_cheques"
+              name="Cheques"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_cheque"
+              sequence="25"/>
+
     <menuitem id="menu_majal_real_estate_commissions"
               name="Commissions"
               parent="menu_majal_real_estate_sales"
@@ -86,6 +92,12 @@
               parent="menu_majal_real_estate_handover"
               action="action_majal_handover"
               sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_documents"
+              name="Documents"
+              parent="menu_majal_real_estate_root"
+              action="action_majal_property_document"
+              sequence="60"/>
 
     <menuitem id="menu_majal_real_estate_config"
               name="Configuration"
