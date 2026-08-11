@@ -1,5 +1,10 @@
 # Majal continuation handoff
 
+> **Newest checkpoint: [`next-tool-2026-08-11/START_HERE.md`](next-tool-2026-08-11/START_HERE.md)**
+> — the Property suite, and one open UI defect that needs a browser to fix.
+> The 2026-07-31 checkpoint below remains the reference for the Construction
+> and Facilities platform.
+
 Use this folder to continue the Majal work with Codex, Claude Code, Cursor, or
 another coding tool.
 
