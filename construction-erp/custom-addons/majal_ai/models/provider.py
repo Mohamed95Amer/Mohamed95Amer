@@ -161,12 +161,33 @@ class MajalAiProvider(models.Model):
             provider.has_api_key = has_key
             provider.api_key_hint = _("Configured") if has_key else _("Not configured")
             spec = PROVIDER_SPECS.get(provider.code, {})
+            local_runtime_ready = (
+                provider.code not in LOCAL_PROVIDER_CODES
+                or provider._local_runtime_enabled()
+            )
             provider.is_ready = bool(
                 provider.enabled
                 and provider.endpoint
                 and provider.model_name
+                and local_runtime_ready
                 and (has_key or not spec.get("requires_key"))
             )
+
+    @api.model
+    def _local_runtime_enabled(self):
+        """Keep workstation-only models off remote servers by default.
+
+        A production container must never assume that ``host.docker.internal``
+        is the user's trusted workstation. Local Docker Compose opts in
+        explicitly; hosted deployments stay on configured hosted providers
+        until a private connector is deliberately provisioned.
+        """
+        return os.environ.get("MAJAL_AI_LOCAL_ENABLED", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
 
     @api.constrains("endpoint", "code")
     def _check_endpoint(self):

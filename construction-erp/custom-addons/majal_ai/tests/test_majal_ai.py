@@ -63,6 +63,14 @@ class TestMajalAi(TransactionCase):
         self.assertFalse(self.local.requires_key)
         self.assertFalse(self.local_coder.requires_key)
 
+    def test_local_profiles_require_explicit_runtime_opt_in(self):
+        with patch.dict(os.environ, {"MAJAL_AI_LOCAL_ENABLED": ""}):
+            self.local.invalidate_recordset(["is_ready"])
+            self.assertFalse(self.local.is_ready)
+        with patch.dict(os.environ, {"MAJAL_AI_LOCAL_ENABLED": "true"}):
+            self.local.invalidate_recordset(["is_ready"])
+            self.assertTrue(self.local.is_ready)
+
     def test_prompt_library_includes_scenarios_and_role_aware_guide(self):
         data = self.env["majal.ai.conversation"].with_user(self.user_a).bootstrap()
         scopes = {item["scope"] for item in data["suggestions"]}
