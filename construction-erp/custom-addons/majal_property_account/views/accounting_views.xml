@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_property_accounting_settings_list" model="ir.ui.view">
+        <field name="name">majal.property.accounting.settings.list</field>
+        <field name="model">majal.property.accounting.settings</field>
+        <field name="arch" type="xml">
+            <list string="Property Accounting Settings">
+                <field name="company_id"/>
+                <field name="journal_id"/>
+                <field name="income_account_id"/>
+                <field name="rent_income_account_id"/>
+                <field name="service_charge_income_account_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_majal_property_accounting_settings_form" model="ir.ui.view">
+        <field name="name">majal.property.accounting.settings.form</field>
+        <field name="model">majal.property.accounting.settings</field>
+        <field name="arch" type="xml">
+            <form string="Property Accounting Settings">
+                <sheet>
+                    <div class="oe_title"><h1>Property Accounting</h1></div>
+                    <group>
+                        <field name="company_id"/>
+                        <field name="journal_id"/>
+                        <field name="income_account_id"/>
+                        <field name="rent_income_account_id"/>
+                        <field name="service_charge_income_account_id"/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        Majal creates draft invoices only. Posting, payment and reconciliation remain controlled by Accounting users.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_majal_property_accounting_settings" model="ir.actions.act_window">
+        <field name="name">Property Accounting Settings</field>
+        <field name="res_model">majal.property.accounting.settings</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

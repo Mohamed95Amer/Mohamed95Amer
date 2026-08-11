@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_payment_installment_form_accounting" model="ir.ui.view">
+        <field name="name">majal.payment.installment.form.accounting</field>
+        <field name="model">majal.payment.installment</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_payment_installment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_invoice" type="object" string="Create Draft Invoice"
+                        class="btn-primary" invisible="invoice_id or state == 'paid'"/>
+                <button name="action_open_invoice" type="object" string="Open Invoice"
+                        invisible="not invoice_id"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_date']" position="after">
+                <field name="invoice_id" readonly="1"/>
+                <field name="invoice_state" readonly="1"/>
+                <field name="invoice_payment_state" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_majal_rent_line_list_accounting" model="ir.ui.view">
+        <field name="name">majal.lease.rent.line.list.accounting</field>
+        <field name="model">majal.lease.rent.line</field>
+        <field name="inherit_id" ref="majal_property_operations.view_majal_rent_line_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='amount_residual']" position="after">
+                <field name="invoice_id" optional="hide"/>
+                <button name="action_create_invoice" type="object" string="Invoice"
+                        icon="fa-file-text-o" invisible="invoice_id or state == 'paid'"/>
+                <button name="action_open_invoice" type="object" string="Open"
+                        icon="fa-external-link" invisible="not invoice_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_majal_service_charge_list_accounting" model="ir.ui.view">
+        <field name="name">majal.service.charge.list.accounting</field>
+        <field name="model">majal.service.charge</field>
+        <field name="inherit_id" ref="majal_property_ownership.view_charge_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='amount_residual']" position="after">
+                <field name="invoice_id" optional="hide"/>
+                <button name="action_create_invoice" type="object" string="Invoice"
+                        icon="fa-file-text-o" invisible="invoice_id or state == 'paid'"/>
+                <button name="action_open_invoice" type="object" string="Open"
+                        icon="fa-external-link" invisible="not invoice_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
