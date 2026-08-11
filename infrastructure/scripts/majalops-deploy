@@ -14,6 +14,8 @@ case "$ACTION" in
         image="${2:-}"
         install_mods="${3:-${INSTALL_MODULES:-}}"
         upgrade_mods="${4:-${UPGRADE_MODULES:-}}"
+        [[ "$install_mods" == "-" ]] && install_mods=""
+        [[ "$upgrade_mods" == "-" ]] && upgrade_mods=""
         module_pattern='^([a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*)?$'
         [[ "$image" =~ ^ghcr\.io/mohamed95amer/majalops-platform@sha256:[a-fA-F0-9]{64}$ ]] || {
             printf 'Invalid or unauthorized image reference.\n' >&2
