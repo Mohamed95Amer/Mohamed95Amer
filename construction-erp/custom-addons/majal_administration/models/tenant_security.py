@@ -324,6 +324,16 @@ class ResUsersTenantSecurity(models.Model):
                 f"('{manager_path}', '=', user.id), "
                 f"('{members_path}', 'in', [user.id])]"
             )
+            if model_name == "project.task":
+                # The To-do app stores personal tasks without a project. They
+                # are not construction records and therefore have no company
+                # path to satisfy the tenant domain above. Keep them usable,
+                # but only for the person assigned to the private task.
+                allowed = (
+                    "['|', '&', ('project_id', '=', False), "
+                    "('user_ids', 'in', [user.id])] + ("
+                    f"{allowed})"
+                )
             if model_name == "project.project":
                 allowed = f"[('is_construction', '=', True)] + ({allowed})"
             domain = (

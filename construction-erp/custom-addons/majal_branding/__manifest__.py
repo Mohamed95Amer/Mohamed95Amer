@@ -1,7 +1,7 @@
 {
     "name": "Majal Brand System",
     "summary": "Client-ready Majal identity, product information and PWA",
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.3.0",
     "category": "Hidden/Tools",
     "license": "LGPL-3",
     "author": "Majal",
@@ -29,6 +29,7 @@
             "majal_branding/static/src/company_switcher/company_switcher.xml",
             "majal_branding/static/src/user_menu/user_menu.js",
             "majal_branding/static/src/activity_menu/activity_menu.xml",
+            "majal_branding/static/src/router/majal_router.js",
             "majal_branding/static/src/scss/backend.scss",
         ],
         "web.assets_frontend": [

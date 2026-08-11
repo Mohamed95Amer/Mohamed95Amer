@@ -34,6 +34,7 @@ MANAGED_GROUP_XMLIDS = set(
         "construction_base.group_construction_user",
         "project.group_project_manager",
         "project.group_project_user",
+        "project.group_project_stages",
         "purchase.group_purchase_manager",
         "purchase.group_purchase_user",
         "stock.group_stock_manager",

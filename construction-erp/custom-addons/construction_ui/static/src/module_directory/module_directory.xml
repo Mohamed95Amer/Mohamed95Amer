@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_ui.MajalModuleDirectory">
+        <main class="o_majal_module_directory">
+            <header>
+                <span>YOUR MAJAL WORKSPACE</span>
+                <h1>Modules available to you</h1>
+                <p>Open a workspace below. Availability follows your role and company permissions.</p>
+            </header>
+            <section class="o_majal_module_grid" aria-label="Majal modules">
+                <button t-foreach="apps" t-as="app" t-key="app.id"
+                        type="button" class="o_majal_module_card"
+                        t-on-click="() => this.openApp(app)">
+                    <span class="o_majal_module_icon">
+                        <img t-if="app.webIconData" t-att-src="app.webIconData" t-att-alt="app.name"/>
+                        <span t-else="" t-esc="app.name.slice(0, 2)"/>
+                    </span>
+                    <span class="o_majal_module_copy">
+                        <strong t-esc="app.name"/>
+                        <small>Open workspace</small>
+                    </span>
+                    <i class="fa fa-arrow-right" aria-hidden="true"/>
+                </button>
+            </section>
+            <aside>
+                <i class="fa fa-shield"/>
+                Only supported, installed Majal workspaces are shown. System packages and edition upgrades are managed by the platform team.
+            </aside>
+        </main>
+    </t>
+</templates>

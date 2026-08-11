@@ -57,6 +57,19 @@ class TestMajalBranding(TransactionCase):
 
 @tagged("post_install", "-at_install")
 class TestMajalPublicRoutes(HttpCase):
+    def test_branded_app_alias_preserves_backend_path_and_query(self):
+        response = self.url_open(
+            "/app/action-123?debug=assets",
+            timeout=15,
+            allow_redirects=False,
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.headers["Location"],
+            "/odoo/action-123?debug=assets",
+        )
+
     def test_database_selector_recovers_to_majal_login(self):
         response = self.url_open(
             "/web/database/selector",

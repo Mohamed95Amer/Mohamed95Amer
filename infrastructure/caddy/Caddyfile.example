@@ -55,6 +55,19 @@
 		}
 	}
 
+	# Public Majal backend route. The application keeps the upstream path
+	# internally for framework compatibility, while clients see /app.
+	@majal_app path /app /app/*
+	handle @majal_app {
+		uri replace /app /odoo
+		reverse_proxy majal:8069 {
+			transport http {
+				dial_timeout 10s
+				response_header_timeout 120s
+			}
+		}
+	}
+
 	handle {
 		reverse_proxy majal:8069 {
 			health_uri /majal/health

@@ -16,6 +16,10 @@
             <body>
                 <header class="mf-header">
                     <div>
+                        <a class="mf-back" href="/app" aria-label="Back to Majal">
+                            <span aria-hidden="true">←</span>
+                            <span>Back to Majal</span>
+                        </a>
                         <span class="mf-kicker">MAJAL FIELD</span>
                         <h1>Good work, <t t-esc="user_name"/></h1>
                         <p><t t-esc="company_name"/></p>

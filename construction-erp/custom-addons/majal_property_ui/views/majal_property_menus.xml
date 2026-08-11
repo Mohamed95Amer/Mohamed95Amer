@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="majal_real_estate.menu_majal_real_estate_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/property.svg</field>
+    </record>
+
     <!-- The platform convention: section menus open a workspace, leaf menus
          open their own act_window, and every section carries an Overview child
          at sequence 1 so the workspace stays reachable once you are inside a

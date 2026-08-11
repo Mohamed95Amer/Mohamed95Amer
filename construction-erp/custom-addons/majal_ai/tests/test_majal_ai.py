@@ -13,6 +13,7 @@ class TestMajalAi(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.local = cls.env.ref("majal_ai.provider_local")
+        cls.local_coder = cls.env.ref("majal_ai.provider_local_coder")
         cls.kimi = cls.env.ref("majal_ai.provider_kimi")
         cls.user_a = cls.env["res.users"].create(
             {
@@ -49,12 +50,35 @@ class TestMajalAi(TransactionCase):
         data = self.env["majal.ai.conversation"].bootstrap()
         self.assertEqual(
             {provider["code"] for provider in data["providers"]},
-            {"local", "kimi", "openai", "gemini", "anthropic"},
+            {"local", "local_coder", "kimi", "openai", "gemini", "anthropic"},
         )
         for provider in data["providers"]:
             self.assertNotIn("endpoint", provider)
             self.assertNotIn("api_key", provider)
             self.assertNotIn("api_key_encrypted", provider)
+
+    def test_shipped_ollama_profiles_match_installed_models(self):
+        self.assertEqual(self.local.model_name, "gpt-oss:20b")
+        self.assertEqual(self.local_coder.model_name, "qwen3-coder:30b")
+        self.assertFalse(self.local.requires_key)
+        self.assertFalse(self.local_coder.requires_key)
+
+    def test_prompt_library_includes_scenarios_and_role_aware_guide(self):
+        data = self.env["majal.ai.conversation"].with_user(self.user_a).bootstrap()
+        scopes = {item["scope"] for item in data["suggestions"]}
+        self.assertEqual(scopes, {"portfolio", "construction", "facilities", "guide"})
+        self.assertGreaterEqual(len(data["suggestions"]), 12)
+        guide = self.env["majal.ai.conversation"].with_user(self.user_a).create(
+            {
+                "name": "How to use Majal",
+                "provider_id": self.local.id,
+                "scope": "guide",
+            }
+        )
+        context, citations = guide._build_context()
+        self.assertIn("MAJAL ROLE-AWARE NAVIGATION GUIDE", context)
+        self.assertIn("Majal Intelligence", context)
+        self.assertEqual(citations, [])
 
     def test_hosted_key_is_encrypted_and_never_computed_back(self):
         master_key = Fernet.generate_key().decode()

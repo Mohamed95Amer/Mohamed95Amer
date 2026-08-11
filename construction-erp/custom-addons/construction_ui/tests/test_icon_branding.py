@@ -3,6 +3,14 @@ from odoo.tests import TransactionCase, tagged
 
 @tagged("post_install", "-at_install")
 class TestMajalAppIcons(TransactionCase):
+    def test_module_directory_replaces_the_vendor_marketplace(self):
+        menu = self.env.ref("base.menu_management")
+        action = self.env.ref("construction_ui.action_majal_module_directory")
+
+        self.assertEqual(menu.name, "Majal Modules")
+        self.assertEqual(menu.action, action)
+        self.assertEqual(action.tag, "construction_ui.module_directory")
+
     def test_every_installed_top_level_app_uses_a_majal_icon(self):
         # Modules allowed to supply an app icon. The rule is that no app shows
         # a stock Odoo icon, not that the icons all live in one module — so a

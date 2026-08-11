@@ -116,7 +116,7 @@ export class MajalSidebar extends Component {
     }
 
     href(menu) {
-        return menu.actionID ? `/odoo/action-${menu.actionID}` : "#";
+        return menu.actionID ? `/app/action-${menu.actionID}` : "#";
     }
 }
 
