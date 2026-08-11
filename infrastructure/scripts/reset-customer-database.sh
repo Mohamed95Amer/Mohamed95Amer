@@ -17,7 +17,9 @@ db_exec() {
     local container
     container="$(compose ps -q "$DB_SERVICE")"
     [[ -n "$container" ]] || die "Cannot find the database container."
-    docker exec -e PGPASSWORD="$db_password" "$container" "$@"
+    # Keep stdin attached: validation and atomic database swaps intentionally
+    # feed SQL to psql through heredocs.
+    docker exec -i -e PGPASSWORD="$db_password" "$container" "$@"
 }
 env_value() {
     awk -F= -v key="$1" '$1 == key { sub(/^[^=]*=/, ""); gsub(/^\047|\047$/, ""); print; exit }' "$ENV_FILE"
@@ -75,7 +77,10 @@ SELECT concat_ws(',',
 );
 SQL
 )"
-[[ "$validation" == "0,0,0,0" ]] || die "Candidate database contains unexpected business/demo records: $validation"
+if [[ "$validation" != "0,0,0,0" ]]; then
+    cleanup_candidate
+    die "Candidate database contains unexpected business/demo records: $validation"
+fi
 
 printf 'Candidate is clean. Stopping the application for an atomic database/filestore swap.\n'
 compose stop -t 90 "$APP_SERVICE"
