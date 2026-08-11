@@ -42,7 +42,7 @@ db_user="$(env_value POSTGRES_USER)"
 db_password="$(env_value POSTGRES_PASSWORD)"
 db_container="$(docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" ps -q db)"
 [[ -n "$db_container" ]] || die "Cannot find the platform database container."
-docker exec -e PGPASSWORD="$db_password" "$db_container" \
+docker exec -i -e PGPASSWORD="$db_password" "$db_container" \
     psql -U "$db_user" -d postgres -v db_name="$MAJAL_DEMO_DB" <<'SQL'
 SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity
@@ -50,7 +50,7 @@ WHERE datname = :'db_name' AND pid <> pg_backend_pid();
 SQL
 docker exec -e PGPASSWORD="$db_password" "$db_container" \
     dropdb --if-exists -U "$db_user" "$MAJAL_DEMO_DB"
-docker exec -e PGPASSWORD="$db_password" "$db_container" \
+docker exec -i -e PGPASSWORD="$db_password" "$db_container" \
     psql -U "$db_user" -d postgres -v role_name="$MAJAL_DEMO_DB_USER" <<'SQL'
 SELECT format('DROP ROLE IF EXISTS %I', :'role_name') \gexec
 SQL

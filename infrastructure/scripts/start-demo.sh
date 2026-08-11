@@ -103,7 +103,7 @@ trap cleanup_failed_start ERR
 
 # The public demo never receives the platform database owner credential. Its
 # short-lived role owns only its short-lived database and is dropped at expiry.
-docker exec -e PGPASSWORD="$db_password" "$db_container" \
+docker exec -i -e PGPASSWORD="$db_password" "$db_container" \
     psql -U "$db_user" -d postgres \
     -v role_name="$db_role" -v role_password="$db_role_password" -v db_name="$db_name" <<'SQL'
 SELECT format(
