@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_property_listing_user,majal.property.listing user,model_majal_property_listing,majal_property_listing.group_majal_property_listing_user,1,1,1,0
+access_majal_property_listing_manager,majal.property.listing manager,model_majal_property_listing,majal_property_listing.group_majal_property_listing_manager,1,1,1,1

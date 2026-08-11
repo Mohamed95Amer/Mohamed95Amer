@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_listing_a1601" model="majal.property.listing">
+        <field name="name">Marina Heights — Tower A 1601</field>
+        <field name="unit_id" ref="majal_real_estate.demo_unit_a1601"/>
+        <field name="public_title">Bright one-bedroom marina residence</field>
+        <field name="public_title_ar">شقة مشرقة بغرفة نوم واحدة بإطلالة بحرية</field>
+        <field name="description">A ready-to-view residence with marina outlook, balcony and dedicated parking.</field>
+        <field name="listing_price">1180000</field>
+        <field name="original_price">1250000</field>
+        <field name="energy_rating">B</field>
+        <field name="featured">1</field>
+        <field name="state">published</field>
+    </record>
+</odoo>
