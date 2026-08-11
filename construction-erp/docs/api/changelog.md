@@ -11,8 +11,8 @@ route, model, field or method that an integration can reach changes.
 | --- | --- |
 | Platform | Odoo **18.0** Community |
 | Odoo commit | pinned in `construction-erp/ODOO_PINNED_SHA`, vendored at `construction-erp/vendor/odoo/` |
-| Majal addons | 37 in `construction-erp/custom-addons/` |
-| Addon versions | `18.0.1.0.0` for 33 addons; `18.0.1.1.0`, `18.0.1.2.0` (×2) and `18.0.1.3.0` for the rest |
+| Majal addons | Read from the checked-out `custom-addons/` directory or the live module registry |
+| Addon versions | Read from `ir.module.module.installed_version`; Property is delivered as separate versioned addons |
 
 Read the exact versions from the deployment you are talking to rather than
 trusting this table:
@@ -74,6 +74,7 @@ What you should not rely on:
 
 | Date | Change |
 | --- | --- |
+| 2026-08-11 | Added the Property domain reference, buyer portal routes, safe provider/job connector architecture, Property accounting links and global multi-company isolation coverage. Route inventory updated to 30 declarations across 11 controller files. |
 | 2026-08-01 | First release of this documentation set, covering the full RPC surface, all 27 `@http.route` declarations, the approval engine, the security model and the domain models. |
 
 ## Reporting a discrepancy

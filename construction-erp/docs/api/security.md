@@ -17,7 +17,8 @@ do not announce themselves. `search` simply does not return the row.
 
 ## Groups
 
-Thirteen Majal groups, defined across the addons' `security/` directories.
+Majal groups are defined across the addons' `security/` directories. Always
+resolve them by XML ID rather than relying on a numeric database id.
 
 ### Construction — `construction_base`
 
@@ -50,7 +51,22 @@ Thirteen Majal groups, defined across the addons' `security/` directories.
 | `majal_administration.group_platform_owner` | Highest rank. Required for recovery-archive download and high-risk capability grants. |
 | `majal_administration.group_user_administrator` | Company administrator |
 | `majal_administration.group_backup_operator` | Recovery operations |
+| `majal_administration.group_platform_monitor` | May call the authenticated deep health endpoint; grants no general administration rights |
 | `majal_ai.group_ai_manager` | AI provider configuration, including reading the encrypted key fields |
+
+### Property and integrations
+
+| XML ID | Meaning |
+| --- | --- |
+| `majal_real_estate.group_majal_real_estate_user` | Property sales and portfolio user |
+| `majal_real_estate.group_majal_real_estate_manager` | Property portfolio manager |
+| `majal_property_operations.group_majal_property_manager` | Leasing and property operations manager |
+| `majal_property_ownership.group_majal_owners_association` | Owners' association and service-charge operations |
+| `majal_property_listing.group_majal_property_listing_user` | Listing author |
+| `majal_property_listing.group_majal_property_listing_manager` | Listing reviewer and publisher |
+| `majal_integrations.group_majal_integration_manager` | Integration provider and job administration |
+| `majal_property_integrations.group_majal_property_integration_manager` | Property channel publication and connector administration |
+| `majal_property_account.group_majal_property_account_manager` | Property accounting setup and invoicing |
 
 Resolve any of these to an id:
 
@@ -79,7 +95,7 @@ allowed = models.execute_kw(
 | Field | Type | Description |
 | --- | --- | --- |
 | `majal_role_id` | many2one `majal.access.role` | The user's rank |
-| `majal_industry_scope` | selection | `construction` / `facilities` / `both`. Required, defaults to `both`. |
+| `majal_industry_scope` | selection | `construction`, `facilities`, `both`, `real_estate`, or `property_facilities`. Required, defaults to `both`. |
 | `majal_capability_pack_ids` | many2many `majal.capability.pack` | Optional commercial capabilities |
 | `majal_access_summary` | char | **computed** — human-readable summary |
 
@@ -119,6 +135,10 @@ A construction-scoped user reading a facilities model — or vice versa — gets
 `[(1, '=', 0)]`, a domain that matches nothing. Not an error, not a partial
 result: **zero rows, silently**. If your integration reads both sides of the
 product, its user needs `majal_industry_scope = "both"`.
+
+Property-only integrations should use `real_estate`; integrations that also
+raise facilities work against Property assets should use `property_facilities`.
+Use `both` only when the account genuinely needs all suites.
 
 Note the first clause: `user.share` (portal users) are exempted from the tenant
 rules entirely and are governed instead by the portal rules below.
@@ -181,6 +201,22 @@ absolute rather than rule-based.
 ### Facilities — company-scoped
 
 `facility.sla.policy`, `contract.contract`.
+
+### Property — company isolation
+
+All 28 core Property business models have global company record rules. This
+includes the inventory hierarchy, reservations and payment records, handovers,
+documents, leases and inspections, property maintenance, service-charge budgets
+and charges, owner statements, listings, publications and accounting settings.
+
+The domain is based on `company_ids`, including records whose `company_id` is
+empty only where the model permits shared configuration. A user assigned only to
+Company A cannot discover Company B's developments, units, leases, service
+budgets or listings even when an RPC caller sends an empty domain. This boundary
+is covered by the automated `majal_property_account` company-isolation test.
+
+For predictable results, integrations must still pass
+`context={"allowed_company_ids": [...]}` and an explicit company domain.
 
 ### Facilities — assignment-scoped
 

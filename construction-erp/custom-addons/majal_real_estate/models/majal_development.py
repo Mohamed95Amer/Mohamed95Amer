@@ -60,13 +60,13 @@ class MajalDevelopment(models.Model):
     sold_unit_count = fields.Integer(compute="_compute_portfolio_health")
     sold_rate = fields.Float(
         string="Sold %", compute="_compute_portfolio_health",
-        group_operator="avg")
+        aggregator="avg")
     occupancy_rate = fields.Float(
         string="Occupied %", compute="_compute_portfolio_health",
-        group_operator="avg")
+        aggregator="avg")
     collection_rate = fields.Float(
         string="Collected %", compute="_compute_portfolio_health",
-        group_operator="avg")
+        aggregator="avg")
     amount_sold = fields.Monetary(compute="_compute_portfolio_health")
     amount_collected = fields.Monetary(compute="_compute_portfolio_health")
     building_count = fields.Integer(compute="_compute_counts")

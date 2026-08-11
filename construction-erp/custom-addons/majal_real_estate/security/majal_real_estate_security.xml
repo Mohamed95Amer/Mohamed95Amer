@@ -18,6 +18,89 @@
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 
+    <!-- Company isolation is a global rule so it is intersected with every
+         role-specific rule, including the buyer portal rules below. -->
+    <record id="rule_majal_development_company" model="ir.rule">
+        <field name="name">Property developments: allowed companies</field>
+        <field name="model_id" ref="model_majal_development"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_community_company" model="ir.rule">
+        <field name="name">Property communities: allowed companies</field>
+        <field name="model_id" ref="model_majal_community"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_building_company" model="ir.rule">
+        <field name="name">Property buildings: allowed companies</field>
+        <field name="model_id" ref="model_majal_building"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_floor_company" model="ir.rule">
+        <field name="name">Property floors: allowed companies</field>
+        <field name="model_id" ref="model_majal_floor"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_unit_type_company" model="ir.rule">
+        <field name="name">Property unit types: allowed companies</field>
+        <field name="model_id" ref="model_majal_unit_type"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_unit_company" model="ir.rule">
+        <field name="name">Property units: allowed companies</field>
+        <field name="model_id" ref="model_majal_unit"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_reservation_company" model="ir.rule">
+        <field name="name">Property reservations: allowed companies</field>
+        <field name="model_id" ref="model_majal_reservation"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_payment_plan_company" model="ir.rule">
+        <field name="name">Property payment plans: allowed companies</field>
+        <field name="model_id" ref="model_majal_payment_plan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_payment_plan_line_company" model="ir.rule">
+        <field name="name">Property payment plan lines: allowed companies</field>
+        <field name="model_id" ref="model_majal_payment_plan_line"/>
+        <field name="domain_force">[('plan_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_payment_installment_company" model="ir.rule">
+        <field name="name">Property payment installments: allowed companies</field>
+        <field name="model_id" ref="model_majal_payment_installment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_commission_company" model="ir.rule">
+        <field name="name">Property commissions: allowed companies</field>
+        <field name="model_id" ref="model_majal_commission"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_lead_company" model="ir.rule">
+        <field name="name">Property leads: allowed companies</field>
+        <field name="model_id" ref="model_majal_lead"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_handover_company" model="ir.rule">
+        <field name="name">Property handovers: allowed companies</field>
+        <field name="model_id" ref="model_majal_handover"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_handover_snag_company" model="ir.rule">
+        <field name="name">Property handover snags: allowed companies</field>
+        <field name="model_id" ref="model_majal_handover_snag"/>
+        <field name="domain_force">[('handover_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_cheque_company" model="ir.rule">
+        <field name="name">Property cheques: allowed companies</field>
+        <field name="model_id" ref="model_majal_cheque"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_property_document_company" model="ir.rule">
+        <field name="name">Property documents: allowed companies</field>
+        <field name="model_id" ref="model_majal_property_document"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
     <!-- A buyer sees their own paperwork and nothing else. The portal ACLs
          grant read on these two models only; these rules are what stop one
          buyer from reading another's. -->

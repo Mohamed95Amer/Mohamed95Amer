@@ -55,7 +55,8 @@ class MajalPropertyDocument(models.Model):
         default=30, required=True,
         help="How long before expiry this starts appearing as expiring.")
     attachment_ids = fields.Many2many("ir.attachment", string="Files")
-    attachment_count = fields.Integer(compute="_compute_attachment_count")
+    attachment_count = fields.Integer(
+        string="Document File Count", compute="_compute_attachment_count")
     notes = fields.Text()
 
     state = fields.Selection(

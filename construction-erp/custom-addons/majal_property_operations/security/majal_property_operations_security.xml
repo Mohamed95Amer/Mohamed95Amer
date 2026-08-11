@@ -8,4 +8,29 @@
                eval="[(4, ref('majal_real_estate.group_majal_real_estate_user'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
+    <record id="rule_majal_lease_company" model="ir.rule">
+        <field name="name">Property leases: allowed companies</field>
+        <field name="model_id" ref="model_majal_lease"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_lease_rent_line_company" model="ir.rule">
+        <field name="name">Property rent lines: allowed companies</field>
+        <field name="model_id" ref="model_majal_lease_rent_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_lease_inspection_company" model="ir.rule">
+        <field name="name">Property lease inspections: allowed companies</field>
+        <field name="model_id" ref="model_majal_lease_inspection"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_lease_inspection_line_company" model="ir.rule">
+        <field name="name">Property inspection lines: allowed companies</field>
+        <field name="model_id" ref="model_majal_lease_inspection_line"/>
+        <field name="domain_force">[('inspection_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_maintenance_request_company" model="ir.rule">
+        <field name="name">Property maintenance requests: allowed companies</field>
+        <field name="model_id" ref="model_majal_maintenance_request"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>

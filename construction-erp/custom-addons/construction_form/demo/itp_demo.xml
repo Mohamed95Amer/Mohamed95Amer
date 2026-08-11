@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <data noupdate="1">
     <!-- A plan somebody in the industry would recognise, with the two point
          types side by side so the difference is legible without reading the
          help text: the rebar check stops the pour, the slump test only
@@ -94,4 +95,5 @@
     <function model="construction.itp.record" name="action_release">
         <value eval="[ref('itp_record_setting_out')]"/>
     </function>
+  </data>
 </odoo>

@@ -1,88 +1,20 @@
-Continue the Majal Property suite in this worktree:
+Continue Majal Property in the isolated worktree:
 
-C:\Users\hossi\Documents\Odoo-majal-property
+  C:\Users\hossi\Documents\Odoo-majal-property\construction-erp
 
-Branch:
-feature/majal-property-phase2   (head 86e5a60, pushed)
+Do not touch C:\Users\hossi\Documents\Odoo or database erp.
 
-Read these completely before doing anything:
-1. construction-erp\handoff\next-tool-2026-08-11\START_HERE.md
-2. construction-erp\handoff\next-tool-2026-08-11\CHECKPOINT.md
-3. construction-erp\docs\full-system-audit-2026-07-28.md
+Read, in order:
+1. handoff/next-tool-2026-08-11/START_HERE.md
+2. docs/pre-hetzner-release-audit-2026-08-11.md
+3. handoff/next-tool-2026-08-11/CHECKPOINT.md
+4. docs/api/index.md
 
-Do not touch C:\Users\hossi\Documents\Odoo or the `erp` database. Those are the
-user's live working copy and live database. Do not reset, clean, checkout or
-discard anything in any worktree; run `git status --short` and
-`git log -1 --oneline` first.
+Branch feature/majal-property-phase2 is at committed head 246f934 plus
+uncommitted audited fixes and documentation. The final clean gate passed 843
+tests with 0 failures/errors across all 48 requested Majal modules. Upgrade,
+company isolation and authenticated HTTP/JSON-RPC smoke tests also pass.
 
-WHAT EXISTS
-
-A complete Property application on top of the existing Construction and
-Facilities platform: development hierarchy and unit inventory, leads,
-reservations, payment plans, broker commissions, handover and snagging,
-leasing with rent schedules and move-in/move-out inspections, service charge
-budgets, owner statements, post-dated cheques, documents with expiry, a buyer
-portal, and two bridges (Construction, Facilities) plus an access-governance
-bridge.
-
-812 tests pass across 43 modules in one database. Each suite installs on its
-own: a Property-only install pulls in zero construction and zero facility
-modules, and vice versa. An upgrade from the pre-Property platform commit
-(0a021cb) to this branch was verified on a customer-shaped database.
-
-THE ONE OPEN DEFECT — THIS IS THE FIRST TASK IF YOU HAVE A BROWSER
-
-`majal_property_ui` renders a blank Odoo web client. It is quarantined:
-`installable: False`, and Property currently runs on standard Odoo views. The
-previous tool could not fix it because it had no browser and this environment
-blocks installing a headless one (apt and pip both fail TLS verification).
-
-Everything checkable without a browser passes: the server returns 200, the
-asset bundle downloads, and the bundle demonstrably contains the module paths,
-the OWL template `majal_property_ui.PropertyHome`, and the registry tag
-`majal_property_ui.property_home`, with no stale references. The request log
-shows the browser fetch the bundle and then make no further calls — a
-JavaScript exception during boot.
-
-If you can run a browser: open the demo, F12, reload, read the first red
-console error. Suspect files, and there are only three:
-
-  custom-addons/majal_property_ui/static/src/workspace_hub/property_workspaces.js
-  custom-addons/majal_property_ui/static/src/home/property_home.js
-  custom-addons/majal_property_ui/static/src/home/property_home.xml
-
-Re-enable by setting "installable": True in that module's __manifest__.py and
-adding majal_property_ui back to the MODULES line in scripts/run-tests.sh.
-
-Before uninstalling it again, read the dangling-menu warning in START_HERE.md —
-uninstalling it leaves four menus pointing at deleted actions and every page
-then returns 500.
-
-Note: an earlier attempt split construction_ui into a shared shell module
-(majal_suite_ui) so Property could have the same chrome without dragging in all
-28 construction and facility modules. That split was reverted in 86e5a60
-because the blank page persisted with majal_property_ui uninstalled. The split
-is a good idea and will need doing again — but only by someone who can watch a
-browser while doing it.
-
-RUNNING IT
-
-No bare-metal Odoo on this machine. Everything runs in disposable Docker
-stacks; exact commands are in CHECKPOINT.md section 2. Read section 3 of that
-file first — eight traps are listed there, and at least four of them cost the
-previous tool hours each. The two that matter most:
-
-  * share a named volume at /var/lib/odoo between the container that builds a
-    database and the one that serves it, or every attachment is lost;
-  * an HTTP 200 from curl proves nothing about whether a page renders.
-
-A demo is currently running at http://localhost:8074 (admin / admin),
-containers majal-prop-web and majal-prop-db, database majal_demo.
-
-OPEN DECISIONS — ASK, DO NOT ASSUME
-
-Every amount in this system is a number somebody types: no invoices, no
-journal entries, nothing reconciles to a bank, and owner statements compute
-what to pay a third party. Whether to integrate `account` is the user's call
-and is the largest open question. Four smaller ones are listed at the end of
-CHECKPOINT.md.
+Do not deploy yet. Review the diff, commit intentionally, perform desktop/mobile
+visual UAT and a WebGL BIM smoke, then rehearse backup/restore before promoting
+an immutable image to Hetzner.

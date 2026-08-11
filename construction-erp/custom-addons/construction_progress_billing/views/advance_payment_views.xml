@@ -36,7 +36,7 @@
                          interrupting somebody for. -->
                     <div class="alert alert-danger d-flex align-items-center"
                          role="alert" invisible="not guarantee_lapsed">
-                        <i class="fa fa-shield me-2"/>
+                        <i class="fa fa-shield me-2" title="Guarantee warning"/>
                         <field name="guarantee_warning" nolabel="1" readonly="1"
                                class="oe_inline"/>
                     </div>

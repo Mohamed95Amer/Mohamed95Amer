@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <data noupdate="1">
     <record id="product_concrete" model="product.product">
         <field name="name">Ready-mix concrete C30/37</field>
         <field name="type">consu</field>
@@ -66,4 +67,5 @@
     <function model="stock.scrap" name="action_validate">
         <value eval="[ref('scrap_concrete_spillage')]"/>
     </function>
+  </data>
 </odoo>

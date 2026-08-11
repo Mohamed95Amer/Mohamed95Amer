@@ -32,7 +32,7 @@ class ProjectSafety(models.Model):
         help="Total labour hours recorded on the project's daily site logs.",
     )
     hse_incident_count = fields.Integer(
-        compute="_compute_safety_stats", string="Incidents")
+        compute="_compute_safety_stats", string="Incident Count")
     hse_near_miss_count = fields.Integer(
         compute="_compute_safety_stats", string="Near Misses")
     hse_lti_count = fields.Integer(

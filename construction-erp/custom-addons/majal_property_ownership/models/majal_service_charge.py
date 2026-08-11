@@ -57,7 +57,7 @@ class MajalServiceChargeBudget(models.Model):
     amount_charged = fields.Monetary(compute="_compute_charge_totals")
     amount_collected = fields.Monetary(compute="_compute_charge_totals")
     collection_rate = fields.Float(
-        compute="_compute_charge_totals", group_operator="avg")
+        compute="_compute_charge_totals", aggregator="avg")
     notes = fields.Text()
 
     _sql_constraints = [

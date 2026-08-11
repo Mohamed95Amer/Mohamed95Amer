@@ -44,7 +44,7 @@ class ProjectProjectCvr(models.Model):
         compute="_compute_cvr",
         search="_search_cvr_contract_value",
         currency_field="currency_id",
-        string="Contract Value",
+        string="CVR Contract Value",
         help="BOQ sell total, including approved variations.",
     )
     cvr_certified_value = fields.Monetary(

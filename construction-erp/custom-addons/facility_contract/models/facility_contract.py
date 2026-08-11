@@ -59,7 +59,7 @@ class FacilityMaintenanceContract(models.Model):
     request_ids = fields.One2many(
         "maintenance.request", "facility_contract_id", string="Work Orders")
     request_count = fields.Integer(
-        string="Work Orders", compute="_compute_contract_performance")
+        string="Work Order Count", compute="_compute_contract_performance")
     pm_visits_used = fields.Integer(
         string="PM Visits Used", compute="_compute_contract_performance")
     pm_visits_remaining = fields.Integer(
