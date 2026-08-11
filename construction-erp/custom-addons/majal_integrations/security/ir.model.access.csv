@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_integration_provider_manager,majal.integration.provider manager,model_majal_integration_provider,majal_integrations.group_majal_integration_manager,1,1,1,1
+access_majal_integration_job_manager,majal.integration.job manager,model_majal_integration_job,majal_integrations.group_majal_integration_manager,1,1,1,0

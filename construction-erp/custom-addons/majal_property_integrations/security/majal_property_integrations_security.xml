@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_majal_property_integrations" model="ir.module.category">
+        <field name="name">Property Integrations</field>
+        <field name="sequence">29</field>
+    </record>
+
+    <record id="group_majal_property_integration_manager" model="res.groups">
+        <field name="name">Property Integration Manager</field>
+        <field name="category_id" ref="module_category_majal_property_integrations"/>
+        <field name="implied_ids" eval="[(4, ref('majal_property_listing.group_majal_property_listing_manager')), (4, ref('majal_integrations.group_majal_integration_manager'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record id="rule_listing_channel_company" model="ir.rule">
+        <field name="name">Listing channels: allowed companies</field>
+        <field name="model_id" ref="model_majal_property_listing_channel"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_listing_publication_company" model="ir.rule">
+        <field name="name">Listing publications: allowed companies</field>
+        <field name="model_id" ref="model_majal_property_listing_publication"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_property_notification_settings_company" model="ir.rule">
+        <field name="name">Property reminder settings: allowed companies</field>
+        <field name="model_id" ref="model_majal_property_notification_settings"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_property_notification_company" model="ir.rule">
+        <field name="name">Property reminders: allowed companies</field>
+        <field name="model_id" ref="model_majal_property_notification"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

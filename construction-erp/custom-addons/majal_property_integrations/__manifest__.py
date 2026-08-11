@@ -1,0 +1,28 @@
+{
+    "name": "Majal Property Integrations",
+    "summary": "Safe maps, listing publication channels and property reminders",
+    "version": "18.0.1.0.0",
+    "category": "Real Estate",
+    "license": "LGPL-3",
+    "author": "Mohamed Amer",
+    "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
+    "depends": [
+        "majal_integrations",
+        "majal_real_estate",
+        "majal_property_listing",
+        "majal_property_operations",
+        "mail",
+    ],
+    "data": [
+        "security/majal_property_integrations_security.xml",
+        "security/ir.model.access.csv",
+        "data/property_integration_cron.xml",
+        "views/development_views.xml",
+        "views/listing_publication_views.xml",
+        "views/property_notification_views.xml",
+        "views/menus.xml",
+    ],
+    "demo": ["demo/property_integrations_demo.xml"],
+    "application": False,
+    "installable": True,
+}
