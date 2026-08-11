@@ -32,7 +32,9 @@ COPY --chown=odoo:odoo construction-erp/third-party-addons/ /mnt/third-party-add
 COPY --chown=odoo:odoo construction-erp/NOTICE.md /usr/share/doc/majalops/NOTICE.md
 COPY --chown=odoo:odoo construction-erp/scripts/docker-entrypoint-majal.sh /usr/local/bin/majal-entrypoint
 COPY --chown=odoo:odoo infrastructure/docker/platform-entrypoint.sh /usr/local/bin/majal-platform-entrypoint
+COPY --chown=odoo:odoo infrastructure/docker/demo-entrypoint.sh /usr/local/bin/majal-demo-entrypoint
 RUN chmod 0755 /usr/local/bin/majal-entrypoint /usr/local/bin/majal-platform-entrypoint \
+         /usr/local/bin/majal-demo-entrypoint \
     && find /mnt/custom-addons /mnt/oca-addons /mnt/third-party-addons \
          -type d -exec chmod 0755 {} + \
     && find /mnt/custom-addons /mnt/oca-addons /mnt/third-party-addons \

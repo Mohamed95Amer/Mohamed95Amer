@@ -71,6 +71,7 @@ if [[ "$ENABLE_MONITORING" == "YES" ]]; then
 fi
 
 systemctl enable --now majalops-platform.service
+systemctl enable majalops-demo-reconcile.service
 systemctl enable --now majalops-health.timer
 if [[ -f /etc/majalops/restic.env ]]; then
     systemctl enable --now majalops-backup.timer majalops-restic-check.timer
