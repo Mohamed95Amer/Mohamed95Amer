@@ -37,11 +37,8 @@ every other UI module in this repo makes.
         ],
     },
     "application": False,
-    # Held back: this layer renders a blank web client and I have no way to
-    # debug a browser from where I work -- no console, and this environment
-    # blocks installing a headless one. The Property application itself is
-    # unaffected and runs on standard Odoo views. Do not ship this until
-    # somebody has opened it in a browser and read the console.
-    "installable": False,
+    # Enabled in the isolated Property demo so the browser boot path can be
+    # exercised alongside the standard application views.
+    "installable": True,
     "auto_install": False,
 }

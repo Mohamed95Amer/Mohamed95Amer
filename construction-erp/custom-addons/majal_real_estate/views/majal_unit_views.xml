@@ -109,11 +109,11 @@
                 <field name="currency_id"/>
                 <templates>
                     <t t-name="card">
-                        <div t-attf-class="oe_kanban_card o_kanban_record p-2 border
-                            #{'border-success' if record.status.raw_value == 'available'
-                              else 'border-danger' if record.status.raw_value == 'sold'
-                              else 'border-warning' if record.status.raw_value == 'reserved'
-                              else 'border-secondary'}">
+                        <div t-att-class="'oe_kanban_card o_kanban_record p-2 border ' +
+                            (record.status.raw_value === 'available' ? 'border-success' :
+                             record.status.raw_value === 'sold' ? 'border-danger' :
+                             record.status.raw_value === 'reserved' ? 'border-warning' :
+                             'border-secondary')">
                             <div class="d-flex justify-content-between align-items-start">
                                 <strong class="fs-5"><field name="name"/></strong>
                                 <field name="status" widget="badge"
@@ -132,7 +132,7 @@
                                 <field name="list_price" widget="monetary"/>
                             </div>
                             <div class="text-muted small" t-if="record.view.raw_value">
-                                <i class="fa fa-eye me-1"/><field name="view"/>
+                                <i class="fa fa-eye me-1" title="View"/><field name="view"/>
                             </div>
                         </div>
                     </t>
