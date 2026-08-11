@@ -14,8 +14,16 @@ case "${args[2]:-}" in
         exec sudo /usr/local/sbin/majalops-deploy registry-login "${args[3]}"
         ;;
     update)
-        [[ "${#args[@]}" -eq 4 ]] || exit 1
-        exec sudo /usr/local/sbin/majalops-deploy update "${args[3]}"
+        case "${#args[@]}" in
+            4)
+                exec sudo /usr/local/sbin/majalops-deploy update "${args[3]}"
+                ;;
+            6)
+                exec sudo /usr/local/sbin/majalops-deploy update \
+                    "${args[3]}" "${args[4]}" "${args[5]}"
+                ;;
+            *) exit 1 ;;
+        esac
         ;;
     health)
         [[ "${#args[@]}" -eq 3 ]] || exit 1

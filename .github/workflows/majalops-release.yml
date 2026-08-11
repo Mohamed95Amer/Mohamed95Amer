@@ -250,7 +250,7 @@ jobs:
             "sudo /usr/local/sbin/majalops-deploy registry-login ${GITHUB_ACTOR}"
           # shellcheck disable=SC2029
           ssh "${ssh_args[@]}" "$target" \
-            "sudo /usr/local/sbin/majalops-deploy update '${IMAGE_REF}' '${INSTALL_MODS}' '${UPGRADE_MODS}'"
+            "sudo /usr/local/sbin/majalops-deploy update ${IMAGE_REF} ${INSTALL_MODS} ${UPGRADE_MODS}"
           ssh "${ssh_args[@]}" "$target" \
             "sudo /usr/local/sbin/majalops-deploy health"
 
