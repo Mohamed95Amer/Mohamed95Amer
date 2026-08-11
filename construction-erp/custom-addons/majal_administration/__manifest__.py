@@ -12,6 +12,9 @@
         "construction_base",
         "construction_ui",
         "facility_asset",
+        # The access levels shipped here name a group from every suite, so
+        # this module knows about all three by definition.
+        "majal_real_estate",
         "project",
         "purchase",
         "stock",

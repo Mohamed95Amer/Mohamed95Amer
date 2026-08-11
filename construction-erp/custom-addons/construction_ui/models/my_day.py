@@ -36,15 +36,8 @@ class ConstructionMyDay(models.AbstractModel):
         # mixed install somebody is always reading a register they are not
         # allowed to. Unguarded, that is an AccessError where a screen should
         # be — the whole of My Day fails, not just the row.
-        # env.get, not env[...]: the shell ships without construction_base on
-        # a Facilities- or Property-only install, and a missing model must
-        # drop one section rather than raise on the home screen.
-        step = self.env.get("construction.approval.step")
-        waiting = (
-            step._waiting_on(user)
-            if step is not None and step.has_access("read")
-            else self.env["mail.followers"].browse()
-        )
+        step = self.env["construction.approval.step"]
+        waiting = step._waiting_on(user) if step.has_access("read") else step
         if waiting:
             sections.append({
                 "key": "approvals",

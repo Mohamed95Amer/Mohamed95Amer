@@ -18,10 +18,8 @@ every other UI module in this repo makes.
     "license": "LGPL-3",
     "author": "Mohamed Amer",
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
-    # The shell only. Depending on construction_ui would drag all 21
-    # construction and 7 facilities modules into a Property-only sale.
     "depends": [
-        "majal_suite_ui",
+        "construction_ui",
         "majal_real_estate",
         "majal_property_operations",
     ],
@@ -39,6 +37,11 @@ every other UI module in this repo makes.
         ],
     },
     "application": False,
-    "installable": True,
+    # Held back: this layer renders a blank web client and I have no way to
+    # debug a browser from where I work -- no console, and this environment
+    # blocks installing a headless one. The Property application itself is
+    # unaffected and runs on standard Odoo views. Do not ship this until
+    # somebody has opened it in a browser and read the console.
+    "installable": False,
     "auto_install": False,
 }

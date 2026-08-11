@@ -17,7 +17,7 @@
                             <i class="fa fa-handshake-o"/> Sales dashboard
                         </button>
                         <button class="btn o_suite_btn_ghost"
-                                t-on-click="() => this.openAction('majal_suite_ui.action_my_day')">
+                                t-on-click="() => this.openAction('construction_ui.action_my_day')">
                             <i class="fa fa-thumb-tack"/> My day
                         </button>
                     </div>

@@ -28,7 +28,7 @@ function writeStore(key, value) {
 }
 
 export class MajalSidebar extends Component {
-    static template = "majal_suite_ui.MajalSidebar";
+    static template = "construction_ui.MajalSidebar";
     static props = {};
 
     setup() {

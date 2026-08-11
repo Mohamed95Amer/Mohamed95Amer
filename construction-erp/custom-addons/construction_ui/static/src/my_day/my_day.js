@@ -15,7 +15,7 @@ import { _t } from "@web/core/l10n/translation";
  * somebody else is stopped until they are done.
  */
 export class MyDay extends Component {
-    static template = "majal_suite_ui.MyDay";
+    static template = "construction_ui.MyDay";
     static props = ["*"];
 
     setup() {
@@ -57,4 +57,4 @@ export class MyDay extends Component {
     }
 }
 
-registry.category("actions").add("majal_suite_ui.my_day", MyDay);
+registry.category("actions").add("construction_ui.my_day", MyDay);

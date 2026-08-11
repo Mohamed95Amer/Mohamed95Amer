@@ -18,7 +18,7 @@
     <menuitem id="menu_property_my_day"
               name="My Day"
               parent="majal_real_estate.menu_majal_real_estate_root"
-              action="majal_suite_ui.action_my_day"
+              action="construction_ui.action_my_day"
               sequence="2"/>
 
     <!-- Portfolio: the physical estate, previously scattered under Inventory. -->

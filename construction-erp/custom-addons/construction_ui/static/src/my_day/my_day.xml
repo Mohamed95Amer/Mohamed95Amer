@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="majal_suite_ui.MyDay">
+    <t t-name="construction_ui.MyDay">
         <div class="o_my_day">
             <header class="o_my_day_head">
                 <div>
