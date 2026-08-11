@@ -5,6 +5,7 @@
 !construction-erp/third-party-addons/**
 !construction-erp/scripts/docker-entrypoint-majal.sh
 !infrastructure/docker/platform-entrypoint.sh
+!infrastructure/docker/demo-entrypoint.sh
 !infrastructure/docker/requirements-platform.lock.txt
 **/__pycache__/
 **/*.pyc
