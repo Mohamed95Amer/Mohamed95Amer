@@ -34,9 +34,9 @@
 
 	@health path /healthz
 	handle @health {
-		rewrite * /web/login
+		rewrite * /majal/health
 		reverse_proxy majal:8069 {
-			health_uri /web/login
+			health_uri /majal/health
 			health_interval 30s
 			health_timeout 10s
 		}
@@ -57,7 +57,7 @@
 
 	handle {
 		reverse_proxy majal:8069 {
-			health_uri /web/login
+			health_uri /majal/health
 			health_interval 30s
 			health_timeout 10s
 			transport http {
