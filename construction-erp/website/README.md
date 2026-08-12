@@ -116,9 +116,10 @@ These are not style preferences; breaking them makes the site wrong.
   (`docs/administration-and-recovery.md`), five AI provider modes
   (`docs/majal-intelligence.md`).
 - **No pricing.** The repository does not state any.
-- **The hosted demo is not live.** `demo.majalops.com` and
-  `docs.majalops.com` are both labelled as planned. When they go live, update
-  `about.html#demo` and the "soon" badge in the nav of every page.
+- **Public docs and anonymous demo URLs are not advertised until verified.**
+  Navigation points to the live documentation-status section and the contact
+  form. Guided demonstrations use isolated synthetic-data environments. When a
+  permanent public service is verified, update those internal links deliberately.
 - **State the limits.** The BIM section carries the limitations from
   `docs/bim.md` — bounding-box clash testing, unread IFC units, no DWG, no IFC
   writing — because a page that is vague about them gets trusted for things the
