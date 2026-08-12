@@ -356,7 +356,7 @@ details.more p {
   display: grid; gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
 }
-.site-footer h4 {
+.site-footer h2 {
   font: 700 .78rem/1 var(--body); letter-spacing: .14em;
   text-transform: uppercase; color: var(--on-ink); margin: 0 0 .8rem;
 }
