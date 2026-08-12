@@ -322,7 +322,7 @@ class ResUsersTenantSecurity(models.Model):
                 allowed = f"[('is_construction', '=', True)] + ({allowed})"
             domain = (
                 "[(1, '=', 1)] if user.share else "
-                "([(1, '=', 0)] if user.majal_industry_scope == 'facilities' "
+                "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
                 f"else ({allowed}))"
             )
             self._majal_upsert_rule(
@@ -335,7 +335,7 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(1, '=', 0)] if user.majal_industry_scope == 'facilities' "
+                "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
                 f"else [('{company_path}', 'in', company_ids)])",
             )
 
@@ -347,7 +347,7 @@ class ResUsersTenantSecurity(models.Model):
                 self._majal_validate_field_path(model_name, path)
             domain = (
                 "[(1, '=', 1)] if user.share else "
-                "([(1, '=', 0)] if user.majal_industry_scope == 'facilities' "
+                "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
                 "else ("
                 f"[('{company_path}', 'in', company_ids)] "
                 "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
@@ -365,7 +365,7 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(1, '=', 0)] if user.majal_industry_scope == 'construction' "
+                "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
                 f"else [('{company_path}', 'in', company_ids)])",
             )
 
@@ -392,7 +392,7 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(1, '=', 0)] if user.majal_industry_scope == 'construction' "
+                "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
                 f"else ([('{company_path}', 'in', company_ids)] "
                 f"if (not user.majal_role_id or user.majal_role_id.rank >= 40) else {restricted}))",
             )
@@ -402,7 +402,7 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal workspace: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(1, '=', 0)] if user.majal_industry_scope == 'construction' "
+                "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
                 "else [(1, '=', 1)])",
             )
         self.env.registry.clear_cache()
