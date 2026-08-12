@@ -203,11 +203,25 @@ hr {
 main { display: block; }
 
 section.band {
-  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  padding-block: clamp(3rem, 6.5vw, 5rem);
   border-top: 1px solid var(--line);
 }
 section.band:first-of-type { border-top: 0; }
 section.band.tinted { background: var(--surface-2); }
+
+/* A short accent rule above each band's own heading — it marks where a new
+   subject starts, which a long page of stacked bands otherwise leaves to
+   spacing alone. */
+section.band > .wrap > h2::before,
+section.band > .wrap > .prose > h2:first-child::before {
+  content: "";
+  display: block;
+  width: 2.25rem;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
 
 .skip {
   position: absolute;
@@ -224,10 +238,18 @@ section.band.tinted { background: var(--surface-2); }
 /* ---------- header / nav ---------- */
 
 .site-header {
-  background: var(--nav);
-  color: #e7eef1;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--nav) 92%, transparent);
+  backdrop-filter: blur(10px);
+  color: #efe7d8;
   border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
+
+/* The header floats over the content, so an anchored heading must stop clear
+   of it rather than under it. */
+:where(section, h2, h3)[id] { scroll-margin-top: 5.5rem; }
 
 .site-header .wrap {
   display: flex;
@@ -239,8 +261,8 @@ section.band.tinted { background: var(--surface-2); }
 
 .brand {
   display: inline-flex;
-  align-items: baseline;
-  gap: .55rem;
+  align-items: center;
+  gap: .6rem;
   color: #fff;
   text-decoration: none;
   font-family: var(--display);
@@ -251,18 +273,25 @@ section.band.tinted { background: var(--surface-2); }
   margin-inline-end: auto;
 }
 .brand:hover { color: #fff; }
-.brand .mark {
-  display: inline-block;
-  width: .62em;
-  height: .62em;
-  background: var(--accent);
-  border-radius: 2px;
-  transform: translateY(-.02em);
+
+/* The mark: three floor plates in axonometric projection. Inline SVG rather
+   than an <img> so it takes its colour from the surface it sits on. */
+.logo-mark {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 auto;
+  overflow: visible;
 }
+.logo-mark .p3 { fill: currentColor; opacity: .4; }
+.logo-mark .p2 { fill: currentColor; opacity: .7; }
+.logo-mark .p1 { fill: var(--accent); }
+.brand:hover .logo-mark .p2,
+.brand:hover .logo-mark .p3 { opacity: 1; }
+.logo-mark .p1, .logo-mark .p2, .logo-mark .p3 { transition: opacity .2s ease; }
 .brand .tag {
   font-weight: 400;
   font-size: .74rem;
-  color: #9fb6bf;
+  color: #a3988a;
   letter-spacing: .02em;
 }
 
@@ -278,7 +307,7 @@ section.band.tinted { background: var(--surface-2); }
 .nav li { margin: 0; }
 .nav a {
   display: block;
-  color: #cddae0;
+  color: #cfc5b5;
   text-decoration: none;
   font-size: .93rem;
   padding: .35rem .55rem;
@@ -292,12 +321,12 @@ section.band.tinted { background: var(--surface-2); }
 .nav a.ext::after {
   content: " ↗";
   font-size: .8em;
-  color: #8aa4ae;
+  color: #9a8f7e;
 }
 .nav .soon {
   font-size: .68rem;
   color: var(--nav);
-  background: #9fb6bf;
+  background: #a3988a;
   border-radius: 3px;
   padding: 0 .3em;
   margin-inline-start: .3em;
@@ -330,7 +359,7 @@ section.band.tinted { background: var(--surface-2); }
 .nav-toggle .bar::after {
   width: 1.35rem;
   height: 2px;
-  background: #e7eef1;
+  background: #efe7d8;
   border-radius: 1px;
 }
 .nav-toggle .bar {
@@ -374,11 +403,32 @@ section.band.tinted { background: var(--surface-2); }
   .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); }
 }
 
+/* A drawing-sheet grid under the page title — the reference the whole product
+   is built on, at an opacity that reads as texture rather than decoration. */
 .page-head {
-  padding-block: clamp(2rem, 5vw, 3.25rem) clamp(1.25rem, 3vw, 2rem);
+  position: relative;
+  padding-block: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 3.5vw, 2.25rem);
   border-bottom: 1px solid var(--line);
-  background: var(--surface);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 39px,
+      color-mix(in srgb, var(--line) 60%, transparent) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px,
+      color-mix(in srgb, var(--line) 60%, transparent) 39px 40px),
+    var(--surface);
 }
+/* Fade the grid out downward so it sits under the title and releases the lede. */
+.page-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--surface) 70%, transparent) 55%,
+    var(--surface) 100%);
+}
+.page-head > * { position: relative; z-index: 1; }
+.page-head h1 { margin-bottom: .35em; }
 .page-head .lede {
   font-size: clamp(1.02rem, .98rem + .4vw, 1.15rem);
   color: var(--text-muted);
@@ -399,22 +449,31 @@ section.band.tinted { background: var(--surface-2); }
   display: inline-flex;
   align-items: center;
   gap: .4rem;
-  padding: .6rem 1.1rem;
+  padding: .65rem 1.2rem;
   border-radius: 8px;
   font-size: .95rem;
   font-weight: 600;
   text-decoration: none;
   border: 1px solid transparent;
+  transition: transform .15s ease, box-shadow .2s ease,
+              background-color .2s ease, border-color .2s ease, color .2s ease;
 }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
 .btn-primary {
   background: var(--accent);
   color: #1b1206;
   border-color: var(--accent);
 }
-.btn-primary:hover { background: #d0ab68; color: #1b1206; }
+.btn-primary:hover {
+  background: #e8934a;
+  border-color: #e8934a;
+  color: #1b1206;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 40%, transparent);
+}
 .btn-ghost {
   border-color: rgba(255, 255, 255, .3);
-  color: #dfe9ec;
+  color: #efe7d8;
 }
 .btn-ghost:hover { border-color: #fff; color: #fff; background: rgba(255, 255, 255, .06); }
 .btn-quiet {
@@ -434,11 +493,18 @@ section.band.tinted { background: var(--surface-2); }
 .grid.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
 
 .card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 1.35rem 1.4rem;
+  padding: 1.5rem 1.55rem;
   box-shadow: var(--shadow);
+  transition: transform .18s ease, box-shadow .22s ease, border-color .2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 2px 4px rgba(18, 14, 8, .06), 0 14px 32px rgba(18, 14, 8, .10);
 }
 .card h2, .card h3 { margin-top: 0; font-size: clamp(1.1rem, 1.02rem + .38vw, 1.25rem); }
 .card > :last-child { margin-bottom: 0; }
@@ -476,6 +542,13 @@ figure.shot img {
   color: var(--text-muted);
   font-size: .85rem;
   padding: .5rem;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .24s ease, border-color .2s ease;
+}
+figure.shot img:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 2px 4px rgba(18, 14, 8, .06), 0 16px 36px rgba(18, 14, 8, .12);
 }
 figure.shot.tall img { aspect-ratio: 4 / 5; }
 figure.shot.wide img { aspect-ratio: 21 / 9; }
@@ -689,46 +762,73 @@ dl.facts dd { margin: 0 0 .8rem; color: var(--text-muted); }
 .toc {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.1rem 1.3rem;
+  border-inline-start: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.4rem 1.6rem;
   margin: 0 0 2rem;
+  box-shadow: var(--shadow);
 }
 .toc h2 {
-  margin: 0 0 .6rem;
-  font-size: .78rem;
-  letter-spacing: .1em;
+  margin: 0 0 .9rem;
+  font-family: var(--font);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
+.toc h2::before { content: none; }
 .toc ul {
   list-style: none;
   margin: 0;
   padding: 0;
   columns: 2;
-  column-gap: 2rem;
+  column-gap: 2.5rem;
   font-size: .93rem;
 }
-.toc li { margin-bottom: .25rem; break-inside: avoid; }
+.toc li { margin-bottom: 0; break-inside: avoid; }
+.toc a {
+  display: block;
+  padding: .4rem .5rem .4rem .6rem;
+  border-radius: 6px;
+  color: var(--primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  border-inline-start: 2px solid transparent;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+.toc a:hover {
+  background: var(--surface-2);
+  border-inline-start-color: var(--accent);
+  color: var(--primary-strong);
+}
 @media (max-width: 34rem) { .toc ul { columns: 1; } }
 
 /* ---------- footer ---------- */
 
 .site-footer {
   background: var(--nav);
-  color: #b9cbd3;
+  color: #b3a897;
   margin-top: 0;
-  padding-block: 2.5rem 2rem;
+  padding-block: 3rem 2.25rem;
   font-size: .92rem;
 }
-.site-footer a { color: #d7e5e9; }
-.site-footer a:hover { color: #fff; }
-.site-footer h2 {
-  font-size: .75rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: #8ba3ad;
-  margin: 0 0 .7rem;
+.site-footer a {
+  color: #d8cfbf;
+  text-decoration: none;
+  transition: color .16s ease;
 }
+.site-footer a:hover { color: #fff; text-decoration: underline; }
+.site-footer h2 {
+  font-family: var(--font);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 .8rem;
+}
+.site-footer h2::before { content: none; }
 .footer-cols {
   display: grid;
   gap: 1.75rem 2rem;
@@ -741,7 +841,7 @@ dl.facts dd { margin: 0 0 .8rem; color: var(--text-muted); }
   padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, .1);
   font-size: .85rem;
-  color: #8ba3ad;
+  color: #9a8f7e;
 }
 .colophon p { margin-bottom: .4rem; }
 .colophon p:last-child { margin-bottom: 0; }

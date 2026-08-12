@@ -1,3 +1,24 @@
+# Images
+
+## The logo
+
+`majal-mark.svg` is the Majal mark: three floor plates in axonometric
+projection — the drawing convention the product is built around, read as a
+building from the ground up. The bottom two plates recede, the top one carries
+the accent.
+
+It ships **three** ways, and all three have to stay in step if the mark ever
+changes:
+
+| Where | Form | Why |
+|---|---|---|
+| `majal-mark.svg` | standalone file, literal colours | the brand asset — for anything outside this site |
+| inline `<svg class="logo-mark">` in every page header | `currentColor` + `var(--accent)` | so the mark takes its colour from the bar it sits on and follows the theme |
+| `<link rel="icon">` data URI in every `<head>` | literal colours | favicons cannot reference the stylesheet |
+
+The wordmark beside it is not a graphic — it is live text set in Big Shoulders
+Bold, uppercase, from `assets/fonts/`.
+
 # Screenshots
 
 Drop the real PNGs into this directory using exactly these filenames. The pages

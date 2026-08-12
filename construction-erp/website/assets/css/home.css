@@ -109,12 +109,19 @@ a { color: var(--teal-deep); }
   font: 700 1.35rem/1 var(--display);
   letter-spacing: .06em; text-transform: uppercase;
   color: var(--on-ink); text-decoration: none;
-  display: flex; align-items: baseline; gap: .55rem;
+  display: flex; align-items: center; gap: .6rem;
 }
-.brand .rule-mark {
-  width: 1.4rem; height: .5rem; background: var(--gold);
-  display: inline-block; transform: translateY(-.1rem);
+
+/* The mark: three floor plates in axonometric projection. Inline SVG rather
+   than an <img> so it takes its colour from the surface it sits on. */
+.logo-mark {
+  width: 1.7rem; height: 1.7rem; flex: 0 0 auto; overflow: visible;
 }
+.logo-mark .p3 { fill: currentColor; opacity: .4; }
+.logo-mark .p2 { fill: currentColor; opacity: .7; }
+.logo-mark .p1 { fill: var(--gold); }
+.logo-mark .p1, .logo-mark .p2, .logo-mark .p3 { transition: opacity .2s ease; }
+.brand:hover .logo-mark .p2, .brand:hover .logo-mark .p3 { opacity: 1; }
 .topnav { margin-left: auto; display: flex; gap: 1.4rem; flex-wrap: wrap; }
 .topnav a {
   color: var(--on-ink-dim); text-decoration: none;
@@ -228,10 +235,19 @@ a { color: var(--teal-deep); }
   padding: .85rem 1.5rem; text-decoration: none;
   border: 1px solid transparent; display: inline-block;
 }
+.btn {
+  transition: transform .15s ease, box-shadow .2s ease,
+              background-color .2s ease, border-color .2s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
 .btn-primary { background: var(--gold); color: #21170a; }
-.btn-primary:hover { background: #e8934a; }
+.btn-primary:hover {
+  background: #e8934a;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--gold) 45%, transparent);
+}
 .btn-ghost { border-color: rgba(255, 255, 255, .35); color: var(--on-ink); }
-.btn-ghost:hover { border-color: var(--on-ink); }
+.btn-ghost:hover { border-color: var(--on-ink); background: rgba(255, 255, 255, .06); }
 
 /* ---- the strip: six words each, not paragraphs ----------------------- */
 
@@ -258,6 +274,12 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
   font: 700 clamp(1.9rem, 1.2rem + 2.6vw, 3rem)/1 var(--display);
   text-transform: uppercase; letter-spacing: .01em;
   margin: 0 0 .6rem; text-wrap: balance;
+}
+/* Marks where a new subject starts — the same device the inner pages use. */
+.section-head h2::before {
+  content: ""; display: block;
+  width: 2.25rem; height: 3px; border-radius: 2px;
+  background: var(--gold); margin-bottom: 1rem;
 }
 .section-head p { margin: 0; color: var(--muted); font-size: 1.05rem; }
 
@@ -299,6 +321,12 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 .card {
   background: var(--surface); border: 1px solid var(--rule);
   display: flex; flex-direction: column;
+  transition: transform .18s ease, box-shadow .22s ease, border-color .2s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--teal) 45%, var(--rule));
+  box-shadow: 0 2px 4px rgba(18, 14, 8, .06), 0 16px 36px rgba(18, 14, 8, .12);
 }
 .card > img {
   width: 100%; aspect-ratio: 16 / 7; object-fit: cover; object-position: 50% 50%;
