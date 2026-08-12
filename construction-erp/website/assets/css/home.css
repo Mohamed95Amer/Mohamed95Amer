@@ -118,6 +118,27 @@ a { color: var(--teal-deep); }
 }
 .topnav a:hover, .topnav a[aria-current] { color: var(--on-ink); }
 
+/* ---- promo banner ------------------------------------------------------ */
+
+.promo-banner {
+  background: var(--teal-deep); color: var(--on-ink);
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+.promo-banner .wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: .6rem .9rem; flex-wrap: wrap;
+  padding: .65rem 1rem; text-align: center;
+  font-size: .92rem;
+}
+.promo-banner strong { color: var(--gold); }
+.promo-banner a.btn-quiet {
+  font: 700 .82rem/1 var(--body); letter-spacing: .02em;
+  padding: .4rem .85rem; text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, .4); color: var(--on-ink);
+  border-radius: 999px; white-space: nowrap;
+}
+.promo-banner a.btn-quiet:hover { border-color: var(--on-ink); background: rgba(255, 255, 255, .08); }
+
 /* ---- hero ------------------------------------------------------------ */
 
 /* `.hero` is a <section>, so it inherits the generic section padding below

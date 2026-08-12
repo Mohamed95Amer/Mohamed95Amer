@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About &amp; open source — Majal</title>
-<meta name="description" content="How Majal is assembled: Odoo 18 Community as the base, pinned OCA and community modules, thirty-seven Majal modules under LGPL-3 and AGPL-3, and how to run the whole thing yourself with Docker.">
+<meta name="description" content="How Majal is assembled: Odoo 18 Community as the base, pinned OCA and community modules, thirty-eight Majal modules under LGPL-3 and AGPL-3, and how to run the whole thing yourself with Docker.">
 <meta name="theme-color" content="#173240">
 <link rel="stylesheet" href="/assets/css/majal.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
@@ -23,6 +23,7 @@
         <li><a href="/about.html" aria-current="page">Open source</a></li>
         <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
         <li><a href="#demo">Demo<span class="soon">soon</span></a></li>
+        <li><a href="/contact.html">Contact</a></li>
       </ul>
     </nav>
   </div>
@@ -82,7 +83,7 @@
           </tr>
           <tr>
             <td>Majal modules</td>
-            <td>The product itself: 37 construction, facilities and platform modules</td>
+            <td>The product itself: 38 construction, facilities and platform modules</td>
             <td><code>custom-addons/</code>, in this repository</td>
           </tr>
         </tbody>
@@ -133,7 +134,7 @@
         because they build on OCA's AGPL-3 <code>contract</code> lineage. Every module's
         <code>__manifest__.py</code> and its source headers state the licence that applies to
         it; the module table on the
-        <a href="/features.html#modules">features page</a> lists all thirty-seven with their
+        <a href="/features.html#modules">features page</a> lists all thirty-eight with their
         declared licence.
       </p>
       <p>
@@ -239,6 +240,54 @@ pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
   </div>
 </section>
 
+<!-- ============ INTEGRATORS ============ -->
+<section class="band" id="integrators">
+  <div class="wrap">
+    <div class="prose">
+      <h2>For integrators</h2>
+      <p>
+        Majal exposes two surfaces. The first is Odoo's own external API —
+        XML-RPC and JSON-RPC over the standard ORM, reaching every Majal model, field
+        and public method. This is what most integrations use. The second is a small,
+        deliberate set of Majal HTTP routes for asset tag scanning, the offline field
+        app, the customer and subcontractor portal, CSV export and the WhatsApp
+        webhook. There is no separate REST API, no GraphQL endpoint, and no
+        <code>/api/v1/...</code> namespace — if a route is not documented, it does not
+        exist.
+      </p>
+
+      <h3>Authentication</h3>
+      <p>
+        Every RPC call authenticates with <code>(database, uid, password)</code>,
+        where the password may be a developer <strong>API key</strong> instead of the
+        account password. An API key is required once a user has MFA enabled —
+        <code>majal_security</code> switches that account to key-only authentication
+        over RPC, so an integration built against a plain password breaks the day its
+        account enrols in two-factor. Keys are minted from the UI, shown once, and
+        stored only as a hash.
+      </p>
+
+      <h3>What the docs cover</h3>
+      <ul class="ticks">
+        <li>Getting started, base URLs and your first authenticated call</li>
+        <li>Conventions — IDs, domains, pagination, dates and time zones, multi-company</li>
+        <li>Domain reference by module: commercial, site, HSE, facilities, documents, BIM, messaging</li>
+        <li>The approval engine's server-side enforcement, and the mistake integrators make first</li>
+        <li>The security model — groups, record rules, what a portal user can and cannot reach</li>
+        <li>Every custom HTTP route in the product, with its auth level and CSRF posture</li>
+      </ul>
+
+      <p class="note">
+        <span class="label">Where to read it</span>
+        The full reference lives in <code>docs/api/</code> in the repository today.
+        <code>docs.majalops.com</code> is reserved for it and is not live yet — the same
+        honesty applies here as everywhere else on this page: nothing is running behind
+        that hostname until this paragraph is rewritten to say so.
+      </p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ DEMO ============ -->
 <section class="band tinted" id="demo">
   <div class="wrap">
@@ -322,6 +371,7 @@ pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
         <ul>
           <li><a href="/insights/">Insights</a></li>
           <li><a href="https://docs.majalops.com">Documentation ↗</a></li>
+          <li><a href="/about.html#integrators">For integrators</a></li>
           <li><a href="/about.html#self-host">Self-hosting</a></li>
         </ul>
       </div>

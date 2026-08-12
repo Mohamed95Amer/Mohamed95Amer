@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Majal</title>
+<meta name="description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
+<meta name="theme-color" content="#173240">
+<link rel="stylesheet" href="/assets/css/majal.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
+</head>
+<body class="on-page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/features.html">Features</a></li>
+        <li><a href="/insights/">Insights</a></li>
+        <li><a href="/about.html">Open source</a></li>
+        <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
+        <li><a href="/about.html#demo">Demo<span class="soon">soon</span></a></li>
+        <li><a href="/contact.html" aria-current="page">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="prose">
+      <h1>Contact</h1>
+      <p class="lede">
+        A question about Majal, or a request for a free demo call — this form reaches a
+        person, not a sales queue. There is no live chat and no phone line yet; email is
+        the honest answer for how a reply comes back.
+      </p>
+    </div>
+  </div>
+</div>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <!--
+        Placeholder form endpoint. Replace YOUR_FORM_ID with a real Formspree
+        (or equivalent) form ID before this page goes live — until then,
+        submissions here go nowhere.
+      -->
+      <form class="contact" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" autocomplete="name" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+        </div>
+
+        <div class="field">
+          <label for="company">Company <span class="optional">(optional)</span></label>
+          <input type="text" id="company" name="company" autocomplete="organization">
+        </div>
+
+        <div class="field">
+          <label for="reason">What is this about</label>
+          <select id="reason" name="reason">
+            <option value="demo">Book a free demo call</option>
+            <option value="general">General question</option>
+            <option value="self-host">Self-hosting / Docker help</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+
+        <input type="hidden" name="_subject" value="Majal contact form">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+        <div class="submit-row">
+          <button type="submit" class="btn btn-primary">Send</button>
+          <span class="meta">Read and answered by a person — no automated reply, no SLA promised.</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="band tinted">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Other ways to reach the project</h2>
+      <p>
+        The source is public and the design notes are in the repository — for a lot of
+        questions, reading those is faster than waiting on a reply.
+      </p>
+      <dl class="facts">
+        <dt>Source</dt>
+        <dd><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">github.com/Mohamed95Amer/Mohamed95Amer ↗</a></dd>
+        <dt>Documentation</dt>
+        <dd><a href="https://docs.majalops.com">docs.majalops.com ↗</a> — planned; the source documentation is in <code>docs/</code> in the repository today</dd>
+        <dt>Self-hosting</dt>
+        <dd><a href="/about.html#self-host">Run it yourself with Docker</a></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/features.html#construction">Construction</a></li>
+          <li><a href="/features.html#facilities">Facilities</a></li>
+          <li><a href="/features.html#bim">BIM</a></li>
+          <li><a href="/features.html#modules">Module list</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="https://docs.majalops.com">Documentation ↗</a></li>
+          <li><a href="/about.html#self-host">Self-hosting</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="/about.html">About &amp; open source</a></li>
+          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub repository ↗</a></li>
+          <li><a href="/about.html#licence">Licensing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Try it</h2>
+        <ul>
+          <li><a href="/contact.html">Book a free demo</a></li>
+          <li><a href="/about.html#self-host">Run it with Docker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <p>Majal is built on Odoo 18 Community Edition (LGPL-3) with pinned OCA and community modules. Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.</p>
+      <p>Procore, Fieldwire, PlanRadar, Maximo, Solibri, Navisworks, BIMcollab and Revizto are trademarks of their respective owners, referenced here only for comparison and interoperability.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

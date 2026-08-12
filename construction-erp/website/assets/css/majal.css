@@ -471,6 +471,53 @@ ul.ticks li::before {
 
 dl.facts { display: grid; gap: .1rem 1rem; }
 dl.facts dt { font-weight: 650; }
+
+/* ---------- forms ---------- */
+
+form.contact {
+  display: grid;
+  gap: 1.1rem;
+  max-width: 34rem;
+}
+form.contact .field { display: grid; gap: .35rem; }
+form.contact label {
+  font-size: .88rem;
+  font-weight: 650;
+  color: var(--text);
+}
+form.contact .optional {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+form.contact input,
+form.contact select,
+form.contact textarea {
+  font: inherit;
+  font-size: .96rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: .6rem .75rem;
+}
+form.contact input:focus,
+form.contact select:focus,
+form.contact textarea:focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+  border-color: var(--line-strong);
+}
+form.contact textarea { resize: vertical; min-height: 8rem; }
+form.contact .submit-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: .3rem;
+}
+form.contact button.btn {
+  font: inherit;
+  cursor: pointer;
+}
 dl.facts dd { margin: 0 0 .8rem; color: var(--text-muted); }
 @media (min-width: 34rem) {
   dl.facts { grid-template-columns: minmax(8rem, 14rem) 1fr; }

@@ -31,6 +31,11 @@ background, so the layout does not move when they arrive.
 | `shot-boq.png` | `features.html` → Commercial | A bill of quantities: hierarchical sections with priced lines, the budget cost breakdown columns, section and sheet totals, and the approval state. Desktop. |
 | `shot-exposure.png` | `index.html` | The **Commercial Exposure** report: contract value, approved variations with their percentage of contract, retention held, certified-not-invoiced, and below them the "Waiting for a signature" table ordered worst value first with days outstanding. Desktop. |
 | `shot-asset-tag.png` | `features.html` → QR and NFC asset tags | Either the printable 70 × 50 mm QR/NFC label for a facility asset, or the authenticated mobile landing page a scan opens (asset code, warranty, open work, "confirm scan"). Phone-shaped, `4 / 5`. |
+| `shot-retention-release.png` | `features.html` → Commercial | A retention release certificate: the withheld, already-released and available-to-release figures, and the release percentage. Desktop. |
+| `shot-advance-payment.png` | `features.html` → Commercial | An advance payment certificate with the guarantee lapsed, showing the warning banner that the outstanding balance is unsecured, beside the recovery rate and amount still outstanding. Desktop. |
+| `shot-plan-viewer.png` | `features.html` → Construction delivery | A drawing sheet in the plan viewer with pins dropped at specific points — the different pin types (task, RFI, defect, note) should be visibly distinct. Desktop. |
+| `shot-transmittal.png` | `features.html` → Construction delivery | An issued transmittal: recipient, purpose, issue date, the drawing revisions it carries, and the banner warning that a carried revision has since been superseded. Desktop. |
+| `shot-itp.png` | `features.html` → Construction delivery | An inspection and test plan listing its checks in sequence, with hold points marked distinctly from witness points. Desktop. |
 
 ## If a shot cannot be captured
 

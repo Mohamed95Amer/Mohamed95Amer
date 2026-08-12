@@ -23,6 +23,7 @@
         <li><a href="/about.html">Open source</a></li>
         <li><a class="ext" href="https://docs.majalops.com">Docs</a></li>
         <li><a href="/about.html#demo">Demo<span class="soon">soon</span></a></li>
+        <li><a href="/contact.html">Contact</a></li>
       </ul>
     </nav>
   </div>
@@ -88,6 +89,53 @@
         The certificate itself prints as a Payment Certificate PDF.
       </p>
 
+      <h3>Retention release</h3>
+      <p>
+        Every certificate above can withhold retention; this is where it comes back. A
+        release certificate draws against what the certificates have actually withheld —
+        not what the contract implies should exist — and recognises the two moments that
+        usually govern it: half on taking-over, the rest at the end of the defects-liability
+        period. A release claimed before its date is <strong>flagged, not blocked</strong>,
+        because clients and contractors genuinely agree early releases; a release for more
+        than the certificates have withheld is <strong>blocked outright</strong>, because
+        that one is never a matter of agreement. Prints as a Retention Release Certificate PDF.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-retention-release.png"
+           alt="A retention release certificate in Majal, showing the retention withheld to date, the amount already released, what remains available, and the percentage being released on this certificate.">
+      <figcaption>
+        <strong>Retention release.</strong> The withheld, released and available figures
+        are read from the certificates themselves, not typed in — so a release can never
+        ask for more than the project has actually held back.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Advance payment and recovery</h3>
+      <p>
+        An advance paid against a bank guarantee before work starts, recovered as a
+        percentage of every certificate that follows until the balance reaches zero — and
+        optionally held back from recovery until an agreed share of the contract is
+        complete. The guarantee's expiry is tracked against what is still outstanding: an
+        advance still owed against a guarantee that has lapsed is <strong>unsecured</strong>,
+        and the certificate says so rather than leaving it for an audit to find. Prints as
+        an Advance Payment Certificate PDF.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-advance-payment.png"
+           alt="An advance payment in Majal, invoiced and showing a red warning that its bank guarantee has expired and the outstanding balance is unsecured, beside the recovery rate and amount still outstanding.">
+      <figcaption>
+        <strong>Advance payment and recovery.</strong> The guarantee's expiry is checked
+        against the date, not typed as a status — so a lapsed guarantee shows up as a warning
+        on the certificate itself, here on a live one still carrying an unsecured balance.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
       <h3>Change events and variation orders</h3>
       <p>
         A change event — often raised from an RFI or an instruction — becomes a priced
@@ -231,6 +279,93 @@
       </article>
 
     </div>
+
+    <div class="prose">
+      <h3>The plan viewer, close up</h3>
+      <p>
+        Sheet PDFs render on a canvas via Odoo's bundled pdf.js, with pin coordinates
+        normalised to the sheet rather than the pixel size of whoever is looking, so a pin
+        dropped on a phone lands in the same place on a desk monitor. Three taps get from a
+        point on a drawing to the task, RFI, defect or note it stands for — the pin is a
+        route into the record, not a sticky note that lives beside it. The same viewer and
+        the same pin model serve facility floor plans through a shared mixin, so a
+        maintenance request pinned on a floor plan and an RFI pinned on a construction
+        drawing are the same mechanism wearing two hats, not two implementations that will
+        eventually drift apart.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-plan-viewer.png"
+           alt="A mechanical drawing sheet in the Majal plan viewer with three colour-coded pins placed at specific points on the plan — a note, an RFI and a defect — each a link into its own record.">
+      <figcaption>
+        <strong>The plan viewer.</strong> Status-coloured pins dropped at exact points on the
+        rendered sheet — a note, an RFI, a defect — each one a route to the task, RFI, defect
+        or note it was dropped for, on a construction drawing here and on a facility floor
+        plan through the same mechanism elsewhere in the product.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Drawing transmittals</h3>
+      <p>
+        A transmittal is the record that a drawing was actually sent — to whom, for what
+        purpose, and on what date — which is what ISO&nbsp;19650 asks for and what "we
+        emailed it" is not an answer to. Once issued, a transmittal is
+        <strong>immutable</strong>: the recipient, the drawings, the purpose and the date
+        cannot be edited afterwards, only superseded by issuing again — because a record
+        that can be quietly corrected after the fact is not evidence of anything. A
+        transmittal also flags when a revision it carried has since been superseded, so it
+        is visible when a recipient may be working from a drawing that is no longer current.
+      </p>
+      <p class="note">
+        <span class="label">Why immutable</span>
+        A claim that turns on which drawing revision a subcontractor was working to is
+        decided by the transmittal, not by memory. That only holds if the transmittal itself
+        cannot move once it has gone out.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-transmittal.png"
+           alt="A drawing transmittal in Majal listing the recipient, purpose and issue date, the drawing revisions it carries, and a warning that one revision has since been superseded.">
+      <figcaption>
+        <strong>Drawing transmittals.</strong> What went out, to whom, for what purpose and
+        when — locked once issued, with a flag when a carried revision has since been
+        superseded.
+      </figcaption>
+    </figure>
+
+    <div class="prose">
+      <h3>Inspection and test plans, and hold points</h3>
+      <p>
+        An ITP names the checks a piece of work requires, in order, against a stated
+        acceptance criterion and standard — and the checks come in two kinds that ISO&nbsp;9001
+        treats very differently. A <strong>hold point</strong> stops the work: concrete is
+        not poured until the rebar inspection is signed off, and a pour that goes ahead
+        anyway is the defect nobody can inspect afterwards, because it is inside the slab. A
+        <strong>witness point</strong> only invites somebody — if they do not attend, the
+        work proceeds and the record shows they were invited. Releasing a hold point needs
+        either the inspection that evidences it, or a recorded waiver naming who authorised
+        proceeding without one.
+      </p>
+      <p class="note">
+        <span class="label">Waivers are recorded, not hidden</span>
+        Hold points do get waived on real jobs. A system that cannot record that honestly
+        gets worked around instead of used — so a waived hold point still shows exactly who
+        authorised it and why, rather than pretending the point was never there.
+      </p>
+    </div>
+
+    <figure class="shot">
+      <img src="/assets/img/shot-itp.png"
+           alt="An inspection and test plan in Majal listing several checks in sequence, hold points marked distinctly from witness points, each with its responsible party and reference standard.">
+      <figcaption>
+        <strong>Hold points and witness points on one plan.</strong> A hold point blocks the
+        work until it is released against evidence or a recorded waiver; a witness point
+        only invites someone.
+      </figcaption>
+    </figure>
   </div>
 </section>
 
@@ -958,7 +1093,7 @@
   <div class="wrap">
     <h2>The full module list</h2>
     <p class="prose">
-      Thirty-seven Majal modules on top of pinned Odoo 18 Community, OCA and community
+      Thirty-eight Majal modules on top of pinned Odoo 18 Community, OCA and community
       third-party addons. Licence is taken from each module's manifest.
     </p>
     <div class="table-scroll">
@@ -969,15 +1104,15 @@
         <tbody>
           <tr><td><code>construction_base</code></td><td>Security groups, project extensions, document-numbering mixin, the approval engine</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_boq</code></td><td>Bill of quantities with budget cost split, lock and revisions</td><td>LGPL-3</td></tr>
-          <tr><td><code>construction_drawing</code></td><td>Drawing register, revision control, supersede, bulk PDF upload</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_drawing</code></td><td>Drawing register, revision control, supersede, bulk PDF upload, transmittals</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_rfi</code></td><td>RFIs with ball-in-court and overdue reminders</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_submittal</code></td><td>Submittal register with revision cycles and tier-validated review</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_pin</code></td><td>Pins on drawing sheets with the OWL plan viewer</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_planning</code></td><td>WBS, typed dependencies, CPM engine, baselines, Gantt</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_defect</code></td><td>Punch lists and DLP defects, pinnable and assignable</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_daily_log</code></td><td>Digital site diary with computed totals and PDF</td><td>LGPL-3</td></tr>
-          <tr><td><code>construction_form</code></td><td>No-code checklists, recurring inspections, PDF field reports</td><td>LGPL-3</td></tr>
-          <tr><td><code>construction_progress_billing</code></td><td>Interim payment certificates with retention</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_form</code></td><td>No-code checklists, recurring inspections, PDF field reports, ITPs with hold points</td><td>LGPL-3</td></tr>
+          <tr><td><code>construction_progress_billing</code></td><td>Interim payment certificates, retention release, advance payment and recovery</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_change_order</code></td><td>Change events and variation orders that adjust the BOQ</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_subcontractor</code></td><td>Subcontracts, subcontractor certificates, defect-linked back-charges</td><td>LGPL-3</td></tr>
           <tr><td><code>construction_tender</code></td><td>Tender packages, bid invitations, line-by-line levelling</td><td>LGPL-3</td></tr>
@@ -1003,6 +1138,7 @@
           <tr><td><code>majal_field_offline</code></td><td>Bounded offline field workspace with conflict-safe sync</td><td>LGPL-3</td></tr>
           <tr><td><code>majal_ai</code></td><td>Majal Intelligence — bilingual, permission-aware, read-only copilot</td><td>LGPL-3</td></tr>
           <tr><td><code>majal_branding</code></td><td>Majal identity, product information, PWA manifest and icons</td><td>LGPL-3</td></tr>
+          <tr><td><code>majal_workforce</code></td><td>Allocate people to projects and facility locations, with a projected-availability calendar</td><td>LGPL-3</td></tr>
           <tr><td><code>majal_demo</code></td><td>Opt-in two-company acceptance dataset and role personas — demo/QA databases only</td><td>LGPL-3</td></tr>
         </tbody>
       </table>
