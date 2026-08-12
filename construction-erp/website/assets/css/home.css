@@ -5,9 +5,10 @@
  * stylesheet with a second one layered on top is where spacing quietly
  * cancels itself out.
  *
- * The palette is a drafting room rather than a brand deck — cool paper with a
- * blue-grey bias toward the teal, ink dark enough to sit a rendered model on,
- * and the gold spent once per screen instead of scattered. */
+ * The palette is a drafting room rather than a brand deck — warm paper, ink
+ * dark enough to sit a rendered model on, and an amber pulled from site
+ * safety equipment rather than a generic corporate gold, spent once per
+ * screen instead of scattered. */
 
 @font-face {
   font-family: "Big Shoulders";
@@ -26,18 +27,21 @@
 }
 
 :root {
-  --ink:        #10222a;
-  --ink-soft:   #1b3540;
-  --paper:      #eceef0;
+  /* Same "working drawings" palette as majal.css — warm paper, a confident
+     teal, an amber pulled from site safety equipment rather than a generic
+     corporate gold — so the home page and the inner pages read as one site. */
+  --ink:        #12181c;
+  --ink-soft:   #1e2a2f;
+  --paper:      #f7f4ee;
   --surface:    #ffffff;
-  --teal:       #2f7a80;
-  --teal-deep:  #235f66;
-  --gold:       #c59b52;
-  --rule:       #ccd6d9;
-  --text:       #16262d;
-  --muted:      #5d6f76;
-  --on-ink:     #e7edef;
-  --on-ink-dim: #a9bcc3;
+  --teal:       #0e7a79;
+  --teal-deep:  #0a5f5e;
+  --gold:       #d97a1f;
+  --rule:       #e1d9c9;
+  --text:       #211d17;
+  --muted:      #6b6156;
+  --on-ink:     #efe7d8;
+  --on-ink-dim: #b3a897;
 
   --display: "Big Shoulders", "Arial Narrow", system-ui, sans-serif;
   --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -48,22 +52,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
-    --paper:   #0d1c22;
-    --surface: #142932;
-    --text:    #e4ebed;
-    --muted:   #9db0b7;
-    --rule:    #26424c;
-    --teal:    #4d9aa1;
-    --ink:     #081419;
+    --paper:   #171310;
+    --surface: #221c15;
+    --text:    #efe7d8;
+    --muted:   #b3a897;
+    --rule:    #3a3226;
+    --teal:    #5fc2be;
+    --ink:     #0c1012;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0d1c22; --surface: #142932; --text: #e4ebed;
-  --muted: #9db0b7; --rule: #26424c; --teal: #4d9aa1; --ink: #081419;
+  --paper: #171310; --surface: #221c15; --text: #efe7d8;
+  --muted: #b3a897; --rule: #3a3226; --teal: #5fc2be; --ink: #0c1012;
 }
 :root[data-theme="light"] {
-  --paper: #eceef0; --surface: #ffffff; --text: #16262d;
-  --muted: #5d6f76; --rule: #ccd6d9; --teal: #2f7a80; --ink: #10222a;
+  --paper: #f7f4ee; --surface: #ffffff; --text: #211d17;
+  --muted: #6b6156; --rule: #e1d9c9; --teal: #0e7a79; --ink: #12181c;
 }
 
 * { box-sizing: border-box; }
@@ -190,7 +194,7 @@ a { color: var(--teal-deep); }
   justify-self: end; width: min(100%, 38rem);
 }
 /* Full strength, not a washed-out backdrop: the model is the argument. */
-.hero-figure { position: relative; overflow: hidden; background: #cfd6d8; }
+.hero-figure { position: relative; overflow: hidden; background: #ded5c1; }
 .hero-figure img {
   width: 100%; height: 100%; min-height: clamp(18rem, 46vh, 30rem);
   object-fit: cover; object-position: 42% 50%;
@@ -225,7 +229,7 @@ a { color: var(--teal-deep); }
   border: 1px solid transparent; display: inline-block;
 }
 .btn-primary { background: var(--gold); color: #21170a; }
-.btn-primary:hover { background: #d5ad66; }
+.btn-primary:hover { background: #e8934a; }
 .btn-ghost { border-color: rgba(255, 255, 255, .35); color: var(--on-ink); }
 .btn-ghost:hover { border-color: var(--on-ink); }
 
@@ -269,7 +273,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 .compare figure { margin: 0; }
 .compare img {
   width: 100%; aspect-ratio: 8 / 7; object-fit: contain;
-  background: #f0f2f3; border: 1px solid rgba(255, 255, 255, .14);
+  background: #efe9dd; border: 1px solid rgba(255, 255, 255, .14);
 }
 .compare figcaption {
   margin-top: .7rem; font-size: .85rem; color: var(--on-ink-dim);
@@ -298,7 +302,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 }
 .card > img {
   width: 100%; aspect-ratio: 16 / 7; object-fit: cover; object-position: 50% 50%;
-  background: #f4f6f7; border-bottom: 1px solid var(--rule);
+  background: #efe9dd; border-bottom: 1px solid var(--rule);
 }
 /* The phone capture is portrait and its point is that everything fits one
    screen, so it is shown whole rather than cropped to the landscape ratio. */
@@ -366,7 +370,7 @@ details.more p {
 .footer-note {
   margin-top: 2.5rem; padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, .1);
-  color: #8ea1a9; max-width: 60ch;
+  color: #9a8f7e; max-width: 60ch;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,56 +1,81 @@
 /* Majal — majalops.com
    One stylesheet, no build step, no remote assets. */
 
+/* ---------- fonts ---------- */
+/* Same two families as home.css, self-hosted, already in assets/fonts/ —
+   one type language across the whole site instead of a system-font stack
+   here and a designed one there. */
+
+@font-face {
+  font-family: "Big Shoulders";
+  src: url("../fonts/BigShoulders-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("../fonts/InstrumentSans-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("../fonts/InstrumentSans-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
 /* ---------- tokens ---------- */
 
 :root {
-  --nav: #173240;
-  --nav-2: #12272f;
-  --primary: #2c6068;
-  --primary-strong: #24515a;
-  --accent: #a97c2c;
-  --page: #f4f6f7;
+  /* "Working drawings": a warm paper ground instead of cold blue-grey, a
+     confident teal rather than a muted one, and an amber accent pulled from
+     site safety equipment rather than a generic corporate gold. */
+  --nav: #12181c;
+  --nav-2: #0b1013;
+  --primary: #0e7a79;
+  --primary-strong: #0a5f5e;
+  --accent: #d97a1f;
+  --page: #f7f4ee;
   --surface: #ffffff;
-  --surface-2: #eceff1;
-  --text: #263842;
-  --text-muted: #5a6b76;
-  --line: #d8dfe3;
-  --line-strong: #b9c4ca;
-  --code-bg: #eef1f3;
-  --focus: #c59b52;
-  --shadow: 0 1px 2px rgba(23, 50, 64, .06), 0 8px 24px rgba(23, 50, 64, .05);
+  --surface-2: #efe9dd;
+  --text: #211d17;
+  --text-muted: #6b6156;
+  --line: #e1d9c9;
+  --line-strong: #c9bea8;
+  --code-bg: #efe9dd;
+  --focus: #c17a1f;
+  --shadow: 0 1px 2px rgba(18, 14, 8, .07), 0 10px 28px rgba(18, 14, 8, .07);
   --danger: #b3432f;
   --danger-bg: #fbeae6;
   --success: #2f7a4f;
   --success-bg: #e8f4ec;
 
-  --measure: 68ch;
+  --measure: 66ch;
   --wide: 1180px;
   --radius: 10px;
 
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-          "Noto Sans", "Noto Sans Arabic", Arial, sans-serif;
+  --display: "Big Shoulders", "Arial Narrow", system-ui, sans-serif;
+  --font: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Noto Sans Arabic", Roboto, Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
           "Liberation Mono", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --nav: #0d1c23;
-    --nav-2: #0a171c;
-    --primary: #6fb2ba;
-    --primary-strong: #8ec8cf;
-    --accent: #d3ac66;
-    --page: #0f1b21;
-    --surface: #15252c;
-    --surface-2: #1b2f37;
-    --text: #dde7ea;
-    --text-muted: #9db0b9;
-    --line: #274049;
-    --line-strong: #35545f;
-    --code-bg: #10222a;
-    --focus: #e0bd7c;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px rgba(0, 0, 0, .28);
+    --nav: #0c1012;
+    --nav-2: #080b0c;
+    --primary: #5fc2be;
+    --primary-strong: #84d4cf;
+    --accent: #e8a855;
+    --page: #171310;
+    --surface: #221c15;
+    --surface-2: #2b241b;
+    --text: #efe7d8;
+    --text-muted: #b3a897;
+    --line: #3a3226;
+    --line-strong: #4c4231;
+    --code-bg: #2b241b;
+    --focus: #e8a855;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 30px rgba(0, 0, 0, .32);
     --danger: #e08872;
     --danger-bg: #3a1f1a;
     --success: #7fcb9c;
@@ -77,28 +102,43 @@ body {
   background: var(--page);
   color: var(--text);
   font-family: var(--font);
-  font-size: 17px;
-  line-height: 1.65;
+  font-size: 17.5px;
+  line-height: 1.7;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4 {
-  line-height: 1.22;
-  font-weight: 650;
-  letter-spacing: -0.012em;
-  margin: 0 0 .5em;
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 0 0 .55em;
   text-wrap: balance;
 }
 
-h1 { font-size: clamp(2rem, 1.35rem + 2.6vw, 3rem); }
-h2 { font-size: clamp(1.4rem, 1.15rem + 1.1vw, 1.9rem); margin-top: 2.4em; }
-h3 { font-size: clamp(1.1rem, 1.02rem + .38vw, 1.25rem); margin-top: 2em; }
+h1, h2 {
+  font-family: var(--display);
+  letter-spacing: -0.01em;
+}
+h1 {
+  font-size: clamp(2.3rem, 1.5rem + 3.2vw, 3.5rem);
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+h2 {
+  font-size: clamp(1.6rem, 1.3rem + 1.3vw, 2.2rem);
+  margin-top: 2.8em;
+  line-height: 1.1;
+}
+h3 {
+  font-size: clamp(1.12rem, 1.03rem + .4vw, 1.3rem);
+  letter-spacing: -0.006em;
+  margin-top: 2.3em;
+}
 h4 { font-size: 1rem; margin-top: 1.6em; text-transform: none; }
 
 h2:first-child, h3:first-child { margin-top: 0; }
 
-p, ul, ol, dl { margin: 0 0 1.1em; overflow-wrap: break-word; }
+p, ul, ol, dl { margin: 0 0 1.15em; overflow-wrap: break-word; }
 li { margin-bottom: .4em; }
 li > ul, li > ol { margin-top: .4em; }
 
@@ -203,9 +243,11 @@ section.band.tinted { background: var(--surface-2); }
   gap: .55rem;
   color: #fff;
   text-decoration: none;
+  font-family: var(--display);
   font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: .01em;
+  font-size: 1.3rem;
+  letter-spacing: .015em;
+  text-transform: uppercase;
   margin-inline-end: auto;
 }
 .brand:hover { color: #fff; }
@@ -490,9 +532,10 @@ tbody tr:last-child td { border-bottom: 0; }
   border-inline-start: 4px solid var(--primary);
   background: var(--surface);
   border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 1rem 1.1rem;
-  margin: 1.6rem 0;
+  padding: 1.15rem 1.3rem;
+  margin: 2rem 0;
   font-size: .95rem;
+  box-shadow: var(--shadow);
 }
 .note > :last-child { margin-bottom: 0; }
 .note.caution { border-inline-start-color: var(--accent); }
@@ -526,6 +569,7 @@ ul.ticks li::before {
 
 dl.facts { display: grid; gap: .1rem 1rem; }
 dl.facts dt { font-weight: 650; }
+dl.facts dt, dl.facts dd { min-width: 0; overflow-wrap: anywhere; }
 
 /* ---------- forms ---------- */
 
