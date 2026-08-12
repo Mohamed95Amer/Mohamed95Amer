@@ -58,6 +58,24 @@
   </div>
 </div>
 
+<div class="doc">
+  <div class="wrap doc-grid">
+    <aside class="doc-aside">
+      <nav class="toc" aria-label="On this page">
+        <h2>On this page</h2>
+        <ul>
+          <li><a href="#stack">What the stack is made of</a></li>
+          <li><a href="#licence">Licensing</a></li>
+          <li><a href="#self-host">Running it yourself</a></li>
+          <li><a href="#integrators">For integrators</a></li>
+          <li><a href="#demo">The hosted demo</a></li>
+          <li><a href="#why">Why it was built this way</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="doc-main">
+
 <!-- ============ THE STACK ============ -->
 <section class="band" id="stack">
   <div class="wrap">
@@ -364,6 +382,10 @@ pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
   </div>
 </section>
 
+    </div>
+  </div>
+</div>
+
 </main>
 
 <footer class="site-footer">
@@ -409,6 +431,50 @@ pip3 install -r vendor/odoo/requirements.txt -r requirements-oca.txt
     </div>
   </div>
 </footer>
+
+
+<script>
+(function () {
+  "use strict";
+  var links = Array.prototype.slice.call(
+    document.querySelectorAll('.toc a[href^="#"]'));
+  if (!links.length || !("IntersectionObserver" in window)) return;
+
+  var linkFor = {}, targets = [];
+  links.forEach(function (a) {
+    var el = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (el) { linkFor[el.id] = a; targets.push(el); }
+  });
+  if (!targets.length) return;
+
+  var onScreen = Object.create(null);
+
+  function mark() {
+    var best = null;
+    targets.forEach(function (el) {
+      if (!onScreen[el.id]) return;
+      if (!best || el.getBoundingClientRect().top < best.getBoundingClientRect().top) {
+        best = el;
+      }
+    });
+    links.forEach(function (a) { a.classList.remove("is-current"); });
+    if (best) linkFor[best.id].classList.add("is-current");
+  }
+
+  // Top inset clears the sticky header; the bottom inset means a section
+  // only counts as "current" once it reaches the upper part of the screen,
+  // rather than the moment its last line scrolls into view.
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) onScreen[e.target.id] = true;
+      else delete onScreen[e.target.id];
+    });
+    mark();
+  }, { rootMargin: "-88px 0px -55% 0px" });
+
+  targets.forEach(function (el) { io.observe(el); });
+})();
+</script>
 
 </body>
 </html>

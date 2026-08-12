@@ -56,30 +56,32 @@
   </div>
 </div>
 
-<section class="band">
-  <div class="wrap">
-    <nav class="toc" aria-label="On this page">
-      <h2>On this page</h2>
-      <ul>
-        <li><a href="#commercial">Commercial: BOQ, variations, billing, CVR</a></li>
-        <li><a href="#construction">Construction delivery</a></li>
-        <li><a href="#planning">Planning &amp; programme</a></li>
-        <li><a href="#hse">Health, safety &amp; site records</a></li>
-        <li><a href="#procurement">Tenders &amp; subcontracts</a></li>
-        <li><a href="#materials">Materials &amp; site stores</a></li>
-        <li><a href="#bim">BIM and IFC</a></li>
-        <li><a href="#approvals">Approvals &amp; control</a></li>
-        <li><a href="#facilities">Facilities management</a></li>
-        <li><a href="#tags">QR &amp; NFC asset tags</a></li>
-        <li><a href="#mobile">Mobile &amp; field</a></li>
-        <li><a href="#documents">Document control</a></li>
-        <li><a href="#portal">Portals</a></li>
-        <li><a href="#platform">Platform, language &amp; recovery</a></li>
-        <li><a href="#modules">The full module list</a></li>
-      </ul>
-    </nav>
-  </div>
-</section>
+<div class="doc">
+  <div class="wrap doc-grid">
+    <aside class="doc-aside">
+      <nav class="toc" aria-label="On this page">
+        <h2>On this page</h2>
+        <ul>
+          <li><a href="#commercial">Commercial: BOQ, variations, billing, CVR</a></li>
+          <li><a href="#construction">Construction delivery</a></li>
+          <li><a href="#planning">Planning &amp; programme</a></li>
+          <li><a href="#hse">Health, safety &amp; site records</a></li>
+          <li><a href="#procurement">Tenders &amp; subcontracts</a></li>
+          <li><a href="#materials">Materials &amp; site stores</a></li>
+          <li><a href="#bim">BIM and IFC</a></li>
+          <li><a href="#approvals">Approvals &amp; control</a></li>
+          <li><a href="#facilities">Facilities management</a></li>
+          <li><a href="#tags">QR &amp; NFC asset tags</a></li>
+          <li><a href="#mobile">Mobile &amp; field</a></li>
+          <li><a href="#documents">Document control</a></li>
+          <li><a href="#portal">Portals</a></li>
+          <li><a href="#platform">Platform, language &amp; recovery</a></li>
+          <li><a href="#modules">The full module list</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="doc-main">
 
 <!-- ============ COMMERCIAL ============ -->
 <section class="band" id="commercial">
@@ -1165,6 +1167,10 @@
   </div>
 </section>
 
+    </div>
+  </div>
+</div>
+
 </main>
 
 <footer class="site-footer">
@@ -1209,6 +1215,50 @@
     </div>
   </div>
 </footer>
+
+
+<script>
+(function () {
+  "use strict";
+  var links = Array.prototype.slice.call(
+    document.querySelectorAll('.toc a[href^="#"]'));
+  if (!links.length || !("IntersectionObserver" in window)) return;
+
+  var linkFor = {}, targets = [];
+  links.forEach(function (a) {
+    var el = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+    if (el) { linkFor[el.id] = a; targets.push(el); }
+  });
+  if (!targets.length) return;
+
+  var onScreen = Object.create(null);
+
+  function mark() {
+    var best = null;
+    targets.forEach(function (el) {
+      if (!onScreen[el.id]) return;
+      if (!best || el.getBoundingClientRect().top < best.getBoundingClientRect().top) {
+        best = el;
+      }
+    });
+    links.forEach(function (a) { a.classList.remove("is-current"); });
+    if (best) linkFor[best.id].classList.add("is-current");
+  }
+
+  // Top inset clears the sticky header; the bottom inset means a section
+  // only counts as "current" once it reaches the upper part of the screen,
+  // rather than the moment its last line scrolls into view.
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) onScreen[e.target.id] = true;
+      else delete onScreen[e.target.id];
+    });
+    mark();
+  }, { rootMargin: "-88px 0px -55% 0px" });
+
+  targets.forEach(function (el) { io.observe(el); });
+})();
+</script>
 
 </body>
 </html>

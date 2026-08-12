@@ -5,9 +5,11 @@ framework, no CDN, no remote fonts. Every asset it loads is in this directory.
 
 ```
 website/
-├── index.html                        Home
-├── features.html                     Everything the product does, one long page with a TOC
-├── about.html                        Stack, licensing, self-hosting, demo status
+├── index.html                        Home (its own stylesheet, home.css)
+├── features.html                     Everything the product does, one long page with a sticky contents rail
+├── about.html                        Stack, licensing, self-hosting, integrators, demo status
+├── contact.html                      Contact / book a demo form
+├── robots.txt, sitemap.xml
 ├── insights/
 │   ├── index.html                    Article index
 │   ├── approval-trails.html
@@ -15,8 +17,10 @@ website/
 │   ├── bim-colour.html
 │   └── verified-recovery.html
 ├── assets/
-│   ├── css/majal.css                 The whole stylesheet
-│   └── img/README.md                 Which screenshot goes where (PNGs dropped in here)
+│   ├── css/majal.css                 Every page except the home page
+│   ├── css/home.css                  The home page only — deliberately standalone
+│   ├── fonts/                        Big Shoulders + Instrument Sans, self-hosted
+│   └── img/                          The logo mark, and README.md saying which screenshot goes where
 └── README.md
 ```
 
@@ -69,7 +73,7 @@ These are not style preferences; breaking them makes the site wrong.
   studies, ratings or awards. There are none on the site and none should be
   added that are not real and attributable.
 - **No invented statistics.** Every number here is verifiable in the
-  repository: 37 Majal modules in `custom-addons/`, six document types wired
+  repository: 38 Majal modules in `custom-addons/`, six document types wired
   into the approval engine (`docs/approvals.md`), 44 test modules, the 2000-per-run
   clash cap and 300 MB indexing cap (`docs/bim.md`), seven recovery slots
   (`docs/administration-and-recovery.md`), five AI provider modes
@@ -87,5 +91,17 @@ These are not style preferences; breaking them makes the site wrong.
 
 Semantic landmarks, one `h1` per page, heading order preserved, a skip link,
 visible `:focus-visible` outlines, and alt text on every image. Both colour
-schemes were checked for contrast. No JavaScript is loaded at all, so nothing
-degrades when it is unavailable.
+schemes were checked for contrast against WCAG AA.
+
+**JavaScript is progressive enhancement only, and there is very little of it.**
+Two pages carry a small inline script and both work fully without it:
+
+- `contact.html` — client-side validation and a fetch submit that gives real
+  loading / success / error states. With JS off the form falls back to a plain
+  `POST`, which is what the `action` has always been.
+- `features.html` and `about.html` — an `IntersectionObserver` that marks which
+  section you are reading in the contents rail. With JS off the rail is still a
+  complete, working list of links.
+
+Nothing else on the site loads a script, and no page depends on one to render
+or to navigate.

@@ -223,6 +223,69 @@ section.band > .wrap > .prose > h2:first-child::before {
   margin-bottom: 1rem;
 }
 
+/* ---------- documentation layout ---------- */
+/* A long reference page is navigated, not read start-to-finish. Below 62rem
+   it stays a single column with the contents at the top; above it, the
+   contents become a sticky rail that tracks where you are. */
+
+.doc-grid { display: grid; align-items: start; }
+/* Grid items default to min-width:auto, so a wide table inside would prise the
+   column open rather than scrolling inside its own container. */
+.doc-aside, .doc-main { min-width: 0; }
+
+.doc-main > section.band {
+  padding-block: clamp(2.5rem, 5vw, 3.5rem);
+}
+.doc-main > section.band:first-child { border-top: 0; padding-top: 2.25rem; }
+/* Tinting alternate bands was standing in for structure. The rail does that
+   job now, and a tinted block inside a column reads as a stray card. */
+.doc-main > section.band.tinted { background: none; }
+/* These .wrap elements are nested inside the grid's own .wrap. */
+.doc-main .wrap {
+  max-width: none;
+  width: auto;
+  padding-inline: 0;
+  margin-inline: 0;
+}
+
+@media (min-width: 62rem) {
+  .doc-grid {
+    grid-template-columns: 15.5rem minmax(0, 1fr);
+    column-gap: 3.5rem;
+  }
+  .doc-aside {
+    position: sticky;
+    top: 5.5rem;
+    max-height: calc(100vh - 7.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: 2.25rem;
+  }
+  /* In the rail the contents are the furniture, not a card. */
+  .doc-aside .toc {
+    background: none;
+    border: 0;
+    border-inline-start: 1px solid var(--line);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+  .doc-aside .toc ul { columns: 1; }
+  .doc-aside .toc a { font-size: .875rem; padding: .38rem .6rem; }
+  .doc-aside .toc h2 { padding-inline-start: .6rem; }
+}
+
+/* Where you are now — set by the scroll-spy, and by :target as a no-JS
+   fallback so an anchored link still marks its own entry. */
+.toc a.is-current,
+.toc a:target {
+  background: var(--surface-2);
+  border-inline-start-color: var(--accent);
+  color: var(--primary-strong);
+  font-weight: 650;
+}
+
 .skip {
   position: absolute;
   left: -9999px;

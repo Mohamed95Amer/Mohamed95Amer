@@ -255,7 +255,7 @@ a { color: var(--teal-deep); }
 .strip ul {
   list-style: none; margin: 0; padding: 1.4rem 0;
   display: grid; gap: .3rem 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
 }
 .strip li {
   font-size: .9rem; color: var(--on-ink-dim);
@@ -290,7 +290,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 .bim .section-head p { color: var(--on-ink-dim); }
 .compare {
   display: grid; gap: 1.25rem;
-  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
 }
 .compare figure { margin: 0; }
 .compare img {
@@ -313,7 +313,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 
 .cards {
   display: grid; gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
   /* Each card sizes to its own content: with the default stretch, opening one
      disclosure grew every card in that row and left the others hollow. */
   align-items: start;
@@ -368,7 +368,7 @@ details.more p {
 
 .split {
   display: grid; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
 }
 .split img { border: 1px solid var(--rule); }
 .split-text h2 {
@@ -386,7 +386,7 @@ details.more p {
 }
 .footer-grid {
   display: grid; gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
 }
 .site-footer h2 {
   font: 700 .78rem/1 var(--body); letter-spacing: .14em;
