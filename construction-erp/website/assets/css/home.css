@@ -313,7 +313,9 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 
 .cards {
   display: grid; gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  /* Two up, not three: these are real application screens, and at a third of
+     the page they were too small to read anything on. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
   /* Each card sizes to its own content: with the default stretch, opening one
      disclosure grew every card in that row and left the others hollow. */
   align-items: start;
