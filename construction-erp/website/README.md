@@ -3,6 +3,10 @@
 A static site. Plain HTML and one stylesheet, no build step, no npm, no
 framework, no CDN, no remote fonts. Every asset it loads is in this directory.
 
+The contact endpoint is intentionally one level above this static directory,
+at `functions/api/contact.js`, because Cloudflare Pages discovers Functions
+from the Pages project root.
+
 ```
 website/
 ├── index.html                        Home (its own stylesheet, home.css)
@@ -11,8 +15,6 @@ website/
 ├── contact.html                      Contact / book a demo form
 ├── thanks.html                       Where the form lands without JavaScript (noindex)
 ├── robots.txt, sitemap.xml
-├── functions/
-│   └── api/contact.js                Cloudflare Pages Function — the form's endpoint
 ├── insights/
 │   ├── index.html                    Article index
 │   ├── approval-trails.html
@@ -34,19 +36,24 @@ Connect the repository and use these settings:
 | Setting | Value |
 |---|---|
 | Framework preset | **None** |
-| Build command | *(leave empty — there is no build step)* |
+| Build command | `exit 0` |
 | Build output directory | `construction-erp/website` |
 | Root directory | *(repository root — leave as `/`)* |
+
+The Pages Function lives at the repository root (`/functions/api/contact.js`),
+as required by Cloudflare Pages. It is intentionally outside the static output
+directory; Cloudflare discovers it during the Pages deployment and routes
+`/api/contact` to it. Do not move it into `construction-erp/website/`.
 
 Then attach `majalops.com` and `www.majalops.com` as custom domains in the
 Pages project. Cloudflare creates the DNS records itself; there is no A record
 to add by hand.
 
-### The contact form needs three environment variables
+### The contact form needs two environment variables
 
-`functions/api/contact.js` is a Pages Function. Cloudflare picks it up because
-`functions/` sits at the root of the build output directory, so it deploys with
-the site and there is no separate service to run. It sends through
+`/functions/api/contact.js` is a Pages Function. Cloudflare picks it up because
+`functions/` sits at the root of the Pages project, so it deploys with the site
+and there is no separate service to run. It sends through
 [Resend](https://resend.com) — one REST call, no SDK, no dependency to install.
 
 Set these in the Pages project under **Settings → Environment variables**, for
@@ -55,16 +62,16 @@ Set these in the Pages project under **Settings → Environment variables**, for
 | Variable | Value |
 |---|---|
 | `RESEND_API_KEY` | `re_…` from the Resend dashboard. Mark it **encrypted**. |
-| `CONTACT_TO` | The address the messages should arrive at. |
+| `CONTACT_TO` | Optional override; defaults to `Support@majalops.com`. |
 | `CONTACT_FROM` | e.g. `Majal <noreply@majalops.com>` — must be on a domain verified in Resend. |
 
 `CONTACT_FROM` cannot be the sender's own address: Resend will not send as a
 domain you have not proven you own. The sender goes in `Reply-To` instead, so
 replying to the notification still reaches them.
 
-Until all three are set the endpoint answers **503** and says the form is not
-configured. That is deliberate — a form that silently swallows messages is worse
-than one that admits it is not wired up yet.
+Until `RESEND_API_KEY` and `CONTACT_FROM` are set the endpoint answers **503** and
+says the form is not configured. That is deliberate — a form that silently
+swallows messages is worse than one that admits it is not wired up yet.
 
 Swapping Resend for another provider means changing one `fetch` call in
 `functions/api/contact.js`; nothing else on the site knows what sends the mail.

@@ -97,8 +97,11 @@ async function handlePost(request, env) {
     return reply(request, false, 400, "That email address does not look right.");
   }
 
-  const { RESEND_API_KEY, CONTACT_TO, CONTACT_FROM } = env;
-  if (!RESEND_API_KEY || !CONTACT_TO || !CONTACT_FROM) {
+  const { RESEND_API_KEY, CONTACT_FROM } = env;
+  // Support is the public Majal inbox. Pages can still override it with
+  // CONTACT_TO for a staging or partner deployment.
+  const CONTACT_TO = env.CONTACT_TO || "Support@majalops.com";
+  if (!RESEND_API_KEY || !CONTACT_FROM) {
     // Misconfigured rather than broken — do not pretend it was delivered.
     return reply(
       request,
