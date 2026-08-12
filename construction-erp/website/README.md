@@ -9,7 +9,10 @@ website/
 ├── features.html                     Everything the product does, one long page with a sticky contents rail
 ├── about.html                        Stack, licensing, self-hosting, integrators, demo status
 ├── contact.html                      Contact / book a demo form
+├── thanks.html                       Where the form lands without JavaScript (noindex)
 ├── robots.txt, sitemap.xml
+├── functions/
+│   └── api/contact.js                Cloudflare Pages Function — the form's endpoint
 ├── insights/
 │   ├── index.html                    Article index
 │   ├── approval-trails.html
@@ -38,6 +41,33 @@ Connect the repository and use these settings:
 Then attach `majalops.com` and `www.majalops.com` as custom domains in the
 Pages project. Cloudflare creates the DNS records itself; there is no A record
 to add by hand.
+
+### The contact form needs three environment variables
+
+`functions/api/contact.js` is a Pages Function. Cloudflare picks it up because
+`functions/` sits at the root of the build output directory, so it deploys with
+the site and there is no separate service to run. It sends through
+[Resend](https://resend.com) — one REST call, no SDK, no dependency to install.
+
+Set these in the Pages project under **Settings → Environment variables**, for
+**Production and Preview** both:
+
+| Variable | Value |
+|---|---|
+| `RESEND_API_KEY` | `re_…` from the Resend dashboard. Mark it **encrypted**. |
+| `CONTACT_TO` | The address the messages should arrive at. |
+| `CONTACT_FROM` | e.g. `Majal <noreply@majalops.com>` — must be on a domain verified in Resend. |
+
+`CONTACT_FROM` cannot be the sender's own address: Resend will not send as a
+domain you have not proven you own. The sender goes in `Reply-To` instead, so
+replying to the notification still reaches them.
+
+Until all three are set the endpoint answers **503** and says the form is not
+configured. That is deliberate — a form that silently swallows messages is worse
+than one that admits it is not wired up yet.
+
+Swapping Resend for another provider means changing one `fetch` call in
+`functions/api/contact.js`; nothing else on the site knows what sends the mail.
 
 To preview locally, serve the directory over HTTP rather than opening the files
 directly — links are root-absolute (`/features.html`), so `file://` will not
@@ -98,7 +128,8 @@ Two pages carry a small inline script and both work fully without it:
 
 - `contact.html` — client-side validation and a fetch submit that gives real
   loading / success / error states. With JS off the form falls back to a plain
-  `POST`, which is what the `action` has always been.
+  `POST` to the same `action`, and `/api/contact` answers a 303 redirect to
+  `thanks.html` instead of JSON. Nothing is lost but the in-place status line.
 - `features.html` and `about.html` — an `IntersectionObserver` that marks which
   section you are reading in the contents rail. With JS off the rail is still a
   complete, working list of links.

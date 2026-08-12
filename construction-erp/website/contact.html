@@ -61,11 +61,12 @@
   <div class="wrap">
     <div class="prose">
       <!--
-        Placeholder form endpoint. Replace YOUR_FORM_ID with a real Formspree
-        (or equivalent) form ID before this page goes live — until then,
-        submissions here go nowhere.
+        Posts to /api/contact — the Pages Function in functions/api/contact.js,
+        which deploys with the site. Without JavaScript this is a plain POST and
+        the Function redirects to /thanks.html; the script at the bottom of this
+        page upgrades it to a fetch() that stays on the page.
       -->
-      <form class="contact" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+      <form class="contact" id="contact-form" action="/api/contact" method="POST" novalidate>
         <div class="field">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-error">
@@ -256,11 +257,19 @@
       headers: { Accept: "application/json" },
     })
       .then(function (response) {
-        if (response.ok) {
-          setStatus("Thanks — your message is on its way. Expect a reply by email.", "success");
+        // The endpoint answers JSON with its own message — a rejected field or
+        // an unconfigured mailer says something more useful than "try again".
+        return response.json().then(
+          function (data) { return { ok: response.ok, message: data && data.message }; },
+          function () { return { ok: response.ok, message: null }; }
+        );
+      })
+      .then(function (result) {
+        if (result.ok) {
+          setStatus(result.message || "Thanks — your message is on its way. Expect a reply by email.", "success");
           form.reset();
         } else {
-          setStatus("That didn't go through. Please try again in a moment.", "error");
+          setStatus(result.message || "That didn't go through. Please try again in a moment.", "error");
         }
       })
       .catch(function () {
