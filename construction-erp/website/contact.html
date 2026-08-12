@@ -62,10 +62,11 @@
   <div class="wrap">
     <div class="prose">
       <!--
-        Posts to /api/contact — the Pages Function in functions/api/contact.js,
-        which deploys with the site. Without JavaScript this is a plain POST and
-        the Function redirects to /thanks.html; the script at the bottom of this
-        page upgrades it to a fetch() that stays on the page.
+        Posts to /api/contact — the Pages Function at /functions/api/contact.js
+        in the repository root, not in this directory: Cloudflare discovers
+        Functions from the Pages project root. Without JavaScript this is a
+        plain POST and the Function redirects to /thanks.html; the script at the
+        bottom of this page upgrades it to a fetch() that stays on the page.
       -->
       <form class="contact" id="contact-form" action="/api/contact" method="POST" novalidate>
         <div class="field">
