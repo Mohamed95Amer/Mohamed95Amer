@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A model that colours everything at once tells you nothing — Majal</title>
 <meta name="description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
+<link rel="canonical" href="https://majalops.com/insights/bim-colour.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Majal">
+<meta property="og:title" content="A model that colours everything at once tells you nothing — Majal">
+<meta property="og:description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
+<meta property="og:url" content="https://majalops.com/insights/bim-colour.html">
+<meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A model that colours everything at once tells you nothing — Majal">
+<meta name="twitter:description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
+<meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="theme-color" content="#173240">
 <link rel="stylesheet" href="/assets/css/majal.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23173240'/%3E%3Crect x='8' y='8' width='16' height='4' fill='%23c59b52'/%3E%3Crect x='8' y='14' width='16' height='4' fill='%23346d75'/%3E%3Crect x='8' y='20' width='16' height='4' fill='%23346d75'/%3E%3C/svg%3E">
@@ -15,6 +26,8 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Menu"><span class="bar"></span></label>
     <nav aria-label="Primary">
       <ul class="nav">
         <li><a href="/">Home</a></li>
@@ -69,7 +82,7 @@
     </div>
 
     <figure class="shot">
-      <img src="/assets/img/shot-bim-original.png"
+      <img loading="lazy" decoding="async" src="/assets/img/shot-bim-original.png"
            alt="The same IFC model drawn in the colours written into the file by its authoring tool: many saturated hues at once, one per object class, with no single element standing out.">
       <figcaption>
         <strong>The file's own colours.</strong> This is what a structural export looks like when
@@ -141,7 +154,7 @@
       </p>
 
       <figure class="shot">
-        <img src="/assets/img/shot-bim-legend.png"
+        <img loading="lazy" decoding="async" src="/assets/img/shot-bim-legend.png"
              alt="The BIM viewer's class legend beside the model: named element classes such as Wall, Slab, Beam and Column, each with its colour swatch and element count, ordered by count, with an isolate control on each row.">
         <figcaption>
           <strong>The legend does three jobs.</strong> It names each class in words a person
@@ -224,7 +237,6 @@
         <h2>Project</h2>
         <ul>
           <li><a href="/about.html">About &amp; open source</a></li>
-          <li><a href="https://github.com/Mohamed95Amer/Mohamed95Amer">GitHub repository ↗</a></li>
           <li><a href="/about.html#licence">Licensing</a></li>
         </ul>
       </div>

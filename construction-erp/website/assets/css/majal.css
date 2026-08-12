@@ -19,6 +19,10 @@
   --code-bg: #eef1f3;
   --focus: #c59b52;
   --shadow: 0 1px 2px rgba(23, 50, 64, .06), 0 8px 24px rgba(23, 50, 64, .05);
+  --danger: #b3432f;
+  --danger-bg: #fbeae6;
+  --success: #2f7a4f;
+  --success-bg: #e8f4ec;
 
   --measure: 68ch;
   --wide: 1180px;
@@ -47,6 +51,10 @@
     --code-bg: #10222a;
     --focus: #e0bd7c;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px rgba(0, 0, 0, .28);
+    --danger: #e08872;
+    --danger-bg: #3a1f1a;
+    --success: #7fcb9c;
+    --success-bg: #163223;
   }
 }
 
@@ -252,6 +260,76 @@ section.band.tinted { background: var(--surface-2); }
   padding: 0 .3em;
   margin-inline-start: .3em;
   vertical-align: .1em;
+}
+
+/* ---------- mobile nav toggle ---------- */
+
+.nav-toggle-input {
+  position: absolute;
+  inset-inline-start: -9999px;
+}
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.nav-toggle:hover { background: rgba(255, 255, 255, .08); }
+.nav-toggle-input:focus-visible + .nav-toggle {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.nav-toggle .bar,
+.nav-toggle .bar::before,
+.nav-toggle .bar::after {
+  width: 1.35rem;
+  height: 2px;
+  background: #e7eef1;
+  border-radius: 1px;
+}
+.nav-toggle .bar {
+  position: relative;
+  display: block;
+}
+.nav-toggle .bar::before,
+.nav-toggle .bar::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  transition: transform .18s ease, top .18s ease;
+}
+.nav-toggle .bar::before { top: -6px; }
+.nav-toggle .bar::after { top: 6px; }
+.nav-toggle-input:checked + .nav-toggle .bar { background: transparent; }
+.nav-toggle-input:checked + .nav-toggle .bar::before { top: 0; transform: rotate(45deg); }
+.nav-toggle-input:checked + .nav-toggle .bar::after { top: 0; transform: rotate(-45deg); }
+
+@media (max-width: 46rem) {
+  .nav-toggle { display: inline-flex; }
+  .site-header nav[aria-label="Primary"] {
+    order: 3;
+    flex-basis: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .22s ease;
+  }
+  .nav-toggle-input:checked ~ nav[aria-label="Primary"] {
+    max-height: 24rem;
+  }
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding-block: .35rem .9rem;
+    border-top: 1px solid rgba(255, 255, 255, .1);
+    margin-top: .5rem;
+  }
+  .nav a { padding: .75rem .3rem; font-size: 1rem; }
+  .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); }
 }
 
 /* ---------- hero ---------- */
@@ -507,7 +585,16 @@ form.contact textarea:focus {
   outline-offset: 1px;
   border-color: var(--line-strong);
 }
+form.contact input[aria-invalid="true"],
+form.contact textarea[aria-invalid="true"] {
+  border-color: var(--danger);
+}
 form.contact textarea { resize: vertical; min-height: 8rem; }
+form.contact .field-error {
+  margin: 0;
+  font-size: .84rem;
+  color: var(--danger);
+}
 form.contact .submit-row {
   display: flex;
   align-items: center;
@@ -517,6 +604,44 @@ form.contact .submit-row {
 form.contact button.btn {
   font: inherit;
   cursor: pointer;
+}
+form.contact button.btn:disabled {
+  opacity: .7;
+  cursor: progress;
+}
+form.contact button.btn:disabled .btn-label::after {
+  content: "";
+  display: inline-block;
+  width: .8em;
+  height: .8em;
+  margin-inline-start: .5em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  vertical-align: -.15em;
+  animation: majal-spin .7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  form.contact button.btn:disabled .btn-label::after { animation: none; }
+}
+@keyframes majal-spin { to { transform: rotate(360deg); } }
+
+form.contact .form-status {
+  margin: 0;
+  padding: .75rem 1rem;
+  border-radius: 8px;
+  font-size: .92rem;
+  border: 1px solid var(--line);
+}
+form.contact .form-status.is-success {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success);
+}
+form.contact .form-status.is-error {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 dl.facts dd { margin: 0 0 .8rem; color: var(--text-muted); }
 @media (min-width: 34rem) {

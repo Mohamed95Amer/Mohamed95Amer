@@ -118,6 +118,41 @@ a { color: var(--teal-deep); }
 }
 .topnav a:hover, .topnav a[aria-current] { color: var(--on-ink); }
 
+/* ---- mobile nav toggle ------------------------------------------------ */
+
+.nav-toggle-input { position: absolute; left: -9999px; }
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 2.75rem; height: 2.75rem; border-radius: 8px; cursor: pointer;
+  margin-left: auto; flex: 0 0 auto;
+}
+.nav-toggle:hover { background: rgba(255, 255, 255, .08); }
+.nav-toggle-input:focus-visible + .nav-toggle { outline: 3px solid var(--gold); outline-offset: 2px; }
+.nav-toggle .bar, .nav-toggle .bar::before, .nav-toggle .bar::after {
+  width: 1.35rem; height: 2px; background: var(--on-ink); border-radius: 1px;
+}
+.nav-toggle .bar { position: relative; display: block; }
+.nav-toggle .bar::before, .nav-toggle .bar::after {
+  content: ""; position: absolute; left: 0; transition: transform .18s ease, top .18s ease;
+}
+.nav-toggle .bar::before { top: -6px; }
+.nav-toggle .bar::after { top: 6px; }
+.nav-toggle-input:checked + .nav-toggle .bar { background: transparent; }
+.nav-toggle-input:checked + .nav-toggle .bar::before { top: 0; transform: rotate(45deg); }
+.nav-toggle-input:checked + .nav-toggle .bar::after { top: 0; transform: rotate(-45deg); }
+
+@media (max-width: 46rem) {
+  .nav-toggle { display: inline-flex; }
+  .topnav {
+    order: 3; flex-basis: 100%; margin-left: 0;
+    max-height: 0; overflow: hidden; flex-direction: column; gap: 0;
+    transition: max-height .22s ease;
+  }
+  .nav-toggle-input:checked ~ .topnav { max-height: 20rem; }
+  .topnav a { padding: .75rem .1rem; font-size: 1rem; border-top: 1px solid rgba(255, 255, 255, .08); }
+  .topnav a:first-child { border-top: 0; }
+}
+
 /* ---- promo banner ------------------------------------------------------ */
 
 .promo-banner {
