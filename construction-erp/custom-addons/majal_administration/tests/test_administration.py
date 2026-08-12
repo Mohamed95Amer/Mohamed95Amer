@@ -583,6 +583,52 @@ class TestMajalAdministration(TransactionCase):
         wizard.flush_recordset(["temporary_password"])
         self.assertFalse(wizard.temporary_password)
 
+    def test_my_day_opens_for_an_industry_scoped_user(self):
+        """My Day reads both halves of the product, on purpose.
+
+        So a user scoped to one of them always queries a model the tenant
+        rules hide — which means the "hide it" domain runs on the home
+        screen of every scoped user, and has to be one Odoo can parse.
+        Odoo's false domain is FALSE_LEAF, (0, '=', 1). (1, '=', 0) reads
+        as false to a human but is not what expression.is_boolean() matches,
+        so it falls through to being treated as a leaf on a field named 1
+        and raises inside _apply_ir_rules:
+
+            AttributeError: 'int' object has no attribute 'split'
+
+        That is a 500 on the home screen for everyone whose scope is not
+        'both' — which is every seeded persona except admin.
+        """
+        self.assertEqual(self.field_user.majal_industry_scope, "construction")
+        payload = (
+            self.env["construction.my.day"]
+            .with_user(self.field_user)
+            .my_day()  # must not raise
+        )
+        self.assertEqual(payload["user"], self.field_user.display_name)
+        self.assertIsInstance(payload["sections"], list)
+
+    def test_tenant_rules_use_a_false_domain_odoo_can_parse(self):
+        """The guard above, one level down and for every rule at once.
+
+        my_day only reaches the models it lists; this catches the same
+        mistake on a rule it does not, before somebody finds it by
+        opening the register instead.
+        """
+        rules = self.env["ir.rule"].search(
+            [("name", "like", "Majal tenant:")]
+        )
+        self.assertTrue(rules, "tenant rules should exist to be checked")
+        malformed = rules.filtered(
+            lambda r: "(1, '=', 0)" in (r.domain_force or "")
+        )
+        self.assertFalse(
+            malformed,
+            "Use FALSE_LEAF (0, '=', 1) to match nothing; (1, '=', 0) is "
+            "not recognised by expression.is_boolean() and raises. Rules: "
+            f"{malformed.mapped('name')}",
+        )
+
 
 class TestMajalAccessLevels(TransactionCase):
     """A level is a permission grant a company is allowed to edit.
