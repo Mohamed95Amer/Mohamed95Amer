@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>"We take backups" is not a recovery position — Majal</title>
+<title>"We take backups" is not a recovery position â€” Majal</title>
 <meta name="description" content="What a verified recovery point requires: a checksum checked twice, a manifest, retention tiers that do not lie about age, and a restore path the running application cannot trigger.">
 <link rel="canonical" href="https://majalops.com/insights/verified-recovery.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Majal">
-<meta property="og:title" content="&quot;We take backups&quot; is not a recovery position — Majal">
+<meta property="og:title" content="&quot;We take backups&quot; is not a recovery position â€” Majal">
 <meta property="og:description" content="What a verified recovery point requires: a checksum checked twice, a manifest, retention tiers that do not lie about age, and a restore path the running application cannot trigger.">
 <meta property="og:url" content="https://majalops.com/insights/verified-recovery.html">
 <meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="&quot;We take backups&quot; is not a recovery position — Majal">
+<meta name="twitter:title" content="&quot;We take backups&quot; is not a recovery position â€” Majal">
 <meta name="twitter:description" content="What a verified recovery point requires: a checksum checked twice, a manifest, retention tiers that do not lie about age, and a restore path the running application cannot trigger.">
 <meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="theme-color" content="#12181c">
@@ -36,7 +36,7 @@
         <li><a href="/">Home</a></li>
         <li><a href="/features.html">Platform</a></li>
         <li><a href="/insights/" aria-current="page">Insights</a></li>
-        <li><a href="/about.html">Open source</a></li>
+        <li><a href="/about.html">About</a></li>
         <li><a href="/about.html#documentation">Docs</a></li>
         <li><a class="nav-cta" href="/contact.html">Book a demo</a></li>
       </ul>
@@ -49,7 +49,7 @@
 <div class="page-head">
   <div class="wrap">
     <div class="prose">
-      <p class="meta">Insight · Operations</p>
+      <p class="meta">Insight Â· Operations</p>
       <h1>"We take backups" is not a recovery position</h1>
       <p class="lede">
         A backup you have never restored is a hypothesis. Four things separate a recovery
@@ -68,14 +68,14 @@
       <h2>1. A database dump is not a backup of an ERP</h2>
       <p>
         A construction ERP's most irreplaceable content is not in PostgreSQL. It is the
-        drawings, the site photos, the signed permits, the approved PDFs — the filestore. A
+        drawings, the site photos, the signed permits, the approved PDFs â€” the filestore. A
         dump restored without them gives you a system that knows an attachment exists,
         references it on a record, and cannot produce it.
       </p>
       <p>Each Majal recovery archive contains three things, on purpose:</p>
       <dl class="facts">
         <dt><code>dump.sql</code></dt>
-        <dd>A transaction-consistent PostgreSQL export — consistent, not merely recent.</dd>
+        <dd>A transaction-consistent PostgreSQL export â€” consistent, not merely recent.</dd>
         <dt><code>filestore/</code></dt>
         <dd>Every uploaded drawing, photo, PDF and attachment.</dd>
         <dt><code>manifest.json</code></dt>
@@ -92,7 +92,7 @@
       <h2>2. A checksum you compute once is decoration</h2>
       <p>
         Every archive is hashed with SHA-256 and the hash is stored in Majal. The part that
-        matters is that it is checked <em>again</em> — before download and before restore.
+        matters is that it is checked <em>again</em> â€” before download and before restore.
       </p>
       <p>
         Silent corruption is not exotic. Disks, filesystems, copies and object stores all fail
@@ -101,9 +101,9 @@
         write time and never re-read tells you that the file was fine once.
       </p>
       <p>
-        Archives are written with mode <code>0600</code> below the protected Odoo data volume.
+        Archives are written with mode <code>0600</code> below the protected application data volume.
         The application refuses a configured backup path outside that volume, and checks
-        minimum free storage before exporting — because a truncated archive that stopped when
+        minimum free storage before exporting â€” because a truncated archive that stopped when
         the disk filled is exactly the corrupt-but-present file the checksum exists to catch.
       </p>
 
@@ -118,7 +118,7 @@
         These are described as <strong>retention tiers, not fabricated exact ages</strong>, and
         the screen always shows the actual timestamp and age. That distinction sounds
         pedantic until somebody plans a recovery around a slot labelled "monthly" that is in
-        fact five weeks old — a five-week-old assumption during an incident is worse than no
+        fact five weeks old â€” a five-week-old assumption during an incident is worse than no
         assumption.
       </p>
       <p>
@@ -132,8 +132,8 @@
         get wrong.
       </p>
       <p>
-        If the application can restore itself, then anything that compromises the application —
-        a bad session, a mis-scoped administrator, a bug in a controller — can destroy the
+        If the application can restore itself, then anything that compromises the application â€”
+        a bad session, a mis-scoped administrator, a bug in a controller â€” can destroy the
         system and its history in one call. The convenience and the catastrophe are the same
         code path.
       </p>
@@ -142,7 +142,7 @@
         <li>A Platform Owner opens a <em>verified</em> recovery point and chooses <strong>Prepare Restore</strong>.</li>
         <li>They type the database name and a confirmation phrase.</li>
         <li>Majal issues a one-time recovery code that expires after two hours and writes a checksum-bound request into the protected data volume.</li>
-        <li>A <em>deployment operator</em> — a different person, at the host — runs the restore script with that request ID and code.</li>
+        <li>A <em>deployment operator</em> â€” a different person, at the host â€” runs the restore script with that request ID and code.</li>
       </ol>
       <p>
         Note what the split actually enforces: the application can only ever <em>request</em>. It
@@ -160,7 +160,7 @@
         <span class="label">The line worth quoting</span>
         Never test restore for the first time during an incident. Run a quarterly restore drill
         into an isolated non-production environment, and record the <em>measured</em> recovery
-        time — because the number you have measured is the only recovery time objective you can
+        time â€” because the number you have measured is the only recovery time objective you can
         promise a client.
       </p>
 
@@ -178,7 +178,7 @@
       <ul class="ticks">
         <li>copy encrypted backups to a separate account and region;</li>
         <li>make at least one copy immutable against application credentials;</li>
-        <li>monitor the daily job, archive age, free space and off-site replication — a backup job that silently stopped is the classic failure, and it is only visible if somebody is watching the <em>age</em> of the newest archive;</li>
+        <li>monitor the daily job, archive age, free space and off-site replication â€” a backup job that silently stopped is the classic failure, and it is only visible if somebody is watching the <em>age</em> of the newest archive;</li>
         <li>define client-specific recovery-point and recovery-time objectives, in numbers;</li>
         <li>keep the encryption key outside the application host;</li>
         <li>test both database records and attachment downloads after a restore, not just that the login page loads;</li>
@@ -202,12 +202,12 @@
         <p>
           Recovery points and the two-step restore live in <code>majal_administration</code>,
           alongside the client role model and the immutable administration audit.
-          <a href="/features.html#platform">See the feature summary →</a>
+          <a href="/features.html#platform">See the feature summary â†’</a>
         </p>
       </div>
 
       <nav class="article-nav" aria-label="More insights">
-        <p><a href="/insights/">← All insights</a></p>
+        <p><a href="/insights/">â† All insights</a></p>
         <p>Next: <a href="/insights/approval-trails.html">An approval trail is only as good as its enforcement point</a></p>
       </nav>
 
@@ -240,7 +240,7 @@
       <div>
         <h2>Project</h2>
         <ul>
-          <li><a href="/about.html">About &amp; open source</a></li>
+          <li><a href="/about.html">About Majal</a></li>
           <li><a href="/about.html#licence">Licensing</a></li>
         </ul>
       </div>
@@ -253,7 +253,7 @@
       </div>
     </div>
     <div class="colophon">
-      <p>Majal is built on Odoo 18 Community Edition (LGPL-3) with pinned OCA and community modules. Odoo is a trademark of Odoo S.A.; Majal is not affiliated with or endorsed by Odoo S.A.</p>
+      <p>Majal is a product of MajalOps. Customer-specific implementation, security and integration documentation is shared privately during an approved engagement.</p>
     </div>
   </div>
 </footer>
