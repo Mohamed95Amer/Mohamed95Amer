@@ -224,7 +224,7 @@ section.band.tinted { background: var(--surface-2); }
 .industry-tabs input:checked + label strong, .industry-tabs input:checked + label .tab-number { color: #fff; }
 .industry-tabs input:checked + label .tab-number { background: rgba(255,255,255,.18); }
 .industry-panel { display: none; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
-#tab-construction:checked ~ #panel-construction, #tab-facilities:checked ~ #panel-facilities, #tab-property:checked ~ #panel-property { display: grid; }
+.industry-panel.is-active { display: grid; }
 .industry-copy { max-width: 34rem; }
 .industry-copy h2 { margin-top: .35rem; }
 .feature-list { display: grid; gap: .55rem; margin: 1.35rem 0 1.6rem; padding: 0; list-style: none; }
