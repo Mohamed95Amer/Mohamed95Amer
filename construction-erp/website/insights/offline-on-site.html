@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What "offline" actually costs on a construction site Ã¢â‚¬â€ Majal</title>
-<meta name="description" content="Installable is not offline. Three different asks get called a mobile app and they cost very different amounts Ã¢â‚¬â€ measured at a 390px viewport, not assumed.">
+<title>What "offline" actually costs on a construction site — Majal</title>
+<meta name="description" content="Installable is not offline. Three different asks get called a mobile app and they cost very different amounts — measured at a 390px viewport, not assumed.">
 <link rel="canonical" href="https://majalops.com/insights/offline-on-site.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Majal">
-<meta property="og:title" content="What &quot;offline&quot; actually costs on a construction site Ã¢â‚¬â€ Majal">
-<meta property="og:description" content="Installable is not offline. Three different asks get called a mobile app and they cost very different amounts Ã¢â‚¬â€ measured at a 390px viewport, not assumed.">
+<meta property="og:title" content="What &quot;offline&quot; actually costs on a construction site — Majal">
+<meta property="og:description" content="Installable is not offline. Three different asks get called a mobile app and they cost very different amounts — measured at a 390px viewport, not assumed.">
 <meta property="og:url" content="https://majalops.com/insights/offline-on-site.html">
 <meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What &quot;offline&quot; actually costs on a construction site Ã¢â‚¬â€ Majal">
-<meta name="twitter:description" content="Installable is not offline. Three different asks get called a mobile app and they cost very different amounts Ã¢â‚¬â€ measured at a 390px viewport, not assumed.">
+<meta name="twitter:title" content="What &quot;offline&quot; actually costs on a construction site — Majal">
+<meta name="twitter:description" content="Installable is not offline. Three different asks get called a mobile app and they cost very different amounts — measured at a 390px viewport, not assumed.">
 <meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="theme-color" content="#12181c">
 <link rel="stylesheet" href="/assets/css/majal.css?v=20260813">
@@ -49,7 +49,7 @@
 <div class="page-head">
   <div class="wrap">
     <div class="prose">
-      <p class="meta">Insight Ã‚Â· Field</p>
+      <p class="meta">Insight · Field</p>
       <h1>What "offline" actually costs on a construction site</h1>
       <p class="lede">
         "We need a mobile app" is three different requests wearing the same coat. One is
@@ -67,7 +67,7 @@
       <h2>Measure first, and be prepared to be wrong in both directions</h2>
       <p>
         Majal's mobile position was established by loading a running instance in Chromium at
-        an iPhone 13 viewport Ã¢â‚¬â€ 390 Ãƒâ€” 664 Ã¢â‚¬â€ and reading the numbers, rather than by opening a
+        an iPhone 13 viewport — 390 × 664 — and reading the numbers, rather than by opening a
         page on somebody's phone and forming an impression.
       </p>
       <p>
@@ -79,7 +79,7 @@
       <p>
         The failure was somewhere a responsive-design audit does not look. The inspection
         checklist was a table 577&nbsp;px wide inside a 390&nbsp;px screen, so it truncated the
-        questions to <em>"Wall finishÃ¢â‚¬Â¦", "Ceiling tileÃ¢â‚¬Â¦", "Door closÃ¢â‚¬Â¦"</em> Ã¢â‚¬â€ that is, it
+        questions to <em>"Wall finish…", "Ceiling tile…", "Door clos…"</em> — that is, it
         truncated exactly the words that distinguish one checklist line from another, on the
         screen a person uses standing in the room being inspected.
       </p>
@@ -87,7 +87,7 @@
         <span class="label">The mechanism is worth stealing</span>
         <p>
           The fix was not CSS and not JavaScript. Majal's responsive view layer selects the
-          <code>kanban</code> sub-view of a one2many whenever the screen is small Ã¢â‚¬â€ so a phone
+          <code>kanban</code> sub-view of a one2many whenever the screen is small — so a phone
           layout is a <em>sub-view</em>. One question per card, its section above it, the
           answer as a badge, and tapping a card opens a form with radio buttons instead of a
           dropdown.
@@ -109,7 +109,7 @@
         work without a connection.
       </p>
       <p>
-        <strong>Installable Ã¢â€°Â  offline.</strong> The gap between those two words is the whole of
+        <strong>Installable ≠ offline.</strong> The gap between those two words is the whole of
         the expensive phase, and it is the gap most mobile-app conversations skate over.
       </p>
 
@@ -118,18 +118,18 @@
       <h3>1. "It works on my phone"</h3>
       <p>
         Largely true the day it was measured. Finishing it meant fixing the screens a person
-        uses standing in a room Ã¢â‚¬â€ the checklist above, and the defect form.
+        uses standing in a room — the checklist above, and the defect form.
       </p>
       <p>
         The defect form was a different kind of problem, and a more instructive one. It is a
         top-level form with no small-screen variant to select, so there is no sub-view trick.
         Groups stack on a phone, which means <strong>the field order <em>is</em> the screen
-        order</strong> Ã¢â‚¬â€ and the photo was tenth, below nine fields and a description, on a
+        order</strong> — and the photo was tenth, below nine fields and a description, on a
         screen where the photo is the entire point of a snag.
       </p>
       <p>
-        Reordering to title Ã¢â€ â€™ photo Ã¢â€ â€™ location Ã¢â€ â€™ severity Ã¢â€ â€™ project Ã¢â€ â€™ description measures as
-        one screen at 390 Ãƒâ€” 664 with nothing below the fold. Trade, phase, who fixes it and by
+        Reordering to title → photo → location → severity → project → description measures as
+        one screen at 390 × 664 with nothing below the fold. Trade, phase, who fixes it and by
         when moved to an Assignment tab; the rectified photo to a Rectification tab. The empty
         reference heading is hidden until save, where it had been costing a third of a screen
         above the first thing you type.
@@ -146,13 +146,13 @@
         that only shows up on a device. The maskable icon was <em>declared, not drawn</em>: a
         single manifest entry claimed <code>purpose: "any maskable"</code> while pointing at an
         icon with rounded corners, so a launcher's own mask would turn its transparent corners
-        into notches Ã¢â‚¬â€ and whose ground line ran 56 units from the centre when the safe circle
+        into notches — and whose ground line ran 56 units from the centre when the safe circle
         has a radius of 51.2. Android would have sliced both ends off. There are now two
         entries: one for <code>any</code>, and a full-bleed <code>maskable</code> variant with
         the mark scaled to 0.78 about the centre.
       </p>
       <p>
-        There is a test asserting both properties by parsing the served SVG Ã¢â‚¬â€ written after the
+        There is a test asserting both properties by parsing the served SVG — written after the
         first version of that test matched the comment explaining the rule instead of the
         markup obeying it.
       </p>
@@ -173,7 +173,7 @@
             <tr>
               <td>Read-only offline</td>
               <td>Cache the current project's open defects, today's inspections and the drawings behind them. A site engineer can <em>see</em> their list in a basement.</td>
-              <td>About a week Ã¢â‚¬â€ and it covers a surprising share of the real complaint</td>
+              <td>About a week — and it covers a surprising share of the real complaint</td>
             </tr>
             <tr>
               <td>Queued writes</td>
@@ -219,7 +219,7 @@
       <h2>What I would not do</h2>
       <p>
         Build a native app first. The portal already serves clients, consultants and
-        subcontractors Ã¢â‚¬â€ the majority of people who will ever open this on a phone Ã¢â‚¬â€ and it
+        subcontractors — the majority of people who will ever open this on a phone — and it
         measures clean at 390&nbsp;px today. The group with a genuine offline need is the site
         team snagging in a building with no signal, and that need is specific enough to serve
         with a focused offline surface rather than a second copy of the whole ERP.
@@ -233,7 +233,7 @@
         canvas. A single-discipline model of one floor is fine on a modern handset.
       </p>
       <p>
-        A federated whole-tower model is not, and no front-end work changes that Ã¢â‚¬â€ it would
+        A federated whole-tower model is not, and no front-end work changes that — it would
         need server-side geometry tiling, which is a project in its own right. On a phone, treat
         the viewer as "look at this level". Coordination happens at a desk.
       </p>
@@ -243,12 +243,12 @@
         <p>
           <code>majal_field_offline</code> ships the bounded field PWA;
           <code>majal_branding</code> ships the manifest and icons.
-          <a href="/features.html#mobile">See the feature summary Ã¢â€ â€™</a>
+          <a href="/features.html#mobile">See the feature summary →</a>
         </p>
       </div>
 
       <nav class="article-nav" aria-label="More insights">
-        <p><a href="/insights/">Ã¢â€ Â All insights</a></p>
+        <p><a href="/insights/">← All insights</a></p>
         <p>Next: <a href="/insights/bim-colour.html">A model that colours everything at once tells you nothing</a></p>
       </nav>
 

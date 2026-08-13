@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact â€” Majal</title>
-<meta name="description" content="Get in touch with Majal, or ask for a free demo call â€” a short form, read and answered by a person, not a sales queue.">
+<title>Contact — Majal</title>
+<meta name="description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
 <link rel="canonical" href="https://majalops.com/contact.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Majal">
-<meta property="og:title" content="Contact â€” Majal">
-<meta property="og:description" content="Get in touch with Majal, or ask for a free demo call â€” a short form, read and answered by a person, not a sales queue.">
+<meta property="og:title" content="Contact — Majal">
+<meta property="og:description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
 <meta property="og:url" content="https://majalops.com/contact.html">
 <meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Contact â€” Majal">
-<meta name="twitter:description" content="Get in touch with Majal, or ask for a free demo call â€” a short form, read and answered by a person, not a sales queue.">
+<meta name="twitter:title" content="Contact — Majal">
+<meta name="twitter:description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
 <meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="theme-color" content="#12181c">
 <link rel="stylesheet" href="/assets/css/majal.css?v=20260813">
@@ -48,11 +48,11 @@
     <div class="prose">
       <h1>Contact</h1>
       <p class="lede">
-        A question about Majal, or a request for a free demo call â€” this form reaches a
+        A question about Majal, or a request for a free demo call — this form reaches a
         person, not a sales queue. There is no live chat and no phone line yet; email is
         the honest answer for how a reply comes back.
       </p>
-      <p class="lede"><a href="mailto:Support@majalops.com">Support@majalops.com</a> Â· We usually reply by email.</p>
+      <p class="lede"><a href="mailto:Support@majalops.com">Support@majalops.com</a> · We usually reply by email.</p>
     </div>
   </div>
 </div>
@@ -61,7 +61,7 @@
   <div class="wrap">
     <div class="prose">
       <!--
-        Posts to /api/contact â€” the Pages Function at /functions/api/contact.js
+        Posts to /api/contact — the Pages Function at /functions/api/contact.js
         in the repository root, not in this directory: Cloudflare discovers
         Functions from the Pages project root. Without JavaScript this is a
         plain POST and the Function redirects to /thanks.html; the script at the
@@ -108,7 +108,7 @@
           <button type="submit" class="btn btn-primary">
             <span class="btn-label">Send</span>
           </button>
-          <span class="meta">Read and answered by a person â€” no automated reply, no SLA promised.</span>
+          <span class="meta">Read and answered by a person — no automated reply, no SLA promised.</span>
         </div>
 
         <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
@@ -250,7 +250,7 @@
 
     submitting = true;
     button.disabled = true;
-    buttonLabel.textContent = "Sendingâ€¦";
+    buttonLabel.textContent = "Sending…";
     setStatus("", null);
 
     fetch(form.action, {
@@ -259,7 +259,7 @@
       headers: { Accept: "application/json" },
     })
       .then(function (response) {
-        // The endpoint answers JSON with its own message â€” a rejected field or
+        // The endpoint answers JSON with its own message — a rejected field or
         // an unconfigured mailer says something more useful than "try again".
         return response.json().then(
           function (data) { return { ok: response.ok, message: data && data.message }; },
@@ -268,14 +268,14 @@
       })
       .then(function (result) {
         if (result.ok) {
-          setStatus(result.message || "Thanks â€” your message is on its way. Expect a reply by email.", "success");
+          setStatus(result.message || "Thanks — your message is on its way. Expect a reply by email.", "success");
           form.reset();
         } else {
           setStatus(result.message || "That didn't go through. Please try again in a moment.", "error");
         }
       })
       .catch(function () {
-        setStatus("That didn't go through â€” check your connection and try again.", "error");
+        setStatus("That didn't go through — check your connection and try again.", "error");
       })
       .finally(function () {
         submitting = false;

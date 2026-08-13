@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A model that colours everything at once tells you nothing Ã¢â‚¬â€ Majal</title>
+<title>A model that colours everything at once tells you nothing — Majal</title>
 <meta name="description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
 <link rel="canonical" href="https://majalops.com/insights/bim-colour.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Majal">
-<meta property="og:title" content="A model that colours everything at once tells you nothing Ã¢â‚¬â€ Majal">
+<meta property="og:title" content="A model that colours everything at once tells you nothing — Majal">
 <meta property="og:description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
 <meta property="og:url" content="https://majalops.com/insights/bim-colour.html">
 <meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="A model that colours everything at once tells you nothing Ã¢â‚¬â€ Majal">
+<meta name="twitter:title" content="A model that colours everything at once tells you nothing — Majal">
 <meta name="twitter:description" content="Why the default view in Majal's BIM viewer is one neutral material and a set of edges, and what colour is saved for: answering a question somebody actually asked.">
 <meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="theme-color" content="#12181c">
@@ -49,7 +49,7 @@
 <div class="page-head">
   <div class="wrap">
     <div class="prose">
-      <p class="meta">Insight Ã‚Â· BIM</p>
+      <p class="meta">Insight · BIM</p>
       <h1>A model that colours everything at once tells you nothing</h1>
       <p class="lede">
         Open a structural IFC in most viewers and you get confetti: twenty saturated tones,
@@ -75,7 +75,7 @@
         The deeper objection is that the colours are not true. Concrete is one colour in life.
         A slab and a beam are not different colours on a site; they are different
         <em>shapes</em>. Shape, shadow and edges are what tell them apart, and they do it
-        without a legend at all Ã¢â‚¬â€ nobody has ever needed a key to identify a stair.
+        without a legend at all — nobody has ever needed a key to identify a stair.
       </p>
       <p>
         So Majal's default is a single neutral material with drawn edges, and colour is kept
@@ -88,7 +88,7 @@
            alt="The same IFC model drawn in the colours written into the file by its authoring tool: many saturated hues at once, one per object class, with no single element standing out.">
       <figcaption>
         <strong>The file's own colours.</strong> This is what a structural export looks like when
-        a viewer draws the styled items the authoring tool wrote into it Ã¢â‚¬â€ every class a
+        a viewer draws the styled items the authoring tool wrote into it — every class a
         different saturated tone, and nothing to look at first. Majal draws the same model as
         one neutral material with edges, which leaves colour free to mean something.
       </figcaption>
@@ -100,7 +100,7 @@
       <p>
         Edge extraction has a threshold, and getting it wrong destroys the thing it was
         supposed to help. Anything flatter than about 22 degrees is a tessellation seam inside
-        one face rather than a real corner Ã¢â‚¬â€ and drawing those turns a curved wall into a
+        one face rather than a real corner — and drawing those turns a curved wall into a
         wireframe. The angle is the difference between "this reads as a building" and "this
         reads as a mesh".
       </p>
@@ -112,7 +112,7 @@
       <ul class="ticks">
         <li>
           <strong>Open items.</strong> Elements carrying linked records are drawn in the colour
-          of their <em>worst open item</em>. Not all records, not a count Ã¢â‚¬â€ the worst one, which
+          of their <em>worst open item</em>. Not all records, not a count — the worst one, which
           is the thing a person scanning a model is looking for.
         </li>
         <li>
@@ -125,7 +125,7 @@
           a duct is recognisable as the mechanical model's duct without reading a legend.
         </li>
         <li>
-          <strong>Class, when you ask for it.</strong> Six hues and a neutral for the tail Ã¢â‚¬â€
+          <strong>Class, when you ask for it.</strong> Six hues and a neutral for the tail —
           off by default, on when the question is "where are the columns".
         </li>
       </ul>
@@ -137,7 +137,7 @@
         colour-vision-deficiency separation and the normal-vision floor.
       </p>
       <p>
-        It does <strong>not</strong> pass an all-pairs check Ã¢â‚¬â€ and no six-colour set does. The
+        It does <strong>not</strong> pass an all-pairs check — and no six-colour set does. The
         checker's own reference palette caps at three colours for that case. Every class being
         on screen at once <em>is</em> the all-pairs case.
       </p>
@@ -148,7 +148,7 @@
       <ul class="ticks">
         <li>the legend names each class and can isolate it, so ambiguity is one click from resolution;</li>
         <li>the legend is ordered by count, so it doubles as a description of what is actually in this model;</li>
-        <li>and the geometry itself is the strongest cue of all Ã¢â‚¬â€ a stair is stair-shaped whatever colour it is.</li>
+        <li>and the geometry itself is the strongest cue of all — a stair is stair-shaped whatever colour it is.</li>
       </ul>
       <p>
         The general rule: if your palette fails all-pairs, do not ship a view where all pairs
@@ -160,8 +160,8 @@
              alt="The BIM viewer's class legend beside the model: named element classes such as Wall, Slab, Beam and Column, each with its colour swatch and element count, ordered by count, with an isolate control on each row.">
         <figcaption>
           <strong>The legend does three jobs.</strong> It names each class in words a person
-          uses Ã¢â‚¬â€ <code>IFCWALLSTANDARDCASE</code> and <code>IFCWALL</code> are both "Wall" to
-          somebody looking at a building Ã¢â‚¬â€ it orders by count so it also describes what is in
+          uses — <code>IFCWALLSTANDARDCASE</code> and <code>IFCWALL</code> are both "Wall" to
+          somebody looking at a building — it orders by count so it also describes what is in
           the model, and each row can isolate its class, which is the answer to any legend
           entry you cannot tell apart by colour.
         </figcaption>
@@ -183,7 +183,7 @@
 
       <h2>Why this matters beyond aesthetics</h2>
       <p>
-        The purpose of Majal's BIM module is not to display a model Ã¢â‚¬â€ it is to make a model a
+        The purpose of Majal's BIM module is not to display a model — it is to make a model a
         record. Elements are linked to RFIs, defects, tasks and bill items on their GlobalId, so
         the links survive the model being re-issued. The viewer exists so somebody can
         <em>see</em> those links.
@@ -200,12 +200,12 @@
         <p>
           The viewer ships in <code>construction_bim</code>, drawing geometry in the browser
           with web-ifc and three.js. The server never parses geometry.
-          <a href="/features.html#bim">See the feature summary, including the stated limits Ã¢â€ â€™</a>
+          <a href="/features.html#bim">See the feature summary, including the stated limits →</a>
         </p>
       </div>
 
       <nav class="article-nav" aria-label="More insights">
-        <p><a href="/insights/">Ã¢â€ Â All insights</a></p>
+        <p><a href="/insights/">← All insights</a></p>
         <p>Next: <a href="/insights/verified-recovery.html">"We take backups" is not a recovery position</a></p>
       </nav>
 
