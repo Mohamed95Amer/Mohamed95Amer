@@ -400,6 +400,45 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
   text-transform: uppercase; letter-spacing: .02em; margin: 0 0 .55rem;
 }
 .card .claim { margin: 0; color: var(--text); font-size: 1.03rem; max-width: 52ch; }
+.walkthrough-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.4vw, 1.6rem);
+}
+.walkthrough-card {
+  display: block;
+  border-top: 4px solid var(--gold);
+}
+.walkthrough-card .card-body {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+.walkthrough-card .claim { margin-bottom: 1.6rem; }
+.walkthrough-action { margin: auto 0 0; }
+.walkthrough-btn {
+  display: flex;
+  width: 100%;
+  min-height: 3.15rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--teal-deep);
+  border-radius: 8px;
+  color: #fff;
+  background: var(--teal-deep);
+  box-shadow: 0 7px 18px rgba(10, 69, 69, .18);
+}
+.walkthrough-btn:hover {
+  border-color: var(--teal);
+  color: #fff;
+  background: var(--teal);
+  box-shadow: 0 10px 24px rgba(10, 69, 69, .24);
+}
+.walkthrough-btn:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+.walkthrough-btn span:last-child { font-size: 1.35rem; line-height: .7; }
 .card--phone {
   grid-template-columns: minmax(18rem, .72fr) minmax(0, 1.28fr);
   grid-column: 1 / -1;
@@ -446,6 +485,7 @@ details.more p {
   .hero-visual-note { left: .75rem; top: .75rem; }
   .hero-visual-note strong { font-size: .82rem; }
   .cards { grid-template-columns: 1fr; }
+  .walkthrough-cards { gap: 1rem; }
   .card { display: flex; flex-direction: column; }
   .card-media, .card:nth-child(even) .card-media { order: 0; aspect-ratio: 16 / 9; border-inline: 0; border-bottom: 1px solid var(--rule); }
   .card-media img { width: 100%; height: 100%; object-fit: contain; }
