@@ -372,7 +372,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 .card:nth-child(even) .card-media { order: 2; border-inline-end: 0; border-inline-start: 1px solid var(--rule); }
 .card--phone .card-media { order: 0; border-inline-start: 0; border-inline-end: 1px solid var(--rule); }
 .card-media img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%; object-fit: contain;
   transition: transform .28s ease, filter .28s ease;
 }
 .card-media:hover img { transform: scale(1.008); filter: saturate(1.04); }
@@ -448,7 +448,7 @@ details.more p {
   .cards { grid-template-columns: 1fr; }
   .card { display: flex; flex-direction: column; }
   .card-media, .card:nth-child(even) .card-media { order: 0; aspect-ratio: 16 / 9; border-inline: 0; border-bottom: 1px solid var(--rule); }
-  .card-media img { width: 100%; height: 100%; object-fit: cover; }
+  .card-media img { width: 100%; height: 100%; object-fit: contain; }
   .card--phone { display: flex; }
   .card--phone { grid-template-columns: 1fr; }
   .card--phone .card-media {
