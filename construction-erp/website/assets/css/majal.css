@@ -50,7 +50,8 @@
 
   --measure: 66ch;
   --wide: 1180px;
-  --radius: 10px;
+  --radius: 12px;
+  --radius-lg: 18px;
 
   --display: "Big Shoulders", "Arial Narrow", system-ui, sans-serif;
   --font: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -318,8 +319,8 @@ section.band > .wrap > .prose > h2:first-child::before {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .4rem 1.5rem;
-  padding-block: .85rem;
+  gap: .45rem 1.25rem;
+  padding-block: .7rem;
 }
 
 .brand {
@@ -372,15 +373,25 @@ section.band > .wrap > .prose > h2:first-child::before {
   display: block;
   color: #cfc5b5;
   text-decoration: none;
-  font-size: .93rem;
-  padding: .35rem .55rem;
-  border-radius: 6px;
+  font-size: .88rem;
+  font-weight: 550;
+  padding: .45rem .62rem;
+  border-radius: 999px;
 }
 .nav a:hover { color: #fff; background: rgba(255, 255, 255, .08); }
 .nav a[aria-current="page"] {
   color: #fff;
-  box-shadow: inset 0 -2px 0 var(--accent);
+  background: rgba(255, 255, 255, .1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
 }
+.nav a.nav-cta {
+  color: #1b1206;
+  background: var(--accent);
+  font-weight: 700;
+  padding-inline: .85rem;
+  box-shadow: 0 4px 14px rgba(217, 122, 31, .2);
+}
+.nav a.nav-cta:hover { color: #1b1206; background: #e8934a; }
 .nav a.ext::after {
   content: " ↗";
   font-size: .8em;
@@ -462,8 +473,9 @@ section.band > .wrap > .prose > h2:first-child::before {
     border-top: 1px solid rgba(255, 255, 255, .1);
     margin-top: .5rem;
   }
-  .nav a { padding: .75rem .3rem; font-size: 1rem; }
-  .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); }
+  .nav a { padding: .75rem .5rem; font-size: 1rem; border-radius: 8px; }
+  .nav a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--accent); background: rgba(255, 255, 255, .05); }
+  .nav a.nav-cta { margin-top: .35rem; text-align: center; }
 }
 
 /* A drawing-sheet grid under the page title — the reference the whole product
@@ -559,7 +571,7 @@ section.band > .wrap > .prose > h2:first-child::before {
   position: relative;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 1.5rem 1.55rem;
   box-shadow: var(--shadow);
   transition: transform .18s ease, box-shadow .22s ease, border-color .2s ease;
@@ -581,9 +593,22 @@ section.band > .wrap > .prose > h2:first-child::before {
   display: block;
 }
 
-a.card { text-decoration: none; color: inherit; display: block; }
+a.card { text-decoration: none; color: inherit; display: block; padding-bottom: 3.2rem; }
 a.card:hover { border-color: var(--primary); color: inherit; }
-a.card h2, a.card h3 { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
+a.card h2, a.card h3 { color: var(--text); text-decoration: none; }
+a.card::after {
+  content: "Explore section  ↗";
+  position: absolute;
+  inset-inline-start: 1.55rem;
+  bottom: 1.25rem;
+  color: var(--primary);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transition: color .2s ease, transform .2s ease;
+}
+a.card:hover::after { color: var(--primary-strong); transform: translateX(.15rem); }
 
 /* ---------- figures ---------- */
 
@@ -601,7 +626,7 @@ figure.shot img {
     linear-gradient(135deg, transparent 46%, var(--line) 46%, var(--line) 54%, transparent 54%) 0 0/22px 22px,
     var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   color: var(--text-muted);
   font-size: .85rem;
   padding: .5rem;
