@@ -41,7 +41,7 @@
                             <field name="sequence"/>
                         </group>
                         <group string="Connection">
-                            <field name="endpoint" readonly="code != 'local'"/>
+                            <field name="endpoint" readonly="code not in ['local', 'local_coder']"/>
                             <field name="model_name"/>
                             <field name="timeout_seconds"/>
                             <field name="requires_key" invisible="1"/>
@@ -61,7 +61,7 @@
                         <field name="provider_note" readonly="1" nolabel="1"/>
                     </div>
                     <div class="alert alert-warning" role="alert"
-                         invisible="code == 'local' or has_api_key">
+                         invisible="code in ['local', 'local_coder'] or has_api_key">
                         Hosted keys are accepted only when MAJAL_AI_MASTER_KEY is
                         configured on the server. Keys are never returned to the browser.
                     </div>

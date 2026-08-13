@@ -193,11 +193,17 @@ class MailBot(models.AbstractModel):
                 ("enabled", "=", True),
             ]
         ).filtered("is_ready")
-        # Prefer a configured hosted provider over a local endpoint that may
-        # be enabled but not currently running. Kimi remains the product's
-        # first hosted default; Gemini follows because it is the strongest
-        # verified configuration on this installation.
-        rank = {"kimi": 0, "gemini": 1, "openai": 2, "anthropic": 3, "local": 4}
+        # Local Ollama is the default private processing path. Existing chat
+        # conversations keep their chosen provider above, so a company can
+        # still make Gemini or another hosted provider its working default.
+        rank = {
+            "local": 0,
+            "local_coder": 1,
+            "gemini": 2,
+            "kimi": 3,
+            "openai": 4,
+            "anthropic": 5,
+        }
         return min(
             providers,
             key=lambda provider: (
@@ -210,6 +216,11 @@ class MailBot(models.AbstractModel):
 
     def _question_scope(self, question):
         text = question.casefold()
+        guidance = {
+            "how do i", "how to", "where can i", "where is", "navigate",
+            "show me the steps", "guide me", "workflow", "أين", "ازاي", "إزاي",
+            "كيف", "الخطوات", "دليل", "مسار العمل",
+        }
         facilities = {
             "asset", "assets", "facility", "facilities", "maintenance",
             "equipment", "work order", "nfc", "preventive", "أصل", "أصول",
@@ -220,6 +231,8 @@ class MailBot(models.AbstractModel):
             "drawing", "boq", "site", "tender", "مشروع", "إنشاء", "موقع",
             "مناقصة", "مخطط", "عيب", "استلام",
         }
+        if any(term in text for term in guidance):
+            return "guide"
         if any(term in text for term in facilities):
             return "facilities"
         if any(term in text for term in construction):

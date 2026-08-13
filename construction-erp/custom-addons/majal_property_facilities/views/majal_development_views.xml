@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_development_form_facilities" model="ir.ui.view">
+        <field name="name">majal.development.form.facilities</field>
+        <field name="model">majal.development</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_development_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_facility_locations" type="object"
+                        class="oe_stat_button" icon="fa-map-marker"
+                        invisible="facility_location_count == 0">
+                    <field name="facility_location_count" widget="statinfo"
+                           string="FM Locations"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Facilities" name="facilities">
+                    <div class="alert alert-info" role="alert">
+                        Units join the Facilities location tree when they are
+                        handed over, or when published by hand. The team named
+                        here is what makes those locations visible to the
+                        technicians who work them.
+                    </div>
+                    <group>
+                        <group string="Team">
+                            <field name="facility_manager_user_id"/>
+                            <field name="facility_member_user_ids"
+                                   widget="many2many_tags"/>
+                        </group>
+                        <group string="Publishing">
+                            <field name="facility_auto_publish"/>
+                            <field name="facility_location_id" readonly="1"/>
+                            <field name="facility_published" invisible="1"/>
+                            <button name="action_publish_to_facilities" type="object"
+                                    string="Publish to Facilities" class="btn-link"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -3,9 +3,10 @@
 [← Endpoints](index.md) · [← Index](../index.md)
 
 Source: `custom-addons/construction_portal/controllers/portal.py`,
-`custom-addons/facility_portal/controllers/portal.py`
+`custom-addons/facility_portal/controllers/portal.py`,
+`custom-addons/majal_real_estate/controllers/portal.py`
 
-Eleven routes across two controllers, both extending Odoo's stock
+Fourteen routes across three controllers, all extending Odoo's stock
 `CustomerPortal`. Every one renders a QWeb template and returns HTML. **None of
 them is a JSON API**, and none is intended for machine consumption.
 
@@ -171,6 +172,23 @@ occupant will not see the request in their portal.
 | `construction.subcontract` | own | no | no | no |
 | `construction.subcontract.payment` | own | no | no | no |
 | `maintenance.request` | own (portal reporter) | no | **yes** | no |
+| `majal.reservation` | own non-draft reservations or a valid share token | no | no | no |
+
+## Property buyer portal — `majal_real_estate`
+
+| Route | Methods | Authentication | Notes |
+| --- | --- | --- | --- |
+| `/my/reservations`, `/my/reservations/page/<int:page>` | any | user | Buyer list; draft reservations are excluded |
+| `/my/reservation/<int:reservation_id>` | any | public | Detail requires the user's record-rule access or a valid portal `access_token` |
+
+The list domain uses the signed-in partner's commercial entity and excludes
+drafts. The search runs as the portal user so record rules decide what is theirs;
+rendering then uses the validated record to display related unit and development
+names. The public detail route calls `_document_check_access` and redirects to
+`/my` when the record or token is invalid, preventing identifier enumeration.
+
+These are HTML pages. Integrations should use the authenticated ORM models in
+[Property models](../models/property.md), not scrape the buyer portal.
 
 Full domains in [Security → Portal users](../security.md#portal-users).
 

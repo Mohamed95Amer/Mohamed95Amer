@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_development_form_integrations" model="ir.ui.view">
+        <field name="name">majal.development.form.integrations</field>
+        <field name="model">majal.development</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_development_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='city']" position="before">
+                <field name="street"/>
+                <field name="street2"/>
+            </xpath>
+            <xpath expr="//field[@name='country_id']" position="after">
+                <field name="address_state_id"/>
+                <field name="zip"/>
+                <field name="latitude"/>
+                <field name="longitude"/>
+                <field name="map_url" invisible="1"/>
+                <button name="action_open_map" type="object" string="Open Map"
+                        icon="fa-map-marker" class="btn-secondary" invisible="not map_url"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

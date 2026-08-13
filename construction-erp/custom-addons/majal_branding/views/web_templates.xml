@@ -32,6 +32,18 @@
         <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
             <attribute name="href">/majal_branding/static/src/img/majal-assistant.png</attribute>
         </xpath>
+        <!-- The platform router still parses its upstream /odoo path. On a
+             branded /app deep-link, normalize before the router module starts;
+             the Majal router extension changes the displayed URL back after
+             bootstrap and for all later navigation. -->
+        <xpath expr="//t[@t-set='head_web']/script[1]" position="before">
+            <script type="text/javascript">
+                if (window.location.pathname === '/app' || window.location.pathname.startsWith('/app/')) {
+                    const upstreamPath = window.location.pathname.replace(/^\/app/, '/odoo');
+                    window.history.replaceState(window.history.state, '', upstreamPath + window.location.search + window.location.hash);
+                }
+            </script>
+        </xpath>
     </template>
 
     <template id="majal_brand_promotion"

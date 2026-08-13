@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_facility_location_form_property" model="ir.ui.view">
+        <field name="name">facility.location.form.property</field>
+        <field name="model">facility.location</field>
+        <field name="inherit_id" ref="facility_asset.view_facility_location_form"/>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="after">
+                <field name="majal_development_id"
+                       invisible="not majal_development_id"/>
+                <field name="majal_building_id" invisible="not majal_building_id"/>
+                <field name="majal_unit_id" invisible="not majal_unit_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_facility_location_search_property" model="ir.ui.view">
+        <field name="name">facility.location.search.property</field>
+        <field name="model">facility.location</field>
+        <field name="inherit_id" ref="facility_asset.view_facility_location_search"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <field name="majal_development_id"/>
+                <filter string="Published from Property" name="filter_from_property"
+                        domain="[('majal_development_id', '!=', False)]"/>
+            </search>
+        </field>
+    </record>
+</odoo>

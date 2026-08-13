@@ -97,6 +97,29 @@ class TestMajalAdministration(TransactionCase):
             )
         )
 
+    def test_personal_todo_is_private_and_not_blocked_by_project_tenant_rule(self):
+        self.env["res.users"]._majal_install_tenant_rules()
+        personal = self.env["project.task"].with_user(self.company_admin).create(
+            {
+                "name": "Prepare my weekly follow-up",
+                "project_id": False,
+                "user_ids": [(6, 0, [self.company_admin.id])],
+            }
+        )
+        self.assertEqual(personal.project_id, self.env["project.project"])
+        self.assertEqual(personal.user_ids, self.company_admin)
+        self.assertEqual(
+            personal.with_user(self.field_user).search_count(
+                [("id", "=", personal.id)]
+            ),
+            0,
+        )
+
+    def test_platform_roles_include_project_stage_field_access(self):
+        stages = self.env.ref("project.group_project_stages")
+        for role in (self.owner_role, self.admin_role, self.operations_role, self.manager_role):
+            self.assertIn(stages, role.construction_group_ids)
+
     def test_company_admin_cannot_assign_owner(self):
         with self.assertRaises(AccessError):
             self.field_user.with_user(self.company_admin)._majal_apply_role(

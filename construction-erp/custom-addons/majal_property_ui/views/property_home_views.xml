@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_property_home" model="ir.actions.client">
+        <field name="name">Property Overview</field>
+        <field name="tag">majal_property_ui.property_home</field>
+    </record>
+
+    <!-- The root menu opens the home rather than a list, matching how the
+         Construction and Facilities roots behave. -->
+    <record id="majal_real_estate.menu_majal_real_estate_root" model="ir.ui.menu">
+        <field name="action" ref="action_property_home"/>
+        <field name="web_icon">majal_real_estate,static/description/icon.svg</field>
+    </record>
+</odoo>

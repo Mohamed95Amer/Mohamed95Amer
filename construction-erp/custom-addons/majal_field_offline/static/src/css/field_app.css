@@ -38,6 +38,22 @@ button { cursor: pointer; }
 }
 .mf-header h1 { margin: .25rem 0; font-size: clamp(1.45rem, 4vw, 2.4rem); }
 .mf-header p { margin: 0; color: #d9e6e9; }
+.mf-back {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin-bottom: .9rem;
+    padding: .45rem .65rem;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 9px;
+    color: white;
+    background: rgba(255,255,255,.09);
+    font-size: .78rem;
+    font-weight: 750;
+    text-decoration: none;
+}
+.mf-back:hover, .mf-back:focus-visible { background: rgba(255,255,255,.16); outline: 0; }
+[dir="rtl"] .mf-back > span:first-child { transform: rotate(180deg); }
 .mf-kicker { font-size: .72rem; font-weight: 800; letter-spacing: .15em; color: #e5c990; }
 .mf-network {
     align-self: flex-start;

@@ -72,6 +72,7 @@
                             <h1>
                                 <t t-if="state.scope === 'construction'">Construction Intelligence</t>
                                 <t t-elif="state.scope === 'facilities'">Facilities Intelligence</t>
+                                <t t-elif="state.scope === 'guide'">Majal System Guide</t>
                                 <t t-else="">Portfolio Intelligence</t>
                             </h1>
                         </div>
@@ -108,6 +109,10 @@
                             <button t-att-class="{'is-active': state.scope === 'facilities'}"
                                     t-on-click="() => this.setScope('facilities')">
                                 <i class="fa fa-wrench"/> Facilities
+                            </button>
+                            <button t-att-class="{'is-active': state.scope === 'guide'}"
+                                    t-on-click="() => this.setScope('guide')">
+                                <i class="fa fa-compass"/> How to use Majal
                             </button>
                         </div>
                         <select t-if="state.scope === 'construction'"
@@ -150,8 +155,8 @@
                                 <t t-foreach="state.suggestions" t-as="suggestion"
                                    t-key="suggestion.label">
                                     <button t-on-click="() => this.useSuggestion(suggestion)">
-                                        <i t-att-class="suggestion.scope === 'facilities' ? 'fa fa-wrench' : suggestion.scope === 'construction' ? 'fa fa-building' : 'fa fa-line-chart'"/>
-                                        <span t-esc="suggestion.label"/>
+                                        <i t-att-class="suggestion.scope === 'facilities' ? 'fa fa-wrench' : suggestion.scope === 'construction' ? 'fa fa-building' : suggestion.scope === 'guide' ? 'fa fa-compass' : 'fa fa-line-chart'"/>
+                                        <span><small t-esc="suggestion.category"/><strong t-esc="suggestion.label"/></span>
                                         <i class="fa fa-arrow-right"/>
                                     </button>
                                 </t>

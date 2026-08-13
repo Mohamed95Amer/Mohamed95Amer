@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_equipment_form_property" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.property</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="facility_asset.view_equipment_form_facility"/>
+        <field name="arch" type="xml">
+            <field name="facility_location_id" position="after">
+                <field name="majal_unit_id" invisible="not majal_unit_id"/>
+                <field name="majal_owner_partner_id"
+                       invisible="not majal_unit_id"/>
+                <field name="majal_occupant_partner_id"
+                       invisible="not majal_occupant_partner_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_form_property" model="ir.ui.view">
+        <field name="name">maintenance.request.form.property</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <field name="equipment_id" position="after">
+                <field name="majal_unit_id" invisible="not majal_unit_id"/>
+                <field name="majal_tenant_partner_id"
+                       invisible="not majal_request_id"/>
+                <field name="majal_request_id" invisible="1"/>
+            </field>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="alert"
+                     invisible="not majal_request_id">
+                    Raised from a tenant report. Closing this work order closes
+                    the report with it.
+                    <button name="action_view_tenant_report" type="object"
+                            string="Open the report" class="btn-link"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

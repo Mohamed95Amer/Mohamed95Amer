@@ -5,6 +5,7 @@ This directory is the complete automation layer for `majalops-platform-01`: a He
 ## Automated architecture
 
 - `platform.majalops.com` resolves through Cloudflare; Caddy is the only public application edge and obtains/renews HTTPS certificates automatically.
+- `demo.majalops.com` is an isolated synthetic-data slot with its own database and filestore; its default lifecycle is one hour and automatic destruction.
 - Majal and PostgreSQL run as containers on a private backend network. Neither publishes a host port.
 - Prometheus and Alertmanager bind to server loopback only; exporters stay on internal Docker networks.
 - systemd starts the stack after reboot and runs bounded health recovery every minute.
@@ -52,3 +53,5 @@ The orchestrator creates and attests a semantic release, applies Hetzner and Clo
 - Automatic recovery never restarts an unhealthy PostgreSQL container and stops after three attempts in 30 minutes.
 
 Review `VALIDATION.md`, then follow `runbooks/phase2-owner-actions.md`. No script should be run on the server until its rollback statement and the pre-deployment checklist have been reviewed.
+
+For a clean customer template and disposable demonstrations, follow `runbooks/customer-clean-and-ephemeral-demo.md`. The clean reset always takes a paired backup before cutover; the demo never shares the customer database or filestore.

@@ -34,17 +34,43 @@
 
 	@health path /healthz
 	handle @health {
-		rewrite * /web/login
+		rewrite * /majal/health
 		reverse_proxy majal:8069 {
-			health_uri /web/login
+			health_uri /majal/health
 			health_interval 30s
 			health_timeout 10s
 		}
 	}
 
+	# Odoo's websocket and legacy long-polling endpoints must reach the
+	# evented worker. Sending them to the regular HTTP workers produces
+	# "Couldn't bind the websocket" errors for authenticated browser sessions.
+	@evented path /websocket /longpolling /longpolling/*
+	handle @evented {
+		reverse_proxy majal:8072 {
+			transport http {
+				dial_timeout 10s
+				response_header_timeout 120s
+			}
+		}
+	}
+
+	# Public Majal backend route. The application keeps the upstream path
+	# internally for framework compatibility, while clients see /app.
+	@majal_app path /app /app/*
+	handle @majal_app {
+		uri replace /app /odoo
+		reverse_proxy majal:8069 {
+			transport http {
+				dial_timeout 10s
+				response_header_timeout 120s
+			}
+		}
+	}
+
 	handle {
 		reverse_proxy majal:8069 {
-			health_uri /web/login
+			health_uri /majal/health
 			health_interval 30s
 			health_timeout 10s
 			transport http {
@@ -52,5 +78,58 @@
 				response_header_timeout 120s
 			}
 		}
+	}
+}
+
+# One isolated, synthetic demo slot. The lifecycle scripts create a separate
+# database and filestore, then destroy both at expiry. No customer database is
+# ever routed through this host.
+demo.majalops.com {
+	encode zstd gzip
+
+	log {
+		output file {$CADDY_LOG_PATH:/var/log/caddy/access.log} {
+			roll_size 20MiB
+			roll_keep 10
+			roll_keep_for 168h
+		}
+		format json
+	}
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(self), geolocation=(self), microphone=()"
+	}
+
+	@demo_root path /
+	redir @demo_root /web/login 302
+
+	@demo_health path /healthz
+	handle @demo_health {
+		rewrite * /majal/health
+		reverse_proxy demo:8069
+	}
+
+	@demo_evented path /websocket /longpolling /longpolling/*
+	handle @demo_evented {
+		reverse_proxy demo:8072
+	}
+
+	@demo_app path /app /app/*
+	handle @demo_app {
+		uri replace /app /odoo
+		reverse_proxy demo:8069
+	}
+
+	handle {
+		reverse_proxy demo:8069
+	}
+
+	handle_errors {
+		respond "This Majal demonstration has expired. Ask for a new one-hour session." 410
 	}
 }

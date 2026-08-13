@@ -1,0 +1,15 @@
+[options]
+addons_path = /mnt/custom-addons,/mnt/oca-addons,/mnt/third-party-addons,/usr/lib/python3/dist-packages/odoo/addons
+data_dir = /var/lib/odoo
+list_db = False
+server_wide_modules = base,web,majal_branding
+proxy_mode = True
+workers = 2
+max_cron_threads = 0
+limit_request = 4096
+limit_time_cpu = 120
+limit_time_real = 240
+limit_memory_soft = 1073741824
+limit_memory_hard = 1342177280
+log_level = info
+log_handler = :INFO,werkzeug:WARNING

@@ -2,8 +2,8 @@
 
 [← Index](../index.md)
 
-Every `@http.route` defined by Majal's own addons. There are 27 route declarations
-across 8 controller files, and this is the complete list — if a path is not here,
+Every `@http.route` defined by Majal's own addons. There are 30 route declarations
+across 11 controller files, and this is the complete list — if a path is not here,
 it does not exist in the product.
 
 ```
@@ -34,8 +34,12 @@ Anything outside these paths is stock Odoo (`/web/...`, `/my/...` from the base
 | `/my/facility/request/<int:request_id>` | any | http | user | default | [Portal](portal.md) |
 | `/my/facility/request/new` | any | http | user | default | [Portal](portal.md) |
 | `/my/facility/request/submit` | POST | http | user | default | [Portal](portal.md) |
+| `/my/reservations`, `/my/reservations/page/<int:page>` | any | http | user | default | [Portal](portal.md) |
+| `/my/reservation/<int:reservation_id>` | any | http | **public** | default | [Portal](portal.md) |
 | `/majal/sheets/<int:sheet_id>/export.csv` | GET | http | user | default | [Exports](exports.md) |
 | `/majal/administration/backups/<int:snapshot_id>/download` | GET | http | user | **off** (`csrf=False`) | [Exports](exports.md) |
+| `/majal/health` | GET | http | **none** | **off** | [Health](health.md) |
+| `/majal/health/deep` | GET | http | user + Platform Monitor | **off** | [Health](health.md) |
 | `/majal/legal/open-source` | GET | http | **public** | default | [Public pages](public-pages.md) |
 | `/majal/about` | GET | http | **public** | default | [Public pages](public-pages.md) |
 | `/majal/help` | GET | http | **public** | default | [Public pages](public-pages.md) |
@@ -67,6 +71,9 @@ Honestly: two.
 | --- | --- |
 | `POST /majal/field/api/bootstrap` | Pull the current user's assigned work in one call |
 | `POST /majal/field/api/sync` | Push a batch of offline operations back, idempotently |
+
+`GET /majal/health` and `GET /majal/health/deep` are monitoring contracts, not
+business-data APIs. See [Health](health.md).
 
 Everything else is either a browser page (`website=True`, renders a QWeb
 template), a file download, or Meta's callback. For all other integration work,
@@ -108,5 +115,6 @@ session.
 - [Field app](field-app.md) — offline bootstrap and sync
 - [Portal](portal.md) — customer and subcontractor self-service
 - [Exports](exports.md) — sheet CSV and recovery archive download
+- [Health](health.md) — minimal liveness and privileged readiness probes
 - [Public pages](public-pages.md) — branding pages and the database-manager redirects
 - [Webhooks](../webhooks.md) — the WhatsApp inbound callback

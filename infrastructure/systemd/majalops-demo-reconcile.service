@@ -1,0 +1,14 @@
+[Unit]
+Description=Remove an interrupted MajalOps ephemeral demo after reboot
+Requires=docker.service
+Wants=majalops-platform.service
+After=docker.service majalops-platform.service
+ConditionPathExists=/var/lib/majalops/demo/session.env
+
+[Service]
+Type=oneshot
+Environment=CONFIRM_DESTROY=YES
+ExecStart=/opt/majalops/infrastructure/scripts/stop-demo.sh
+
+[Install]
+WantedBy=multi-user.target

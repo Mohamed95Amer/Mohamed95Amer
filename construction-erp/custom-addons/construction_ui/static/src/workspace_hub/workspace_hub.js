@@ -53,7 +53,9 @@ const localizeConfig = (value, key = null) => {
 //
 // `requires` lists the fields a metric depends on; if the model no longer has
 // them the metric is dropped and the generic counts take over.
-const OPERATIONAL_METRICS = {
+// Exported so a downstream suite (Property) can register its own tiles with
+// Object.assign rather than this file growing an entry per app.
+export const OPERATIONAL_METRICS = {
     rfis: [
         { label: "Open", hint: "Not yet closed", icon: "fa-folder-open-o",
           requires: ["state"], domain: [["state", "!=", "closed"]] },
@@ -322,6 +324,23 @@ Object.assign(OPERATIONAL_METRICS, {
 OPERATIONAL_METRICS.quality_hub = OPERATIONAL_METRICS.defects;
 OPERATIONAL_METRICS.site_work = OPERATIONAL_METRICS.inspections;
 OPERATIONAL_METRICS.engineering_hub = OPERATIONAL_METRICS.drawings;
+
+// One entry per suite the workspaces belong to. A lookup rather than a chain
+// of ternaries so the next app that joins the platform registers itself here
+// instead of editing three separate expressions in this file.
+// Strings are plain English and translated at setup, matching localizeConfig.
+export const AREAS = {
+    construction: {
+        suiteTitle: "Majal Construction",
+        suiteArea: "Construction",
+        home: "construction_ui.action_construction_home",
+    },
+    facilities: {
+        suiteTitle: "Majal Facilities",
+        suiteArea: "Facilities",
+        home: "construction_ui.action_facility_home",
+    },
+};
 
 const workspace = (values) => ({
     area: "construction",
@@ -877,10 +896,10 @@ export class MajalWorkspaceHub extends Component {
         this.notification = useService("notification");
         this.workspaceKey = (this.props.action?.tag || "").replace("construction_ui.workspace.", "");
         this.config = localizeConfig(WORKSPACES[this.workspaceKey]);
-        this.suiteTitle =
-            this.config.area === "facilities" ? _t("Majal Facilities") : _t("Majal Construction");
-        this.suiteArea =
-            this.config.area === "facilities" ? _t("Facilities") : _t("Construction");
+        const area = AREAS[this.config.area] || AREAS.construction;
+        this.suiteTitle = _t(area.suiteTitle);
+        this.suiteArea = _t(area.suiteArea);
+        this.areaHome = area.home;
         this.state = useState({
             loading: true,
             metrics: [],
@@ -1084,11 +1103,7 @@ export class MajalWorkspaceHub extends Component {
     }
 
     async goHome() {
-        await this.openAction(
-            this.config.area === "facilities"
-                ? "construction_ui.action_facility_home"
-                : "construction_ui.action_construction_home"
-        );
+        await this.openAction(this.areaHome);
     }
 
     async openAction(actionXmlId) {
@@ -1100,8 +1115,11 @@ export class MajalWorkspaceHub extends Component {
     }
 
     warnUnavailable() {
+        const message = this.config?.area === "real_estate"
+            ? _t("This Property workspace needs the Real Estate User access role. Ask your Majal administrator to enable it for your account.")
+            : _t("This Majal workspace is not available for the current user.");
         this.notification.add(
-            _t("This Majal workspace is not available for the current user."),
+            message,
             { type: "warning" }
         );
     }

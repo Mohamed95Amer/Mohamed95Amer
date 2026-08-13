@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="majal_property_ui.PropertyHome">
+        <main class="o_property_home">
+            <section class="o_property_hero">
+                <div class="o_property_hero_copy">
+                    <span class="o_suite_eyebrow">MAJAL · PROPERTY OPERATIONS CENTER</span>
+                    <h1>From land to lease, one record per unit.</h1>
+                    <p>Inventory, sales, payments, handover and tenancy in a single view of the portfolio.</p>
+                    <div class="o_suite_hero_actions">
+                        <button class="btn o_suite_btn_primary"
+                                t-on-click="() => this.openWorkspace('unit_inventory')">
+                            <i class="fa fa-th"/> Unit inventory
+                        </button>
+                        <button class="btn o_suite_btn_secondary"
+                                t-on-click="() => this.openWorkspace('reservations')">
+                            <i class="fa fa-handshake-o"/> Sales dashboard
+                        </button>
+                        <button class="btn o_suite_btn_ghost"
+                                t-on-click="() => this.openAction('construction_ui.action_my_day')">
+                            <i class="fa fa-thumb-tack"/> My day
+                        </button>
+                    </div>
+                </div>
+                <div class="o_property_hero_meta">
+                    <div class="o_suite_meta_line">
+                        <span class="o_suite_date" t-esc="today"/>
+                        <div class="o_suite_status"><span/> Live</div>
+                    </div>
+                    <div class="o_suite_focus_panel">
+                        <header>
+                            <span><i class="fa fa-bolt"/> Today's focus</span>
+                            <small>Live priorities</small>
+                        </header>
+                        <div class="o_suite_focus_items">
+                            <button t-foreach="focusItems" t-as="item" t-key="item.key"
+                                    class="o_suite_focus_item"
+                                    t-on-click="() => this.openFocus(item)">
+                                <span class="o_suite_focus_icon">
+                                    <i t-attf-class="fa {{ item.icon }}"/>
+                                </span>
+                                <span>
+                                    <strong t-att-class="{'o_skeleton': state.loading}"
+                                            t-esc="state.kpis[item.key]"/>
+                                    <small t-esc="item.label"/>
+                                    <em t-esc="item.caption"/>
+                                </span>
+                                <i class="fa fa-arrow-right"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="o_suite_kpis" aria-label="Property overview">
+                <button t-foreach="kpiDefinitions" t-as="kpi" t-key="kpi.key"
+                        t-attf-class="o_suite_kpi o_tone_{{ kpi.tone }}"
+                        t-on-click="() => this.openWorkspace(kpi.workspace)">
+                    <span class="o_suite_kpi_icon"><i t-attf-class="fa {{ kpi.icon }}"/></span>
+                    <span class="o_suite_kpi_copy">
+                        <strong t-att-class="{'o_skeleton': state.loading}"
+                                t-esc="state.kpis[kpi.key]"/>
+                        <small t-esc="kpi.label"/>
+                        <em t-esc="kpi.hint"/>
+                    </span>
+                    <i class="fa fa-arrow-right o_suite_kpi_arrow"/>
+                </button>
+            </section>
+
+            <section class="o_property_workspace">
+                <div class="o_suite_section_intro">
+                    <div>
+                        <span class="o_suite_eyebrow">WORKSPACES</span>
+                        <h2>Run the portfolio from one place</h2>
+                    </div>
+                    <p>Start from the operational question, then drill into the underlying record.</p>
+                </div>
+                <div class="o_property_groups">
+                    <article class="o_suite_group"
+                             t-foreach="appGroups" t-as="group" t-key="group.title">
+                        <header>
+                            <div><h3 t-esc="group.title"/><p t-esc="group.subtitle"/></div>
+                            <span t-esc="formatAppCount(group.apps.length)"/>
+                        </header>
+                        <div class="o_suite_apps">
+                            <button t-foreach="group.apps" t-as="app" t-key="app.name"
+                                    class="o_suite_app"
+                                    t-on-click="() => this.openWorkspace(app.workspace)">
+                                <span t-attf-class="o_suite_app_icon o_tone_{{ app.tone }}">
+                                    <i t-attf-class="fa {{ app.icon }}"/>
+                                </span>
+                                <span class="o_suite_app_copy">
+                                    <strong t-esc="app.name"/>
+                                    <small t-esc="app.description"/>
+                                </span>
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </t>
+</templates>

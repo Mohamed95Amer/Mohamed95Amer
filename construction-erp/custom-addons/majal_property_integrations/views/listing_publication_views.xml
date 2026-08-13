@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_listing_channel_list" model="ir.ui.view">
+        <field name="name">majal.property.listing.channel.list</field>
+        <field name="model">majal.property.listing.channel</field>
+        <field name="arch" type="xml">
+            <list string="Listing Channels">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="mode" widget="badge"/>
+                <field name="provider_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_listing_channel_form" model="ir.ui.view">
+        <field name="name">majal.property.listing.channel.form</field>
+        <field name="model">majal.property.listing.channel</field>
+        <field name="arch" type="xml">
+            <form string="Listing Channel">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="mode"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Approved API Connection">
+                            <field name="provider_id" invisible="mode != 'api'" required="mode == 'api'"/>
+                        </group>
+                    </group>
+                    <group string="Internal Notes"><field name="notes"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_listing_channel" model="ir.actions.act_window">
+        <field name="name">Listing Channels</field>
+        <field name="res_model">majal.property.listing.channel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_listing_publication_list" model="ir.ui.view">
+        <field name="name">majal.property.listing.publication.list</field>
+        <field name="model">majal.property.listing.publication</field>
+        <field name="arch" type="xml">
+            <list string="Channel Publications">
+                <field name="listing_id"/>
+                <field name="channel_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('draft', 'ready', 'queued')"
+                       decoration-success="state == 'published'"
+                       decoration-danger="state == 'failed'"
+                       decoration-muted="state == 'withdrawn'"/>
+                <field name="published_at" optional="show"/>
+                <field name="external_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_listing_publication_form" model="ir.ui.view">
+        <field name="name">majal.property.listing.publication.form</field>
+        <field name="model">majal.property.listing.publication</field>
+        <field name="arch" type="xml">
+            <form string="Channel Publication">
+                <header>
+                    <button name="action_prepare" type="object" string="Prepare Snapshot"
+                            class="btn-primary" invisible="state in ('queued', 'published')"/>
+                    <button name="action_queue" type="object" string="Queue API Publication"
+                            class="btn-primary" invisible="state != 'ready' or channel_id == False"/>
+                    <button name="action_mark_published" type="object" string="Confirm Published"
+                            invisible="state not in ('ready', 'queued')"/>
+                    <button name="action_withdraw" type="object" string="Withdraw"
+                            invisible="state in ('draft', 'withdrawn')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,ready,queued,published,failed,withdrawn"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="listing_id"/>
+                            <field name="channel_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="checksum" readonly="1"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="external_id" readonly="1"/>
+                            <field name="published_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Canonical Snapshot"><field name="snapshot" readonly="1"/></group>
+                    <group string="Last Error"><field name="last_error" readonly="1"/></group>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_listing_publication" model="ir.actions.act_window">
+        <field name="name">Channel Publications</field>
+        <field name="res_model">majal.property.listing.publication</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_property_listing_form_publications" model="ir.ui.view">
+        <field name="name">majal.property.listing.form.publications</field>
+        <field name="model">majal.property.listing</field>
+        <field name="inherit_id" ref="majal_property_listing.view_majal_property_listing_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_button_box" name="button_box"
+                     groups="majal_property_integrations.group_majal_property_integration_manager">
+                    <button name="action_view_publications" type="object"
+                            class="oe_stat_button" icon="fa-share-alt">
+                        <field name="publication_count" widget="statinfo" string="Channels"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Channel Publications"
+                      groups="majal_property_integrations.group_majal_property_integration_manager">
+                    <field name="publication_ids" context="{'default_listing_id': id}">
+                        <list editable="bottom">
+                            <field name="channel_id"/>
+                            <field name="state" widget="badge"/>
+                            <field name="published_at" optional="show"/>
+                            <field name="external_id" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

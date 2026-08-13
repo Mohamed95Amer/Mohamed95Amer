@@ -11,12 +11,21 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
+LOCAL_PROVIDER_CODES = {"local", "local_coder"}
+
 
 PROVIDER_SPECS = {
     "local": {
-        "label": "Local AI (Free)",
+        "label": "Ollama General (Local)",
         "endpoint": "http://host.docker.internal:11434/v1/chat/completions",
-        "model": "qwen3:8b",
+        "model": "gpt-oss:20b",
+        "style": "openai",
+        "requires_key": False,
+    },
+    "local_coder": {
+        "label": "Ollama Technical (Local)",
+        "endpoint": "http://host.docker.internal:11434/v1/chat/completions",
+        "model": "qwen3-coder:30b",
         "style": "openai",
         "requires_key": False,
     },
@@ -60,6 +69,7 @@ class MajalAiProvider(models.Model):
     code = fields.Selection(
         [
             ("local", "Local AI"),
+            ("local_coder", "Local Technical AI"),
             ("kimi", "Kimi"),
             ("openai", "OpenAI"),
             ("gemini", "Gemini"),
@@ -119,9 +129,9 @@ class MajalAiProvider(models.Model):
         for provider in self:
             spec = PROVIDER_SPECS.get(provider.code, {})
             provider.requires_key = bool(spec.get("requires_key"))
-            if provider.code == "local":
+            if provider.code in LOCAL_PROVIDER_CODES:
                 provider.provider_note = _(
-                    "Free local processing. Start Ollama on the Majal server or host computer."
+                    "Private local processing through Ollama. Keep the endpoint on a trusted private network."
                 )
             else:
                 provider.provider_note = _(
@@ -151,12 +161,33 @@ class MajalAiProvider(models.Model):
             provider.has_api_key = has_key
             provider.api_key_hint = _("Configured") if has_key else _("Not configured")
             spec = PROVIDER_SPECS.get(provider.code, {})
+            local_runtime_ready = (
+                provider.code not in LOCAL_PROVIDER_CODES
+                or provider._local_runtime_enabled()
+            )
             provider.is_ready = bool(
                 provider.enabled
                 and provider.endpoint
                 and provider.model_name
+                and local_runtime_ready
                 and (has_key or not spec.get("requires_key"))
             )
+
+    @api.model
+    def _local_runtime_enabled(self):
+        """Keep workstation-only models off remote servers by default.
+
+        A production container must never assume that ``host.docker.internal``
+        is the user's trusted workstation. Local Docker Compose opts in
+        explicitly; hosted deployments stay on configured hosted providers
+        until a private connector is deliberately provisioned.
+        """
+        return os.environ.get("MAJAL_AI_LOCAL_ENABLED", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
 
     @api.constrains("endpoint", "code")
     def _check_endpoint(self):
@@ -165,13 +196,13 @@ class MajalAiProvider(models.Model):
             if parsed.scheme not in {"http", "https"} or not parsed.hostname:
                 raise ValidationError(_("The AI endpoint must be a valid HTTP or HTTPS URL."))
             spec = PROVIDER_SPECS.get(provider.code)
-            if provider.code != "local" and spec and provider.endpoint != spec["endpoint"]:
+            if provider.code not in LOCAL_PROVIDER_CODES and spec and provider.endpoint != spec["endpoint"]:
                 raise ValidationError(
                     _("Hosted provider endpoints are fixed to prevent unsafe outbound requests.")
                 )
-            if provider.code != "local" and parsed.scheme != "https":
+            if provider.code not in LOCAL_PROVIDER_CODES and parsed.scheme != "https":
                 raise ValidationError(_("Hosted AI providers must use HTTPS."))
-            if provider.code == "local":
+            if provider.code in LOCAL_PROVIDER_CODES:
                 allowed_names = {"localhost", "host.docker.internal", "ollama"}
                 is_private_ip = False
                 try:
@@ -353,7 +384,7 @@ class MajalAiProvider(models.Model):
                 self.code,
                 exc.__class__.__name__,
             )
-            if self.code == "local":
+            if self.code in LOCAL_PROVIDER_CODES:
                 raise UserError(
                     _(
                         "Local AI is not reachable. Start Ollama and confirm that "
@@ -369,8 +400,12 @@ class MajalAiProvider(models.Model):
             "model": self.model_name,
             "messages": [{"role": "system", "content": system_prompt}] + messages,
         }
-        if self.code == "local":
+        if self.code in LOCAL_PROVIDER_CODES:
             payload.update({"temperature": 0.2, "max_tokens": 1600})
+            if (self.model_name or "").lower().startswith("gpt-oss:"):
+                # Ollama otherwise spends a large part of the response budget
+                # on hidden reasoning before returning user-visible content.
+                payload["reasoning_effort"] = "low"
         elif self.code == "kimi":
             payload.update({"temperature": 0.2, "max_completion_tokens": 1600})
         else:

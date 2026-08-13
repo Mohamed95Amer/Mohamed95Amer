@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <data noupdate="1">
     <!-- A transmittal that has gone stale since it was issued. AR-101 Rev.A
          is on it and drawing_demo has already superseded it with Rev.B, so
          the amber banner and the "Contains Superseded" filter both have
@@ -44,4 +45,5 @@
     <function model="construction.transmittal" name="action_acknowledge">
         <value eval="[ref('transmittal_alnoor_construction')]"/>
     </function>
+  </data>
 </odoo>

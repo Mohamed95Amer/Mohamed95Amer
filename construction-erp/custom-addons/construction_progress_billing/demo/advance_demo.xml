@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <data noupdate="1">
     <!-- Al Noor is mid-execution, so an advance is the natural state to show:
          paid up front, being recovered from every certificate. IPC1 has
          already been certified by progress_claim_demo, so the recovery is a
@@ -58,4 +59,5 @@
             ('state', '=', 'pending'),
         ]"/>
     </function>
+  </data>
 </odoo>

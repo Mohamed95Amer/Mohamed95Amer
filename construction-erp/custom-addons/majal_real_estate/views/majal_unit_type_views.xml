@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_unit_type_list" model="ir.ui.view">
+        <field name="name">majal.unit.type.list</field>
+        <field name="model">majal.unit.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="development_id"/>
+                <field name="name"/>
+                <field name="unit_category"/>
+                <field name="bedrooms"/>
+                <field name="bathrooms"/>
+                <field name="total_area"/>
+                <field name="typical_price"/>
+                <field name="unit_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_unit_type_form" model="ir.ui.view">
+        <field name="name">majal.unit.type.form</field>
+        <field name="model">majal.unit.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_units" type="object"
+                            string="Generate Units" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <field name="unit_count" widget="statinfo" string="Units"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. 1BR Type A"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="development_id"/>
+                            <field name="unit_category"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="bedrooms"/>
+                            <field name="bathrooms"/>
+                        </group>
+                        <group string="Area">
+                            <field name="suite_area"/>
+                            <field name="balcony_area"/>
+                            <field name="total_area"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="typical_price"/>
+                        </group>
+                    </group>
+                    <group string="Finish">
+                        <field name="finish_notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_unit_type" model="ir.actions.act_window">
+        <field name="name">Unit Types</field>
+        <field name="res_model">majal.unit.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

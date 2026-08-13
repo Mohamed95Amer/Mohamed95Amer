@@ -1,7 +1,7 @@
 {
     "name": "Majal Administration",
     "summary": "Client access administration and verified recovery points",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Majal/Administration",
     "license": "LGPL-3",
     "author": "Majal",
@@ -12,6 +12,9 @@
         "construction_base",
         "construction_ui",
         "facility_asset",
+        # The access levels shipped here name a group from every suite, so
+        # this module knows about all three by definition.
+        "majal_real_estate",
         "project",
         "purchase",
         "stock",

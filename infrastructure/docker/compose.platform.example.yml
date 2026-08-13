@@ -83,6 +83,63 @@ services:
         max-size: 20m
         max-file: "5"
 
+  demo:
+    profiles: ["demo"]
+    image: ${MAJAL_IMAGE:?Set MAJAL_IMAGE to a reviewed immutable image}
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint:
+      - /usr/local/bin/majal-demo-entrypoint
+    command:
+      - odoo
+    environment:
+      HOST: db
+      USER: ${MAJAL_DEMO_DB_USER:-majal_demo_inactive}
+      PASSWORD: ${MAJAL_DEMO_DB_PASSWORD:-inactive}
+      ODOO_ADMIN_PASSWD: ${MAJAL_DATABASE_MANAGER_SECRET}
+      POSTGRES_DB: ${MAJAL_DEMO_DB:-majal_demo_inactive}
+      MAJAL_DEMO_MODULES: ${MAJAL_DEMO_MODULES:-}
+      MAJAL_DEMO_LOGIN: ${MAJAL_DEMO_LOGIN:-demo.owner@majal.local}
+      MAJAL_DEMO_PASSWORD: ${MAJAL_DEMO_PASSWORD:-inactive}
+      MAJAL_DEMO_DOMAIN: ${MAJAL_DEMO_DOMAIN:-demo.majalops.com}
+      MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:-}
+      MAJAL_AI_CA_BUNDLE: ${MAJAL_AI_CA_BUNDLE:-}
+      MAJAL_AI_LOCAL_ENABLED: "false"
+    expose:
+      - "8069"
+      - "8072"
+    volumes:
+      - majal-demo-data:/var/lib/odoo
+      - ${DEMO_ODOO_CONFIG_FILE:-/opt/majalops/infrastructure/configs/odoo.demo.conf.example}:/etc/odoo/odoo.conf:ro
+    networks:
+      - edge
+      - backend
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    init: true
+    stop_grace_period: 45s
+    mem_limit: 1536m
+    cpus: 1.25
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login', timeout=10)"
+      interval: 20s
+      timeout: 12s
+      retries: 10
+      start_period: 15m
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "3"
+
   db:
     image: ${POSTGRES_IMAGE:?Set POSTGRES_IMAGE to a reviewed immutable image}
     restart: unless-stopped
@@ -157,4 +214,5 @@ volumes:
   caddy-config:
   caddy-logs:
   majal-data:
+  majal-demo-data:
   postgres-data:

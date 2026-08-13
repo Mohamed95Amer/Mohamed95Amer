@@ -263,11 +263,32 @@
 }
 
 .o-mail-Discuss {
+    --majal-discuss-sidebar: 292px;
     background: var(--majal-page);
 
     .o-mail-DiscussSidebar {
+        width: var(--majal-discuss-sidebar);
+        min-width: var(--majal-discuss-sidebar);
+        padding: 10px 8px;
         border-inline-end: 1px solid var(--majal-border);
-        background: #edf2f3 !important;
+        background:
+            radial-gradient(circle at 12% 0, rgba(197,155,82,.11), transparent 30%),
+            #edf2f3 !important;
+
+        button {
+            border-radius: 9px;
+            transition: background .14s ease, color .14s ease, transform .14s ease;
+
+            &:hover { background: rgba(255,255,255,.72); }
+            &:active { transform: translateY(1px); }
+        }
+
+        .o-active,
+        [aria-selected="true"] {
+            color: var(--majal-nav) !important;
+            background: #fff !important;
+            box-shadow: 0 3px 10px rgba(12,31,41,.08), inset 3px 0 0 var(--majal-primary);
+        }
     }
 
     .o-mail-Thread {
@@ -277,18 +298,138 @@
     }
 
     .o-mail-Message {
-        border-radius: 10px;
+        width: calc(100% - 24px);
+        max-width: 920px;
+        margin-inline: auto;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        transition: background .14s ease, border-color .14s ease, box-shadow .14s ease;
 
         &:hover {
-            background: rgba(255, 255, 255, .76);
+            border-color: rgba(220,228,231,.88);
+            background: rgba(255, 255, 255, .86);
+            box-shadow: 0 4px 14px rgba(12,31,41,.04);
         }
+
+        .o-mail-Message-avatar { border-radius: 11px; box-shadow: 0 2px 8px rgba(12,31,41,.10); }
+        .o-mail-Message-author { color: var(--majal-nav); font-weight: 750; }
+        .o-mail-Message-date { color: #89979d; }
     }
 
     .o-mail-Composer {
+        max-width: 940px;
+        margin: 10px auto 13px;
         border: 1px solid var(--majal-border);
-        border-radius: 14px;
+        border-radius: 17px;
         background: white;
-        box-shadow: 0 6px 18px rgba(12, 31, 41, .06);
+        box-shadow: 0 10px 30px rgba(12, 31, 41, .085);
+
+        &:focus-within {
+            border-color: rgba(52,109,117,.58);
+            box-shadow: 0 10px 32px rgba(12,31,41,.10), 0 0 0 3px rgba(52,109,117,.08);
+        }
+
+        .btn { border-radius: 10px; }
+    }
+
+    .o-mail-Discuss-header,
+    .o-mail-Thread-header {
+        min-height: 64px;
+        border-bottom: 1px solid var(--majal-border);
+        background: rgba(255,255,255,.94);
+        backdrop-filter: blur(10px);
+    }
+
+    .o-mail-Discuss-core { min-width: 0; }
+
+    .o-mail-Thread-empty {
+        max-width: 460px;
+        margin: auto;
+        padding: 28px;
+        border: 1px solid var(--majal-border);
+        border-radius: 18px;
+        text-align: center;
+        background: rgba(255,255,255,.78);
+        box-shadow: 0 12px 35px rgba(12,31,41,.06);
+    }
+}
+
+// To-do is a workboard in Majal, not a generic rich-text sample. Keep the
+// editor readable on long site and facilities checklists and give headings a
+// quiet visual hierarchy without changing the stored note itself.
+.o_majal_todo_route .oe_description .note-editable {
+    max-width: 980px;
+    margin: 24px auto 40px;
+    padding: clamp(22px, 4vw, 52px) !important;
+    border: 1px solid var(--majal-border);
+    border-radius: 22px;
+    color: var(--majal-text);
+    background: linear-gradient(145deg, #fff 0%, #f3f8f8 100%);
+    box-shadow: 0 16px 45px rgba(12, 31, 41, .08);
+
+    h1 {
+        margin-bottom: 18px;
+        color: var(--majal-nav);
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        letter-spacing: -.025em;
+    }
+
+    h2,
+    h3 {
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid var(--majal-border);
+        color: var(--majal-primary-dark);
+    }
+
+    blockquote,
+    ul,
+    ol {
+        padding: 14px 18px;
+        border-inline-start: 4px solid var(--majal-accent);
+        border-radius: 0 12px 12px 0;
+        background: rgba(255, 255, 255, .72);
+    }
+
+    input[type="checkbox"] { accent-color: var(--majal-primary); }
+}
+
+// The messaging systray is rendered inside a fixed overlay whose width can be
+// inherited from the desktop viewport. Pin the actual popover as a compact
+// panel; the previous generic dropdown rule did not beat that overlay width.
+.o-mail-DiscussSystray {
+    width: min(475px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    min-width: 0 !important;
+    max-height: min(680px, calc(100vh - 58px)) !important;
+    overflow: hidden !important;
+    border: 1px solid var(--majal-border) !important;
+    border-radius: 16px !important;
+    background: var(--majal-page) !important;
+    box-shadow: 0 22px 60px rgba(12, 31, 41, .2) !important;
+}
+
+.o-mail-DiscussSystray .o-mail-MessagingMenu {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: min(678px, calc(100vh - 60px)) !important;
+    overflow: hidden;
+}
+
+[dir="rtl"] .o-mail-Discuss .o-mail-DiscussSidebar .o-active,
+[dir="rtl"] .o-mail-Discuss .o-mail-DiscussSidebar [aria-selected="true"] {
+    box-shadow: 0 3px 10px rgba(12,31,41,.08), inset -3px 0 0 var(--majal-primary);
+}
+
+@media (max-width: 991.98px) {
+    .o-mail-Discuss { --majal-discuss-sidebar: 250px; }
+}
+
+@media (max-width: 767.98px) {
+    .o-mail-Discuss {
+        --majal-discuss-sidebar: min(86vw, 330px);
+        .o-mail-Message { max-width: calc(100% - 10px); }
+        .o-mail-Composer { margin: 6px 7px 9px; border-radius: 14px; }
     }
 }
 
@@ -329,6 +470,12 @@
     .o-mail-ActivityMenu {
         max-height: calc(100dvh - 54px);
         overscroll-behavior: contain;
+    }
+
+    .o-mail-DiscussSystray {
+        width: calc(100vw - 12px) !important;
+        max-width: calc(100vw - 12px) !important;
+        border-radius: 13px !important;
     }
 
     .o_majal_system_card a {

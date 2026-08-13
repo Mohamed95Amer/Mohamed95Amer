@@ -1,0 +1,158 @@
+// The o_suite_* classes (KPIs, focus panel, groups, buttons) are declared at
+// top level by construction_ui's facility_home.scss, so they are already
+// available here. Only the page chrome is per-app, which is all this file is.
+//
+// Nothing in construction_ui is edited: the reduced-motion and RTL blocks at
+// the bottom re-declare their own selectors scoped to this page. CSS is
+// additive, and that is safer than editing a file six other modules load.
+
+$property-deep: #173b43;
+$property-mid: #2f5f68;
+$property-sage: #6f8d83;
+$property-surface: #f4f6f7;
+$property-ink: #203034;
+
+.o_property_home {
+    height: 100%;
+    min-height: 0;
+    padding: clamp(18px, 3vw, 42px);
+    color: $property-ink;
+    background:
+        radial-gradient(circle at 94% 0%, rgba($property-sage, .08), transparent 26rem),
+        $property-surface;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+
+    > * {
+        width: 100%;
+        max-width: 1720px;
+        margin-inline: auto;
+    }
+
+    button:focus-visible {
+        outline: 3px solid rgba(#d7c29d, .55);
+        outline-offset: 2px;
+    }
+}
+
+.o_property_hero {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    min-height: 306px;
+    padding: clamp(28px, 4vw, 52px);
+    overflow: hidden;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, .10);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 84% 25%, rgba(#8fb8a9, .18), transparent 24rem),
+        linear-gradient(112deg, rgba($property-deep, .99), rgba($property-mid, .94)),
+        repeating-linear-gradient(135deg, transparent 0 28px, rgba(255, 255, 255, .025) 28px 29px);
+    box-shadow: 0 16px 42px rgba($property-deep, .14);
+
+    &::after {
+        content: "";
+        position: absolute;
+        right: -72px;
+        bottom: -122px;
+        width: 350px;
+        height: 350px;
+        border: 46px solid rgba($property-sage, .10);
+        border-radius: 50%;
+    }
+}
+
+.o_property_hero_copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    max-width: 760px;
+    flex-direction: column;
+    justify-content: center;
+
+    h1 {
+        max-width: 690px;
+        margin: 10px 0 12px;
+        color: white;
+        font-size: clamp(2rem, 4vw, 3.35rem);
+        font-weight: 720;
+        letter-spacing: -.042em;
+        line-height: 1.04;
+    }
+
+    p {
+        max-width: 650px;
+        margin: 0;
+        color: rgba(255, 255, 255, .72);
+        font-size: 1.03rem;
+    }
+}
+
+.o_property_hero_meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    // Expressed as two declarations rather than min(430px, 40%): Sass reads
+    // min() as its own function and refuses to mix % with px.
+    width: 40%;
+    max-width: 430px;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.o_property_workspace {
+    margin-top: clamp(20px, 3vw, 34px);
+}
+
+.o_property_groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+@media (max-width: 991.98px) {
+    .o_property_hero {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .o_property_hero_meta {
+        width: 100%;
+    }
+}
+
+// Registration chores, re-declared rather than edited into construction_ui.
+@media (prefers-reduced-motion: reduce) {
+    .o_property_home * {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+body.o_rtl {
+    .o_property_home {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .o_property_hero::after {
+        right: auto;
+        left: -72px;
+    }
+
+    // Codes, references and figures stay left-to-right inside RTL prose.
+    .o_property_home .o_suite_kpi_copy strong,
+    .o_property_home .o_suite_focus_item strong {
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
+}

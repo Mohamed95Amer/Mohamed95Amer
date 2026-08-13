@@ -95,6 +95,12 @@ FACILITY_ASSIGNMENT_MODELS = {
             "equipment_id.owner_user_id",
             "equipment_id.facility_location_id.manager_user_id",
             "equipment_id.facility_location_id.member_user_ids",
+            # A request reported against a place rather than a machine — every
+            # tenant-reported fault, and everything the portal raises — has no
+            # equipment to route through. Without these two paths the team who
+            # look after that location cannot see the job at all.
+            "facility_location_id.manager_user_id",
+            "facility_location_id.member_user_ids",
         ],
     },
     "facility.asset.scan": {
@@ -318,6 +324,16 @@ class ResUsersTenantSecurity(models.Model):
                 f"('{manager_path}', '=', user.id), "
                 f"('{members_path}', 'in', [user.id])]"
             )
+            if model_name == "project.task":
+                # The To-do app stores personal tasks without a project. They
+                # are not construction records and therefore have no company
+                # path to satisfy the tenant domain above. Keep them usable,
+                # but only for the person assigned to the private task.
+                allowed = (
+                    "['|', '&', ('project_id', '=', False), "
+                    "('user_ids', 'in', [user.id])] + ("
+                    f"{allowed})"
+                )
             if model_name == "project.project":
                 allowed = f"[('is_construction', '=', True)] + ({allowed})"
             domain = (

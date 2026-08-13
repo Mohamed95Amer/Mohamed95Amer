@@ -244,13 +244,15 @@ jobs:
           [[ "$UPGRADE_MODS" =~ $module_pattern ]] || { echo "Invalid upgrade_modules input" >&2; exit 1; }
           ssh_args=(-i ~/.ssh/majalops_deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -p "${PORT:-22}")
           target="${USER:-majaldeploy}@${HOST:?${TARGET^^}_HOST is required}"
+          install_arg="${INSTALL_MODS:--}"
+          upgrade_arg="${UPGRADE_MODS:--}"
           # Values expand locally by design; the server-side wrapper validates both allow-listed formats.
           # shellcheck disable=SC2029
           printf '%s' "$GH_TOKEN" | ssh "${ssh_args[@]}" "$target" \
             "sudo /usr/local/sbin/majalops-deploy registry-login ${GITHUB_ACTOR}"
           # shellcheck disable=SC2029
           ssh "${ssh_args[@]}" "$target" \
-            "sudo /usr/local/sbin/majalops-deploy update '${IMAGE_REF}' '${INSTALL_MODS}' '${UPGRADE_MODS}'"
+            "sudo /usr/local/sbin/majalops-deploy update ${IMAGE_REF} ${install_arg} ${upgrade_arg}"
           ssh "${ssh_args[@]}" "$target" \
             "sudo /usr/local/sbin/majalops-deploy health"
 

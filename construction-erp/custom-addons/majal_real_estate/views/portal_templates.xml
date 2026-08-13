@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_reservation" name="Portal My Home: reservations"
+              inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/majal_real_estate/static/description/icon.png'"/>
+                <t t-set="title">My Properties</t>
+                <t t-set="text">Your reserved units and payment schedule</t>
+                <t t-set="url" t-value="'/my/reservations'"/>
+                <t t-set="placeholder_count" t-value="'reservation_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_reservations" name="My Reservations">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Properties</t>
+            </t>
+            <t t-if="not reservations">
+                <div class="alert alert-info" role="alert">
+                    There are no reserved units in your name yet.
+                </div>
+            </t>
+            <t t-else="">
+                <table class="table table-hover o_portal_my_doc_table">
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Unit</th>
+                            <th>Development</th>
+                            <th>Reserved On</th>
+                            <th class="text-end">Agreed Price</th>
+                            <th class="text-end">Outstanding</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="reservations" t-as="reservation">
+                            <td>
+                                <a t-attf-href="/my/reservation/#{reservation.id}">
+                                    <span t-field="reservation.name"/>
+                                </a>
+                            </td>
+                            <td><span t-field="reservation.unit_id.name"/></td>
+                            <td><span t-field="reservation.development_id.name"/></td>
+                            <td><span t-field="reservation.reservation_date"/></td>
+                            <td class="text-end">
+                                <span t-field="reservation.sale_price"/>
+                            </td>
+                            <td class="text-end">
+                                <span t-field="reservation.amount_residual"/>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill text-bg-info"
+                                      t-field="reservation.state"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div t-if="pager" class="o_portal_pager text-center">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_reservation_page" name="Reservation">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="majal_real_estate.group_majal_real_estate_user">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url"
+                       t-value="'/odoo/action-majal_real_estate.action_majal_reservation/%s' % reservation.id"/>
+                </t>
+            </t>
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">
+                        <span t-field="reservation.name"/> -
+                        <span t-field="reservation.unit_id.name"/>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <strong>Development</strong>
+                            <div t-field="reservation.development_id.name"/>
+                            <strong class="d-block mt-2">Building / Floor</strong>
+                            <div>
+                                <span t-field="reservation.building_id.name"/> /
+                                <span t-field="reservation.floor_id.name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Reserved On</strong>
+                            <div t-field="reservation.reservation_date"/>
+                            <strong class="d-block mt-2">Agreed Price</strong>
+                            <div t-field="reservation.sale_price"/>
+                            <strong class="d-block mt-2">Outstanding</strong>
+                            <div t-field="reservation.amount_residual"/>
+                        </div>
+                    </div>
+
+                    <h5>Payment Schedule</h5>
+                    <t t-if="not reservation.installment_ids">
+                        <div class="alert alert-info" role="alert">
+                            No payment schedule has been issued for this unit yet.
+                        </div>
+                    </t>
+                    <table t-else="" class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Milestone</th>
+                                <th>Due Date</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-end">Paid</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="reservation.installment_ids" t-as="installment">
+                                <td><span t-field="installment.name"/></td>
+                                <td>
+                                    <span t-field="installment.due_date"/>
+                                    <span t-if="installment.is_overdue"
+                                          class="badge text-bg-danger ms-1">Overdue</span>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="installment.amount"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="installment.amount_paid"/>
+                                </td>
+                                <td><span t-field="installment.state"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
