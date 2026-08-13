@@ -370,6 +370,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
   border-inline-end: 1px solid var(--rule);
 }
 .card:nth-child(even) .card-media { order: 2; border-inline-end: 0; border-inline-start: 1px solid var(--rule); }
+.card--phone .card-media { order: 0; border-inline-start: 0; border-inline-end: 1px solid var(--rule); }
 .card-media img {
   width: 100%; height: 100%; object-fit: cover;
   transition: transform .28s ease, filter .28s ease;
@@ -451,7 +452,7 @@ details.more p {
   .card--phone { display: flex; }
   .card--phone { grid-template-columns: 1fr; }
   .card--phone .card-media {
-    aspect-ratio: 4 / 3; border-right: 0; border-bottom: 1px solid var(--rule);
+    aspect-ratio: 4 / 3; border-inline: 0; border-bottom: 1px solid var(--rule);
     padding: 1rem;
   }
   .card--phone .card-media img { width: auto; height: 100%; object-fit: contain; }
