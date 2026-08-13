@@ -199,6 +199,30 @@ $property-ink: #203034;
     }
 }
 
+// Property carries its own purpose-built rail on the command centre. On
+// record screens, reshape the common Majal navigation into the same compact
+// property rail instead of showing the app launcher and a second navigation
+// column beside it.
+@include media-breakpoint-up(md) {
+    .o_web_client:has(.o_property_home) {
+        .o_majal_sidebar { display: none !important; }
+        .o_action_manager { margin-inline-start: 0 !important; }
+    }
+
+    .o_majal_sidebar.o_majal_sidebar_property:not(.o_majal_sidebar_collapsed) {
+        width: 210px;
+        background: linear-gradient(180deg, #0c3540 0%, #082f39 100%);
+
+        .o_majal_rail { display: none; }
+        .o_majal_sidebar_head { min-height: 68px; padding: 16px 18px; }
+        .o_majal_sidebar_app { font-size: 15px; }
+    }
+
+    .o_web_client:has(.o_majal_sidebar_property:not(.o_majal_sidebar_collapsed)) {
+        .o_action_manager { margin-inline-start: 210px; }
+    }
+}
+
 .o_property_view_switcher {
     display: flex;
     width: fit-content;

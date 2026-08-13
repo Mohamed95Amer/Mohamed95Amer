@@ -3,7 +3,7 @@
 
   <t t-name="construction_ui.MajalSidebar">
     <aside class="o_majal_sidebar d-print-none"
-           t-att-class="{ o_majal_sidebar_collapsed: state.collapsed }"
+           t-att-class="{ o_majal_sidebar_collapsed: state.collapsed, o_majal_sidebar_property: isPropertyApp }"
            t-if="!ui.isSmall">
 
       <!-- The app rail. On a phone the burger menu already does this, so the
