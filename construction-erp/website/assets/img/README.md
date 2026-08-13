@@ -3,7 +3,7 @@
 ## The logo
 
 `majal-mark.svg` is the Majal mark: three floor plates in axonometric
-projection â€” the drawing convention the product is built around, read as a
+projection Ã¢â‚¬â€ the drawing convention the product is built around, read as a
 building from the ground up. The bottom two plates recede, the top one carries
 the accent.
 
@@ -12,11 +12,11 @@ changes:
 
 | Where | Form | Why |
 |---|---|---|
-| `majal-mark.svg` | standalone file, literal colours | the brand asset â€” for anything outside this site |
+| `majal-mark.svg` | standalone file, literal colours | the brand asset Ã¢â‚¬â€ for anything outside this site |
 | inline `<svg class="logo-mark">` in every page header | `currentColor` + `var(--accent)` | so the mark takes its colour from the bar it sits on and follows the theme |
 | `<link rel="icon">` data URI in every `<head>` | literal colours | favicons cannot reference the stylesheet |
 
-The wordmark beside it is not a graphic â€” it is live text set in Big Shoulders
+The wordmark beside it is not a graphic Ã¢â‚¬â€ it is live text set in Big Shoulders
 Bold, uppercase, from `assets/fonts/`.
 
 # Screenshots
@@ -33,12 +33,12 @@ background, so the layout does not move when they arrive.
   A strip of a different ratio gets cropped a second time by the CSS, which is
   how these once ended up showing a meaningless middle slice with the numbers
   cut off mid-digit. Capture at a 1600 x 700 viewport at 2x, then trim the
-  collapsed icon rail and the Odoo top bar â€” neither says anything about the
-  feature â€” keeping the result at 16 : 7.
+  collapsed icon rail and the internal application top bar - neither says anything about the
+  feature Ã¢â‚¬â€ keeping the result at 16 : 7.
 - **Desktop shots**: capture at 1440 px wide or better, on a light background.
   The figure box is `16 / 10` by default (`.shot`) and `21 / 9` for `.shot.wide`.
   Images are `object-fit: contain`, so a slightly different ratio will letterbox
-  rather than crop â€” but matching the ratio looks better.
+  rather than crop Ã¢â‚¬â€ but matching the ratio looks better.
 - **Phone shots**: capture at a 390 px viewport (iPhone 13 width). These are
   referenced with `.shot.tall`, a `4 / 5` box.
 - Use a demo database. Do not capture real client names, real contract values,
@@ -49,25 +49,25 @@ background, so the layout does not move when they arrive.
 
 | Filename | Where it is used | What it should show |
 |---|---|---|
-| `shot-bim-viewer.png` | `features.html` â†’ BIM and IFC | The 3D BIM viewer with a model loaded in the **default** view: one neutral material with drawn edges, plus a handful of elements coloured by their worst open item. Storey filter and section-cut controls visible. Desktop. |
-| `shot-bim-legend.png` | `insights/bim-colour.html` | The class legend beside the model â€” named classes ("Wall", "Slab", "Beam", "Column"), each with its colour swatch and element count, ordered by count, with the isolate control on each row. Desktop. |
-| `shot-bim-original.png` | `insights/bim-colour.html` | The **same** model drawn in the colours written into the IFC by its authoring tool â€” many saturated hues at once, one per object class. This is the "confetti" counter-example; it should be recognisably the same building as `shot-bim-viewer.png`. Desktop. |
-| `shot-approval-inbox.png` | `features.html` â†’ Approvals and control | The "waiting for me" approval inbox: one list across document kinds (variation, bill of quantities, payment certificate, permit, daily log, inspection), each row showing the document, its value and which step of the chain it is at. Desktop. |
-| `shot-my-day.png` | `index.html` | **My Day** at a 390 px viewport â€” a real phone capture, not a desktop one scaled down; it is shown in a 17 rem phone frame and a desktop screenshot there is unreadable. "Waiting for my approval" first, then defects, inspections, tasks, RFIs and permits with counts and late counts. Empty rows must not be drawn, so trim the dead scroll area below the last row. Phone. |
-| `shot-dashboard.png` | `features.html` â†’ Commercial | The executive portfolio dashboard with several projects selected: metric bars scaled across the selection, the certified-against-contract track, the value-against-cost stack, and the worst-first watchlist. Desktop. |
-| `shot-defect-mobile.png` | `features.html` â†’ Mobile and field | Raising a defect at a 390 px viewport, showing the corrected field order â€” title, photo, location, severity, project, description â€” with nothing below the fold. Phone. |
-| `shot-boq.png` | `features.html` â†’ Commercial | A bill of quantities: hierarchical sections with priced lines, the budget cost breakdown columns, section and sheet totals, and the approval state. Desktop. |
+| `shot-bim-viewer.png` | `features.html` Ã¢â€ â€™ BIM and IFC | The 3D BIM viewer with a model loaded in the **default** view: one neutral material with drawn edges, plus a handful of elements coloured by their worst open item. Storey filter and section-cut controls visible. Desktop. |
+| `shot-bim-legend.png` | `insights/bim-colour.html` | The class legend beside the model Ã¢â‚¬â€ named classes ("Wall", "Slab", "Beam", "Column"), each with its colour swatch and element count, ordered by count, with the isolate control on each row. Desktop. |
+| `shot-bim-original.png` | `insights/bim-colour.html` | The **same** model drawn in the colours written into the IFC by its authoring tool Ã¢â‚¬â€ many saturated hues at once, one per object class. This is the "confetti" counter-example; it should be recognisably the same building as `shot-bim-viewer.png`. Desktop. |
+| `shot-approval-inbox.png` | `features.html` Ã¢â€ â€™ Approvals and control | The "waiting for me" approval inbox: one list across document kinds (variation, bill of quantities, payment certificate, permit, daily log, inspection), each row showing the document, its value and which step of the chain it is at. Desktop. |
+| `shot-my-day.png` | `index.html` | **My Day** at a 390 px viewport Ã¢â‚¬â€ a real phone capture, not a desktop one scaled down; it is shown in a 17 rem phone frame and a desktop screenshot there is unreadable. "Waiting for my approval" first, then defects, inspections, tasks, RFIs and permits with counts and late counts. Empty rows must not be drawn, so trim the dead scroll area below the last row. Phone. |
+| `shot-dashboard.png` | `features.html` Ã¢â€ â€™ Commercial | The executive portfolio dashboard with several projects selected: metric bars scaled across the selection, the certified-against-contract track, the value-against-cost stack, and the worst-first watchlist. Desktop. |
+| `shot-defect-mobile.png` | `features.html` Ã¢â€ â€™ Mobile and field | Raising a defect at a 390 px viewport, showing the corrected field order Ã¢â‚¬â€ title, photo, location, severity, project, description Ã¢â‚¬â€ with nothing below the fold. Phone. |
+| `shot-boq.png` | `features.html` Ã¢â€ â€™ Commercial | A bill of quantities: hierarchical sections with priced lines, the budget cost breakdown columns, section and sheet totals, and the approval state. Desktop. |
 | `shot-exposure.png` | `index.html` | The **Commercial Exposure** report: contract value, approved variations with their percentage of contract, retention held, certified-not-invoiced, and below them the "Waiting for a signature" table ordered worst value first with days outstanding. Desktop. |
-| `shot-asset-tag.png` | `features.html` â†’ QR and NFC asset tags | Either the printable 70 Ã— 50 mm QR/NFC label for a facility asset, or the authenticated mobile landing page a scan opens (asset code, warranty, open work, "confirm scan"). Phone-shaped, `4 / 5`. |
-| `shot-retention-release.png` | `features.html` â†’ Commercial | A retention release certificate: the withheld, already-released and available-to-release figures, and the release percentage. Desktop. |
-| `shot-advance-payment.png` | `features.html` â†’ Commercial | An advance payment certificate with the guarantee lapsed, showing the warning banner that the outstanding balance is unsecured, beside the recovery rate and amount still outstanding. Desktop. |
-| `shot-plan-viewer.png` | `features.html` â†’ Construction delivery | A drawing sheet in the plan viewer with pins dropped at specific points â€” the different pin types (task, RFI, defect, note) should be visibly distinct. Desktop. |
-| `shot-transmittal.png` | `features.html` â†’ Construction delivery | An issued transmittal: recipient, purpose, issue date, the drawing revisions it carries, and the banner warning that a carried revision has since been superseded. Desktop. |
-| `shot-itp.png` | `features.html` â†’ Construction delivery | An inspection and test plan listing its checks in sequence, with hold points marked distinctly from witness points. Desktop. |
+| `shot-asset-tag.png` | `features.html` Ã¢â€ â€™ QR and NFC asset tags | Either the printable 70 Ãƒâ€” 50 mm QR/NFC label for a facility asset, or the authenticated mobile landing page a scan opens (asset code, warranty, open work, "confirm scan"). Phone-shaped, `4 / 5`. |
+| `shot-retention-release.png` | `features.html` Ã¢â€ â€™ Commercial | A retention release certificate: the withheld, already-released and available-to-release figures, and the release percentage. Desktop. |
+| `shot-advance-payment.png` | `features.html` Ã¢â€ â€™ Commercial | An advance payment certificate with the guarantee lapsed, showing the warning banner that the outstanding balance is unsecured, beside the recovery rate and amount still outstanding. Desktop. |
+| `shot-plan-viewer.png` | `features.html` Ã¢â€ â€™ Construction delivery | A drawing sheet in the plan viewer with pins dropped at specific points Ã¢â‚¬â€ the different pin types (task, RFI, defect, note) should be visibly distinct. Desktop. |
+| `shot-transmittal.png` | `features.html` Ã¢â€ â€™ Construction delivery | An issued transmittal: recipient, purpose, issue date, the drawing revisions it carries, and the banner warning that a carried revision has since been superseded. Desktop. |
+| `shot-itp.png` | `features.html` Ã¢â€ â€™ Construction delivery | An inspection and test plan listing its checks in sequence, with hold points marked distinctly from witness points. Desktop. |
 
 ## If a shot cannot be captured
 
 Do not substitute a stock image or a mock-up. Remove the `<figure>` block from
-the page instead, or replace it with a shot that shows something real â€” every
+the page instead, or replace it with a shot that shows something real Ã¢â‚¬â€ every
 caption on the site describes the screen it sits next to, and a caption that
 does not match what the reader is looking at costs more than a missing figure.
