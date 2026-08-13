@@ -193,7 +193,15 @@ class TestMajalAi(TransactionCase):
     def test_local_provider_chat_is_audited(self):
         # Provider records are editable configuration, so this test must not
         # depend on whatever enabled state the live database currently has.
+        # Local models are deliberately opt-in so the test must model the
+        # workstation runtime explicitly rather than relying on CI/container
+        # environment defaults.
         self.local.enabled = True
+        with patch.dict(os.environ, {"MAJAL_AI_LOCAL_ENABLED": "true"}):
+            self.local.invalidate_recordset(["is_ready"])
+            self._assert_local_provider_chat_is_audited()
+
+    def _assert_local_provider_chat_is_audited(self):
         response = Mock()
         response.ok = True
         response.json.return_value = {
@@ -254,15 +262,17 @@ class TestMajalAi(TransactionCase):
                 ],
             },
         }
-        with patch(
-            "odoo.addons.majal_ai.models.conversation.MajalAiConversation.ask",
-            return_value=fake_result,
-        ) as ask:
-            answer = self.env["mail.bot"].with_user(self.user_a)._get_answer(
-                channel,
-                "<p>What needs attention?</p>",
-                {"body": "<p>What needs attention?</p>"},
-            )
+        with patch.dict(os.environ, {"MAJAL_AI_LOCAL_ENABLED": "true"}):
+            self.local.invalidate_recordset(["is_ready"])
+            with patch(
+                "odoo.addons.majal_ai.models.conversation.MajalAiConversation.ask",
+                return_value=fake_result,
+            ) as ask:
+                answer = self.env["mail.bot"].with_user(self.user_a)._get_answer(
+                    channel,
+                    "<p>What needs attention?</p>",
+                    {"body": "<p>What needs attention?</p>"},
+                )
         self.assertIn("need attention", str(answer))
         self.assertIn("<strong>Two projects</strong>", str(answer))
         self.assertNotIn("**Two projects**", str(answer))
