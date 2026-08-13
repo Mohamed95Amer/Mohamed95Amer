@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>An approval trail is only as good as its enforcement point â€” Majal</title>
+<title>An approval trail is only as good as its enforcement point ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Majal</title>
 <meta name="description" content="Hiding a button with a groups attribute is not an approval control. Why Majal moved the check into the method, and what a value-banded, delegable approval chain has to get right.">
 <link rel="canonical" href="https://majalops.com/insights/approval-trails.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Majal">
-<meta property="og:title" content="An approval trail is only as good as its enforcement point â€” Majal">
+<meta property="og:title" content="An approval trail is only as good as its enforcement point ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Majal">
 <meta property="og:description" content="Hiding a button with a groups attribute is not an approval control. Why Majal moved the check into the method, and what a value-banded, delegable approval chain has to get right.">
 <meta property="og:url" content="https://majalops.com/insights/approval-trails.html">
 <meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="An approval trail is only as good as its enforcement point â€” Majal">
+<meta name="twitter:title" content="An approval trail is only as good as its enforcement point ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Majal">
 <meta name="twitter:description" content="Hiding a button with a groups attribute is not an approval control. Why Majal moved the check into the method, and what a value-banded, delegable approval chain has to get right.">
 <meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
 <meta name="theme-color" content="#12181c">
@@ -49,7 +49,7 @@
 <div class="page-head">
   <div class="wrap">
     <div class="prose">
-      <p class="meta">Insight Â· Control</p>
+      <p class="meta">Insight ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Control</p>
       <h1>An approval trail is only as good as its enforcement point</h1>
       <p class="lede">
         Every module in the suite had grown its own approve button. Fourteen of them. Two
@@ -73,18 +73,18 @@
         quietly contradicts.
       </p>
       <p>
-        This one is annoying but honest â€” everybody can see it is missing.
+        This one is annoying but honest ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â everybody can see it is missing.
       </p>
 
       <h2>The second problem: the rule was a UI instruction</h2>
       <p>
-        The guard on each of those buttons was a <code>groups="â€¦"</code> attribute in a view.
+        The guard on each of those buttons was a <code>groups="ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦"</code> attribute in a view.
         That attribute hides a control. It does not stop the method being called.
       </p>
       <p>
         Write access on bills of quantities and variations belongs to the commercial group,
-        because those are the people who write them. So a quantity surveyor â€” the person who
-        produces the bill â€” had everything needed to approve the bill. Not by finding an
+        because those are the people who write them. So a quantity surveyor ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â the person who
+        produces the bill ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â had everything needed to approve the bill. Not by finding an
         exploit: by calling the method the button would have called, from anywhere that can
         call a method.
       </p>
@@ -94,8 +94,8 @@
       </p>
       <div class="table-scroll">
 <pre><code>GROUPS pm? False | commercial? True
-RESULT approved by a non-PM: approved          â† a bill of quantities
-CO approved by non-PM: approved | value 197400 â† a variation order</code></pre>
+RESULT approved by a non-PM: approved          ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Ãƒâ€šÃ‚Â a bill of quantities
+CO approved by non-PM: approved | value 197400 ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Ãƒâ€šÃ‚Â a variation order</code></pre>
       </div>
       <p>
         A hundred and ninety-seven thousand of variation, approved by somebody the interface
@@ -107,7 +107,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
       <p>
         Majal's approval check lives inside <code>action_approve</code> itself, in a
         <code>_check_approved()</code> call. That is a small relocation with a large
-        consequence: the rule now holds wherever the call comes from â€” a button, an automated
+        consequence: the rule now holds wherever the call comes from ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â a button, an automated
         action, a data-migration script, the RPC console, a screen nobody has written yet, or
         the integration a client's IT team builds next year without telling anybody.
       </p>
@@ -126,7 +126,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
       <h3>Segregation of duties, on by default</h3>
       <p>
         The person who raised a document cannot sign it. On by default, because the default is
-        what most rules will be left at â€” but switchable, because it does not always apply. A
+        what most rules will be left at ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â but switchable, because it does not always apply. A
         daily site log approved by the person who wrote it is normal and forcing a second
         signature on it just teaches people that approvals are noise.
       </p>
@@ -135,7 +135,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
       <p>
         A step cannot be signed while an earlier one is outstanding. Without that, a chain of
         three signatures is three independent signatures that happen to be drawn in a row, and
-        the sequence â€” which is the whole point of a delegation of authority â€” is decoration.
+        the sequence ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â which is the whole point of a delegation of authority ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â is decoration.
       </p>
 
       <h3>A reason is required to reject</h3>
@@ -155,7 +155,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
       <h3>Delegation that records whose authority was used</h3>
       <p>
         This is the one that matters most and gets built last. Somebody goes on leave and
-        approvals stop. The usual field fix is to share a login â€” which destroys the audit
+        approvals stop. The usual field fix is to share a login ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â which destroys the audit
         trail at precisely the point where it is load-bearing, because now the record says a
         director signed something while the director was on a plane.
       </p>
@@ -174,13 +174,13 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
       <p>
         That is what makes "waiting on me" a single query instead of a tour of every model.
         An approver opens one list containing variations, payment certificates, permits to
-        work, bills of quantities, daily logs and inspections, worst first â€” rather than
+        work, bills of quantities, daily logs and inspections, worst first ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â rather than
         opening six registers and filtering each by hand, which in practice means opening
         three of them.
       </p>
       <p>
         It also means the board's Commercial Exposure screen can end with a
-        <em>Waiting for a signature</em> table â€” pending steps by value with days outstanding â€”
+        <em>Waiting for a signature</em> table ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â pending steps by value with days outstanding ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â
         without any new plumbing. The exposure report and the approver's inbox are two
         readings of the same table.
       </p>
@@ -195,7 +195,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
         A board member signing a large variation has no business holding write access to bills
         of quantities, and requiring it would defeat the exact separation the rules exist to
         create. This was found by a test, where a delegate with only site-engineer rights
-        approved a bill and the callback failed on write access â€” which is a much better place
+        approved a bill and the callback failed on write access ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â which is a much better place
         to find it than a Friday afternoon on a live job.
       </p>
       <p>
@@ -220,8 +220,8 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
         <li>
           <strong>Not every model is wired up.</strong> Six are: bills of quantities, variation
           orders, payment certificates, permits to work, daily logs and inspections. Moving
-          another across is small and explicit â€” inherit the mixin, answer what it is worth,
-          call the check from the action that commits it â€” but it is a decision somebody makes,
+          another across is small and explicit ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â inherit the mixin, answer what it is worth,
+          call the check from the action that commits it ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â but it is a decision somebody makes,
           not something that happens quietly.
         </li>
       </ul>
@@ -230,12 +230,12 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
       <p>
         The construction security groups imply one another: manager implies project manager
         implies site engineer. A step assigned to the project-manager group can therefore be
-        signed by anyone more senior, which is usually exactly what you want â€” a delegation of
+        signed by anyone more senior, which is usually exactly what you want ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â a delegation of
         authority normally reads "this level or above".
       </p>
       <p>
-        Where it is not what you want â€” where the rule is "the board signs, and only the
-        board" â€” name a specific person on the step rather than a group that others inherit.
+        Where it is not what you want ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â where the rule is "the board signs, and only the
+        board" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â name a specific person on the step rather than a group that others inherit.
         Group implication is a convenience that silently widens a control if you forget it
         exists.
       </p>
@@ -244,14 +244,14 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
         <span class="label">In the product</span>
         <p>
           The approval engine lives in <code>construction_base</code>. Rules are configured as
-          data under Configuration â†’ Approval Rules, and the shipped demo data includes a
+          data in the approval workspace, and the shipped demo data includes a
           worked delegation of authority meant to be copied and edited.
-          <a href="/features.html#approvals">See the feature summary â†’</a>
+          <a href="/features.html#approvals">See the feature summary ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢</a>
         </p>
       </div>
 
       <nav class="article-nav" aria-label="More insights">
-        <p><a href="/insights/">â† All insights</a></p>
+        <p><a href="/insights/">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Ãƒâ€šÃ‚Â All insights</a></p>
         <p>Next: <a href="/insights/offline-on-site.html">What "offline" actually costs on a construction site</a></p>
       </nav>
 
@@ -278,7 +278,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
         <ul>
           <li><a href="/insights/">Insights</a></li>
           <li><a href="/about.html#documentation">Documentation status</a></li>
-          <li><a href="/about.html#self-host">Self-hosting</a></li>
+          <li><a href="/about.html#delivery">Delivery options</a></li>
         </ul>
       </div>
       <div>
@@ -292,7 +292,7 @@ CO approved by non-PM: approved | value 197400 â† a variation order</code><
         <h2>Try it</h2>
         <ul>
           <li><a href="/contact.html">Guided demo by appointment</a></li>
-          <li><a href="/about.html#self-host">Run it with Docker</a></li>
+          <li><a href="/about.html#delivery">Delivery options</a></li>
         </ul>
       </div>
     </div>

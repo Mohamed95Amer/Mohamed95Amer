@@ -583,14 +583,10 @@
       <h3>BCF 2.1 round-trip</h3>
       <p>
         Issues leave as <code>.bcfzip</code> archives and come back the same way, because the
-        people who answer them work in Solibri, Navisworks, Revit, Tekla, BIMcollab or Revizto
-        and will not log in here to read a pin. Topics are matched on <strong>GUID</strong>,
-        so a file round-tripped through a reviewer's tool updates the issues rather than
-        duplicating every one. A pin's camera is exported as the viewpoint; a pin with no
-        saved view still exports a camera standing back from the point, because a topic that
-        opens inside a wall is a topic nobody can read. The selected component is written by
-        IfcGuid, which is what lands the topic on the right wall in the other tool. A topic
-        raised here as a defect stays a defect on import.
+        Issues can be shared with approved design and delivery partners. Topics are matched on
+        a stable model identity so a revised file updates the issue instead of duplicating it.
+        A pin stores its viewpoint and selected element, keeping every review conversation
+        anchored to the same place in the building.
       </p>
       <p class="note">
         <span class="label">Implemented / not implemented</span>
@@ -1059,7 +1055,7 @@
       <p>
         Six Majal roles â€” Platform Owner, Company Administrator, Operations Manager,
         Project/Facility Manager, Engineer/Supervisor, Field User/Technician â€” replace the raw
-        technical group matrix, each scopeable to Construction, Facilities, or both. Twelve
+        clear capability tiers, each scopeable to Construction, Facilities, or both. Twelve
         audited optional capability tiers add Procurement, Inventory, Finance, HR, Website and
         AI administration; one tier per family; each with a minimum role; and high-risk
         Finance, HR and Website administration requires Platform Owner approval.
@@ -1068,7 +1064,7 @@
         Enforced on the server: a Company Administrator cannot grant Company Administrator or
         Platform Owner; no administrator can change an account at or above their own rank;
         users cannot deactivate themselves; the last active Platform Owner cannot be
-        deactivated; client administrators cannot edit raw technical groups; and access and
+        deactivated; client administrators cannot bypass role boundaries; and access and
         activation changes land in an immutable administration audit. HR packs are explicitly
         isolated from Facilities administration, because the upstream HR role normally implies
         Maintenance Administrator.
