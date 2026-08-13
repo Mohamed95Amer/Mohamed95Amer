@@ -1115,8 +1115,11 @@ export class MajalWorkspaceHub extends Component {
     }
 
     warnUnavailable() {
+        const message = this.config?.area === "real_estate"
+            ? _t("This Property workspace needs the Real Estate User access role. Ask your Majal administrator to enable it for your account.")
+            : _t("This Majal workspace is not available for the current user.");
         this.notification.add(
-            _t("This Majal workspace is not available for the current user."),
+            message,
             { type: "warning" }
         );
     }

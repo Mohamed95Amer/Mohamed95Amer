@@ -260,11 +260,15 @@ export class PropertyHome extends Component {
     async openAction(actionXmlId) {
         try {
             await this.action.doAction(actionXmlId);
-        } catch {
+        } catch (error) {
+            // This is normally a missing Real Estate User permission, not a
+            // broken workspace. Say what the administrator needs to change so
+            // a client does not have to guess from an opaque warning.
             this.notification.add(
-                _t("This workspace is not available. Check that its module is installed."),
-                { type: "warning" }
+                _t("This Majal workspace needs the matching Property access role. Ask an administrator to grant Real Estate User access."),
+                { type: "warning", sticky: true }
             );
+            console.warn("Majal property action could not be opened", actionXmlId, error);
         }
     }
 

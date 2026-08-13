@@ -30,6 +30,7 @@
             "majal_branding/static/src/user_menu/user_menu.js",
             "majal_branding/static/src/activity_menu/activity_menu.xml",
             "majal_branding/static/src/router/majal_router.js",
+            "majal_branding/static/src/copy/majal_copy.js",
             "majal_branding/static/src/scss/backend.scss",
         ],
         "web.assets_frontend": [
