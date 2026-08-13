@@ -210,6 +210,32 @@ section.band {
 section.band:first-of-type { border-top: 0; }
 section.band.tinted { background: var(--surface-2); }
 
+/* ---------- industry walkthrough tabs ---------- */
+.industry-player { padding-block: clamp(2.5rem, 6vw, 5rem); background: var(--surface-2); border-top: 1px solid var(--line); }
+.industry-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
+.industry-tabs input { position: absolute; opacity: 0; pointer-events: none; }
+.industry-tabs label { display: flex; align-items: center; gap: .85rem; min-height: 5.25rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+.industry-tabs label:hover { transform: translateY(-2px); border-color: var(--accent); }
+.industry-tabs strong, .industry-tabs small { display: block; }
+.industry-tabs strong { color: var(--text); font-size: 1rem; }
+.industry-tabs small { margin-top: .25rem; font-size: .76rem; line-height: 1.3; }
+.tab-number { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; flex: 0 0 2.25rem; border-radius: 50%; background: var(--surface-2); color: var(--primary); font-size: .78rem; font-weight: 700; }
+.industry-tabs input:checked + label { border-color: var(--primary); background: var(--primary); color: #fff; box-shadow: var(--shadow); }
+.industry-tabs input:checked + label strong, .industry-tabs input:checked + label .tab-number { color: #fff; }
+.industry-tabs input:checked + label .tab-number { background: rgba(255,255,255,.18); }
+.industry-panel { display: none; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
+#tab-construction:checked ~ #panel-construction, #tab-facilities:checked ~ #panel-facilities, #tab-property:checked ~ #panel-property { display: grid; }
+.industry-copy { max-width: 34rem; }
+.industry-copy h2 { margin-top: .35rem; }
+.feature-list { display: grid; gap: .55rem; margin: 1.35rem 0 1.6rem; padding: 0; list-style: none; }
+.feature-list li { position: relative; padding-inline-start: 1.35rem; color: var(--text-muted); }
+.feature-list li::before { content: ""; position: absolute; inset-inline-start: 0; top: .55em; width: .48rem; height: .48rem; border-radius: 50%; background: var(--accent); }
+.industry-media video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #10181c; border-radius: var(--radius); box-shadow: 0 1rem 2.5rem rgba(18, 14, 8, .16); }
+.media-caption { margin: .7rem 0 0; color: var(--text-muted); font-size: .82rem; }
+.media-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .65rem; }
+.media-thumbs img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: .45rem; border: 1px solid var(--line); }
+@media (max-width: 52rem) { .industry-tabs { grid-template-columns: 1fr; } .industry-panel { grid-template-columns: 1fr; } }
+
 /* A short accent rule above each band's own heading — it marks where a new
    subject starts, which a long page of stacked bands otherwise leaves to
    spacing alone. */
