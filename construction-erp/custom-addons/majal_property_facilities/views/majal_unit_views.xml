@@ -5,16 +5,16 @@
         <field name="model">majal.unit</field>
         <field name="inherit_id" ref="majal_real_estate.view_majal_unit_form"/>
         <field name="arch" type="xml">
-            <!-- Anchored on the outer group, not on a group's string: view
-                 inheritance may not select on 'string'. -->
-            <xpath expr="//sheet/group[1]" position="inside">
-                <group string="Facilities">
+            <xpath expr="//notebook" position="inside">
+                <page string="Facilities" name="facilities">
+                  <group>
                     <field name="facility_location_id" readonly="1"/>
                     <field name="facility_published" invisible="1"/>
                     <button name="action_publish_to_facilities" type="object"
                             string="Publish to Facilities" class="btn-link"
                             invisible="facility_published"/>
-                </group>
+                  </group>
+                </page>
             </xpath>
         </field>
     </record>

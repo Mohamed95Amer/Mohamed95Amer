@@ -112,6 +112,8 @@
         <field name="parking_ref">P1-116</field>
         <field name="list_price">1180000</field>
         <field name="status">available</field>
+        <field name="listing_readiness">92</field>
+        <field name="marketing_image" type="base64" file="majal_real_estate/static/src/img/unit-interior.png"/>
     </record>
     <record id="demo_unit_a1604" model="majal.unit">
         <field name="name">A-1604</field>
@@ -127,6 +129,8 @@
         <field name="parking_ref">P2-144</field>
         <field name="list_price">1850000</field>
         <field name="status">reserved</field>
+        <field name="listing_readiness">88</field>
+        <field name="marketing_image" type="base64" file="majal_real_estate/static/src/img/unit-interior.png"/>
     </record>
     <record id="demo_unit_a1704" model="majal.unit">
         <field name="name">A-1704</field>

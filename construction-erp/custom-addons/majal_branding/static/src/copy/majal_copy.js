@@ -60,6 +60,10 @@ function replaceText(root) {
 }
 
 function applyCopy() {
+    if (!document.body) {
+        window.addEventListener("DOMContentLoaded", applyCopy, { once: true });
+        return;
+    }
     document.body.classList.toggle("o_majal_todo_route", isTodoRoute());
     replaceText(document.body);
     // The form renderer replaces the editor after the record loads, and Odoo's

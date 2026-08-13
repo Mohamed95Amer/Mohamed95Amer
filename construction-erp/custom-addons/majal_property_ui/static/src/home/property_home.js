@@ -227,9 +227,20 @@ export class PropertyHome extends Component {
         this.notification = useService("notification");
         this.state = useState({
             loading: true,
+            view: "executive",
             kpis: Object.fromEntries(
                 [...PROPERTY_KPIS, ...PROPERTY_FOCUS].map((item) => [item.key, "–"])
             ),
+            executive: {
+                portfolioValue: 0, occupancy: 0, collection: 0, openLeads: 0,
+                totalUnits: 0, available: 0, reserved: 0, blocked: 0, occupied: 0,
+                developmentName: _t("Featured development"),
+            },
+            operations: {
+                rentCollected: 0, rentScheduled: 0, leasesExpiring: 0,
+                openMaintenance: 0, urgentMaintenance: 0, serviceRate: 100,
+                maintenanceCards: [],
+            },
         });
         this.kpiDefinitions = localizeItems(PROPERTY_KPIS);
         this.focusItems = localizeItems(PROPERTY_FOCUS);
@@ -253,7 +264,61 @@ export class PropertyHome extends Component {
                 this.state.kpis[counted[index].key] =
                     result.status === "fulfilled" ? result.value : "–";
             });
+            await this.loadControlCentre();
             this.state.loading = false;
+        });
+    }
+
+    setView(view) {
+        this.state.view = view;
+    }
+
+    formatMoney(value) {
+        return new Intl.NumberFormat(undefined, {
+            style: "currency", currency: "AED",
+            notation: value >= 1000000 ? "compact" : "standard",
+            maximumFractionDigits: value >= 1000000 ? 1 : 0,
+        }).format(value || 0);
+    }
+
+    async loadControlCentre() {
+        const safeRead = async (model, domain, fields, limit = 2000) => {
+            try {
+                return await this.orm.searchRead(model, domain, fields, { limit });
+            } catch (error) {
+                console.warn("Majal property metric unavailable", model, error);
+                return [];
+            }
+        };
+        const [units, leads, developments, rentLines, leases, requests, closed] = await Promise.all([
+            safeRead("majal.unit", [], ["status", "list_price"]),
+            safeRead("majal.lead", [["state", "=", "open"]], ["id"]),
+            safeRead("majal.development", [["state", "=", "active"]], ["name"]),
+            safeRead("majal.lease.rent.line", [], ["amount", "amount_paid"]),
+            safeRead("majal.lease", [["state", "=", "active"], ["end_date", "<=", isoDate(60)]], ["id"]),
+            safeRead("majal.maintenance.request", [["state", "in", ["new", "in_progress"]]],
+                ["name", "state", "priority", "unit_id", "user_id", "category"], 20),
+            safeRead("majal.maintenance.request", [["state", "=", "done"]], ["id"]),
+        ]);
+        const count = (statuses) => units.filter((unit) => statuses.includes(unit.status)).length;
+        const scheduled = rentLines.reduce((sum, line) => sum + (line.amount || 0), 0);
+        const paid = rentLines.reduce((sum, line) => sum + (line.amount_paid || 0), 0);
+        const occupied = count(["leased", "owner_occupied", "handed_over"]);
+        Object.assign(this.state.executive, {
+            portfolioValue: units.reduce((sum, unit) => sum + (unit.list_price || 0), 0),
+            occupancy: units.length ? occupied / units.length * 100 : 0,
+            collection: scheduled ? paid / scheduled * 100 : 0,
+            openLeads: leads.length, totalUnits: units.length, occupied,
+            available: count(["available", "vacant"]), reserved: count(["reserved"]),
+            blocked: count(["blocked", "under_maintenance"]),
+            developmentName: developments[0]?.name || _t("Featured development"),
+        });
+        Object.assign(this.state.operations, {
+            rentCollected: paid, rentScheduled: scheduled, leasesExpiring: leases.length,
+            openMaintenance: requests.length,
+            urgentMaintenance: requests.filter((request) => request.priority === "2").length,
+            serviceRate: requests.length + closed.length ? closed.length / (requests.length + closed.length) * 100 : 100,
+            maintenanceCards: requests.slice(0, 7),
         });
     }
 

@@ -13,7 +13,7 @@ which means uninstalling it leaves those menus where it put them: Odoo does
 not restore overridden field values on uninstall. That is the same bargain
 every other UI module in this repo makes.
 """,
-    "version": "18.0.1.0.0",
+    "version": "18.0.2.0.0",
     "category": "Real Estate",
     "license": "LGPL-3",
     "author": "Mohamed Amer",

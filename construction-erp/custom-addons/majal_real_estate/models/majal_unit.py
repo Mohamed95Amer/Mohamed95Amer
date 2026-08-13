@@ -31,6 +31,15 @@ class MajalUnit(models.Model):
     name = fields.Char(
         required=True, tracking=True, help='Unit code, e.g. "A-1204".')
     active = fields.Boolean(default=True)
+    marketing_image = fields.Image(
+        string="Unit Photography", max_width=1920, max_height=1080,
+        help="Primary client-facing photograph used on the unit overview.")
+    listing_readiness = fields.Float(
+        string="Listing Readiness (%)", default=0, digits=(5, 0),
+        help="Completion of photography, pricing and marketing information.")
+    document_readiness = fields.Float(
+        string="Document Pack (%)", compute="_compute_document_readiness",
+        digits=(5, 0))
     floor_id = fields.Many2one(
         "majal.floor", required=True, ondelete="restrict", index=True)
     # Related+stored so a development or a building can hold a real
@@ -109,6 +118,13 @@ class MajalUnit(models.Model):
         for unit in self:
             unit.handover_count = len(unit.handover_ids)
             unit.document_count = len(unit.document_ids)
+
+    @api.depends("document_ids")
+    def _compute_document_readiness(self):
+        for unit in self:
+            # Nine is the complete standard sales pack: title/SPA, floor plan,
+            # brochure, specifications, fees, service charge, IDs and approvals.
+            unit.document_readiness = min(len(unit.document_ids) / 9.0 * 100.0, 100.0)
 
     def action_view_handovers(self):
         self.ensure_one()

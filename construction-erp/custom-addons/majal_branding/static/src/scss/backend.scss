@@ -398,10 +398,11 @@
 // inherited from the desktop viewport. Pin the actual popover as a compact
 // panel; the previous generic dropdown rule did not beat that overlay width.
 .o-mail-DiscussSystray {
-    width: min(475px, calc(100vw - 24px)) !important;
+    width: calc(100vw - 24px) !important;
+    max-width: 475px !important;
     max-width: calc(100vw - 24px) !important;
     min-width: 0 !important;
-    max-height: min(680px, calc(100vh - 58px)) !important;
+    max-height: calc(100vh - 58px) !important;
     overflow: hidden !important;
     border: 1px solid var(--majal-border) !important;
     border-radius: 16px !important;
@@ -412,7 +413,7 @@
 .o-mail-DiscussSystray .o-mail-MessagingMenu {
     width: 100% !important;
     max-width: none !important;
-    max-height: min(678px, calc(100vh - 60px)) !important;
+    max-height: calc(100vh - 60px) !important;
     overflow: hidden;
 }
 
