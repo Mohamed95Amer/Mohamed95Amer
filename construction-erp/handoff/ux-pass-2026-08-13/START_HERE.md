@@ -59,27 +59,44 @@ integration**. Multi-approver → several named people per approval step.
 
 ## Phase 1 — The bug, then navigation and naming
 
-### 1.1 "Documents & Commercial is not working" — reproduce before fixing
+### 1.1 "Documents & Commercial is not working" — diagnosed, see below
 
-The action is structurally sound: `action_majal_project_documents`
-(`construction_ui/views/project_workspace_views.xml:146`) targets
-`majal.project.document`, and the `search_default_group_project` filter it asks
-for exists at line 139 of the same file. ACLs exist for both the user and
-manager groups. So this is a **runtime** failure, not a broken definition.
+**Diagnosed on the running system — this is a demo-data gap, not a code bug.**
 
-**Leading hypothesis:** `majal.project.document` is in the tenant record-rule map
-(`majal_administration/models/tenant_security.py:8`). That is the same machinery
-that crashed My Day earlier on this branch, where a malformed match-nothing
-domain `[(1,'=',0)]` fell through Odoo's `expression.is_boolean()` and blew up on
-`left.split('.')` inside `_apply_ir_rules`. That instance was fixed, but this
-action must be exercised as a **non-admin, industry-scoped persona** to confirm
-nothing similar remains.
+Reproduced against `sidebar_demo` as two seeded non-admin personas, `omar.pm`
+and `nadia.qs`. Neither gets an error dialog, a traceback or a JavaScript error.
+Both get the screen with **zero rows**, and so does `admin`.
 
-Steps: bring up the demo DB, log in as a seeded non-admin persona, open
-Commercial → Documents & Commercial, capture the real traceback, fix at the root,
-and add a regression test alongside
-`majal_administration/tests/test_administration.py`. **Prove the test fails
-against the unfixed code** — a test that passes before the fix is not a test.
+The reason is simply that nothing exists to show:
+
+```
+select count(*) from majal_project_document;   ->  0
+```
+
+Nothing in the codebase ever creates one. `majal.project.document` has a model,
+list/kanban/form/search views, an action and a menu
+(`construction_ui/views/project_workspace_views.xml`), but no demo data and no
+creation path — while its neighbours are seeded (BOQ 2, drawings 3, defects 4).
+An empty screen is exactly how "not working" looks to someone testing.
+
+Two hypotheses are now **ruled out**, so do not spend time on them:
+
+- *Not* the tenant record rule. The rule on this model is well-formed today —
+  `[(0, '=', 1)]` for the facilities scope, which Odoo parses correctly. The
+  malformed `[(1, '=', 0)]` that crashed My Day earlier on this branch is gone.
+- *Not* a broken action or a missing search filter. The action's
+  `search_default_group_project` filter exists (same file, line 139) and the
+  ACLs are present for both the user and manager groups.
+
+**The fix is to seed it.** Add `majal.project.document` demo records in
+`majal_demo`, hung off the existing demo projects, following the pattern the
+other registers already use. If the model is *meant* to be populated some other
+way — from `majal_documents`, or by a user action that does not exist yet — then
+that missing path is the real defect and should be built instead; decide which
+before writing code, because the two answers lead to very different work.
+
+Whichever way it goes, add a test that fails against today's state: assert the
+screen returns at least one record for a seeded non-admin persona.
 
 ### 1.2 Majal Field: Drawings before Assets
 `majal_field_offline/views/field_app_templates.xml:36-41` — swap the two nav
