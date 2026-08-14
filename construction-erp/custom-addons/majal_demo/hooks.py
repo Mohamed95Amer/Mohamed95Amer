@@ -416,6 +416,45 @@ def _seed_construction(env, company, users):
             )
         env["majal.project.document"].sudo().create(values)
 
+    # Change orders and their variations. Same reason as the documents above:
+    # the register existed and was empty, so the restructure that puts the
+    # variations on the change order had nothing to show.
+    change_orders = [
+        ("Basement waterproofing — specification change", "design_change",
+         197_400, "Consultant revised the tanking specification after the "
+                  "ground-water survey; the original system no longer complies."),
+        ("Lobby finishes — client upgrade", "client_request",
+         88_250, "Client selected a higher-grade stone after the mock-up "
+                 "review. Rate difference only, quantities unchanged."),
+    ]
+    for title, origin, amount, reason in change_orders:
+        event = env["construction.change.event"].sudo().search(
+            [("name", "=", title), ("project_id", "=", primary.id)], limit=1
+        )
+        if not event:
+            event = env["construction.change.event"].sudo().create(
+                {
+                    "name": title,
+                    "project_id": primary.id,
+                    "origin": origin,
+                    "date": today - timedelta(days=30),
+                    "estimated_amount": amount,
+                    "description": "<p>Raised from the site record for the "
+                                   "demo commercial workflow.</p>",
+                }
+            )
+        if boq and not event.change_order_ids:
+            env["construction.change.order"].sudo().create(
+                {
+                    "name": title,
+                    "project_id": primary.id,
+                    "change_event_id": event.id,
+                    "boq_id": boq.id,
+                    "change_type": "addition",
+                    "reason": "<p>%s</p>" % reason,
+                }
+            )
+
     return projects
 
 
