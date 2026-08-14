@@ -42,6 +42,10 @@ class MajalApiClient(models.Model):
     @api.constrains("user_id", "company_id")
     def _check_user_company(self):
         for client in self:
+            if client.user_id and client.user_id.share:
+                raise UserError(_("An API client must use an internal user, not a portal user."))
+            if client.user_id and not client.user_id.active:
+                raise UserError(_("The integration user must be active."))
             if client.user_id and client.company_id not in client.user_id.company_ids:
                 raise UserError(_("The integration user must have access to this company."))
 

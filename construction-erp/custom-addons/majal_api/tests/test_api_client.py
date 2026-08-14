@@ -1,5 +1,6 @@
 import hashlib
 
+from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, new_test_user
 
 
@@ -31,3 +32,18 @@ class TestMajalApiClient(TransactionCase):
         self.assertEqual(authenticated, client)
         client.action_revoke()
         self.assertFalse(self.env["majal.api.client"]._authenticate(wizard.token))
+
+    def test_portal_users_cannot_back_an_api_client(self):
+        portal = self.env["res.users"].sudo().create({
+            "name": "Portal Integration",
+            "login": "portal-integration@majal.test",
+            "share": True,
+            "company_id": self.env.company.id,
+            "company_ids": [(6, 0, [self.env.company.id])],
+        })
+        with self.assertRaises(UserError):
+            self.env["majal.api.client"].sudo().create({
+                "name": "Portal client",
+                "company_id": self.env.company.id,
+                "user_id": portal.id,
+            })
