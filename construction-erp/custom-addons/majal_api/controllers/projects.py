@@ -75,6 +75,51 @@ class MajalProjectsApi(http.Controller):
             "count": len(documents),
         })
 
+    @http.route(
+        "/api/v1/search", type="http", auth="public", methods=["GET"],
+        csrf=False, save_session=False,
+    )
+    def search(self, **params):
+        token = request.httprequest.headers.get("X-Majal-API-Key", "")
+        client = request.env["majal.api.client"].sudo()._authenticate(token)
+        if not client:
+            return self._json({"error": "invalid_api_key"}, 401)
+        if client.scope != "search_read":
+            return self._json({"error": "scope_not_allowed"}, 403)
+        query = (params.get("q") or "").strip()
+        if len(query) < 2:
+            return self._json({"error": "q_must_contain_at_least_2_characters"}, 400)
+        try:
+            limit = int(params.get("limit", 25))
+        except (TypeError, ValueError):
+            return self._json({"error": "limit_must_be_an_integer"}, 400)
+        if not 1 <= limit <= 100:
+            return self._json({"error": "limit_must_be_between_1_and_100"}, 400)
+        env = request.env
+        project_env = env["project.project"].with_user(client.user_id).with_company(
+            client.company_id
+        )
+        document_env = env["majal.document"].with_user(client.user_id).with_company(
+            client.company_id
+        )
+        projects = project_env.search([
+            ("is_construction", "=", True),
+            "|", ("name", "ilike", query), ("project_code", "ilike", query),
+        ], limit=limit, order="id asc")
+        documents = document_env.search([
+            "|", ("name", "ilike", query), ("reference", "ilike", query),
+        ], limit=limit, order="id asc")
+        rows = ([{
+            "type": "project", "id": project.id,
+            "title": project.name, "reference": project.project_code,
+            "state": project.construction_stage,
+        } for project in projects] + [{
+            "type": "document", "id": document.id,
+            "title": document.name, "reference": document.reference,
+            "state": document.state,
+        } for document in documents])[:limit]
+        return self._json({"query": query, "data": rows, "count": len(rows)})
+
     @staticmethod
     def _json(payload, status=200):
         return request.make_response(

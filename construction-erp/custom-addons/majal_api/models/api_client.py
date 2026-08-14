@@ -24,7 +24,8 @@ class MajalApiClient(models.Model):
     )
     scope = fields.Selection(
         [("projects_read", "Projects — read"),
-         ("documents_read", "Documents — read")],
+         ("documents_read", "Documents — read"),
+         ("search_read", "Majal Search — read")],
         required=True, default="projects_read", tracking=True,
     )
     active = fields.Boolean(default=True, tracking=True)

@@ -58,6 +58,22 @@ revision and linked project ID. Document content and attachments are not
 returned by this endpoint; use the normal authenticated document API when a
 client explicitly needs those records.
 
+## Search Majal
+
+Create a client with the **Majal Search — read** scope, then call the native
+search fallback:
+
+```http
+GET https://your-host/api/v1/search?q=fire%20pump&limit=25
+X-Majal-API-Key: YOUR_MAJAL_API_KEY
+```
+
+It searches construction project names/codes and controlled-document
+names/references, while still applying the integration user’s record rules.
+The query must contain at least two characters and the result is capped at 100
+rows. This is intentionally a small native fallback; a future Meilisearch
+deployment can replace its implementation without changing the contract.
+
 This endpoint is read-only. Use the documented XML-RPC or JSON-RPC API for
 write workflows, where the same server-side approval and record-rule guards
 continue to apply.
