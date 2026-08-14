@@ -31,6 +31,7 @@
     "data": [
         "security/ir.model.access.csv",
         "data/mis_report_data.xml",
+        "data/mis_instance_data.xml",
         "views/construction_report_views.xml",
         "views/facility_report_views.xml",
         "views/estate_report_views.xml",
