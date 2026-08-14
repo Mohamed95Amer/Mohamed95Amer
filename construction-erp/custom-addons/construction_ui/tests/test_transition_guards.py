@@ -131,9 +131,25 @@ class TestDrawingSignOffGuard(TransactionCase):
             "sheet_filename": "sheet.pdf",
             "sheet_file": base64.b64encode(MINIMAL_PDF),
         })
-        revision.action_submit_approval()
+        # Submitted by the engineer and signed off by somebody else: the gate
+        # refuses to let the person who submitted a drawing sign it, which is
+        # the separation of duties the whole register exists for.
+        revision.with_user(self.user).action_submit_approval()
         self.assertEqual(revision.approval_state, "submitted")
+        self.assertEqual(revision.submitted_by_id, self.user)
 
         revision.action_approve_revision()
         self.assertEqual(revision.approval_state, "approved")
         self.assertEqual(revision.approved_by_id, self.env.user)
+
+    def test_the_submitter_cannot_sign_their_own_drawing(self):
+        """Worth its own test rather than being a footnote of the happy
+        path: it is the control an auditor asks about first."""
+        revision = self._revision()
+        revision.write({
+            "sheet_filename": "sheet.pdf",
+            "sheet_file": base64.b64encode(MINIMAL_PDF),
+        })
+        revision.with_user(self.user).action_submit_approval()
+        with self.assertRaises(AccessError):
+            revision.with_user(self.user).action_approve_revision()
