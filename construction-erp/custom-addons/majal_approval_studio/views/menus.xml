@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="construction_base.menu_approvals_root" model="ir.ui.menu">
+        <field name="name">Majal Approvals</field>
+    </record>
+
+    <menuitem id="menu_approval_studio" name="Approval Studio"
+              parent="construction_base.menu_approvals_root"
+              action="action_approval_studio_rules" sequence="5"
+              groups="construction_base.group_construction_manager"/>
+</odoo>
