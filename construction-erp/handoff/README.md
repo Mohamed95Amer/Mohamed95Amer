@@ -4,11 +4,20 @@ Use this folder to continue the Majal work with Codex, Claude Code, Cursor, or
 another coding tool.
 
 > **Latest checkpoint:** start with
-> [`next-tool-2026-07-31/START_HERE.md`](next-tool-2026-07-31/START_HERE.md)
-> and give the next tool the contents of
-> [`next-tool-2026-07-31/COPY_THIS_PROMPT.txt`](next-tool-2026-07-31/COPY_THIS_PROMPT.txt).
-> Those files include the UI, Arabic, dashboard, material-access and
-> company-switcher work completed after the older checkpoint below.
+> [`ux-pass-2026-08-13/START_HERE.md`](ux-pass-2026-08-13/START_HERE.md) and give
+> the next tool the contents of
+> [`ux-pass-2026-08-13/COPY_THIS_PROMPT.txt`](ux-pass-2026-08-13/COPY_THIS_PROMPT.txt).
+> That brief covers the 23 UX changes from Mohamed's August testing round —
+> navigation, naming, the Change Order restructure, asset depreciation, Majal
+> Field defect capture and the drawing-revision compare — with the codebase
+> already read: exact file paths, the five requests that describe UI which does
+> not exist, and the traps that break module loading.
+>
+> **Previous checkpoint:**
+> [`next-tool-2026-07-31/START_HERE.md`](next-tool-2026-07-31/START_HERE.md) and
+> [`next-tool-2026-07-31/COPY_THIS_PROMPT.txt`](next-tool-2026-07-31/COPY_THIS_PROMPT.txt)
+> — the UI, Arabic, dashboard, material-access and company-switcher work
+> completed after the older checkpoint below.
 
 ## Where the project is
 
