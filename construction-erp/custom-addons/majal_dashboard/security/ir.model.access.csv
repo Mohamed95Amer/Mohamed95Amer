@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_construction_report,majal.construction.report,model_majal_construction_report,construction_base.group_construction_manager,1,0,0,0
+access_construction_report_pm,majal.construction.report pm,model_majal_construction_report,construction_base.group_construction_pm,1,0,0,0
+access_facility_report,majal.facility.report,model_majal_facility_report,maintenance.group_equipment_manager,1,0,0,0
+access_estate_report,majal.estate.report,model_majal_estate_report,maintenance.group_equipment_manager,1,0,0,0
+access_estate_report_mgr,majal.estate.report manager,model_majal_estate_report,construction_base.group_construction_manager,1,0,0,0
+access_facility_report_mgr,majal.facility.report manager,model_majal_facility_report,construction_base.group_construction_manager,1,0,0,0

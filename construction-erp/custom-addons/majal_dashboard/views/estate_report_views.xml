@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_estate_report_list" model="ir.ui.view">
+        <field name="name">majal.estate.report.list</field>
+        <field name="model">majal.estate.report</field>
+        <field name="arch" type="xml">
+            <list string="Estate" create="0" sample="1">
+                <field name="location_id"/>
+                <field name="location_type" optional="show"/>
+                <field name="asset_count" sum="Assets"/>
+                <field name="critical_asset_count" sum="Critical" optional="show"/>
+                <field name="purchase_value" sum="Capital"/>
+                <field name="book_value" sum="Book value"/>
+                <field name="maintenance_spend" sum="Spend"/>
+                <field name="spend_to_value_percent" optional="show"/>
+                <field name="open_workorder_count" sum="Open" optional="show"/>
+                <field name="breached_count" sum="Breaches" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_estate_report_graph_value" model="ir.ui.view">
+        <field name="name">majal.estate.report.graph.value</field>
+        <field name="model">majal.estate.report</field>
+        <field name="arch" type="xml">
+            <!-- Capital against book value: the gap is how much life the
+                 plant in each property has already used up. -->
+            <graph string="Capital and Book Value by Property" type="bar"
+                   sample="1">
+                <field name="location_id"/>
+                <field name="purchase_value" type="measure"/>
+                <field name="book_value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_estate_report_graph_spend" model="ir.ui.view">
+        <field name="name">majal.estate.report.graph.spend</field>
+        <field name="model">majal.estate.report</field>
+        <field name="arch" type="xml">
+            <graph string="Maintenance Spend by Property" type="bar"
+                   sample="1" order="DESC">
+                <field name="location_id"/>
+                <field name="maintenance_spend" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_estate_report_pivot" model="ir.ui.view">
+        <field name="name">majal.estate.report.pivot</field>
+        <field name="model">majal.estate.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Estate Portfolio" sample="1">
+                <field name="location_type" type="row"/>
+                <field name="purchase_value" type="measure"/>
+                <field name="book_value" type="measure"/>
+                <field name="maintenance_spend" type="measure"/>
+                <field name="asset_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_estate_report_search" model="ir.ui.view">
+        <field name="name">majal.estate.report.search</field>
+        <field name="model">majal.estate.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="location_id"/>
+                <filter name="buildings" string="Buildings"
+                        domain="[('location_type','=','building')]"/>
+                <filter name="has_assets" string="Holding assets"
+                        domain="[('asset_count','&gt;',0)]"/>
+                <filter name="breaching" string="With SLA breaches"
+                        domain="[('breached_count','&gt;',0)]"/>
+                <separator/>
+                <filter name="group_type" string="Type" context="{'group_by':'location_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_estate_portfolio" model="ir.actions.act_window">
+        <field name="name">Estate Portfolio</field>
+        <field name="res_model">majal.estate.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+    </record>
+
+    <record id="action_estate_value" model="ir.actions.act_window">
+        <field name="name">Capital and Book Value</field>
+        <field name="res_model">majal.estate.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_estate_report_graph_value"/>
+    </record>
+
+    <record id="action_estate_spend" model="ir.actions.act_window">
+        <field name="name">Maintenance Spend by Property</field>
+        <field name="res_model">majal.estate.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_estate_report_graph_spend"/>
+    </record>
+
+    <record id="action_estate_pivot" model="ir.actions.act_window">
+        <field name="name">Estate Analysis</field>
+        <field name="res_model">majal.estate.report</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_estate_report_pivot"/>
+    </record>
+</odoo>

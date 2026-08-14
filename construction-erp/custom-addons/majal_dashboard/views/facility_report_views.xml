@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_facility_report_pivot" model="ir.ui.view">
+        <field name="name">majal.facility.report.pivot</field>
+        <field name="model">majal.facility.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Maintenance Cost" sample="1">
+                <field name="location_id" type="row"/>
+                <field name="maintenance_type" type="col"/>
+                <field name="total_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_facility_report_graph_volume" model="ir.ui.view">
+        <field name="name">majal.facility.report.graph.volume</field>
+        <field name="model">majal.facility.report</field>
+        <field name="arch" type="xml">
+            <!-- Stacked by type over time. The shape that matters is the
+                 ratio: an estate whose corrective work keeps growing against
+                 its planned work is being repaired, not maintained. -->
+            <graph string="Workload" type="bar" stacked="1" sample="1">
+                <field name="request_date" interval="month"/>
+                <field name="maintenance_type"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_facility_report_graph_sla" model="ir.ui.view">
+        <field name="name">majal.facility.report.graph.sla</field>
+        <field name="model">majal.facility.report</field>
+        <field name="arch" type="xml">
+            <graph string="SLA Breaches by Team" type="bar" sample="1">
+                <field name="team_id"/>
+                <field name="sla_resolution_state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_facility_report_graph_cost" model="ir.ui.view">
+        <field name="name">majal.facility.report.graph.cost</field>
+        <field name="model">majal.facility.report</field>
+        <field name="arch" type="xml">
+            <graph string="Cost by Asset Category" type="pie" sample="1">
+                <field name="category_id"/>
+                <field name="total_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_facility_report_list" model="ir.ui.view">
+        <field name="name">majal.facility.report.list</field>
+        <field name="model">majal.facility.report</field>
+        <field name="arch" type="xml">
+            <list string="Work Orders" create="0" sample="1"
+                  decoration-danger="sla_breached">
+                <field name="request_id"/>
+                <field name="request_date"/>
+                <field name="location_id" optional="show"/>
+                <field name="equipment_id" optional="show"/>
+                <field name="team_id" optional="show"/>
+                <field name="maintenance_type"/>
+                <field name="days_to_close" optional="show"/>
+                <field name="sla_resolution_state" optional="show"/>
+                <field name="total_cost" sum="Cost"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_facility_report_search" model="ir.ui.view">
+        <field name="name">majal.facility.report.search</field>
+        <field name="model">majal.facility.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id"/>
+                <field name="location_id"/>
+                <field name="team_id"/>
+                <filter name="open" string="Open"
+                        domain="[('is_closed','=',False)]"/>
+                <filter name="breached" string="SLA breached"
+                        domain="[('sla_breached','=',True)]"/>
+                <filter name="planned" string="Planned work"
+                        domain="[('is_planned','=',True)]"/>
+                <filter name="this_year" string="This year"
+                        domain="[('request_date','&gt;=',context_today().strftime('%Y-01-01'))]"/>
+                <separator/>
+                <filter name="group_location" string="Location" context="{'group_by':'location_id'}"/>
+                <filter name="group_team" string="Team" context="{'group_by':'team_id'}"/>
+                <filter name="group_type" string="Type" context="{'group_by':'maintenance_type'}"/>
+                <filter name="group_month" string="Month" context="{'group_by':'request_date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_facility_workload" model="ir.actions.act_window">
+        <field name="name">Maintenance Workload</field>
+        <field name="res_model">majal.facility.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_facility_report_graph_volume"/>
+    </record>
+
+    <record id="action_facility_sla" model="ir.actions.act_window">
+        <field name="name">SLA Performance</field>
+        <field name="res_model">majal.facility.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_facility_report_graph_sla"/>
+    </record>
+
+    <record id="action_facility_cost" model="ir.actions.act_window">
+        <field name="name">Cost by Asset Category</field>
+        <field name="res_model">majal.facility.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_facility_report_graph_cost"/>
+    </record>
+
+    <record id="action_facility_cost_pivot" model="ir.actions.act_window">
+        <field name="name">Maintenance Cost by Location</field>
+        <field name="res_model">majal.facility.report</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_facility_report_pivot"/>
+    </record>
+
+    <record id="action_facility_breaches" model="ir.actions.act_window">
+        <field name="name">Breached Work Orders</field>
+        <field name="res_model">majal.facility.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="context">{'search_default_breached': 1}</field>
+    </record>
+</odoo>

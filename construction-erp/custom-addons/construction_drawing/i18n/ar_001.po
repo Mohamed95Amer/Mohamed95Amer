@@ -979,3 +979,32 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
 msgid "on"
 msgstr ""
+
+#. module: construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_form
+msgid "Compare"
+msgstr "مقارنة"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/drawing.py:0
+msgid "Compare Revisions"
+msgstr "مقارنة المراجعات"
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Fit"
+msgstr "ملاءمة"
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Page"
+msgstr "صفحة"
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Scroll together"
+msgstr "تمرير متزامن"

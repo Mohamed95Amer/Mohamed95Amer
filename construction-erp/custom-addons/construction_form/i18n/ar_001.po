@@ -1484,3 +1484,13 @@ msgstr "نعم / لا / لا ينطبق"
 #: model:ir.model.fields,help:construction_form.field_construction_itp_point__reference_standard
 msgid "e.g. SBC 304, BS EN 12390-3, spec clause 03300."
 msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Export to Excel"
+msgstr "تصدير إلى إكسل"
+
+#. module: construction_form
+#: model:ir.actions.server,name:construction_form.action_request_approval_construction_form_inspection
+msgid "Request Approval"
+msgstr "طلب الاعتماد"

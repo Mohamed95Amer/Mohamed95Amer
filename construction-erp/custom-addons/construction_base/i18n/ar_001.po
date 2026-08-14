@@ -513,3 +513,42 @@ msgstr "العطاء"
 #: model:ir.model.constraint,message:construction_base.constraint_project_project_project_code_uniq
 msgid "The project code must be unique per company."
 msgstr "يجب أن يكون رمز المشروع فريداً داخل الشركة."
+
+#. module: construction_base
+#: model:ir.model.fields,field_description:construction_base.field_construction_approval_rule_step__group_id
+msgid "Any Member Of"
+msgstr "أي عضو في"
+
+#. module: construction_base
+#: model:ir.model.fields,field_description:construction_base.field_construction_approval_rule_step__user_ids
+msgid "Any Of These People"
+msgstr "أي من هؤلاء الأشخاص"
+
+#. module: construction_base
+#. odoo-python
+#: code:addons/construction_base/models/document_code.py:0
+#: model:ir.actions.server,name:construction_base.action_document_code
+#: model:ir.model,name:construction_base.model_construction_document_code
+#: model:ir.ui.menu,name:construction_base.menu_document_code
+msgid "Document Numbering"
+msgstr "ترقيم المستندات"
+
+#. module: construction_base
+#: model:ir.model.fields,field_description:construction_base.field_construction_approval_step__user_ids
+msgid "Named Approvers"
+msgstr "المعتمدون المحددون"
+
+#. module: construction_base
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_code__padding
+msgid "Padding"
+msgstr "عدد الخانات"
+
+#. module: construction_base
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_code__prefix
+msgid "Prefix"
+msgstr "البادئة"
+
+#. module: construction_base
+#: model:ir.model.fields,field_description:construction_base.field_construction_approval_rule_step__user_id
+msgid "Specific Person"
+msgstr "شخص محدد"

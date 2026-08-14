@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Under Odoo's own Dashboards app, not a Majal-only corner: these sit
+         beside "My Dashboard", which is where somebody who has pinned their
+         own charts will already be looking. -->
+    <menuitem id="menu_dashboard_construction"
+              name="Construction"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_construction"
+              groups="construction_base.group_construction_manager"
+              sequence="10"/>
+
+    <menuitem id="menu_dashboard_facilities"
+              name="Facilities"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_facilities"
+              groups="maintenance.group_equipment_manager"
+              sequence="20"/>
+
+    <menuitem id="menu_dashboard_property"
+              name="Property"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_property"
+              groups="maintenance.group_equipment_manager"
+              sequence="30"/>
+</odoo>

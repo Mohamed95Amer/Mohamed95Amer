@@ -8716,3 +8716,9 @@ msgstr "إحاطة الموقع"
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
 msgid "Management indicators"
 msgstr "مؤشرات الإدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/sidebar/majal_sidebar.xml:0
+msgid "Back"
+msgstr "رجوع"

@@ -415,3 +415,71 @@ msgstr "مثال: ساعات التشغيل، ك.و.س، دورات."
 #: model:ir.model.fields,help:facility_asset.field_facility_asset_meter__uom
 msgid "hours / kWh / cycles …"
 msgstr "ساعات / ك.و.س / دورات ..."
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_depreciated_value
+msgid "Accumulated Depreciation"
+msgstr "مجمع الإهلاك"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_category_id
+msgid "Asset Type"
+msgstr "نوع الأصل"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_book_value
+msgid "Book Value"
+msgstr "القيمة الدفترية"
+
+#. module: facility_asset
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_equipment_form_depreciation
+msgid "Close Depreciation"
+msgstr "إقفال الإهلاك"
+
+#. module: facility_asset
+#. odoo-python
+#: code:addons/facility_asset/models/asset_depreciation.py:0
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_id
+msgid "Depreciating Asset"
+msgstr "الأصل القابل للإهلاك"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_line_ids
+msgid "Depreciation Schedule"
+msgstr "جدول الإهلاك"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_state
+msgid "Depreciation Status"
+msgstr "حالة الإهلاك"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_gross_value
+msgid "Gross Value"
+msgstr "القيمة الإجمالية"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_in_service_date
+msgid "In Service"
+msgstr "تاريخ التشغيل"
+
+#. module: facility_asset
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_equipment_form_depreciation
+msgid "Open Asset"
+msgstr "فتح الأصل"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_entry_count
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_equipment_form_depreciation
+msgid "Posted Entries"
+msgstr "القيود المرحّلة"
+
+#. module: facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__asset_salvage_value
+msgid "Residual Value"
+msgstr "القيمة المتبقية"
+
+#. module: facility_asset
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_equipment_form_depreciation
+msgid "Start Depreciation"
+msgstr "بدء الإهلاك"
