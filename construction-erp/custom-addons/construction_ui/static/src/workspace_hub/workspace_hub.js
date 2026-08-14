@@ -603,7 +603,7 @@ export const WORKSPACES = {
     change_orders: workspace({
         title: "Change Control",
         eyebrow: "COMMERCIAL GOVERNANCE",
-        description: "Capture change events, evaluate impact and maintain an auditable variation workflow.",
+        description: "Capture change orders, evaluate impact and maintain an auditable variation workflow.",
         model: "construction.change.order",
         action: "construction_change_order.action_change_order",
         icon: "fa-exchange",

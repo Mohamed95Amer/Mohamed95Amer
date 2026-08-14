@@ -5,22 +5,23 @@ class ConstructionRfi(models.Model):
     _inherit = "construction.rfi"
 
     change_event_ids = fields.One2many(
-        "construction.change.event", "source_rfi_id")
-    change_event_count = fields.Integer(compute="_compute_change_event_count")
+        "construction.change.event", "source_rfi_id", string="Change Orders")
+    change_event_count = fields.Integer(
+        compute="_compute_change_event_count", string="Change Order Count")
 
     def _compute_change_event_count(self):
         for rfi in self:
             rfi.change_event_count = len(rfi.change_event_ids)
 
     def action_view_change_events(self):
-        """Where the "Raise Change Event" button led, for whoever comes back
+        """Where the "Raise Change Order" button led, for whoever comes back
         to this RFI later and has no other way to find it — the form had no
         button box at all before this, so a change event once raised was
-        reachable only by searching the Change Events register by hand."""
+        reachable only by searching the Change Orders register by hand."""
         self.ensure_one()
         action = {
             "type": "ir.actions.act_window",
-            "name": self.env._("Change Events"),
+            "name": self.env._("Change Orders"),
             "res_model": "construction.change.event",
             "domain": [("source_rfi_id", "=", self.id)],
             "context": {"default_source_rfi_id": self.id,

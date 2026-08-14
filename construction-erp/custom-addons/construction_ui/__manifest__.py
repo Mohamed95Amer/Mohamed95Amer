@@ -55,6 +55,7 @@
         "views/my_day_views.xml",
         "views/facility_home_views.xml",
         "views/project_workspace_views.xml",
+        "views/defect_workorder_views.xml",
         "views/workspace_hub_views.xml",
         "views/dashboard_hub_views.xml",
         "views/login_branding.xml",

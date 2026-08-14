@@ -7,19 +7,19 @@
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_reopen']" position="after">
                 <button name="action_raise_change_event" type="object"
-                        string="Raise Change Event" icon="fa-exchange"
+                        string="Raise Change Order" icon="fa-exchange"
                         invisible="not cost_impact or state == 'draft'"/>
             </xpath>
             <!-- The RFI form had no button box at all: once "Raise Change
                  Event" had been clicked, the event it created was reachable
-                 only by searching the Change Events register by hand. -->
+                 only by searching the Change Orders register by hand. -->
             <xpath expr="//div[hasclass('oe_title')]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="action_view_change_events" type="object"
                             class="oe_stat_button" icon="fa-exchange"
                             invisible="not change_event_count">
                         <field name="change_event_count" widget="statinfo"
-                               string="Change Events"/>
+                               string="Change Orders"/>
                     </button>
                 </div>
             </xpath>

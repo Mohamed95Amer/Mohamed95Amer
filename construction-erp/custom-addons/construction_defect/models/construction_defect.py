@@ -64,6 +64,11 @@ class ConstructionDefect(models.Model):
         help="Party responsible for rectifying the defect (portal-assignable).")
     assigned_user_id = fields.Many2one(
         "res.users", string="Assigned To", tracking=True)
+    reviewer_id = fields.Many2one(
+        "res.users", string="Reviewer", tracking=True,
+        help="Who signs the rectification off. Deliberately separate from the "
+             "person who fixes it — a defect closed by its own fixer is not "
+             "inspected, it is asserted.")
     photo_before = fields.Image(string="Photo (Defect)", max_width=1920,
                                 max_height=1920)
     photo_after = fields.Image(string="Photo (Rectified)", max_width=1920,

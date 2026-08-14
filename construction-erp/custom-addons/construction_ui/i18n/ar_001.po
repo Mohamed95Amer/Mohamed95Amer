@@ -2062,18 +2062,6 @@ msgstr "أمر تغيير"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
-msgid "Change Events"
-msgstr "أحداث التغيير"
-
-#. module: construction_ui
-#. odoo-javascript
-#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
-msgid "Change Event"
-msgstr "حدث تغيير"
-
-#. module: construction_ui
-#. odoo-javascript
-#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "Subcontract"
 msgstr "عقد مقاول باطن"
 
@@ -8295,11 +8283,6 @@ msgstr "جهة العمل"
 
 #. module: construction_ui
 #: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
-msgid "Task Label"
-msgstr "مسمى المهام"
-
-#. module: construction_ui
-#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
 msgid "Project Overview"
 msgstr "لوحة المشروع"
 
@@ -8524,12 +8507,6 @@ msgstr "أكبر تأخير %s يومًا"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "Open defects"
-msgstr "العيوب المفتوحة"
-
-#. module: construction_ui
-#. odoo-javascript
-#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
 msgid "%s overdue RFIs"
 msgstr "%s طلب معلومات متأخر"
 
@@ -8544,12 +8521,6 @@ msgstr "أصول المرافق"
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
 msgid "Across %s locations"
 msgstr "عبر %s مواقع"
-
-#. module: construction_ui
-#. odoo-javascript
-#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "Open work orders"
-msgstr "أوامر العمل المفتوحة"
 
 #. module: construction_ui
 #. odoo-javascript

@@ -11,7 +11,11 @@ class ConstructionChangeEvent(models.Model):
     a priced variation order."""
 
     _name = "construction.change.event"
-    _description = "Change Event"
+    # Renamed for users, not in the database: this is the Change Order they
+    # raise, and each priced variation beneath it is a Variation. The _name
+    # stays as it is — renaming it means a migration and an edit to
+    # majal_administration's tenant rule map, for no user-visible gain.
+    _description = "Change Order"
     _inherit = ["construction.document.mixin", "mail.thread"]
     _doc_prefix = "CE"
     _order = "id desc"
@@ -28,12 +32,16 @@ class ConstructionChangeEvent(models.Model):
     currency_id = fields.Many2one(
         related="project_id.currency_id", store=True)
     state = fields.Selection(
-        [("open", "Open"), ("converted", "Converted to VO"),
+        [("open", "Open"), ("converted", "Converted to Variation"),
          ("rejected", "Rejected")],
         default="open", tracking=True)
+    # Explicit labels: without them Odoo derives "Change Order" from the field
+    # name, which now collides with the change event's own renamed label and
+    # produces duplicate msgids in the translations.
     change_order_ids = fields.One2many(
-        "construction.change.order", "change_event_id")
-    change_order_count = fields.Integer(compute="_compute_co_count")
+        "construction.change.order", "change_event_id", string="Variations")
+    change_order_count = fields.Integer(
+        compute="_compute_co_count", string="Variation Count")
 
     def _is_open_for_overdue(self):
         self.ensure_one()
@@ -64,6 +72,21 @@ class ConstructionChangeEvent(models.Model):
             "target": "current",
         }
 
+    def action_view_change_orders(self):
+        """The variations raised against this change order."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Variations"),
+            "res_model": "construction.change.order",
+            "view_mode": "list,form",
+            "domain": [("change_event_id", "=", self.id)],
+            "context": {
+                "default_change_event_id": self.id,
+                "default_project_id": self.project_id.id,
+            },
+        }
+
     def action_reject(self):
         self.state = "rejected"
 
@@ -74,13 +97,14 @@ class ConstructionChangeOrder(models.Model):
     flow into subsequent progress certificates."""
 
     _name = "construction.change.order"
-    _description = "Change Order / Variation"
+    _description = "Variation"
     _inherit = ["construction.document.mixin", "mail.thread",
                 "mail.activity.mixin", "construction.approvable"]
     _doc_prefix = "VO"
     _order = "id desc"
 
-    change_event_id = fields.Many2one("construction.change.event")
+    change_event_id = fields.Many2one(
+        "construction.change.event", string="Change Order")
     boq_id = fields.Many2one(
         "construction.boq", required=True,
         domain="[('project_id', '=', project_id)]")
@@ -201,7 +225,7 @@ class ConstructionChangeOrder(models.Model):
 
 class ConstructionChangeOrderLine(models.Model):
     _name = "construction.change.order.line"
-    _description = "Change Order Line"
+    _description = "Variation Line"
     _order = "change_order_id, sequence, id"
 
     change_order_id = fields.Many2one(
