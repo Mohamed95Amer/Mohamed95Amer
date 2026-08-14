@@ -319,6 +319,10 @@ body.o_rtl .o_prog_gantt {
     .o_prog_name_row {
         /* rtl:ignore */
         text-align: right;
+
+        // A collapsed phase points toward its hidden children.  Mirror the
+        // caret for Arabic while leaving the chronological time axis LTR.
+        .o_prog_twisty .fa-caret-right { transform: scaleX(-1); }
     }
     .o_prog_slip { margin-right: auto; margin-left: 0; }
     .o_prog_scroller,

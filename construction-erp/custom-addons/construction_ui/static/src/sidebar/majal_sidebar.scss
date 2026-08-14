@@ -308,6 +308,13 @@ $sidebar-rail: 52px;
     box-shadow: -1px 0 0 rgba(0, 0, 0, .18);
 
     .o_majal_children { border-left: 0; border-right: 1px solid rgba(255, 255, 255, .12); }
+
+    // The LTR open state turns an angle-right caret clockwise.  In Arabic
+    // the children open toward the left, so the same state must turn it
+    // counter-clockwise instead of pointing down/right.
+    .o_majal_item[aria-expanded="true"] .o_majal_caret {
+        transform: rotate(-90deg);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
