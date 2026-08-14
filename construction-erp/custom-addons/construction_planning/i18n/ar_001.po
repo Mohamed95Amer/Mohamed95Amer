@@ -471,11 +471,11 @@ msgstr "تعذر تحميل البرنامج الزمني."
 #. odoo-javascript
 #: code:addons/construction_planning/static/src/gantt/gantt.xml:0
 msgid ""
-"No scheduled activities. Set planned start and finish dates on the project's "
-"tasks, then run the schedule to compute the critical path."
+"No scheduled activities. Set planned start and finish dates on the project's"
+" tasks, then run the schedule to compute the critical path."
 msgstr ""
-"لا توجد أنشطة مجدولة. حدد تاريخي البداية والنهاية المخططين لمهام المشروع، "
-"ثم شغّل الجدولة لحساب المسار الحرج."
+"لا توجد أنشطة مجدولة. حدد تاريخي البداية والنهاية المخططين لمهام المشروع، ثم"
+" شغّل الجدولة لحساب المسار الحرج."
 
 #. module: construction_planning
 #. odoo-javascript
@@ -503,3 +503,9 @@ msgid ""
 msgstr ""
 "عدد أيام العمل التي تأخرت (+) أو تقدمت (-) فيها النهاية المجدولة عن خط "
 "الأساس."
+
+msgid "Expand"
+msgstr "توسيع"
+
+msgid "Collapse"
+msgstr "طي"

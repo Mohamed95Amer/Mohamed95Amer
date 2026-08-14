@@ -1,6 +1,8 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
+from .transitions import DRAWING_TRANSITION, PROJECT_DOCUMENT_TRANSITION
+
 
 class MajalProjectDocument(models.Model):
     _name = "majal.project.document"
@@ -81,7 +83,8 @@ class MajalProjectDocument(models.Model):
     def write(self, vals):
         if (
             self._decision_fields & set(vals)
-            and not self.env.context.get("majal_document_transition")
+            and self.env.context.get("majal_document_transition")
+            is not PROJECT_DOCUMENT_TRANSITION
             and not self.env.su
         ):
             raise AccessError(
@@ -89,7 +92,8 @@ class MajalProjectDocument(models.Model):
             )
         if (
             self._controlled_content_fields & set(vals)
-            and not self.env.context.get("majal_document_transition")
+            and self.env.context.get("majal_document_transition")
+            is not PROJECT_DOCUMENT_TRANSITION
             and any(record.state not in ("draft", "rejected") for record in self)
         ):
             raise UserError(
@@ -127,7 +131,7 @@ class MajalProjectDocument(models.Model):
         for record in self:
             if record.state not in ("draft", "rejected"):
                 raise UserError(_("Only draft or rejected documents can be submitted."))
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=PROJECT_DOCUMENT_TRANSITION).write(
                 {
                     "state": "submitted",
                     "submitted_by_id": self.env.user.id,
@@ -141,7 +145,7 @@ class MajalProjectDocument(models.Model):
     def action_review(self):
         records = self.filtered(lambda record: record.state == "submitted")
         records._check_named_approver()
-        records.with_context(majal_document_transition=True).write(
+        records.with_context(majal_document_transition=PROJECT_DOCUMENT_TRANSITION).write(
             {"state": "under_review"}
         )
 
@@ -150,7 +154,7 @@ class MajalProjectDocument(models.Model):
         for record in self:
             if record.state not in ("submitted", "under_review"):
                 raise UserError(_("Only submitted documents can be approved."))
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=PROJECT_DOCUMENT_TRANSITION).write(
                 {
                     "state": "approved",
                     "approved_by_id": self.env.user.id,
@@ -164,7 +168,7 @@ class MajalProjectDocument(models.Model):
         for record in self:
             if record.state not in ("submitted", "under_review"):
                 raise UserError(_("Only submitted documents can be returned."))
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=PROJECT_DOCUMENT_TRANSITION).write(
                 {
                     "state": "rejected",
                     "approved_by_id": False,
@@ -177,14 +181,14 @@ class MajalProjectDocument(models.Model):
         if not self.env.user.has_group("construction_base.group_construction_pm"):
             raise AccessError(_("Only a Project Manager can close documents."))
         self.filtered(lambda record: record.state == "approved").with_context(
-            majal_document_transition=True
+            majal_document_transition=PROJECT_DOCUMENT_TRANSITION
         ).write({"state": "closed"})
 
     def action_reset_draft(self):
         if not self.env.user.has_group("construction_base.group_construction_pm"):
             raise AccessError(_("Only a Project Manager can reset documents."))
         self.filtered(lambda record: record.state in ("rejected", "closed")).with_context(
-            majal_document_transition=True
+            majal_document_transition=PROJECT_DOCUMENT_TRANSITION
         ).write({"state": "draft"})
 
 
@@ -368,7 +372,8 @@ class ConstructionDrawingRevision(models.Model):
     def write(self, vals):
         if (
             self._approval_decision_fields & set(vals)
-            and not self.env.context.get("majal_drawing_transition")
+            and self.env.context.get("majal_drawing_transition")
+            is not DRAWING_TRANSITION
             and not self.env.su
         ):
             raise AccessError(
@@ -376,7 +381,8 @@ class ConstructionDrawingRevision(models.Model):
             )
         if (
             {"attachment_id", "sheet_file"} & set(vals)
-            and not self.env.context.get("majal_drawing_transition")
+            and self.env.context.get("majal_drawing_transition")
+            is not DRAWING_TRANSITION
             and any(revision.approval_state not in ("draft", "rejected") for revision in self)
         ):
             raise UserError(
@@ -415,7 +421,7 @@ class ConstructionDrawingRevision(models.Model):
                 raise UserError(_("Only draft or returned revisions can be submitted."))
             if not revision.attachment_id:
                 raise UserError(_("Upload the drawing PDF before requesting sign-off."))
-            revision.with_context(majal_drawing_transition=True).write(
+            revision.with_context(majal_drawing_transition=DRAWING_TRANSITION).write(
                 {
                     "approval_state": "submitted",
                     "submitted_by_id": self.env.user.id,
@@ -428,7 +434,7 @@ class ConstructionDrawingRevision(models.Model):
         for revision in self:
             if revision.approval_state != "submitted":
                 raise UserError(_("Only submitted revisions can be signed off."))
-            revision.with_context(majal_drawing_transition=True).write(
+            revision.with_context(majal_drawing_transition=DRAWING_TRANSITION).write(
                 {
                     "approval_state": "approved",
                     "approved_by_id": self.env.user.id,
@@ -439,7 +445,7 @@ class ConstructionDrawingRevision(models.Model):
     def action_reject_revision(self):
         records = self.filtered(lambda revision: revision.approval_state == "submitted")
         records._check_signoff_authority()
-        records.with_context(majal_drawing_transition=True).write(
+        records.with_context(majal_drawing_transition=DRAWING_TRANSITION).write(
             {"approval_state": "rejected", "approved_by_id": False, "approved_date": False}
         )
 
@@ -447,7 +453,7 @@ class ConstructionDrawingRevision(models.Model):
         if not self.env.user.has_group("construction_base.group_construction_pm"):
             raise AccessError(_("Only a Project Manager can reset drawing sign-off."))
         self.filtered(lambda revision: revision.approval_state == "rejected").with_context(
-            majal_drawing_transition=True
+            majal_drawing_transition=DRAWING_TRANSITION
         ).write({"approval_state": "draft"})
 
     def action_make_current(self):

@@ -201,3 +201,92 @@ class TestMajalDmsTokens(DocumentsBaseCase):
         self.assertFalse(
             file_record.sudo().check_access_token(unrelated.access_token)
         )
+
+
+class TestForgedTransitionContext(TestMajalControlledDocuments):
+    """The guard has to be unforgeable, not merely present.
+
+    Both write guards used to stand down for any truthy value under their
+    context key. Context travels with an RPC call, so a user holding ordinary
+    write access could send `majal_document_transition: true` and write the
+    approval fields directly — forging a signature trail through the document
+    rather than through the workflow that records who signed it.
+
+    RPC carries JSON, so a caller can send the string, the number or the
+    boolean, and none of them *are* the private object the guard now compares
+    against by identity.
+    """
+
+    FORGERIES = (True, 1, "1", "DOCUMENT_TRANSITION", "majal_document_transition",
+                 {"": ""}, ["x"])
+
+    def _sheet(self):
+        return self.env["majal.sheet"].with_user(self.manager).create({
+            "name": "Forgery Estimate",
+            "company_id": self.env.company.id,
+            "project_id": self.project.id,
+            "sheet_type": "estimate",
+            "line_ids": [Command.create({
+                "description": "Concrete", "unit": "m3",
+                "quantity": 10, "unit_rate": 500,
+            })],
+        })
+
+    def test_a_forged_document_key_does_not_unlock_the_state(self):
+        document = self._document()
+        for forged in self.FORGERIES:
+            with self.assertRaises(AccessError, msg=repr(forged)):
+                document.with_user(self.field_user).with_context(
+                    majal_document_transition=forged
+                ).write({"state": "approved"})
+        self.assertEqual(document.state, "draft")
+
+    def test_a_forged_document_key_does_not_forge_a_signature(self):
+        """The fields that say who approved it are the point of the guard."""
+        document = self._document()
+        for field, value in (("approved_by_id", self.field_user.id),
+                             ("approval_checksum", "deadbeef"),
+                             ("issued_by_id", self.field_user.id)):
+            with self.assertRaises(AccessError, msg=field):
+                document.with_user(self.field_user).with_context(
+                    majal_document_transition=True
+                ).write({field: value})
+
+    def test_a_forged_sheet_key_does_not_unfreeze_it(self):
+        sheet = self._sheet()
+        sheet.with_user(self.manager).action_freeze()
+        for forged in self.FORGERIES:
+            with self.assertRaises(AccessError, msg=repr(forged)):
+                sheet.with_user(self.manager).with_context(
+                    majal_sheet_transition=forged
+                ).write({"state": "draft"})
+        self.assertEqual(sheet.state, "frozen")
+
+    def test_a_forged_sheet_key_does_not_rewrite_the_checksum(self):
+        """A sheet whose checksum can be rewritten is not evidence of
+        anything."""
+        sheet = self._sheet()
+        sheet.with_user(self.manager).action_freeze()
+        original = sheet.checksum
+        with self.assertRaises(AccessError):
+            sheet.with_user(self.manager).with_context(
+                majal_sheet_transition=True
+            ).write({"checksum": "0" * 64})
+        self.assertEqual(sheet.checksum, original)
+
+    def test_the_document_workflow_itself_still_works(self):
+        """Closing a hole that also closes the door is not a fix."""
+        document = self._document()
+        document.with_user(self.field_user).action_submit()
+        self.assertEqual(document.state, "submitted")
+        document.with_user(self.manager).action_approve()
+        self.assertEqual(document.state, "approved")
+        self.assertEqual(document.approved_by_id, self.manager)
+
+    def test_the_sheet_workflow_itself_still_works(self):
+        sheet = self._sheet()
+        sheet.with_user(self.manager).action_freeze()
+        self.assertEqual(sheet.state, "frozen")
+        self.assertTrue(sheet.checksum)
+        sheet.with_user(self.manager).action_new_revision()
+        self.assertEqual(sheet.state, "draft")

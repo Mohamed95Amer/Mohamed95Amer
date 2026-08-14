@@ -979,3 +979,45 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_drawing.report_transmittal_document
 msgid "on"
 msgstr ""
+
+msgid "Compare"
+msgstr "مقارنة"
+
+msgid "Compare Revisions"
+msgstr "مقارنة المراجعات"
+
+msgid "Show this revision beside the one before it"
+msgstr "عرض هذه المراجعة بجانب المراجعة السابقة لها"
+
+msgid "Scroll together"
+msgstr "تمرير متزامن"
+
+msgid "Fit"
+msgstr "ملاءمة"
+
+msgid "Page"
+msgstr "صفحة"
+
+msgid "Open"
+msgstr "فتح"
+
+msgid "Loading the sheets…"
+msgstr "جارٍ تحميل اللوحات…"
+
+msgid "The revisions could not be loaded."
+msgstr "تعذر تحميل المراجعات."
+
+msgid "This drawing has no revisions yet."
+msgstr "لا توجد مراجعات لهذه اللوحة بعد."
+
+msgid "Both panes are showing the same revision."
+msgstr "كلا الجزأين يعرضان المراجعة نفسها."
+
+msgid "This revision has no sheet PDF."
+msgstr "لا يوجد ملف PDF لهذه المراجعة."
+
+msgid "Zoom in"
+msgstr "تكبير"
+
+msgid "Zoom out"
+msgstr "تصغير"

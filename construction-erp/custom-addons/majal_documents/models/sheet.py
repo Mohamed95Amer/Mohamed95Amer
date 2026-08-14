@@ -3,6 +3,8 @@ import hashlib
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
+from .transitions import SHEET_TRANSITION
+
 
 class MajalSheet(models.Model):
     _name = "majal.sheet"
@@ -104,7 +106,9 @@ class MajalSheet(models.Model):
             "frozen_at",
         }
         if protected.intersection(values) and not (
-            self.env.su or self.env.context.get("majal_sheet_transition")
+            self.env.su
+            or self.env.context.get("majal_sheet_transition")
+            is SHEET_TRANSITION
         ):
             raise AccessError(_("Use the sheet workflow buttons."))
         editable = {
@@ -147,7 +151,7 @@ class MajalSheet(models.Model):
             if record.state != "draft":
                 raise UserError(_("Only draft sheets can be frozen."))
             checksum = hashlib.sha256(record._canonical_content()).hexdigest()
-            record.with_context(majal_sheet_transition=True).write(
+            record.with_context(majal_sheet_transition=SHEET_TRANSITION).write(
                 {
                     "state": "frozen",
                     "revision": record.revision + 1,
@@ -164,7 +168,7 @@ class MajalSheet(models.Model):
                 raise UserError(_("Only a frozen sheet can start a new revision."))
             if (self.env.user.majal_role_id.rank or 0) < 30:
                 raise AccessError(_("A manager must reopen a frozen sheet."))
-            record.with_context(majal_sheet_transition=True).write(
+            record.with_context(majal_sheet_transition=SHEET_TRANSITION).write(
                 {"state": "draft", "checksum": False}
             )
         return True

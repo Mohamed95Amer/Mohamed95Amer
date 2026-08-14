@@ -8318,8 +8318,8 @@ msgid "Management Dashboards"
 msgstr "لوحات الإدارة"
 
 #. module: construction_ui
-#: model:ir.ui.menu,name:spreadsheet_dashboard.spreadsheet_dashboard_menu_dashboard
 #. odoo-javascript
+#: model:ir.ui.menu,name:spreadsheet_dashboard.spreadsheet_dashboard_menu_dashboard
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
 msgid "Analytical Workbooks"
 msgstr "مصنفات التحليل"
@@ -8339,8 +8339,11 @@ msgstr "لوحات الإدارة"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
-msgid "Start with the company-wide position, then move directly into the operation that needs attention."
-msgstr "ابدأ بصورة الشركة كاملة، ثم انتقل مباشرة إلى العملية التي تحتاج إلى التدخل."
+msgid ""
+"Start with the company-wide position, then move directly into the operation "
+"that needs attention."
+msgstr ""
+"ابدأ بصورة الشركة كاملة، ثم انتقل مباشرة إلى العملية التي تحتاج إلى التدخل."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8387,8 +8390,12 @@ msgstr "محفظة الإدارة التنفيذية"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "Compare contract value, margin, programme, quality, safety, and material performance across every project."
-msgstr "قارن قيمة العقود والهامش والبرنامج والجودة والسلامة وأداء المواد عبر جميع المشاريع."
+msgid ""
+"Compare contract value, margin, programme, quality, safety, and material "
+"performance across every project."
+msgstr ""
+"قارن قيمة العقود والهامش والبرنامج والجودة والسلامة وأداء المواد عبر جميع "
+"المشاريع."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8405,8 +8412,12 @@ msgstr "عمليات الإنشاءات"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "Open projects, site records, engineering workflows, commercial controls, and the daily risk picture."
-msgstr "افتح المشاريع وسجلات الموقع ومسارات الهندسة والضوابط التجارية وصورة المخاطر اليومية."
+msgid ""
+"Open projects, site records, engineering workflows, commercial controls, and"
+" the daily risk picture."
+msgstr ""
+"افتح المشاريع وسجلات الموقع ومسارات الهندسة والضوابط التجارية وصورة المخاطر "
+"اليومية."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8423,8 +8434,12 @@ msgstr "عمليات إدارة المرافق"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "Monitor assets, locations, work orders, preventive maintenance, service levels, contracts, and parts."
-msgstr "راقب الأصول والمواقع وأوامر العمل والصيانة الوقائية ومستويات الخدمة والعقود وقطع الغيار."
+msgid ""
+"Monitor assets, locations, work orders, preventive maintenance, service "
+"levels, contracts, and parts."
+msgstr ""
+"راقب الأصول والمواقع وأوامر العمل والصيانة الوقائية ومستويات الخدمة والعقود "
+"وقطع الغيار."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8441,8 +8456,12 @@ msgstr "الموقف التجاري"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "See unapproved change, certification, billing, commitment, and forecast-margin exposure before month end."
-msgstr "راجع التغييرات غير المعتمدة والتصديق والفوترة والالتزامات وانكشاف الهامش المتوقع قبل نهاية الشهر."
+msgid ""
+"See unapproved change, certification, billing, commitment, and forecast-"
+"margin exposure before month end."
+msgstr ""
+"راجع التغييرات غير المعتمدة والتصديق والفوترة والالتزامات وانكشاف الهامش "
+"المتوقع قبل نهاية الشهر."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8453,8 +8472,12 @@ msgstr "المتابعة الشخصية"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "One prioritised queue for approvals, overdue actions, assigned defects, inspections, and work orders."
-msgstr "قائمة واحدة مرتبة للاعتمادات والإجراءات المتأخرة والعيوب والفحوص وأوامر العمل المسندة إليك."
+msgid ""
+"One prioritised queue for approvals, overdue actions, assigned defects, "
+"inspections, and work orders."
+msgstr ""
+"قائمة واحدة مرتبة للاعتمادات والإجراءات المتأخرة والعيوب والفحوص وأوامر "
+"العمل المسندة إليك."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8465,8 +8488,12 @@ msgstr "تحليل ذاتي"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
-msgid "Open configurable spreadsheet dashboards for finance, sales, inventory, and other installed business areas."
-msgstr "افتح لوحات جداول قابلة للضبط للمالية والمبيعات والمخزون ومجالات الأعمال المثبتة الأخرى."
+msgid ""
+"Open configurable spreadsheet dashboards for finance, sales, inventory, and "
+"other installed business areas."
+msgstr ""
+"افتح لوحات جداول قابلة للضبط للمالية والمبيعات والمخزون ومجالات الأعمال "
+"المثبتة الأخرى."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8619,7 +8646,9 @@ msgstr "التعلّم من السلامة"
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
-msgid "Record what happened, find why, and close the actions that stop it happening again."
+msgid ""
+"Record what happened, find why, and close the actions that stop it happening"
+" again."
 msgstr "سجّل ما حدث، وحدد السبب، وأغلق الإجراءات التي تمنع تكراره."
 
 #. module: construction_ui
@@ -8687,3 +8716,9 @@ msgstr "إحاطة الموقع"
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
 msgid "Management indicators"
 msgstr "مؤشرات الإدارة"
+
+msgid "Back"
+msgstr "رجوع"
+
+msgid "Payments"
+msgstr "الدفعات"

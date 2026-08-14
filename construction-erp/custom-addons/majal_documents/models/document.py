@@ -4,6 +4,8 @@ import hashlib
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
+from .transitions import DOCUMENT_TRANSITION
+
 
 DOCUMENT_STATES = [
     ("draft", "Draft"),
@@ -160,7 +162,9 @@ class MajalDocument(models.Model):
             "current_version_id",
         }
         if transition_fields.intersection(values) and not (
-            self.env.su or self.env.context.get("majal_document_transition")
+            self.env.su
+            or self.env.context.get("majal_document_transition")
+            is DOCUMENT_TRANSITION
         ):
             raise AccessError(_("Use the document workflow buttons to change status."))
         controlled_content = {
@@ -228,7 +232,7 @@ class MajalDocument(models.Model):
                 "created_by_id": self.env.user.id,
             }
         )
-        self.with_context(majal_document_transition=True).write(
+        self.with_context(majal_document_transition=DOCUMENT_TRANSITION).write(
             {"current_version_id": version.id}
         )
         return version
@@ -244,7 +248,7 @@ class MajalDocument(models.Model):
                     _("The submitter and required approver must be different users.")
                 )
             version = record._create_version()
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=DOCUMENT_TRANSITION).write(
                 {
                     "state": "submitted",
                     "submitted_by_id": self.env.user.id,
@@ -276,7 +280,7 @@ class MajalDocument(models.Model):
             record._check_named_approver()
             if not record.current_version_id:
                 raise ValidationError(_("The submitted version is missing."))
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=DOCUMENT_TRANSITION).write(
                 {
                     "state": "approved",
                     "approved_by_id": self.env.user.id,
@@ -298,7 +302,7 @@ class MajalDocument(models.Model):
             if record.state != "submitted":
                 raise UserError(_("Only submitted documents can be rejected."))
             record._check_named_approver()
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=DOCUMENT_TRANSITION).write(
                 {"state": "rejected"}
             )
         return True
@@ -311,7 +315,7 @@ class MajalDocument(models.Model):
                 raise ValidationError(
                     _("The approved checksum no longer matches the current revision.")
                 )
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=DOCUMENT_TRANSITION).write(
                 {
                     "state": "issued",
                     "issued_by_id": self.env.user.id,
@@ -327,7 +331,7 @@ class MajalDocument(models.Model):
                 raise AccessError(_("A manager must reopen a controlled document."))
             if record.state not in ("rejected", "cancelled", "approved"):
                 raise UserError(_("This document cannot be reset to draft."))
-            record.with_context(majal_document_transition=True).write(
+            record.with_context(majal_document_transition=DOCUMENT_TRANSITION).write(
                 {
                     "state": "draft",
                     "approved_by_id": False,

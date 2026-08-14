@@ -110,3 +110,6 @@ msgstr "قائمة المزامنة"
 #. module: majal_field_offline
 msgid "Clear this device"
 msgstr "مسح بيانات هذا الجهاز"
+
+msgid "Back"
+msgstr "رجوع"

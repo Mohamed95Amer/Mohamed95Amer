@@ -415,3 +415,30 @@ msgstr "مثال: ساعات التشغيل، ك.و.س، دورات."
 #: model:ir.model.fields,help:facility_asset.field_facility_asset_meter__uom
 msgid "hours / kWh / cycles …"
 msgstr "ساعات / ك.و.س / دورات ..."
+
+msgid "Depreciating Asset"
+msgstr "الأصل القابل للإهلاك"
+
+msgid "Asset Type"
+msgstr "نوع الأصل"
+
+msgid "Depreciation Status"
+msgstr "حالة الإهلاك"
+
+msgid "Gross Value"
+msgstr "القيمة الإجمالية"
+
+msgid "Book Value"
+msgstr "القيمة الدفترية"
+
+msgid "Accumulated Depreciation"
+msgstr "مجمع الإهلاك"
+
+msgid "Start Depreciation"
+msgstr "بدء الإهلاك"
+
+msgid "Open Asset"
+msgstr "فتح الأصل"
+
+msgid "Depreciation"
+msgstr "الإهلاك"

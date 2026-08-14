@@ -58,6 +58,27 @@ MODULES = [
 # Majal vocabulary. Exact messages are intentionally used so placeholders,
 # punctuation and workflow terminology remain safe and reviewable.
 CUSTOM = {
+    # Terminology introduced with document numbering, multi-person approval,
+    # the inspection export, the revision compare and asset depreciation.
+    # Kept here as well as in the shipped catalogues so a regeneration does
+    # not quietly drop them back to English.
+    "Document Numbering": "ترقيم المستندات",
+    "Prefix": "البادئة",
+    "Padding": "عدد الخانات",
+    "Any Of These People": "أي من هؤلاء الأشخاص",
+    "Named Approvers": "المعتمدون المحددون",
+    "Specific Person": "شخص محدد",
+    "Any Member Of": "أي عضو في",
+    "Export to Excel": "تصدير إلى إكسل",
+    "Compare Revisions": "مقارنة المراجعات",
+    "Scroll together": "تمرير متزامن",
+    "Depreciating Asset": "الأصل القابل للإهلاك",
+    "Accumulated Depreciation": "مجمع الإهلاك",
+    "Book Value": "القيمة الدفترية",
+    "Gross Value": "القيمة الإجمالية",
+    "Start Depreciation": "بدء الإهلاك",
+    "Depreciation": "الإهلاك",
+    "Asset Type": "نوع الأصل",
     # Viewer and checklist wording added with the 3D pins and the standard
     # form library. These are exact matches so they beat the generic official
     # catalogue, which renders some of them for a different context.

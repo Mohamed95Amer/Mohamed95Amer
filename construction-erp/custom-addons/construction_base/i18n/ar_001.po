@@ -513,3 +513,33 @@ msgstr "العطاء"
 #: model:ir.model.constraint,message:construction_base.constraint_project_project_project_code_uniq
 msgid "The project code must be unique per company."
 msgstr "يجب أن يكون رمز المشروع فريداً داخل الشركة."
+
+msgid "Document Numbering"
+msgstr "ترقيم المستندات"
+
+msgid "Prefix"
+msgstr "البادئة"
+
+msgid "Padding"
+msgstr "عدد الخانات"
+
+msgid "Numbering"
+msgstr "الترقيم"
+
+msgid "Any Of These People"
+msgstr "أي من هؤلاء الأشخاص"
+
+msgid "Named Approvers"
+msgstr "المعتمدون المحددون"
+
+msgid "Specific Person"
+msgstr "شخص محدد"
+
+msgid "Any Member Of"
+msgstr "أي عضو في"
+
+msgid "Request Approval"
+msgstr "طلب الاعتماد"
+
+msgid "Everything selected is now waiting."
+msgstr "كل ما تم تحديده أصبح بانتظار الاعتماد."
