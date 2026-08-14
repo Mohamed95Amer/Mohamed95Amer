@@ -34,6 +34,16 @@
       <!-- The tree for whichever app is open. -->
       <div class="o_majal_tree_wrap">
         <div class="o_majal_sidebar_head">
+          <!-- History back, not "home". The hub's goHome already covers
+               going to the top; what was missing was retracing one step,
+               which is what somebody four registers deep actually wants.
+               Odoo's own breadcrumbs are left alone — the sidebar
+               deliberately does not touch them. -->
+          <button type="button" class="o_majal_back"
+                  title="Back" aria-label="Back"
+                  t-on-click="() => this.goBack()">
+            <i class="fa fa-angle-left"/>
+          </button>
           <span class="o_majal_sidebar_app" t-if="currentApp" t-esc="currentApp.name"/>
         </div>
 

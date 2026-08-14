@@ -302,11 +302,76 @@
         }
     }
 
+    // ------------------------------------------------------------------
+    // Going back
+    //
+    // On a phone this is not a nicety. The app is a single page, so the
+    // device's own back gesture left Majal Field entirely — a technician
+    // three fields into a defect swiped back out of the app and lost the
+    // form. Tabs and dialogs now push a history entry, so back closes the
+    // dialog or returns to Overview, and only leaves once there is nothing
+    // left to leave. The header button runs the same path so the two can
+    // never disagree.
+    // ------------------------------------------------------------------
+    const openDialog = () => Array.from(document.querySelectorAll("dialog"))
+        .find((item) => item.open);
+
+    function showTab(name) {
+        document.querySelectorAll("[data-tab]").forEach(
+            (item) => item.classList.toggle("is-active", item.dataset.tab === name));
+        document.querySelectorAll(".mf-panel").forEach(
+            (item) => item.classList.toggle("is-active", item.id === name));
+        const back = document.getElementById("backButton");
+        if (back) back.hidden = name === "overview";
+    }
+
+    function currentTab() {
+        const active = document.querySelector(".mf-panel.is-active");
+        return active ? active.id : "overview";
+    }
+
+    function goDeeper(state) {
+        // A guard rather than an assumption: history is unavailable in some
+        // embedded webviews, and a back button that throws is worse than one
+        // that only works from the header.
+        try {
+            window.history.pushState(state, "");
+        } catch (error) {
+            /* the header button still works */
+        }
+    }
+
+    function goBack() {
+        const dialog = openDialog();
+        if (dialog) {
+            dialog.close();
+            return true;
+        }
+        if (currentTab() !== "overview") {
+            showTab("overview");
+            return true;
+        }
+        return false;
+    }
+
+    window.addEventListener("popstate", () => {
+        // Nothing left to unwind: put the entry back so the next gesture
+        // does not skip past the app into whatever preceded it.
+        if (!goBack()) goDeeper({depth: 0});
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!event.target.closest("#backButton")) return;
+        if (window.history.state) window.history.back();
+        else goBack();
+    });
+
     document.addEventListener("click", async (event) => {
         const tab = event.target.closest("[data-tab]");
         if (tab) {
-            document.querySelectorAll("[data-tab]").forEach((item) => item.classList.toggle("is-active", item === tab));
-            document.querySelectorAll(".mf-panel").forEach((item) => item.classList.toggle("is-active", item.id === tab.dataset.tab));
+            const name = tab.dataset.tab;
+            if (name !== currentTab() && name !== "overview") goDeeper({tab: name});
+            showTab(name);
         }
         const defectAction = event.target.closest("[data-defect-action]");
         if (defectAction) {
@@ -350,9 +415,15 @@
         }, {target_model: "maintenance.request", target_id: workorder.id, base_write_date: workorder.write_date});
     });
 
-    $("#openDefect").addEventListener("click", () => $("#defectDialog").showModal());
+    // Both dialogs push an entry, so the device's back gesture closes the
+    // form rather than leaving the app with the form half filled in.
+    $("#openDefect").addEventListener("click", () => {
+        goDeeper({dialog: "defectDialog"});
+        $("#defectDialog").showModal();
+    });
     $("#openDailyLog").addEventListener("click", () => {
         $("#dailyLogForm").elements.log_date.value = new Date().toISOString().slice(0, 10);
+        goDeeper({dialog: "dailyLogDialog"});
         $("#dailyLogDialog").showModal();
     });
     $("#defectForm").addEventListener("submit", async (event) => {

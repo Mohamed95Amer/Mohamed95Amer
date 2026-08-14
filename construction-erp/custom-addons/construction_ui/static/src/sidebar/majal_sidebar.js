@@ -118,6 +118,22 @@ export class MajalSidebar extends Component {
     href(menu) {
         return menu.actionID ? `/odoo/action-${menu.actionID}` : "#";
     }
+
+    /**
+     * One step back, through the browser's own history.
+     *
+     * The web client keeps its state in the URL, so history.back() retraces
+     * a step properly — including back out of a record into the list it came
+     * from. Reimplementing that against the action stack would be a second,
+     * worse copy of something the browser already gets right.
+     *
+     * This is not the hub's goHome: that jumps to the top, which is the
+     * wrong move for somebody four registers deep who wants the one screen
+     * before this one.
+     */
+    goBack() {
+        browser.history.back();
+    }
 }
 
 /* The sidebar is part of the web client's frame, so it mounts alongside the

@@ -15,6 +15,12 @@
             </head>
             <body>
                 <header class="mf-header">
+                    <!-- Hidden on Overview, which is the top of the app and
+                         has nowhere to go back to. Shown by the script, not
+                         by CSS, because the same handler drives the device's
+                         own back gesture. -->
+                    <button id="backButton" class="mf-back" type="button"
+                            aria-label="Back" hidden="hidden">←</button>
                     <div>
                         <span class="mf-kicker">MAJAL FIELD</span>
                         <h1>Good work, <t t-esc="user_name"/></h1>

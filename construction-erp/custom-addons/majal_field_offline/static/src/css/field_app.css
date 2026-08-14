@@ -234,3 +234,23 @@ dialog input, dialog select, dialog textarea {
     .mf-syncbar { align-items: flex-start; }
     .mf-syncbar .mf-button { padding-inline: .65rem; }
 }
+
+/* The back control. Sized to the 44px touch target the rest of the app
+   uses: this gets pressed with a gloved thumb on a site, not a mouse. */
+.mf-back {
+    align-self: flex-start;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    margin-inline-end: .25rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: white;
+    background: rgba(255, 255, 255, .14);
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: .75rem;
+    cursor: pointer;
+}
+.mf-back:hover { background: rgba(255, 255, 255, .22); }
+.mf-back[hidden] { display: none; }
+/* The glyph points the way the language runs. */
+[dir="rtl"] .mf-back { transform: scaleX(-1); }

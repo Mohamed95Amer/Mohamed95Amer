@@ -107,6 +107,27 @@ $sidebar-rail: 52px;
         border-bottom: 1px solid rgba(255, 255, 255, .08);
     }
 
+    .o_majal_back {
+        flex: 0 0 auto;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        color: rgba(255, 255, 255, .72);
+        background: rgba(255, 255, 255, .08);
+        border: 0;
+        border-radius: 6px;
+        line-height: 1;
+        cursor: pointer;
+
+        &:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .18);
+        }
+    }
+
+    // The chevron points the way the language runs.
+    [dir="rtl"] & .o_majal_back .fa { transform: scaleX(-1); }
+
     .o_majal_sidebar_app {
         min-width: 0;
         overflow: hidden;
