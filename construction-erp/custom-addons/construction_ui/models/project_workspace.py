@@ -298,6 +298,36 @@ class ProjectProject(models.Model):
             "construction.material.issue", _("Material Issues")
         )
 
+    def action_majal_drawing_revisions(self):
+        """Revisions and their sign-off trail, for this project only.
+
+        Deliberately a method rather than a %()d reference to the global
+        action: that action is declared later in the same XML file than the
+        button would use it, which loads fine on an upgrade — the record is
+        already in the database — and fails on a fresh install.
+        """
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Revisions & Sign-off"),
+            "res_model": "construction.drawing.revision",
+            "view_mode": "list,form",
+            "domain": [("project_id", "=", self.id)],
+            "context": {"default_project_id": self.id},
+        }
+
+    def action_majal_drawing_upload(self):
+        """Open the bulk drawing upload wizard against this project."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Bulk Upload Drawings"),
+            "res_model": "construction.drawing.upload",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_project_id": self.id},
+        }
+
 
 class ConstructionDrawingRevision(models.Model):
     _name = "construction.drawing.revision"

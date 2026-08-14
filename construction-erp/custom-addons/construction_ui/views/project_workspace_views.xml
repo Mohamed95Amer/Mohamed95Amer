@@ -335,11 +335,10 @@
                             <!-- Both of these existed already and were only
                                  reachable from a menu two levels away from the
                                  drawings they act on. -->
-                            <button name="%(construction_drawing.action_drawing_upload)d"
-                                    type="action" string="Bulk Upload Drawings"
-                                    context="{'default_project_id': id}"/>
-                            <button name="%(construction_ui.action_majal_drawing_revisions)d"
-                                    type="action" string="Revisions &amp; Sign-off"/>
+                            <button name="action_majal_drawing_upload" type="object"
+                                    string="Bulk Upload Drawings"/>
+                            <button name="action_majal_drawing_revisions" type="object"
+                                    string="Revisions &amp; Sign-off"/>
                         </group>
                     </group>
                     <separator string="Drawings"/>
