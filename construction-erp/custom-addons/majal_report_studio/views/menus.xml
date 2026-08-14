@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_report_studio_root"
+              name="Report Studio"
+              parent="majal_documents.menu_majal_documents_root"
+              action="action_majal_report_catalog"
+              sequence="50"/>
+</odoo>
