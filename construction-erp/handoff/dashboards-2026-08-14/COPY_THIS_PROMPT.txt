@@ -1,0 +1,70 @@
+You are continuing development of MajalOps — an Odoo 18 Community
+construction, facilities and property platform. The product brand is Majal,
+not Odoo.
+
+Repository: Mohamed95Amer/Mohamed95Amer, working dir construction-erp/.
+Branch: codex/odoo19-ui-enhancement (PR #7). Develop, commit and push there.
+Never merge wip/local-2026-07-31.
+
+FIRST: read construction-erp/handoff/dashboards-2026-08-14/START_HERE.md.
+It records what was just built, the traps that cost time, and the open work.
+Do not re-derive it.
+
+Baseline: scripts/run-tests.sh all => 704 tests, 0 failed, 0 errors. It must
+still be 0/0 when you finish.
+
+TWO RULES THAT COST ME MOST OF A SESSION:
+
+1. A clean install proves nothing about whether a feature works. Three
+   features installed perfectly and were broken — a report that raised on
+   first compute, a viewer whose panes stayed blank until a control was
+   touched, a menu that opened on an empty list. The Python suite was green
+   through all three. If you touch UI, JS, or anything a user opens, drive
+   it in a browser (Playwright, executable_path=/opt/pw-browsers/chromium,
+   wait on .o_main_navbar, never networkidle) and listen for pageerror.
+
+2. Read the API before you write against it. Six defects came from assuming
+   field names. Query information_schema or open the model file first.
+
+ALSO: run scripts/init-db.sh, not only the test suite. The suite never loads
+a language; init-db.sh loads ar_001, and a malformed .po entry killed the
+whole install this session while the suite stayed green.
+
+WHAT TO PICK UP (in the order I would do it):
+
+a) Workforce dashboard has only 2 panels. It needs a stored utilisation
+   measure to answer "who is over-committed" — likely a fifth SQL analysis
+   view over majal.allocation, following the pattern in
+   custom-addons/majal_dashboard/models/. Copy the pin-test discipline from
+   tests/test_construction_report.py: assert concrete numbers, not only that
+   two implementations agree, because two empty values agree with each other
+   and prove nothing.
+
+b) Put the MIS Trading Summary on the Financial board if it renders inside a
+   board — board panels require a window action, and a server action cannot
+   be drawn there. Verify in a browser.
+
+c) Procurement panels are thin until real purchase orders exist.
+   purchase.order.construction_project_id already links POs to projects and
+   routes receipts into the project's site store, so the integration is
+   there; the demo data is not.
+
+d) RTL is unverified. Three directional glyphs were flipped for RTL (back
+   arrow, sidebar chevron, Gantt twisty) and never looked at in Arabic.
+
+e) Non-admin personas are unverified on the new screens. A record-rule fault
+   invisible to admin has broken this branch before.
+
+CONSTRAINTS:
+- Secrets come from environment variables. Never hardcode, never commit one.
+- Website content rules (website/README.md): no invented statistics, no
+  invented social proof, no pricing. Every number verifiable in the repo.
+- Screenshots on the site must be real captures. If you cannot produce one,
+  remove the <figure> block rather than substitute a mock-up.
+- Do not add a proprietary-licensed module (e.g. Dashboard Ninja, Odoo
+  Proprietary License v1.0) without the owner deciding explicitly.
+- Keep the four workflow guards unforgeable: compare context values against
+  a private object by identity, never a truthy check.
+
+Before you start, run: git status --short && git log --oneline -5
+Report what you find before changing anything.
