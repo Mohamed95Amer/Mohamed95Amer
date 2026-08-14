@@ -17,6 +17,16 @@
               action="action_board_financial" sequence="10"
               groups="construction_base.group_construction_commercial,construction_base.group_construction_manager"/>
 
+    <!-- The statutory side of the money is MIS Builder's, not this
+         module's. It is reachable from here rather than duplicated: a second
+         P&L that disagrees with the first is worse than one that takes an
+         extra click. -->
+    <menuitem id="menu_board_mis" name="Financial Reports"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="mis_builder.mis_report_instance_view_action"
+              sequence="12"
+              groups="construction_base.group_construction_commercial,construction_base.group_construction_manager"/>
+
     <menuitem id="menu_board_operations" name="Operations"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
               action="action_board_operations" sequence="15"/>
@@ -41,4 +51,18 @@
     <menuitem id="menu_board_equipment" name="Equipment"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
               action="action_board_equipment" sequence="40"/>
+
+    <!-- OCA's spreadsheet editor arrives as its own top-level app carrying
+         its own icon, and the product is Majal rather than a shelf of other
+         people's apps. Rebranded like every other third-party app, using
+         construction_ui's icon set.
+
+         Branded rather than added to the branding test's allow-list: the
+         rule is that no app shows a stock icon, and widening the exception
+         would retire the check that caught this one. It lives here and not
+         in construction_ui because this is the module that decided to vendor
+         the editor, and construction_ui does not depend on it. -->
+    <record id="spreadsheet_oca.spreadsheet_spreadsheet_menu" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/general.svg</field>
+    </record>
 </odoo>

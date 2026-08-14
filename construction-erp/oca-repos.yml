@@ -74,3 +74,15 @@ repos:
     commit: 52e03a544f25b789ed34a0e842603ce0b80f36aa
     modules:
       - report_xlsx
+  # Odoo's spreadsheet_dashboard (core) can display a dashboard but not edit
+  # one — editing is Enterprise's spreadsheet_edition. These give Community a
+  # real spreadsheet editor and let a user build their own dashboard from a
+  # pivot without writing a module, which is what "My Dashboards" has to mean
+  # if it is to mean anything. AGPL-3 / LGPL-3.
+  spreadsheet:
+    url: https://github.com/OCA/spreadsheet.git
+    commit: 6663df26dc5119b466ac70092530414e128848fe
+    modules:
+      - spreadsheet_oca
+      - spreadsheet_dashboard_oca
+      - spreadsheet_dashboard_purchase_oca

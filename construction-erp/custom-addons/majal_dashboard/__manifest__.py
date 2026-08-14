@@ -10,6 +10,8 @@
     "depends": [
         "board",
         "spreadsheet_dashboard",
+        "spreadsheet_oca",
+        "construction_ui",
         "construction_report",
         "construction_progress_billing",
         "construction_subcontractor",
@@ -22,11 +24,13 @@
         "facility_sla",
         "facility_contract",
         "purchase",
+        "mis_builder",
         "majal_workforce",
         "construction_material",
     ],
     "data": [
         "security/ir.model.access.csv",
+        "data/mis_report_data.xml",
         "views/construction_report_views.xml",
         "views/facility_report_views.xml",
         "views/estate_report_views.xml",

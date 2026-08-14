@@ -14,3 +14,4 @@ update the pin in the repos manifest and re-run the script.
 | https://github.com/OCA/mis-builder.git | `223b9774af49c7059cbc24c86d531c7aaf642831` | mis_builder, mis_builder_budget |
 | https://github.com/OCA/web.git | `fedf87bfa4243dec6c74bede0e3a1379bf9cd135` | web_responsive, web_notify, web_timeline |
 | https://github.com/OCA/reporting-engine.git | `52e03a544f25b789ed34a0e842603ce0b80f36aa` | report_xlsx |
+| https://github.com/OCA/spreadsheet.git | `6663df26dc5119b466ac70092530414e128848fe` | spreadsheet_oca, spreadsheet_dashboard_oca, spreadsheet_dashboard_purchase_oca |
