@@ -6,7 +6,13 @@
               web_icon="construction_ui,static/description/apps/general.svg"
               groups="base.group_user"/>
     <record id="dms.main_menu_dms" model="ir.ui.menu">
+        <field name="name">File Library</field>
+        <field name="parent_id" ref="menu_majal_documents_root"/>
+        <field name="sequence">40</field>
         <field name="web_icon">construction_ui,static/description/apps/apps.svg</field>
+    </record>
+    <record id="dms.menu_dms_storage" model="ir.ui.menu">
+        <field name="name">Storage Backends</field>
     </record>
     <menuitem id="menu_majal_documents"
               name="Controlled Documents"
