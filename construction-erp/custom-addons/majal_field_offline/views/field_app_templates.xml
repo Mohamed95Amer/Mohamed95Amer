@@ -37,8 +37,8 @@
                         <button data-tab="defects">Defects</button>
                         <button data-tab="inspections">Inspections</button>
                         <button data-tab="workorders">Work Orders</button>
-                        <button data-tab="assets">Assets</button>
                         <button data-tab="drawings">Drawings</button>
+                        <button data-tab="assets">Assets</button>
                     </nav>
 
                     <section id="overview" class="mf-panel is-active">

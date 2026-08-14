@@ -209,6 +209,12 @@ class ProjectProject(models.Model):
     site_form_count = fields.Integer(compute="_compute_majal_workspace_counts")
     quality_item_count = fields.Integer(compute="_compute_majal_workspace_counts")
     engineering_item_count = fields.Integer(compute="_compute_majal_workspace_counts")
+    # Registers that used to be reachable only from a top-level menu, which
+    # meant leaving the project to find something that belongs to it.
+    meeting_count = fields.Integer(compute="_compute_majal_workspace_counts")
+    subcontract_count = fields.Integer(compute="_compute_majal_workspace_counts")
+    subcontract_payment_count = fields.Integer(compute="_compute_majal_workspace_counts")
+    material_issue_count = fields.Integer(compute="_compute_majal_workspace_counts")
 
     def _compute_majal_workspace_counts(self):
         models_to_count = {
@@ -219,6 +225,10 @@ class ProjectProject(models.Model):
             "defects": ("construction.defect", []),
             "rfis": ("construction.rfi", []),
             "submittals": ("construction.submittal", []),
+            "meetings": ("construction.meeting", []),
+            "subcontracts": ("construction.subcontract", []),
+            "sc_payments": ("construction.subcontract.payment", []),
+            "material_issues": ("construction.material.issue", []),
         }
         for project in self:
             counts = {
@@ -231,6 +241,10 @@ class ProjectProject(models.Model):
             project.site_form_count = counts["forms"]
             project.quality_item_count = counts["forms"] + counts["defects"] + counts["submittals"]
             project.engineering_item_count = counts["drawings"] + counts["rfis"] + counts["submittals"]
+            project.meeting_count = counts["meetings"]
+            project.subcontract_count = counts["subcontracts"]
+            project.subcontract_payment_count = counts["sc_payments"]
+            project.material_issue_count = counts["material_issues"]
 
     def _majal_open_records(self, model, name, context=None):
         self.ensure_one()
@@ -267,6 +281,22 @@ class ProjectProject(models.Model):
 
     def action_majal_engineering(self):
         return self._majal_open_records("construction.submittal", _("Engineering Approvals"))
+
+    def action_majal_meetings(self):
+        return self._majal_open_records("construction.meeting", _("Meetings & Minutes"))
+
+    def action_majal_subcontracts(self):
+        return self._majal_open_records("construction.subcontract", _("Subcontracts"))
+
+    def action_majal_subcontract_payments(self):
+        return self._majal_open_records(
+            "construction.subcontract.payment", _("Payments")
+        )
+
+    def action_majal_material_issues(self):
+        return self._majal_open_records(
+            "construction.material.issue", _("Material Issues")
+        )
 
 
 class ConstructionDrawingRevision(models.Model):

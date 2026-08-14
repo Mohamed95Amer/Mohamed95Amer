@@ -20,7 +20,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" icon="fa-money" disabled="1">
                             <field name="payment_count" widget="statinfo"
-                                   string="Certificates"/>
+                                   string="Payments"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -215,7 +215,7 @@
     </record>
 
     <record id="action_sc_payment" model="ir.actions.act_window">
-        <field name="name">Subcontractor Payments</field>
+        <field name="name">Payments</field>
         <field name="res_model">construction.subcontract.payment</field>
         <field name="view_mode">list,form</field>
     </record>
@@ -226,7 +226,7 @@
               action="action_subcontract"
               sequence="40"/>
     <menuitem id="menu_sc_payment"
-              name="Subcontractor Payments"
+              name="Payments"
               parent="construction_base.menu_construction_commercial"
               action="action_sc_payment"
               sequence="45"/>

@@ -123,14 +123,6 @@ const APP_GROUPS = [
         subtitle: "Keep site teams moving",
         apps: [
             {
-                name: "Plan Viewer",
-                description: "Open drawings and work with live pins",
-                action: "construction_pin.action_plan_viewer",
-                icon: "fa-map-o",
-                tone: "blue",
-                workspace: "plan_viewer",
-            },
-            {
                 name: "Daily Site Logs",
                 description: "Capture labour, equipment and delays",
                 action: "construction_daily_log.action_construction_daily_log",

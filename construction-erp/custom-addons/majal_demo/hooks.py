@@ -372,6 +372,50 @@ def _seed_construction(env, company, users):
                     "notes": "Demo daily progress and coordination notes.",
                 }
             )
+
+    # Documents & Commercial had a model, four views, an action and a menu, but
+    # nothing ever created a record — so the screen opened empty for every user
+    # and read as broken. One document per type, spread across the states the
+    # form actually offers, so the register shows its own workflow.
+    documents = [
+        ("tender", "Tender pack — main works", client, 128_500_000, "closed", -180),
+        ("bid_request", "Bidding request — MEP package", subcontractor, 0, "closed", -150),
+        ("quotation", "Quotation — MEP package", subcontractor, 18_400_000, "approved", -140),
+        ("contract", "Subcontract — MEP package", subcontractor, 18_400_000, "approved", -120),
+        ("permit", "Authority permit — excavation", consultant, 0, "approved", -110),
+        ("sales_order", "Variation order — basement waterproofing", client, 197_400, "under_review", -20),
+        ("general", "Method statement — facade installation", consultant, 0, "submitted", -6),
+    ]
+    for document_type, title, partner, amount, state, day_offset in documents:
+        if env["majal.project.document"].sudo().search(
+            [("name", "=", title), ("project_id", "=", primary.id)], limit=1
+        ):
+            continue
+        values = {
+            "name": title,
+            "project_id": primary.id,
+            "document_type": document_type,
+            "partner_id": partner.id,
+            "date_document": today + timedelta(days=day_offset),
+            "amount": amount,
+            "state": state,
+            "description": "<p>Demo record for the Documents &amp; Commercial register.</p>",
+        }
+        # create() is not guarded the way write() is, so the seeded states can be
+        # set directly — but the dates have to come with them or the register
+        # shows approved documents nobody ever approved.
+        document_date = values["date_document"]
+        if state in ("submitted", "under_review", "approved", "rejected", "closed"):
+            values["submitted_by_id"] = users["engineer"].id
+            values["approver_id"] = manager.id
+            values["submitted_date"] = fields.Datetime.to_datetime(document_date)
+        if state in ("approved", "closed"):
+            values["approved_by_id"] = manager.id
+            values["approved_date"] = fields.Datetime.to_datetime(
+                document_date + timedelta(days=2)
+            )
+        env["majal.project.document"].sudo().create(values)
+
     return projects
 
 

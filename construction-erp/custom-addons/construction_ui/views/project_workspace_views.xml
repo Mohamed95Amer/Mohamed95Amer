@@ -159,6 +159,18 @@
             <xpath expr="//page[@name='construction']" position="attributes">
                 <attribute name="string">Project Profile</attribute>
             </xpath>
+            <!-- The stage a project is at is the first thing anyone asks about,
+                 and it was buried in a group two tabs in. Core's stage_id
+                 statusbar stays where it is: it is gated behind
+                 project.group_project_stages and invisible to most users. -->
+            <xpath expr="//header" position="inside">
+                <field name="construction_stage" widget="statusbar"
+                       options="{'clickable': '1'}"
+                       invisible="not is_construction"/>
+            </xpath>
+            <xpath expr="//field[@name='construction_stage'][not(ancestor::header)]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='label_tasks']" position="attributes">
                 <attribute name="string">Task Label</attribute>
             </xpath>
@@ -189,6 +201,25 @@
                 <button name="action_majal_engineering" type="object" class="oe_stat_button"
                         icon="fa-paper-plane-o" invisible="not is_construction">
                     <field name="engineering_item_count" widget="statinfo" string="Engineering"/>
+                </button>
+                <!-- These four had top-level menus and nothing on the project,
+                     so finding a subcontract meant leaving the project it
+                     belongs to. -->
+                <button name="action_majal_subcontracts" type="object" class="oe_stat_button"
+                        icon="fa-handshake-o" invisible="not is_construction">
+                    <field name="subcontract_count" widget="statinfo" string="Subcontracts"/>
+                </button>
+                <button name="action_majal_subcontract_payments" type="object" class="oe_stat_button"
+                        icon="fa-money" invisible="not is_construction">
+                    <field name="subcontract_payment_count" widget="statinfo" string="Payments"/>
+                </button>
+                <button name="action_majal_material_issues" type="object" class="oe_stat_button"
+                        icon="fa-cubes" invisible="not is_construction">
+                    <field name="material_issue_count" widget="statinfo" string="Materials"/>
+                </button>
+                <button name="action_majal_meetings" type="object" class="oe_stat_button"
+                        icon="fa-comments-o" invisible="not is_construction">
+                    <field name="meeting_count" widget="statinfo" string="Meetings"/>
                 </button>
             </xpath>
             <xpath expr="//page[@name='construction']" position="after">
@@ -301,6 +332,14 @@
                                     string="Open Drawing Register" class="btn-primary"/>
                             <button name="action_majal_engineering" type="object"
                                     string="Open Submittals"/>
+                            <!-- Both of these existed already and were only
+                                 reachable from a menu two levels away from the
+                                 drawings they act on. -->
+                            <button name="%(construction_drawing.action_drawing_upload)d"
+                                    type="action" string="Bulk Upload Drawings"
+                                    context="{'default_project_id': id}"/>
+                            <button name="%(construction_ui.action_majal_drawing_revisions)d"
+                                    type="action" string="Revisions &amp; Sign-off"/>
                         </group>
                     </group>
                     <separator string="Drawings"/>
@@ -340,6 +379,48 @@
                                    decoration-info="state == 'submitted'"
                                    decoration-success="state in ('approved', 'approved_as_noted')"
                                    decoration-danger="state == 'revise_resubmit'"/>
+                        </list>
+                    </field>
+                </page>
+                <!-- construction_material already computes all of this on the
+                     project; it simply had nowhere on the form to appear, so
+                     the register looked missing rather than undiscovered. -->
+                <page string="Materials" name="majal_materials"
+                      invisible="not is_construction">
+                    <group>
+                        <group string="Position">
+                            <field name="material_budget_value"/>
+                            <field name="material_consumed_value"/>
+                            <field name="material_on_hand_value"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Waste &amp; Exceptions">
+                            <field name="material_waste_value"/>
+                            <field name="material_waste_percent" widget="percentage"/>
+                            <field name="material_over_budget_count"/>
+                            <field name="site_location_id"/>
+                        </group>
+                    </group>
+                    <group string="Quick Navigation">
+                        <button name="action_open_material_summary" type="object"
+                                string="Open Material Position" class="btn-primary"/>
+                        <button name="action_majal_material_issues" type="object"
+                                string="Open Material Issues"/>
+                        <button name="action_open_site_stock" type="object"
+                                string="Open Site Store"/>
+                    </group>
+                    <separator string="Material Issues"/>
+                    <field name="material_issue_ids" context="{'default_project_id': id}"
+                           options="{'no_delete': True}">
+                        <list delete="false">
+                            <field name="reference"/>
+                            <field name="issue_date"/>
+                            <field name="issued_to_id"/>
+                            <field name="total_value"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'done'"
+                                   decoration-muted="state == 'cancelled'"/>
                         </list>
                     </field>
                 </page>

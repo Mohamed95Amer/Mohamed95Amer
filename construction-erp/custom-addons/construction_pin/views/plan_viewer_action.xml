@@ -5,9 +5,14 @@
         <field name="tag">construction_plan_viewer</field>
     </record>
 
+    <!-- The plan viewer is not a place you go, it is something you open on a
+         drawing sheet — the two buttons on the drawing form and revision list
+         are the way in. The action itself must stay: construction_ui refs it
+         and facility_floorplan reuses the same client-action tag. -->
     <menuitem id="menu_plan_viewer"
               name="Plan Viewer"
               parent="construction_base.menu_construction_engineering"
               action="action_plan_viewer"
-              sequence="12"/>
+              sequence="12"
+              active="False"/>
 </odoo>

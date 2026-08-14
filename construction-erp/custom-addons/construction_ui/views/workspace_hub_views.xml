@@ -20,10 +20,6 @@
         <field name="name">Commercial Control</field>
         <field name="tag">construction_ui.workspace.commercial_hub</field>
     </record>
-    <record id="action_workspace_plan_viewer" model="ir.actions.client">
-        <field name="name">Plan Viewer</field>
-        <field name="tag">construction_ui.workspace.plan_viewer</field>
-    </record>
     <record id="action_workspace_daily_logs" model="ir.actions.client">
         <field name="name">Daily Site Logs</field>
         <field name="tag">construction_ui.workspace.daily_logs</field>
@@ -103,10 +99,6 @@
     <record id="action_workspace_bim" model="ir.actions.client">
         <field name="name">BIM Models</field>
         <field name="tag">construction_ui.workspace.bim</field>
-    </record>
-    <record id="action_workspace_whatsapp" model="ir.actions.client">
-        <field name="name">WhatsApp Alerts</field>
-        <field name="tag">construction_ui.workspace.whatsapp</field>
     </record>
     <record id="action_workspace_parts" model="ir.actions.client">
         <field name="name">Parts &amp; Stores</field>
@@ -200,9 +192,6 @@
               parent="construction_base.menu_construction_commercial"
               action="action_workspace_commercial_hub"
               sequence="1"/>
-    <record id="construction_pin.menu_plan_viewer" model="ir.ui.menu">
-        <field name="action" ref="construction_pin.action_plan_viewer"/>
-    </record>
     <record id="construction_daily_log.menu_construction_daily_log" model="ir.ui.menu">
         <field name="action" ref="construction_daily_log.action_construction_daily_log"/>
     </record>
@@ -279,9 +268,6 @@
 
     <record id="construction_bim.menu_bim_elements" model="ir.ui.menu">
         <field name="action" ref="construction_bim.action_bim_element"/>
-    </record>
-    <record id="construction_whatsapp.menu_whatsapp_messages" model="ir.ui.menu">
-        <field name="action" ref="construction_whatsapp.action_whatsapp_message"/>
     </record>
 
     <record id="facility_inventory.menu_facility_parts" model="ir.ui.menu">

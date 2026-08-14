@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Held back from general release. The two config menus below were
+         already system-only; the message log is now too, so WhatsApp stays
+         installed and testable without appearing in anyone's navigation. -->
     <menuitem id="menu_whatsapp_messages" name="WhatsApp"
               parent="construction_base.menu_construction_root"
-              action="action_whatsapp_message" sequence="72"/>
+              action="action_whatsapp_message" sequence="72"
+              groups="base.group_system"/>
 
     <menuitem id="menu_whatsapp_config" name="WhatsApp Accounts"
               parent="construction_base.menu_construction_config"
