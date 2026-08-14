@@ -28,6 +28,9 @@ class ConstructionDefect(models.Model):
     def _workorder_team(self, company):
         """A maintenance team in the defect's own company.
 
+        Read and created as sudo for the same reason the request itself is:
+        the person raising the snag is not a maintenance administrator.
+
         maintenance.request carries check_company on maintenance_team_id, and
         the field's default is the first team the user can see — which in a
         multi-company database belongs to somebody else. Setting the request's
@@ -35,12 +38,12 @@ class ConstructionDefect(models.Model):
         "Incompatible companies on records" the moment a defect is created for
         a company that is not the one the default team lives in.
         """
-        team = self.env["maintenance.team"].search(
+        team = self.env["maintenance.team"].sudo().search(
             [("company_id", "=", company.id)], limit=1
         )
         if team:
             return team
-        return self.env["maintenance.team"].create(
+        return self.env["maintenance.team"].sudo().create(
             {"name": _("Maintenance"), "company_id": company.id}
         )
 
@@ -67,15 +70,21 @@ class ConstructionDefect(models.Model):
         Idempotent on purpose: this runs from create and from write, and a
         defect reassigned twice should move its work order, not accumulate
         duplicates.
+
+        Written as sudo throughout. The work order is a consequence of raising
+        the snag, not a second action the raiser performs: a site engineer or a
+        Majal Field technician can create a defect without being able to create
+        a maintenance request, and before this was sudo their sync failed with
+        "Access Denied by record rules ... create on maintenance.request".
         """
         for defect in self:
             if not defect.assigned_user_id:
                 continue
             if defect.workorder_id:
                 if defect.workorder_id.user_id != defect.assigned_user_id:
-                    defect.workorder_id.user_id = defect.assigned_user_id
+                    defect.workorder_id.sudo().user_id = defect.assigned_user_id
                 continue
-            defect.workorder_id = self.env["maintenance.request"].create(
+            defect.sudo().workorder_id = self.env["maintenance.request"].sudo().create(
                 defect._workorder_values()
             )
 

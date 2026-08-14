@@ -179,12 +179,18 @@ class TestMyDay(TransactionCase):
 
         fm = self._my_day(technician)
         self.assertIsNotNone(self._section(fm, "work_orders"))
+        # Still one: the engineer's defect raised a work order, but it went to
+        # the engineer, not to this technician.
         self.assertEqual(self._section(fm, "work_orders")["count"], 1)
         self.assertIsNone(self._section(fm, "defects"))
 
         builder = self._my_day(self.engineer)
         self.assertIsNotNone(self._section(builder, "defects"))
-        self.assertIsNone(self._section(builder, "work_orders"))
+        # The engineer does have a work order now — the one their own defect
+        # raised, since a defect's assignee is who has to fix it. What they
+        # must not see is the technician's, so the count is the boundary here
+        # rather than the section's absence.
+        self.assertEqual(self._section(builder, "work_orders")["count"], 1)
 
     def test_planned_maintenance_due_reaches_the_team_not_one_person(self):
         """A PM plan names an asset and a team, never a person."""
