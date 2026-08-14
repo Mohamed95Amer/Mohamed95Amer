@@ -68,6 +68,20 @@ class TestTradingSummary(TransactionCase):
             ["revenue", "direct_cost", "gross_margin", "gross_margin_pct",
              "overheads", "operating_result"])
 
+    def test_financial_board_points_at_the_ready_instance(self):
+        """The board must open a report instance, not MIS's empty template
+        list.  A server action or a definition without an instance renders as
+        a blank panel even though both records installed successfully."""
+        action = self.env.ref("majal_dashboard.action_mis_trading_board")
+        instance = self.env.ref("majal_dashboard.mis_instance_trading")
+        self.assertEqual(action.res_model, "mis.report.instance")
+        self.assertEqual(action.res_id, instance.id)
+        self.assertEqual(action.view_mode, "form")
+        self.assertEqual(
+            action.view_id,
+            self.env.ref("mis_builder.mis_report_instance_result_view_form"),
+        )
+
     def test_it_selects_by_account_type_not_by_code(self):
         """A report written against codes is right on one chart of accounts
         and silently wrong on every other."""

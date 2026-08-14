@@ -62,6 +62,17 @@
         <field name="context">{'disable_toolbar': True}</field>
     </record>
 
+    <!-- A board panel must load a window action.  The MIS list action is
+         intentionally kept for the finance menu; this form action opens the
+         ready-to-run Trading Summary instance itself. -->
+    <record id="action_mis_trading_board" model="ir.actions.act_window">
+        <field name="name">Trading Summary</field>
+        <field name="res_model">mis.report.instance</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mis_builder.mis_report_instance_result_view_form"/>
+        <field name="res_id" eval="ref('mis_instance_trading')"/>
+    </record>
+
     <!-- ============================== Financial =============================
          Where the money is committed and where it has been earned. The
          statutory side — P&L, balance sheet, budgets — is MIS Builder's job
@@ -86,6 +97,9 @@
                         <action name="%(action_procurement_commitment)d"
                                 string="Committed by project"
                                 view_mode="graph"/>
+                        <action name="%(action_mis_trading_board)d"
+                                string="Trading summary"
+                                view_mode="form"/>
                         <action name="%(action_construction_portfolio)d"
                                 string="Jobs below their tendered margin"
                                 view_mode="list"
@@ -241,6 +255,9 @@
                     <column>
                         <action name="%(action_workforce_allocation)d"
                                 string="Allocations by project"
+                                view_mode="graph"/>
+                        <action name="%(action_workforce_utilisation)d"
+                                string="Utilisation by person"
                                 view_mode="graph"/>
                     </column>
                     <column>

@@ -29,6 +29,7 @@
         "construction_material",
     ],
     "data": [
+        "security/majal_dashboard_security.xml",
         "security/ir.model.access.csv",
         "data/mis_report_data.xml",
         "data/mis_instance_data.xml",
@@ -40,5 +41,6 @@
         "views/dashboards.xml",
         "views/menus.xml",
     ],
+    "demo": ["demo/procurement_demo.xml"],
     "installable": True,
 }

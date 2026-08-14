@@ -7,3 +7,6 @@ access_estate_report_mgr,majal.estate.report manager,model_majal_estate_report,c
 access_facility_report_mgr,majal.facility.report manager,model_majal_facility_report,construction_base.group_construction_manager,1,0,0,0
 access_procurement_report,majal.procurement.report,model_majal_procurement_report,construction_base.group_construction_manager,1,0,0,0
 access_procurement_report_comm,majal.procurement.report commercial,model_majal_procurement_report,construction_base.group_construction_commercial,1,0,0,0
+access_workforce_report_pm,majal workforce report pm,model_majal_workforce_report,construction_base.group_construction_pm,1,0,0,0
+access_workforce_report_manager,majal workforce report manager,model_majal_workforce_report,construction_base.group_construction_manager,1,0,0,0
+access_workforce_report_fm,majal workforce report facilities,model_majal_workforce_report,majal_administration.group_facilities_supervisor,1,0,0,0

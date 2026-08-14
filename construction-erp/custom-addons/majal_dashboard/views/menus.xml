@@ -42,7 +42,8 @@
 
     <menuitem id="menu_board_workforce" name="Workforce"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_workforce" sequence="30"/>
+              action="action_board_workforce" sequence="30"
+              groups="construction_base.group_construction_pm,majal_administration.group_facilities_supervisor"/>
 
     <menuitem id="menu_board_hse" name="HSE"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"

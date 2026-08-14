@@ -166,4 +166,41 @@
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_workforce_list_majal"/>
     </record>
+
+    <!-- One row per person, rather than one row per allocation.  This is the
+         view that answers the management question the allocation register
+         cannot: who is carrying more than a week can hold? -->
+    <record id="view_workforce_report_graph_utilisation" model="ir.ui.view">
+        <field name="name">majal.workforce.report.graph.utilisation</field>
+        <field name="model">majal.workforce.report</field>
+        <field name="arch" type="xml">
+            <graph string="Utilisation by Person" type="bar" sample="1"
+                   order="DESC">
+                <field name="employee_id"/>
+                <field name="utilization_percent" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_workforce_report_list" model="ir.ui.view">
+        <field name="name">majal.workforce.report.list</field>
+        <field name="model">majal.workforce.report</field>
+        <field name="arch" type="xml">
+            <list string="Workforce Utilisation" create="0" sample="1"
+                  decoration-danger="is_overallocated">
+                <field name="employee_id"/>
+                <field name="allocation_count"/>
+                <field name="utilization_percent"/>
+                <field name="available_percent"/>
+                <field name="is_overallocated"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_workforce_utilisation" model="ir.actions.act_window">
+        <field name="name">Utilisation by Person</field>
+        <field name="res_model">majal.workforce.report</field>
+        <field name="view_mode">graph,list</field>
+        <field name="view_id" ref="view_workforce_report_graph_utilisation"/>
+    </record>
 </odoo>
