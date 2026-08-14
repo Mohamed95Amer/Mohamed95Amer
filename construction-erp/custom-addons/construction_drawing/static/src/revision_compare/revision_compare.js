@@ -15,7 +15,7 @@
  * pages are two pictures, not a comparison.
  */
 
-import { Component, onWillStart, useRef, useState } from "@odoo/owl";
+import { Component, onMounted, onWillStart, useRef, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
@@ -62,6 +62,12 @@ export class RevisionCompare extends Component {
             await loadPDFJSAssets();
             await this.load();
         });
+        // The first paint has to wait for the mount. onWillStart runs before
+        // the component is in the DOM, so the canvas refs are still null and
+        // renderPane bails out — which showed as both panes staying blank
+        // until the user touched a control, since every control calls
+        // renderBoth again and by then the refs exist.
+        onMounted(() => this.renderBoth({ fit: true }));
     }
 
     get pdfjs() {
@@ -87,7 +93,6 @@ export class RevisionCompare extends Component {
         } finally {
             this.state.loading = false;
         }
-        await this.renderBoth({ fit: true });
     }
 
     revisionOf(id) {
