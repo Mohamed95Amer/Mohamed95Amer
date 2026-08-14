@@ -58,21 +58,26 @@ class ConstructionDocumentMixin(models.AbstractModel):
         return ["!"] + domain
 
     def _next_reference(self, project):
-        seq = self.env["ir.sequence"].search(
-            [("code", "=", f"construction.doc.{self._doc_prefix.lower()}"),
-             ("company_id", "in", [project.company_id.id, False])],
-            limit=1,
-        )
-        if not seq:
-            seq = self.env["ir.sequence"].sudo().create({
-                "name": f"Construction {self._doc_prefix}",
-                "code": f"construction.doc.{self._doc_prefix.lower()}",
-                "padding": 4,
-                "company_id": False,
-            })
+        """PRJ-RFI-0001: the project, the document type, the number.
+
+        The middle part is whatever the company configured under Settings →
+        Document Numbering, falling back to `_doc_prefix` where nothing is
+        configured — which is every install until somebody changes it, so the
+        fallback is the normal path and not an error case.
+
+        The counter is keyed on `_doc_prefix` rather than on the configured
+        prefix, deliberately. See construction_base/models/document_code.py:
+        keying it on the visible prefix would restart every register at 1 the
+        first time somebody edited one.
+        """
+        seq = self.env["ir.sequence"]._construction_document_sequence(
+            self._doc_prefix, project.company_id)
         number = seq.next_by_id()
+        configured = self.env["construction.document.code"]._for(
+            self._name, project.company_id)
+        prefix = configured.prefix or self._doc_prefix
         code = project.project_code or f"P{project.id}"
-        return f"{code}-{self._doc_prefix}-{number}"
+        return f"{code}-{prefix}-{number}"
 
     @api.model_create_multi
     def create(self, vals_list):

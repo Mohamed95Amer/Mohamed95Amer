@@ -15,6 +15,7 @@
         "views/project_views.xml",
         "views/construction_menus.xml",
         "views/approval_views.xml",
+        "views/document_code_views.xml",
     ],
     "demo": [
         "demo/project_demo.xml",
