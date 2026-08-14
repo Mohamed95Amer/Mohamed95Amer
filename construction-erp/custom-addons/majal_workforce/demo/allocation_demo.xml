@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Site staff and their commitments.
+
+         Without this the Workforce board is empty on a fresh install, and
+         empty is not what it looks like: Odoo fills a graph or list that has
+         no rows with generated sample records, so the board comes up showing
+         invented people on invented projects in faint grey. A reviewer reads
+         that as data. That is worse than a blank panel, because a blank panel
+         is honestly blank.
+
+         None of these people have a login. That is deliberate and it is the
+         case the module was written for — on a site most of the workforce has
+         no system account, and allocation has to work for them too. It also
+         keeps this file inert with respect to access: grants_access projects
+         an allocation onto project.majal_member_ids, which is a user-level
+         field, so employees without a user change no visibility anywhere and
+         no record rule shifts underneath the existing demo. -->
+
+    <record id="employee_demo_site_manager" model="hr.employee">
+        <field name="name">Khalid Al Rashed</field>
+        <field name="job_title">Site Manager</field>
+    </record>
+    <record id="employee_demo_qs" model="hr.employee">
+        <field name="name">Rania Haddad</field>
+        <field name="job_title">Quantity Surveyor</field>
+    </record>
+    <record id="employee_demo_foreman" model="hr.employee">
+        <field name="name">Ibrahim Nasser</field>
+        <field name="job_title">Foreman</field>
+    </record>
+    <record id="employee_demo_engineer" model="hr.employee">
+        <field name="name">Dana Farouk</field>
+        <field name="job_title">Site Engineer</field>
+    </record>
+    <record id="employee_demo_hse" model="hr.employee">
+        <field name="name">Tarek Suleiman</field>
+        <field name="job_title">HSE Officer</field>
+    </record>
+
+    <!-- Dates are relative, never literal. A fixed date_start is correct on
+         the day it is written and silently produces an all-"planned",
+         all-empty board a year later — the panels filter on what is live
+         today. -->
+
+    <!-- Al Noor. A full-time site manager and a foreman. -->
+    <record id="alloc_demo_alnoor_manager" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_site_manager"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_construction_manager"/>
+        <field name="allocation_percent">100</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=120)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_alnoor_foreman" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_foreman"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_foreman"/>
+        <field name="allocation_percent">100</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=90)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- Marina. A site engineer, and the HSE officer covering both jobs. -->
+    <record id="alloc_demo_marina_engineer" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_engineer"/>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="role_id" ref="role_site_engineer"/>
+        <field name="allocation_percent">100</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=60)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_alnoor_hse" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_hse"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_hse_officer"/>
+        <field name="allocation_percent">50</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=100)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_marina_hse" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_hse"/>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="role_id" ref="role_hse_officer"/>
+        <field name="allocation_percent">50</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=60)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- The quantity surveyor is on both jobs at 80%. This is the whole
+         reason the utilisation panel exists: 160% is not a data error, it is
+         a fortnight of somebody working two full jobs, and the board is there
+         so a manager sees it before the person does. -->
+    <record id="alloc_demo_alnoor_qs" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_qs"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_quantity_surveyor"/>
+        <field name="allocation_percent">80</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=45)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_marina_qs" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_qs"/>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="role_id" ref="role_quantity_surveyor"/>
+        <field name="allocation_percent">80</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+    </record>
+</odoo>

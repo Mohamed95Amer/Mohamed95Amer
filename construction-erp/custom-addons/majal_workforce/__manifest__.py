@@ -25,6 +25,7 @@
         "wizards/end_allocation_wizard_views.xml",
         "views/menus.xml",
     ],
+    "demo": ["demo/allocation_demo.xml"],
     "application": False,
     "installable": True,
     "post_init_hook": "post_init_hook",
