@@ -1,4 +1,5 @@
 from odoo import fields
+from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -34,6 +35,11 @@ class TestWorkforceReport(TransactionCase):
             "date_start": today,
             "allocation_percent": 80,
         })
+        cls.read_only_user = cls.env["res.users"].create({
+            "name": "Workforce report reader",
+            "login": "workforce-report-reader",
+            "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
+        })
 
     def test_report_has_a_concrete_current_utilisation_measure(self):
         row = self.env["majal.workforce.report"].search([
@@ -58,3 +64,10 @@ class TestWorkforceReport(TransactionCase):
         ])
         self.assertEqual(row.allocation_count, 2)
         self.assertEqual(row.utilization_percent, 140.0)
+
+    def test_plain_user_cannot_open_restricted_workforce_report(self):
+        """The board must not become a back door around its menu groups."""
+        with self.assertRaises(AccessError):
+            self.env["majal.workforce.report"].with_user(
+                self.read_only_user
+            ).search([])
