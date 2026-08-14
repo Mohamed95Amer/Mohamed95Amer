@@ -20,6 +20,7 @@ If a route is not listed in [Custom endpoints](endpoints/index.md), it does not 
 | Page | What it covers |
 | --- | --- |
 | [Getting started](getting-started.md) | Base URLs, obtaining an API key, your first authenticated call |
+| [Integration API](integration-api.md) | Scoped API clients and the read-only projects endpoint |
 | [Conventions](conventions.md) | IDs, domains, pagination, dates and time zones, multi-company, `Command` tuples |
 | [XML-RPC](xmlrpc.md) | `common`/`object` services, `authenticate`, `execute_kw` |
 | [JSON-RPC](jsonrpc.md) | `/jsonrpc`, session auth, `/web/dataset/call_kw` |

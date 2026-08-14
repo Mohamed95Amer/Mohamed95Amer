@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_api_client_company" model="ir.rule">
+        <field name="name">Majal API clients are company scoped</field>
+        <field name="model_id" ref="model_majal_api_client"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('majal_administration.group_user_administrator'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_api_root" name="Majal Integrations" sequence="94"
+              web_icon="construction_ui,static/description/apps/settings.svg"
+              groups="majal_administration.group_user_administrator"/>
+    <menuitem id="menu_majal_api_clients" name="API Clients"
+              parent="menu_majal_api_root" action="action_majal_api_clients" sequence="10"/>
+</odoo>
