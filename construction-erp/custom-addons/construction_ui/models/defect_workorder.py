@@ -25,16 +25,37 @@ class ConstructionDefect(models.Model):
              "who has to fix it sees it in the queue they actually work from.",
     )
 
+    def _workorder_team(self, company):
+        """A maintenance team in the defect's own company.
+
+        maintenance.request carries check_company on maintenance_team_id, and
+        the field's default is the first team the user can see — which in a
+        multi-company database belongs to somebody else. Setting the request's
+        company without settling the team is how you get
+        "Incompatible companies on records" the moment a defect is created for
+        a company that is not the one the default team lives in.
+        """
+        team = self.env["maintenance.team"].search(
+            [("company_id", "=", company.id)], limit=1
+        )
+        if team:
+            return team
+        return self.env["maintenance.team"].create(
+            {"name": _("Maintenance"), "company_id": company.id}
+        )
+
     def _workorder_values(self):
         """What the work order carries over from the defect."""
         self.ensure_one()
+        company = self.company_id or self.env.company
         return {
             "name": self.name or self.reference or _("Defect"),
             "description": self.description or "",
             "user_id": self.assigned_user_id.id,
             "owner_user_id": self.env.uid,
             "maintenance_type": "corrective",
-            "company_id": self.company_id.id or self.env.company.id,
+            "company_id": company.id,
+            "maintenance_team_id": self._workorder_team(company).id,
             # A critical snag should not queue behind routine work.
             "priority": {"low": "0", "medium": "1",
                          "high": "2", "critical": "3"}.get(self.severity, "1"),
