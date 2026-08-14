@@ -5,3 +5,5 @@ access_facility_report,majal.facility.report,model_majal_facility_report,mainten
 access_estate_report,majal.estate.report,model_majal_estate_report,maintenance.group_equipment_manager,1,0,0,0
 access_estate_report_mgr,majal.estate.report manager,model_majal_estate_report,construction_base.group_construction_manager,1,0,0,0
 access_facility_report_mgr,majal.facility.report manager,model_majal_facility_report,construction_base.group_construction_manager,1,0,0,0
+access_procurement_report,majal.procurement.report,model_majal_procurement_report,construction_base.group_construction_manager,1,0,0,0
+access_procurement_report_comm,majal.procurement.report commercial,model_majal_procurement_report,construction_base.group_construction_commercial,1,0,0,0

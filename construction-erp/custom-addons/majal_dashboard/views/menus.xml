@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Under Odoo's own Dashboards app, not a Majal-only corner: these sit
-         beside "My Dashboard", which is where somebody who has pinned their
-         own charts will already be looking. -->
-    <menuitem id="menu_dashboard_construction"
-              name="Construction"
-              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_construction"
-              groups="construction_base.group_construction_manager"
-              sequence="10"/>
+    <!-- Under Odoo's own Dashboards app, beside "My Dashboard".
 
-    <menuitem id="menu_dashboard_facilities"
-              name="Facilities"
-              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_facilities"
-              groups="maintenance.group_equipment_manager"
-              sequence="20"/>
+         Ordered the way attention flows rather than alphabetically:
+         Executive first, then the money, then delivery, then the specialisms.
+         My Dashboard is board's own and keeps its place at the end, which is
+         where a user's private pinned views belong. -->
 
-    <menuitem id="menu_dashboard_property"
-              name="Property"
+    <menuitem id="menu_board_executive" name="Executive"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_property"
-              groups="maintenance.group_equipment_manager"
-              sequence="30"/>
+              action="action_board_executive" sequence="5"
+              groups="construction_base.group_construction_manager"/>
+
+    <menuitem id="menu_board_financial" name="Financial"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_financial" sequence="10"
+              groups="construction_base.group_construction_commercial,construction_base.group_construction_manager"/>
+
+    <menuitem id="menu_board_operations" name="Operations"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_operations" sequence="15"/>
+
+    <menuitem id="menu_board_project" name="Project"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_project" sequence="20"/>
+
+    <menuitem id="menu_board_procurement" name="Procurement"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_procurement" sequence="25"
+              groups="construction_base.group_construction_commercial,construction_base.group_construction_manager"/>
+
+    <menuitem id="menu_board_workforce" name="Workforce"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_workforce" sequence="30"/>
+
+    <menuitem id="menu_board_hse" name="HSE"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_hse" sequence="35"/>
+
+    <menuitem id="menu_board_equipment" name="Equipment"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_equipment" sequence="40"/>
 </odoo>

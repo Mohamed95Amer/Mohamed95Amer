@@ -1,24 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Three boards, one per business. Odoo's own Dashboards app renders
-         these: each <action> is a panel, and a user can drag panels around
-         and add their own from any list view's cog menu, so this is a
-         starting layout rather than a fixed screen. -->
+    <!-- Eight boards by function, under Odoo's own Dashboards app beside
+         "My Dashboard".
 
-    <!-- ============================ Construction ============================
-         Ordered the way a board meeting runs: where is the money, which job
-         is losing it, and what is driving that. -->
-    <record id="board_construction" model="ir.ui.view">
-        <field name="name">Construction Dashboard</field>
+         An earlier cut split these by business line — Construction,
+         Facilities, Property. That is how the company is organised, but it is
+         not how a question arrives: a finance director asks about money across
+         every business, not about construction. So the split is functional,
+         and each board carries the industry as a filter where it matters
+         rather than as a separate screen.
+
+         Every panel is a window action, because a board panel loads an action
+         and draws one of its views — a server action cannot be rendered here,
+         and a panel nobody can click through to is a picture rather than a
+         report. -->
+
+    <!-- ============================== Executive =============================
+         The five things a board meeting opens with, across all three
+         businesses. Deliberately short: a screen with everything on it is
+         read as a screen with nothing on it. -->
+    <record id="board_executive" model="ir.ui.view">
+        <field name="name">Executive Dashboard</field>
         <field name="model">board.board</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Construction">
+            <form string="Executive">
                 <board style="1-1">
                     <column>
                         <action name="%(action_construction_margin)d"
                                 string="Forecast margin by project"
                                 view_mode="graph"/>
+                        <action name="%(action_estate_value)d"
+                                string="Capital and book value by property"
+                                view_mode="graph"/>
+                        <action name="%(action_dashboard_approvals)d"
+                                string="Approvals waiting"
+                                view_mode="list"/>
+                    </column>
+                    <column>
+                        <action name="%(action_construction_movement)d"
+                                string="Margin movement since tender"
+                                view_mode="graph"/>
+                        <action name="%(action_facility_workload)d"
+                                string="Maintenance workload"
+                                view_mode="graph"/>
+                        <action name="%(action_hse_incidents)d"
+                                string="Safety incidents"
+                                view_mode="graph"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_board_executive" model="ir.actions.act_window">
+        <field name="name">Executive</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="board_executive"/>
+        <field name="context">{'disable_toolbar': True}</field>
+    </record>
+
+    <!-- ============================== Financial =============================
+         Where the money is committed and where it has been earned. The
+         statutory side — P&L, balance sheet, budgets — is MIS Builder's job
+         and lives under Accounting; duplicating it here badly would be worse
+         than linking to it. -->
+    <record id="board_financial" model="ir.ui.view">
+        <field name="name">Financial Dashboard</field>
+        <field name="model">board.board</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Financial">
+                <board style="1-1">
+                    <column>
                         <action name="%(action_construction_exposure)d"
                                 string="Certified against cost"
                                 view_mode="graph"/>
@@ -27,47 +83,41 @@
                                 view_mode="pivot"/>
                     </column>
                     <column>
-                        <action name="%(action_construction_movement)d"
-                                string="Margin movement since tender"
+                        <action name="%(action_procurement_commitment)d"
+                                string="Committed by project"
                                 view_mode="graph"/>
                         <action name="%(action_construction_portfolio)d"
                                 string="Jobs below their tendered margin"
                                 view_mode="list"
                                 domain="[('margin_variance','&lt;',0)]"/>
-                        <action name="%(action_dashboard_approvals)d"
-                                string="Approvals waiting"
-                                view_mode="list"/>
                     </column>
                 </board>
             </form>
         </field>
     </record>
 
-    <record id="action_board_construction" model="ir.actions.act_window">
-        <field name="name">Construction Dashboard</field>
+    <record id="action_board_financial" model="ir.actions.act_window">
+        <field name="name">Financial</field>
         <field name="res_model">board.board</field>
         <field name="view_mode">form</field>
         <field name="usage">menu</field>
-        <field name="view_id" ref="board_construction"/>
+        <field name="view_id" ref="board_financial"/>
         <field name="context">{'disable_toolbar': True}</field>
     </record>
 
-    <!-- ============================ Facilities ============================
-         Delivery rather than money first: an FM director is judged on
-         response, not on spend. -->
-    <record id="board_facilities" model="ir.ui.view">
-        <field name="name">Facilities Dashboard</field>
+    <!-- ============================= Operations =============================
+         Delivery, not money. An operations manager is judged on response and
+         on how much of the work was planned rather than reactive. -->
+    <record id="board_operations" model="ir.ui.view">
+        <field name="name">Operations Dashboard</field>
         <field name="model">board.board</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Facilities">
+            <form string="Operations">
                 <board style="1-1">
                     <column>
                         <action name="%(action_facility_workload)d"
                                 string="Workload, planned against reactive"
-                                view_mode="graph"/>
-                        <action name="%(action_facility_cost)d"
-                                string="Cost by asset category"
                                 view_mode="graph"/>
                         <action name="%(action_facility_cost_pivot)d"
                                 string="Maintenance cost by location"
@@ -86,55 +136,207 @@
         </field>
     </record>
 
-    <record id="action_board_facilities" model="ir.actions.act_window">
-        <field name="name">Facilities Dashboard</field>
+    <record id="action_board_operations" model="ir.actions.act_window">
+        <field name="name">Operations</field>
         <field name="res_model">board.board</field>
         <field name="view_mode">form</field>
         <field name="usage">menu</field>
-        <field name="view_id" ref="board_facilities"/>
+        <field name="view_id" ref="board_operations"/>
         <field name="context">{'disable_toolbar': True}</field>
     </record>
 
-    <!-- ============================== Estate ==============================
-         Named Property in the menu because that is what the business calls
-         it, but every figure on it is an estate figure: assets, their value
-         and what they cost to keep. There are no leases or tenancies in this
-         system to report on. -->
-    <record id="board_property" model="ir.ui.view">
-        <field name="name">Property Dashboard</field>
+    <!-- ============================== Project ===============================
+         One level down from Executive: the commercial position plus the site
+         events that move it. -->
+    <record id="board_project" model="ir.ui.view">
+        <field name="name">Project Dashboard</field>
         <field name="model">board.board</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Property">
+            <form string="Project">
                 <board style="1-1">
                     <column>
-                        <action name="%(action_estate_value)d"
-                                string="Capital and book value by property"
+                        <action name="%(action_construction_portfolio)d"
+                                string="Portfolio"
+                                view_mode="list"/>
+                        <action name="%(action_construction_margin)d"
+                                string="Forecast margin by project"
                                 view_mode="graph"/>
-                        <action name="%(action_estate_pivot)d"
-                                string="Portfolio analysis"
-                                view_mode="pivot"/>
                     </column>
                     <column>
-                        <action name="%(action_estate_spend)d"
-                                string="Maintenance spend by property"
+                        <action name="%(action_project_rfis)d"
+                                string="Open RFIs"
+                                view_mode="list"/>
+                        <action name="%(action_project_defects)d"
+                                string="Open snags by severity"
                                 view_mode="graph"/>
-                        <action name="%(action_estate_portfolio)d"
-                                string="Properties holding assets"
-                                view_mode="list"
-                                domain="[('asset_count','&gt;',0)]"/>
                     </column>
                 </board>
             </form>
         </field>
     </record>
 
-    <record id="action_board_property" model="ir.actions.act_window">
-        <field name="name">Property Dashboard</field>
+    <record id="action_board_project" model="ir.actions.act_window">
+        <field name="name">Project</field>
         <field name="res_model">board.board</field>
         <field name="view_mode">form</field>
         <field name="usage">menu</field>
-        <field name="view_id" ref="board_property"/>
+        <field name="view_id" ref="board_project"/>
+        <field name="context">{'disable_toolbar': True}</field>
+    </record>
+
+    <!-- ============================ Procurement =============================
+         Purchase orders and subcontract packages together, because a job's
+         commitment is the sum of both and a screen showing one understates
+         every project on it. -->
+    <record id="board_procurement" model="ir.ui.view">
+        <field name="name">Procurement Dashboard</field>
+        <field name="model">board.board</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Procurement">
+                <board style="1-1">
+                    <column>
+                        <action name="%(action_procurement_commitment)d"
+                                string="Commitment by project"
+                                view_mode="graph"/>
+                        <action name="%(action_procurement_pivot)d"
+                                string="Procurement analysis"
+                                view_mode="pivot"/>
+                    </column>
+                    <column>
+                        <action name="%(action_procurement_vendor)d"
+                                string="Spend by vendor"
+                                view_mode="graph"/>
+                        <action name="%(action_procurement_outstanding)d"
+                                string="Ordered, not yet received"
+                                view_mode="graph"/>
+                        <action name="%(action_procurement_late)d"
+                                string="Past due deliveries"
+                                view_mode="list"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_board_procurement" model="ir.actions.act_window">
+        <field name="name">Procurement</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="board_procurement"/>
+        <field name="context">{'disable_toolbar': True}</field>
+    </record>
+
+    <!-- ============================== Workforce =============================
+         Who is allocated where, and where the plan exceeds the people. -->
+    <record id="board_workforce" model="ir.ui.view">
+        <field name="name">Workforce Dashboard</field>
+        <field name="model">board.board</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Workforce">
+                <board style="1-1">
+                    <column>
+                        <action name="%(action_workforce_allocation)d"
+                                string="Allocations by project"
+                                view_mode="graph"/>
+                    </column>
+                    <column>
+                        <action name="%(action_workforce_list)d"
+                                string="Current allocations"
+                                view_mode="list"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_board_workforce" model="ir.actions.act_window">
+        <field name="name">Workforce</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="board_workforce"/>
+        <field name="context">{'disable_toolbar': True}</field>
+    </record>
+
+    <!-- ================================ HSE =================================
+         Incidents are the lagging measure and permits the leading one; both
+         belong on the same screen or the board only ever sees the harm. -->
+    <record id="board_hse" model="ir.ui.view">
+        <field name="name">HSE Dashboard</field>
+        <field name="model">board.board</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="HSE">
+                <board style="1-1">
+                    <column>
+                        <action name="%(action_hse_incidents)d"
+                                string="Incidents by month and class"
+                                view_mode="graph"/>
+                        <action name="%(action_hse_incident_list)d"
+                                string="Lost time incidents"
+                                view_mode="list"/>
+                    </column>
+                    <column>
+                        <action name="%(action_hse_permits)d"
+                                string="Permits by status"
+                                view_mode="graph"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_board_hse" model="ir.actions.act_window">
+        <field name="name">HSE</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="board_hse"/>
+        <field name="context">{'disable_toolbar': True}</field>
+    </record>
+
+    <!-- ============================== Equipment =============================
+         The asset side of the estate: what is owned, what it is worth after
+         depreciation, and what it costs to keep running. -->
+    <record id="board_equipment" model="ir.ui.view">
+        <field name="name">Equipment Dashboard</field>
+        <field name="model">board.board</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Equipment">
+                <board style="1-1">
+                    <column>
+                        <action name="%(action_estate_value)d"
+                                string="Capital and book value by property"
+                                view_mode="graph"/>
+                        <action name="%(action_estate_portfolio)d"
+                                string="Properties holding assets"
+                                view_mode="list"
+                                domain="[('asset_count','&gt;',0)]"/>
+                    </column>
+                    <column>
+                        <action name="%(action_facility_cost)d"
+                                string="Cost by asset category"
+                                view_mode="graph"/>
+                        <action name="%(action_estate_spend)d"
+                                string="Maintenance spend by property"
+                                view_mode="graph"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_board_equipment" model="ir.actions.act_window">
+        <field name="name">Equipment</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="board_equipment"/>
         <field name="context">{'disable_toolbar': True}</field>
     </record>
 </odoo>

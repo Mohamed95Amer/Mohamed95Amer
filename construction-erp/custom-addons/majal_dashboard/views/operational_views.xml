@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Panels drawn straight off the operational registers.
+
+         No analysis view behind these on purpose. HSE incidents, RFIs, snags
+         and allocations are counted rather than costed, and a count groups
+         perfectly well over a stored column. A SQL view here would be a layer
+         that restates nothing and can only drift. The three analysis views
+         exist because money had to be recomputed; these do not. -->
+
+    <!-- ================================ HSE ================================= -->
+    <record id="view_hse_incident_graph_majal" model="ir.ui.view">
+        <field name="name">construction.incident.graph.majal</field>
+        <field name="model">construction.incident</field>
+        <field name="arch" type="xml">
+            <!-- By month and class: the shape of the trend matters more than
+                 the total, and a near miss and a lost-time injury on the same
+                 bar tell a board nothing. -->
+            <graph string="Incidents" type="line" sample="1">
+                <field name="occurred_on" interval="month"/>
+                <field name="incident_class"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_hse_incident_list_majal" model="ir.ui.view">
+        <field name="name">construction.incident.list.majal</field>
+        <field name="model">construction.incident</field>
+        <field name="arch" type="xml">
+            <list string="Lost Time Incidents" create="0" sample="1"
+                  decoration-danger="is_lti">
+                <field name="occurred_on"/>
+                <field name="project_id"/>
+                <field name="incident_class"/>
+                <field name="severity"/>
+                <field name="days_lost" sum="Days lost"/>
+                <field name="is_lti" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hse_permit_graph_majal" model="ir.ui.view">
+        <field name="name">construction.permit.graph.majal</field>
+        <field name="model">construction.permit</field>
+        <field name="arch" type="xml">
+            <graph string="Permits" type="bar" sample="1">
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_hse_incidents" model="ir.actions.act_window">
+        <field name="name">Incidents by Month</field>
+        <field name="res_model">construction.incident</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_hse_incident_graph_majal"/>
+    </record>
+
+    <record id="action_hse_incident_list" model="ir.actions.act_window">
+        <field name="name">Lost Time Incidents</field>
+        <field name="res_model">construction.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_hse_incident_list_majal"/>
+        <field name="domain">[('is_lti', '=', True)]</field>
+    </record>
+
+    <record id="action_hse_permits" model="ir.actions.act_window">
+        <field name="name">Permits by Status</field>
+        <field name="res_model">construction.permit</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_hse_permit_graph_majal"/>
+    </record>
+
+    <!-- ============================== Project =============================== -->
+    <record id="view_project_rfi_list_majal" model="ir.ui.view">
+        <field name="name">construction.rfi.list.majal</field>
+        <field name="model">construction.rfi</field>
+        <field name="arch" type="xml">
+            <!-- Oldest first. An RFI register sorted newest-first hides the
+                 one that has been outstanding for six weeks, which is the
+                 only one anybody needed to see. -->
+            <list string="Open RFIs" create="0" sample="1"
+                  default_order="date_required asc"
+                  decoration-danger="is_overdue">
+                <field name="reference" optional="show"/>
+                <field name="project_id"/>
+                <field name="name"/>
+                <field name="ball_in_court_id" optional="show"/>
+                <field name="date_required"/>
+                <!-- Fetched but not shown: a decoration can only
+                     read a field the list actually loaded, and an
+                     optional column that is hidden is not. -->
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_project_defect_graph_majal" model="ir.ui.view">
+        <field name="name">construction.defect.graph.majal</field>
+        <field name="model">construction.defect</field>
+        <field name="arch" type="xml">
+            <graph string="Snags by Severity" type="bar" stacked="1" sample="1">
+                <field name="project_id"/>
+                <field name="severity"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_project_rfis" model="ir.actions.act_window">
+        <field name="name">Open RFIs</field>
+        <field name="res_model">construction.rfi</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_project_rfi_list_majal"/>
+        <field name="domain">[('state', 'not in', ['answered', 'closed'])]</field>
+    </record>
+
+    <record id="action_project_defects" model="ir.actions.act_window">
+        <field name="name">Open Snags by Severity</field>
+        <field name="res_model">construction.defect</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_project_defect_graph_majal"/>
+        <field name="domain">[('state', 'not in', ['closed', 'rejected'])]</field>
+    </record>
+
+    <!-- ============================= Workforce ============================== -->
+    <record id="view_workforce_graph_majal" model="ir.ui.view">
+        <field name="name">majal.allocation.graph.majal</field>
+        <field name="model">majal.allocation</field>
+        <field name="arch" type="xml">
+            <graph string="Allocations" type="bar" stacked="1" sample="1">
+                <field name="project_id"/>
+                <field name="role_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_workforce_list_majal" model="ir.ui.view">
+        <field name="name">majal.allocation.list.majal</field>
+        <field name="model">majal.allocation</field>
+        <field name="arch" type="xml">
+            <list string="Allocations" create="0" sample="1"
+                  decoration-warning="is_overallocated">
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <field name="role_id"/>
+                <field name="date_start"/>
+                <field name="date_end" optional="show"/>
+                <field name="is_overallocated" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_workforce_allocation" model="ir.actions.act_window">
+        <field name="name">Allocations by Project</field>
+        <field name="res_model">majal.allocation</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_workforce_graph_majal"/>
+    </record>
+
+    <record id="action_workforce_list" model="ir.actions.act_window">
+        <field name="name">Current Allocations</field>
+        <field name="res_model">majal.allocation</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_workforce_list_majal"/>
+    </record>
+</odoo>
