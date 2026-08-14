@@ -23,7 +23,8 @@ class MajalApiClient(models.Model):
         help="The integration user whose groups and project rules constrain API results.",
     )
     scope = fields.Selection(
-        [("projects_read", "Projects — read")],
+        [("projects_read", "Projects — read"),
+         ("documents_read", "Documents — read")],
         required=True, default="projects_read", tracking=True,
     )
     active = fields.Boolean(default=True, tracking=True)

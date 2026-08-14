@@ -44,6 +44,20 @@ domain or model name from the caller.
 `limit` is an integer from 1 to 100. Invalid, missing or revoked keys return
 `401`; unsupported scopes return `403`; invalid limits return `400`.
 
+## Read controlled documents
+
+Create a second API client with the **Documents — read** scope, then call:
+
+```http
+GET https://your-host/api/v1/documents?limit=50
+X-Majal-API-Key: YOUR_MAJAL_API_KEY
+```
+
+The response includes the document reference, title, workflow state, current
+revision and linked project ID. Document content and attachments are not
+returned by this endpoint; use the normal authenticated document API when a
+client explicitly needs those records.
+
 This endpoint is read-only. Use the documented XML-RPC or JSON-RPC API for
 write workflows, where the same server-side approval and record-rule guards
 continue to apply.
