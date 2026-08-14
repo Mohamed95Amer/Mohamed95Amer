@@ -8716,9 +8716,3 @@ msgstr "إحاطة الموقع"
 #: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
 msgid "Management indicators"
 msgstr "مؤشرات الإدارة"
-
-msgid "Back"
-msgstr "رجوع"
-
-msgid "Payments"
-msgstr "الدفعات"

@@ -1484,6 +1484,3 @@ msgstr "نعم / لا / لا ينطبق"
 #: model:ir.model.fields,help:construction_form.field_construction_itp_point__reference_standard
 msgid "e.g. SBC 304, BS EN 12390-3, spec clause 03300."
 msgstr ""
-
-msgid "Export to Excel"
-msgstr "تصدير إلى إكسل"
