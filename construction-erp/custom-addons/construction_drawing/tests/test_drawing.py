@@ -106,3 +106,78 @@ class TestDrawing(TransactionCase):
         self.assertEqual(wizard._parse_filename("AR-101_B.pdf"), ("AR-101", "B"))
         self.assertEqual(wizard._parse_filename("ST-201-R2.pdf"), ("ST-201", "2"))
         self.assertEqual(wizard._parse_filename("plain.pdf"), ("plain", "A"))
+
+
+@tagged("post_install", "-at_install")
+class TestRevisionCompare(TransactionCase):
+    """A reviewer asking "what changed at Rev C" used to open two PDFs in
+    two browser tabs and alt-tab between them. Nothing in the codebase
+    connected one revision to the one it replaced."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Compare Test", "is_construction": True})
+        cls.drawing = cls.env["construction.drawing"].create({
+            "name": "Level 2 Plan", "number": "AR-002",
+            "project_id": cls.project.id,
+        })
+        cls.other = cls.env["construction.drawing"].create({
+            "name": "Level 3 Plan", "number": "AR-003",
+            "project_id": cls.project.id,
+        })
+
+    def _revision(self, letter, drawing=None):
+        return self.env["construction.drawing.revision"].create(
+            {"drawing_id": (drawing or self.drawing).id, "revision": letter})
+
+    def test_the_previous_revision_is_the_one_before_it(self):
+        first = self._revision("A")
+        second = self._revision("B")
+        self.assertEqual(second._previous_revision(), first)
+
+    def test_the_first_revision_has_nothing_before_it(self):
+        """There is no Rev 0. The action must still open rather than fail."""
+        first = self._revision("A")
+        self.assertFalse(first._previous_revision())
+        action = first.action_compare_revisions()
+        self.assertEqual(action["params"]["left_id"], first.id)
+        self.assertEqual(action["params"]["right_id"], first.id)
+
+    def test_it_does_not_reach_into_another_drawing(self):
+        """AR-003's revisions are not AR-002's history, however close their
+        ids happen to be."""
+        self._revision("A", drawing=self.other)
+        mine = self._revision("A")
+        self.assertFalse(mine._previous_revision())
+
+    def test_the_order_is_the_order_they_were_issued(self):
+        """Revisions are Char. Real projects issue A, B, C1, P2, and sorting
+        those as version numbers gets it wrong on somebody's scheme; the
+        register knows the order they arrived in and that is what is used."""
+        first = self._revision("P2")
+        second = self._revision("C1")
+        self.assertEqual(second._previous_revision(), first)
+
+    def test_the_action_opens_on_the_pair(self):
+        first = self._revision("A")
+        second = self._revision("B")
+        action = second.action_compare_revisions()
+        self.assertEqual(action["tag"], "construction_revision_compare")
+        self.assertEqual(action["params"]["drawing_id"], self.drawing.id)
+        self.assertEqual(action["params"]["left_id"], first.id)
+        self.assertEqual(action["params"]["right_id"], second.id)
+
+    def test_the_screen_is_handed_every_revision_newest_first(self):
+        self._revision("A")
+        second = self._revision("B")
+        data = self.env["construction.drawing.revision"].get_compare_data(
+            self.drawing.id)
+
+        self.assertEqual(data["drawing"]["number"], "AR-002")
+        self.assertEqual(len(data["revisions"]), 2)
+        self.assertEqual(data["revisions"][0]["id"], second.id)
+        # Each entry carries its own attachment, so switching a pane does
+        # not cost a round trip on a screen built for flipping between them.
+        self.assertIn("attachment_id", data["revisions"][0])

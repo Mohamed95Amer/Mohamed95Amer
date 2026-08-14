@@ -36,6 +36,14 @@
                                     <button name="action_make_current" type="object"
                                             string="Make Current" icon="fa-check"
                                             invisible="state == 'current'"/>
+                                    <!-- Reachable from the revision line
+                                         rather than from the drawing, since
+                                         "what changed" is always a question
+                                         about a particular revision. -->
+                                    <button name="action_compare_revisions"
+                                            type="object" string="Compare"
+                                            icon="fa-columns"
+                                            title="Show this revision beside the one before it"/>
                                 </list>
                             </field>
                         </page>

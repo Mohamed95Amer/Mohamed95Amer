@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+  <t t-name="construction_drawing.RevisionCompare">
+    <div class="o_rev_compare">
+
+      <div class="o_rev_bar">
+        <div class="o_rev_title" t-if="state.drawing">
+          <strong t-esc="state.drawing.number"/>
+          <span t-esc="state.drawing.name"/>
+        </div>
+        <div class="o_rev_tools">
+          <button type="button" class="btn btn-sm btn-secondary"
+                  t-on-click="() => this.zoom(-0.2)" aria-label="Zoom out">−</button>
+          <span class="o_rev_zoom" t-esc="Math.round(state.scale * 100) + '%'"/>
+          <button type="button" class="btn btn-sm btn-secondary"
+                  t-on-click="() => this.zoom(0.2)" aria-label="Zoom in">+</button>
+          <button type="button" class="btn btn-sm btn-secondary"
+                  t-on-click="() => this.fit()">Fit</button>
+
+          <span class="o_rev_pages" t-if="state.pageCount > 1">
+            <button type="button" class="btn btn-sm btn-secondary"
+                    t-att-disabled="state.page &lt;= 1"
+                    t-on-click="() => this.setPage(state.page - 1)">‹</button>
+            <span>Page <t t-esc="state.page"/> / <t t-esc="state.pageCount"/></span>
+            <button type="button" class="btn btn-sm btn-secondary"
+                    t-att-disabled="state.page >= state.pageCount"
+                    t-on-click="() => this.setPage(state.page + 1)">›</button>
+          </span>
+
+          <label class="o_rev_sync">
+            <input type="checkbox" t-att-checked="state.syncScroll"
+                   t-on-change="() => this.toggleSync()"/>
+            <span>Scroll together</span>
+          </label>
+        </div>
+      </div>
+
+      <div t-if="state.loading" class="o_rev_note">Loading the sheets…</div>
+      <div t-elif="state.error" class="o_rev_note o_rev_error">
+        The revisions could not be loaded.
+      </div>
+      <div t-elif="!state.revisions.length" class="o_rev_note">
+        This drawing has no revisions yet.
+      </div>
+
+      <t t-else="">
+        <!-- Said plainly rather than left to be inferred: a reviewer with
+             both pickers on the same revision sees no differences and has
+             no way to tell that from a revision that changed nothing. -->
+        <div t-if="comparingSameRevision" class="o_rev_note o_rev_warn">
+          Both panes are showing the same revision.
+        </div>
+
+        <!-- The two panes are written out rather than looped. A t-ref
+             cannot be built from a loop variable, and each pane needs its
+             own ref for the canvas and the scroll container. -->
+        <div class="o_rev_panes">
+
+          <div class="o_rev_pane_wrap">
+            <div class="o_rev_pane_head">
+              <select class="form-select form-select-sm"
+                      t-on-change="(ev) => this.onSelect('left', ev)">
+                <option t-foreach="state.revisions" t-as="revision"
+                        t-key="revision.id"
+                        t-att-value="revision.id"
+                        t-att-selected="revision.id === state.leftId">
+                  <t t-esc="revision.label"/>
+                  <t t-if="revision.issue_date"> — <t t-esc="revision.issue_date"/></t>
+                </option>
+              </select>
+              <span class="o_rev_state" t-if="leftRevision"
+                    t-att-class="'o_rev_state_' + leftRevision.state"
+                    t-esc="leftRevision.state === 'current' ? 'Current' : 'Superseded'"/>
+              <button type="button" class="btn btn-sm btn-link"
+                      t-if="state.leftId"
+                      t-on-click="() => this.openRevision(state.leftId)">Open</button>
+            </div>
+            <div class="o_rev_pane" t-ref="leftPane"
+                 t-on-scroll="() => this.onScroll('left')">
+              <div t-if="leftRevision &amp;&amp; !leftRevision.attachment_id"
+                   class="o_rev_note">This revision has no sheet PDF.</div>
+              <canvas t-ref="leftCanvas"/>
+            </div>
+          </div>
+
+          <div class="o_rev_pane_wrap">
+            <div class="o_rev_pane_head">
+              <select class="form-select form-select-sm"
+                      t-on-change="(ev) => this.onSelect('right', ev)">
+                <option t-foreach="state.revisions" t-as="revision"
+                        t-key="revision.id"
+                        t-att-value="revision.id"
+                        t-att-selected="revision.id === state.rightId">
+                  <t t-esc="revision.label"/>
+                  <t t-if="revision.issue_date"> — <t t-esc="revision.issue_date"/></t>
+                </option>
+              </select>
+              <span class="o_rev_state" t-if="rightRevision"
+                    t-att-class="'o_rev_state_' + rightRevision.state"
+                    t-esc="rightRevision.state === 'current' ? 'Current' : 'Superseded'"/>
+              <button type="button" class="btn btn-sm btn-link"
+                      t-if="state.rightId"
+                      t-on-click="() => this.openRevision(state.rightId)">Open</button>
+            </div>
+            <div class="o_rev_pane" t-ref="rightPane"
+                 t-on-scroll="() => this.onScroll('right')">
+              <div t-if="rightRevision &amp;&amp; !rightRevision.attachment_id"
+                   class="o_rev_note">This revision has no sheet PDF.</div>
+              <canvas t-ref="rightCanvas"/>
+            </div>
+          </div>
+
+        </div>
+      </t>
+    </div>
+  </t>
+
+</templates>

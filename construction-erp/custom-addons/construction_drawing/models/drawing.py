@@ -166,6 +166,77 @@ class ConstructionDrawingRevision(models.Model):
         for rev in self:
             rev.display_name = f"{rev.drawing_id.number or ''} Rev.{rev.revision or ''}"
 
+    # ------------------------------------------------------------------
+    # Comparing two revisions
+    # ------------------------------------------------------------------
+    def _previous_revision(self):
+        """The revision this one replaced, or an empty recordset.
+
+        Ordered by id rather than by the revision letter. Revisions are
+        Char — real projects issue "A", "B", "C1", "P2", and any attempt to
+        sort those as versions gets it wrong on somebody's numbering scheme.
+        The order they were issued in is what the register actually knows.
+        """
+        self.ensure_one()
+        return self.search([
+            ("drawing_id", "=", self.drawing_id.id),
+            ("id", "<", self.id),
+        ], order="id desc", limit=1)
+
+    def action_compare_revisions(self):
+        """Open this revision beside the one before it.
+
+        Two sheets side by side rather than a computed diff: a drawing is a
+        picture, and what changed on it is a thing an engineer sees and a
+        pixel comparison of two independently generated PDFs does not — the
+        same sheet replotted moves every line by a fraction and would light
+        up entirely.
+        """
+        self.ensure_one()
+        return {
+            "type": "ir.actions.client",
+            "tag": "construction_revision_compare",
+            "name": self.env._("Compare Revisions"),
+            "params": {
+                "drawing_id": self.drawing_id.id,
+                "right_id": self.id,
+                "left_id": self._previous_revision().id or self.id,
+            },
+        }
+
+    @api.model
+    def get_compare_data(self, drawing_id):
+        """Everything the compare screen needs, in one call.
+
+        The viewer needs the sheet list to populate both pickers, and each
+        entry has to carry its attachment so switching a pane does not cost
+        another round trip on a screen whose whole purpose is flipping
+        between revisions.
+        """
+        drawing = self.env["construction.drawing"].browse(drawing_id)
+        drawing.check_access("read")
+        revisions = self.search(
+            [("drawing_id", "=", drawing.id)], order="id desc")
+        return {
+            "drawing": {
+                "id": drawing.id,
+                "number": drawing.number or "",
+                "name": drawing.name or "",
+            },
+            "revisions": [
+                {
+                    "id": revision.id,
+                    "label": revision.display_name or "",
+                    "revision": revision.revision or "",
+                    "issue_date": revision.issue_date or "",
+                    "issued_for": revision.issued_for or "",
+                    "state": revision.state,
+                    "attachment_id": revision.attachment_id.id or False,
+                }
+                for revision in revisions
+            ],
+        }
+
     @api.model_create_multi
     def create(self, vals_list):
         revisions = super().create(vals_list)

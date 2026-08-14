@@ -16,6 +16,11 @@
         "wizard/drawing_upload_views.xml",
         "report/transmittal_report.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "construction_drawing/static/src/revision_compare/*",
+        ],
+    },
     "demo": [
         "demo/drawing_demo.xml",
         "demo/transmittal_demo.xml",
