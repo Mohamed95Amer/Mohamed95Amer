@@ -71,7 +71,7 @@
                 <div class="o_prog_names_head">Activity</div>
                 <div t-foreach="rows" t-as="row" t-key="row.id"
                      class="o_prog_name_row"
-                     t-att-class="{ o_critical: row.isCritical }"
+                     t-att-class="{ o_critical: row.isCritical, o_prog_phase: row.synthetic }"
                      t-att-style="'padding-inline-start:' + (8 + row.depth * 14) + 'px'"
                      t-on-click="() => this.openTask(row.id)"
                      t-att-title="row.tooltip">
@@ -109,6 +109,7 @@
                              title="Today"/>
 
                         <div t-foreach="rows" t-as="row" t-key="row.id" class="o_prog_row"
+                             t-att-class="{ o_prog_phase_row: row.synthetic }"
                              t-on-click="() => this.openTask(row.id)"
                              t-att-title="row.tooltip">
                             <!-- Baseline shadow: the offset between this and the

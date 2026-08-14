@@ -11,8 +11,15 @@ the string, the number and the boolean all arrive as something that is not
 that object.
 """
 
+import base64
+
 from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
+
+# The smallest thing construction_drawing's _check_pdf will accept. The
+# sign-off gate refuses to submit a revision with no sheet, which is correct
+# and means the happy-path test needs one.
+MINIMAL_PDF = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n"
 
 # Everything an RPC caller could plausibly send while guessing at the guard.
 FORGERIES = (True, 1, "1", "TRANSITION", "majal_document_transition",
@@ -116,6 +123,17 @@ class TestDrawingSignOffGuard(TransactionCase):
             ).write({"approved_by_id": self.user.id})
 
     def test_the_sign_off_workflow_still_works(self):
+        """Submit, then sign off. A revision cannot be approved straight from
+        draft, and it needs its sheet attached before it can even be
+        submitted — both of which are the gate doing its job."""
         revision = self._revision()
+        revision.write({
+            "sheet_filename": "sheet.pdf",
+            "sheet_file": base64.b64encode(MINIMAL_PDF),
+        })
+        revision.action_submit_approval()
+        self.assertEqual(revision.approval_state, "submitted")
+
         revision.action_approve_revision()
         self.assertEqual(revision.approval_state, "approved")
+        self.assertEqual(revision.approved_by_id, self.env.user)

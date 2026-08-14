@@ -13,6 +13,9 @@
             <field name="expected_life_years" position="after">
                 <field name="asset_category_id"
                        groups="account.group_account_readonly"/>
+                <field name="asset_in_service_date"/>
+                <field name="asset_salvage_value"
+                       invisible="not purchase_value"/>
                 <field name="asset_id" readonly="1"
                        invisible="not asset_id"/>
                 <field name="asset_state" invisible="not asset_id"/>
@@ -37,6 +40,24 @@
                         icon="fa-external-link"
                         invisible="not asset_id"
                         groups="account.group_account_readonly"/>
+                <button name="action_view_depreciation_entries" type="object"
+                        string="Posted Entries" class="btn-link"
+                        icon="fa-book"
+                        invisible="not asset_entry_count"
+                        groups="account.group_account_readonly"/>
+                <!-- Shown rather than done. Closing an asset posts a disposal
+                     entry, and an accounting entry that appears because
+                     somebody changed a status on a maintenance form is how a
+                     finance team stops trusting the system. -->
+                <button name="action_dispose_asset" type="object"
+                        string="Close Depreciation" class="btn-link text-danger"
+                        icon="fa-ban"
+                        invisible="not asset_needs_disposal"
+                        groups="account.group_account_manager"
+                        help="This equipment is retired but its asset is still
+                              depreciating. Closing it stops the charge."/>
+                <field name="asset_needs_disposal" invisible="1"/>
+                <field name="asset_entry_count" invisible="1"/>
             </field>
         </field>
     </record>

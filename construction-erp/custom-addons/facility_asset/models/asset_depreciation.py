@@ -51,6 +51,35 @@ class MaintenanceEquipment(models.Model):
     asset_depreciated_value = fields.Monetary(
         compute="_compute_asset_depreciated_value",
         string="Accumulated Depreciation", currency_field="currency_id")
+    asset_in_service_date = fields.Date(
+        string="In Service",
+        help="When the asset was commissioned. Depreciation runs from this "
+             "date, not from the day somebody typed the record in — a chiller "
+             "bought in March and commissioned in September has not lost six "
+             "months of value sitting in a crate.")
+    asset_salvage_value = fields.Monetary(
+        string="Residual Value", currency_field="currency_id",
+        help="What it is expected to be worth at the end of its life. "
+             "Depreciation is spread over the purchase value less this, so "
+             "leaving it at zero writes plant down to nothing and overstates "
+             "the annual charge.")
+    asset_line_ids = fields.One2many(
+        related="asset_id.depreciation_line_ids", string="Depreciation Schedule")
+    asset_entry_count = fields.Integer(
+        related="asset_id.entry_count", string="Posted Entries")
+    asset_needs_disposal = fields.Boolean(
+        compute="_compute_asset_needs_disposal",
+        help="Retired equipment whose asset is still running. The schedule "
+             "keeps posting until the asset is closed, which overstates the "
+             "charge for every period after it left service.")
+
+    @api.depends("tag_status", "asset_id.state")
+    def _compute_asset_needs_disposal(self):
+        for equipment in self:
+            equipment.asset_needs_disposal = (
+                equipment.tag_status == "retired"
+                and equipment.asset_id.state == "open"
+            )
 
     @api.depends("asset_id.value", "asset_id.value_residual")
     def _compute_asset_depreciated_value(self):
@@ -73,7 +102,12 @@ class MaintenanceEquipment(models.Model):
             # numbers to work from and should not invent a third.
             "method_number": self.expected_life_years,
             "method_period": 12,
-            "date": fields.Date.context_today(self),
+            # The commissioning date, falling back to today only when nobody
+            # recorded one. Dating an asset from the day the record was typed
+            # is the most common way a depreciation schedule ends up a few
+            # months out from the year it should have started in.
+            "date": self.asset_in_service_date or fields.Date.context_today(self),
+            "salvage_value": self.asset_salvage_value,
         }
 
     def action_create_asset(self):
@@ -100,9 +134,44 @@ class MaintenanceEquipment(models.Model):
             raise UserError(_(
                 "Set the expected life in years, so there is a period to "
                 "spread the value over."))
-        self.asset_id = self.env["account.asset.asset"].create(
-            self._asset_values())
+        asset = self.env["account.asset.asset"].create(self._asset_values())
+        # Creating it is not the same as running it, and the difference is the
+        # whole feature. account.asset.asset.create() computes the schedule,
+        # but the asset stays in draft — and _cron_generate_entries only looks
+        # at assets in state 'open'. Left in draft the board looks right on
+        # screen and nothing is ever posted to the ledger, which is worse than
+        # no depreciation at all because it reads as done.
+        asset.validate()
+        self.asset_id = asset
+        self.message_post(body=_(
+            "Depreciation started: %(value)s over %(years)s years from "
+            "%(date)s, residual %(salvage)s.",
+            value=self.purchase_value, years=self.expected_life_years,
+            date=asset.date, salvage=self.asset_salvage_value,
+        ))
         return self.action_view_asset()
+
+    def action_dispose_asset(self):
+        """Stop the schedule when the equipment leaves service.
+
+        Not automatic on retiring the equipment, deliberately. Closing an
+        asset posts a disposal entry, and an accounting entry appearing
+        because somebody changed a status field on a maintenance form is the
+        kind of surprise that ends with the finance team distrusting the
+        whole system. The form shows that it is needed; a person presses it.
+        """
+        self.ensure_one()
+        if self.asset_id.state != "open":
+            raise UserError(_(
+                "%s has no running depreciation to close.", self.name))
+        return self.asset_id.set_to_close()
+
+    def action_view_depreciation_entries(self):
+        self.ensure_one()
+        if not self.asset_id:
+            raise UserError(_("%s is not on the depreciation register.",
+                              self.name))
+        return self.asset_id.open_entries()
 
     def action_view_asset(self):
         self.ensure_one()

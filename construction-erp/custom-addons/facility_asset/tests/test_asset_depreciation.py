@@ -1,3 +1,5 @@
+from datetime import date
+
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
@@ -66,6 +68,66 @@ class TestAssetDepreciation(TransactionCase):
         equipment.asset_category_id = self._category()
         with self.assertRaises(UserError):
             equipment.action_create_asset()
+
+    def test_it_is_running_not_merely_created(self):
+        """The difference the whole feature turns on.
+
+        account.asset.asset.create() computes the board, but the asset stays
+        in draft, and _cron_generate_entries only looks at assets in state
+        'open'. Left in draft the schedule looks right on screen and nothing
+        ever reaches the ledger — which is worse than no depreciation,
+        because it reads as done.
+        """
+        self.equipment.asset_category_id = self._category()
+        self.equipment.action_create_asset()
+        self.assertEqual(self.equipment.asset_id.state, "open")
+        self.assertEqual(self.equipment.asset_state, "open")
+
+    def test_the_schedule_is_computed_and_spans_the_stated_life(self):
+        self.equipment.asset_category_id = self._category()
+        self.equipment.action_create_asset()
+
+        lines = self.equipment.asset_id.depreciation_line_ids
+        self.assertEqual(len(lines), 15)
+        self.assertAlmostEqual(
+            sum(lines.mapped("amount")), 400000.0, places=2)
+
+    def test_depreciation_runs_from_commissioning_not_from_data_entry(self):
+        """A chiller bought in March and commissioned in September has not
+        lost six months of value sitting in a crate."""
+        self.equipment.asset_category_id = self._category()
+        self.equipment.asset_in_service_date = date(2024, 9, 1)
+        self.equipment.action_create_asset()
+        self.assertEqual(self.equipment.asset_id.date, date(2024, 9, 1))
+
+    def test_residual_value_is_not_depreciated_away(self):
+        """Leaving salvage at zero writes plant down to nothing and
+        overstates the annual charge."""
+        self.equipment.asset_category_id = self._category()
+        self.equipment.asset_salvage_value = 40000.0
+        self.equipment.action_create_asset()
+
+        asset = self.equipment.asset_id
+        self.assertEqual(asset.salvage_value, 40000.0)
+        self.assertAlmostEqual(
+            sum(asset.depreciation_line_ids.mapped("amount")), 360000.0,
+            places=2)
+
+    def test_retired_equipment_still_depreciating_is_flagged(self):
+        """Nothing posts a disposal by itself — an accounting entry that
+        appears because somebody changed a status field is how a finance
+        team stops trusting the system. But it must be visible."""
+        self.equipment.asset_category_id = self._category()
+        self.equipment.action_create_asset()
+        self.assertFalse(self.equipment.asset_needs_disposal)
+
+        self.equipment.tag_status = "retired"
+        self.equipment.invalidate_recordset()
+        self.assertTrue(self.equipment.asset_needs_disposal)
+
+    def test_disposing_without_a_running_asset_is_refused(self):
+        with self.assertRaises(UserError):
+            self.equipment.action_dispose_asset()
 
     def test_the_asset_carries_the_two_numbers_over(self):
         self.equipment.asset_category_id = self._category()

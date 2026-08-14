@@ -360,3 +360,24 @@ body.o_rtl .o_prog_gantt {
     .o_prog_names { width: 150px; flex-basis: 150px; }
     .o_prog_summary .o_prog_stat { min-width: 88px; padding: 6px 9px; }
 }
+
+// A synthesised phase row — derived from the WBS numbering, not a task
+// anybody created. Styled as a summary so it is never mistaken for
+// something editable: it has no record behind it to open.
+.o_prog_gantt {
+    .o_prog_name_row.o_prog_phase {
+        background: rgba(52, 109, 117, .05);
+
+        .o_prog_label { font-weight: 600; }
+        .o_prog_wbs { font-weight: 600; }
+    }
+
+    // The classic summary bar: a thin span with tails, so it reads as the
+    // envelope of the work under it rather than as work of its own.
+    .o_prog_row.o_prog_phase_row .o_prog_bar {
+        height: 7px;
+        margin-top: 6px;
+        border-radius: 2px;
+        opacity: .85;
+    }
+}
