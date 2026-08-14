@@ -223,8 +223,17 @@ section.band.tinted { background: var(--surface-2); }
 .industry-tabs input:checked + label { border-color: var(--primary); background: var(--primary); color: #fff; box-shadow: var(--shadow); }
 .industry-tabs input:checked + label strong, .industry-tabs input:checked + label .tab-number { color: #fff; }
 .industry-tabs input:checked + label .tab-number { background: rgba(255,255,255,.18); }
-.industry-panel { display: none; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
-.industry-panel.is-active { display: grid; }
+/* Without JavaScript all three walkthroughs are shown in sequence: the videos
+   are the point of the page, the tabs are only a convenience. The script adds
+   .js-tabs once it can actually drive the switching, and that is what collapses
+   them — so the page is never a row of tabs above nothing. */
+.industry-panel { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow); }
+.industry-panel + .industry-panel { margin-top: 1.25rem; }
+.js-tabs .industry-panel { display: none; margin-top: 0; }
+.js-tabs .industry-panel.is-active { display: grid; }
+/* The tab row is decoration until the script can switch on it. */
+.industry-tabs { display: none; }
+.js-tabs .industry-tabs { display: grid; }
 .industry-copy { max-width: 34rem; }
 .industry-copy h2 { margin-top: .35rem; }
 .feature-list { display: grid; gap: .55rem; margin: 1.35rem 0 1.6rem; padding: 0; list-style: none; }

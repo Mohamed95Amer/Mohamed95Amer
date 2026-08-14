@@ -3,8 +3,14 @@ from pathlib import Path
 import ftfy
 
 
-ROOT = Path(__file__).resolve().parents[1]
-TEXT_SUFFIXES = {".html", ".css", ".js", ".json", ".xml", ".txt"}
+# This script lives in construction-erp/scripts/website/ but repairs the site
+# under construction-erp/website/ — name the target explicitly rather than
+# counting parent directories, so moving the script cannot silently point it
+# somewhere else.
+ROOT = Path(__file__).resolve().parents[2] / "website"
+# .md matters: the first run omitted it and left both READMEs corrupted while
+# every page was clean.
+TEXT_SUFFIXES = {".html", ".css", ".js", ".json", ".xml", ".txt", ".md"}
 
 
 def main():
