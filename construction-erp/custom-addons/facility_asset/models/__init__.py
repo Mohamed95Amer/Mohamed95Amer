@@ -4,3 +4,4 @@ from . import facility_failure
 from . import facility_spare
 from . import maintenance_equipment
 from . import asset_scan
+from . import asset_depreciation

@@ -8,7 +8,7 @@
     "license": "LGPL-3",
     "author": "Mohamed Amer",
     "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
-    "depends": ["maintenance", "product", "website"],
+    "depends": ["maintenance", "product", "website", "om_account_asset"],
     "data": [
         "security/facility_asset_security.xml",
         "security/ir.model.access.csv",
@@ -18,6 +18,7 @@
         "views/facility_location_views.xml",
         "views/facility_failure_views.xml",
         "views/maintenance_equipment_views.xml",
+        "views/asset_depreciation_views.xml",
         "views/maintenance_request_views.xml",
         "report/asset_tag_report.xml",
         "views/asset_tag_views.xml",

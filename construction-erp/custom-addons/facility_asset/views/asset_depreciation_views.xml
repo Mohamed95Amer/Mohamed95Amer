@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Depreciation sits next to the two numbers it is computed from —
+         purchase value and expected life — rather than in a tab of its own,
+         because on its own it looks like an accounting screen that has
+         wandered into the FM app. -->
+    <record id="view_equipment_form_depreciation" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.depreciation</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id"
+               ref="facility_asset.view_equipment_form_facility"/>
+        <field name="arch" type="xml">
+            <field name="expected_life_years" position="after">
+                <field name="asset_category_id"
+                       groups="account.group_account_readonly"/>
+                <field name="asset_id" readonly="1"
+                       invisible="not asset_id"/>
+                <field name="asset_state" invisible="not asset_id"/>
+                <field name="asset_gross_value" invisible="not asset_id"/>
+                <field name="asset_depreciated_value"
+                       invisible="not asset_id"/>
+                <field name="asset_book_value" invisible="not asset_id"/>
+                <!-- A button and not an automatic create: an asset needs a
+                     category, which needs accounts and a journal, which need
+                     a chart of accounts. On a database where nobody has set
+                     accounting up yet, creating one automatically would fail
+                     every time a piece of equipment was created. -->
+                <button name="action_create_asset" type="object"
+                        string="Start Depreciation" class="btn-link"
+                        icon="fa-line-chart"
+                        invisible="asset_id"
+                        groups="account.group_account_manager"
+                        help="Put this asset on the depreciation register,
+                              using its purchase value and expected life."/>
+                <button name="action_view_asset" type="object"
+                        string="Open Asset" class="btn-link"
+                        icon="fa-external-link"
+                        invisible="not asset_id"
+                        groups="account.group_account_readonly"/>
+            </field>
+        </field>
+    </record>
+</odoo>
