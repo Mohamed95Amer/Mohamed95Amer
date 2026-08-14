@@ -72,8 +72,19 @@
                 <div t-foreach="rows" t-as="row" t-key="row.id"
                      class="o_prog_name_row"
                      t-att-class="{ o_critical: row.isCritical }"
+                     t-att-style="'padding-inline-start:' + (8 + row.depth * 14) + 'px'"
                      t-on-click="() => this.openTask(row.id)"
                      t-att-title="row.tooltip">
+                    <!-- The toggle stops the click reaching the row, or
+                         folding a phase would also open the task behind it. -->
+                    <button t-if="row.hasChildren" type="button"
+                            class="o_prog_twisty"
+                            t-att-aria-expanded="row.collapsed ? 'false' : 'true'"
+                            t-att-aria-label="row.collapsed ? 'Expand' : 'Collapse'"
+                            t-on-click.stop="() => this.toggleRow(row.id)">
+                        <i class="fa" t-att-class="row.collapsed ? 'fa-caret-right' : 'fa-caret-down'"/>
+                    </button>
+                    <span t-else="" class="o_prog_twisty o_prog_twisty_leaf"/>
                     <span class="o_prog_wbs" t-if="row.wbs" t-esc="row.wbs"/>
                     <span class="o_prog_label" t-esc="row.name"/>
                     <span class="o_prog_slip" t-if="row.slipping">+<t t-esc="row.variance"/>d</span>

@@ -113,6 +113,23 @@ $name-w: 300px;
         &:hover { background: rgba(52, 109, 117, .07); }
         &.o_critical .o_prog_label { color: $g-critical; font-weight: 600; }
 
+        // Fixed width whether or not the row has one, so the codes below a
+        // phase still line up with each other instead of stepping sideways
+        // depending on whether a row happens to have children.
+        .o_prog_twisty {
+            flex: 0 0 auto;
+            width: 14px;
+            height: 14px;
+            padding: 0;
+            color: $g-muted;
+            background: none;
+            border: 0;
+            line-height: 1;
+
+            &:hover { color: inherit; }
+        }
+        .o_prog_twisty_leaf { visibility: hidden; }
+
         .o_prog_wbs {
             flex: 0 0 auto;
             color: $g-muted;

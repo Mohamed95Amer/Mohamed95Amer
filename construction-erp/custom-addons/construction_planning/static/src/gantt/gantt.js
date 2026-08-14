@@ -58,6 +58,10 @@ export class ProgrammeGantt extends Component {
             showBaseline: true,
             criticalOnly: false,
             tasks: [],
+            // Which phases are folded away, by task id. Everything starts
+            // open: a programme that hides itself on load is a programme
+            // somebody has to unfold before they can read it.
+            collapsed: {},
         });
 
         onWillStart(async () => {
@@ -96,7 +100,7 @@ export class ProgrammeGantt extends Component {
                     "name", "wbs_code", "planned_start", "planned_finish",
                     "baseline_start", "baseline_finish", "finish_variance_days",
                     "progress", "is_critical", "is_milestone", "total_float",
-                    "project_id",
+                    "project_id", "parent_id",
                 ],
                 { limit: 400, order: "wbs_code, planned_start, id" }
             );
@@ -222,9 +226,107 @@ export class ProgrammeGantt extends Component {
         return date.toLocaleDateString(undefined, { month: "short", year: "2-digit" });
     }
 
+    // ------------------------------------------------------------------
+    // Hierarchy
+    //
+    // The programme was a flat list ordered by wbs_code, so a fifty-line
+    // schedule read as fifty peers and the phases were implied by nothing
+    // but the numbering. The tree is derived from wbs_code rather than from
+    // parent_id on purpose: nothing in this module populates parent_id — the
+    // demo data included — while every task already carries a code like
+    // "1.1" or "2.M". A tree built on the field nobody fills in would be a
+    // flat list with extra machinery.
+    //
+    // parent_id is still read, as the fallback for a task with no code at
+    // all, so those nest under their parent instead of all piling up at the
+    // root.
+    // ------------------------------------------------------------------
+
+    /** The code of the row this one sits under, or null at the top. */
+    parentWbsOf(wbs) {
+        if (!wbs) {
+            return null;
+        }
+        const cut = wbs.lastIndexOf(".");
+        return cut === -1 ? null : wbs.slice(0, cut);
+    }
+
+    /**
+     * Parent, depth and child-count for every task, in one pass.
+     *
+     * Built once per render rather than answered per row on demand. The
+     * obvious shape — a parentOf(task) helper the template calls — rebuilds
+     * the code index on every call, and hasChildren then calls it once per
+     * task per task. At the 400-task limit this loader already sets, that is
+     * tens of millions of operations to draw one chart.
+     */
+    get hierarchy() {
+        const byWbs = new Map();
+        const byId = new Map();
+        for (const task of this.state.tasks) {
+            byId.set(task.id, task);
+            if (task.wbs_code) {
+                byWbs.set(task.wbs_code, task);
+            }
+        }
+
+        const parent = new Map();
+        for (const task of this.state.tasks) {
+            let found = null;
+            // Walk up past codes that are not on screen — "1.2.1" whose
+            // "1.2" the critical-path filter removed still belongs under a
+            // visible "1" rather than vanishing with its parent.
+            let wbs = this.parentWbsOf(task.wbs_code);
+            while (wbs && !found) {
+                found = byWbs.get(wbs) || null;
+                wbs = this.parentWbsOf(wbs);
+            }
+            if (!found && !task.wbs_code && task.parent_id) {
+                found = byId.get(task.parent_id[0]) || null;
+            }
+            // A code cannot be its own ancestor, but data can say anything.
+            parent.set(task.id, found && found.id !== task.id ? found : null);
+        }
+
+        const childCount = new Map();
+        for (const task of this.state.tasks) {
+            const above = parent.get(task.id);
+            if (above) {
+                childCount.set(above.id, (childCount.get(above.id) || 0) + 1);
+            }
+        }
+
+        const depth = new Map();
+        const hidden = new Set();
+        for (const task of this.state.tasks) {
+            let level = 0;
+            let above = parent.get(task.id);
+            // Bounded, so a cycle the data should not contain draws a wrong
+            // chart rather than hanging the browser.
+            while (above && level < 12) {
+                if (this.state.collapsed[above.id]) {
+                    hidden.add(task.id);
+                }
+                level += 1;
+                above = parent.get(above.id);
+            }
+            depth.set(task.id, level);
+        }
+
+        return { depth, childCount, hidden };
+    }
+
+    toggleRow(taskId) {
+        this.state.collapsed = {
+            ...this.state.collapsed,
+            [taskId]: !this.state.collapsed[taskId],
+        };
+    }
+
     /** Rows enriched with everything the template needs to draw. */
     get rows() {
-        return this.state.tasks.map((task) => {
+        const { depth, childCount, hidden } = this.hierarchy;
+        return this.state.tasks.filter((task) => !hidden.has(task.id)).map((task) => {
             const left = this.offsetOf(task.planned_start) || 0;
             const width = this.widthBetween(task.planned_start, task.planned_finish);
             const baselineLeft = this.offsetOf(task.baseline_start);
@@ -236,6 +338,9 @@ export class ProgrammeGantt extends Component {
                 id: task.id,
                 name: task.name,
                 wbs: task.wbs_code || "",
+                depth: depth.get(task.id) || 0,
+                hasChildren: Boolean(childCount.get(task.id)),
+                collapsed: Boolean(this.state.collapsed[task.id]),
                 isCritical: task.is_critical,
                 isMilestone: task.is_milestone,
                 float: task.total_float || 0,
