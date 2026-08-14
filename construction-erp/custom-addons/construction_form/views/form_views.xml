@@ -97,6 +97,13 @@
                             invisible="state != 'in_progress' or remaining_count == 0"
                             help="Answer every outstanding Yes/No check with Yes.
                                   Anything already answered is left as it is."/>
+                    <!-- Alongside Print, not inside it: the PDF is the record
+                         you issue, the spreadsheet is the one you sort and
+                         count, and they are wanted at different moments. -->
+                    <button name="action_export_xlsx" type="object"
+                            string="Export to Excel" invisible="state == 'draft'"
+                            help="The answers as a spreadsheet, for sorting and
+                                  counting. Print gives the signed record."/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

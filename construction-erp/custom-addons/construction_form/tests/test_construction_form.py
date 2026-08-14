@@ -162,6 +162,68 @@ class TestConstructionForm(TransactionCase):
 
 
 @tagged("post_install", "-at_install")
+class TestInspectionSpreadsheet(TransactionCase):
+    """The PDF is the record you issue; this is the one you sort and count."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.project = cls.env["project.project"].create(
+            {"name": "Export Test", "is_construction": True})
+        cls.template = cls.env["construction.form.template"].create({
+            "name": "Handover", "code": "HAND",
+            "project_id": cls.project.id,
+            "question_ids": [
+                (0, 0, {"name": "Access clear?", "required": True}),
+                (0, 0, {"name": "Observation", "answer_type": "text"}),
+            ],
+        })
+
+    def _inspection(self):
+        inspection = self.env["construction.form.inspection"].create({
+            "template_id": self.template.id, "project_id": self.project.id})
+        inspection.action_start()
+        return inspection
+
+    def test_the_button_hands_over_a_url_not_an_attachment(self):
+        """Storing the sheet on the record would be a second version of the
+        truth that goes stale the moment somebody edits an answer."""
+        inspection = self._inspection()
+        action = inspection.action_export_xlsx()
+        self.assertEqual(action["type"], "ir.actions.act_url")
+        self.assertIn(str(inspection.id), action["url"])
+        self.assertTrue(action["url"].endswith(".xlsx"))
+
+    def test_a_comment_that_looks_like_a_formula_is_defused(self):
+        """An inspector types free text into a comment box, and free text is
+        where the injection payload arrives. Excel and LibreOffice both act
+        on a leading =, and one of them offers to run it."""
+        from odoo.addons.construction_form.controllers.inspection_export import (
+            _safe,
+        )
+        for payload in ("=cmd|'/c calc'!A1", "+1+1", "-2+3", "@SUM(A1)"):
+            self.assertTrue(_safe(payload).startswith("'"), payload)
+        self.assertEqual(_safe("Crack in slab"), "Crack in slab")
+        self.assertEqual(_safe(False), "")
+
+    def test_every_kind_of_answer_lands_in_one_column(self):
+        """A checklist mixes five answer types, and a sheet with five
+        mostly-empty answer columns is unreadable."""
+        from odoo.addons.construction_form.controllers.inspection_export import (
+            _answer_text,
+        )
+        inspection = self._inspection()
+        required = inspection.answer_ids.filtered(
+            lambda a: a.question_id.required)
+        required.answer_yes_no = "yes"
+        self.assertEqual(_answer_text(required), "Yes")
+
+        text = inspection.answer_ids - required
+        text.answer_text = "Chipped tile by the lift lobby"
+        self.assertEqual(_answer_text(text), "Chipped tile by the lift lobby")
+
+
+@tagged("post_install", "-at_install")
 class TestFormLibrary(TransactionCase):
     """The forms that ship with the module.
 

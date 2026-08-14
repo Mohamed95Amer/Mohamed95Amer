@@ -227,6 +227,21 @@ class ConstructionFormInspection(models.Model):
             inspection.uses_date = "date" in types
             inspection.uses_binary = bool(types & {"photo", "signature"})
 
+    def action_export_xlsx(self):
+        """Hand the answers over as a spreadsheet.
+
+        A URL action rather than a generated attachment: the sheet is derived
+        entirely from records that are already stored, so saving a copy of it
+        on the inspection would only create a second version of the truth that
+        goes stale the moment anybody edits an answer.
+        """
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_url",
+            "url": "/construction/inspection/%s/export.xlsx" % self.id,
+            "target": "self",
+        }
+
     def action_pass_remaining(self):
         """Answer every unanswered Yes/No check with Yes.
 
