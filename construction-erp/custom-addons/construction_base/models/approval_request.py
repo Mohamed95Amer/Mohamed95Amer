@@ -191,6 +191,14 @@ class ConstructionApprovalStep(models.Model):
 
     group_id = fields.Many2one("res.groups")
     user_id = fields.Many2one("res.users", string="Named Approver")
+    user_ids = fields.Many2many(
+        "res.users", "construction_approval_step_user_rel",
+        "step_id", "user_id", string="Named Approvers",
+        help="Any one of these people can sign, copied from the rule step at "
+             "the moment the request was raised. Copied rather than related "
+             "for the same reason group_id and user_id are: editing a rule "
+             "must not silently change who was entitled to sign a decision "
+             "already outstanding.")
 
     decided_by_id = fields.Many2one("res.users", readonly=True)
     delegated_from_id = fields.Many2one(
@@ -224,6 +232,7 @@ class ConstructionApprovalStep(models.Model):
         "request_id",
         "group_id",
         "user_id",
+        "user_ids",
         "sequence",
     }
 
@@ -287,12 +296,25 @@ class ConstructionApprovalStep(models.Model):
     def _approvers(self):
         """Everybody entitled to sign this step, delegations included."""
         self.ensure_one()
+        users = self._named_approvers()
+        return users | self.env["construction.approval.delegation"]._delegates_of(users)
+
+    def _named_approvers(self):
+        """The people the step names, before delegation is considered.
+
+        One place, because `_approvers` and `_delegator_for` had grown their
+        own copies of this and a third entitlement field would have had to be
+        remembered in both.
+        """
+        self.ensure_one()
         users = self.env["res.users"]
         if self.user_id:
             users |= self.user_id
+        if self.user_ids:
+            users |= self.user_ids
         if self.group_id:
             users |= self.group_id.users
-        return users | self.env["construction.approval.delegation"]._delegates_of(users)
+        return users
 
     def _can_be_signed_by(self, user):
         self.ensure_one()
@@ -315,11 +337,7 @@ class ConstructionApprovalStep(models.Model):
     def _delegator_for(self, user):
         """Whose authority is being used, when it is not the signer's own."""
         self.ensure_one()
-        named = self.env["res.users"]
-        if self.user_id:
-            named |= self.user_id
-        if self.group_id:
-            named |= self.group_id.users
+        named = self._named_approvers()
         if user in named:
             return self.env["res.users"]
         delegation = self.env["construction.approval.delegation"]._active_for(
@@ -347,8 +365,12 @@ class ConstructionApprovalStep(models.Model):
         candidates = self.search([
             ("state", "=", "pending"),
             ("request_id.state", "=", "pending"),
-            "|", "|",
+            # Four entitlement leaves, so three prefix ORs. Miscounting these
+            # does not raise: it silently ANDs the tail, and the inbox goes
+            # quietly empty for whoever falls in the part that got dropped.
+            "|", "|", "|",
             ("user_id", "in", (user | delegating).ids),
+            ("user_ids", "in", (user | delegating).ids),
             ("group_id", "in", user.groups_id.ids),
             ("group_id", "in", delegating.groups_id.ids),
         ])
@@ -476,7 +498,11 @@ class ConstructionApprovalStep(models.Model):
                 and user == self.request_id.requested_by_id):
             return self.env._(
                 "You raised this, so somebody else has to approve it.")
+        # People first, and the group only when nobody is named: naming the
+        # group is more use than reciting forty of its members.
+        people = self.user_id | self.user_ids
         return self.env._(
             "This approval is for %s.",
-            self.user_id.display_name or self.group_id.display_name
+            ", ".join(people.mapped("display_name"))
+            or self.group_id.display_name
             or self.env._("somebody else"))

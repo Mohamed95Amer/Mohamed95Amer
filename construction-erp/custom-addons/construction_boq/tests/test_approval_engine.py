@@ -248,6 +248,111 @@ class TestApprovalRules(ApprovalCase):
                 "name": "Nobody", "model_id": self.model_id,
                 "step_ids": [(0, 0, {"name": "Ghost"})]})
 
+    def test_a_list_of_named_people_is_somebody_who_can_sign_it(self):
+        """The third way of naming an approver has to satisfy the same
+        constraint as the other two, or configuring a step this way is
+        refused as empty."""
+        rule = self.env["construction.approval.rule"].create({
+            "name": "Either director", "model_id": self.model_id,
+            "step_ids": [(0, 0, {
+                "name": "A director",
+                "user_ids": [(6, 0, (self.pm | self.boss).ids)]})]})
+        self.assertEqual(len(rule.step_ids), 1)
+
+
+@tagged("post_install", "-at_install")
+class TestSeveralNamedApprovers(ApprovalCase):
+    """"Either of these two people can sign" — as a role nobody maintains.
+
+    A group is the better answer where the authority really is a role, but
+    "whichever of our two directors is in the country" is not a role, and
+    making it one means creating and maintaining a group of two.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.env["construction.approval.rule"].create({
+            "name": "Either director", "model_id": self.model_id,
+            "step_ids": [(0, 0, {
+                "name": "A director",
+                "user_ids": [(6, 0, (self.pm | self.boss).ids)]})]})
+        self.request = self.boq.with_user(self.qs).action_request_approval()
+        self.step = self.request.step_ids
+
+    def test_the_named_people_are_carried_onto_the_request(self):
+        """Copied, not related: editing the rule afterwards must not change
+        who was entitled to sign a decision already outstanding."""
+        self.assertEqual(self.step.user_ids, self.pm | self.boss)
+
+    def test_either_of_them_can_sign(self):
+        self.assertTrue(self.step._can_be_signed_by(self.pm))
+        self.assertTrue(self.step._can_be_signed_by(self.boss))
+
+    def test_one_signature_is_enough(self):
+        """'Any of', not 'all of'. Two signatures is two steps."""
+        self.step.with_user(self.boss).action_approve()
+        self.assertEqual(self.request.state, "approved")
+
+    def test_somebody_not_named_is_still_refused(self):
+        self.assertFalse(self.step._can_be_signed_by(self.engineer))
+        with self.assertRaises(UserError):
+            self.step.with_user(self.engineer).action_approve()
+
+    def test_it_reaches_both_their_inboxes(self):
+        """The inbox domain ORs four entitlement leaves. Miscount the prefix
+        operators and it silently ANDs the tail instead of raising, and the
+        people in the dropped part simply never hear about the approval.
+        """
+        for approver in (self.pm, self.boss):
+            waiting = self.env["construction.approval.step"].with_user(
+                approver)._waiting_on(approver)
+            self.assertIn(self.step, waiting, approver.name)
+
+    def test_the_refusal_names_them_rather_than_a_group(self):
+        reason = self.step._refusal_reason(self.engineer)
+        self.assertIn(self.pm.display_name, reason)
+        self.assertIn(self.boss.display_name, reason)
+
+
+@tagged("post_install", "-at_install")
+class TestBulkRequestForApproval(ApprovalCase):
+    """Forty variations to submit used to mean forty documents opened."""
+
+    def setUp(self):
+        super().setUp()
+        self._rule([("Project manager",
+                     "construction_base.group_construction_pm")])
+        self.second = self.env["construction.boq"].create(
+            {"name": "Second bill", "project_id": self.project.id})
+
+    def test_a_selection_is_sent_in_one_go(self):
+        both = self.boq | self.second
+        both.with_user(self.qs).action_request_approval_selected()
+        for document in both:
+            self.assertTrue(document._open_approval_request(), document.name)
+
+    def test_one_that_cannot_be_sent_does_not_abort_the_rest(self):
+        """The whole point. It used to raise on the first record already
+        pending, having raised nothing at all, leaving the user to work out
+        which of forty it was and deselect it.
+        """
+        self.boq.with_user(self.qs).action_request_approval()
+        both = self.boq | self.second
+
+        result = both.with_user(self.qs).action_request_approval_selected()
+
+        self.assertTrue(self.second._open_approval_request())
+        self.assertEqual(result["tag"], "display_notification")
+        self.assertIn(self.boq.display_name, result["params"]["message"])
+
+    def test_one_record_still_says_plainly_what_is_wrong(self):
+        """Skipping is right for a selection and wrong for a single record:
+        somebody who pressed the button on one document and got a summary
+        saying one was skipped has been told nothing."""
+        self.boq.with_user(self.qs).action_request_approval()
+        with self.assertRaises(UserError):
+            self.boq.with_user(self.qs).action_request_approval()
+
 
 @tagged("post_install", "-at_install")
 class TestApprovalDelegation(ApprovalCase):

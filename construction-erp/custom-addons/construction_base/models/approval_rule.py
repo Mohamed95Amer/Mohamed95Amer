@@ -133,6 +133,16 @@ class ConstructionApprovalRuleStep(models.Model):
         "res.users", string="Specific Person",
         help="Use where the authority is personal rather than a role. A group "
              "is usually better: people go on leave, roles do not.")
+    user_ids = fields.Many2many(
+        "res.users", "construction_approval_rule_step_user_rel",
+        "step_id", "user_id", string="Any Of These People",
+        help="Any one of these people can give this signature. Use it where "
+             "the authority is personal but not one person's — 'either "
+             "project manager', 'whichever director is in the country'.\n\n"
+             "This is 'any of', never 'all of', which is deliberate: it "
+             "behaves the same way a group does. A document that genuinely "
+             "needs two signatures needs two steps, because two signatures on "
+             "one step cannot record who was waiting on whom.")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -142,10 +152,10 @@ class ConstructionApprovalRuleStep(models.Model):
         steps._check_who()
         return steps
 
-    @api.constrains("group_id", "user_id")
+    @api.constrains("group_id", "user_id", "user_ids")
     def _check_who(self):
         for step in self:
-            if not step.group_id and not step.user_id:
+            if not step.group_id and not step.user_id and not step.user_ids:
                 raise ValidationError(self.env._(
                     "A step needs somebody who can sign it: a group or a "
                     "person."))

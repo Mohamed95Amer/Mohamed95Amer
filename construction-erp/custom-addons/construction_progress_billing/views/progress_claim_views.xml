@@ -122,4 +122,16 @@
               parent="construction_base.menu_construction_commercial"
               action="action_progress_claim"
               sequence="20"/>
+
+    <!-- Send a whole selection for approval from the list-view cog. The
+         engine always looped over the recordset; until now nothing could
+         hand it more than one record. -->
+    <record id="action_request_approval_construction_progress_claim" model="ir.actions.server">
+        <field name="name">Request Approval</field>
+        <field name="model_id" ref="model_construction_progress_claim"/>
+        <field name="binding_model_id" ref="model_construction_progress_claim"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_request_approval_selected()</field>
+    </record>
 </odoo>

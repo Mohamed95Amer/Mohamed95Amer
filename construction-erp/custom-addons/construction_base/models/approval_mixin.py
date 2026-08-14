@@ -160,19 +160,91 @@ class ConstructionApprovable(models.AbstractModel):
     # Requesting
     # ------------------------------------------------------------------
     def action_request_approval(self):
-        """Raise the approval this document needs, if it needs one."""
+        """Raise the approval this document needs, if it needs one.
+
+        On one record a problem is an error, because the person pressed the
+        button on that document and nothing happened otherwise. On a selection
+        it is not: forty variations sent for approval used to stop dead on the
+        first one already pending, having raised nothing at all, and the user's
+        only recovery was to work out which one it was and deselect it. So a
+        multi-record call skips what it cannot do and reports it afterwards.
+        """
         created = self.env["construction.approval.request"]
+        skipped = []
         for record in self:
             if record._open_approval_request():
-                raise UserError(self.env._(
-                    "This is already waiting for approval."))
+                if len(self) == 1:
+                    raise UserError(self.env._(
+                        "This is already waiting for approval."))
+                skipped.append((record.display_name, self.env._(
+                    "already waiting for approval")))
+                continue
             rule = record._approval_rule()
             if not rule:
-                raise UserError(self.env._(
-                    "No approval rule covers this document. Either it does not "
-                    "need approving, or a rule is missing for its value."))
+                if len(self) == 1:
+                    raise UserError(self.env._(
+                        "No approval rule covers this document. Either it does "
+                        "not need approving, or a rule is missing for its "
+                        "value."))
+                skipped.append((record.display_name, self.env._(
+                    "no approval rule covers it")))
+                continue
             created |= record._create_approval_request(rule)
+        if skipped and len(self) > 1:
+            return self._approval_batch_notification(created, skipped)
         return created
+
+    def action_request_approval_selected(self):
+        """Send a whole selection for approval, from the list-view cog.
+
+        The engine could always do several at once — `action_request_approval`
+        has looped over `self` since it was written — but there was no way to
+        call it on more than one record, so a quantity surveyor with forty
+        variations to submit opened and submitted forty documents.
+
+        This exists rather than the server action calling
+        `action_request_approval` directly because that method returns a
+        recordset when nothing was skipped, and a recordset is not an action:
+        the client would take the silence for a failure. Here every path ends
+        in something the user can see.
+        """
+        result = self.action_request_approval()
+        if isinstance(result, dict):
+            return result
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success",
+                "title": self.env._("%s sent for approval", len(result)),
+                "message": self.env._("Everything selected is now waiting."),
+                "next": {"type": "ir.actions.act_window_close"},
+            },
+        }
+
+    def _approval_batch_notification(self, created, skipped):
+        """Say what was raised and what was not, without losing the work.
+
+        A plain notification rather than a raise: raising here would roll back
+        the requests that did succeed, which is the behaviour this exists to
+        replace.
+        """
+        lines = "\n".join(
+            "• %s — %s" % (name, why) for name, why in skipped[:20])
+        if len(skipped) > 20:
+            lines += self.env._("\n… and %s more.", len(skipped) - 20)
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "warning" if not created else "info",
+                "title": self.env._("%s sent for approval", len(created)),
+                "message": self.env._(
+                    "%(count)s were skipped:\n%(lines)s",
+                    count=len(skipped), lines=lines),
+                "sticky": True,
+            },
+        }
 
     def _create_approval_request(self, rule):
         self.ensure_one()
@@ -191,6 +263,7 @@ class ConstructionApprovable(models.AbstractModel):
                     "name": step.name,
                     "group_id": step.group_id.id,
                     "user_id": step.user_id.id,
+                    "user_ids": [(6, 0, step.user_ids.ids)],
                 })
                 for step in rule.step_ids
             ],

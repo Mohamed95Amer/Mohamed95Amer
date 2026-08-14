@@ -209,4 +209,17 @@
               parent="construction_base.menu_construction_commercial"
               action="action_change_order"
               sequence="35"/>
+
+    <!-- Send a whole selection for approval from the list-view cog. The
+         engine always looped over the recordset; until now nothing could
+         hand it more than one record. Bound to the Variation, which is
+         what carries the approval, not to the Change Order above it. -->
+    <record id="action_request_approval_construction_change_order" model="ir.actions.server">
+        <field name="name">Request Approval</field>
+        <field name="model_id" ref="model_construction_change_order"/>
+        <field name="binding_model_id" ref="model_construction_change_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_request_approval_selected()</field>
+    </record>
 </odoo>
