@@ -126,7 +126,11 @@ $sidebar-rail: 52px;
     }
 
     // The chevron points the way the language runs.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
     [dir="rtl"] & .o_majal_back .fa { transform: scaleX(-1); }
+/*!rtl:end:ignore*/
 
     .o_majal_sidebar_app {
         min-width: 0;
@@ -302,6 +306,9 @@ $sidebar-rail: 52px;
 }
 
 // RTL: the column belongs on the right, and so does the shadow.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
 :dir(rtl) .o_majal_sidebar {
     left: auto;
     right: 0;
@@ -316,6 +323,7 @@ $sidebar-rail: 52px;
         transform: rotate(-90deg);
     }
 }
+/*!rtl:end:ignore*/
 
 @media (prefers-reduced-motion: reduce) {
     .o_majal_sidebar .o_majal_caret { transition: none; }

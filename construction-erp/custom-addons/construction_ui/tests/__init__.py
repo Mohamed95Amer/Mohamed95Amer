@@ -4,3 +4,4 @@ from . import test_icon_branding
 from . import test_drawing_revision_state
 from . import test_transition_guards
 from . import test_rtl_assets
+from . import test_rtl_fences

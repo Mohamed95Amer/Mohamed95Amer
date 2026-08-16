@@ -1,0 +1,95 @@
+# Arabic (ar_001) translations for majal_workforce.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Workforce"
+msgstr "القوى العاملة"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Allocations"
+msgstr "الإسنادات"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Allocate People"
+msgstr "إسناد الأشخاص"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Roles"
+msgstr "الأدوار"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Person"
+msgstr "الشخص"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Project"
+msgstr "المشروع"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Role"
+msgstr "الدور"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Until"
+msgstr "حتى"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "% of time"
+msgstr "نسبة الوقت %"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Grants access"
+msgstr "يمنح صلاحية الوصول"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Planned"
+msgstr "مخطط"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Active"
+msgstr "نشط"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Ended"
+msgstr "منتهٍ"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Majal Workforce Allocation"
+msgstr "إسناد القوى العاملة في مجال"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Include everything below"
+msgstr "يشمل كل ما تحته"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "Held past its end date"
+msgstr "مستمر بعد تاريخ الانتهاء"
+
+#. module: majal_workforce
+#: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+msgid "System account"
+msgstr "حساب النظام"
+

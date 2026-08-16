@@ -650,7 +650,11 @@
         transition: transform .22s ease;
     }
 
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
     [dir="rtl"] .o_majal_ai_sidebar { transform: translateX(105%); }
+/*!rtl:end:ignore*/
     .o_majal_ai--sidebar-open .o_majal_ai_sidebar { transform: translateX(0); }
     .o_majal_ai_close { display: inline-grid; }
 

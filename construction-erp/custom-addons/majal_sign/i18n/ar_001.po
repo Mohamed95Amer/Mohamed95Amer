@@ -1,0 +1,60 @@
+# Arabic (ar_001) translations for majal_sign.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Majal eSign"
+msgstr "التوقيع الإلكتروني من مجال"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Signature Register"
+msgstr "سجل التوقيعات"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Waiting for My Signature"
+msgstr "بانتظار توقيعي"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Signature"
+msgstr "التوقيع"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Signer"
+msgstr "الموقّع"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Signed on"
+msgstr "تاريخ التوقيع"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Signed by"
+msgstr "وقّع بواسطة"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Signed"
+msgstr "موقّع"
+
+#. module: majal_sign
+#: model:ir.ui.menu,name:majal_sign.menu_placeholder
+msgid "Cancelled"
+msgstr "ملغى"
+

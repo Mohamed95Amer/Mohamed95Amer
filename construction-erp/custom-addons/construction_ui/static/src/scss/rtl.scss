@@ -1,5 +1,18 @@
 // Majal Arabic / RTL refinements. Odoo supplies the base RTL bundle; these
 // rules cover the custom dashboards and preserve readable numbers and codes.
+//
+// Everything here is already expressed the way it should appear in Arabic —
+// text-align: right means right, margin-left means the left of an RTL screen.
+// rtlcss builds the Arabic bundle by mirroring every directional declaration
+// it finds, so without the guard below it would mirror these too and hand
+// back the left-to-right layout they exist to replace. Twenty-three
+// declarations in this file would flip.
+//
+// So the file is fenced off. Anything added here must likewise be written in
+// its final Arabic form, not in terms to be mirrored.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
 body.o_rtl {
     body,
     .o_web_client {
@@ -183,3 +196,4 @@ body.o_rtl {
         }
     }
 }
+/*!rtl:end:ignore*/

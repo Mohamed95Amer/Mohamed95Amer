@@ -1,0 +1,150 @@
+# Arabic (ar_001) translations for majal_dashboard.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Executive"
+msgstr "الإدارة التنفيذية"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Financial"
+msgstr "المالية"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Financial Reports"
+msgstr "التقارير المالية"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Operations"
+msgstr "العمليات"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Project"
+msgstr "المشاريع"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Procurement"
+msgstr "المشتريات"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Workforce"
+msgstr "القوى العاملة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "HSE"
+msgstr "السلامة والصحة والبيئة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Equipment"
+msgstr "المعدات"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Certified against cost"
+msgstr "المعتمد مقابل التكلفة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Commercial position by stage"
+msgstr "الموقف التجاري حسب المرحلة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Committed by project"
+msgstr "الالتزامات حسب المشروع"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Trading summary"
+msgstr "ملخص النشاط التجاري"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Jobs below their tendered margin"
+msgstr "مشاريع دون هامش المناقصة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Allocations by project"
+msgstr "الإسنادات حسب المشروع"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Utilisation by person"
+msgstr "نسبة الإشغال لكل شخص"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Current allocations"
+msgstr "الإسنادات الحالية"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Incidents by Month"
+msgstr "الحوادث شهرياً"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Construction Portfolio Analysis"
+msgstr "تحليل محفظة الإنشاءات"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Facility Portfolio Analysis"
+msgstr "تحليل محفظة المرافق"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Estate Portfolio Analysis"
+msgstr "تحليل محفظة الأصول العقارية"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Procurement Commitment Analysis"
+msgstr "تحليل التزامات المشتريات"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Workforce Utilisation Analysis"
+msgstr "تحليل إشغال القوى العاملة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Utilisation %"
+msgstr "نسبة الإشغال %"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Available %"
+msgstr "النسبة المتاحة %"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Over-committed"
+msgstr "تجاوز الطاقة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "Active allocations"
+msgstr "الإسنادات النشطة"
+
+#. module: majal_dashboard
+#: model:ir.ui.menu,name:majal_dashboard.menu_placeholder
+msgid "System account"
+msgstr "حساب النظام"
+

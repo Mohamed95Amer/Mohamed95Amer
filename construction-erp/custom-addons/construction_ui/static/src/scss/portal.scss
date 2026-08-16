@@ -85,6 +85,9 @@ $ui-muted: #697983;
 }
 
 // Arabic / RTL refinements mirroring rtl.scss, applied to the portal.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
 html[dir="rtl"] {
     .o_portal,
     .o_portal_wrap {
@@ -114,3 +117,4 @@ html[dir="rtl"] {
         }
     }
 }
+/*!rtl:end:ignore*/

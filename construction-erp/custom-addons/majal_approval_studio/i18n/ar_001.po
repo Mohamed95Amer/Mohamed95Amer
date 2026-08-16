@@ -1,0 +1,30 @@
+# Arabic (ar_001) translations for majal_approval_studio.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: majal_approval_studio
+#: model:ir.ui.menu,name:majal_approval_studio.menu_placeholder
+msgid "Approval Studio"
+msgstr "استوديو الاعتمادات"
+
+#. module: majal_approval_studio
+#: model:ir.ui.menu,name:majal_approval_studio.menu_placeholder
+msgid "Majal Approvals"
+msgstr "اعتمادات مجال"
+
+#. module: majal_approval_studio
+#: model:ir.ui.menu,name:majal_approval_studio.menu_placeholder
+msgid "Approval rule"
+msgstr "قاعدة الاعتماد"
+
+#. module: majal_approval_studio
+#: model:ir.ui.menu,name:majal_approval_studio.menu_placeholder
+msgid "Steps"
+msgstr "الخطوات"
+

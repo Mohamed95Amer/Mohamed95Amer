@@ -347,6 +347,9 @@ $d-muted: #697983;
 }
 
 // Arabic / RTL
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
 html[dir="rtl"] .o_cdash {
     .o_cdash_picker_actions { margin-right: auto; margin-left: 0; }
     .o_cdash_bar_val { text-align: left; }
@@ -354,6 +357,7 @@ html[dir="rtl"] .o_cdash {
     .o_cdash_table th:first-child, .o_cdash_table td:first-child { text-align: right; }
     .o_cdash_cost_name em { margin-right: 7px; margin-left: 0; }
 }
+/*!rtl:end:ignore*/
 
 @media (prefers-reduced-motion: reduce) {
     .o_cdash_kpi, .o_cdash_bar_fill, .o_cdash_progress_fill, .o_cdash_cost_bar {

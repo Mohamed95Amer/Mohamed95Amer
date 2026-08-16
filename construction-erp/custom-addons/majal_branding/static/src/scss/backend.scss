@@ -91,9 +91,12 @@
     }
 }
 
+// Written as it should appear in Arabic; keep rtlcss off it.
+/*!rtl:begin:ignore*/
 [dir="rtl"] .o_base_settings_view .o_form_renderer .settings_tab .tab.selected {
     box-shadow: inset -3px 0 0 var(--majal-primary) !important;
 }
+/*!rtl:end:ignore*/
 
 .dropdown-menu:has(.o-mail-MessagingMenu),
 .dropdown-menu:has(.o-mail-ActivityMenu) {

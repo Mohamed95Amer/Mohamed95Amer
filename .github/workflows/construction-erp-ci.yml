@@ -178,6 +178,12 @@ jobs:
             libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev \
             libjpeg-dev zlib1g-dev libpq-dev
 
+      # rtlcss builds the Arabic stylesheet. Without it Odoo serves a bundle
+      # named .rtl.min.css that is really the left-to-right sheet, so the
+      # install job would pass while Arabic renders in an English layout.
+      - name: Install rtlcss so the Arabic bundle is really mirrored
+        run: sudo npm install -g rtlcss
+
       - name: Read the Odoo pin
         id: pin
         run: echo "sha=$(tr -d '[:space:]' < ODOO_PINNED_SHA)" >> "$GITHUB_OUTPUT"
@@ -269,6 +275,12 @@ jobs:
           sudo apt-get install -yqq --no-install-recommends \
             libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev \
             libjpeg-dev zlib1g-dev libpq-dev
+
+      # rtlcss builds the Arabic stylesheet. Without it Odoo serves a bundle
+      # named .rtl.min.css that is really the left-to-right sheet, so the
+      # install job would pass while Arabic renders in an English layout.
+      - name: Install rtlcss so the Arabic bundle is really mirrored
+        run: sudo npm install -g rtlcss
 
       - name: Read the Odoo pin
         id: pin

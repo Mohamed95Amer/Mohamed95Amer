@@ -249,10 +249,14 @@ $mdh-alert: #b94b43;
     color: #65747d;
 }
 
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
 html[dir="rtl"] {
     .o_mdh_card_arrow { transform: rotate(180deg); }
     .o_mdh_section_head p { text-align: start; }
 }
+/*!rtl:end:ignore*/
 
 @media (max-width: 1199.98px) {
     .o_mdh_kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }

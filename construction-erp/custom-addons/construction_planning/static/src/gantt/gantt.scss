@@ -291,6 +291,9 @@ $name-w: 300px;
 
 // Arabic / RTL: the time axis still runs left-to-right — a programme read
 // right-to-left would invert the direction of time itself.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
 html[dir="rtl"] .o_prog_gantt,
 body.o_rtl .o_prog_gantt {
     // The surrounding controls and activity register follow Arabic reading
@@ -340,6 +343,7 @@ body.o_rtl .o_prog_gantt {
         margin-left: 5px;
     }
 }
+/*!rtl:end:ignore*/
 
 @media (max-width: 767.98px) {
     .o_prog_toolbar {
