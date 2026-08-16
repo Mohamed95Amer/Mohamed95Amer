@@ -116,9 +116,26 @@
                                     <span class="o_pin_dot">
                                         <i t-att-class="pinIcon(pin)"/>
                                     </span>
+                                    <t t-if="pin.has_photo">
+                                        <span class="o_pin_has_photo"
+                                              title="This pin has a photo">
+                                            <i class="fa fa-camera"/>
+                                        </span>
+                                    </t>
                                     <span class="o_pin_tip">
                                         <strong t-esc="pin.name"/>
                                         <t t-if="pin.status"> · <t t-esc="pin.status"/></t>
+                                        <!-- The picture, not a link to it. A
+                                             pin with a photo is nearly always
+                                             being hovered *because* of the
+                                             photo, and /web/image serves it
+                                             through the record's own access
+                                             rules. -->
+                                        <img t-if="pin.has_photo"
+                                             class="o_pin_tip_photo"
+                                             t-att-src="photoUrl(pin)"
+                                             loading="lazy"
+                                             alt="Photo attached to this pin"/>
                                     </span>
                                 </div>
                             </t>
@@ -149,6 +166,23 @@
             <div class="mb-2">
                 <label class="form-label">Description (optional)</label>
                 <textarea class="form-control" t-model="state.description" rows="3"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Photo (optional)</label>
+                <!-- capture="environment" asks a phone for the rear camera
+                     directly rather than the photo library. On site the
+                     picture is nearly always being taken now, of the thing
+                     the pin is being dropped on; on a desktop the attribute
+                     is ignored and this stays an ordinary file picker. -->
+                <input type="file" class="form-control" accept="image/*"
+                       capture="environment" t-on-change="onPhotoSelected"/>
+                <div t-if="state.photoError" class="text-danger small mt-1"
+                     t-esc="state.photoError"/>
+                <div t-if="state.photoPreview" class="o_pin_photo_preview mt-2">
+                    <img t-att-src="state.photoPreview" alt="Selected photo"/>
+                    <button class="btn btn-sm btn-link text-danger"
+                            t-on-click="clearPhoto">Remove</button>
+                </div>
             </div>
             <t t-set-slot="footer">
                 <button class="btn btn-primary"

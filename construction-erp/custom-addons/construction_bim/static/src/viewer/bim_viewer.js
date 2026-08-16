@@ -1431,6 +1431,9 @@ export class BimViewer extends Component {
                 pin_type: "note",
                 name: "",
                 note: "",
+                photo: null,
+                photoPreview: null,
+                photoError: null,
             };
             this.state.placing = false;
             return;
@@ -1529,6 +1532,37 @@ export class BimViewer extends Component {
         this.state.draft = null;
     }
 
+    /** Read the chosen picture once: base64 for the RPC, data URL to preview. */
+    async onDraftPhoto(ev) {
+        const draft = this.state.draft;
+        const file = ev.target.files?.[0];
+        draft.photoError = null;
+        if (!file) {
+            draft.photo = draft.photoPreview = null;
+            return;
+        }
+        if (!file.type.startsWith("image/")) {
+            draft.photoError = _t("That file is not an image.");
+            ev.target.value = "";
+            return;
+        }
+        // Mirrors construction_pin.max_photo_mb. The server decides; this
+        // saves a site engineer uploading megabytes to be refused.
+        if (file.size > 12 * 1024 * 1024) {
+            draft.photoError = _t("That photo is larger than 12MB.");
+            ev.target.value = "";
+            return;
+        }
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+        draft.photoPreview = dataUrl;
+        draft.photo = dataUrl.split(",")[1] || null;
+    }
+
     async saveDraft() {
         const draft = this.state.draft;
         if (!draft || !draft.name.trim()) {
@@ -1545,6 +1579,7 @@ export class BimViewer extends Component {
                 pos_x: draft.position[0],
                 pos_y: draft.position[1],
                 pos_z: draft.position[2],
+                photo: draft.photo || null,
                 // The view it was seen from, not only the point. This is what
                 // BCF carries to Solibri and back, and what lets somebody
                 // else stand where the person raising it stood.

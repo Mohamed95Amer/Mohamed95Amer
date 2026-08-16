@@ -65,6 +65,15 @@ class ConstructionBimPin(models.Model):
     rfi_id = fields.Many2one("construction.rfi", ondelete="cascade")
     defect_id = fields.Many2one("construction.defect", ondelete="cascade")
 
+    # A photograph of the real thing the pin marks. On a BIM pin this is what
+    # closes the gap between the model and the site: the element says what was
+    # designed, the photo says what was built.
+    photo = fields.Image(string="Photo", max_width=1920, max_height=1920)
+    # Sent in the payload instead of the image. pins_for_model returns every
+    # pin on the model at once, so the bytes would be paid for on load rather
+    # than when a pin is opened.
+    has_photo = fields.Boolean(compute="_compute_has_photo", store=True)
+
     author_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, readonly=True)
     status = fields.Char(compute="_compute_status", store=True)
@@ -73,6 +82,11 @@ class ConstructionBimPin(models.Model):
          ("none", "Note")],
         compute="_compute_status", store=True, default="none",
     )
+
+    @api.depends("photo")
+    def _compute_has_photo(self):
+        for pin in self:
+            pin.has_photo = bool(pin.photo)
 
     @api.model
     def _pin_type_registry(self):
@@ -186,6 +200,9 @@ class ConstructionBimPin(models.Model):
         for key in ("cam_x", "cam_y", "cam_z",
                     "cam_target_x", "cam_target_y", "cam_target_z"):
             pin_values[key] = values.get(key) or 0.0
+        if values.get("photo"):
+            pin_values["photo"] = self.env["plan.pin.mixin"]._validated_photo(
+                values["photo"])
         pin_values.update(self._create_linked_record(model, pin_type, name, values))
         pin = self.create(pin_values)
         return pin._payload()
@@ -225,6 +242,7 @@ class ConstructionBimPin(models.Model):
             "global_id": self.global_id or "",
             "position": [self.pos_x, self.pos_y, self.pos_z],
             "has_viewpoint": self.has_viewpoint,
+            "has_photo": self.has_photo,
             "camera": (
                 [self.cam_x, self.cam_y, self.cam_z] if self.has_viewpoint
                 else None),

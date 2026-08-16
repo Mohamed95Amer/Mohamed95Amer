@@ -294,3 +294,32 @@
         }
     }
 }
+
+// A pin carrying a photograph says so before it is opened. Small, because it
+// rides on a marker that already has to stay legible over a busy drawing.
+.o_pin_has_photo {
+    position: absolute;
+    top: -4px;
+    inset-inline-end: -4px;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #112f3d;
+    color: #f1c75b;
+    font-size: 8px;
+    pointer-events: none;
+}
+
+// Bounded so a portrait photo from a phone cannot push the tooltip off the
+// sheet; the full image is one click away on the record.
+.o_pin_tip_photo {
+    display: block;
+    max-width: 220px;
+    max-height: 160px;
+    margin-top: 6px;
+    border-radius: 4px;
+    object-fit: cover;
+}

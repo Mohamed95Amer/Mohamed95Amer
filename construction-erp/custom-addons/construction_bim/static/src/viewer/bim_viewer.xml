@@ -282,6 +282,19 @@ Mac or Linux:
                         <label for="pin_note">Detail</label>
                         <textarea id="pin_note" rows="2" t-model="state.draft.note"
                                   placeholder="What needs doing here"/>
+                        <label for="pin_photo">Photo (optional)</label>
+                        <!-- capture asks a phone for the rear camera rather
+                             than the library: on site the picture is being
+                             taken now, of the thing being pinned. Ignored on
+                             a desktop, where this stays a file picker. -->
+                        <input id="pin_photo" type="file" accept="image/*"
+                               capture="environment" t-on-change="onDraftPhoto"/>
+                        <div t-if="state.draft.photoError" class="text-danger small"
+                             t-esc="state.draft.photoError"/>
+                        <img t-if="state.draft.photoPreview"
+                             class="o_bim_draft_photo"
+                             t-att-src="state.draft.photoPreview"
+                             alt="Selected photo"/>
                         <div class="o_bim_draft_actions">
                             <button class="btn btn-sm btn-primary" t-on-click="saveDraft">
                                 Drop pin

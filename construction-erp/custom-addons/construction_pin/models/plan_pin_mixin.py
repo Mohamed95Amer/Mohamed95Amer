@@ -1,5 +1,9 @@
+import base64
+import binascii
+
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import image_process
 
 # Kanban colour indexes per semantic status bucket.
 PIN_COLORS = {
@@ -34,6 +38,17 @@ class PlanPinMixin(models.AbstractModel):
     pin_type = fields.Selection(
         selection="_selection_pin_type", default="note", required=True)
     note = fields.Text()
+    # A photograph of what the pin is pointing at. On site this is usually the
+    # whole content of the observation — a crack, a missing handrail, a wrong
+    # fitting — and describing it in a note is a poor substitute for showing
+    # it. max_width/max_height make Odoo resize on write, so a modern phone
+    # camera does not put a 12-megapixel original in the filestore.
+    photo = fields.Image(string="Photo", max_width=1920, max_height=1920)
+    # Sent to the plan viewer instead of the image itself. The viewer loads
+    # every pin on a sheet at once, so shipping the bytes for each would make
+    # opening a busy drawing far heavier than looking at one photograph. The
+    # flag draws the indicator; /web/image fetches the picture when asked.
+    has_photo = fields.Boolean(compute="_compute_has_photo", store=True)
     status = fields.Char(compute="_compute_status_color")
     color = fields.Integer(compute="_compute_status_color")
     status_bucket = fields.Char(compute="_compute_status_color")
@@ -68,6 +83,11 @@ class PlanPinMixin(models.AbstractModel):
             if not (0.0 <= pin.pos_x <= 1.0) or not (0.0 <= pin.pos_y <= 1.0):
                 raise ValidationError(
                     self.env._("Pin coordinates must be normalized between 0 and 1."))
+
+    @api.depends("photo")
+    def _compute_has_photo(self):
+        for pin in self:
+            pin.has_photo = bool(pin.photo)
 
     @api.depends("pin_type")
     def _compute_status_color(self):
@@ -112,12 +132,45 @@ class PlanPinMixin(models.AbstractModel):
     # ------------------------------------------------------------------
     @api.model
     def _viewer_pin_fields(self):
+        # has_photo, never photo — see the field's comment. The viewer draws an
+        # indicator from the flag and fetches the picture from /web/image only
+        # when somebody opens that pin.
         fields_list = ["id", "name", "pos_x", "pos_y", "pin_type", "status",
-                       "color", "status_bucket"]
+                       "color", "status_bucket", "has_photo"]
         for entry in self._pin_type_registry():
             if entry.get("link_field") and entry["link_field"] not in fields_list:
                 fields_list.append(entry["link_field"])
         return fields_list
+
+    @api.model
+    def _validated_photo(self, photo):
+        """Refuse an oversized upload before it reaches the image pipeline.
+
+        fields.Image resizes on write, but the resize happens *after* the
+        whole payload has been decoded in memory — so the ceiling has to be
+        applied to what arrives, not to what is stored. A current phone camera
+        produces a few megabytes; the limit is set well above that and well
+        below a figure that threatens the worker.
+
+        It is also the point where a file that is not an image is rejected.
+        fields.Image would raise on it anyway, but with a traceback about PIL
+        rather than a sentence a site engineer can act on.
+        """
+        raw = photo.encode() if isinstance(photo, str) else photo
+        ceiling = int(float(
+            self.env["ir.config_parameter"].sudo()
+            .get_param("construction_pin.max_photo_mb", 12)) * 1024 * 1024)
+        # base64 carries roughly four bytes for every three of payload.
+        if len(raw) * 3 // 4 > ceiling:
+            raise ValidationError(self.env._(
+                "That photograph is larger than the %(limit)s MB limit.",
+                limit=round(ceiling / (1024 * 1024), 1)))
+        try:
+            image_process(base64.b64decode(raw), verify_resolution=True)
+        except (UserError, ValueError, TypeError, binascii.Error):
+            raise ValidationError(self.env._(
+                "That file is not an image Majal can read. Use a JPEG or PNG."))
+        return raw
 
     @api.model
     def get_plan_data(self, sheet_id):
@@ -143,7 +196,7 @@ class PlanPinMixin(models.AbstractModel):
 
     @api.model
     def create_pin_with_target(self, sheet_id, pos_x, pos_y, pin_type, name,
-                               description=None):
+                               description=None, photo=None):
         sheet = self.env[self._sheet_model].browse(sheet_id)
         vals = {
             self._sheet_field: sheet_id,
@@ -152,6 +205,8 @@ class PlanPinMixin(models.AbstractModel):
             "pin_type": pin_type,
             "name": name,
         }
+        if photo:
+            vals["photo"] = self._validated_photo(photo)
         entry = {e["id"]: e for e in self._pin_type_registry()}.get(pin_type)
         if entry and entry.get("model"):
             target = self.env[entry["model"]].create(

@@ -9,12 +9,17 @@ import {
     useExternalListener,
 } from "@odoo/owl";
 import { registry } from "@web/core/registry";
+
 import { useService } from "@web/core/utils/hooks";
 import { loadPDFJSAssets } from "@web/libs/pdfjs";
 import { Dialog } from "@web/core/dialog/dialog";
 import { _t } from "@web/core/l10n/translation";
 
 const WORKER_SRC = "/web/static/lib/pdfjs/build/pdf.worker.js";
+
+// Mirrors construction_pin.max_photo_mb on the server. Checked in both
+// places on purpose: the server decides, the browser saves the upload.
+const MAX_PHOTO_BYTES = 12 * 1024 * 1024;
 
 // Fallback shown before the server list loads.
 const FALLBACK_TYPES = [
@@ -33,11 +38,58 @@ export class PinPromptDialog extends Component {
             pinType: this.props.pinTypes[0]?.id || "note",
             name: "",
             description: "",
+            photo: null,          // base64 payload sent to the server
+            photoPreview: null,   // data URL, only for the thumbnail
+            photoError: null,
         });
     }
     selectType(typeId) {
         this.state.pinType = typeId;
     }
+
+    /**
+     * Read the chosen picture once, keep the base64 for the RPC and a data
+     * URL for the preview.
+     *
+     * The size is checked here as well as on the server. The server check is
+     * the one that counts — this one exists so a site engineer on a slow
+     * connection is told immediately rather than after uploading twelve
+     * megabytes to be refused.
+     */
+    async onPhotoSelected(ev) {
+        const file = ev.target.files?.[0];
+        this.state.photoError = null;
+        if (!file) {
+            this.clearPhoto();
+            return;
+        }
+        if (!file.type.startsWith("image/")) {
+            this.state.photoError = _t("That file is not an image.");
+            ev.target.value = "";
+            return;
+        }
+        if (file.size > MAX_PHOTO_BYTES) {
+            this.state.photoError = _t(
+                "That photo is larger than %sMB.", MAX_PHOTO_BYTES / 1048576);
+            ev.target.value = "";
+            return;
+        }
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+        this.state.photoPreview = dataUrl;
+        this.state.photo = dataUrl.split(",")[1] || null;
+    }
+
+    clearPhoto() {
+        this.state.photo = null;
+        this.state.photoPreview = null;
+        this.state.photoError = null;
+    }
+
     onConfirm() {
         if (!this.state.name.trim()) {
             return;
@@ -108,6 +160,17 @@ export class PlanViewer extends Component {
     get visiblePins() {
         return this.state.pins.filter(
             (pin) => this.state.filters[pin.pin_type] !== false);
+    }
+
+    /**
+     * Where to fetch a pin's photograph.
+     *
+     * /web/image runs the record's own access rules, so a user who may not
+     * read the pin does not get the picture either — which is why the image
+     * is served this way rather than shipped inside the pin payload.
+     */
+    photoUrl(pin) {
+        return `/web/image/${this.pinModel}/${pin.id}/photo`;
     }
 
     pinCount(typeId) {
@@ -247,7 +310,7 @@ export class PlanViewer extends Component {
                 const pin = await this.orm.call(
                     this.pinModel, "create_pin_with_target",
                     [this.state.sheetId, posX, posY, vals.pinType, vals.name,
-                     vals.description]);
+                     vals.description, vals.photo || null]);
                 this.state.pins = [...this.state.pins, pin];
                 this.state.addMode = false;
                 this.notification.add(_t("Pin created."), { type: "success" });

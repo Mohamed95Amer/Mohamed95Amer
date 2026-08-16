@@ -771,3 +771,14 @@
         max-height: 34%;
     }
 }
+
+// Bounded so a portrait phone photo cannot stretch the draft panel over the
+// model it is describing.
+.o_bim_draft_photo {
+    display: block;
+    max-width: 100%;
+    max-height: 130px;
+    margin-top: 6px;
+    border-radius: 4px;
+    object-fit: cover;
+}
