@@ -41,6 +41,11 @@
         "views/dashboards.xml",
         "views/menus.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "majal_dashboard/static/src/scss/boards.scss",
+        ],
+    },
     "demo": ["demo/procurement_demo.xml"],
     "installable": True,
 }

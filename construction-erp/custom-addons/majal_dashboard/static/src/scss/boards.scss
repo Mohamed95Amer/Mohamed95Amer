@@ -1,0 +1,41 @@
+// A board panel must not hide a number.
+//
+// Panels are narrow by construction — two or three to a row — while the views
+// inside them are as wide as their data. A pivot of the commercial position
+// carries five money columns; a list of jobs below their tendered margin
+// carries four. Neither fits, and .o_pivot / .o_list_renderer default to
+// overflow-x: visible, so the surplus is simply clipped by the panel's border.
+//
+// The result reads as a complete table with a short last column. On the
+// financial board that hid Margin Movement — the one figure on the panel that
+// says whether the job got better or worse this month.
+//
+// This was visible in both directions before it was noticed: left-to-right it
+// clipped the right-hand column, and once the Arabic build started mirroring
+// properly it clipped the left-hand one instead. Same defect, different edge.
+//
+// Scoped to .o-dashboard-action so the standalone pivot and list views, which
+// have the whole screen and their own scrolling, are left alone.
+.o-dashboard-action {
+    .o_pivot,
+    .o_list_renderer,
+    .o_content > .table-responsive {
+        overflow-x: auto;
+    }
+
+    // Scrolling is only useful if the reader can tell there is more. Without a
+    // visible track on a trackpad the panel looks complete and simply ends.
+    .o_pivot,
+    .o_list_renderer {
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+            background: rgba(0, 0, 0, .22);
+        }
+    }
+}
