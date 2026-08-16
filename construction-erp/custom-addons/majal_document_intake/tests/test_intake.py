@@ -40,7 +40,12 @@ class TestIntake(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = new_test_user(
-            cls.env, login="intake-user", groups="base.group_user"
+            cls.env, login="intake-user", groups="base.group_user",
+            # Explicit password: new_test_user defaults it to the login,
+            # and this database enforces a 12-character minimum. The
+            # module suite alone does not install that policy, so a short
+            # login passes there and fails in the full run.
+            password="intake-user-password",
         )
         cls.project = cls.env["project.project"].create(
             {"name": "Intake Project", "is_construction": True}
@@ -227,7 +232,8 @@ class TestIntake(TransactionCase):
         intake path goes through it rather than around it.
         """
         author = new_test_user(
-            self.env, login="intake-author", groups="base.group_user")
+            self.env, login="intake-author", groups="base.group_user",
+            password="intake-author-password")
         # Created *as* the author, not created as admin and then read as the
         # author: the own-records rule correctly refuses the second, which is
         # the rule doing its job rather than a problem with this test.
@@ -349,7 +355,8 @@ class TestIntake(TransactionCase):
 
     def test_a_user_does_not_see_another_users_uploads(self):
         other = new_test_user(
-            self.env, login="intake-other", groups="base.group_user")
+            self.env, login="intake-other", groups="base.group_user",
+            password="intake-other-password")
         mine = self._upload(as_upload("Subject\nMine\n"), "mine.csv")
         visible = self.env["majal.intake.upload"].with_user(other).search([
             ("id", "=", mine.id)
