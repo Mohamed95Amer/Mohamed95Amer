@@ -43,13 +43,17 @@ msgid "A task cannot depend on itself."
 msgstr "لا يمكن أن تعتمد المهمة على نفسها."
 
 #. modules: construction_daily_log, construction_planning
+#. odoo-javascript
 #: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__activity_ids
 #: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
 msgid "Activity"
 msgstr "النشاط"
 
 #. module: construction_planning
+#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
 msgid "Baseline"
 msgstr "خط الأساس"
 
@@ -111,6 +115,12 @@ msgstr "البداية المتأخرة"
 #. module: construction_planning
 #: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
 msgid "Critical Path"
+msgstr "المسار الحرج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Critical path"
 msgstr "المسار الحرج"
 
 #. module: construction_planning
@@ -190,7 +200,9 @@ msgid "Latest scheduled activity finish (CPM)."
 msgstr "آخر نهاية مجدولة للنشاط وفق المسار الحرج."
 
 #. module: construction_planning
+#. odoo-javascript
 #: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
 msgid "Milestones"
 msgstr "مؤشرات التقدم "
 

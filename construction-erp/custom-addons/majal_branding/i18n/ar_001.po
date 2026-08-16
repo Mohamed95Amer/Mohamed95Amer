@@ -258,6 +258,7 @@ msgstr ""
 "مرتبطة بالعمل."
 
 #. module: majal_branding
+#. odoo-python
 #: code:addons/majal_branding/models/assistant.py:0
 msgid "Ask for help at any time, or open Help & Support from your profile."
 msgstr "اطلب المساعدة في أي وقت، أو افتح المساعدة والدعم من ملفك الشخصي."

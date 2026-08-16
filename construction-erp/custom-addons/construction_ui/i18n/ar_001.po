@@ -720,10 +720,12 @@ msgstr "المواد ومخازن الموقع"
 
 #. modules: construction_meeting, construction_ui
 #. odoo-javascript
+#. odoo-python
 #: model:ir.actions.act_window,name:construction_meeting.action_meeting
 #: model:ir.actions.client,name:construction_ui.action_workspace_meetings
 #: model:ir.ui.menu,name:construction_meeting.menu_meetings
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: code:addons/construction_ui/models/project_workspace.py:0
 msgid "Meetings & Minutes"
 msgstr "الاجتماعات والمحاضر"
 
@@ -1143,8 +1145,10 @@ msgstr "قرار المراجع وشروطه..."
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: model:ir.ui.menu,name:construction_ui.menu_majal_drawing_revisions
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: code:addons/construction_ui/models/project_workspace.py:0
 msgid "Revisions & Sign-off"
 msgstr "المراجعات والاعتماد"
 
@@ -1291,11 +1295,13 @@ msgstr "ابدأ بالسؤال التشغيلي ثم انتقل إلى تفاص
 
 #. modules: construction_report, construction_subcontractor, construction_ui
 #. odoo-javascript
+#. odoo-python
 #: model:ir.actions.act_window,name:construction_subcontractor.action_subcontract
 #: model:ir.actions.client,name:construction_ui.action_workspace_subcontracts
 #: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_subcontract_ids
 #: model:ir.ui.menu,name:construction_subcontractor.menu_subcontract
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: code:addons/construction_ui/models/project_workspace.py:0
 msgid "Subcontracts"
 msgstr "عقود المقاولين الباطنين"
 
@@ -2529,7 +2535,9 @@ msgstr "أوامر العمل"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: code:addons/construction_ui/models/defect_workorder.py:0
 msgid "Work Order"
 msgstr "أمر عمل"
 
@@ -6189,7 +6197,9 @@ msgstr "صرف مواد بالموقع"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: code:addons/construction_ui/models/project_workspace.py:0
 msgid "Material Issues"
 msgstr "أوامر صرف المواد"
 
@@ -8288,10 +8298,12 @@ msgstr "لوحة المشروع"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
 #: model:ir.actions.client,name:construction_ui.action_my_day
 #: model:ir.ui.menu,name:construction_ui.menu_facility_my_day
 #: model:ir.ui.menu,name:construction_ui.menu_my_day
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "My Day"
 msgstr "يومي"
 
@@ -8308,7 +8320,9 @@ msgid "Good afternoon"
 msgstr "مساء الخير"
 
 #. module: construction_ui
+#. odoo-javascript
 #: model:ir.ui.menu,name:construction_base.menu_approvals_root
+#: code:addons/construction_ui/static/src/systray/approvals_systray.xml:0
 msgid "Approvals"
 msgstr "الاعتمادات"
 
@@ -8603,37 +8617,49 @@ msgstr ""
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "Waiting for my approval"
 msgstr "بانتظار اعتمادي"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "Defects assigned to me"
 msgstr "العيوب المسندة إليّ"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "My inspections"
 msgstr "عمليات الفحص الخاصة بي"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "My tasks"
 msgstr "مهامي"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "RFIs in my court"
 msgstr "طلبات المعلومات في عهدتي"
 
 #. module: construction_ui
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_ui/static/src/my_day/my_day.js:0
+#: code:addons/construction_ui/models/my_day.py:0
 msgid "Permits I supervise"
 msgstr "التصاريح التي أشرف عليها"
 

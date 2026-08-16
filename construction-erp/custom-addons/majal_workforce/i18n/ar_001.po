@@ -14,12 +14,16 @@ msgid "Workforce"
 msgstr "القوى العاملة"
 
 #. module: majal_workforce
+#. odoo-python
 #: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+#: code:addons/majal_workforce/wizards/allocate_wizard.py:0
 msgid "Allocations"
 msgstr "الإسنادات"
 
 #. module: majal_workforce
+#. odoo-python
 #: model:ir.ui.menu,name:majal_workforce.menu_placeholder
+#: code:addons/majal_workforce/models/facility_location.py:0
 msgid "Allocate People"
 msgstr "إسناد الأشخاص"
 

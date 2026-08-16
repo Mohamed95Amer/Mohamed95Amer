@@ -298,14 +298,18 @@ msgid "Change Order Count"
 msgstr "عدد أوامر التغيير"
 
 #. module: construction_change_order
+#. odoo-python
 #: model:ir.actions.act_window,name:construction_change_order.action_change_event
 #: model:ir.ui.menu,name:construction_change_order.menu_change_event
+#: code:addons/construction_change_order/models/construction_rfi.py:0
 msgid "Change Orders"
 msgstr "أوامر التغيير"
 
 #. module: construction_change_order
+#. odoo-python
 #: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__change_order_ids
 #: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__change_order_id
+#: code:addons/construction_change_order/models/change_order.py:0
 msgid "Variations"
 msgstr "التغييرات"
 

@@ -402,6 +402,7 @@ msgid "Unsupported operator %s on %s"
 msgstr ""
 
 #. modules: construction_material, construction_report, facility_inventory
+#. odoo-javascript
 #: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__value
 #: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__value
 #: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
@@ -409,6 +410,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_list
 #: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
 #: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
 msgid "Value"
 msgstr "القيمة"
 
@@ -426,9 +428,11 @@ msgstr ""
 
 #. module: construction_report
 #. odoo-javascript
+#. odoo-python
 #: code:addons/construction_report/static/src/exposure/exposure.js:0
 #: model:ir.actions.client,name:construction_report.action_exposure
 #: model:ir.ui.menu,name:construction_report.menu_exposure
+#: code:addons/construction_report/models/exposure.py:0
 msgid "Commercial Exposure"
 msgstr "الموقف التجاري"
 

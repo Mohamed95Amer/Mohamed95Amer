@@ -61,10 +61,10 @@
         <div t-elif="state.error" class="o_prog_placeholder o_tone_alert">
             The programme could not be loaded.
         </div>
-        <div t-elif="!state.tasks.length" class="o_prog_placeholder">
-            No scheduled activities. Set planned start and finish dates on the
-            project's tasks, then run the schedule to compute the critical path.
-        </div>
+        <!-- Kept on one line: owl passes a text node to _t with its internal
+             whitespace intact, so a wrapped sentence looks up a key with a
+             newline in it and never finds the .po entry. -->
+        <div t-elif="!state.tasks.length" class="o_prog_placeholder">No scheduled activities. Set planned start and finish dates on the project's tasks, then run the schedule to compute the critical path.</div>
 
         <div t-else="" class="o_prog_body">
             <div class="o_prog_names">

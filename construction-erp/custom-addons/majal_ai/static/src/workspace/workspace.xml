@@ -142,10 +142,10 @@
                             </div>
                             <span class="o_majal_ai_welcome_kicker">MAJAL INTELLIGENCE</span>
                             <h2>Turn operational data into the next clear action.</h2>
-                            <p>
-                                Ask in Arabic or English. Majal uses only records you can
-                                access and links answers back to their source.
-                            </p>
+                            <!-- Kept on one line: owl passes a text node to _t with its
+                                 internal whitespace intact, so a wrapped sentence looks up
+                                 a key with a newline in it and never finds the .po entry. -->
+                            <p>Ask in Arabic or English. Majal uses only records you can access and links answers back to their source.</p>
                             <div class="o_majal_ai_suggestions">
                                 <t t-foreach="state.suggestions" t-as="suggestion"
                                    t-key="suggestion.label">

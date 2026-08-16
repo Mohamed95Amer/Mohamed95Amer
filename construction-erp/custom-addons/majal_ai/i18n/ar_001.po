@@ -9,70 +9,106 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Majal Intelligence"
 msgstr "ذكاء مجال"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Construction & facilities copilot"
 msgstr "مساعد الإنشاءات وإدارة المرافق"
 
 #. module: majal_ai
+#. odoo-javascript
+#. odoo-python
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "New conversation"
 msgstr "محادثة جديدة"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Recent conversations"
 msgstr "المحادثات الأخيرة"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Your conversations will appear here."
 msgstr "ستظهر محادثاتك هنا."
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Read-only assistance · Permission-aware · Audited"
 msgstr "مساعدة للقراءة فقط · تراعي الصلاحيات · خاضعة للتدقيق"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Ask your operation"
 msgstr "اسأل عن عملياتك"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Portfolio Intelligence"
 msgstr "ذكاء محفظة المشاريع"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Construction Intelligence"
 msgstr "ذكاء الإنشاءات"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Facilities Intelligence"
 msgstr "ذكاء إدارة المرافق"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Portfolio"
 msgstr "المحفظة"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Construction"
 msgstr "الإنشاءات"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Facilities"
 msgstr "إدارة المرافق"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "All accessible projects"
 msgstr "كل المشاريع المتاحة"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "All accessible assets"
 msgstr "كل الأصول المتاحة"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Turn operational data into the next clear action."
 msgstr "حوّل بيانات العمليات إلى الخطوة التالية الواضحة."
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid ""
 "Ask in Arabic or English. Majal uses only records you can access and links "
 "answers back to their source."
@@ -81,43 +117,63 @@ msgstr ""
 "إليها فقط، ويربط الإجابات بمصادرها."
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "AI-generated · Verify important decisions"
 msgstr "مولّد بالذكاء الاصطناعي · راجع القرارات المهمة"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Sources"
 msgstr "المصادر"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "Reviewing your Majal records…"
 msgstr "تتم مراجعة سجلات مجال…"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid "All records available in this scope"
 msgstr "كل السجلات المتاحة في هذا النطاق"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.js:0
 msgid "Ask Majal about projects, assets, risks or operations…"
 msgstr "اسأل مجال عن المشاريع أو الأصول أو المخاطر أو العمليات…"
 
 #. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
 msgid ""
 "Majal may make mistakes. Review safety, contractual and financial advice."
 msgstr "قد يخطئ مجال. راجع نصائح السلامة والعقود والشؤون المالية."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "Give me an executive portfolio briefing"
 msgstr "أعطني موجزاً تنفيذياً عن محفظة المشاريع"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "Summarize overdue RFIs, defects and submittals"
 msgstr "لخّص طلبات المعلومات والعيوب والاعتمادات المتأخرة"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "Which assets and work orders need attention?"
 msgstr "ما الأصول وأوامر العمل التي تحتاج إلى اهتمام؟"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "Draft a preventive-maintenance action plan"
 msgstr "أنشئ مسودة خطة عمل للصيانة الوقائية"
 
@@ -182,23 +238,33 @@ msgid "Remove API Key"
 msgstr "إزالة مفتاح API"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "Configured"
 msgstr "تم الإعداد"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "Not configured"
 msgstr "غير مُعد"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid ""
 "Free local processing. Start Ollama on the Majal server or host computer."
 msgstr "معالجة محلية مجانية. شغّل Ollama على خادم مجال أو الجهاز المضيف."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "Bring your own API key. Provider usage charges and terms apply."
 msgstr "استخدم مفتاح API الخاص بك. تُطبق رسوم وشروط المزود."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "The selected AI provider is not enabled or fully configured."
 msgstr "مزود الذكاء الاصطناعي المحدد غير مفعّل أو غير مكتمل الإعداد."
 
@@ -211,26 +277,38 @@ msgstr ""
 "المُعد."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "The provider rejected the configured API key."
 msgstr "رفض المزود مفتاح API المُعد."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "The provider rate limit has been reached."
 msgstr "تم بلوغ حد طلبات المزود."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "You can only access your own AI conversations."
 msgstr "يمكنك الوصول إلى محادثات الذكاء الاصطناعي الخاصة بك فقط."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
 msgid "Questions are limited to 8,000 characters."
 msgstr "الأسئلة محدودة بـ 8,000 حرف."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "Your daily Majal Intelligence request limit has been reached."
 msgstr "تم بلوغ الحد اليومي لطلبات ذكاء مجال."
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "This company has reached its monthly AI token allowance."
 msgstr "بلغت هذه الشركة الحد الشهري لاستخدام الذكاء الاصطناعي."
 
@@ -239,5 +317,7 @@ msgid "Intelligence Manager"
 msgstr "مدير ذكاء مجال"
 
 #. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
 msgid "Only Intelligence Managers can remove provider keys."
 msgstr "يمكن لمديري ذكاء مجال فقط إزالة مفاتيح المزودين."
