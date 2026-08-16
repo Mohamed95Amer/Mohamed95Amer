@@ -8722,3 +8722,69 @@ msgstr "مؤشرات الإدارة"
 #: code:addons/construction_ui/static/src/sidebar/majal_sidebar.xml:0
 msgid "Back"
 msgstr "رجوع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "Reply date passed"
+msgstr "مرّ تاريخ الرد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "Overdue defects"
+msgstr "عيوب متأخرة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "Fix date passed"
+msgstr "مرّ تاريخ الإصلاح"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "My overdue actions"
+msgstr "إجراءاتي المتأخرة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "Mine, from meetings"
+msgstr "الخاصة بي، من الاجتماعات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "SLA breached"
+msgstr "إخلال باتفاقية مستوى الخدمة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "Promise missed"
+msgstr "لم يتم الوفاء بالموعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "SLA at risk"
+msgstr "اتفاقية مستوى الخدمة في خطر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "Save it now"
+msgstr "تدارَكها الآن"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "Contracts to renew"
+msgstr "عقود بحاجة إلى تجديد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "Ends in 60 days"
+msgstr "تنتهي خلال 60 يوماً"
