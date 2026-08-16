@@ -1,8 +1,20 @@
 import base64
+import hashlib
 import io
 
 from odoo import fields, models
 from odoo.exceptions import UserError
+
+# Ceiling on the decoded upload, in megabytes. Overridable per database with
+# the ir.config_parameter of the same name.
+#
+# There is a limit at all because the whole file is decoded into memory before
+# openpyxl sees it, so without one any user who can open this wizard can ask
+# the server to allocate as much as they can upload. 25MB is far above a real
+# bill of quantities — the demo ones are a few kilobytes — and far below a
+# figure that threatens the worker.
+MAX_UPLOAD_MB = 25
+MAX_UPLOAD_PARAM = "construction_boq.max_import_mb"
 
 # Expected header row (case-insensitive, order fixed). Columns after
 # "Unit Rate" are optional cost-breakdown columns.
@@ -27,6 +39,39 @@ class ConstructionBoqImport(models.TransientModel):
     boq_id = fields.Many2one("construction.boq", required=True)
     file = fields.Binary(string="XLSX File", required=True)
     filename = fields.Char()
+
+    def _max_upload_bytes(self):
+        raw = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param(MAX_UPLOAD_PARAM, MAX_UPLOAD_MB)
+        )
+        try:
+            megabytes = float(raw)
+        except (TypeError, ValueError):
+            megabytes = MAX_UPLOAD_MB
+        return int(megabytes * 1024 * 1024)
+
+    def _uom_index(self):
+        """Match unit labels in the user's language *and* in English.
+
+        uom.uom has no stable code — name is the only label and it is
+        translate=True. Keying the lookup on the translated name alone means
+        the same workbook resolves different units depending on who is logged
+        in, and silently: an unmatched unit is left empty rather than raising.
+        So index both the source term and the user's own, and let either hit.
+        """
+        index = {}
+        uoms = self.env["uom.uom"].search([])
+        for record in uoms.with_context(lang="en_US"):
+            key = (record.name or "").strip().lower()
+            if key:
+                index[key] = record.id
+        for record in uoms:  # the reader's language wins on a collision
+            key = (record.name or "").strip().lower()
+            if key:
+                index[key] = record.id
+        return index
 
     def _parse_rows(self, data):
         try:
@@ -60,13 +105,23 @@ class ConstructionBoqImport(models.TransientModel):
             raise UserError(self.env._(
                 "This BOQ is locked. Create a new revision first."
             ))
-        rows = self._parse_rows(base64.b64decode(self.file))
+        data = base64.b64decode(self.file)
+        ceiling = self._max_upload_bytes()
+        if len(data) > ceiling:
+            raise UserError(self.env._(
+                "This file is %(size).1f MB. The import limit is %(limit).1f MB.",
+                size=len(data) / (1024 * 1024),
+                limit=ceiling / (1024 * 1024),
+            ))
+        # Taken before parsing, over the bytes actually received, so it
+        # identifies the upload rather than our reading of it.
+        checksum = hashlib.sha256(data).hexdigest()
+
+        rows = self._parse_rows(data)
         Section = self.env["construction.boq.section"]
         Line = self.env["construction.boq.line"]
         sections = {s.code: s for s in boq.section_ids if s.code}
-        uoms = {
-            u.name.lower(): u for u in self.env["uom.uom"].search([])
-        }
+        uoms = self._uom_index()
         created = 0
         for index, row in enumerate(rows, start=2):
             row = list(row) + [None] * (len(HEADERS) - len(row))
@@ -85,7 +140,7 @@ class ConstructionBoqImport(models.TransientModel):
                         "sequence": (len(sections) + 1) * 10,
                     })
                 section = sections[sec_code]
-            uom = uoms.get(str(unit or "").strip().lower())
+            uom_id = uoms.get(str(unit or "").strip().lower())
 
             def num(value, row_index=index):
                 if value in (None, ""):
@@ -103,7 +158,7 @@ class ConstructionBoqImport(models.TransientModel):
                 "section_id": section.id if section else False,
                 "item_code": str(item_code or "").strip() or False,
                 "name": str(description).strip(),
-                "uom_id": uom.id if uom else False,
+                "uom_id": uom_id or False,
                 "quantity": num(qty),
                 "unit_rate": num(rate),
                 "cost_material": num(material),
@@ -113,6 +168,18 @@ class ConstructionBoqImport(models.TransientModel):
                 "cost_overhead": num(overhead),
             })
             created += 1
+
+        # An import rewrites the commercial basis of the job, so leave a
+        # durable record of which file did it. The checksum is what makes the
+        # entry worth anything: a filename can be reused for a corrected
+        # workbook, and then the chatter says two imports were the same when
+        # they were not.
+        boq.message_post(body=self.env._(
+            "Imported %(count)s lines from %(filename)s (SHA-256 %(checksum)s).",
+            count=created,
+            filename=self.filename or self.env._("an unnamed file"),
+            checksum=checksum,
+        ))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
