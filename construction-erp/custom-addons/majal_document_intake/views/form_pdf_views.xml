@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_inspection_pdf" model="ir.ui.view">
+        <field name="name">construction.form.inspection.pdf</field>
+        <field name="model">construction.form.inspection</field>
+        <field name="inherit_id" ref="construction_form.view_form_inspection_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <!-- Only offered when there is an original to fill. A button
+                     that exists to explain why it cannot work is worse than a
+                     button that is not there. -->
+                <button name="action_export_filled_pdf" type="object"
+                        string="Download the filled form"
+                        invisible="not has_source_pdf"/>
+                <field name="has_source_pdf" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_form_template_pdf" model="ir.ui.view">
+        <field name="name">construction.form.template.pdf</field>
+        <field name="model">construction.form.template</field>
+        <field name="inherit_id" ref="construction_form.view_form_template_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-info" role="alert"
+                     invisible="not has_source_pdf">
+                    This form was built from a PDF. A completed inspection can be
+                    downloaded as that PDF with the answers filled in.
+                    <field name="source_pdf_id" readonly="1"/>
+                </div>
+                <field name="has_source_pdf" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

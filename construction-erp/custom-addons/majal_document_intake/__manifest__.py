@@ -9,12 +9,13 @@
     # registers — the BOQ, the tender, the ledger, the maintenance backlog —
     # have their own importers and their own approvals, and reaching into them
     # from here would be an arbitrary-model write by another name.
-    "depends": ["majal_documents", "project"],
+    "depends": ["majal_documents", "construction_form", "project"],
     "data": [
         "security/majal_document_intake_security.xml",
         "security/ir.model.access.csv",
         "views/mapping_views.xml",
         "views/intake_views.xml",
+        "views/form_pdf_views.xml",
         "views/menus.xml",
     ],
     "installable": True,

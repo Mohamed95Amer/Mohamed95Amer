@@ -305,6 +305,129 @@ def parse_pdf(data):
     return _trim(rows)
 
 
+# PDF form field types, as the specification names them, mapped to the answer
+# types construction.form.question already offers. This is a real mapping over
+# machine-readable structure, not a guess about what a blank space might mean:
+# an AcroForm field declares its own type, and a PDF that has none simply has
+# no fields to find.
+PDF_FIELD_TYPES = {
+    "/Tx": "text",       # free text
+    "/Btn": "yes_no",    # checkbox or radio
+    "/Ch": "text",       # dropdown or list
+    "/Sig": "signature",
+}
+
+# Applied to text fields only, and only on the field's own name. A field called
+# "date_of_inspection" is a date; one called "number_of_operatives" is a number.
+# Getting this wrong costs a reviewer one dropdown on the template, which is why
+# it is allowed to be a heuristic at all — the type it produces is editable
+# before anything is created.
+NAME_HINTS = (
+    (("date", "تاريخ"), "date"),
+    (("qty", "quantity", "number", "count", "no_of", "عدد", "كمية"), "number"),
+    (("sign", "signature", "توقيع"), "signature"),
+    (("photo", "image", "صورة"), "photo"),
+)
+
+
+def _answer_type_for(field_type, name):
+    answer_type = PDF_FIELD_TYPES.get(field_type, "text")
+    if answer_type != "text":
+        return answer_type
+    lowered = (name or "").lower()
+    for needles, hinted in NAME_HINTS:
+        if any(needle in lowered for needle in needles):
+            return hinted
+    return "text"
+
+
+def parse_pdf_form(data):
+    """Enumerate the fillable fields of a PDF.
+
+    Returns [{name, label, answer_type, value, required}] in document order.
+
+    A PDF form is not a picture of a form: AcroForm fields are structure, each
+    declaring a name, a type and its flags. So "find the empty fields" is a
+    read, not an inference — which is what makes this safe to build without
+    OCR. A flat or scanned PDF has no AcroForm at all, and that is reported
+    plainly rather than returned as a form with nothing in it.
+    """
+    try:
+        from pypdf import PdfReader
+        from pypdf.constants import FieldDictionaryAttributes
+    except ImportError:
+        raise ParseError("No PDF reader is installed on the server.")
+
+    try:
+        reader = PdfReader(io.BytesIO(data))
+        if reader.is_encrypted:
+            raise ParseError("This PDF is password-protected.")
+        fields = reader.get_fields() or {}
+    except ParseError:
+        raise
+    except Exception as error:
+        raise ParseError(f"This PDF could not be read: {error}")
+
+    if not fields:
+        raise ParseError(
+            "This PDF has no fillable fields. It may be a scan or a flat "
+            "print, which would need OCR — not yet available. A form saved "
+            "with fields from Acrobat, Word or Google Docs will work."
+        )
+
+    required_bit = FieldDictionaryAttributes.FfBits.Required
+
+    detected = []
+    for name, field in fields.items():
+        field_type = field.get("/FT")
+        # Skip pushbuttons: they trigger an action and hold no answer.
+        flags = int(field.get("/Ff", 0) or 0)
+        if field_type == "/Btn" and flags & (1 << 16):
+            continue
+        value = field.get("/V")
+        detected.append({
+            "name": str(name),
+            # /TU is the field's tooltip, which form authors use for the human
+            # question. Falling back to the field name means a reviewer sees
+            # something readable either way.
+            "label": str(field.get("/TU") or name),
+            "answer_type": _answer_type_for(field_type, str(name)),
+            "value": "" if value is None else neutralise(value),
+            "required": bool(flags & required_bit),
+        })
+    return detected
+
+
+def fill_pdf_form(data, values):
+    """Write values back into the PDF's own fields and return the bytes.
+
+    The point of the whole feature: a subcontractor's permit or a client's H&S
+    form comes back as *their* document, filled, rather than as a Majal report
+    that happens to contain the same answers. Auditors ask for the form.
+
+    Flattened on the way out, so the returned file records what was submitted
+    rather than staying editable by whoever receives it.
+    """
+    try:
+        from pypdf import PdfReader, PdfWriter
+    except ImportError:
+        raise ParseError("No PDF writer is installed on the server.")
+
+    try:
+        reader = PdfReader(io.BytesIO(data))
+        writer = PdfWriter(clone_from=reader)
+        for page in writer.pages:
+            writer.update_page_form_field_values(
+                page, {k: str(v) for k, v in values.items() if v is not None},
+                auto_regenerate=False, flatten=True,
+            )
+        buffer = io.BytesIO()
+        writer.write(buffer)
+        return buffer.getvalue()
+    except Exception as error:
+        raise ParseError(f"The filled PDF could not be produced: {error}")
+
+
 PARSERS = {
     "csv": parse_csv,
     "txt": parse_csv,

@@ -18,7 +18,7 @@ import hashlib
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
-from .parsers import ParseError, parse
+from .parsers import ParseError, parse, parse_pdf_form
 
 # Ceiling on the decoded upload. Overridable per database.
 MAX_UPLOAD_MB = 25
@@ -57,7 +57,8 @@ class MajalIntakeUpload(models.Model):
         domain="[('company_id', 'in', (False, company_id))]",
     )
     target_model = fields.Selection(
-        [("majal.document", "Document"), ("majal.sheet", "Sheet")],
+        [("majal.document", "Document"), ("majal.sheet", "Sheet"),
+         ("construction.form.template", "Fillable form")],
         required=True, default="majal.document",
     )
     profile_id = fields.Many2one(
@@ -140,6 +141,9 @@ class MajalIntakeUpload(models.Model):
             ("id", "!=", self.id),
         ], limit=1)
 
+        if self.target_model == "construction.form.template":
+            return self._parse_as_form(data, checksum, earlier)
+
         try:
             file_format, rows = parse(data, self.filename)
         except ParseError as error:
@@ -189,6 +193,108 @@ class MajalIntakeUpload(models.Model):
         })
         return True
 
+    def _parse_as_form(self, data, checksum, earlier):
+        """Read a PDF's fillable fields and offer them as form questions.
+
+        The same review screen serves this: a detected field, what Majal thinks
+        it is, and accept / edit / reject. What changes is the meaning of the
+        target — here it is the answer type the question will use, not a field
+        on a model — so nothing is written outside construction.form.*.
+        """
+        try:
+            detected = parse_pdf_form(data)
+        except ParseError as error:
+            self.write({
+                "error": str(error), "checksum": checksum, "state": "draft",
+            })
+            return False
+
+        self.field_ids.unlink()
+        self.write({
+            "checksum": checksum,
+            "file_format": "pdf-form",
+            "row_count": len(detected),
+            "column_count": len(detected),
+            "duplicate_of_id": earlier.id if earlier else False,
+            "error": False,
+            "state": "parsed",
+            "preview_html": self._form_preview(detected),
+            "field_ids": [
+                (0, 0, {
+                    "sequence": index * 10,
+                    "source_key": field["name"],
+                    "sample_value": field["label"],
+                    "target_field": field["answer_type"],
+                    # The PDF declared its own type, so this is a read of
+                    # structure rather than a guess — except where the answer
+                    # type came from a name hint, which is a guess and is
+                    # scored lower so a reviewer looks at it.
+                    "confidence": 100 if field["answer_type"] in (
+                        "text", "yes_no", "signature") else 75,
+                    "reason": self.env._("Declared by the PDF as a fillable field."),
+                    "required": field["required"],
+                    "default_value": field["value"] or False,
+                    "decision": "accept",
+                })
+                for index, field in enumerate(detected)
+            ],
+        })
+        return True
+
+    def _form_preview(self, detected):
+        from markupsafe import Markup, escape
+
+        rows = Markup("").join(
+            Markup("<tr><td>%s</td><td>%s</td><td>%s</td></tr>") % (
+                escape(field["label"]), escape(field["answer_type"]),
+                escape(_("Required") if field["required"] else ""),
+            )
+            for field in detected[:20]
+        )
+        return Markup(
+            "<table class='table table-sm'><thead><tr><th>%s</th><th>%s</th>"
+            "<th></th></tr></thead><tbody>%s</tbody></table>"
+        ) % (escape(_("Question")), escape(_("Answer type")), rows)
+
+    def _apply_as_form(self):
+        """Create the form template, its questions, and keep the source PDF.
+
+        The PDF is attached to the template rather than only to this upload,
+        because it is what a completed inspection is written back into. Losing
+        it would leave the form usable and the deliverable — the client's own
+        document, filled — impossible to produce.
+        """
+        self.ensure_one()
+        accepted = self.field_ids.filtered(lambda f: f.decision == "accept")
+        if not accepted:
+            raise UserError(_("No field has been accepted."))
+
+        template = self.env["construction.form.template"].create({
+            "name": self.filename.rsplit(".", 1)[0],
+            "code": (self.checksum or "")[:8].upper() or "PDFFORM",
+            "company_id": self.company_id.id,
+            "project_id": self.project_id.id or False,
+            "question_ids": [
+                (0, 0, {
+                    "sequence": line.sequence,
+                    "name": line.sample_value or line.source_key,
+                    "answer_type": line.target_field or "text",
+                    "required": line.required,
+                    # The PDF field name, kept so answers can be written back
+                    # into the right box. Without it the filled PDF is guesswork.
+                    "instructions": line.source_key,
+                })
+                for line in accepted
+            ],
+        })
+        self.env["ir.attachment"].create({
+            "name": self.filename,
+            "datas": self.file,
+            "res_model": template._name,
+            "res_id": template.id,
+        })
+        return template
+
     def _preview(self, header, body):
         """A small HTML table of what was read. Escaped, never interpolated.
 
@@ -226,6 +332,26 @@ class MajalIntakeUpload(models.Model):
                 "This file was already imported as %s. Reject it, or delete "
                 "the earlier import first.", self.duplicate_of_id.display_name,
             ))
+
+        if self.target_model == "construction.form.template":
+            template = self._apply_as_form()
+            self.write({
+                "state": "applied",
+                "created_record_ref": f"construction.form.template,{template.id}",
+                "error": False,
+            })
+            self.message_post(body=_(
+                "Built the form %(name)s with %(count)s question(s) from "
+                "%(filename)s, SHA-256 %(checksum)s.",
+                name=template.name, count=len(template.question_ids),
+                filename=self.filename, checksum=self.checksum,
+            ))
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "construction.form.template",
+                "res_id": template.id,
+                "view_mode": "form",
+            }
 
         accepted = self.field_ids.filtered(
             lambda f: f.decision == "accept" and f.target_field
