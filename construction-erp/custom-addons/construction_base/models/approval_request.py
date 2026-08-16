@@ -329,7 +329,19 @@ class ConstructionApprovalStep(models.Model):
             return False
         if user not in self._approvers():
             return False
-        rule = self.request_id.rule_id
+        # sudo on the rule, deliberately. This reads one policy flag on the
+        # rule governing a step the caller has already been found entitled to
+        # sign, so there is nothing here they are not already subject to.
+        #
+        # Without it the whole screen dies. Approval rules are company-scoped
+        # by the tenant rules, and the defaults every install ships are
+        # created with company_id defaulting to whichever company was active
+        # at install time. A user in any other company cannot read them — so
+        # traversing to the rule raises AccessError, and My Day, which calls
+        # this for every step in the inbox, fails entirely rather than
+        # dropping a row. has_access() upstream does not catch it: that tests
+        # the model's ACL, and this is a record rule.
+        rule = self.request_id.rule_id.sudo()
         if rule.require_other_user and user == self.request_id.requested_by_id:
             return False
         return True

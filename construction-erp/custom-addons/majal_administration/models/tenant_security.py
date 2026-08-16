@@ -331,12 +331,20 @@ class ResUsersTenantSecurity(models.Model):
 
         for model_name, company_path in CONSTRUCTION_COMPANY_MODELS.items():
             self._majal_validate_field_path(model_name, company_path)
+            # The company-less leg is Odoo's convention for a record shared by
+            # every company, and these models are exactly where it matters:
+            # an approval rule or a form template with no company is a default
+            # the whole database is meant to inherit. Written as a bare
+            # `in company_ids`, such a record is visible to nobody at all —
+            # SQL will not match NULL against an IN list — so a default
+            # policy would silently apply to no one.
             self._majal_upsert_rule(
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
                 "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
-                f"else [('{company_path}', 'in', company_ids)])",
+                f"else ['|', ('{company_path}', '=', False), "
+                f"('{company_path}', 'in', company_ids)])",
             )
 
         for model_name, prefix in CONSTRUCTION_CHILD_MODELS.items():
