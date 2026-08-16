@@ -280,12 +280,20 @@ export class ConstructionHome extends Component {
         this.kpiDefinitions = localizeItems(KPI_DEFINITIONS);
         this.focusItems = localizeItems(CONSTRUCTION_FOCUS);
         this.appGroups = localizeItems(APP_GROUPS);
-        const interfaceLocale = document.body.classList.contains("o_rtl") ? "ar-AE" : undefined;
-        this.today = new Intl.DateTimeFormat(interfaceLocale, {
+        // Format the date in the user's language, not in whatever the browser
+        // happens to be set to and not by guessing at the language from the
+        // text direction. The previous version read body.o_rtl and assumed
+        // Arabic, which is wrong three ways: Hebrew, Farsi and Urdu are also
+        // RTL and would have been given Arabic month names; it forced
+        // Arabic-Indic numerals, which Gulf Arabic locales generally do not
+        // use; and on the LTR side it passed undefined, so a French user with
+        // an English browser read an English date. user.lang is already a
+        // BCP-47 locale — pyToJsLocale converts it in @web/core/user — so the
+        // right answer is simply to use it.
+        this.today = new Intl.DateTimeFormat(user.lang, {
             weekday: "long",
             day: "numeric",
             month: "long",
-            numberingSystem: interfaceLocale ? "arab" : undefined,
         }).format(new Date());
 
         onWillStart(async () => {

@@ -3,6 +3,7 @@
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 
 const escapeHtml = (value) =>
@@ -1057,15 +1058,11 @@ export class MajalWorkspaceHub extends Component {
         if (!value) {
             return "";
         }
-        return new Intl.DateTimeFormat(
-            document.body.classList.contains("o_rtl") ? "ar-AE" : undefined,
-            {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                numberingSystem: document.body.classList.contains("o_rtl") ? "arab" : undefined,
-            }
-        ).format(new Date(value.replace(" ", "T") + "Z"));
+        return new Intl.DateTimeFormat(user.lang, {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        }).format(new Date(value.replace(" ", "T") + "Z"));
     }
 }
 

@@ -3,6 +3,7 @@
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 
 const LOCALIZED_KEYS = new Set(["label", "hint", "caption", "title", "subtitle", "name", "description"]);
@@ -204,12 +205,12 @@ export class FacilityHome extends Component {
         this.kpiDefinitions = localizeItems(FACILITY_KPIS);
         this.focusItems = localizeItems(FACILITY_FOCUS);
         this.appGroups = localizeItems(FACILITY_GROUPS);
-        const interfaceLocale = document.body.classList.contains("o_rtl") ? "ar-AE" : undefined;
-        this.today = new Intl.DateTimeFormat(interfaceLocale, {
+        // Same reasoning as construction_home.js: format in the user's
+        // language rather than guessing it from the text direction.
+        this.today = new Intl.DateTimeFormat(user.lang, {
             weekday: "long",
             day: "numeric",
             month: "long",
-            numberingSystem: interfaceLocale ? "arab" : undefined,
         }).format(new Date());
 
         onWillStart(async () => {
