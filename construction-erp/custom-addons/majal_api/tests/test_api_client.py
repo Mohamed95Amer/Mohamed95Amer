@@ -34,13 +34,20 @@ class TestMajalApiClient(TransactionCase):
         self.assertFalse(self.env["majal.api.client"]._authenticate(wizard.token))
 
     def test_portal_users_cannot_back_an_api_client(self):
+        # share is computed from group membership, not writable — see
+        # res.users._compute_share, which sets it purely from whether the user
+        # holds base.group_user. Passing share=True on create is discarded, the
+        # user is created internal by default, and the guard correctly declines
+        # to fire. The fixture has to make a real portal user by giving it the
+        # portal group and nothing else, or this test asserts nothing.
         portal = self.env["res.users"].sudo().create({
             "name": "Portal Integration",
             "login": "portal-integration@majal.test",
-            "share": True,
             "company_id": self.env.company.id,
             "company_ids": [(6, 0, [self.env.company.id])],
+            "groups_id": [(6, 0, [self.env.ref("base.group_portal").id])],
         })
+        self.assertTrue(portal.share, "fixture is not actually a portal user")
         with self.assertRaises(UserError):
             self.env["majal.api.client"].sudo().create({
                 "name": "Portal client",
