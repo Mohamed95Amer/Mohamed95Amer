@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_intake_root" name="Intake"
+              parent="majal_documents.menu_majal_documents_root"
+              sequence="30"/>
+
+    <menuitem id="menu_intake_upload" name="Document Intake"
+              parent="menu_intake_root"
+              action="action_intake_upload" sequence="10"/>
+
+    <menuitem id="menu_intake_profiles" name="Mapping Profiles"
+              parent="menu_intake_root"
+              action="action_mapping_profile" sequence="20"
+              groups="construction_base.group_construction_manager"/>
+</odoo>

@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_intake_upload_user,majal.intake.upload user,model_majal_intake_upload,base.group_user,1,1,1,0
+access_intake_upload_manager,majal.intake.upload manager,model_majal_intake_upload,construction_base.group_construction_manager,1,1,1,1
+access_intake_field_user,majal.intake.field user,model_majal_intake_field,base.group_user,1,1,1,1
+access_intake_profile_user,majal.intake.mapping.profile read,model_majal_intake_mapping_profile,base.group_user,1,0,0,0
+access_intake_profile_manager,majal.intake.mapping.profile manage,model_majal_intake_mapping_profile,construction_base.group_construction_manager,1,1,1,1
+access_intake_profile_line_user,majal.intake.mapping.line read,model_majal_intake_mapping_line,base.group_user,1,0,0,0
+access_intake_profile_line_manager,majal.intake.mapping.line manage,model_majal_intake_mapping_line,construction_base.group_construction_manager,1,1,1,1

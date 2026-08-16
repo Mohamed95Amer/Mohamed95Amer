@@ -149,35 +149,60 @@ class MajalDocument(models.Model):
                 )
         return super().create(vals_list)
 
+    # The two field classes below are the security model for this record, and
+    # they are class attributes rather than locals inside write() so that
+    # anything else needing to know what may be written — bulk import, an
+    # integration, a mapping profile — reads the same definition instead of
+    # keeping a second copy that drifts out of step with this one.
+    #
+    # TRANSITION_FIELDS move the workflow and record who moved it. Nothing
+    # outside the workflow buttons may write them, ever.
+    TRANSITION_FIELDS = frozenset({
+        "state",
+        "submitted_by_id",
+        "submitted_at",
+        "approved_by_id",
+        "approved_at",
+        "approval_checksum",
+        "issued_by_id",
+        "issued_at",
+        "current_version_id",
+    })
+    # CONTROLLED_CONTENT is the document itself. Writable, but only while it
+    # is still a draft — once approved, the content is what was approved.
+    CONTROLLED_CONTENT = frozenset({
+        "name",
+        "document_date",
+        "company_id",
+        "project_id",
+        "recipient_id",
+        "template_id",
+        "language",
+        "body_html",
+        "requires_qualified_signature",
+    })
+
+    @api.model
+    def _intake_writable_fields(self):
+        """Fields an import may target, derived from the guards above.
+
+        Deliberately not a hand-written list. A new controlled field becomes
+        importable automatically; a new transition field becomes forbidden
+        automatically. The alternative — a second list maintained by hand — is
+        the one that silently grants write access to a workflow field the day
+        somebody forgets to update it.
+        """
+        return set(self.CONTROLLED_CONTENT)
+
     def write(self, values):
-        transition_fields = {
-            "state",
-            "submitted_by_id",
-            "submitted_at",
-            "approved_by_id",
-            "approved_at",
-            "approval_checksum",
-            "issued_by_id",
-            "issued_at",
-            "current_version_id",
-        }
+        transition_fields = self.TRANSITION_FIELDS
         if transition_fields.intersection(values) and not (
             self.env.su
             or self.env.context.get("majal_document_transition")
             is DOCUMENT_TRANSITION
         ):
             raise AccessError(_("Use the document workflow buttons to change status."))
-        controlled_content = {
-            "name",
-            "document_date",
-            "company_id",
-            "project_id",
-            "recipient_id",
-            "template_id",
-            "language",
-            "body_html",
-            "requires_qualified_signature",
-        }
+        controlled_content = self.CONTROLLED_CONTENT
         if controlled_content.intersection(values):
             locked = self.filtered(
                 lambda record: record.state not in ("draft", "rejected")

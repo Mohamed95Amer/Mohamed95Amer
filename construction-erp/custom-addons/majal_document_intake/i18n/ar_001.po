@@ -1,0 +1,154 @@
+# Arabic translations for majal_document_intake.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Majal Document Intake"
+msgstr "استقبال مستندات مجال"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Document Intake"
+msgstr "استقبال المستندات"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Mapping Profiles"
+msgstr "ملفات الربط"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Mapping Profile"
+msgstr "ملف الربط"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Intake"
+msgstr "الاستقبال"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Uploaded"
+msgstr "تم الرفع"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Ready to review"
+msgstr "جاهز للمراجعة"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Applied"
+msgstr "تم التطبيق"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Read the file"
+msgstr "اقرأ الملف"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Read it again"
+msgstr "أعد القراءة"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Create the record"
+msgstr "أنشئ السجل"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Reject"
+msgstr "رفض"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Start over"
+msgstr "ابدأ من جديد"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Review the mapping"
+msgstr "راجع الربط"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "What was read"
+msgstr "ما تمت قراءته"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Source Key"
+msgstr "عمود الملف"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Sample Value"
+msgstr "قيمة من الملف"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Target Field"
+msgstr "الحقل المستهدف"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Confidence"
+msgstr "درجة الثقة"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Reason"
+msgstr "السبب"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Decision"
+msgstr "القرار"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Accept"
+msgstr "قبول"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Document"
+msgstr "مستند"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Sheet"
+msgstr "كشف"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Waiting for review"
+msgstr "بانتظار المراجعة"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Possible duplicates"
+msgstr "تكرار محتمل"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Uploaded by"
+msgstr "رفعه"
+
+#. module: majal_document_intake
+#: model:ir.model,name:majal_document_intake.model_majal_intake_upload
+msgid "Mine"
+msgstr "الخاصة بي"

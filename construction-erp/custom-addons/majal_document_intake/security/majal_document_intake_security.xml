@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Company isolation is a GLOBAL rule — no groups. That distinction
+             is load-bearing and was wrong here first time round: Odoo ANDs
+             global rules with everything, but ORs rules that share a group.
+             Written as a group rule alongside the own-records rule below, it
+             did not narrow anything — it widened it, because "in my company"
+             OR "mine" is just "in my company", and every user could read
+             every colleague's uploads. -->
+        <record id="rule_intake_upload_company" model="ir.rule">
+            <field name="name">Majal: intake uploads stay in their company</field>
+            <field name="model_id" ref="model_majal_intake_upload"/>
+            <field name="groups" eval="[(5,)]"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <!-- An intake queue is a working area, not a shared archive. What is
+             worth reading afterwards is the document the import produced, and
+             that has its own access rules. -->
+        <record id="rule_intake_upload_own" model="ir.rule">
+            <field name="name">Majal: users see their own uploads</field>
+            <field name="model_id" ref="model_majal_intake_upload"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
+        <!-- ORs with the rule above, which is the intent: somebody has to be
+             able to answer "who imported that". Still ANDed with the global
+             company rule. -->
+        <record id="rule_intake_upload_manager" model="ir.rule">
+            <field name="name">Majal: managers see every upload</field>
+            <field name="model_id" ref="model_majal_intake_upload"/>
+            <field name="groups"
+                   eval="[(4, ref('construction_base.group_construction_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="rule_intake_profile_company" model="ir.rule">
+            <field name="name">Majal: mapping profiles stay in their company</field>
+            <field name="model_id" ref="model_majal_intake_mapping_profile"/>
+            <field name="groups" eval="[(5,)]"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>

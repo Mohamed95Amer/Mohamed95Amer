@@ -97,14 +97,40 @@ class MajalSheet(models.Model):
                 )
         return super().create(vals_list)
 
+    # Class attributes for the same reason as majal.document: one definition
+    # of what may be written, read by write() and by anything importing into
+    # this model, rather than two copies that drift.
+    PROTECTED_FIELDS = frozenset({
+        "state",
+        "revision",
+        "checksum",
+        "frozen_by_id",
+        "frozen_at",
+    })
+    EDITABLE_FIELDS = frozenset({
+        "name",
+        "sheet_date",
+        "company_id",
+        "project_id",
+        "sheet_type",
+        "currency_id",
+        "line_ids",
+        "note",
+    })
+
+    @api.model
+    def _intake_writable_fields(self):
+        """What an import may target on a sheet.
+
+        line_ids is excluded even though write() allows it: a one2many takes
+        Odoo command tuples, and letting a mapping profile supply those would
+        be a way to reach arbitrary nested writes through a field that looks
+        like an ordinary target. Sheet lines are imported by their own path.
+        """
+        return set(self.EDITABLE_FIELDS) - {"line_ids"}
+
     def write(self, values):
-        protected = {
-            "state",
-            "revision",
-            "checksum",
-            "frozen_by_id",
-            "frozen_at",
-        }
+        protected = self.PROTECTED_FIELDS
         if protected.intersection(values) and not (
             self.env.su
             or self.env.context.get("majal_sheet_transition")
