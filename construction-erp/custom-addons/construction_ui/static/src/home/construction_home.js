@@ -290,7 +290,13 @@ export class ConstructionHome extends Component {
         // an English browser read an English date. user.lang is already a
         // BCP-47 locale — pyToJsLocale converts it in @web/core/user — so the
         // right answer is simply to use it.
-        this.today = new Intl.DateTimeFormat(user.lang, {
+        //
+        // The `|| undefined` is load-bearing: pyToJsLocale returns "" when the
+        // session carries no lang, and Intl.DateTimeFormat("") throws
+        // RangeError rather than falling back. This runs in setup(), so that
+        // throw would be a blank screen instead of a wrong date. Core guards
+        // the same way — see localization_service.js.
+        this.today = new Intl.DateTimeFormat(user.lang || undefined, {
             weekday: "long",
             day: "numeric",
             month: "long",

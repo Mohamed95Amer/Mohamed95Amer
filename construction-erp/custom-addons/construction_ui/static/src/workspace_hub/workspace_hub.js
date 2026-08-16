@@ -1058,7 +1058,9 @@ export class MajalWorkspaceHub extends Component {
         if (!value) {
             return "";
         }
-        return new Intl.DateTimeFormat(user.lang, {
+        // `|| undefined` because pyToJsLocale returns "" for a session with no
+        // lang, and Intl.DateTimeFormat("") throws rather than falling back.
+        return new Intl.DateTimeFormat(user.lang || undefined, {
             day: "numeric",
             month: "short",
             year: "numeric",

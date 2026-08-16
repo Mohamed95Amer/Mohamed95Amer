@@ -9,7 +9,16 @@ class TestMajalAppIcons(TransactionCase):
         # Majal module shipping its own Majal-styled asset belongs here. Kept
         # explicit rather than matching on a "majal_" prefix, since the point
         # is to notice a new app arriving with an unbranded icon.
-        allowed_modules = {"construction_ui", "majal_ai", "majal_administration"}
+        # majal_sign is here because it ships its own icon in the Majal palette
+        # (the navy/gold/teal used across the suite), which is the case this
+        # list exists to admit. That is not the same as the spreadsheet_oca
+        # decision, where a vendored third-party app arrived carrying a *stock*
+        # icon: that one was rebranded rather than allow-listed, because
+        # excusing a stock icon is what would retire this check. Adding a
+        # first-party module with a bespoke asset does not.
+        allowed_modules = {
+            "construction_ui", "majal_ai", "majal_administration", "majal_sign",
+        }
         top_level_apps = self.env["ir.ui.menu"].search(
             [("parent_id", "=", False), ("web_icon", "!=", False)]
         )

@@ -1,8 +1,16 @@
-import base64
-
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase, new_test_user
+
+
+# signature is a fields.Image, so Odoo pushes every write through PIL to
+# validate and resize it. Arbitrary bytes raise UnidentifiedImageError before
+# any of the access logic under test is reached, which is what these tests were
+# doing. This is a real 1x1 PNG — the smallest thing PIL will accept.
+ONE_PIXEL_PNG = (
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmM"
+    "IQAAAABJRU5ErkJggg=="
+)
 
 
 class TestMajalSignRequest(TransactionCase):
@@ -39,7 +47,7 @@ class TestMajalSignRequest(TransactionCase):
             "signer_id": self.signer.id,
         })
         request.with_user(self.signer).write({
-            "signature": base64.b64encode(b"test-signature").decode()
+            "signature": ONE_PIXEL_PNG
         })
         request.with_user(self.signer).action_sign()
         self.assertEqual(request.state, "signed")
@@ -56,7 +64,7 @@ class TestMajalSignRequest(TransactionCase):
             "signer_id": self.signer.id,
         })
         request.with_user(self.signer).write({
-            "signature": base64.b64encode(b"test-signature").decode()
+            "signature": ONE_PIXEL_PNG
         })
         with self.assertRaises(AccessError):
             request.with_user(self.approver).action_sign()
@@ -70,7 +78,7 @@ class TestMajalSignRequest(TransactionCase):
         })
         with self.assertRaises(AccessError):
             request.with_user(self.approver).write({
-                "signature": base64.b64encode(b"forged").decode()
+                "signature": ONE_PIXEL_PNG
             })
 
     def test_request_rejects_non_current_revision(self):

@@ -206,8 +206,9 @@ export class FacilityHome extends Component {
         this.focusItems = localizeItems(FACILITY_FOCUS);
         this.appGroups = localizeItems(FACILITY_GROUPS);
         // Same reasoning as construction_home.js: format in the user's
-        // language rather than guessing it from the text direction.
-        this.today = new Intl.DateTimeFormat(user.lang, {
+        // language rather than guessing it from the text direction, and guard
+        // the empty lang because Intl throws on "" rather than falling back.
+        this.today = new Intl.DateTimeFormat(user.lang || undefined, {
             weekday: "long",
             day: "numeric",
             month: "long",
