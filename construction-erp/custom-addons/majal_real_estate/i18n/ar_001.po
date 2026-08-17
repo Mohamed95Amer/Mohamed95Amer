@@ -1,0 +1,3182 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_real_estate
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_building.py:0
+msgid "%(building)s's community must belong to the same development as the building."
+msgstr "يجب أن ينتمي مجمع %(building)s إلى المشروع العقاري نفسه الذي ينتمي إليه المبنى."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "%(buyer)s still owes %(amount)s on %(unit)s. Settle the balance before completing the handover."
+msgstr "ما زال %(buyer)s مديناً بمبلغ %(amount)s على %(unit)s. سوِّ الرصيد قبل إتمام التسليم."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "%(handover)s still has %(count)s unverified snag(s). Every snag must be fixed and verified before the unit is ready to hand over."
+msgstr "ما زال في %(handover)s عدد %(count)s ملاحظة غير مُتحقق منها. يجب إصلاح كل ملاحظة والتحقق منها قبل أن تصبح الوحدة جاهزة للتسليم."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "%(plan_line)s is due on handover, but %(development)s has no expected handover date. Set one before generating the schedule."
+msgstr "%(plan_line)s مستحق عند التسليم، لكن %(development)s ليس له تاريخ تسليم متوقع. حدد تاريخاً قبل توليد الجدول."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "%(unit)s is already held by %(reservation)s."
+msgstr "%(unit)s محجوزة بالفعل بموجب %(reservation)s."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "%(unit)s is not available (current status: %(status)s), so it cannot be reserved."
+msgstr "%(unit)s غير متاحة (الحالة الحالية: %(status)s)، فلا يمكن حجزها."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "%s already has payments recorded against its schedule. Adjust the individual installments instead of regenerating it."
+msgstr "%s مسجل عليه دفعات على جدوله بالفعل. عدّل الأقساط الفردية بدلاً من إعادة توليده."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "%s cannot be cancelled from its current state."
+msgstr "لا يمكن إلغاء %s من حالته الحالية."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "%s cannot bounce from its current state."
+msgstr "لا يمكن ارتداد %s من حالته الحالية."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "%s cannot clear from its current state."
+msgstr "لا يمكن تحصيل %s من حالته الحالية."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_property_document.py:0
+msgid "%s expires soon"
+msgstr "%s ينتهي قريباً"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "%s has already cleared; it cannot be handed back."
+msgstr "%s حُصّل بالفعل، ولا يمكن إعادته."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "%s has not been marked fixed yet, so there is nothing to verify."
+msgstr "لم تُعلَّم %s كمُصلحة بعد، فلا يوجد ما يُتحقق منه."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "%s must be marked ready before it can be completed."
+msgstr "يجب تعليم %s كجاهز قبل إتمامه."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__1br
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__1br
+msgid "1 Bedroom"
+msgstr "غرفة نوم واحدة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__2br
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__2br
+msgid "2 Bedroom"
+msgstr "غرفتا نوم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__3br
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__3br
+msgid "3 Bedroom"
+msgstr "ثلاث غرف نوم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__4br
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__4br
+msgid "4 Bedroom"
+msgstr "أربع غرف نوم"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_kanban
+msgid "<i class=\"fa fa-eye me-1\" title=\"View\"/>"
+msgstr "<i class=\"fa fa-eye me-1\" title=\"عرض\"/>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "<small>AREA</small>"
+msgstr "<small>المساحة</small>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "<small>BEDROOMS</small>"
+msgstr "<small>غرف النوم</small>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "<small>FLOOR</small>"
+msgstr "<small>الطابق</small>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "<span class=\"done\"><i>✓</i><b>Listing ready</b></span><span class=\"done\"><i>✓</i><b>Visit complete</b></span><span class=\"current\"><i>3</i><b>Offer issued</b></span><span><i>4</i><b>Reservation</b></span><span><i>5</i><b>Contract</b></span><span><i>6</i><b>Handover</b></span>"
+msgstr "<span class=\"done\"><i>✓</i><b>الإعلان جاهز</b></span><span class=\"done\"><i>✓</i><b>الزيارة تمت</b></span><span class=\"current\"><i>3</i><b>صدر العرض</b></span><span><i>4</i><b>الحجز</b></span><span><i>5</i><b>العقد</b></span><span><i>6</i><b>التسليم</b></span>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "<span>Living space and property view</span>"
+msgstr "<span>مساحة المعيشة وإطلالة العقار</span>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "<span>Ready</span><span>Premium</span>"
+msgstr "<span>جاهزة</span><span>مميزة</span>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "<strong class=\"d-block mt-2\">Agreed Price</strong>"
+msgstr "<strong class=\"d-block mt-2\">السعر المتفق عليه</strong>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "<strong class=\"d-block mt-2\">Building / Floor</strong>"
+msgstr "<strong class=\"d-block mt-2\">المبنى / الطابق</strong>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "<strong class=\"d-block mt-2\">Outstanding</strong>"
+msgstr "<strong class=\"d-block mt-2\">المستحق</strong>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "<strong>Development</strong>"
+msgstr "<strong>المشروع العقاري</strong>"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "<strong>Reserved On</strong>"
+msgstr "<strong>حُجزت في</strong>"
+
+#. module: majal_real_estate
+#: model_terms:ir.actions.act_window,help:majal_real_estate.action_majal_cheque
+msgid "A cheque becomes a payment when it clears, and can fail after\n                it has been handed over. Clearing one here is what settles the\n                instalment or rent behind it."
+msgstr "يصبح الشيك دفعة عند تحصيله، وقد يفشل بعد تسليمه. وتحصيله هنا هو ما يسدد القسط أو الإيجار الذي وراءه."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "A cleared cheque cannot be cancelled."
+msgstr "لا يمكن إلغاء شيك محصّل."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "A cleared cheque cannot be reopened."
+msgstr "لا يمكن إعادة فتح شيك محصّل."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "A completed handover cannot be cancelled."
+msgstr "لا يمكن إلغاء تسليم مكتمل."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "A completed handover is the record that a unit changed hands; it cannot be deleted: %s"
+msgstr "التسليم المكتمل هو سجل انتقال الوحدة، ولا يمكن حذفه: %s"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_property_document.py:0
+msgid "A document cannot expire before it was issued."
+msgstr "لا يمكن أن ينتهي المستند قبل إصداره."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_payment_plan.py:0
+msgid "A milestone must claim a positive share of the price."
+msgstr "يجب أن تطالب المرحلة بحصة موجبة من السعر."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_commission.py:0
+msgid "A paid commission cannot be cancelled."
+msgstr "لا يمكن إلغاء عمولة مدفوعة."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "A reservation cannot expire before it starts."
+msgstr "لا يمكن أن ينتهي الحجز قبل أن يبدأ."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__access_warning
+msgid "Access warning"
+msgstr "تحذير وصول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_needaction
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__active
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__active
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__active
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__active
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_development__state__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_exception_decoration
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_exception_decoration
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_exception_decoration
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_exception_decoration
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_exception_decoration
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_type_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_type_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_type_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_type_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_type_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__expiry_date
+msgid "After this date the hold lapses and the unit returns to the available pool."
+msgstr "بعد هذا التاريخ يسقط الحجز وتعود الوحدة إلى المخزون المتاح."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__sale_price
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+msgid "Agreed Price"
+msgstr "السعر المتفق عليه"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_plan_form
+msgid "All developments"
+msgstr "كل المشاريع العقارية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__amount
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__amount
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__amount
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__amount_collected
+msgid "Amount Collected"
+msgstr "المبلغ المحصّل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__amount_paid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__amount_paid
+msgid "Amount Paid"
+msgstr "المبلغ المدفوع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__amount_residual
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__amount_residual
+msgid "Amount Residual"
+msgstr "المبلغ المتبقي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__amount_scheduled
+msgid "Amount Scheduled"
+msgstr "المبلغ المجدول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__amount_sold
+msgid "Amount Sold"
+msgstr "المبلغ المباع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit_generate_wizard__code_suffix
+msgid "Appended to the floor number to distinguish units generated on the same floor by different runs of this wizard, e.g. \"01\" for the first unit type placed on each floor."
+msgstr "تُضاف إلى رقم الطابق لتمييز الوحدات المولّدة في الطابق نفسه من تشغيلات مختلفة لهذا المعالج، مثل \"01\" لأول نوع وحدة يوضع في كل طابق."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_commission.py:0
+msgid "Approve %s before marking it paid."
+msgstr "اعتمد %s قبل تعليمه كمدفوع."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_commission__state__approved
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_plan_form
+msgid "Archived"
+msgstr "مؤرشف"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_type_form
+msgid "Area"
+msgstr "المساحة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Area (sqft)"
+msgstr "المساحة (قدم مربع)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__assigned_user_id
+msgid "Assigned To"
+msgstr "مُسند إلى"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Assignment"
+msgstr "الإسناد"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+msgid "Attached To"
+msgstr "مرفق بـ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_attachment_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Availability"
+msgstr "التوفر"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__available
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Available"
+msgstr "متاح"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__available_unit_count
+msgid "Available Unit Count"
+msgstr "عدد الوحدات المتاحة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__balcony_area
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__balcony_area
+msgid "Balcony Area (sqft)"
+msgstr "مساحة الشرفة (قدم مربع)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__bank_name
+msgid "Bank Name"
+msgstr "اسم البنك"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__bathrooms
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__bathrooms
+msgid "Bathrooms"
+msgstr "دورات المياه"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__bedrooms
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__bedrooms
+msgid "Bedrooms"
+msgstr "غرف النوم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__blocked
+msgid "Blocked"
+msgstr "معطّل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__bounce_reason
+msgid "Bounce Reason"
+msgstr "سبب الارتداد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_cheque__state__bounced
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+msgid "Bounced"
+msgstr "مرتد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__broker_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__broker_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Broker"
+msgstr "الوسيط"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_commission
+msgid "Broker Commission"
+msgstr "عمولة الوسيط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_res_partner__is_majal_broker
+#: model:ir.model.fields,help:majal_real_estate.field_res_users__is_majal_broker
+msgid "Brokers can be credited on a reservation and earn commission."
+msgstr "يمكن نسب الحجز إلى وسيط فيستحق عمولة."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__budget
+msgid "Budget"
+msgstr "الموازنة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__building_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__building_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__building_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__building_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__building_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Building"
+msgstr "المبنى"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__building_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__building_count
+msgid "Building Count"
+msgstr "عدد المباني"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__building_type
+msgid "Building Type"
+msgstr "نوع المبنى"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_building
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__building_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__building_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_buildings
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_community_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "Buildings"
+msgstr "المباني"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__partner_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__partner_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__partner_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Buyer"
+msgstr "المشتري"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_generate_wizard_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__cancel_reason
+msgid "Cancel Reason"
+msgstr "سبب الإلغاء"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "Cancel these reservations before deleting them, otherwise their units stay held with nothing holding them: %s"
+msgstr "ألغِ هذه الحجوزات قبل حذفها، وإلا بقيت وحداتها محجوزة دون حجز يحجزها: %s"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Cancellation"
+msgstr "الإلغاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_cheque__state__cancelled
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_commission__state__cancelled
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover__state__cancelled
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_reservation__state__cancelled
+msgid "Cancelled"
+msgstr "ملغى"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_cheque
+msgid "Cheque"
+msgstr "الشيك"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__name
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "Cheque No."
+msgstr "رقم الشيك"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_cheque
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__cheque_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_cheques
+msgid "Cheques"
+msgstr "الشيكات"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "Choose a payment plan before generating a schedule."
+msgstr "اختر خطة دفع قبل توليد الجدول."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__city
+msgid "City"
+msgstr "المدينة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_cheque__state__cleared
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+msgid "Cleared"
+msgstr "محصّل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__cleared_date
+msgid "Cleared Date"
+msgstr "تاريخ التحصيل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__clubhouse
+msgid "Clubhouse / Amenity"
+msgstr "النادي / المرافق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__code
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__code_prefix
+msgid "Code Prefix"
+msgstr "بادئة الرمز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__code_suffix
+msgid "Code Suffix"
+msgstr "لاحقة الرمز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead_stage__fold
+msgid "Collapse this column in the pipeline when it has no leads."
+msgstr "اطوِ هذا العمود في المسار عندما لا يحتوي على عملاء محتملين."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__collection_rate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_list
+msgid "Collected %"
+msgstr "٪ المحصّل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Commercial"
+msgstr "تجاري"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__commission_rate
+msgid "Commission (%)"
+msgstr "العمولة (٪)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__commission_amount
+msgid "Commission Amount"
+msgstr "مبلغ العمولة"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_commission
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__commission_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_commissions
+msgid "Commissions"
+msgstr "العمولات"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_community
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__community_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_communities
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "Communities"
+msgstr "المجمعات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__community_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__community_id
+msgid "Community"
+msgstr "المجمع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__community_count
+msgid "Community Count"
+msgstr "عدد المجمعات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__company_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Complete Handover"
+msgstr "إتمام التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_development__state__completed
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover__state__completed
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+msgid "Completed"
+msgstr "مكتمل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__completed_date
+msgid "Completed Date"
+msgstr "تاريخ الإتمام"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__listing_readiness
+msgid "Completion of photography, pricing and marketing information."
+msgstr "اكتمال التصوير والتسعير ومعلومات التسويق."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_reservation__state__confirmed
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "Confirmed"
+msgstr "مؤكد"
+
+#. module: majal_real_estate
+#: model_terms:ir.actions.act_window,help:majal_real_estate.action_majal_reservation
+msgid "Confirming a reservation holds the unit so nobody else can sell\n                it. If the hold lapses, the unit returns to the available pool\n                automatically."
+msgstr "تأكيد الحجز يحجز الوحدة فلا يستطيع أحد آخر بيعها. وإذا سقط الحجز، تعود الوحدة إلى المخزون المتاح تلقائياً."
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_res_partner
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__partner_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Contact"
+msgstr "جهة الاتصال"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__contact_name
+msgid "Contact Name"
+msgstr "اسم جهة الاتصال"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Convert to Sale"
+msgstr "تحويل إلى بيع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "Converted"
+msgstr "محوّل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_reservation__state__converted
+msgid "Converted to Sale"
+msgstr "محوّل إلى بيع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__country_id
+msgid "Country"
+msgstr "الدولة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__create_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__create_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__currency_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__active_reservation_id
+msgid "Current Hold"
+msgstr "الحجز الحالي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__access_url
+msgid "Customer Portal URL"
+msgstr "رابط بوابة العميل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Dates"
+msgstr "التواريخ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__offset_days
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_installment__trigger__days_after
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_plan_line__trigger__days_after
+msgid "Days After Booking"
+msgstr "أيام بعد الحجز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_list
+msgid "Days Left"
+msgstr "الأيام المتبقية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__days_to_expiry
+msgid "Days To Expiry"
+msgstr "الأيام حتى الانتهاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_res_partner__broker_commission_rate
+#: model:ir.model.fields,field_description:majal_real_estate.field_res_users__broker_commission_rate
+msgid "Default Commission (%)"
+msgstr "العمولة الافتراضية (٪)"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_list
+msgid "Deposit"
+msgstr "التأمين"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_cheque__state__deposited
+msgid "Deposited"
+msgstr "مُودع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__deposited_date
+msgid "Deposited Date"
+msgstr "تاريخ الإيداع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__description
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__description
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_community_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "Description"
+msgstr "الوصف"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_building__planned_floor_count
+msgid "Designed floor count, which may run ahead of the floor records actually created."
+msgstr "عدد الطوابق التصميمي، وقد يسبق سجلات الطوابق المنشأة فعلياً."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__developer_id
+msgid "Developer"
+msgstr "المطور"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__development_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__development_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Development"
+msgstr "المشروع العقاري"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_development
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_developments
+msgid "Developments"
+msgstr "المشاريع العقارية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__display_name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+msgid "Document"
+msgstr "المستند"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__document_count
+msgid "Document Count"
+msgstr "عدد المستندات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__attachment_count
+msgid "Document File Count"
+msgstr "عدد ملفات المستند"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__document_readiness
+msgid "Document Pack (%)"
+msgstr "حزمة المستندات (٪)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__document_type
+msgid "Document Type"
+msgstr "نوع المستند"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Document pack"
+msgstr "حزمة المستندات"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_property_document
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__document_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_documents
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Documents"
+msgstr "المستندات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_commission__state__draft
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover__state__draft
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_reservation__state__draft
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__partner_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+msgid "Drawer"
+msgstr "الساحب"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__due_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__due_date
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+msgid "Due Date"
+msgstr "تاريخ الاستحقاق"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+msgid "Due for Banking"
+msgstr "مستحق للإيداع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit_type__name
+msgid "E.g. \"1BR Type A\"."
+msgstr "مثال: \"غرفة نوم واحدة نوع A\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_floor__name
+msgid "E.g. \"Floor 12\", \"Ground\", \"P1\" for a parking level."
+msgstr "مثال: \"الطابق 12\"، \"الأرضي\"، \"P1\" لمستوى مواقف."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__view
+msgid "E.g. \"Marina\", \"Garden\"."
+msgstr "مثال: \"المارينا\"، \"الحديقة\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__orientation
+msgid "E.g. \"NW\"."
+msgstr "مثال: \"شمال غربي\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__parking_ref
+msgid "E.g. \"P2-144\"."
+msgstr "مثال: \"P2-144\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_building__name
+msgid "E.g. \"Tower A\"."
+msgstr "مثال: \"البرج أ\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__meter_electricity
+msgid "Electricity Meter Reading"
+msgstr "قراءة عداد الكهرباء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__email
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__name
+msgid "Enquiry"
+msgstr "استفسار"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__expected_close_date
+msgid "Expected Close Date"
+msgstr "تاريخ الإغلاق المتوقع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__expected_handover_date
+msgid "Expected Handover Date"
+msgstr "تاريخ التسليم المتوقع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__state__expired
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_reservation__state__expired
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+msgid "Expired"
+msgstr "منتهٍ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__state__expiring
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+msgid "Expiring Soon"
+msgstr "ينتهي قريباً"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "Expiring This Week"
+msgstr "ينتهي هذا الأسبوع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__expiry_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__expiry_date
+msgid "Expiry Date"
+msgstr "تاريخ الانتهاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__attachment_ids
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_list
+msgid "Files"
+msgstr "الملفات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_type_form
+msgid "Finish"
+msgstr "الإنهاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__finish_notes
+msgid "Finish Notes"
+msgstr "ملاحظات الإنهاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover_snag__state__fixed
+msgid "Fixed"
+msgstr "مُصلح"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__floor_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__floor_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__floor_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Floor"
+msgstr "الطابق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__floor_count
+msgid "Floor Count"
+msgstr "عدد الطوابق"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_floor
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__floor_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__floor_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_floors
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_building_form
+msgid "Floors"
+msgstr "الطوابق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__fold
+msgid "Fold"
+msgstr "طي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_follower_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_partner_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (الشركاء)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__activity_type_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__activity_type_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__activity_type_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__activity_type_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__activity_type_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة Font Awesome مثل fa-tasks"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_generate_wizard_form
+msgid "Generate"
+msgstr "توليد"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Generate Schedule"
+msgstr "توليد الجدول"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_generate_wizard_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_type_form
+msgid "Generate Units"
+msgstr "توليد الوحدات"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_unit_generate_wizard
+msgid "Generate Units From a Unit Type"
+msgstr "توليد الوحدات من نوع وحدة"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/wizards/majal_unit_generate_wizard.py:0
+msgid "Generated Units"
+msgstr "الوحدات المولّدة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__handed_over
+msgid "Handed Over"
+msgstr "مُسلَّم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__handover_id
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_handover
+msgid "Handover"
+msgstr "التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__handover_count
+msgid "Handover Count"
+msgstr "عدد عمليات التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__handover_due
+msgid "Handover Due"
+msgstr "التسليم مستحق"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Handover Record"
+msgstr "سجل التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_handover_snag
+msgid "Handover Snag"
+msgstr "ملاحظة تسليم"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_handover
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__handover_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_handovers
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Handovers"
+msgstr "عمليات التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__has_message
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_cheque__state__held
+msgid "Held"
+msgstr "محجوز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Held by"
+msgstr "محجوز بواسطة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover_snag__severity__high
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_lead__priority__2
+msgid "High"
+msgstr "مرتفع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "History"
+msgstr "السجل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Hold Period"
+msgstr "مدة الحجز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__reminder_days
+msgid "How long before expiry this starts appearing as expiring."
+msgstr "كم من الوقت قبل الانتهاء يبدأ الظهور كمنتهٍ قريباً."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_exception_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_exception_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_exception_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_exception_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_exception_icon
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__activity_exception_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__activity_exception_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__activity_exception_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__activity_exception_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__activity_exception_icon
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "أيقونة للدلالة على نشاط استثنائي."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "Identification"
+msgstr "التعريف"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__identity
+msgid "Identity Document"
+msgstr "وثيقة الهوية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_commission__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__message_needaction
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "عند التحديد، تتطلب الرسائل الجديدة انتباهك."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_commission__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_commission__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__message_has_sms_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__message_has_error
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "عند التحديد، توجد رسائل بها خطأ في التسليم."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "If it failed"
+msgstr "إذا فشل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+msgid "In Hand"
+msgstr "في اليد"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover__state__inspection
+msgid "Inspection"
+msgstr "المعاينة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__inspection_date
+msgid "Inspection Date"
+msgstr "تاريخ المعاينة"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_payment_installment
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_installments
+msgid "Installments"
+msgstr "الأقساط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__installment_id
+msgid "Instalment"
+msgstr "القسط"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "Instrument"
+msgstr "الأداة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__insurance
+msgid "Insurance Policy"
+msgstr "وثيقة التأمين"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Interest"
+msgstr "الاهتمام"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__unit_type_id
+msgid "Interested In"
+msgstr "مهتم بـ"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Internal notes on this hold..."
+msgstr "ملاحظات داخلية على هذا الحجز..."
+
+#. module: majal_real_estate
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_inventory
+msgid "Inventory"
+msgstr "المخزون"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__is_due
+msgid "Is Due"
+msgstr "مستحق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_is_follower
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__is_won
+msgid "Is Won Stage"
+msgstr "مرحلة فوز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__issue_date
+msgid "Issue Date"
+msgstr "تاريخ الإصدار"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__keys_handed
+msgid "Keys Handed"
+msgstr "المفاتيح مُسلَّمة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__land_area
+msgid "Land Area (sqft)"
+msgstr "مساحة الأرض (قدم مربع)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__write_uid
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__write_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_lead_stage
+msgid "Lead Stage"
+msgstr "مرحلة العميل المحتمل"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_lead_stage
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_lead_stages
+msgid "Lead Stages"
+msgstr "مراحل العملاء المحتملين"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_lead
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_leads
+msgid "Leads"
+msgstr "العملاء المحتملون"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead_stage__is_won
+msgid "Leads reaching this stage count as converted enquiries."
+msgstr "العملاء المحتملون الذين يبلغون هذه المرحلة يُحتسبون استفسارات محوّلة."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__leased
+msgid "Leased"
+msgstr "مؤجرة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__expiry_date
+msgid "Leave empty for a document that does not lapse, such as a title deed."
+msgstr "اتركه فارغاً للمستند الذي لا ينتهي، مثل سند الملكية."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+msgid "Leave empty if it never lapses"
+msgstr "اتركه فارغاً إن كان لا ينتهي أبداً"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_payment_plan__development_id
+msgid "Leave empty to offer this plan across every development."
+msgstr "اتركه فارغاً لعرض هذه الخطة على كل المشاريع العقارية."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__reservation_id
+msgid "Links the handover to the sale, so the outstanding balance can be checked before keys change hands."
+msgstr "يربط التسليم بالبيع، ليتسنى التحقق من الرصيد المستحق قبل تسليم المفاتيح."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__list_price
+msgid "List Price"
+msgstr "سعر القائمة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__unit_price
+msgid "List Price at Reservation"
+msgstr "سعر القائمة عند الحجز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__listing_readiness
+msgid "Listing Readiness (%)"
+msgstr "جاهزية الإعلان (٪)"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Listing readiness"
+msgstr "جاهزية الإعلان"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__location
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Location"
+msgstr "الموقع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_lead__state__lost
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_kanban
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+msgid "Lost"
+msgstr "خسارة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__lost_reason
+msgid "Lost Reason"
+msgstr "سبب الخسارة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover_snag__severity__low
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_lead__priority__0
+msgid "Low"
+msgstr "منخفض"
+
+#. module: majal_real_estate
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_root
+msgid "Majal Property"
+msgstr "عقارات مجال"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "Mark Cleared"
+msgstr "تعليم كمحصّل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Mark Lost"
+msgstr "تعليم كخسارة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_form
+msgid "Mark Paid"
+msgstr "تعليم كمدفوع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Mark Ready"
+msgstr "تعليم كجاهز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Mark Won"
+msgstr "تعليم كفوز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Mark as fully paid"
+msgstr "وضع علامة مدفوع بالكامل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_list
+msgid "Mark cleared"
+msgstr "تعليم كمحصّل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Mark fixed"
+msgstr "تعليم كمُصلح"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover_snag__severity__medium
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_lead__priority__1
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_has_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسالة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "Milestone"
+msgstr "المرحلة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_payment_plan_line__name
+msgid "Milestone label, e.g. \"On booking\", \"Slab 10\"."
+msgstr "مسمى المرحلة، مثل \"عند الحجز\"، \"البلاطة 10\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__line_ids
+msgid "Milestones"
+msgstr "المراحل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__mixed_use
+msgid "Mixed Use"
+msgstr "استخدام مختلط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__my_activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__my_activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__my_activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__my_activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__my_activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطي"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+msgid "My Leads"
+msgstr "عملائي المحتملون"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_home_reservation
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+msgid "My Properties"
+msgstr "عقاراتي"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "My Reservations"
+msgstr "حجوزاتي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_community__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_lead.py:0
+msgid "New Reservation"
+msgstr "حجز جديد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_date_deadline
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_summary
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_summary
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_summary
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_summary
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_summary
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_type_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_type_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_type_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_type_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_type_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__next_due_date
+msgid "Next Due Date"
+msgstr "تاريخ الاستحقاق التالي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__state__permanent
+msgid "No Expiry"
+msgstr "بلا انتهاء"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+msgid "No payment schedule has been issued for this unit yet."
+msgstr "لم يصدر بعد جدول دفعات لهذه الوحدة."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__noc
+msgid "No-Objection Certificate"
+msgstr "شهادة عدم ممانعة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__note
+msgid "Note"
+msgstr "ملاحظة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__notes
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__notes
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__notes
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__notes
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__notes
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__notes
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_plan_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__number
+msgid "Number"
+msgstr "الرقم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_commission__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__message_needaction_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب إجراءً"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_commission__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__message_has_error_counter
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل ذات خطأ التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__reference
+msgid "Number the issuing authority gave it."
+msgstr "الرقم الذي منحته الجهة المُصدِرة."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_floor__number
+msgid "Numeric level used for ordering and for unit-code generation. Basement/parking levels may be negative."
+msgstr "المستوى الرقمي المستخدم للترتيب ولتوليد رموز الوحدات. وقد تكون مستويات القبو والمواقف بالسالب."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__occupancy_rate
+msgid "Occupied %"
+msgstr "٪ المشغول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__office
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__office
+msgid "Office"
+msgstr "مكتب"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_installment__trigger__booking
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_plan_line__trigger__booking
+msgid "On Booking"
+msgstr "عند الحجز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_installment__trigger__handover
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_plan_line__trigger__handover
+msgid "On Handover"
+msgstr "عند التسليم"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_development__state__on_hold
+msgid "On Hold"
+msgstr "محجوز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_generate_wizard_form
+msgid "One unit is created per selected floor, named\n                    &lt;prefix&gt;&lt;floor number&gt;&lt;suffix&gt; -- e.g. A, floor\n                    12, suffix 01 becomes A1201."
+msgstr "تُنشأ وحدة واحدة لكل طابق محدد، باسم &lt;البادئة&gt;&lt;رقم الطابق&gt;&lt;اللاحقة&gt; — مثلاً A مع الطابق 12 واللاحقة 01 تصبح A1201."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "Only a cancelled handover can be reopened."
+msgstr "لا يمكن إعادة فتح سوى تسليم ملغى."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "Only a cancelled or expired reservation can be reopened."
+msgstr "لا يمكن إعادة فتح سوى حجز ملغى أو منتهٍ."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "Only a confirmed reservation can be converted to a sale."
+msgstr "لا يمكن تحويل سوى حجز مؤكد إلى بيع."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_commission.py:0
+msgid "Only a draft commission can be approved."
+msgstr "لا يمكن اعتماد سوى عمولة في حالة مسودة."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "Only a draft handover can be scheduled."
+msgstr "لا يمكن جدولة سوى تسليم في حالة مسودة."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "Only a draft reservation can be confirmed."
+msgstr "لا يمكن تأكيد سوى حجز في حالة مسودة."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "Only a handover under inspection can be marked ready."
+msgstr "لا يمكن تعليم سوى تسليم قيد المعاينة كجاهز."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "Only a held cheque can be deposited."
+msgstr "لا يمكن إيداع سوى شيك محفوظ."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "Only a scheduled handover can move to inspection."
+msgstr "لا ينتقل إلى المعاينة سوى تسليم مجدول."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_payment_plan_line__offset_days
+msgid "Only used when the trigger is 'Days After Booking'."
+msgstr "يُستخدم فقط عندما يكون المُشغِّل \"أيام بعد الحجز\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover_snag__state__open
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_lead__state__open
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__open_snag_count
+msgid "Open Snag Count"
+msgstr "عدد الملاحظات المفتوحة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_list
+msgid "Open Snags"
+msgstr "ملاحظات مفتوحة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__orientation
+msgid "Orientation"
+msgstr "الاتجاه"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__lead_id
+msgid "Originating Lead"
+msgstr "العميل المحتمل الأصلي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__other
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__other
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__other
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Outcome"
+msgstr "النتيجة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_list
+msgid "Outstanding"
+msgstr "مستحق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__amount_residual
+msgid "Outstanding Balance"
+msgstr "الرصيد المستحق"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Overdue"
+msgstr "متأخر"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__overdue_count
+msgid "Overdue Count"
+msgstr "عدد المتأخرات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__owner_id
+msgid "Owner"
+msgstr "المالك"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__owner_occupied
+msgid "Owner Occupied"
+msgstr "مشغولة من المالك"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_commission__state__paid
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_installment__state__paid
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Paid"
+msgstr "مدفوع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__parking_ref
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__parking
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__parking
+msgid "Parking"
+msgstr "مواقف السيارات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__parking
+msgid "Parking Structure"
+msgstr "مبنى مواقف"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_installment__state__partial
+msgid "Partially Paid"
+msgstr "مدفوع جزئياً"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__passport
+msgid "Passport"
+msgstr "جواز السفر"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__payment_date
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__payment_date
+msgid "Payment Date"
+msgstr "تاريخ الدفع"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_payment_installment
+msgid "Payment Installment"
+msgstr "قسط الدفع"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_payment_plan
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__payment_plan_id
+msgid "Payment Plan"
+msgstr "خطة الدفع"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_payment_plan_line
+msgid "Payment Plan Milestone"
+msgstr "مرحلة خطة الدفع"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_payment_plan
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_payment_plans
+msgid "Payment Plans"
+msgstr "خطط الدفع"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Payment Schedule"
+msgstr "جدول الدفعات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_payment_installment__state__pending
+msgid "Pending"
+msgstr "معلق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__penthouse
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__penthouse
+msgid "Penthouse"
+msgstr "بنتهاوس"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__percentage
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__percentage
+msgid "Percentage"
+msgstr "النسبة المئوية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__phone
+msgid "Phone"
+msgstr "الهاتف"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__plan_id
+msgid "Plan"
+msgstr "الخطة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__planned
+msgid "Planned"
+msgstr "مخطط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__planned_floor_count
+msgid "Planned Floors"
+msgstr "الطوابق المخططة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_development__state__planning
+msgid "Planning"
+msgstr "التخطيط"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__access_url
+msgid "Portal Access URL"
+msgstr "رابط الوصول للبوابة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "Portfolio Health"
+msgstr "صحة المحفظة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Position"
+msgstr "الموضع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__power_of_attorney
+msgid "Power of Attorney"
+msgstr "وكالة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit_generate_wizard__code_prefix
+msgid "Prepended to the floor number, e.g. \"A\" for Tower A."
+msgstr "تُضاف قبل رقم الطابق، مثل \"A\" للبرج أ."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__price_per_sqft
+msgid "Price Per Sqft"
+msgstr "السعر لكل قدم مربع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_type_form
+msgid "Pricing"
+msgstr "التسعير"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__marketing_image
+msgid "Primary client-facing photograph used on the unit overview."
+msgstr "الصورة الأساسية الموجهة للعميل والمستخدمة في نظرة الوحدة العامة."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__priority
+msgid "Priority"
+msgstr "الأولوية"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_property_document
+msgid "Property Document"
+msgstr "مستند عقاري"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_res_partner__broker_commission_rate
+#: model:ir.model.fields,help:majal_real_estate.field_res_users__broker_commission_rate
+msgid "Proposed on new reservations; can be overridden per deal."
+msgstr "يُقترح على الحجوزات الجديدة، ويمكن تجاوزه لكل صفقة."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Rate %"
+msgstr "٪ المعدل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__rate
+msgid "Rate (%)"
+msgstr "المعدل (٪)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__rating_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__rating_ids
+msgid "Ratings"
+msgstr "التقييمات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover__state__ready
+msgid "Ready for Handover"
+msgstr "جاهزة للتسليم"
+
+#. module: majal_real_estate
+#: model:ir.module.category,name:majal_real_estate.module_category_majal_real_estate
+msgid "Real Estate"
+msgstr "العقارات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_res_partner__is_majal_broker
+#: model:ir.model.fields,field_description:majal_real_estate.field_res_users__is_majal_broker
+msgid "Real Estate Broker"
+msgstr "وسيط عقاري"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_building
+msgid "Real Estate Building"
+msgstr "مبنى عقاري"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_community
+msgid "Real Estate Community"
+msgstr "مجمع عقاري"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_development
+msgid "Real Estate Development"
+msgstr "مشروع عقاري"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_floor
+msgid "Real Estate Floor"
+msgstr "طابق عقاري"
+
+#. module: majal_real_estate
+#: model:res.groups,name:majal_real_estate.group_majal_real_estate_manager
+msgid "Real Estate Manager"
+msgstr "مدير العقارات"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_unit
+msgid "Real Estate Unit"
+msgstr "وحدة عقارية"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_unit_type
+msgid "Real Estate Unit Type"
+msgstr "نوع وحدة عقارية"
+
+#. module: majal_real_estate
+#: model:res.groups,name:majal_real_estate.group_majal_real_estate_user
+msgid "Real Estate User"
+msgstr "مستخدم العقارات"
+
+#. module: majal_real_estate
+#: model:ir.actions.server,name:majal_real_estate.cron_expire_reservations_ir_actions_server
+msgid "Real Estate: expire lapsed reservations"
+msgstr "العقارات: إنهاء الحجوزات الساقطة"
+
+#. module: majal_real_estate
+#: model:ir.actions.server,name:majal_real_estate.cron_flag_expiring_documents_ir_actions_server
+msgid "Real Estate: flag expiring documents"
+msgstr "العقارات: تمييز المستندات المنتهية"
+
+#. module: majal_real_estate
+#: model_terms:ir.actions.act_window,help:majal_real_estate.action_majal_cheque
+msgid "Record a cheque"
+msgstr "تسجيل شيك"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__name
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__reference
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__name
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__partner_id
+msgid "Relates To"
+msgstr "يتعلق بـ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__reminder_days
+msgid "Reminder Days"
+msgstr "أيام التذكير"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+msgid "Renew"
+msgstr "تجديد"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_property_document.py:0
+msgid "Renewed Document"
+msgstr "المستند المجدد"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Reopen"
+msgstr "إعادة الفتح"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__reservation_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__reservation_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__reservation_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__reservation_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+msgid "Reservation"
+msgstr "الحجز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__reservation_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__reservation_count
+msgid "Reservation Count"
+msgstr "عدد الحجوزات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__reservation_date
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "Reservation Date"
+msgstr "تاريخ الحجز"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__reservation_fee
+msgid "Reservation Fee"
+msgstr "رسوم الحجز"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_lead.py:0
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_reservation
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__reservation_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__reservation_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_reservations
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Reservations"
+msgstr "الحجوزات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "Reserve a Unit"
+msgstr "حجز وحدة"
+
+#. module: majal_real_estate
+#: model_terms:ir.actions.act_window,help:majal_real_estate.action_majal_reservation
+msgid "Reserve a unit for a buyer"
+msgstr "احجز وحدة لمشترٍ"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__reserved
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Reserved"
+msgstr "محجوز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+msgid "Reserved On"
+msgstr "حُجزت في"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "Reset"
+msgstr "إعادة تعيين"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__visa
+msgid "Residence Visa"
+msgstr "تأشيرة الإقامة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__activity_user_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__activity_user_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__activity_user_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__activity_user_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__activity_user_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__retail
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__retail
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__retail
+msgid "Retail"
+msgstr "تجزئة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "Return to Drawer"
+msgstr "إعادة إلى الساحب"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_cheque__state__returned
+msgid "Returned"
+msgstr "مُعاد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسالة النصية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__sale_agreement
+msgid "Sale Agreement"
+msgstr "اتفاقية البيع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__sale_price
+msgid "Sale Price"
+msgstr "سعر البيع"
+
+#. module: majal_real_estate
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_sales
+msgid "Sales"
+msgstr "المبيعات"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_lead
+msgid "Sales Lead"
+msgstr "عميل محتمل"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__user_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__user_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+msgid "Salesperson"
+msgstr "مندوب المبيعات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__installment_ids
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Schedule"
+msgstr "الجدول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover__state__scheduled
+msgid "Scheduled"
+msgstr "مجدول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__scheduled_date
+msgid "Scheduled Date"
+msgstr "التاريخ المجدول"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__access_token
+msgid "Security Token"
+msgstr "رمز الأمان"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__sequence
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead_stage__sequence
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__sequence
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_lead.py:0
+msgid "Set a contact on %s before reserving a unit for them."
+msgstr "حدد جهة اتصال على %s قبل حجز وحدة له."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_handover.py:0
+msgid "Set a scheduled date before scheduling the handover."
+msgstr "حدد تاريخاً مجدولاً قبل جدولة التسليم."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_reservation.py:0
+msgid "Set the agreed price on %s before generating a schedule."
+msgstr "حدد السعر المتفق عليه على %s قبل توليد الجدول."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__owner_id
+msgid "Set when the unit is handed over; who owns it now, as opposed to who is developing or selling it."
+msgstr "يُضبط عند تسليم الوحدة؛ من يملكها الآن، بخلاف من يطورها أو يبيعها."
+
+#. module: majal_real_estate
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_config
+msgid "Settings"
+msgstr "الإعدادات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "Settles"
+msgstr "يسدد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__severity
+msgid "Severity"
+msgstr "الخطورة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_payment_plan_line__percentage
+msgid "Share of the agreed price due at this milestone."
+msgstr "حصة السعر المتفق عليه المستحقة في هذه المرحلة."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_building__code
+msgid "Short code used as the unit-numbering prefix within this building, e.g. \"A\"."
+msgstr "رمز مختصر يُستخدم بادئةً لترقيم الوحدات داخل هذا المبنى، مثل \"A\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__code
+msgid "Short code used as the unit-numbering prefix, e.g. MH."
+msgstr "رمز مختصر يُستخدم بادئةً لترقيم الوحدات، مثل MH."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__name
+msgid "Snag"
+msgstr "ملاحظة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__snag_count
+msgid "Snag Count"
+msgstr "عدد الملاحظات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__snag_ids
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Snag List"
+msgstr "قائمة الملاحظات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__sold
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Sold"
+msgstr "مباعة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__sold_rate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_list
+msgid "Sold %"
+msgstr "٪ المباع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__sold_unit_count
+msgid "Sold Unit Count"
+msgstr "عدد الوحدات المباعة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__source
+msgid "Source"
+msgstr "المصدر"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__stage_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+msgid "Stage"
+msgstr "المرحلة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Start Inspection"
+msgstr "بدء المعاينة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__state
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__status
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_reservation_page
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__activity_state
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__activity_state
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__activity_state
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__activity_state
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__activity_state
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "الحالة بناءً على الأنشطة\nمتأخر: تجاوز تاريخ الاستحقاق\nاليوم: تاريخ النشاط هو اليوم\nمخطط: أنشطة مستقبلية."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__storage
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__storage
+msgid "Storage"
+msgstr "مستودع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__studio
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__studio
+msgid "Studio"
+msgstr "استوديو"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__suite_area
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__suite_area
+msgid "Suite Area (sqft)"
+msgstr "مساحة الجناح (قدم مربع)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__tenancy_contract
+msgid "Tenancy Contract"
+msgstr "عقد الإيجار"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__installment_id
+msgid "The buyer instalment this cheque settles, if any."
+msgstr "قسط المشتري الذي يسدده هذا الشيك، إن وُجد."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__active_reservation_id
+msgid "The confirmed reservation currently holding this unit, if any."
+msgstr "الحجز المؤكد الذي يحجز هذه الوحدة حالياً، إن وُجد."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_payment_plan.py:0
+msgid "The milestones of %(plan)s add up to %(total).2f%%, not 100%%."
+msgstr "مجموع مراحل %(plan)s هو %(total).2f%%، وليس 100%%."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+msgid "There are no reserved units in your name yet."
+msgstr "لا توجد وحدات محجوزة باسمك بعد."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/wizards/majal_unit_generate_wizard.py:0
+msgid "These unit codes already exist in %(building)s: %(codes)s. Change the code prefix/suffix or remove those floors before generating."
+msgstr "رموز الوحدات هذه موجودة بالفعل في %(building)s: %(codes)s. غيّر بادئة الرمز أو لاحقته، أو أزل تلك الطوابق قبل التوليد."
+
+#. module: majal_real_estate
+#: model:ir.model.constraint,message:majal_real_estate.constraint_majal_commission_reservation_broker_uniq
+msgid "This broker already has a commission on this reservation."
+msgstr "لهذا الوسيط عمولة على هذا الحجز بالفعل."
+
+#. module: majal_real_estate
+#: model:ir.model.constraint,message:majal_real_estate.constraint_majal_building_code_development_uniq
+msgid "This building code is already used by another building in this development."
+msgstr "رمز المبنى هذا مستخدم بالفعل لمبنى آخر في هذا المشروع العقاري."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "This cheque bounced. Anything it had settled has been\n                        put back as outstanding."
+msgstr "ارتد هذا الشيك. وقد أُعيد كل ما كان قد سدده إلى المستحق."
+
+#. module: majal_real_estate
+#: model:ir.model.constraint,message:majal_real_estate.constraint_majal_cheque_number_partner_uniq
+msgid "This cheque number is already recorded for this drawer."
+msgstr "رقم الشيك هذا مسجل بالفعل لهذا الساحب."
+
+#. module: majal_real_estate
+#: model:ir.model.constraint,message:majal_real_estate.constraint_majal_development_code_company_uniq
+msgid "This development code is already used by another development in this company."
+msgstr "رمز المشروع العقاري هذا مستخدم بالفعل لمشروع آخر في هذه الشركة."
+
+#. module: majal_real_estate
+#: model:ir.model.constraint,message:majal_real_estate.constraint_majal_floor_number_building_uniq
+msgid "This floor number already exists in this building."
+msgstr "رقم الطابق هذا موجود بالفعل في هذا المبنى."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "This replaces the current schedule. Continue?"
+msgstr "سيحل هذا محل الجدول الحالي. هل تريد المتابعة؟"
+
+#. module: majal_real_estate
+#: model:ir.model.constraint,message:majal_real_estate.constraint_majal_unit_name_building_uniq
+msgid "This unit code already exists in this building."
+msgstr "رمز الوحدة هذا موجود بالفعل في هذا المبنى."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__title_deed
+msgid "Title Deed"
+msgstr "سند الملكية"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+msgid "To Approve"
+msgstr "للاعتماد"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_search
+msgid "To Pay"
+msgstr "للدفع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_commission_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_list
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_list
+msgid "Total"
+msgstr "الإجمالي"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_plan_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_plan_list
+msgid "Total %"
+msgstr "٪ الإجمالي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__total_area
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__total_area
+msgid "Total Area (sqft)"
+msgstr "المساحة الإجمالية (قدم مربع)"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan__total_percentage
+msgid "Total Percentage"
+msgstr "النسبة الإجمالية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__tower
+msgid "Tower"
+msgstr "برج"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__townhouse
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__townhouse
+msgid "Townhouse"
+msgstr "تاون هاوس"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__document_type__trade_licence
+msgid "Trade Licence"
+msgstr "الرخصة التجارية"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__trigger
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_plan_line__trigger
+msgid "Trigger"
+msgstr "المُشغِّل"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "Type"
+msgstr "النوع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__activity_exception_decoration
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__activity_exception_decoration
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__activity_exception_decoration
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__activity_exception_decoration
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__activity_exception_decoration
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط الاستثنائي على السجل."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__typical_price
+msgid "Typical Price"
+msgstr "السعر النموذجي"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__under_contract
+msgid "Under Contract"
+msgstr "تحت العقد"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__under_maintenance
+msgid "Under Maintenance"
+msgstr "تحت الصيانة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__unit_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__unit_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__unit_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover_snag__unit_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_payment_installment__unit_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__unit_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__unit_id
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_reservations
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__unit_category
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__unit_category
+msgid "Unit Category"
+msgstr "فئة الوحدة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_generate_wizard_form
+msgid "Unit Code Pattern"
+msgstr "نمط رمز الوحدة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__unit_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__unit_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__unit_count
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__unit_count
+msgid "Unit Count"
+msgstr "عدد الوحدات"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_handover
+msgid "Unit Handover"
+msgstr "تسليم وحدة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__marketing_image
+msgid "Unit Photography"
+msgstr "تصوير الوحدة"
+
+#. module: majal_real_estate
+#: model:ir.model,name:majal_real_estate.model_majal_reservation
+msgid "Unit Reservation"
+msgstr "حجز وحدة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__unit_type_id
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_generate_wizard__unit_type_id
+msgid "Unit Type"
+msgstr "نوع الوحدة"
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_unit_type
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__unit_type_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_unit_types
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "Unit Types"
+msgstr "أنواع الوحدات"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__name
+msgid "Unit code, e.g. \"A-1204\"."
+msgstr "رمز الوحدة، مثل \"A-1204\"."
+
+#. module: majal_real_estate
+#: model:ir.actions.act_window,name:majal_real_estate.action_majal_unit
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_building__unit_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__unit_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_floor__unit_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit_type__unit_ids
+#: model:ir.ui.menu,name:majal_real_estate.menu_majal_real_estate_units
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_building_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_floor_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_type_form
+msgid "Units"
+msgstr "الوحدات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_installment_search
+msgid "Unpaid"
+msgstr "غير مدفوع"
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_cheque.py:0
+msgid "Unsupported search on Due."
+msgstr "بحث غير مدعوم على المستحق."
+
+#. module: majal_real_estate
+#. odoo-python
+#: code:addons/majal_real_estate/models/majal_payment_installment.py:0
+msgid "Unsupported search on Overdue."
+msgstr "بحث غير مدعوم على المتأخر."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__expected_handover_date
+msgid "Used to date payment milestones that fall due on handover."
+msgstr "يُستخدم لتأريخ مراحل الدفع المستحقة عند التسليم."
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__status__vacant
+msgid "Vacant"
+msgstr "شاغرة"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_property_document__state__valid
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_search
+msgid "Valid"
+msgstr "سارٍ"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+msgid "Validity"
+msgstr "السريان"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_handover_snag__state__verified
+msgid "Verified"
+msgstr "مُتحقق منه"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "Verify"
+msgstr "تحقق"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__view
+msgid "View"
+msgstr "عرض"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__villa
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__villa
+msgid "Villa"
+msgstr "فيلا"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_building__building_type__villa_block
+msgid "Villa / Townhouse Block"
+msgstr "مجمع فلل / تاون هاوس"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit__unit_category__warehouse
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_unit_type__unit_category__warehouse
+msgid "Warehouse"
+msgstr "مستودع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__meter_water
+msgid "Water Meter Reading"
+msgstr "قراءة عداد المياه"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_cheque__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_commission__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_development__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_handover__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_lead__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_property_document__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_reservation__website_message_ids
+#: model:ir.model.fields,field_description:majal_real_estate.field_majal_unit__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_commission__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_development__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_property_document__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_reservation__website_message_ids
+#: model:ir.model.fields,help:majal_real_estate.field_majal_unit__website_message_ids
+msgid "Website communication history"
+msgstr "سجل مراسلات الموقع"
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_handover_snag__location
+msgid "Where in the unit, e.g. \"Master bedroom\"."
+msgstr "أين في الوحدة، مثل \"غرفة النوم الرئيسية\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_lead__source
+msgid "Where the enquiry came from, e.g. \"Website\", \"Walk-in\"."
+msgstr "من أين جاء الاستفسار، مثل \"الموقع الإلكتروني\"، \"زيارة مباشرة\"."
+
+#. module: majal_real_estate
+#: model:ir.model.fields,help:majal_real_estate.field_majal_cheque__partner_id
+msgid "Whoever signed the cheque, which is not always the buyer or tenant it pays for."
+msgstr "من وقّع الشيك، وليس دائماً المشتري أو المستأجر الذي يُدفع عنه."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_reservation_form
+msgid "Why was this reservation cancelled?"
+msgstr "لماذا أُلغي هذا الحجز؟"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_search
+msgid "With Open Snags"
+msgstr "عليها ملاحظات مفتوحة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_search
+msgid "With the Bank"
+msgstr "لدى البنك"
+
+#. module: majal_real_estate
+#: model:ir.model.fields.selection,name:majal_real_estate.selection__majal_lead__state__won
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_kanban
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_search
+msgid "Won"
+msgstr "فوز"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.portal_my_home_reservation
+msgid "Your reserved units and payment schedule"
+msgstr "وحداتك المحجوزة وجدول الدفعات"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_kanban
+msgid "bed"
+msgstr "غرفة"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "bedrooms ·"
+msgstr "غرف نوم ·"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_cheque_form
+msgid "e.g. 000451"
+msgstr "مثال: 000451"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_type_form
+msgid "e.g. 1BR Type A"
+msgstr "مثال: غرفة نوم واحدة نوع A"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_payment_plan_form
+msgid "e.g. 20/50/30 Construction Linked"
+msgstr "مثال: 20/50/30 مرتبطة بالإنشاء"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_lead_form
+msgid "e.g. 2BR enquiry - Marina Heights"
+msgstr "مثال: استفسار غرفتي نوم - مرتفعات المارينا"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "e.g. A-1204"
+msgstr "مثال: A-1204"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_floor_form
+msgid "e.g. Floor 12"
+msgstr "مثال: الطابق 12"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_development_form
+msgid "e.g. Marina Heights"
+msgstr "مثال: مرتفعات المارينا"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_property_document_form
+msgid "e.g. Tenancy contract 2026"
+msgstr "مثال: عقد إيجار 2026"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_building_form
+msgid "e.g. Tower A"
+msgstr "مثال: البرج أ"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "of 9"
+msgstr "من 9"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_handover_form
+msgid "snag(s) still to be fixed and verified before this unit\n                        can be handed over."
+msgstr "ملاحظة/ملاحظات ما زالت بحاجة إلى إصلاح وتحقق قبل أن يمكن تسليم هذه الوحدة."
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "sq ft"
+msgstr "قدم مربع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_kanban
+msgid "sqft"
+msgstr "قدم مربع"
+
+#. module: majal_real_estate
+#: model_terms:ir.ui.view,arch_db:majal_real_estate.view_majal_unit_form
+msgid "view"
+msgstr "عرض"

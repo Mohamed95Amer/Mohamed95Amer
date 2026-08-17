@@ -1,0 +1,503 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_listing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__a
+msgid "A"
+msgstr "أ"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Archive"
+msgstr "أرشفة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__state__archived
+msgid "Archived"
+msgstr "مؤرشف"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__available_from
+msgid "Available From"
+msgstr "متاح اعتباراً من"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__b
+msgid "B"
+msgstr "ب"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__bathrooms
+msgid "Bathrooms"
+msgstr "دورات المياه"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__bedrooms
+msgid "Bedrooms"
+msgstr "غرف النوم"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__c
+msgid "C"
+msgstr "ج"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__image_1920
+msgid "Cover Image"
+msgstr "صورة الغلاف"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__d
+msgid "D"
+msgstr "د"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__description
+msgid "Description"
+msgstr "الوصف"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__description_ar
+msgid "Description (Arabic)"
+msgstr "الوصف (بالعربية)"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__development_id
+msgid "Development"
+msgstr "المشروع العقاري"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__e
+msgid "E"
+msgstr "هـ"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__view
+msgid "E.g. \"Marina\", \"Garden\"."
+msgstr "مثال: \"المارينا\"، \"الحديقة\"."
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__orientation
+msgid "E.g. \"NW\"."
+msgstr "مثال: \"شمال غربي\"."
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__parking_ref
+msgid "E.g. \"P2-144\"."
+msgstr "مثال: \"P2-144\"."
+
+#. module: majal_property_listing
+#: model:ir.model.constraint,message:majal_property_listing.constraint_majal_property_listing_unit_unique
+msgid "Each unit can have one active listing."
+msgstr "لكل وحدة إعلان نشط واحد فقط."
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__energy_rating
+msgid "Energy Rating"
+msgstr "تصنيف الطاقة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__f
+msgid "F"
+msgstr "و"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__featured
+msgid "Featured"
+msgstr "مميز"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (الشركاء)"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة Font Awesome مثل fa-tasks"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__energy_rating__g
+msgid "G"
+msgstr "ز"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "أيقونة للدلالة على نشاط استثنائي."
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "عند التحديد، تتطلب الرسائل الجديدة انتباهك."
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__message_has_error
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "عند التحديد، توجد رسائل بها خطأ في التسليم."
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Internal Notes"
+msgstr "ملاحظات داخلية"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Listing"
+msgstr "الإعلان"
+
+#. module: majal_property_listing
+#: model:res.groups,name:majal_property_listing.group_majal_property_listing_manager
+msgid "Listing Manager"
+msgstr "مدير الإعلانات"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__listing_price
+msgid "Listing Price"
+msgstr "سعر الإعلان"
+
+#. module: majal_property_listing
+#: model:res.groups,name:majal_property_listing.group_majal_property_listing_user
+msgid "Listing User"
+msgstr "مستخدم الإعلانات"
+
+#. module: majal_property_listing
+#: model:ir.ui.menu,name:majal_property_listing.menu_majal_property_listings
+msgid "Listings"
+msgstr "الإعلانات"
+
+#. module: majal_property_listing
+#: model:ir.model,name:majal_property_listing.model_majal_property_listing
+msgid "Majal Property Listing"
+msgstr "إعلان عقاري في مجال"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Marina Heights — Tower A 1601"
+msgstr "مرتفعات المارينا — البرج أ 1601"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسالة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطي"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__notes
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب إجراءً"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل ذات خطأ التسليم"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__orientation
+msgid "Orientation"
+msgstr "الاتجاه"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__original_price
+msgid "Original Price"
+msgstr "السعر الأصلي"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__parking_ref
+msgid "Parking"
+msgstr "مواقف السيارات"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Pause"
+msgstr "إيقاف مؤقت"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__state__paused
+msgid "Paused"
+msgstr "موقوف مؤقتاً"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__state__review
+msgid "Pending Review"
+msgstr "بانتظار المراجعة"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Pricing"
+msgstr "التسعير"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Property Listing"
+msgstr "إعلان عقاري"
+
+#. module: majal_property_listing
+#: model:ir.actions.act_window,name:majal_property_listing.action_majal_property_listing
+#: model:ir.module.category,name:majal_property_listing.module_category_majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_list
+msgid "Property Listings"
+msgstr "الإعلانات العقارية"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Public Content"
+msgstr "المحتوى العام"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__public_title
+msgid "Public Title"
+msgstr "العنوان العام"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__public_title_ar
+msgid "Public Title (Arabic)"
+msgstr "العنوان العام (بالعربية)"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__public_url
+msgid "Public URL"
+msgstr "الرابط العام"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Publish"
+msgstr "نشر"
+
+#. module: majal_property_listing
+#: model:ir.model.fields.selection,name:majal_property_listing.selection__majal_property_listing__state__published
+msgid "Published"
+msgstr "منشور"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__published_date
+msgid "Published Date"
+msgstr "تاريخ النشر"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__rating_ids
+msgid "Ratings"
+msgstr "التقييمات"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Reopen"
+msgstr "إعادة الفتح"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسالة النصية"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "الحالة بناءً على الأنشطة\nمتأخر: تجاوز تاريخ الاستحقاق\nاليوم: تاريخ النشاط هو اليوم\nمخطط: أنشطة مستقبلية."
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Submit for Review"
+msgstr "إرسال للمراجعة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__total_area
+msgid "Total Area (sqft)"
+msgstr "المساحة الإجمالية (قدم مربع)"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط الاستثنائي على السجل."
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__unit_id
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: majal_property_listing
+#: model_terms:ir.ui.view,arch_db:majal_property_listing.view_majal_property_listing_form
+msgid "Unit Details"
+msgstr "تفاصيل الوحدة"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__view
+msgid "View"
+msgstr "عرض"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,field_description:majal_property_listing.field_majal_property_listing__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع"
+
+#. module: majal_property_listing
+#: model:ir.model.fields,help:majal_property_listing.field_majal_property_listing__website_message_ids
+msgid "Website communication history"
+msgstr "سجل مراسلات الموقع"
