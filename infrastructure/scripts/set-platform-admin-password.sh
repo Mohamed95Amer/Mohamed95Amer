@@ -25,7 +25,10 @@ password="$(printf '%s' "$password_b64" | base64 --decode)" || die "Invalid pass
 LC_ALL=C
 [[ "$password" != *[[:space:]]* ]] || die "The password cannot contain spaces."
 [[ "$password" != *"'"* ]] || die "The password cannot contain apostrophes."
-[[ "$password" != *'\'* ]] || die "The password cannot contain backslashes."
+# Bracket expression rather than a quoted backslash: the two match the same
+# thing, but shellcheck reads the quoted form as a mis-escaped apostrophe
+# (SC1003) and the bracket form says "a literal backslash" unambiguously.
+[[ "$password" != *[\\]* ]] || die "The password cannot contain backslashes."
 [[ "$password" != *[![:print:]]* ]] || die "Use printable English characters only."
 
 tmp="${ENV_FILE}.tmp.$$"

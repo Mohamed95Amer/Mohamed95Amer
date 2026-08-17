@@ -27,8 +27,13 @@ compose_demo() {
 }
 
 [[ "$EUID" -eq 0 ]] || die "Run as root."
-[[ "$TTL_MINUTES" =~ ^[0-9]+$ ]] && (( TTL_MINUTES >= 15 && TTL_MINUTES <= 240 )) || \
+# Spelled out rather than `A && B || die`: in that form the die also runs
+# when A succeeds and B fails, which happens to be right here but reads as
+# an if-then-else and is not one (SC2015). One wrong edit away from a demo
+# that never expires.
+if ! [[ "$TTL_MINUTES" =~ ^[0-9]+$ ]] || (( TTL_MINUTES < 15 || TTL_MINUTES > 240 )); then
     die "TTL_MINUTES must be between 15 and 240."
+fi
 [[ "$DEMO_DOMAIN" =~ ^[a-z0-9.-]+$ ]] || die "Invalid demo domain."
 [[ -f "$COMPOSE_FILE" && -f "$ENV_FILE" ]] || die "Platform Compose or environment file is missing."
 command -v docker >/dev/null || die "Docker is required."
