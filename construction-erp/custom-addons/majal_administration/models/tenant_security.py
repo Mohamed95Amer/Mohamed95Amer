@@ -183,6 +183,63 @@ FACILITY_SCOPE_ONLY_MODELS = {
     "facility.parts.summary",
 }
 
+PROPERTY_COMPANY_MODELS = {
+    "majal.development": "company_id",
+    "majal.community": "company_id",
+    "majal.building": "company_id",
+    "majal.floor": "company_id",
+    "majal.unit": "company_id",
+    "majal.unit.type": "company_id",
+    "majal.lead": "company_id",
+    "majal.reservation": "company_id",
+    "majal.payment.plan": "company_id",
+    "majal.payment.installment": "company_id",
+    "majal.cheque": "company_id",
+    "majal.commission": "company_id",
+    "majal.handover": "company_id",
+    "majal.property.document": "company_id",
+    "majal.lease": "company_id",
+    "majal.lease.rent.line": "company_id",
+    "majal.lease.inspection": "company_id",
+    "majal.maintenance.request": "company_id",
+    "majal.owner.statement": "company_id",
+    "majal.service.charge.budget": "company_id",
+    "majal.property.listing": "company_id",
+}
+
+# Shared configuration rather than tenant data -- a pipeline stage belongs to
+# the workspace, not to a company, and has no company_id to scope by. It is
+# still gated on workspace access: a construction user has no use for the
+# property sales pipeline's stage list, and _majal_validate_field_path is
+# what caught this one being mistakenly listed as company-scoped above.
+PROPERTY_SCOPE_ONLY_MODELS = {
+    "majal.lead.stage",
+}
+
+# Which workspace-access values grant each suite.
+#
+# Allow-lists, not deny-lists, and that is the whole point. Every rule used to
+# test one literal string -- construction models excluded 'facilities' and
+# nothing else, facility models excluded 'construction' and nothing else -- so
+# when the Property merge added `real_estate` and `property_facilities` to the
+# selection, both new values fell through every exclusion and silently granted
+# the construction and facilities registers to a user set to Property. A
+# deny-list keyed on one string cannot survive the enum growing; an allow-list
+# fails closed, which is the direction a tenancy boundary has to fail.
+CONSTRUCTION_SCOPES = ("construction", "both")
+FACILITY_SCOPES = ("facilities", "both", "property_facilities")
+PROPERTY_SCOPES = ("real_estate", "property_facilities", "both")
+
+
+def _scope_gate(scopes):
+    """Opening half of the rule: match nothing unless the scope allows it.
+
+    Shaped to be followed by `else (...)`, so it drops into the existing
+    domains where the literal comparison used to sit.
+    """
+    return "([(0, '=', 1)] if user.majal_industry_scope not in %r " % (
+        tuple(scopes),)
+
 
 class ProjectProject(models.Model):
     _inherit = "project.project"
@@ -347,7 +404,8 @@ class ResUsersTenantSecurity(models.Model):
         members = "('project_id.majal_member_ids', 'in', [user.id])"
         return (
             "[(1, '=', 1)] if user.share else "
-            f"([{mine}] if user.majal_industry_scope == 'facilities' else "
+            f"([{mine}] if user.majal_industry_scope not in "
+            f"{CONSTRUCTION_SCOPES!r} else "
             f"(['|', {mine}, {company}] "
             "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
             f"['|', {mine}, '&', {company}, '|', {manager}, {members}]))"
@@ -396,8 +454,8 @@ class ResUsersTenantSecurity(models.Model):
                 allowed = f"[('is_construction', '=', True)] + ({allowed})"
             domain = (
                 "[(1, '=', 1)] if user.share else "
-                "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
-                f"else ({allowed}))"
+                + _scope_gate(CONSTRUCTION_SCOPES)
+                + f"else ({allowed}))"
             )
             if model_name == "project.task":
                 domain = self._majal_task_domain()
@@ -418,8 +476,8 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
-                f"else ['|', ('{company_path}', '=', False), "
+                + _scope_gate(CONSTRUCTION_SCOPES)
+                + f"else ['|', ('{company_path}', '=', False), "
                 f"('{company_path}', 'in', company_ids)])",
             )
 
@@ -431,8 +489,8 @@ class ResUsersTenantSecurity(models.Model):
                 self._majal_validate_field_path(model_name, path)
             domain = (
                 "[(1, '=', 1)] if user.share else "
-                "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
-                "else ("
+                + _scope_gate(CONSTRUCTION_SCOPES)
+                + "else ("
                 f"[('{company_path}', 'in', company_ids)] "
                 "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
                 f"[('{company_path}', 'in', company_ids), '|', "
@@ -449,8 +507,8 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
-                f"else [('{company_path}', 'in', company_ids)])",
+                + _scope_gate(FACILITY_SCOPES)
+                + f"else [('{company_path}', 'in', company_ids)])",
             )
 
         for model_name, configuration in FACILITY_ASSIGNMENT_MODELS.items():
@@ -476,8 +534,8 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal tenant: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
-                f"else ([('{company_path}', 'in', company_ids)] "
+                + _scope_gate(FACILITY_SCOPES)
+                + f"else ([('{company_path}', 'in', company_ids)] "
                 f"if (not user.majal_role_id or user.majal_role_id.rank >= 40) else {restricted}))",
             )
 
@@ -486,8 +544,39 @@ class ResUsersTenantSecurity(models.Model):
                 f"Majal workspace: {model_name}",
                 model_name,
                 "[(1, '=', 1)] if user.share else "
-                "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
-                "else [(1, '=', 1)])",
+                + _scope_gate(FACILITY_SCOPES)
+                + "else [(1, '=', 1)])",
+            )
+
+        # Property carries its own company rules, which are correct as far as
+        # they go. What they cannot express is workspace access: a user set to
+        # Construction has no business in the unit inventory, and only this
+        # module knows about majal_industry_scope. Odoo ANDs global rules, so
+        # this narrows the property module's own rule rather than replacing
+        # it -- the company boundary still holds even if this one is removed.
+        for model_name, company_path in PROPERTY_COMPANY_MODELS.items():
+            if model_name not in self.env:
+                # Property is optional: the platform installs without it, and
+                # a rule naming a model that does not exist fails the upgrade.
+                continue
+            self._majal_validate_field_path(model_name, company_path)
+            self._majal_upsert_rule(
+                f"Majal tenant: {model_name}",
+                model_name,
+                "[(1, '=', 1)] if user.share else "
+                + _scope_gate(PROPERTY_SCOPES)
+                + f"else [('{company_path}', 'in', company_ids)])",
+            )
+
+        for model_name in PROPERTY_SCOPE_ONLY_MODELS:
+            if model_name not in self.env:
+                continue
+            self._majal_upsert_rule(
+                f"Majal workspace: {model_name}",
+                model_name,
+                "[(1, '=', 1)] if user.share else "
+                + _scope_gate(PROPERTY_SCOPES)
+                + "else [(1, '=', 1)])",
             )
 
         self._majal_install_approval_rules()
