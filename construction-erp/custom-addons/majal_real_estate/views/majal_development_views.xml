@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_development_list" model="ir.ui.view">
+        <field name="name">majal.development.list</field>
+        <field name="model">majal.development</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="developer_id"/>
+                <field name="city"/>
+                <field name="state" widget="badge"/>
+                <field name="community_count"/>
+                <field name="building_count"/>
+                <field name="unit_count"/>
+                <field name="sold_rate" widget="progressbar" string="Sold %"/>
+                <field name="collection_rate" widget="progressbar" string="Collected %"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_development_form" model="ir.ui.view">
+        <field name="name">majal.development.form</field>
+        <field name="model">majal.development</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planning,active,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_buildings" type="object"
+                                class="oe_stat_button" icon="fa-building-o">
+                            <field name="building_count" widget="statinfo" string="Buildings"/>
+                        </button>
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <field name="unit_count" widget="statinfo" string="Units"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Marina Heights"/></h1>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="code"/>
+                            <field name="developer_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Location">
+                            <field name="city"/>
+                            <field name="country_id"/>
+                            <field name="land_area"/>
+                            <field name="expected_handover_date"/>
+                        </group>
+                    </group>
+                    <group string="Portfolio Health" name="health">
+                        <group>
+                            <field name="sold_rate" widget="progressbar"/>
+                            <field name="occupancy_rate" widget="progressbar"/>
+                            <field name="collection_rate" widget="progressbar"/>
+                        </group>
+                        <group>
+                            <field name="available_unit_count"/>
+                            <field name="sold_unit_count"/>
+                            <field name="amount_sold"/>
+                            <field name="amount_collected"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Communities" name="communities">
+                            <field name="community_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="building_count"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Unit Types" name="unit_types">
+                            <field name="unit_type_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="unit_category"/>
+                                    <field name="bedrooms"/>
+                                    <field name="bathrooms"/>
+                                    <field name="total_area"/>
+                                    <field name="typical_price"/>
+                                    <field name="unit_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_development" model="ir.actions.act_window">
+        <field name="name">Developments</field>
+        <field name="res_model">majal.development</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

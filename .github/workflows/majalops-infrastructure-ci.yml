@@ -1,0 +1,120 @@
+name: MajalOps Infrastructure CI
+
+on:
+  push:
+    paths:
+      - "infrastructure/**"
+      - ".github/workflows/majalops-*.yml"
+  pull_request:
+    paths:
+      - "infrastructure/**"
+      - ".github/workflows/majalops-*.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install static validators
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --no-install-recommends shellcheck
+
+      - name: Validate shell scripts
+        run: |
+          bash -n infrastructure/scripts/*.sh \
+            infrastructure/scripts/majalops-deploy \
+            infrastructure/scripts/majalops-ssh-command \
+            infrastructure/docker/platform-entrypoint.sh
+          shellcheck -x infrastructure/scripts/*.sh \
+            infrastructure/scripts/majalops-deploy \
+            infrastructure/scripts/majalops-ssh-command \
+            infrastructure/docker/platform-entrypoint.sh
+
+      - name: Parse PowerShell automation
+        shell: pwsh
+        run: |
+          $errors = @()
+          Get-ChildItem infrastructure/scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $parseErrors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile(
+              $_.FullName,
+              [ref]$tokens,
+              [ref]$parseErrors
+            )
+            $errors += $parseErrors
+          }
+          if ($errors.Count) {
+            $errors | Format-List
+            exit 1
+          }
+
+      - name: Validate Compose and isolation
+        env:
+          PROMETHEUS_IMAGE: prom/prometheus:latest
+          ALERTMANAGER_IMAGE: prom/alertmanager:latest
+          NODE_EXPORTER_IMAGE: prom/node-exporter:latest
+          POSTGRES_EXPORTER_IMAGE: prometheuscommunity/postgres-exporter:latest
+          BLACKBOX_EXPORTER_IMAGE: prom/blackbox-exporter:latest
+        run: |
+          docker compose \
+            --env-file infrastructure/docker/.env.example \
+            -f infrastructure/docker/compose.platform.example.yml \
+            -f infrastructure/monitoring/compose.monitoring.yml \
+            config --quiet
+          rendered="$(docker compose \
+            --env-file infrastructure/docker/.env.example \
+            -f infrastructure/docker/compose.platform.example.yml \
+            config)"
+          if grep -Eq 'published: "?(5432|8069)"?' <<<"$rendered"; then
+            echo "::error::PostgreSQL or Majal is published to the host"
+            exit 1
+          fi
+
+      - name: Validate Prometheus alert rules
+        run: |
+          docker run --rm \
+            -v "$PWD/infrastructure/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro" \
+            prom/prometheus:v3.13.2 \
+            promtool check rules /etc/prometheus/alerts.yml
+
+      - name: Validate Caddy configuration
+        run: |
+          mkdir -p "$RUNNER_TEMP/caddy-data"
+          docker run --rm \
+            -e MAJAL_DOMAIN=platform.majalops.com \
+            -e TLS_EMAIL=operations@majalops.com \
+            -e CADDY_LOG_PATH=/tmp/access.log \
+            -v "$PWD/infrastructure/caddy/Caddyfile.example:/etc/caddy/Caddyfile:ro" \
+            caddy:2.11.4-alpine \
+            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+
+      - name: Validate Dockerfile can resolve build context
+        run: |
+          test -f construction-erp/custom-addons/majal_branding/__manifest__.py
+          test -f construction-erp/scripts/docker-entrypoint-majal.sh
+          test -f infrastructure/docker/platform-entrypoint.sh
+          docker build --check \
+            --file infrastructure/docker/Dockerfile.platform .
+
+      - name: Check placeholders, secrets and whitespace
+        run: |
+          git diff --check
+          if grep -RInE '(BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,})' infrastructure; then
+            echo "::error::Possible committed secret"
+            exit 1
+          fi
+          if grep -RInE '\[[xX]\]' infrastructure/checklists; then
+            echo "::error::Checklist item was pre-completed"
+            exit 1
+          fi

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_building_list" model="ir.ui.view">
+        <field name="name">majal.building.list</field>
+        <field name="model">majal.building</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="development_id"/>
+                <field name="community_id"/>
+                <field name="building_type"/>
+                <field name="floor_count"/>
+                <field name="unit_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_building_form" model="ir.ui.view">
+        <field name="name">majal.building.form</field>
+        <field name="model">majal.building</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_floors" type="object"
+                                class="oe_stat_button" icon="fa-list-ol">
+                            <field name="floor_count" widget="statinfo" string="Floors"/>
+                        </button>
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <field name="unit_count" widget="statinfo" string="Units"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Tower A"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="development_id"/>
+                            <field name="community_id"/>
+                        </group>
+                        <group>
+                            <field name="building_type"/>
+                            <field name="planned_floor_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Floors" name="floors">
+                            <field name="floor_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="number"/>
+                                    <field name="unit_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_building" model="ir.actions.act_window">
+        <field name="name">Buildings</field>
+        <field name="res_model">majal.building</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -15,9 +15,11 @@
         "maintenance_equipment_contract",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "data/contract_cron.xml",
         "views/facility_contract_views.xml",
         "views/maintenance_request_views.xml",
+        "views/maintenance_equipment_views.xml",
         "views/contract_menus.xml",
     ],
     "demo": ["demo/contract_demo.xml"],

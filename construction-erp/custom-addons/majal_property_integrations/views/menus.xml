@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_property_connections"
+              name="Connections"
+              parent="majal_real_estate.menu_majal_real_estate_root"
+              sequence="85"
+              groups="majal_property_integrations.group_majal_property_integration_manager"/>
+    <menuitem id="menu_property_publications"
+              name="Channel Publications"
+              parent="menu_property_connections"
+              action="action_listing_publication"
+              sequence="10"/>
+    <menuitem id="menu_property_reminders"
+              name="Reminder Center"
+              parent="menu_property_connections"
+              action="action_property_notification"
+              sequence="20"/>
+    <menuitem id="menu_property_listing_channels"
+              name="Listing Channels"
+              parent="majal_real_estate.menu_majal_real_estate_config"
+              action="action_listing_channel"
+              sequence="80"
+              groups="majal_property_integrations.group_majal_property_integration_manager"/>
+    <menuitem id="menu_property_reminder_settings"
+              name="Reminder Policies"
+              parent="majal_real_estate.menu_majal_real_estate_config"
+              action="action_property_notification_settings"
+              sequence="81"
+              groups="majal_property_integrations.group_majal_property_integration_manager"/>
+</odoo>

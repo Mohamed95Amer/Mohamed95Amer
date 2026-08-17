@@ -136,3 +136,10 @@
         grid-template-columns: 1fr;
     }
 }
+// Legal/help pages are product pages, not editable website content. Suppress
+// the administrator editor ribbon only on these routes; the Website app keeps
+// its normal authoring toolbar everywhere else.
+body:has(.o_majal_help_page) .o_frontend_to_backend_nav,
+body:has(.o_majal_legal_page) .o_frontend_to_backend_nav {
+    display: none !important;
+}

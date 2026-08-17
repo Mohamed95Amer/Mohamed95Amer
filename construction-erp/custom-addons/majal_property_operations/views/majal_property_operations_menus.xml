@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_property_operations"
+              name="Leasing"
+              parent="majal_real_estate.menu_majal_real_estate_root"
+              sequence="50"/>
+
+    <menuitem id="menu_majal_leases"
+              name="Leases"
+              parent="menu_majal_property_operations"
+              action="action_majal_lease"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_rent_lines"
+              name="Rent Collection"
+              parent="menu_majal_property_operations"
+              action="action_majal_rent_line"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_lease_inspections"
+              name="Inspections"
+              parent="menu_majal_property_operations"
+              action="action_lease_inspection"
+              sequence="25"/>
+
+    <menuitem id="menu_majal_maintenance_requests"
+              name="Maintenance Requests"
+              parent="menu_majal_property_operations"
+              action="action_majal_maintenance_request"
+              sequence="30"/>
+</odoo>

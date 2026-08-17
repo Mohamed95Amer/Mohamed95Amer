@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_building_form_construction" model="ir.ui.view">
+        <field name="name">majal.building.form.construction</field>
+        <field name="model">majal.building</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_building_form"/>
+        <field name="arch" type="xml">
+            <field name="community_id" position="after">
+                <field name="project_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

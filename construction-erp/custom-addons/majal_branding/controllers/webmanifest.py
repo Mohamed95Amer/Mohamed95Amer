@@ -20,7 +20,7 @@ class MajalWebManifest(webmanifest.WebManifest):
             {
                 "name": "Majal Construction",
                 "short_name": "Construction",
-                "url": "/odoo/action-construction_ui.action_construction_home",
+                "url": "/app/action-construction_ui.action_construction_home",
                 "description": "Projects, site operations and commercial control",
                 "icons": [{
                     "sizes": "any",
@@ -31,7 +31,7 @@ class MajalWebManifest(webmanifest.WebManifest):
             {
                 "name": "Majal Facilities",
                 "short_name": "Facilities",
-                "url": "/odoo/action-construction_ui.action_facility_home",
+                "url": "/app/action-construction_ui.action_facility_home",
                 "description": "Assets, work orders and preventive maintenance",
                 "icons": [{
                     "sizes": "any",
@@ -48,7 +48,7 @@ class MajalWebManifest(webmanifest.WebManifest):
             "name": f"{product_name} — Construction & Facilities",
             "short_name": product_name,
             "description": "Smart construction and facilities operations",
-            "start_url": "/odoo/action-construction_ui.action_construction_home",
+            "start_url": "/app/action-construction_ui.action_construction_home",
             "background_color": "#F4F6F7",
             "theme_color": self._colour("majal.nav_color", "#173240"),
             # Two entries, not one with "any maskable" on it. A maskable icon

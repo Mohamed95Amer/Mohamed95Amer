@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_property" model="ir.ui.view">
+        <field name="name">project.project.form.property</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="construction_base.view_project_form_construction"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='construction']/group" position="inside">
+                <group string="Property" invisible="development_count == 0">
+                    <field name="development_count" invisible="1"/>
+                    <field name="development_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="expected_handover_date"/>
+                            <field name="unit_count"/>
+                        </list>
+                    </field>
+                    <field name="property_unit_count" string="Saleable Units"/>
+                    <button name="action_view_property_units" type="object"
+                            string="View units" class="btn-link"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

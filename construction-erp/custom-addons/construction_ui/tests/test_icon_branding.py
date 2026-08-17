@@ -3,6 +3,14 @@ from odoo.tests import TransactionCase, tagged
 
 @tagged("post_install", "-at_install")
 class TestMajalAppIcons(TransactionCase):
+    def test_module_directory_replaces_the_vendor_marketplace(self):
+        menu = self.env.ref("base.menu_management")
+        action = self.env.ref("construction_ui.action_majal_module_directory")
+
+        self.assertEqual(menu.name, "Majal Modules")
+        self.assertEqual(menu.action, action)
+        self.assertEqual(action.tag, "construction_ui.module_directory")
+
     def test_every_installed_top_level_app_uses_a_majal_icon(self):
         # Modules allowed to supply an app icon. The rule is that no app shows
         # a stock Odoo icon, not that the icons all live in one module — so a
@@ -16,8 +24,14 @@ class TestMajalAppIcons(TransactionCase):
         # icon: that one was rebranded rather than allow-listed, because
         # excusing a stock icon is what would retire this check. Adding a
         # first-party module with a bespoke asset does not.
+        #
+        # majal_real_estate and majal_property_ui arrive on the same terms and
+        # are admitted on the same basis -- first-party modules with their own
+        # Majal-styled assets. The test still has to pass with them installed,
+        # which is what proves the icons are actually there.
         allowed_modules = {
             "construction_ui", "majal_ai", "majal_administration", "majal_sign",
+            "majal_real_estate", "majal_property_ui",
         }
         top_level_apps = self.env["ir.ui.menu"].search(
             [("parent_id", "=", False), ("web_icon", "!=", False)]

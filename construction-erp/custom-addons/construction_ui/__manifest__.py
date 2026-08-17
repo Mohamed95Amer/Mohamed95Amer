@@ -1,7 +1,7 @@
 {
     "name": "Majal Experience",
     "summary": "Majal construction and facilities workspaces",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Majal",
@@ -61,6 +61,7 @@
         "views/login_branding.xml",
         "views/majal_branding.xml",
         "views/app_icon_branding.xml",
+        "views/module_directory_views.xml",
     ],
     "demo": [
         "data/demo_avatars.xml",
@@ -69,6 +70,9 @@
         "web.assets_backend": [
             "construction_ui/static/src/app_launcher/app_launcher.xml",
             "construction_ui/static/src/app_launcher/app_launcher.scss",
+            "construction_ui/static/src/module_directory/module_directory.js",
+            "construction_ui/static/src/module_directory/module_directory.xml",
+            "construction_ui/static/src/module_directory/module_directory.scss",
             "construction_ui/static/src/home/construction_home.js",
             "construction_ui/static/src/home/construction_home.xml",
             "construction_ui/static/src/home/construction_home.scss",

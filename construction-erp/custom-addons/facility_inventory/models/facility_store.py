@@ -42,7 +42,36 @@ class FacilityLocationStore(models.Model):
                 q.quantity * q.product_id.standard_price for q in quants)
 
     def _store_parent_location(self):
-        return self.env.ref("facility_inventory.location_facility_stores")
+        """Return a company-compatible view location for facility stores.
+
+        The XML parent belongs to the company that installed the module.  A
+        child created for another company fails ``stock.location`` company
+        validation, which is common in a multi-company demo or hosted tenant.
+        Reuse the seed when compatible and create one stable view per other
+        company when it is not.
+        """
+        self.ensure_one()
+        company = self.company_id or self.env.company
+        seeded_parent = self.env.ref(
+            "facility_inventory.location_facility_stores"
+        )
+        if not seeded_parent.company_id or seeded_parent.company_id == company:
+            return seeded_parent
+
+        location_model = self.env["stock.location"].sudo()
+        company_parent = location_model.search([
+            ("name", "=", "Facility Stores"),
+            ("usage", "=", "view"),
+            ("company_id", "=", company.id),
+            ("location_id", "=", False),
+        ], limit=1)
+        if not company_parent:
+            company_parent = location_model.create({
+                "name": "Facility Stores",
+                "usage": "view",
+                "company_id": company.id,
+            })
+        return company_parent
 
     def ensure_store(self):
         """Create this location's parts store on first use."""

@@ -3,7 +3,7 @@
     <menuitem id="menu_majal_documents_root"
               name="Majal Documents"
               sequence="42"
-              web_icon="construction_ui,static/description/apps/general.svg"
+              web_icon="construction_ui,static/description/apps/documents.svg"
               groups="base.group_user"/>
     <record id="dms.main_menu_dms" model="ir.ui.menu">
         <field name="name">File Library</field>

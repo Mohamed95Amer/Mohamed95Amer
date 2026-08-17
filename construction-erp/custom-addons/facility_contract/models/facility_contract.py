@@ -59,7 +59,7 @@ class FacilityMaintenanceContract(models.Model):
     request_ids = fields.One2many(
         "maintenance.request", "facility_contract_id", string="Work Orders")
     request_count = fields.Integer(
-        string="Work Orders", compute="_compute_contract_performance")
+        string="Work Order Count", compute="_compute_contract_performance")
     pm_visits_used = fields.Integer(
         string="PM Visits Used", compute="_compute_contract_performance")
     pm_visits_remaining = fields.Integer(
@@ -108,7 +108,10 @@ class FacilityMaintenanceContract(models.Model):
 
             revenue = sum(
                 move.amount_untaxed_signed
-                for move in contract._get_related_invoices()
+                # The Facilities Manager is entitled to this contract-level
+                # KPI without inheriting broad Accounting application access.
+                # Only the deliberate aggregate is exposed by this model.
+                for move in contract.sudo()._get_related_invoices()
                 if move.state == "posted"
             )
             contract.invoiced_revenue = revenue

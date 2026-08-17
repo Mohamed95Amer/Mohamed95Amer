@@ -16,6 +16,7 @@ those silently does nothing.
 | [Documents](documents.md) | Controlled documents and versions, templates, structured sheets, offline sync operations |
 | [BIM](bim.md) | Models, elements, properties, pins, clashes, comparisons, BCF exchange |
 | [Messaging](messaging.md) | WhatsApp accounts, templates, message log |
+| [Property](property.md) | Portfolio, sales, leasing, handover, service charges, listings and accounting |
 
 Approval configuration (`construction.approval.rule`, `.rule.step`, `.request`,
 `.step`, `.delegation`) is documented in [Approvals](../approvals.md).

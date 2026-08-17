@@ -7,7 +7,7 @@
             <title t-esc="title or majal_product_name"/>
         </xpath>
         <xpath expr="//link[@rel='shortcut icon']" position="attributes">
-            <attribute name="t-att-href">'/majal_branding/static/description/icon.svg'</attribute>
+            <attribute name="t-att-href">'/majal_branding/static/description/icon.svg?v=20260802'</attribute>
         </xpath>
         <xpath expr="//head" position="inside">
             <t t-set="majal_brand_colours"
@@ -31,6 +31,18 @@
         </xpath>
         <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
             <attribute name="href">/majal_branding/static/src/img/majal-assistant.png</attribute>
+        </xpath>
+        <!-- The platform router still parses its upstream /odoo path. On a
+             branded /app deep-link, normalize before the router module starts;
+             the Majal router extension changes the displayed URL back after
+             bootstrap and for all later navigation. -->
+        <xpath expr="//t[@t-set='head_web']/script[1]" position="before">
+            <script type="text/javascript">
+                if (window.location.pathname === '/app' || window.location.pathname.startsWith('/app/')) {
+                    const upstreamPath = window.location.pathname.replace(/^\/app/, '/odoo');
+                    window.history.replaceState(window.history.state, '', upstreamPath + window.location.search + window.location.hash);
+                }
+            </script>
         </xpath>
     </template>
 

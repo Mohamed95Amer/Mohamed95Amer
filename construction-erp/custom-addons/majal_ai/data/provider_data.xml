@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <record id="provider_local" model="majal.ai.provider">
-        <field name="name">Local AI (Free)</field>
+        <field name="name">Ollama General</field>
         <field name="code">local</field>
         <field name="company_id" ref="base.main_company"/>
         <field name="endpoint">http://host.docker.internal:11434/v1/chat/completions</field>
-        <field name="model_name">qwen3:8b</field>
+        <field name="model_name">gpt-oss:20b</field>
         <field name="enabled" eval="True"/>
         <field name="sequence">1</field>
+        <field name="daily_request_limit">100</field>
+        <field name="monthly_token_limit">0</field>
+    </record>
+
+    <record id="provider_local_coder" model="majal.ai.provider">
+        <field name="name">Ollama Technical</field>
+        <field name="code">local_coder</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">http://host.docker.internal:11434/v1/chat/completions</field>
+        <field name="model_name">qwen3-coder:30b</field>
+        <field name="enabled" eval="True"/>
+        <field name="sequence">2</field>
         <field name="daily_request_limit">100</field>
         <field name="monthly_token_limit">0</field>
     </record>

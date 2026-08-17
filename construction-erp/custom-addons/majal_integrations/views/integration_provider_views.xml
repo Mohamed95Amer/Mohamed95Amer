@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_integration_provider_list" model="ir.ui.view">
+        <field name="name">majal.integration.provider.list</field>
+        <field name="model">majal.integration.provider</field>
+        <field name="arch" type="xml">
+            <list string="Integration Providers">
+                <field name="name"/>
+                <field name="service"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'testing'"
+                       decoration-danger="state == 'error'"
+                       decoration-muted="state == 'disabled'"/>
+                <field name="adapter_ready" optional="show"/>
+                <field name="has_secret" optional="show"/>
+                <field name="last_success_at" optional="hide"/>
+                <field name="job_count" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_integration_provider_form" model="ir.ui.view">
+        <field name="name">majal.integration.provider.form</field>
+        <field name="model">majal.integration.provider</field>
+        <field name="arch" type="xml">
+            <form string="Integration Provider">
+                <header>
+                    <button name="action_test" type="object" string="Check Configuration"
+                            class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_disable" type="object" string="Disable"
+                            invisible="state == 'disabled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="disabled,testing,active,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_jobs" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="job_count" widget="statinfo" string="Jobs"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Connection">
+                            <field name="code"/>
+                            <field name="service"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="endpoint" widget="url"/>
+                            <field name="secret_env_var"/>
+                        </group>
+                        <group string="Safety and Readiness">
+                            <field name="adapter_ready" readonly="1"/>
+                            <field name="has_secret" readonly="1"/>
+                            <field name="ready" readonly="1"/>
+                            <field name="timeout_seconds"/>
+                            <field name="max_attempts"/>
+                        </group>
+                    </group>
+                    <group string="Health">
+                        <field name="last_health_at" readonly="1"/>
+                        <field name="last_success_at" readonly="1"/>
+                        <field name="last_error" readonly="1"/>
+                    </group>
+                    <group string="Internal Notes"><field name="notes"/></group>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_integration_provider" model="ir.actions.act_window">
+        <field name="name">Integration Providers</field>
+        <field name="res_model">majal.integration.provider</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

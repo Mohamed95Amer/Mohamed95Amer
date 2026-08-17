@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Construction is 35 and Facilities 36; 37 is Odoo's own Dashboards
+         (spreadsheet_dashboard), which construction_ui pulls in, so Property
+         takes 38 to sit immediately after its siblings without a clash.
+         Owned here rather than in a UI override so a standalone install is
+         deterministic too. The name is likewise owned here: two modules must
+         not both claim one identity (see construction_ui/views/majal_branding.xml). -->
+    <menuitem id="menu_majal_real_estate_root"
+              name="Majal Property"
+              web_icon="majal_real_estate,static/description/icon.svg"
+              sequence="38"
+              groups="majal_real_estate.group_majal_real_estate_user"/>
+
+    <menuitem id="menu_majal_real_estate_developments"
+              name="Developments"
+              parent="menu_majal_real_estate_root"
+              action="action_majal_development"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_inventory"
+              name="Inventory"
+              parent="menu_majal_real_estate_root"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_units"
+              name="Units"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_unit"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_buildings"
+              name="Buildings"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_building"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_floors"
+              name="Floors"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_floor"
+              sequence="30"/>
+
+    <menuitem id="menu_majal_real_estate_communities"
+              name="Communities"
+              parent="menu_majal_real_estate_inventory"
+              action="action_majal_community"
+              sequence="40"/>
+
+    <menuitem id="menu_majal_real_estate_sales"
+              name="Sales"
+              parent="menu_majal_real_estate_root"
+              sequence="30"/>
+
+    <menuitem id="menu_majal_real_estate_leads"
+              name="Leads"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_lead"
+              sequence="5"/>
+
+    <menuitem id="menu_majal_real_estate_reservations"
+              name="Reservations"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_reservation"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_installments"
+              name="Installments"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_payment_installment"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_cheques"
+              name="Cheques"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_cheque"
+              sequence="25"/>
+
+    <menuitem id="menu_majal_real_estate_commissions"
+              name="Commissions"
+              parent="menu_majal_real_estate_sales"
+              action="action_majal_commission"
+              sequence="30"/>
+
+    <menuitem id="menu_majal_real_estate_handover"
+              name="Handover"
+              parent="menu_majal_real_estate_root"
+              sequence="40"/>
+
+    <menuitem id="menu_majal_real_estate_handovers"
+              name="Handovers"
+              parent="menu_majal_real_estate_handover"
+              action="action_majal_handover"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_documents"
+              name="Documents"
+              parent="menu_majal_real_estate_root"
+              action="action_majal_property_document"
+              sequence="60"/>
+
+    <menuitem id="menu_majal_real_estate_config"
+              name="Configuration"
+              parent="menu_majal_real_estate_root"
+              sequence="90"
+              groups="majal_real_estate.group_majal_real_estate_manager"/>
+
+    <menuitem id="menu_majal_real_estate_unit_types"
+              name="Unit Types"
+              parent="menu_majal_real_estate_config"
+              action="action_majal_unit_type"
+              sequence="10"/>
+
+    <menuitem id="menu_majal_real_estate_payment_plans"
+              name="Payment Plans"
+              parent="menu_majal_real_estate_config"
+              action="action_majal_payment_plan"
+              sequence="20"/>
+
+    <menuitem id="menu_majal_real_estate_lead_stages"
+              name="Lead Stages"
+              parent="menu_majal_real_estate_config"
+              action="action_majal_lead_stage"
+              sequence="30"/>
+</odoo>

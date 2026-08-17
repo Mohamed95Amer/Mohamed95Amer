@@ -333,6 +333,22 @@ class ProjectProject(models.Model):
         }
 
 
+# A value the caller cannot forge.
+#
+# This guard used to stand down for `majal_drawing_transition=True` in the
+# context. Context travels with an RPC call, so anybody holding write access
+# on a drawing revision could set that key and write approval_state or
+# replace a submitted sheet directly — the same hole that was closed on
+# construction.approvable by WORKFLOW_TRANSITION in approval_mixin.py,
+# arriving by a second door on a model that mixin does not cover.
+#
+# RPC can only deliver JSON, so a context value can never be *identical* to a
+# private Python object. Internal transition code imports this and passes
+# it; a remote caller can send the string, the number or the boolean and
+# none of them are this object.
+DRAWING_TRANSITION = object()
+
+
 class ConstructionDrawingRevision(models.Model):
     _name = "construction.drawing.revision"
     _description = "Drawing Revision"
@@ -372,17 +388,18 @@ class ConstructionDrawingRevision(models.Model):
     def write(self, vals):
         if (
             self._approval_decision_fields & set(vals)
-            and self.env.context.get("majal_drawing_transition")
-            is not DRAWING_TRANSITION
             and not self.env.su
+            # Compared by identity against the private sentinel, never for
+            # truthiness: a caller can put any value in the context, so a
+            # bare `.get(...)` check would let them wave the guard through.
+            and self.env.context.get("majal_drawing_transition") is not DRAWING_TRANSITION
         ):
             raise AccessError(
                 _("Drawing sign-off can only be changed through workflow actions.")
             )
         if (
             {"attachment_id", "sheet_file"} & set(vals)
-            and self.env.context.get("majal_drawing_transition")
-            is not DRAWING_TRANSITION
+            and self.env.context.get("majal_drawing_transition") is not DRAWING_TRANSITION
             and any(revision.approval_state not in ("draft", "rejected") for revision in self)
         ):
             raise UserError(

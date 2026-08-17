@@ -58,6 +58,14 @@ export class MajalSidebar extends Component {
         return this.menuService.getCurrentApp();
     }
 
+    get isPropertyApp() {
+        const app = this.currentApp;
+        return !!app && (
+            app.name === "Majal Property" ||
+            (app.xmlid || "").startsWith("majal_property_ui.")
+        );
+    }
+
     /** The current app's menu, as a tree of sections and their children. */
     get sections() {
         const app = this.currentApp;
@@ -116,7 +124,7 @@ export class MajalSidebar extends Component {
     }
 
     href(menu) {
-        return menu.actionID ? `/odoo/action-${menu.actionID}` : "#";
+        return menu.actionID ? `/app/action-${menu.actionID}` : "#";
     }
 
     /**

@@ -60,6 +60,54 @@ def _dt(value):
     return fields.Datetime.to_string(value) if value else False
 
 
+def _construction_field_records(env, user):
+    """Return construction-only field records without probing forbidden models."""
+    model_names = {
+        "projects": "project.project",
+        "defects": "construction.defect",
+        "inspections": "construction.form.inspection",
+        "drawings": "construction.drawing",
+    }
+    if not user.has_group("construction_base.group_construction_user"):
+        return {
+            key: env[model_name].browse()
+            for key, model_name in model_names.items()
+        }
+
+    projects = env["project.project"].search(
+        [("is_construction", "=", True)],
+        limit=80,
+        order="name",
+    )
+    return {
+        "projects": projects,
+        "defects": env["construction.defect"].search(
+            [
+                ("assigned_user_id", "=", user.id),
+                ("state", "in", ["open", "in_progress", "reopened", "ready"]),
+            ],
+            limit=100,
+            order="severity desc, date_required, id desc",
+        ),
+        "inspections": env["construction.form.inspection"].search(
+            [
+                ("inspector_id", "=", user.id),
+                ("state", "in", ["draft", "in_progress", "rejected"]),
+            ],
+            limit=60,
+            order="scheduled_date, id",
+        ),
+        "drawings": env["construction.drawing"].search(
+            [
+                ("project_id", "in", projects.ids),
+                ("current_revision_id", "!=", False),
+            ],
+            limit=80,
+            order="project_id, number",
+        ),
+    }
+
+
 class MajalFieldApp(http.Controller):
     @http.route(
         ["/majal/field", "/majal/field/"],
@@ -105,27 +153,10 @@ class MajalFieldApp(http.Controller):
     def bootstrap(self):
         env = request.env
         user = env.user
-        projects = env["project.project"].search(
-            [("is_construction", "=", True)],
-            limit=80,
-            order="name",
-        )
-        defects = env["construction.defect"].search(
-            [
-                ("assigned_user_id", "=", user.id),
-                ("state", "in", ["open", "in_progress", "reopened", "ready"]),
-            ],
-            limit=100,
-            order="severity desc, date_required, id desc",
-        )
-        inspections = env["construction.form.inspection"].search(
-            [
-                ("inspector_id", "=", user.id),
-                ("state", "in", ["draft", "in_progress", "rejected"]),
-            ],
-            limit=60,
-            order="scheduled_date, id",
-        )
+        construction_records = _construction_field_records(env, user)
+        projects = construction_records["projects"]
+        defects = construction_records["defects"]
+        inspections = construction_records["inspections"]
         workorders = env["maintenance.request"].search(
             [("user_id", "=", user.id)],
             limit=100,
@@ -141,14 +172,7 @@ class MajalFieldApp(http.Controller):
             limit=120,
             order="name",
         )
-        drawings = env["construction.drawing"].search(
-            [
-                ("project_id", "in", projects.ids),
-                ("current_revision_id", "!=", False),
-            ],
-            limit=80,
-            order="project_id, number",
-        )
+        drawings = construction_records["drawings"]
 
         return {
             "generated_at": _dt(fields.Datetime.now()),

@@ -16,6 +16,22 @@ Never claim an action was completed. Provide drafts and recommendations for a
 human to review. Treat safety, contractual and financial conclusions as decision
 support, not professional certification."""
 
+PROMPT_LIBRARY = [
+    ("portfolio", "Executive", "Give me an executive portfolio briefing with the five decisions that need attention."),
+    ("portfolio", "Commercial", "Summarize commercial exposure, overdue approvals and cash-flow risks."),
+    ("construction", "Site delivery", "Summarize overdue RFIs, defects, submittals and programme risks."),
+    ("construction", "Daily plan", "Prepare a site-manager plan for today, ordered by safety and delivery impact."),
+    ("construction", "Quality", "Review open quality records and propose a close-out sequence."),
+    ("construction", "Documents", "Explain which drawings and revisions are current and what still needs sign-off."),
+    ("facilities", "Operations", "Which assets and work orders need attention, and why?"),
+    ("facilities", "Maintenance", "Draft a preventive-maintenance action plan for critical equipment."),
+    ("facilities", "SLA", "Show likely SLA breaches and the fastest safe recovery actions."),
+    ("facilities", "Energy", "Suggest an energy and asset-performance review using the available records."),
+    ("guide", "How to", "Show me how to create a construction project and prepare its first site records."),
+    ("guide", "How to", "Show me how to register an asset, schedule preventive maintenance and close a work order."),
+    ("guide", "Navigation", "Where do I find approvals, documents, drawings, dashboards and user permissions?"),
+]
+
 
 class MajalAiConversation(models.Model):
     _name = "majal.ai.conversation"
@@ -47,6 +63,7 @@ class MajalAiConversation(models.Model):
             ("portfolio", "Portfolio"),
             ("construction", "Construction"),
             ("facilities", "Facilities"),
+            ("guide", "System Guide"),
         ],
         required=True,
         default="portfolio",
@@ -106,22 +123,8 @@ class MajalAiConversation(models.Model):
                 for conversation in conversations
             ],
             "suggestions": [
-                {
-                    "scope": "portfolio",
-                    "label": _("Give me an executive portfolio briefing"),
-                },
-                {
-                    "scope": "construction",
-                    "label": _("Summarize overdue RFIs, defects and submittals"),
-                },
-                {
-                    "scope": "facilities",
-                    "label": _("Which assets and work orders need attention?"),
-                },
-                {
-                    "scope": "facilities",
-                    "label": _("Draft a preventive-maintenance action plan"),
-                },
+                {"scope": scope, "category": _(category), "label": _(label)}
+                for scope, category, label in PROMPT_LIBRARY
             ],
         }
 
@@ -164,7 +167,7 @@ class MajalAiConversation(models.Model):
             raise ValidationError(_("Enter a question for Majal Intelligence."))
         if len(question) > 8000:
             raise ValidationError(_("Questions are limited to 8,000 characters."))
-        if scope not in {"portfolio", "construction", "facilities"}:
+        if scope not in {"portfolio", "construction", "facilities", "guide"}:
             raise ValidationError(_("Unknown Majal Intelligence scope."))
 
         provider = self.env["majal.ai.provider"].sudo().browse(int(provider_id)).exists()
@@ -280,6 +283,9 @@ class MajalAiConversation(models.Model):
             )
             lines.append(f"[{number}] {label}: {summary}")
 
+        if self.scope == "guide":
+            return self._navigation_context(), []
+
         if self.project_id:
             self.project_id.check_access_rights("read")
             self.project_id.check_access_rule("read")
@@ -344,6 +350,43 @@ class MajalAiConversation(models.Model):
         if not lines:
             lines.append("No readable Majal records were found for this scope.")
         return "\n".join(lines)[:30000], citations
+
+    def _navigation_context(self):
+        """Build a role-aware guide from the menus this user can really see."""
+        visible_ids = self.env["ir.ui.menu"]._visible_menu_ids()
+        menus = self.env["ir.ui.menu"].browse(sorted(visible_ids)).exists()
+        by_parent = {}
+        for menu in menus:
+            by_parent.setdefault(menu.parent_id.id or 0, []).append(menu)
+        for children in by_parent.values():
+            children.sort(key=lambda item: (item.sequence, item.name or "", item.id))
+
+        lines = [
+            "MAJAL ROLE-AWARE NAVIGATION GUIDE",
+            "Use only paths below. If a path is absent, the signed-in user does not currently have access.",
+        ]
+        module_directory = self.env.ref("base.menu_management", raise_if_not_found=False)
+
+        def walk(parent_id, path, depth=0):
+            if depth > 4 or len(lines) >= 350:
+                return
+            for menu in by_parent.get(parent_id, []):
+                if module_directory and menu == module_directory:
+                    continue
+                current = path + [menu.name]
+                if menu.action or depth == 0:
+                    lines.append(" > ".join(current))
+                walk(menu.id, current, depth + 1)
+
+        walk(0, [])
+        lines.extend([
+            "GUIDANCE RULES",
+            "Give numbered click-by-click instructions using the exact path names above.",
+            "Explain required fields and likely permission prerequisites.",
+            "Never claim to click, save, approve or post on the user's behalf.",
+            "When a requested path is missing, tell the user which role or administrator to ask.",
+        ])
+        return "\n".join(lines)[:30000]
 
     @api.model
     def _record_summary(self, record):

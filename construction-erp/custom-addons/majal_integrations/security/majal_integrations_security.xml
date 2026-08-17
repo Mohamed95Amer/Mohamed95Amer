@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_majal_integrations" model="ir.module.category">
+        <field name="name">Majal Integrations</field>
+        <field name="sequence">90</field>
+    </record>
+
+    <record id="group_majal_integration_manager" model="res.groups">
+        <field name="name">Integration Manager</field>
+        <field name="category_id" ref="module_category_majal_integrations"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record id="rule_majal_integration_provider_company" model="ir.rule">
+        <field name="name">Integration providers: allowed companies</field>
+        <field name="model_id" ref="model_majal_integration_provider"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_majal_integration_manager'))]"/>
+    </record>
+
+    <record id="rule_majal_integration_job_company" model="ir.rule">
+        <field name="name">Integration jobs: allowed companies</field>
+        <field name="model_id" ref="model_majal_integration_job"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_majal_integration_manager'))]"/>
+    </record>
+</odoo>

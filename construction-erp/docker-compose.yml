@@ -27,6 +27,9 @@ services:
       ODOO_ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env}
       MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:-}
       MAJAL_AI_CA_BUNDLE: ${MAJAL_AI_CA_BUNDLE:-}
+      # Workstation Docker may reach Ollama through host.docker.internal.
+      # Hosted deployments intentionally do not inherit this opt-in.
+      MAJAL_AI_LOCAL_ENABLED: ${MAJAL_AI_LOCAL_ENABLED:-true}
     entrypoint:
       - /bin/bash
       - /usr/local/bin/majal-entrypoint

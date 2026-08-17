@@ -81,6 +81,12 @@
                                    readonly="not company_id"
                                    options="{'no_create': True}"/>
                         </page>
+                        <page string="With property access" name="property">
+                            <field name="real_estate_group_ids"
+                                   widget="many2many_tags"
+                                   readonly="not company_id"
+                                   options="{'no_create': True}"/>
+                        </page>
                     </notebook>
                     <div class="text-muted mt-2">
                         Changing what a level grants updates everybody who

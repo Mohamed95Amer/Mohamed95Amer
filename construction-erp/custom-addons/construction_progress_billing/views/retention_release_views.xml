@@ -44,7 +44,7 @@
                          than blocked. -->
                     <div class="alert alert-warning d-flex align-items-center"
                          role="alert" invisible="not is_early">
-                        <i class="fa fa-calendar-times-o me-2"/>
+                        <i class="fa fa-calendar-times-o me-2" title="Early release warning"/>
                         <field name="early_warning" nolabel="1" readonly="1"
                                class="oe_inline"/>
                     </div>

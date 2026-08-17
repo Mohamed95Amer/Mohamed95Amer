@@ -1,6 +1,20 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
+# Which suites a scope opens. Named sets rather than literals repeated at
+# three call sites, because the next suite to join the platform should be one
+# entry here and not a hunt through the file.
+#
+# "both" is in all three. It was written when the platform had two suites and
+# meant "the whole platform"; Property arriving did not change that intent,
+# and reading it as construction-and-facilities-only silently took the
+# Property app away from every existing user -- including the administrator,
+# whose own group membership is rewritten from their level.
+FACILITY_SCOPES = {"facilities", "both", "property_facilities"}
+PROPERTY_SCOPES = {"real_estate", "both", "property_facilities"}
+CONSTRUCTION_SCOPES = {"construction", "both"}
+MAJAL_SCOPES = FACILITY_SCOPES | PROPERTY_SCOPES | CONSTRUCTION_SCOPES
+
 
 MANAGED_GROUP_XMLIDS = set(
     [
@@ -20,6 +34,7 @@ MANAGED_GROUP_XMLIDS = set(
         "construction_base.group_construction_user",
         "project.group_project_manager",
         "project.group_project_user",
+        "project.group_project_stages",
         "purchase.group_purchase_manager",
         "purchase.group_purchase_user",
         "stock.group_stock_manager",
@@ -48,7 +63,9 @@ class ResUsers(models.Model):
         [
             ("construction", "Construction"),
             ("facilities", "Facilities Management"),
-            ("both", "Construction & Facilities"),
+            ("both", "All Suites"),
+            ("real_estate", "Property"),
+            ("property_facilities", "Property & Facilities"),
         ],
         string="Workspace access",
         default="both",
@@ -344,7 +361,7 @@ class ResUsers(models.Model):
                              company=None):
         if not role:
             raise ValidationError(_("Select a valid Majal access level."))
-        if scope not in {"construction", "facilities", "both"}:
+        if scope not in MAJAL_SCOPES:
             raise ValidationError(_("Select a valid workspace access scope."))
 
         # What a level grants is data a company can edit, so resolve to the
@@ -356,8 +373,10 @@ class ResUsers(models.Model):
         groups = level.group_ids
         if scope in {"construction", "both"}:
             groups |= level.construction_group_ids
-        if scope in {"facilities", "both"}:
+        if scope in FACILITY_SCOPES:
             groups |= level.facility_group_ids
+        if scope in PROPERTY_SCOPES:
+            groups |= level.real_estate_group_ids
         group_ids = set(groups.ids)
         if base_user:
             # Never level-editable: an internal user who is not an internal

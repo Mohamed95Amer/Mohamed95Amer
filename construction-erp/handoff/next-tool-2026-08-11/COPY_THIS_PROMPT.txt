@@ -1,0 +1,20 @@
+Continue Majal Property in the isolated worktree:
+
+  C:\Users\hossi\Documents\Odoo-majal-property\construction-erp
+
+Do not touch C:\Users\hossi\Documents\Odoo or database erp.
+
+Read, in order:
+1. handoff/next-tool-2026-08-11/START_HERE.md
+2. docs/pre-hetzner-release-audit-2026-08-11.md
+3. handoff/next-tool-2026-08-11/CHECKPOINT.md
+4. docs/api/index.md
+
+Branch feature/majal-property-phase2 is at committed head 246f934 plus
+uncommitted audited fixes and documentation. The final clean gate passed 843
+tests with 0 failures/errors across all 48 requested Majal modules. Upgrade,
+company isolation and authenticated HTTP/JSON-RPC smoke tests also pass.
+
+Do not deploy yet. Review the diff, commit intentionally, perform desktop/mobile
+visual UAT and a WebGL BIM smoke, then rehearse backup/restore before promoting
+an immutable image to Hetzner.

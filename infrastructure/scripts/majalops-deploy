@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+IFS=$'\n\t'
+umask 077
+
+ACTION="${1:-}"
+case "$ACTION" in
+    registry-login)
+        actor="${2:-}"
+        [[ "$actor" =~ ^[A-Za-z0-9_-]{1,39}$ ]] || { printf 'Invalid registry actor.\n' >&2; exit 1; }
+        exec docker login ghcr.io -u "$actor" --password-stdin
+        ;;
+    update)
+        image="${2:-}"
+        install_mods="${3:-${INSTALL_MODULES:-}}"
+        upgrade_mods="${4:-${UPGRADE_MODULES:-}}"
+        [[ "$install_mods" == "-" ]] && install_mods=""
+        [[ "$upgrade_mods" == "-" ]] && upgrade_mods=""
+        module_pattern='^([a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*)?$'
+        [[ "$image" =~ ^ghcr\.io/mohamed95amer/majalops-platform@sha256:[a-fA-F0-9]{64}$ ]] || {
+            printf 'Invalid or unauthorized image reference.\n' >&2
+            exit 1
+        }
+        [[ "$install_mods" =~ $module_pattern ]] || { printf 'Invalid INSTALL_MODULES parameter.\n' >&2; exit 1; }
+        [[ "$upgrade_mods" =~ $module_pattern ]] || { printf 'Invalid UPGRADE_MODULES parameter.\n' >&2; exit 1; }
+        exec env CONFIRM_UPDATE=YES TARGET_IMAGE="$image" INSTALL_MODULES="$install_mods" UPGRADE_MODULES="$upgrade_mods" \
+            bash /opt/majalops/infrastructure/scripts/update-majal.sh
+        ;;
+    health)
+        exec bash /opt/majalops/infrastructure/scripts/healthcheck.sh
+        ;;
+    *)
+        printf 'Allowed actions: registry-login, update, health.\n' >&2
+        exit 2
+        ;;
+esac

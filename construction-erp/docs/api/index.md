@@ -38,6 +38,7 @@ If a route is not listed in [Custom endpoints](endpoints/index.md), it does not 
 | [Documents](models/documents.md) | Controlled documents, versions, templates, structured sheets |
 | [BIM](models/bim.md) | Models, elements, properties, pins, clashes, comparisons |
 | [Messaging](models/messaging.md) | WhatsApp accounts, templates, message log |
+| [Property](models/property.md) | Developments, units, reservations, leases, handovers, service charges, listings and accounting |
 
 ## Behaviour you must read before writing code
 
@@ -47,6 +48,7 @@ If a route is not listed in [Custom endpoints](endpoints/index.md), it does not 
 | [Security model](security.md) | Groups, record rules, what a portal user can and cannot reach, and which tokens are secrets. |
 | [Custom endpoints](endpoints/index.md) | Every `@http.route` in the product, with auth level, methods and CSRF posture. |
 | [Webhooks](webhooks.md) | The WhatsApp inbound callback — the only inbound webhook in the product. |
+| [Integration providers](integrations.md) | Safe inbound RPC, outbound provider jobs, secrets and approved adapter design. |
 
 ## Version
 

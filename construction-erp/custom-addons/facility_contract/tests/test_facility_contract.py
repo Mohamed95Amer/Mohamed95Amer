@@ -1,6 +1,7 @@
 from dateutil.relativedelta import relativedelta
 
-from odoo import fields
+from odoo import Command, fields
+from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -47,6 +48,18 @@ class TestFacilityContract(TransactionCase):
             })],
         })
         cls.contract_line = cls.contract.contract_line_ids
+        cls.facility_manager = cls.env["res.users"].with_context(
+            no_reset_password=True
+        ).create({
+            "name": "Facilities Contract Manager",
+            "login": "facilities-contract-manager@majal.test",
+            "company_id": cls.env.company.id,
+            "company_ids": [Command.set(cls.env.company.ids)],
+            "groups_id": [Command.set([
+                cls.env.ref("base.group_user").id,
+                cls.env.ref("maintenance.group_equipment_manager").id,
+            ])],
+        })
 
     def _request(self, equipment=None, maintenance_type="corrective", **vals):
         values = {
@@ -81,6 +94,26 @@ class TestFacilityContract(TransactionCase):
         self.assertEqual(request.facility_contract_id, self.contract)
         self.assertTrue(request.contract_covered)
         self.assertFalse(request.contract_chargeable)
+
+    def test_facilities_manager_can_open_contract_without_accounting_access(self):
+        self.assertFalse(
+            self.facility_manager.has_group("account.group_account_invoice")
+        )
+        contract = self.contract.with_user(self.facility_manager)
+        values = contract.read(["name", "invoiced_revenue", "margin"])[0]
+        self.assertEqual(values["name"], "HVAC AMC")
+        self.assertEqual(values["invoiced_revenue"], 0.0)
+
+    def test_plain_internal_user_cannot_read_contract_register(self):
+        user = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Facilities Field User",
+            "login": "facilities-field-user@majal.test",
+            "company_id": self.env.company.id,
+            "company_ids": [Command.set(self.env.company.ids)],
+            "groups_id": [Command.set([self.env.ref("base.group_user").id])],
+        })
+        with self.assertRaises(AccessError):
+            self.contract.with_user(user).read(["name"])
 
     def test_work_on_an_uncovered_asset_finds_nothing(self):
         request = self._request(equipment=self.lift)

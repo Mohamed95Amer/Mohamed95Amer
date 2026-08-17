@@ -1,0 +1,20 @@
+{
+    "name": "Majal Integration Foundation",
+    "summary": "Company-isolated providers, idempotent jobs and safe connector controls",
+    "version": "18.0.1.0.0",
+    "category": "Administration",
+    "license": "LGPL-3",
+    "author": "Mohamed Amer",
+    "website": "https://github.com/Mohamed95Amer/Mohamed95Amer",
+    "depends": ["base", "mail"],
+    "data": [
+        "security/majal_integrations_security.xml",
+        "security/ir.model.access.csv",
+        "data/integration_cron.xml",
+        "views/integration_provider_views.xml",
+        "views/integration_job_views.xml",
+        "views/integration_menus.xml",
+    ],
+    "application": False,
+    "installable": True,
+}

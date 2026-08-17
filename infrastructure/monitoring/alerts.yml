@@ -1,0 +1,65 @@
+groups:
+  - name: majalops-platform
+    rules:
+      - alert: MajalOpsHealthFailed
+        expr: majalops_health_status == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations:
+          summary: MajalOps platform health checks are failing
+          description: The local supervisor reports an unhealthy platform on {{ $labels.instance }}.
+
+      - alert: MajalOpsExternalHTTPSFailed
+        expr: probe_success{job="external-https"} == 0
+        for: 3m
+        labels: {severity: critical}
+        annotations:
+          summary: MajalOps public HTTPS endpoint is unavailable
+          description: Blackbox HTTPS probes have failed for more than three minutes.
+
+      - alert: MajalOpsHostDiskLow
+        expr: 100 * (1 - node_filesystem_avail_bytes{mountpoint="/",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{mountpoint="/",fstype!~"tmpfs|overlay"}) > 80
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: MajalOps root disk usage is above 80 percent
+          description: Current usage is {{ $value | printf "%.1f" }} percent.
+
+      - alert: MajalOpsHostMemoryLow
+        expr: 100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) > 85
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: MajalOps memory usage is above 85 percent
+          description: Current usage is {{ $value | printf "%.1f" }} percent.
+
+      - alert: MajalOpsHostLoadHigh
+        expr: node_load15 / count without (cpu, mode) (node_cpu_seconds_total{mode="idle"}) > 1.5
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: MajalOps sustained load is high
+          description: Fifteen-minute load per CPU is {{ $value | printf "%.2f" }}.
+
+      - alert: MajalOpsPostgreSQLDown
+        expr: pg_up == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations:
+          summary: MajalOps PostgreSQL is unavailable
+          description: postgres-exporter cannot reach the platform database.
+
+      - alert: MajalOpsBackupStale
+        expr: time() - majalops_backup_last_success_timestamp_seconds > 93600
+        for: 15m
+        labels: {severity: critical}
+        annotations:
+          summary: MajalOps off-site backup is stale
+          description: No successful off-site backup has been recorded for more than 26 hours.
+
+      - alert: MajalOpsRecoveryRepeated
+        expr: increase(majalops_automatic_recovery_total[30m]) >= 3
+        labels: {severity: critical}
+        annotations:
+          summary: MajalOps automatic recovery is repeatedly firing
+          description: At least three automatic recoveries occurred in 30 minutes; human investigation is required.

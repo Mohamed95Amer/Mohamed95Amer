@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_tenant_rania" model="res.partner">
+        <field name="name">Rania Haddad</field>
+    </record>
+
+    <!-- B-0901 is available stock let out by the developer, so the lease
+         carries no separate landlord. -->
+    <record id="demo_lease_b0901" model="majal.lease">
+        <field name="unit_id" ref="majal_real_estate.demo_unit_b0901"/>
+        <field name="tenant_id" ref="demo_tenant_rania"/>
+        <field name="start_date"
+               eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d')"/>
+        <field name="end_date"
+               eval="(DateTime.today() + relativedelta(months=9, days=-1)).strftime('%Y-%m-%d')"/>
+        <field name="frequency">quarterly</field>
+        <field name="annual_rent">85000</field>
+        <field name="deposit">10000</field>
+    </record>
+
+    <record id="demo_maintenance_ac" model="majal.maintenance.request">
+        <field name="name">AC not cooling in the living room</field>
+        <field name="unit_id" ref="majal_real_estate.demo_unit_b0901"/>
+        <field name="partner_id" ref="demo_tenant_rania"/>
+        <field name="category">hvac</field>
+        <field name="priority">2</field>
+        <field name="description">Unit runs but blows warm air after about
+            twenty minutes.</field>
+    </record>
+</odoo>

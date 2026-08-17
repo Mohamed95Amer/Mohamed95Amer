@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_integrations_root"
+              name="Majal Integrations"
+              sequence="85"
+              groups="majal_integrations.group_majal_integration_manager"/>
+    <menuitem id="menu_majal_integration_providers"
+              name="Providers"
+              parent="menu_majal_integrations_root"
+              action="action_majal_integration_provider"
+              sequence="10"/>
+    <menuitem id="menu_majal_integration_jobs"
+              name="Job Monitor"
+              parent="menu_majal_integrations_root"
+              action="action_majal_integration_job"
+              sequence="20"/>
+</odoo>
