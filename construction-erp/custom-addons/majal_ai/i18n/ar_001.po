@@ -321,3 +321,237 @@ msgstr "مدير ذكاء مجال"
 #: code:addons/majal_ai/models/provider.py:0
 msgid "Only Intelligence Managers can remove provider keys."
 msgstr "يمكن لمديري ذكاء مجال فقط إزالة مفاتيح المزودين."
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.js:0
+msgid "%s is not ready"
+msgstr "%s غير جاهز"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "AI timeout must be between 5 and 120 seconds."
+msgstr "يجب أن تكون مهلة الذكاء الاصطناعي بين 5 و120 ثانية."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Answered by %s"
+msgstr "أجاب %s"
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+msgid "Archive"
+msgstr "أرشفة"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Ask an Intelligence Manager to enable an AI provider. "
+msgstr "اطلب من مسؤول الذكاء تفعيل أحد مزودي الذكاء الاصطناعي. "
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.js:0
+msgid "Ask an administrator to configure this provider."
+msgstr "اطلب من المسؤول إعداد هذا المزود."
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.js:0
+msgid "Choose a configured AI provider before sending a question."
+msgstr "اختر مزود ذكاء اصطناعي مُعدّاً قبل إرسال سؤال."
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+msgid "Close conversations"
+msgstr "إغلاق المحادثات"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Continue in Majal Intelligence"
+msgstr "المتابعة في ذكاء مجال"
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+msgid "Conversations"
+msgstr "المحادثات"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
+msgid "Enter a question for Majal Intelligence."
+msgstr "اكتب سؤالاً لذكاء مجال."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "Hosted AI keys cannot be saved until MAJAL_AI_MASTER_KEY is "
+msgstr "لا يمكن حفظ مفاتيح الذكاء المستضاف حتى يتم ضبط MAJAL_AI_MASTER_KEY "
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "Hosted AI providers must use HTTPS."
+msgstr "يجب أن يستخدم مزودو الذكاء المستضاف بروتوكول HTTPS."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "Hosted provider endpoints are fixed to prevent unsafe outbound requests."
+msgstr "عناوين المزودين المستضافين ثابتة لمنع الطلبات الصادرة غير الآمنة."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "I could not complete that Intelligence request."
+msgstr "تعذر عليّ إكمال طلب الذكاء هذا."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "Local AI endpoints must use localhost, "
+msgstr "يجب أن تستخدم عناوين الذكاء المحلي localhost، "
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "Local AI is not reachable. Start Ollama and confirm that "
+msgstr "تعذر الوصول إلى الذكاء المحلي. شغّل Ollama وتأكد من أن "
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+msgid "MAJAL INTELLIGENCE"
+msgstr "ذكاء مجال"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "MAJAL_AI_MASTER_KEY is invalid. Generate a valid Fernet key."
+msgstr "قيمة MAJAL_AI_MASTER_KEY غير صالحة. أنشئ مفتاح Fernet صالحاً."
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.js:0
+msgid "Majal Intelligence could not complete the request."
+msgstr "تعذر على ذكاء مجال إكمال الطلب."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Majal Intelligence is not configured yet."
+msgstr "لم يُضبط ذكاء مجال بعد."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Majal record"
+msgstr "سجل مجال"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Open Majal Intelligence"
+msgstr "فتح ذكاء مجال"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Open Majal Intelligence to check the provider or try again"
+msgstr "افتح ذكاء مجال للتحقق من المزود أو أعد المحاولة"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Please try again, or open the full workspace for more detail."
+msgstr "أعد المحاولة، أو افتح مساحة العمل الكاملة لمزيد من التفاصيل."
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+msgid "Preparing Majal Intelligence…"
+msgstr "جارٍ تهيئة ذكاء مجال…"
+
+#. module: majal_ai
+#. odoo-javascript
+#: code:addons/majal_ai/static/src/workspace/workspace.xml:0
+msgid "Send"
+msgstr "إرسال"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/mail_bot.py:0
+msgid "Sources:"
+msgstr "المصادر:"
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "The AI endpoint must be a valid HTTP or HTTPS URL."
+msgstr "يجب أن يكون عنوان الذكاء الاصطناعي رابط HTTP أو HTTPS صالحاً."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "The AI provider could not be reached. Check its configuration."
+msgstr "تعذر الوصول إلى مزود الذكاء الاصطناعي. تحقق من إعداداته."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
+msgid "The AI provider returned an empty response."
+msgstr "أعاد مزود الذكاء الاصطناعي استجابة فارغة."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "The AI provider took too long to respond. Please try again."
+msgstr "استغرق مزود الذكاء الاصطناعي وقتاً طويلاً للرد. أعد المحاولة."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "The Majal server could not verify the AI provider's secure "
+msgstr "تعذر على خادم مجال التحقق من اتصال مزود الذكاء الاصطناعي الآمن "
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "The configured Majal AI certificate bundle was not found "
+msgstr "لم يُعثر على حزمة شهادات ذكاء مجال المُعدّة "
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
+msgid "The conversation no longer exists."
+msgstr "لم تعد هذه المحادثة موجودة."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "The provider returned an error (HTTP %(status)s)."
+msgstr "أعاد المزود خطأ (HTTP %(status)s)."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
+msgid "The selected AI provider is unavailable."
+msgstr "مزود الذكاء الاصطناعي المختار غير متاح."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/provider.py:0
+msgid "This provider key cannot be decrypted with the server master key."
+msgstr "لا يمكن فك تشفير مفتاح هذا المزود بمفتاح الخادم الرئيسي."
+
+#. module: majal_ai
+#. odoo-python
+#: code:addons/majal_ai/models/conversation.py:0
+msgid "Unknown Majal Intelligence scope."
+msgstr "نطاق ذكاء مجال غير معروف."

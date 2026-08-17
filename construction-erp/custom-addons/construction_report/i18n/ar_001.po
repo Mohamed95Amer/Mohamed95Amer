@@ -399,7 +399,7 @@ msgstr "موازنة غير ملتزم بها"
 #. odoo-python
 #: code:addons/construction_report/models/project_cvr.py:0
 msgid "Unsupported operator %s on %s"
-msgstr ""
+msgstr "معامل غير مدعوم %s على %s"
 
 #. modules: construction_material, construction_report, facility_inventory
 #. odoo-javascript
@@ -549,3 +549,33 @@ msgstr "أوامر التغيير"
 #: code:addons/construction_report/static/src/exposure/exposure.js:0
 msgid "Uninvoiced"
 msgstr "غير مفوتر"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "A further"
+msgstr "وهناك أيضاً"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Document"
+msgstr "المستند"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Retention"
+msgstr "المحتجزات"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "of variations is submitted and not yet approved."
+msgstr "من الأوامر التغييرية مُقدَّم ولم يُعتمد بعد."

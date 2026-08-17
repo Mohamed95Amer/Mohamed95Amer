@@ -32,19 +32,19 @@ msgstr "منذ %s يوم"
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "%s was %s."
-msgstr ""
+msgstr "تم %s للحساب %s."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "%s was created and verified."
-msgstr ""
+msgstr "تم إنشاء %s والتحقق منه."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_config_settings.py:0
 msgid "%s was protected and verified."
-msgstr ""
+msgstr "تمت حماية %s والتحقق منه."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_invite_wizard_form
@@ -75,7 +75,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/wizards/user_invite_wizard.py:0
 msgid "A user with this login already exists."
-msgstr ""
+msgstr "يوجد مستخدم بهذا اسم الدخول بالفعل."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__ai
@@ -102,7 +102,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Access changed for %s to %s (%s)."
-msgstr ""
+msgstr "تم تغيير صلاحية %s إلى %s (%s)."
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_access_wizard__role_id
@@ -144,19 +144,19 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Add a second Platform Owner before deactivating this account."
-msgstr ""
+msgstr "أضف مالك منصة ثانياً قبل تعطيل هذا الحساب."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Add a second Platform Owner before deleting this account."
-msgstr ""
+msgstr "أضف مالك منصة ثانياً قبل حذف هذا الحساب."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Add a second Platform Owner before removing this owner's access."
-msgstr ""
+msgstr "أضف مالك منصة ثانياً قبل سحب صلاحية هذا المالك."
 
 #. module: majal_administration
 #: model:ir.model.fields,help:majal_administration.field_majal_user_access_wizard__capability_pack_ids
@@ -184,7 +184,7 @@ msgstr "العمر"
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Another recovery point is already being prepared."
-msgstr ""
+msgstr "يجري بالفعل تجهيز نقطة استرجاع أخرى."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_access_wizard_form
@@ -200,7 +200,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Archive file is missing."
-msgstr ""
+msgstr "ملف الأرشيف مفقود."
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_backup_snapshot__size_display
@@ -317,14 +317,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Checksum or archive integrity validation failed."
-msgstr ""
+msgstr "فشل التحقق من بصمة التحقق أو سلامة الأرشيف."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/wizards/user_invite_wizard.py:0
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_client_user_form
 msgid "Client User"
-msgstr ""
+msgstr "مستخدم العميل"
 
 #. module: majal_administration
 #: model:res.groups,name:majal_administration.group_user_administrator
@@ -340,7 +340,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/wizards/user_invite_wizard.py:0
 msgid "Client user %s was created."
-msgstr ""
+msgstr "تم إنشاء مستخدم العميل %s."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_restore_request_wizard_form
@@ -370,13 +370,13 @@ msgstr "مسؤول الشركة"
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Company Administrators can assign Operations Manager or lower."
-msgstr ""
+msgstr "يمكن لمسؤولي الشركة إسناد مستوى مدير العمليات أو ما دونه."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Company Administrators can only manage users in their current company."
-msgstr ""
+msgstr "لا يدير مسؤولو الشركة سوى مستخدمي شركتهم الحالية."
 
 #. module: majal_administration
 #: model:ir.model.fields,help:majal_administration.field_majal_capability_pack__platform_owner_only
@@ -493,13 +493,13 @@ msgstr "اسم قاعدة البيانات"
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Database export failed: %s"
-msgstr ""
+msgstr "فشل تصدير قاعدة البيانات: %s"
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Database, manifest and file archive passed integrity checks."
-msgstr ""
+msgstr "اجتازت قاعدة البيانات وبيان المحتويات وأرشيف الملفات فحوص السلامة."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_backup_snapshot__slot__day_before
@@ -590,7 +590,7 @@ msgstr "نوع الفعالية"
 #. odoo-python
 #: code:addons/majal_administration/models/tenant_security.py:0
 msgid "Every construction project must belong to a company."
-msgstr ""
+msgstr "يجب أن ينتمي كل مشروع إنشاءات إلى شركة."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_restore_request__state__expired
@@ -759,7 +759,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Invalid restore request marker."
-msgstr ""
+msgstr "علامة طلب الاسترجاع غير صالحة."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__inventory
@@ -811,7 +811,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Legacy / custom permissions"
-msgstr ""
+msgstr "صلاحيات قديمة / مخصصة"
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_user_invite_wizard__login
@@ -886,13 +886,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/tenant_security.py:0
 msgid "Majal security path %(path)s is invalid on %(model)s."
-msgstr ""
+msgstr "مسار أمان مجال %(path)s غير صالح على %(model)s."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/tenant_security.py:0
 msgid "Majal security path %(path)s is not relational."
-msgstr ""
+msgstr "مسار أمان مجال %(path)s ليس مسار علاقة."
 
 #. module: majal_administration
 #: model:ir.actions.server,name:majal_administration.ir_cron_majal_daily_recovery_point_ir_actions_server
@@ -962,7 +962,7 @@ msgstr "الحد الأدنى للمساحة الحرة (ميجابايت)"
 #. odoo-python
 #: code:addons/majal_administration/models/res_config_settings.py:0
 msgid "Minimum free storage must be between 64 MB and 1 TB."
-msgstr ""
+msgstr "يجب أن تكون المساحة الحرة الدنيا بين 64 ميغابايت و1 تيرابايت."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_capability_pack_list
@@ -1008,7 +1008,7 @@ msgstr "لم تُنشأ بعد"
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Offline restore %(status)s for %(slot)s."
-msgstr ""
+msgstr "الاسترجاع دون اتصال %(status)s للفتحة %(slot)s."
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_admin_audit__old_values
@@ -1019,19 +1019,19 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Only a Company Administrator can manage users."
-msgstr ""
+msgstr "لا يدير المستخدمين سوى مسؤول الشركة."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Only a Platform Owner can export a recovery archive."
-msgstr ""
+msgstr "لا يصدّر أرشيف الاسترجاع سوى مالك المنصة."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Only a verified recovery point can be restored."
-msgstr ""
+msgstr "لا يُسترجع سوى نقطة استرجاع تم التحقق منها."
 
 #. module: majal_administration
 #: model:ir.model.constraint,message:majal_administration.constraint_majal_backup_snapshot_majal_backup_slot_unique
@@ -1047,7 +1047,7 @@ msgstr "يمكن اختيار مستوى واحد فقط من كل مجموعة 
 #. odoo-python
 #: code:addons/majal_administration/wizards/restore_request_wizard.py:0
 msgid "Only verified recovery points can be restored."
-msgstr ""
+msgstr "لا تُسترجع سوى نقاط الاسترجاع التي تم التحقق منها."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.res_config_settings_view_form_majal_administration
@@ -1168,13 +1168,13 @@ msgstr "مدير المشروع / المرفق"
 #. odoo-python
 #: code:addons/majal_administration/wizards/restore_request_wizard.py:0
 msgid "Protected restore prepared from %s."
-msgstr ""
+msgstr "تم تجهيز استرجاع محمي من %s."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Protected restore request %s was cancelled."
-msgstr ""
+msgstr "تم إلغاء طلب الاسترجاع المحمي %s."
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_capability_pack__group_ids
@@ -1240,7 +1240,7 @@ msgstr "نقطة الاستعادة"
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Recovery point %s was verified."
-msgstr ""
+msgstr "تم التحقق من نقطة الاسترجاع %s."
 
 #. module: majal_administration
 #. odoo-python
@@ -1328,13 +1328,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Select a valid Majal access level."
-msgstr ""
+msgstr "اختر مستوى صلاحية مجال صالحاً."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "Select a valid workspace access scope."
-msgstr ""
+msgstr "اختر نطاق وصول صالحاً لمساحة العمل."
 
 #. module: majal_administration
 #. odoo-python
@@ -1413,7 +1413,7 @@ msgstr "كلمة المرور المؤقتة"
 #. odoo-python
 #: code:addons/majal_administration/wizards/restore_request_wizard.py:0
 msgid "The database name does not match."
-msgstr ""
+msgstr "اسم قاعدة البيانات غير مطابق."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_access_wizard_form
@@ -1433,19 +1433,19 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "The recovery archive failed its integrity test."
-msgstr ""
+msgstr "لم يجتز أرشيف الاسترجاع فحص السلامة."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "The recovery archive file is missing."
-msgstr ""
+msgstr "ملف أرشيف الاسترجاع مفقود."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "The recovery directory must be inside the protected Majal data volume."
-msgstr ""
+msgstr "يجب أن يكون مجلد الاسترجاع داخل وحدة بيانات مجال المحمية."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_restore_request_wizard_form
@@ -1466,7 +1466,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "There is not enough free protected storage to create a recovery point."
-msgstr ""
+msgstr "لا توجد مساحة محمية حرة كافية لإنشاء نقطة استرجاع."
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_backup_snapshot_form
@@ -1484,7 +1484,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "This recovery point failed verification."
-msgstr ""
+msgstr "لم تجتز نقطة الاسترجاع هذه التحقق."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_backup_snapshot__slot__quarterly
@@ -1526,7 +1526,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/wizards/restore_request_wizard.py:0
 msgid "Type RESTORE ERP exactly to continue."
-msgstr ""
+msgstr "اكتب RESTORE ERP بالضبط للمتابعة."
 
 #. module: majal_administration
 #: model:ir.model.fields,field_description:majal_administration.field_majal_restore_request_wizard__database_confirmation
@@ -1537,7 +1537,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Unknown recovery point slot."
-msgstr ""
+msgstr "فتحة نقطة استرجاع غير معروفة."
 
 #. module: majal_administration
 #. odoo-python
@@ -1599,13 +1599,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Verified recovery point created (%s)."
-msgstr ""
+msgstr "تم إنشاء نقطة استرجاع تم التحقق منها (%s)."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_config_settings.py:0
 msgid "Verified recovery point ready"
-msgstr ""
+msgstr "نقطة استرجاع تم التحقق منها وجاهزة"
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_backup_snapshot_form
@@ -1616,7 +1616,7 @@ msgstr "إعادة التحقق"
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "Verify this recovery point before downloading it."
-msgstr ""
+msgstr "تحقق من نقطة الاسترجاع هذه قبل تنزيلها."
 
 #. module: majal_administration
 #: model:ir.model.fields.selection,name:majal_administration.selection__majal_capability_pack__family__website
@@ -1664,37 +1664,37 @@ msgstr "أمس"
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "You are not allowed to administer client users."
-msgstr ""
+msgstr "لا يُسمح لك بإدارة مستخدمي العملاء."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/backup_snapshot.py:0
 msgid "You are not allowed to create recovery points."
-msgstr ""
+msgstr "لا يُسمح لك بإنشاء نقاط استرجاع."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "You cannot change an account at or above your own access level."
-msgstr ""
+msgstr "لا يمكنك تغيير حساب بمستوى صلاحية مساوٍ لمستواك أو أعلى منه."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "You cannot deactivate your own account."
-msgstr ""
+msgstr "لا يمكنك تعطيل حسابك."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "You cannot manage a user who belongs to another company."
-msgstr ""
+msgstr "لا يمكنك إدارة مستخدم يتبع شركة أخرى."
 
 #. module: majal_administration
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "deactivated"
-msgstr ""
+msgstr "التعطيل"
 
 #. module: majal_administration
 #: model_terms:ir.ui.view,arch_db:majal_administration.view_majal_user_invite_wizard_form
@@ -1705,4 +1705,64 @@ msgstr ""
 #. odoo-python
 #: code:addons/majal_administration/models/res_users.py:0
 msgid "reactivated"
-msgstr ""
+msgstr "إعادة التفعيل"
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "Only a Platform Owner can put administration permissions "
+msgstr "لا يمنح صلاحيات الإدارة سوى مالك المنصة "
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "The standard levels are read-only. Use "
+msgstr "المستويات القياسية للقراءة فقط. استخدم "
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/wizards/user_invite_wizard.py:0
+msgid "The temporary password must be at least 12 characters and "
+msgstr "يجب ألا تقل كلمة المرور المؤقتة عن 12 حرفاً وأن "
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "This company already has a level for %s."
+msgstr "لدى هذه الشركة مستوى بالفعل لـ %s."
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "This level already belongs to a company."
+msgstr "هذا المستوى يخص شركة بالفعل."
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/res_users.py:0
+msgid "Use Majal Administration to change access. Raw technical "
+msgstr "استخدم إدارة مجال لتغيير الصلاحيات. الصلاحيات التقنية الخام "
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "You are not allowed to change access levels."
+msgstr "لا يُسمح لك بتغيير مستويات الصلاحية."
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "You can only change the levels of your own company."
+msgstr "لا يمكنك تغيير مستويات سوى شركتك."
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "You can only grant permissions you hold yourself. You do "
+msgstr "لا يمكنك منح سوى الصلاحيات التي تملكها بنفسك. أنت "
+
+#. module: majal_administration
+#. odoo-python
+#: code:addons/majal_administration/models/access_role.py:0
+msgid "You cannot change a level at or above your own."
+msgstr "لا يمكنك تغيير مستوى مساوٍ لمستواك أو أعلى منه."

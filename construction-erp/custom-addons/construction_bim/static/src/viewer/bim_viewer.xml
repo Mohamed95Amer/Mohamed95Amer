@@ -8,8 +8,10 @@
                     <h1 t-esc="state.info.name"/>
                     <small>
                         <t t-esc="state.info.project"/> ·
-                        <t t-esc="state.info.discipline"/> ·
-                        rev <t t-esc="state.info.revision"/>
+                        <!-- " · rev " stays on one line: Owl looks a text node
+                             up with its own whitespace intact, so wrapping it
+                             here would strand the Arabic entry. -->
+                        <t t-esc="state.info.discipline"/> · rev <t t-esc="state.info.revision"/>
                     </small>
                 </div>
                 <div class="o_bim_tools" t-if="!state.librariesMissing and !state.error">
@@ -123,9 +125,7 @@
                         <i class="fa fa-shield"/>
                         <span>
                             <strong>Compatibility view</strong>
-                            Your browser blocked GPU rendering. The model,
-                            navigation, status colours and linked records remain
-                            available.
+                            Your browser blocked GPU rendering. The model, navigation, status colours and linked records remain available.
                         </span>
                     </div>
 
@@ -138,9 +138,7 @@
                         <i class="fa fa-download"/>
                         <h2>The 3D libraries are not installed</h2>
                         <p>
-                            They are fetched by a setup script rather than
-                            committed — web-ifc's browser build alone is 6 MB.
-                            Run this once, then reload:
+                            They are fetched by a setup script rather than committed — web-ifc's browser build alone is 6 MB. Run this once, then reload:
                         </p>
                         <pre>Windows:
 powershell -ExecutionPolicy Bypass -File scripts\fetch-bim-libs.ps1
@@ -152,8 +150,7 @@ Mac or Linux:
                             <i class="fa fa-refresh"/> Reload viewer
                         </button>
                         <p class="o_bim_muted">
-                            Everything else on this model — the element index and
-                            its linked records — works without them.
+                            Everything else on this model — the element index and its linked records — works without them.
                         </p>
                     </div>
 
@@ -182,8 +179,7 @@ Mac or Linux:
                         <span class="o_bim_eyebrow">CLASH TEST</span>
                         <strong t-esc="state.clashTest.name"/>
                         <small>
-                            against <t t-esc="state.clashTest.model_b.name"/>,
-                            tolerance <t t-esc="state.clashTest.tolerance"/>
+                            against <t t-esc="state.clashTest.model_b.name"/>, tolerance <t t-esc="state.clashTest.tolerance"/>
                         </small>
                         <div class="o_bim_clash_actions">
                             <button class="btn btn-sm btn-primary"
@@ -424,9 +420,7 @@ Mac or Linux:
                                 No pin matches the current filter.
                             </p>
                             <p t-else="">
-                                No pins yet. Click <strong>Pin</strong>, then click
-                                the spot on the model — the task, RFI or defect is
-                                created where you put it.
+                                No pins yet. Click <strong>Pin</strong>, then click the spot on the model — the task, RFI or defect is created where you put it.
                             </p>
                         </div>
                     </t>
@@ -454,9 +448,7 @@ Mac or Linux:
                             No element matches the current filter.
                         </p>
                         <p t-else="">
-                            No elements indexed for this model yet. Upload an
-                            IFC file and index it, and every element in it
-                            appears here.
+                            No elements indexed for this model yet. Upload an IFC file and index it, and every element in it appears here.
                         </p>
                     </div>
                 </aside>

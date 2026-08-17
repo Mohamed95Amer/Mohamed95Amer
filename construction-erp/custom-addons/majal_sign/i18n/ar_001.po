@@ -58,3 +58,116 @@ msgstr "موقّع"
 msgid "Cancelled"
 msgstr "ملغى"
 
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/document.py:0
+msgid "A current revision is required first."
+msgstr "يلزم وجود إصدار حالي أولاً."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "A signature can only be requested for an approved document."
+msgstr "لا يمكن طلب التوقيع إلا لمستند معتمد."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "A signed request cannot be edited."
+msgstr "لا يمكن تعديل طلب تم توقيعه."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Add a note explaining the decline."
+msgstr "أضف ملاحظة توضح سبب الرفض."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Add a signature before confirming."
+msgstr "أضف توقيعاً قبل التأكيد."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/document.py:0
+msgid "Only approved or issued documents can be sent for signature."
+msgstr "لا تُرسل للتوقيع إلا المستندات المعتمدة أو الصادرة."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Only pending requests can be cancelled."
+msgstr "لا يمكن إلغاء سوى الطلبات المعلقة."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Only the current approved revision may be signed."
+msgstr "لا يُوقَّع سوى الإصدار المعتمد الحالي."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Only the named signer may provide a signature."
+msgstr "لا يقدم التوقيع سوى الموقِّع المُسمّى."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Only the named signer may sign this request."
+msgstr "لا يوقّع هذا الطلب سوى الموقِّع المُسمّى."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Only the requester or a Platform Owner may cancel."
+msgstr "لا يلغي الطلب سوى مقدّمه أو مالك المنصة."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/document.py:0
+msgid "Request Majal Signature"
+msgstr "طلب توقيع مجال"
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/document.py:0
+msgid "Signature Requests — %s"
+msgstr "طلبات التوقيع — %s"
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Signed requests are immutable and cannot be deleted."
+msgstr "الطلبات الموقّعة غير قابلة للتغيير ولا يمكن حذفها."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Signed revision R%02d. Evidence checksum: %s"
+msgstr "تم توقيع الإصدار R%02d. بصمة التحقق: %s"
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "The document revision has changed."
+msgstr "تغيّر إصدار المستند."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "The signature must reference a revision of this document."
+msgstr "يجب أن يشير التوقيع إلى إصدار من هذا المستند."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "This signature request is no longer pending."
+msgstr "لم يعد طلب التوقيع هذا معلقاً."
+
+#. module: majal_sign
+#. odoo-python
+#: code:addons/majal_sign/models/sign_request.py:0
+msgid "Use the signing workflow to change this request."
+msgstr "استخدم سير عمل التوقيع لتغيير هذا الطلب."

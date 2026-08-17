@@ -114,3 +114,195 @@ msgstr "صادر"
 #. module: majal_documents
 msgid "Rejected"
 msgstr "مرفوض"
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "A manager must reopen a controlled document."
+msgstr "يجب أن يعيد المدير فتح المستند الخاضع للرقابة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "A manager must reopen a frozen sheet."
+msgstr "يجب أن يعيد المدير فتح الجدول المجمّد."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "A submitter cannot approve their own document."
+msgstr "لا يجوز لمن قدّم المستند أن يعتمده."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Approve the document before issuing it."
+msgstr "اعتمد المستند قبل إصداره."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Approved content cannot be edited. Reset it to draft first."
+msgstr "لا يمكن تعديل المحتوى المعتمد. أعده إلى المسودة أولاً."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Approved exact revision R%02d (%s)."
+msgstr "اعتُمد الإصدار R%02d بالضبط (%s)."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Choose a required approver."
+msgstr "اختر معتمداً مطلوباً."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Document versions are immutable."
+msgstr "إصدارات المستند غير قابلة للتغيير."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Document versions cannot be deleted."
+msgstr "لا يمكن حذف إصدارات المستند."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Frozen sheet lines cannot be changed."
+msgstr "لا يمكن تغيير بنود الجدول المجمّد."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Frozen sheet lines cannot be deleted."
+msgstr "لا يمكن حذف بنود الجدول المجمّد."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Frozen sheets cannot be edited."
+msgstr "لا يمكن تعديل الجداول المجمّدة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Frozen sheets cannot receive new lines."
+msgstr "لا يمكن إضافة بنود جديدة إلى جدول مجمّد."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "New"
+msgstr "جديد"
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Only a frozen sheet can start a new revision."
+msgstr "لا يبدأ إصداراً جديداً سوى جدول مجمّد."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Only draft or rejected documents can be submitted."
+msgstr "لا يُقدَّم سوى المستندات في حالة المسودة أو المرفوضة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Only draft sheets can be frozen."
+msgstr "لا تُجمَّد سوى الجداول في حالة المسودة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Only editable documents can apply a template."
+msgstr "لا يطبق القالب سوى المستندات القابلة للتعديل."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Only submitted documents can be approved."
+msgstr "لا يُعتمد سوى المستندات المقدَّمة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Only submitted documents can be rejected."
+msgstr "لا يُرفض سوى المستندات المقدَّمة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Only the named approver or a Platform Owner may act."
+msgstr "لا يتصرف سوى المعتمد المُسمّى أو مالك المنصة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Revision R%02d was submitted for approval."
+msgstr "قُدِّم الإصدار R%02d للاعتماد."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Revisions — %s"
+msgstr "الإصدارات — %s"
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Select a template first."
+msgstr "اختر قالباً أولاً."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Submitted or issued documents cannot be deleted."
+msgstr "لا يمكن حذف المستندات المقدَّمة أو الصادرة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "The approved checksum no longer matches the current revision."
+msgstr "لم تعد بصمة التحقق المعتمدة مطابقة للإصدار الحالي."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "The submitted version is missing."
+msgstr "النسخة المقدَّمة مفقودة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "The submitter and required approver must be different users."
+msgstr "يجب أن يكون مقدّم المستند والمعتمد المطلوب شخصين مختلفين."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "This document cannot be reset to draft."
+msgstr "لا يمكن إعادة هذا المستند إلى المسودة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document_template.py:0
+msgid "Unsupported template placeholders: %s"
+msgstr "عناصر نائبة غير مدعومة في القالب: %s"
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/document.py:0
+msgid "Use the document workflow buttons to change status."
+msgstr "استخدم أزرار سير عمل المستند لتغيير الحالة."
+
+#. module: majal_documents
+#. odoo-python
+#: code:addons/majal_documents/models/sheet.py:0
+msgid "Use the sheet workflow buttons."
+msgstr "استخدم أزرار سير عمل الجدول."

@@ -115,3 +115,129 @@ msgstr "مسح بيانات هذا الجهاز"
 #: model_terms:ir.ui.view,arch_db:majal_field_offline.field_app
 msgid "Back"
 msgstr "رجوع"
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "A defect title is required."
+msgstr "عنوان العيب مطلوب."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Daily labor hours must be between 0 and 24."
+msgstr "يجب أن تكون ساعات العمل اليومية بين 0 و24."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Invalid defect severity."
+msgstr "درجة خطورة العيب غير صالحة."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Invalid inspection answer."
+msgstr "إجابة الفحص غير صالحة."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Invalid offline operation identifier."
+msgstr "معرّف العملية دون اتصال غير صالح."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Invalid weather value."
+msgstr "قيمة الطقس غير صالحة."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Offline defects may only be started or marked ready."
+msgstr "لا يمكن دون اتصال سوى بدء العيوب أو وضع علامة جاهز عليها."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Offline photos must be smaller than 6 MB."
+msgstr "يجب أن يقل حجم الصور دون اتصال عن 6 ميغابايت."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Photo and signature answers must be completed online."
+msgstr "يجب إكمال إجابات الصور والتوقيع أثناء الاتصال بالإنترنت."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "Sync batches may contain at most 100 operations."
+msgstr "لا تتجاوز دفعة المزامنة 100 عملية."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The asset no longer exists."
+msgstr "لم يعد هذا الأصل موجوداً."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The assigned defect no longer exists."
+msgstr "لم يعد العيب المسند موجوداً."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The checklist item no longer exists."
+msgstr "لم يعد بند قائمة التحقق موجوداً."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The inspection answer no longer exists."
+msgstr "لم تعد إجابة الفحص موجودة."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The offline photo is invalid."
+msgstr "الصورة المحفوظة دون اتصال غير صالحة."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The server record changed after it was saved for offline work."
+msgstr "تغيّر السجل على الخادم بعد حفظه للعمل دون اتصال."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "The work order no longer exists."
+msgstr "لم يعد أمر العمل موجوداً."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "This asset is not assigned to you."
+msgstr "هذا الأصل غير مسند إليك."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "This inspection is no longer editable."
+msgstr "لم يعد هذا الفحص قابلاً للتعديل."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "This operation is not allowed offline."
+msgstr "هذه العملية غير مسموح بها دون اتصال."
+
+#. module: majal_field_offline
+#. odoo-python
+#: code:addons/majal_field_offline/models/offline_operation.py:0
+msgid "This record is not assigned to you."
+msgstr "هذا السجل غير مسند إليك."

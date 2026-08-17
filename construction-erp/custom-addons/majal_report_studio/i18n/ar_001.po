@@ -28,3 +28,20 @@ msgstr "التقرير"
 msgid "Category"
 msgstr "الفئة"
 
+#. module: majal_report_studio
+#. odoo-python
+#: code:addons/majal_report_studio/models/report_catalog.py:0
+msgid "Open the source register, choose a record, and use its "
+msgstr "افتح السجل المصدر، واختر قيداً، ثم استخدم "
+
+#. module: majal_report_studio
+#. odoo-python
+#: code:addons/majal_report_studio/models/report_catalog.py:0
+msgid "Records for %s"
+msgstr "قيود %s"
+
+#. module: majal_report_studio
+#. odoo-python
+#: code:addons/majal_report_studio/models/report_catalog.py:0
+msgid "This report has no source record type."
+msgstr "لا يوجد لهذا التقرير نوع قيد مصدر."

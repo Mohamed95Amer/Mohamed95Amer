@@ -74,7 +74,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_drawing/models/transmittal.py:0
 msgid "A transmittal with no drawings on it records nothing."
-msgstr ""
+msgstr "كتاب إحالة بلا رسومات لا يوثّق شيئاً."
 
 #. module: construction_drawing
 #: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_form
@@ -360,7 +360,7 @@ msgstr "الرسومات الصادرة"
 #. odoo-python
 #: code:addons/construction_drawing/models/transmittal.py:0
 msgid "Drawings — %s"
-msgstr ""
+msgstr "الرسومات — %s"
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__electrical
@@ -522,7 +522,7 @@ msgstr "صادر إلى"
 #. odoo-python
 #: code:addons/construction_drawing/models/transmittal.py:0
 msgid "Issued to %(who)s %(how)s — %(count)s drawing(s) %(purpose)s."
-msgstr ""
+msgstr "صدر إلى %(who)s %(how)s — %(count)s رسم/رسومات %(purpose)s."
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__landscape
@@ -650,13 +650,13 @@ msgstr "يمكن رفع ملفات PDF فقط للوحات الرسومات."
 #. odoo-python
 #: code:addons/construction_drawing/models/transmittal.py:0
 msgid "Only a draft transmittal can be issued."
-msgstr ""
+msgstr "لا يمكن إصدار سوى كتاب إحالة في حالة المسودة."
 
 #. module: construction_drawing
 #. odoo-python
 #: code:addons/construction_drawing/models/transmittal.py:0
 msgid "Only an issued transmittal can be acknowledged."
-msgstr ""
+msgstr "لا يمكن الإقرار باستلام سوى كتاب إحالة صادر."
 
 #. module: construction_drawing
 #: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__other
@@ -918,7 +918,7 @@ msgstr "الإحالات"
 #. odoo-python
 #: code:addons/construction_drawing/models/transmittal.py:0
 msgid "Transmittals — %s"
-msgstr ""
+msgstr "كتب الإحالة — %s"
 
 #. module: construction_drawing
 #: model:ir.model.fields,help:construction_drawing.field_construction_transmittal__activity_exception_decoration
@@ -1008,3 +1008,75 @@ msgstr "صفحة"
 #: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
 msgid "Scroll together"
 msgstr "تمرير متزامن"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "%(doc)s has already been issued. What was sent, to whom "
+msgstr "تم إصدار %(doc)s بالفعل. ما أُرسل، وإلى من "
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Both panes are showing the same revision."
+msgstr "كلا الجزأين يعرضان الإصدار نفسه."
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/drawing.py:0
+msgid "Cannot delete the current revision while superseded "
+msgstr "لا يمكن حذف الإصدار الحالي بينما توجد إصدارات مستبدلة "
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.js:0
+msgid "Could not render %s."
+msgstr "تعذر عرض %s."
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Loading the sheets…"
+msgstr "جارٍ تحميل اللوحات…"
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Open"
+msgstr "فتح"
+
+#. module: construction_drawing
+#. odoo-python
+#: code:addons/construction_drawing/models/transmittal.py:0
+msgid "The recipient has confirmed receipt. Cancelling would "
+msgstr "أكد المستلم الاستلام. الإلغاء من شأنه "
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "The revisions could not be loaded."
+msgstr "تعذر تحميل الإصدارات."
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "This drawing has no revisions yet."
+msgstr "لا توجد إصدارات لهذا الرسم بعد."
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "This revision has no sheet PDF."
+msgstr "لا يوجد ملف PDF للوحة هذا الإصدار."
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Zoom in"
+msgstr "تكبير"
+
+#. module: construction_drawing
+#. odoo-javascript
+#: code:addons/construction_drawing/static/src/revision_compare/revision_compare.xml:0
+msgid "Zoom out"
+msgstr "تصغير"

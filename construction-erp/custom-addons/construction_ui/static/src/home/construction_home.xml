@@ -100,8 +100,7 @@
                 <span class="o_construction_tip_icon"><i class="fa fa-star-o"/></span>
                 <div>
                     <strong>Build your personal Majal workspace</strong>
-                    <p>Save filtered records, charts and analysis so your most important views
-                       are always one click away.</p>
+                    <p>Save filtered records, charts and analysis so your most important views are always one click away.</p>
                 </div>
                 <button class="btn btn-link"
                         t-on-click="() => this.openAction('construction_ui.action_construction_my_dashboard')">

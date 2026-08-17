@@ -25,31 +25,31 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bcf.py:0
 msgid "%(count)s topic(s) imported from %(name)s."
-msgstr ""
+msgstr "تم استيراد %(count)s موضوع من %(name)s."
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "%(found)s clash(es) found, %(created)s new."
-msgstr ""
+msgstr "تم العثور على %(found)s تعارض، منها %(created)s جديد."
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "%s could not be downloaded."
-msgstr ""
+msgstr "تعذر تنزيل %s."
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "%s created and pinned."
-msgstr ""
+msgstr "تم إنشاء %s وتثبيته."
 
 #. module: construction_bim
 #. odoo-python
 #: code:addons/construction_bim/models/bim_model.py:0
 msgid "%s issue(s) exported as BCF 2.1."
-msgstr ""
+msgstr "تم تصدير %s ملاحظة بصيغة BCF 2.1."
 
 #. module: construction_bim
 #. odoo-javascript
@@ -153,7 +153,7 @@ msgstr "الكل"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "All storeys"
-msgstr ""
+msgstr "كل الطوابق"
 
 #. module: construction_bim
 #: model:ir.model.constraint,message:construction_bim.constraint_construction_bim_element_global_id_per_model
@@ -201,7 +201,7 @@ msgstr "المسند إليّ"
 #. odoo-python
 #: code:addons/construction_bim/models/bim_model.py:0
 msgid "Attach an IFC file first."
-msgstr ""
+msgstr "أرفق ملف IFC أولاً."
 
 #. modules: construction_bim, construction_form
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_attachment_count
@@ -277,7 +277,7 @@ msgstr "عناصر الموديل"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "BIM MODEL"
-msgstr ""
+msgstr "نموذج معلومات البناء"
 
 #. module: construction_bim
 #: model:ir.model,name:construction_bim.model_construction_bim_model
@@ -372,13 +372,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Building the model…"
-msgstr ""
+msgstr "جارٍ بناء النموذج…"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "CLASH TEST"
-msgstr ""
+msgstr "فحص التعارض"
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_x
@@ -458,13 +458,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bim_compare.py:0
 msgid "Choose the revision to compare against."
-msgstr ""
+msgstr "اختر الإصدار المراد المقارنة به."
 
 #. module: construction_bim
 #. odoo-python
 #: code:addons/construction_bim/models/bim_compare.py:0
 msgid "Choose two different revisions."
-msgstr ""
+msgstr "اختر إصدارين مختلفين."
 
 #. module: construction_bim
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__civil
@@ -499,7 +499,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bim_clash.py:0
 msgid "Clash: %s"
-msgstr ""
+msgstr "تعارض: %s"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -516,13 +516,13 @@ msgstr "التعارضات"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Click a point on the model to drop the pin."
-msgstr ""
+msgstr "انقر نقطة على النموذج لوضع المؤشر."
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Click the model to drop a pin"
-msgstr ""
+msgstr "انقر النموذج لوضع مؤشر"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
@@ -617,13 +617,13 @@ msgstr "الحالي "
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Cut height"
-msgstr ""
+msgstr "ارتفاع المقطع"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Cut through the model"
-msgstr ""
+msgstr "عمل مقطع في النموذج"
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__date_required
@@ -684,13 +684,13 @@ msgstr "منجز"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Downloading the IFC file…"
-msgstr ""
+msgstr "جارٍ تنزيل ملف IFC…"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Drop pin"
-msgstr ""
+msgstr "وضع مؤشر"
 
 #. module: construction_bim
 #: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__electrical
@@ -775,7 +775,7 @@ msgstr "حجم الملف"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Fit"
-msgstr ""
+msgstr "ملاءمة"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -811,7 +811,7 @@ msgstr "أيقونة من Font awesome مثال: fa-tasks "
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Frame the selection"
-msgstr ""
+msgstr "تأطير التحديد"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
@@ -827,7 +827,7 @@ msgstr "من المراجعة"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Give the pin a name."
-msgstr ""
+msgstr "أعطِ المؤشر اسماً."
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__global_id
@@ -849,7 +849,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "GlobalId"
-msgstr ""
+msgstr "المعرّف العام"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
@@ -912,13 +912,13 @@ msgstr "إخفاء "
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Hide everything except the selection"
-msgstr ""
+msgstr "إخفاء كل شيء عدا التحديد"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Hide the selected element"
-msgstr ""
+msgstr "إخفاء العنصر المحدد"
 
 #. modules: construction_bim, construction_form
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__id
@@ -951,7 +951,7 @@ msgstr "نوع عنصر IFC"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "IFC type"
-msgstr ""
+msgstr "نوع IFC"
 
 #. modules: construction_bim, construction_form
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_exception_icon
@@ -1017,7 +1017,7 @@ msgstr "الموضوعات المستوردة"
 #. odoo-python
 #: code:addons/construction_bim/models/bim_pin.py:0
 msgid "Imported topic"
-msgstr ""
+msgstr "موضوع مستورد"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
@@ -1079,7 +1079,7 @@ msgstr "متأخر"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Isolate"
-msgstr ""
+msgstr "عزل"
 
 #. module: construction_bim
 #: model:ir.model.fields,help:construction_bim.field_construction_bim_pin__global_id
@@ -1182,13 +1182,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Loading %s…"
-msgstr ""
+msgstr "جارٍ تحميل %s…"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Loading the model to test against…"
-msgstr ""
+msgstr "جارٍ تحميل النموذج المراد الفحص مقابله…"
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__measure
@@ -1293,13 +1293,13 @@ msgstr "الموعد النهائي لنشاطاتي "
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "NEW PIN"
-msgstr ""
+msgstr "مؤشر جديد"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "NOTHING LINKED"
-msgstr ""
+msgstr "لا يوجد ارتباط"
 
 #. modules: construction_bim, construction_form
 #. odoo-javascript
@@ -1357,19 +1357,19 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "No pin matches the current filter."
-msgstr ""
+msgstr "لا يطابق أي مؤشر عامل التصفية الحالي."
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "No pins yet. Click"
-msgstr ""
+msgstr "لا توجد مؤشرات بعد. انقر"
 
 #. module: construction_bim
 #. odoo-python
 #: code:addons/construction_bim/models/bcf.py:0
 msgid "No topics could be read from that archive."
-msgstr ""
+msgstr "تعذرت قراءة أي مواضيع من هذا الأرشيف."
 
 #. module: construction_bim
 #. odoo-python
@@ -1456,13 +1456,13 @@ msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "OVERLAID"
-msgstr ""
+msgstr "مركّب"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Object type"
-msgstr ""
+msgstr "نوع الكائن"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -1552,7 +1552,7 @@ msgstr "إضافة نموذج فوقه..."
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Parsing geometry…"
-msgstr ""
+msgstr "جارٍ تحليل الهندسة…"
 
 #. module: construction_bim
 #: model:ir.model.fields,help:construction_bim.field_construction_bim_model__ball_in_court_id
@@ -1697,7 +1697,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bim_model.py:0
 msgid "Quantity Takeoff — %s"
-msgstr ""
+msgstr "حصر الكميات — %s"
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_volume
@@ -1729,7 +1729,7 @@ msgstr "إصدار طلب معلومات"
 #. odoo-python
 #: code:addons/construction_bim/models/bim_clash.py:0
 msgid "Raised from clash test %s."
-msgstr ""
+msgstr "مُنشأ من فحص التعارض %s."
 
 #. modules: construction_bim, construction_form
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__rating_ids
@@ -1744,7 +1744,7 @@ msgstr "التقييمات "
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Reading the model…"
-msgstr ""
+msgstr "جارٍ قراءة النموذج…"
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__reference
@@ -1889,13 +1889,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Show everything again"
-msgstr ""
+msgstr "إظهار كل شيء من جديد"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "Show the model as it should stand on a date"
-msgstr ""
+msgstr "عرض النموذج كما ينبغي أن يكون في تاريخ محدد"
 
 #. module: construction_bim
 #: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__overlap
@@ -1939,7 +1939,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bim_pin.py:0
 msgid "Status: %s"
-msgstr ""
+msgstr "الحالة: %s"
 
 #. module: construction_bim
 #: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__step_id
@@ -1997,7 +1997,7 @@ msgstr "اختبار"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "Testing…"
-msgstr ""
+msgstr "جارٍ الفحص…"
 
 #. module: construction_bim
 #. odoo-python
@@ -2010,37 +2010,37 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bcf.py:0
 msgid "That file is not a BCF archive (a BCF is a zip)."
-msgstr ""
+msgstr "هذا الملف ليس أرشيف BCF (وأرشيف BCF ملف مضغوط)."
 
 #. module: construction_bim
 #. odoo-python
 #: code:addons/construction_bim/models/bcf.py:0
 msgid "That file is too large to be a BCF archive."
-msgstr ""
+msgstr "حجم هذا الملف أكبر من أن يكون أرشيف BCF."
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "The 3D libraries are not installed"
-msgstr ""
+msgstr "مكتبات العرض ثلاثي الأبعاد غير مثبتة"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
 msgid "The IFC file could not be downloaded."
-msgstr ""
+msgstr "تعذر تنزيل ملف IFC."
 
 #. module: construction_bim
 #. odoo-python
 #: code:addons/construction_bim/models/bim_model.py:0
 msgid "The file could not be read as IFC: %s"
-msgstr ""
+msgstr "تعذرت قراءة الملف بصيغة IFC: %s"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "The model could not be drawn"
-msgstr ""
+msgstr "تعذر رسم النموذج"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
@@ -2078,7 +2078,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/construction_bim/models/bim_model.py:0
 msgid "This model has no pins to export."
-msgstr ""
+msgstr "لا توجد مؤشرات في هذا النموذج للتصدير."
 
 #. module: construction_bim
 #. odoo-python
@@ -2214,13 +2214,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "What is it?"
-msgstr ""
+msgstr "ما هو؟"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "What needs doing here"
-msgstr ""
+msgstr "ما المطلوب عمله هنا"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
@@ -2238,13 +2238,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "against"
-msgstr ""
+msgstr "مقابل"
 
 #. module: construction_bim
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "e.g. Crack at third window"
-msgstr ""
+msgstr "مثال: شرخ عند النافذة الثالثة"
 
 #. module: construction_bim
 #: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
@@ -2266,7 +2266,7 @@ msgstr "عنصر"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "found ·"
-msgstr ""
+msgstr "تم العثور ·"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -2278,7 +2278,7 @@ msgstr "مرتبط"
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "new ·"
-msgstr ""
+msgstr "جديد ·"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -2302,7 +2302,7 @@ msgstr "الخصائص "
 #. odoo-javascript
 #: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
 msgid "resolved"
-msgstr ""
+msgstr "تمت المعالجة"
 
 #. module: construction_bim
 #. odoo-javascript
@@ -2323,3 +2323,267 @@ msgid ""
 "·\n"
 "                        rev"
 msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "%(a)s clashes with %(b)s by %(overlap).3f at "
+msgstr "يتعارض %(a)s مع %(b)s بمقدار %(overlap).3f عند "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ", then click the spot on the model — the task, RFI or defect is created where you put it."
+msgstr "، ثم انقر الموضع على النموذج — تُنشأ المهمة أو طلب المعلومات أو العيب في المكان الذي حددته."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ", tolerance"
+msgstr "، التفاوت"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "A clash test compares two models. Testing a model against "
+msgstr "يقارن فحص التعارض نموذجين. فحص نموذج مقابل "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Back to model"
+msgstr "العودة إلى النموذج"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "Clash test run: %(found)s found, %(created)s new, "
+msgstr "نتيجة فحص التعارض: %(found)s تعارض، منها %(created)s جديد، "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Colour by element class"
+msgstr "التلوين حسب فئة العنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Colour by record status"
+msgstr "التلوين حسب حالة السجل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Compatibility view"
+msgstr "عرض التوافق"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Details"
+msgstr "التفاصيل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Draw the outline of every element"
+msgstr "رسم حدود كل عنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Edges"
+msgstr "الحواف"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Everything else on this model — the element index and its linked records — works without them."
+msgstr "كل ما عدا ذلك في هذا النموذج — فهرس العناصر والسجلات المرتبطة به — يعمل بدونها."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Full 3D"
+msgstr "ثلاثي الأبعاد الكامل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "IN THIS MODEL"
+msgstr "في هذا النموذج"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "No element matches the current filter."
+msgstr "لا يطابق أي عنصر عامل التصفية الحالي."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "No elements indexed for this model yet. Upload an IFC file and index it, and every element in it appears here."
+msgstr "لم تُفهرس أي عناصر لهذا النموذج بعد. ارفع ملف IFC وافهرسه، وسيظهر هنا كل عنصر فيه."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "No topics found. A BCF archive holds one folder per topic, "
+msgstr "لم يُعثر على مواضيع. يحتوي أرشيف BCF على مجلد لكل موضوع، "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Nothing attached to this element yet."
+msgstr "لا شيء مرفق بهذا العنصر بعد."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open element"
+msgstr "فتح العنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open linked records and model details"
+msgstr "فتح السجلات المرتبطة وتفاصيل النموذج"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Original colours from the file"
+msgstr "الألوان الأصلية من الملف"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Photo (optional)"
+msgstr "صورة (اختياري)"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "Quantities come from the IfcElementQuantity sets an "
+msgstr "تأتي الكميات من مجموعات IfcElementQuantity التي "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Reload viewer"
+msgstr "إعادة تحميل العارض"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Safe view"
+msgstr "العرض الآمن"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Selected photo"
+msgstr "الصورة المختارة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Shaded — one material"
+msgstr "مظلل — خامة واحدة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Show all"
+msgstr "إظهار الكل"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "That archive expands to far more than a BCF "
+msgstr "يتوسع هذا الأرشيف إلى أكبر بكثير من أرشيف BCF "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "That file is not an image."
+msgstr "هذا الملف ليس صورة."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "That photo is larger than 12MB."
+msgstr "حجم الصورة يتجاوز 12 ميغابايت."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "They are fetched by a setup script rather than committed — web-ifc's browser build alone is 6 MB. Run this once, then reload:"
+msgstr "تُجلب هذه المكتبات عبر سكربت إعداد بدلاً من إدراجها في المستودع — فنسخة web-ifc للمتصفح وحدها 6 ميغابايت. شغّل هذا مرة واحدة ثم أعد التحميل:"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "This browser could not create either a WebGL or Canvas 2D context."
+msgstr "تعذر على هذا المتصفح إنشاء سياق WebGL أو Canvas 2D."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model carries no quantities"
+msgstr "لا يحمل هذا النموذج أي كميات"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model is %(size)s MB. Split it by discipline before "
+msgstr "حجم هذا النموذج %(size)s ميغابايت. قسّمه حسب التخصص قبل "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Try again"
+msgstr "أعد المحاولة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Unlinked"
+msgstr "غير مرتبط"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Use a graphics-safe model view"
+msgstr "استخدام عرض آمن للرسوميات"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "What the colours mean"
+msgstr "دلالة الألوان"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Windows: powershell -ExecutionPolicy Bypass -File scripts\\fetch-bim-libs.ps1 Mac or Linux: ./scripts/fetch-bim-libs.sh"
+msgstr "ويندوز: powershell -ExecutionPolicy Bypass -File scripts\\fetch-bim-libs.ps1 ماك أو لينكس: ./scripts/fetch-bim-libs.sh"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Your browser blocked GPU rendering. The model, navigation, status colours and linked records remain available."
+msgstr "حظر متصفحك العرض عبر معالج الرسوميات. يبقى النموذج والتنقل وألوان الحالة والسجلات المرتبطة متاحة."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "· rev"
+msgstr "· إصدار"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "—"
+msgstr "—"

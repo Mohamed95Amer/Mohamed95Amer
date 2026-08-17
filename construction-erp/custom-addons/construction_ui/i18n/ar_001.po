@@ -756,7 +756,7 @@ msgstr "يتطلب اتخاذ إجراء "
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "New %s"
-msgstr ""
+msgstr "%s جديد"
 
 #. module: construction_ui
 #. odoo-javascript
@@ -1386,20 +1386,20 @@ msgstr "مستند عطاء"
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
 msgid "This Majal workspace is not available for the current user."
-msgstr ""
+msgstr "مساحة عمل مجال هذه غير متاحة للمستخدم الحالي."
 
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/home/construction_home.js:0
 msgid ""
 "This workspace is not available yet. Check that its module is installed."
-msgstr ""
+msgstr "مساحة العمل هذه غير متاحة بعد. تأكد من تثبيت الوحدة الخاصة بها."
 
 #. module: construction_ui
 #. odoo-javascript
 #: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
 msgid "This workspace is not available. Check that its module is installed."
-msgstr ""
+msgstr "مساحة العمل هذه غير متاحة. تأكد من تثبيت الوحدة الخاصة بها."
 
 #. module: construction_ui
 #. odoo-javascript
@@ -8814,3 +8814,153 @@ msgstr "عقود بحاجة إلى تجديد"
 #: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
 msgid "Ends in 60 days"
 msgstr "تنتهي خلال 60 يوماً"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "A Project Manager or the named approver must decide this document."
+msgstr "يجب أن يبت في هذا المستند مدير المشروع أو المعتمد المُسمّى."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "A Project Manager or the named approver must sign off this drawing."
+msgstr "يجب أن يعتمد هذا الرسم مدير المشروع أو المعتمد المُسمّى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/sidebar/majal_sidebar.xml:0
+msgid "Applications"
+msgstr "التطبيقات"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Bulk Upload Drawings"
+msgstr "رفع الرسومات بالجملة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Create a new drawing revision instead of replacing a submitted sheet."
+msgstr "أنشئ إصداراً جديداً من الرسم بدلاً من استبدال لوحة تم تقديمها."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Document decisions can only be changed through workflow actions."
+msgstr "لا يمكن تغيير قرارات المستند إلا من خلال إجراءات سير العمل."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Drawing sign-off can only be changed through workflow actions."
+msgstr "لا يمكن تغيير اعتماد الرسم إلا من خلال إجراءات سير العمل."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/defect_workorder.py:0
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.xml:0
+msgid "No approvals, no defects assigned, no inspections due. Anything raised for you today will appear here."
+msgstr "لا اعتمادات، ولا عيوب مسندة إليك، ولا عمليات فحص مستحقة. سيظهر هنا كل ما يُسند إليك اليوم."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Nothing here — %s is at zero."
+msgstr "لا شيء هنا — %s عند الصفر."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only %s can decide this document."
+msgstr "لا يمكن أن يبت في هذا المستند سوى %s."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only %s can sign off this drawing."
+msgstr "لا يمكن أن يعتمد هذا الرسم سوى %s."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only a Project Manager can close documents."
+msgstr "لا يمكن إغلاق المستندات إلا لمدير المشروع."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only a Project Manager can reset documents."
+msgstr "لا يمكن إعادة تعيين المستندات إلا لمدير المشروع."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only a Project Manager can reset drawing sign-off."
+msgstr "لا يمكن إعادة تعيين اعتماد الرسم إلا لمدير المشروع."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Payments"
+msgstr "الدفعات"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Planned maintenance falling due"
+msgstr "الصيانة المخططة المستحقة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Return this document to draft or create a revision before editing it."
+msgstr "أعد هذا المستند إلى المسودة أو أنشئ إصداراً جديداً قبل تعديله."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Save filtered records, charts and analysis so your most important views are always one click away."
+msgstr "احفظ السجلات المفلترة والرسوم البيانية والتحليلات ليبقى أهم ما تتابعه على بعد نقرة واحدة."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Submitted drawing revisions cannot be deleted."
+msgstr "لا يمكن حذف إصدارات الرسومات بعد تقديمها."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Submitted project documents cannot be deleted."
+msgstr "لا يمكن حذف مستندات المشروع بعد تقديمها."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "The person who submitted a document cannot approve it."
+msgstr "لا يجوز لمن قدّم المستند أن يعتمده."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "The person who submitted a drawing cannot sign it off."
+msgstr "لا يجوز لمن قدّم الرسم أن يعتمده."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Work orders assigned to me"
+msgstr "أوامر العمل المسندة إليّ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.xml:0
+msgid "late"
+msgstr "متأخر"

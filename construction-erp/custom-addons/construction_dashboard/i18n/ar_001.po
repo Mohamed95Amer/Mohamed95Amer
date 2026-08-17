@@ -141,7 +141,7 @@ msgstr "معدل تكرار الإصابات المفقودة الوقت"
 #. odoo-javascript
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "Loading portfolio…"
-msgstr ""
+msgstr "جارٍ تحميل المحفظة…"
 
 #. module: construction_dashboard
 #. odoo-javascript
@@ -186,7 +186,7 @@ msgstr "يحتاج متابعة"
 #. odoo-javascript
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "No construction projects yet."
-msgstr ""
+msgstr "لا توجد مشاريع إنشاءات بعد."
 
 #. module: construction_dashboard
 #. odoo-javascript
@@ -198,7 +198,7 @@ msgstr "لا شيء"
 #. odoo-javascript
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "Nothing flagged across the selected projects."
-msgstr ""
+msgstr "لا توجد ملاحظات على المشاريع المختارة."
 
 #. module: construction_dashboard
 #. odoo-javascript
@@ -222,7 +222,7 @@ msgstr "المحفظة"
 #. odoo-javascript
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "Pick at least one project to compare."
-msgstr ""
+msgstr "اختر مشروعاً واحداً على الأقل للمقارنة."
 
 #. module: construction_dashboard
 #. odoo-javascript
@@ -236,7 +236,7 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "The dashboard could not be loaded."
-msgstr ""
+msgstr "تعذر تحميل لوحة البيانات."
 
 #. module: construction_dashboard
 #. odoo-javascript
@@ -254,7 +254,7 @@ msgstr "أكبر انحراف"
 #. odoo-javascript
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "contract"
-msgstr ""
+msgstr "العقد"
 
 #. module: construction_dashboard
 #. odoo-javascript
@@ -315,3 +315,15 @@ msgstr "مشاريع ·"
 #: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
 msgid "under contract"
 msgstr "تحت التعاقد"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "% certified, forecast margin"
+msgstr "٪ معتمد، الهامش المتوقع"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Scaled against the largest value in the selection. Colour follows meaning, not series order."
+msgstr "مُقاس نسبةً إلى أكبر قيمة ضمن التحديد. اللون يتبع المعنى لا ترتيب السلاسل."

@@ -21,8 +21,7 @@
                         <t t-esc="money(portfolio.contract_value)"/> under contract
                     </h1>
                     <p>
-                        <t t-esc="portfolio.percent_complete.toFixed(1)"/>% certified,
-                        forecast margin <t t-esc="money(portfolio.forecast_margin)"/>
+                        <t t-esc="portfolio.percent_complete.toFixed(1)"/>% certified, forecast margin <t t-esc="money(portfolio.forecast_margin)"/>
                         (<t t-esc="portfolio.forecast_margin_percent.toFixed(1)"/>%).
                     </p>
                 </div>
@@ -124,8 +123,7 @@
                             </div>
                         </div>
                         <p class="o_cdash_hint">
-                            Scaled against the largest value in the selection.
-                            Colour follows meaning, not series order.
+                            Scaled against the largest value in the selection. Colour follows meaning, not series order.
                         </p>
                     </section>
 

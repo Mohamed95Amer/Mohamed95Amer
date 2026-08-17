@@ -515,3 +515,75 @@ msgid ""
 msgstr ""
 "عدد أيام العمل التي تأخرت (+) أو تقدمت (-) فيها النهاية المجدولة عن خط "
 "الأساس."
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "%(count)s activities scheduled — %(critical)s on the critical "
+msgstr "تمت جدولة %(count)s أنشطة — منها %(critical)s على المسار الحرج "
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "%s%% complete"
+msgstr "مكتمل %s%%"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Ahead of baseline by %s working days"
+msgstr "متقدم عن خط الأساس بـ %s أيام عمل"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_boq_link.py:0
+msgid "Bill Items"
+msgstr "بنود جدول الكميات"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "Current schedule saved as baseline. Future reschedules "
+msgstr "تم حفظ الجدول الحالي كخط أساس. عمليات إعادة الجدولة اللاحقة "
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Float: %s working days"
+msgstr "الفائض الزمني: %s أيام عمل"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "On the critical path"
+msgstr "على المسار الحرج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Phase %s"
+msgstr "المرحلة %s"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_boq_link.py:0
+msgid "Programme Activities"
+msgstr "أنشطة البرنامج الزمني"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Slipped %s working days behind baseline"
+msgstr "تأخر %s أيام عمل عن خط الأساس"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "WBS %s"
+msgstr "رمز هيكل تجزئة العمل %s"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Zoom"
+msgstr "التكبير"

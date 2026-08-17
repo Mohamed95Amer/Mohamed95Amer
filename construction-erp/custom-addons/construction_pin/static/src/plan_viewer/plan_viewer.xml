@@ -92,8 +92,7 @@
                         <i class="fa fa-cloud-upload fa-3x"/>
                         <p class="fw-bold">No PDF sheet uploaded yet</p>
                         <p class="text-muted">
-                            Upload the drawing sheet to start pinning tasks,
-                            RFIs and notes on the plan.
+                            Upload the drawing sheet to start pinning tasks, RFIs and notes on the plan.
                         </p>
                         <button class="btn btn-primary"
                                 t-att-disabled="state.uploading"

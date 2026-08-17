@@ -358,3 +358,63 @@ msgstr "مثال: بلاطة متشققة عند العمود C3"
 #: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
 msgid "to cancel."
 msgstr "للإلغاء."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Photo (optional)"
+msgstr "صورة (اختياري)"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Photo attached to this pin"
+msgstr "صورة مرفقة بهذا المؤشر"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Remove"
+msgstr "إزالة"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Selected photo"
+msgstr "الصورة المختارة"
+
+#. module: construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+msgid "That file is not an image Majal can read. Use a JPEG or PNG."
+msgstr "هذا الملف ليس صورة يمكن لمجال قراءتها. استخدم صيغة JPEG أو PNG."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "That file is not an image."
+msgstr "هذا الملف ليس صورة."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "That photo is larger than %sMB."
+msgstr "حجم الصورة يتجاوز %s ميغابايت."
+
+#. module: construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+msgid "That photograph is larger than the %(limit)s MB limit."
+msgstr "حجم الصورة يتجاوز الحد المسموح به وهو %(limit)s ميغابايت."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "This pin has a photo"
+msgstr "هذا المؤشر يحتوي على صورة"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Upload the drawing sheet to start pinning tasks, RFIs and notes on the plan."
+msgstr "ارفع لوحة الرسم لتبدأ بتثبيت المهام وطلبات المعلومات والملاحظات على المخطط."
