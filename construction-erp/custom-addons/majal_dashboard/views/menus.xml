@@ -29,11 +29,13 @@
 
     <menuitem id="menu_board_operations" name="Operations"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_operations" sequence="15"/>
+              action="action_board_operations" sequence="15"
+              groups="maintenance.group_equipment_manager,construction_base.group_construction_manager"/>
 
     <menuitem id="menu_board_project" name="Project"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_project" sequence="20"/>
+              action="action_board_project" sequence="20"
+              groups="construction_base.group_construction_manager,construction_base.group_construction_pm"/>
 
     <menuitem id="menu_board_procurement" name="Procurement"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
@@ -47,11 +49,13 @@
 
     <menuitem id="menu_board_hse" name="HSE"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_hse" sequence="35"/>
+              action="action_board_hse" sequence="35"
+              groups="construction_base.group_construction_user"/>
 
     <menuitem id="menu_board_equipment" name="Equipment"
               parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
-              action="action_board_equipment" sequence="40"/>
+              action="action_board_equipment" sequence="40"
+              groups="maintenance.group_equipment_manager,construction_base.group_construction_manager"/>
 
     <!-- OCA's spreadsheet editor arrives as its own top-level app carrying
          its own icon, and the product is Majal rather than a shelf of other

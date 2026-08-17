@@ -24,7 +24,7 @@ import ast
 
 from lxml import etree
 
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import TransactionCase, tagged, new_test_user
 
 BOARDS = [
     "board_executive", "board_financial", "board_operations", "board_project",
@@ -85,3 +85,36 @@ class TestBoards(TransactionCase):
         view = self.env.ref("majal_dashboard.board_financial")
         action = self.env.ref("majal_dashboard.action_mis_trading_board")
         self.assertIn(action.id, self._panel_action_ids(view))
+
+
+@tagged("post_install", "-at_install")
+class TestShippedMisInstanceIsGlobal(TransactionCase):
+    """The Financial board has to open for somebody other than the superuser.
+
+    mis_builder scopes instances by company, and the instance this module
+    ships was created with company_id defaulting to the install company. In
+    any database with more than one company that hides it from everybody
+    else -- the board refused the Platform Owner, the company administrator
+    and the operations manager, and only the superuser was ever exempt.
+    """
+
+    def test_the_shipped_instance_belongs_to_no_single_company(self):
+        instance = self.env.ref("majal_dashboard.mis_instance_trading")
+        self.assertFalse(
+            instance.company_id,
+            "the shipped MIS instance is pinned to one company, so the "
+            "Financial board is unopenable from every other one")
+
+    def test_a_plain_user_in_another_company_can_read_it(self):
+        other = self.env["res.company"].create({"name": "Board Reader Co"})
+        reader = new_test_user(
+            self.env, login="board.reader", password="board-reader-pw-2026",
+            groups="base.group_user",
+            company_id=other.id, company_ids=[(6, 0, [other.id])])
+        self.env.invalidate_all()
+        instance = self.env.ref("majal_dashboard.mis_instance_trading")
+        self.assertTrue(
+            instance.with_user(reader).exists()
+            and instance.with_user(reader).name,
+            "a user outside the install company still cannot read the "
+            "instance the Financial board is built on")

@@ -6,3 +6,4 @@ from . import test_transition_guards
 from . import test_rtl_assets
 from . import test_rtl_fences
 from . import test_template_translations
+from . import test_board_actions

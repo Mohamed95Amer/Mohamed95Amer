@@ -5,10 +5,19 @@
         <field name="tag">construction_ui.home</field>
     </record>
 
+    <!-- view_id is not optional here, however much it looks it. board.board
+         has nine form views in this database once the Majal boards are
+         installed, and an action that names none of them does not get the
+         empty personal dashboard: Odoo resolves the model's form view and
+         lands on whichever board wins, which is the Equipment one. Every
+         user opening "My Workspace" was being handed the estate portfolio,
+         and a site engineer cannot read majal.estate.report, so the screen
+         refused them. -->
     <record id="action_construction_my_dashboard" model="ir.actions.act_window">
         <field name="name">My Dashboard</field>
         <field name="res_model">board.board</field>
         <field name="view_mode">form</field>
+        <field name="view_id" ref="board.board_my_dash_view"/>
         <field name="usage">menu</field>
         <field name="context">{"disable_toolbar": True}</field>
     </record>

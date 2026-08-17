@@ -47,5 +47,6 @@
         ],
     },
     "demo": ["demo/procurement_demo.xml"],
+    "post_init_hook": "make_shipped_mis_instance_global",
     "installable": True,
 }

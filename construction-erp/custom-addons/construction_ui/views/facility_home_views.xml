@@ -5,10 +5,14 @@
         <field name="tag">construction_ui.facility_home</field>
     </record>
 
+    <!-- See the note on the construction side: without view_id this resolves
+         to whichever board.board form view wins, not to the empty personal
+         dashboard. -->
     <record id="action_facility_my_dashboard" model="ir.actions.act_window">
         <field name="name">My Dashboard</field>
         <field name="res_model">board.board</field>
         <field name="view_mode">form</field>
+        <field name="view_id" ref="board.board_my_dash_view"/>
         <field name="usage">menu</field>
         <field name="context">{"disable_toolbar": True}</field>
     </record>

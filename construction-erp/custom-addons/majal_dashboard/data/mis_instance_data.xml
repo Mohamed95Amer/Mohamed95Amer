@@ -18,10 +18,20 @@
              against is a number, and what a director needs is a direction.
              offset=0 is the current year, offset=-1 the one before it. -->
 
+        <!-- company_id is set to nothing on purpose, and has to be stated
+             rather than left out. Left out, it defaults to whichever company
+             was active when the module was installed, and mis_builder's own
+             multi-company rule then hides the instance from every other
+             company: the Financial board refused the Platform Owner, the
+             company administrator and the operations manager, because the
+             only instance in the database belonged to a company none of them
+             were in. False is the leg that rule already provides for a
+             record the whole database is meant to share. -->
         <record id="mis_instance_trading" model="mis.report.instance">
             <field name="name">Trading Summary — this year against last</field>
             <field name="report_id" ref="mis_report_trading"/>
             <field name="comparison_mode" eval="True"/>
+            <field name="company_id" eval="False"/>
         </record>
 
         <record id="mis_instance_period_current" model="mis.report.instance.period">
