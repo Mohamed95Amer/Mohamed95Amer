@@ -83,10 +83,15 @@ jobs:
 
       - name: Validate Prometheus alert rules
         run: |
+          # --entrypoint is required. The image's entrypoint is /bin/prometheus,
+          # so "promtool check rules ..." was being handed to the server as
+          # positional arguments, which failed with "unexpected promtool" —
+          # the alert rules were never actually checked by this step.
           docker run --rm \
             -v "$PWD/infrastructure/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro" \
+            --entrypoint promtool \
             prom/prometheus:v3.13.2 \
-            promtool check rules /etc/prometheus/alerts.yml
+            check rules /etc/prometheus/alerts.yml
 
       - name: Validate Caddy configuration
         run: |
