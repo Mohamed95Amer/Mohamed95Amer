@@ -235,6 +235,26 @@ class FacilityLocation(models.Model):
 class ResUsersTenantSecurity(models.Model):
     _inherit = "res.users"
 
+    majal_approval_delegator_ids = fields.Many2many(
+        "res.users",
+        compute="_compute_majal_approval_delegator_ids",
+        string="Approving On Behalf Of",
+        help="People whose approval authority this user currently holds. "
+             "Read by the approval record rules: a delegate has to be able "
+             "to see the step they are covering, and a rule domain cannot "
+             "call _delegates_of() to work it out.",
+    )
+
+    def _compute_majal_approval_delegator_ids(self):
+        delegation = self.env["construction.approval.delegation"].sudo()
+        today = fields.Date.context_today(self)
+        for user in self:
+            user.majal_approval_delegator_ids = delegation.search([
+                ("delegate_id", "=", user.id),
+                ("date_from", "<=", today),
+                ("date_to", ">=", today),
+            ]).mapped("user_id")
+
     @api.model
     def _majal_validate_field_path(self, model_name, field_path):
         if model_name not in self.env.registry:
@@ -413,5 +433,80 @@ class ResUsersTenantSecurity(models.Model):
                 "([(0, '=', 1)] if user.majal_industry_scope == 'construction' "
                 "else [(1, '=', 1)])",
             )
+
+        self._majal_install_approval_rules()
         self.env.registry.clear_cache()
         return True
+
+    @api.model
+    def _majal_install_approval_rules(self):
+        """Scope the approval engine, without emptying the inbox.
+
+        Approval steps and requests had an ACL granting read to every
+        construction user and no record rule at all, so anyone could read
+        every approval in the database -- document reference, step name and
+        amount. Two demo personas in the contracting company were reading all
+        nine steps in a database where every one of them belonged to another
+        company's project.
+
+        The obvious fix is the wrong one. Scoping purely by company or by
+        project empties the inbox, because an approver frequently is not a
+        member of the project they sign for: a director approving a variation
+        does not work on that job. So the domain is a disjunction -- you see
+        an approval if you are party to it, or if it belongs to a company you
+        are in.
+
+        Company rather than project membership is deliberate. The proven
+        defect is cross-company disclosure; tightening further, to project
+        membership, would also hide approvals from colleagues who legitimately
+        watch them (the exposure screen is exactly that) and would be a policy
+        change the product has not asked for.
+
+        Delegation has to be a leg of its own. A delegate is not named on the
+        step, and a rule domain cannot call _delegates_of(), which is why
+        res.users carries majal_approval_delegator_ids for this.
+        """
+        # No group_id leg, and that is the point. A step assigned to "any
+        # member of Construction Manager" matches half the staff, so a group
+        # leg with no company qualifier re-opens exactly the hole this rule
+        # closes -- the first version of it did, and the operations manager
+        # went on reading all nine of another company's approvals.
+        #
+        # Nothing is lost by dropping it. A group approver inside the company
+        # is already covered by the company leg, and that leg is what makes
+        # the director-signs-a-job-they-are-not-on case work. Only an
+        # explicitly named cross-company approver needs a leg of their own,
+        # and naming somebody across companies is a deliberate act.
+        party = [
+            "('user_id', '=', user.id)",
+            "('user_ids', 'in', [user.id])",
+            "('user_id', 'in', user.majal_approval_delegator_ids.ids)",
+            "('user_ids', 'in', user.majal_approval_delegator_ids.ids)",
+            "('project_id.company_id', 'in', company_ids)",
+        ]
+        self._majal_upsert_rule(
+            "Majal tenant: construction.approval.step",
+            "construction.approval.step",
+            "[(1, '=', 1)] if user.share else ["
+            + ", ".join(["'|'"] * (len(party) - 1) + party)
+            + "]",
+        )
+
+        # The request is reached from its steps, so its legs mirror them one
+        # relation further out. requested_by_id is first: whoever raised a
+        # document must be able to watch it move, even where they are named
+        # on none of its steps.
+        request_party = [
+            "('requested_by_id', '=', user.id)",
+            "('step_ids.user_id', '=', user.id)",
+            "('step_ids.user_ids', 'in', [user.id])",
+            "('step_ids.user_id', 'in', user.majal_approval_delegator_ids.ids)",
+            "('project_id.company_id', 'in', company_ids)",
+        ]
+        self._majal_upsert_rule(
+            "Majal tenant: construction.approval.request",
+            "construction.approval.request",
+            "[(1, '=', 1)] if user.share else ["
+            + ", ".join(["'|'"] * (len(request_party) - 1) + request_party)
+            + "]",
+        )
