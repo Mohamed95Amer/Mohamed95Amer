@@ -80,35 +80,93 @@ class ConstructionApprovalRule(models.Model):
                     "A rule with no steps approves nothing. Add at least one "
                     "approver, or archive the rule."))
 
-    def _covers(self, amount):
-        """Is this value inside the rule's band?"""
+    def _covers(self, amount, currency=None, date=None):
+        """Is this value inside the rule's band?
+
+        The band is money, not a number. Comparing the two directly is only
+        right while every rule and every document share one currency, and
+        nothing enforced that: a rule written 0–50,000 in one currency
+        silently governed a 50,000 document in another, which is a different
+        level of authority wearing the same digits. The document's value is
+        converted into the rule's currency before the comparison, so a band
+        means what the person who wrote it meant.
+        """
         self.ensure_one()
+        if currency and self.currency_id and currency != self.currency_id:
+            amount = currency._convert(
+                amount, self.currency_id,
+                self.company_id or self.env.company,
+                date or fields.Date.context_today(self))
         if amount < self.amount_from:
             return False
         return not self.amount_to or amount < self.amount_to
+
+    @api.model
+    def _record_company(self, record):
+        """Whose delegation of authority governs this document.
+
+        The approval mixin answers this when it is present, and a document
+        wired to the engine always has it. Asking the record directly rather
+        than requiring the hook keeps `_match` usable from anywhere -- a
+        report, a migration, a console -- instead of raising AttributeError
+        on the first caller that passes a plain record.
+        """
+        if hasattr(record, "_approval_company"):
+            return record._approval_company()
+        if "company_id" in record._fields and record.company_id:
+            return record.company_id
+        if "project_id" in record._fields and record.project_id.company_id:
+            return record.project_id.company_id
+        return self.env.company
+
+    @api.model
+    def _record_currency(self, record, company):
+        """What the document's value is denominated in."""
+        if hasattr(record, "_approval_currency"):
+            return record._approval_currency()
+        if "currency_id" in record._fields and record.currency_id:
+            return record.currency_id
+        return company.currency_id
 
     @api.model
     def _match(self, record, amount, kind=False):
         """The rule that governs this document, or an empty set.
 
         Most specific first: a rule naming the project beats a company-wide
-        one, and a rule naming the kind beats a rule covering every kind. No
-        match means no approval is required, which is the right default —
+        one, a rule naming the kind beats a rule covering every kind, and a
+        rule belonging to the document's company beats a company-less default.
+        No match means no approval is required, which is the right default --
         a suite that refused to work until somebody wrote rules would simply
         have the rules written badly and in a hurry.
+
+        The search is elevated, and that is the point rather than a shortcut.
+        Whether a document needs approving is a property of the document, not
+        of who happens to be looking at it. Run under the reader's own rights,
+        this returned nothing for a user outside the company that owns the
+        rules -- and an empty set here is indistinguishable from "no rule
+        covers it", which the caller reads as consent. The document went
+        through unapproved, silently, and the log recorded nothing because as
+        far as the engine knew there was nothing to record. Scoping by the
+        record's company instead of the reader's visibility closes that
+        without widening what anyone can see: the rule is used to decide, and
+        is never returned to a caller that could not otherwise read it.
         """
-        candidates = self.search([
+        company = self._record_company(record)
+        candidates = self.sudo().search([
             ("model_name", "=", record._name),
+            "|", ("company_id", "=", False), ("company_id", "=", company.id),
             "|", ("project_id", "=", False),
                  ("project_id", "=", record.project_id.id
                   if "project_id" in record._fields else False),
             "|", ("document_kind", "=", False), ("document_kind", "=", kind),
         ])
-        matching = candidates.filtered(lambda r: r._covers(amount))
+        currency = self._record_currency(record, company)
+        matching = candidates.filtered(lambda r: r._covers(amount, currency))
         return matching.sorted(
             key=lambda r: (
                 not r.project_id,          # project-specific first
                 not r.document_kind,       # kind-specific next
+                not r.company_id,          # the company's own before a default
                 r.sequence,
             ),
         )[:1]

@@ -103,6 +103,34 @@ class ConstructionApprovable(models.AbstractModel):
                 return abs(self[field] or 0.0)
         return 0.0
 
+    def _approval_currency(self):
+        """What `_approval_amount` is denominated in.
+
+        Probed the same way the amount is, and for the same reason: the
+        documents wired to this engine were written by different modules and
+        do not agree on a field name. Falling back to the company's currency
+        is safe -- a document with no currency of its own is being read in the
+        company's -- and a zero-value document is unaffected either way.
+        """
+        self.ensure_one()
+        if "currency_id" in self._fields and self.currency_id:
+            return self.currency_id
+        return self._approval_company().currency_id
+
+    def _approval_company(self):
+        """Whose delegation of authority governs this document.
+
+        The rule set is chosen by the document's company, never by the
+        reader's. A director in the holding company opening a subsidiary's
+        variation must see the subsidiary's thresholds applied, not their own.
+        """
+        self.ensure_one()
+        if "company_id" in self._fields and self.company_id:
+            return self.company_id
+        if "project_id" in self._fields and self.project_id.company_id:
+            return self.project_id.company_id
+        return self.env.company
+
     def _approval_kind(self):
         """An optional narrowing within the model, e.g. addition vs omission."""
         self.ensure_one()
