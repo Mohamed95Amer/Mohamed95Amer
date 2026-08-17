@@ -2,7 +2,7 @@
     "name": "Majal Dashboards",
     "summary": "Board dashboards for construction, facilities and the estate, "
                "over SQL analysis views",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Mohamed Amer",
@@ -47,6 +47,5 @@
         ],
     },
     "demo": ["demo/procurement_demo.xml"],
-    "post_init_hook": "make_shipped_mis_instance_global",
     "installable": True,
 }
