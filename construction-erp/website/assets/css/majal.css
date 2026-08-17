@@ -212,7 +212,11 @@ section.band.tinted { background: var(--surface-2); }
 
 /* ---------- industry walkthrough tabs ---------- */
 .industry-player { padding-block: clamp(2.5rem, 6vw, 5rem); background: var(--surface-2); border-top: 1px solid var(--line); }
-.industry-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
+/* auto-fit rather than a hard 3, so the row stays full-width with however
+   many industries are actually offered. It was repeat(3, 1fr) while there
+   were three tabs; dropping to two left the pair at a third of the width
+   each with a third of the row empty beside them. */
+.industry-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
 .industry-tabs input { position: absolute; opacity: 0; pointer-events: none; }
 .industry-tabs label { display: flex; align-items: center; gap: .85rem; min-height: 5.25rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
 .industry-tabs label:hover { transform: translateY(-2px); border-color: var(--accent); }
@@ -743,6 +747,24 @@ tbody tr:last-child td { border-bottom: 0; }
   font-weight: 650;
   color: var(--text-muted);
   margin-bottom: .3rem;
+}
+
+/* Marks a roadmap item inside a table of shipped capability, so the reader
+   can tell the two apart at a glance rather than by reading to the end of
+   the row. Muted rather than loud: this is a caveat, not a feature. */
+.badge {
+  display: inline-block;
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: var(--text-muted);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: .1rem .5rem;
+  margin-inline-start: .4rem;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 ul.plain, ol.plain { list-style: none; padding: 0; }
