@@ -1,0 +1,809 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_ui
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "% achieved"
+msgstr "٪ من المستهدف"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.js:0
+msgid "%s apps"
+msgstr "%s تطبيقات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "+ Add property"
+msgstr "+ إضافة عقار"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "+ Service request"
+msgstr "+ طلب خدمة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Across active units"
+msgstr "عبر الوحدات النشطة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Assigned"
+msgstr "مُسند"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Available"
+msgstr "متاح"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Awaiting closure"
+msgstr "بانتظار الإغلاق"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Blocked"
+msgstr "معطّل"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_commissions
+msgid "Broker Commissions"
+msgstr "عمولات الوسطاء"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Buyer signature"
+msgstr "توقيع المشتري"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Collection rate"
+msgstr "معدل التحصيل"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Collections"
+msgstr "التحصيلات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Collections vs target"
+msgstr "التحصيلات مقابل المستهدف"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Colour shows urgency; columns show responsibility and progress."
+msgstr "اللون يوضح الأولوية، والأعمدة توضح المسؤولية والتقدم."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Commercial review"
+msgstr "المراجعة التجارية"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Completed requests"
+msgstr "الطلبات المكتملة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Completed visits"
+msgstr "الزيارات المكتملة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Contract"
+msgstr "العقد"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Developments"
+msgstr "المشاريع العقارية"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Documents, inspections and keys"
+msgstr "المستندات والمعاينات والمفاتيح"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Executive overview"
+msgstr "النظرة التنفيذية"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Export board pack"
+msgstr "تصدير حزمة المجلس"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "FEATURED DEVELOPMENT"
+msgstr "المشروع المميز"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.js:0
+msgid "Featured development"
+msgstr "المشروع المميز"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "From land to lease, one record per unit."
+msgstr "من الأرض إلى الإيجار، سجل واحد لكل وحدة."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Good morning."
+msgstr "صباح الخير."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Handover"
+msgstr "التسليم"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_handovers
+msgid "Handover & Snagging"
+msgstr "التسليم ومعالجة الملاحظات"
+
+#. module: majal_property_ui
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_handover_overview
+msgid "Handover Overview"
+msgstr "نظرة عامة على التسليم"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Handover packs"
+msgstr "حزم التسليم"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Handovers"
+msgstr "عمليات التسليم"
+
+#. module: majal_property_ui
+#. odoo-python
+#: code:addons/majal_property_ui/models/my_day.py:0
+msgid "Handovers to complete"
+msgstr "عمليات تسليم بانتظار الإكمال"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "High-value renewals stay visible before offers are issued."
+msgstr "التجديدات عالية القيمة تبقى ظاهرة قبل إصدار العروض."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "INSIGHTS"
+msgstr "الرؤى"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "In progress"
+msgstr "قيد التنفيذ"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Inquiry"
+msgstr "استفسار"
+
+#. module: majal_property_ui
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_inventory_overview
+msgid "Inventory Overview"
+msgstr "نظرة عامة على المخزون"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Inventory, sales, payments, handover and tenancy in a single view of the portfolio."
+msgstr "المخزون والمبيعات والدفعات والتسليم والإيجار في عرض واحد للمحفظة."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Keep every building performing."
+msgstr "حافظ على أداء كل مبنى."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Keys and closeout"
+msgstr "المفاتيح والإقفال"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Leads & sales"
+msgstr "العملاء المحتملون والمبيعات"
+
+#. module: majal_property_ui
+#. odoo-python
+#: code:addons/majal_property_ui/models/my_day.py:0
+msgid "Leads assigned to me"
+msgstr "العملاء المحتملون المسندون إليّ"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Lease expiry radar"
+msgstr "رادار انتهاء عقود الإيجار"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Leases"
+msgstr "عقود الإيجار"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Leases expiring"
+msgstr "عقود إيجار تنتهي قريباً"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Leases expiring within 60 days"
+msgstr "عقود إيجار تنتهي خلال 60 يوماً"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Leases, collections, inspections and service requests in one daily control view."
+msgstr "عقود الإيجار والتحصيلات والمعاينات وطلبات الخدمة في عرض تحكم يومي واحد."
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_leases
+msgid "Leasing & Tenancy"
+msgstr "التأجير والإشغال"
+
+#. module: majal_property_ui
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_leasing_overview
+msgid "Leasing Overview"
+msgstr "نظرة عامة على التأجير"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Live"
+msgstr "مباشر"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Live commercial inventory"
+msgstr "المخزون التجاري المباشر"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Live priorities"
+msgstr "الأولويات المباشرة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Live unit inventory"
+msgstr "مخزون الوحدات المباشر"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "M"
+msgstr "م"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "MAJAL · PROPERTY OPERATIONS CENTER"
+msgstr "مجال · مركز عمليات العقارات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Maintenance workflow"
+msgstr "سير عمل الصيانة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Majal"
+msgstr "مجال"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Majal Intelligence"
+msgstr "ذكاء مجال"
+
+#. module: majal_property_ui
+#: model:ir.model,name:majal_property_ui.model_construction_my_day
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_my_day
+msgid "My Day"
+msgstr "يومي"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "My day"
+msgstr "يومي"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Needs attention"
+msgstr "يحتاج انتباهاً"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "New"
+msgstr "جديد"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Next 60 days"
+msgstr "الستون يوماً القادمة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "OPERATIONS"
+msgstr "العمليات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Occupancy"
+msgstr "الإشغال"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Occupied"
+msgstr "مشغول"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Offer"
+msgstr "عرض"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "On track"
+msgstr "على المسار"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "One connected record from inventory to sale, handover, lease and owner service."
+msgstr "سجل واحد متصل من المخزون إلى البيع والتسليم والإيجار وخدمة المالك."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Open maintenance"
+msgstr "صيانة مفتوحة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Open sales leads"
+msgstr "عملاء محتملون مفتوحون"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Operations centre"
+msgstr "مركز العمليات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Overdue buyer instalments"
+msgstr "أقساط مشترين متأخرة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_overview
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "PORTFOLIO"
+msgstr "المحفظة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "PORTFOLIO COMMAND CENTER"
+msgstr "مركز قيادة المحفظة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "PROPERTY"
+msgstr "العقارات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "PROPERTY OPERATIONS"
+msgstr "عمليات العقارات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "PT"
+msgstr "ع"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_installments
+msgid "Payments & Collections"
+msgstr "الدفعات والتحصيلات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Performance"
+msgstr "الأداء"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Planned maintenance and inspections"
+msgstr "الصيانة الوقائية والمعاينات"
+
+#. module: majal_property_ui
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_portfolio
+msgid "Portfolio"
+msgstr "المحفظة"
+
+#. module: majal_property_ui
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_portfolio_overview
+msgid "Portfolio Overview"
+msgstr "نظرة عامة على المحفظة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Portfolio team"
+msgstr "فريق المحفظة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Portfolio value"
+msgstr "قيمة المحفظة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Preventive service queue"
+msgstr "قائمة الخدمة الوقائية"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Prioritised by financial impact"
+msgstr "مرتبة حسب الأثر المالي"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_property_home
+msgid "Property Overview"
+msgstr "نظرة عامة على العقارات"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_property_portfolio
+msgid "Property Portfolio"
+msgstr "محفظة العقارات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Property control centre views"
+msgstr "عروض مركز التحكم العقاري"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Property overview"
+msgstr "نظرة عامة على العقارات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Qualified demand"
+msgstr "الطلب المؤهل"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_rent_collection
+msgid "Rent Collection"
+msgstr "تحصيل الإيجار"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Rent collected"
+msgstr "الإيجار المحصّل"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Rent collection trend"
+msgstr "اتجاه تحصيل الإيجار"
+
+#. module: majal_property_ui
+#. odoo-python
+#: code:addons/majal_property_ui/models/my_day.py:0
+msgid "Rent overdue on my tenancies"
+msgstr "إيجار متأخر على إيجاراتي"
+
+#. module: majal_property_ui
+#. odoo-python
+#: code:addons/majal_property_ui/models/my_day.py:0
+msgid "Reservations I am selling"
+msgstr "الحجوزات التي أبيعها"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Reserved"
+msgstr "محجوز"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Role-based workspace"
+msgstr "مساحة عمل حسب الدور"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Run the portfolio from one place"
+msgstr "أدر المحفظة من مكان واحد"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_reservations
+msgid "Sales & Reservations"
+msgstr "المبيعات والحجوزات"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_leads
+msgid "Sales Leads"
+msgstr "العملاء المحتملون"
+
+#. module: majal_property_ui
+#: model:ir.ui.menu,name:majal_property_ui.menu_property_sales_overview
+msgid "Sales Overview"
+msgstr "نظرة عامة على المبيعات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Sales activity"
+msgstr "نشاط المبيعات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Sales dashboard"
+msgstr "لوحة المبيعات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Service closure"
+msgstr "إغلاق الخدمة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Start from the operational question, then drill into the underlying record."
+msgstr "ابدأ من السؤال التشغيلي، ثم انزل إلى السجل الذي وراءه."
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_unit_requests
+msgid "Tenant Requests"
+msgstr "طلبات المستأجرين"
+
+#. module: majal_property_ui
+#. odoo-python
+#: code:addons/majal_property_ui/models/my_day.py:0
+msgid "Tenant requests assigned to me"
+msgstr "طلبات المستأجرين المسندة إليّ"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.js:0
+msgid "This Majal workspace needs the matching Property access role. Ask an administrator to grant Real Estate User access."
+msgstr "تحتاج مساحة عمل مجال هذه إلى دور الوصول العقاري المطابق. اطلب من المسؤول منحك صلاحية مستخدم العقارات."
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Today's focus"
+msgstr "أولويات اليوم"
+
+#. module: majal_property_ui
+#: model:ir.actions.client,name:majal_property_ui.action_workspace_unit_inventory
+msgid "Unit Inventory"
+msgstr "مخزون الوحدات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Unit availability"
+msgstr "توفر الوحدات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Unit inventory"
+msgstr "مخزون الوحدات"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Verify and close"
+msgstr "التحقق والإغلاق"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Visit"
+msgstr "زيارة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "WORKSPACES"
+msgstr "مساحات العمل"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Waiting for occupant confirmation"
+msgstr "بانتظار تأكيد الساكن"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Waterfront residential development"
+msgstr "مشروع سكني على الواجهة المائية"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "Workspaces"
+msgstr "مساحات العمل"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "active"
+msgstr "نشط"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "active ·"
+msgstr "نشط ·"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "held"
+msgstr "محجوز"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "leases"
+msgstr "عقود إيجار"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "occupied"
+msgstr "مشغول"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "open"
+msgstr "مفتوح"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "portfolio ·"
+msgstr "محفظة ·"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "received"
+msgstr "مستلم"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "renewals to review"
+msgstr "تجديدات للمراجعة"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "total"
+msgstr "الإجمالي"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "urgent"
+msgstr "عاجل"
+
+#. module: majal_property_ui
+#. odoo-javascript
+#: code:addons/majal_property_ui/static/src/home/property_home.xml:0
+msgid "· Live view of the active portfolio"
+msgstr "· عرض مباشر للمحفظة النشطة"

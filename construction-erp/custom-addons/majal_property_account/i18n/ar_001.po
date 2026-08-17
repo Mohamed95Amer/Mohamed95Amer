@@ -1,0 +1,234 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_account
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "A rent line needs a tenant before invoicing."
+msgstr "يحتاج بند الإيجار إلى مستأجر قبل إصدار الفاتورة."
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "A service charge needs an owner before invoicing."
+msgstr "تحتاج رسوم الخدمة إلى مالك قبل إصدار الفاتورة."
+
+#. module: majal_property_account
+#: model:ir.ui.menu,name:majal_property_account.menu_majal_property_accounting_settings
+msgid "Accounting Settings"
+msgstr "إعدادات المحاسبة"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "An installment needs a buyer before invoicing."
+msgstr "يحتاج القسط إلى مشترٍ قبل إصدار الفاتورة."
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/accounting_settings.py:0
+msgid "Configure Majal Property Accounting for %(company)s before creating invoices."
+msgstr "اضبط المحاسبة العقارية في مجال لـ %(company)s قبل إنشاء الفواتير."
+
+#. module: majal_property_account
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_payment_installment_form_accounting
+msgid "Create Draft Invoice"
+msgstr "إنشاء فاتورة مسودة"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_lease_rent_line__invoice_id
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_payment_installment__invoice_id
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_service_charge__invoice_id
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_rent_line_list_accounting
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_service_charge_list_accounting
+msgid "Invoice"
+msgstr "الفاتورة"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_lease_rent_line__invoice_state
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_payment_installment__invoice_state
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_service_charge__invoice_state
+msgid "Invoice State"
+msgstr "حالة الفاتورة"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: majal_property_account
+#: model:ir.model,name:majal_property_account.model_majal_lease_rent_line
+msgid "Lease Rent Instalment"
+msgstr "قسط إيجار"
+
+#. module: majal_property_account
+#: model:ir.model,name:majal_property_account.model_majal_property_accounting_settings
+msgid "Majal Property Accounting Settings"
+msgstr "إعدادات المحاسبة العقارية في مجال"
+
+#. module: majal_property_account
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_property_accounting_settings_form
+msgid "Majal creates draft invoices only. Posting, payment and reconciliation remain controlled by Accounting users."
+msgstr "ينشئ مجال فواتير مسودة فقط. أما الترحيل والدفع والتسوية فتبقى بيد مستخدمي المحاسبة."
+
+#. module: majal_property_account
+#: model:ir.model.constraint,message:majal_property_account.constraint_majal_property_accounting_settings_company_unique
+msgid "Only one Property Accounting configuration is allowed per company."
+msgstr "يُسمح بإعداد محاسبة عقارية واحد فقط لكل شركة."
+
+#. module: majal_property_account
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_rent_line_list_accounting
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_service_charge_list_accounting
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: majal_property_account
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_payment_installment_form_accounting
+msgid "Open Invoice"
+msgstr "فتح الفاتورة"
+
+#. module: majal_property_account
+#: model:ir.model,name:majal_property_account.model_majal_payment_installment
+msgid "Payment Installment"
+msgstr "قسط الدفع"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_lease_rent_line__invoice_payment_state
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_payment_installment__invoice_payment_state
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_service_charge__invoice_payment_state
+msgid "Payment State"
+msgstr "حالة الدفع"
+
+#. module: majal_property_account
+#: model:ir.module.category,name:majal_property_account.module_category_majal_property_account
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_property_accounting_settings_form
+msgid "Property Accounting"
+msgstr "المحاسبة العقارية"
+
+#. module: majal_property_account
+#: model:res.groups,name:majal_property_account.group_majal_property_account_manager
+msgid "Property Accounting Manager"
+msgstr "مدير المحاسبة العقارية"
+
+#. module: majal_property_account
+#: model:ir.actions.act_window,name:majal_property_account.action_majal_property_accounting_settings
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_property_accounting_settings_form
+#: model_terms:ir.ui.view,arch_db:majal_property_account.view_majal_property_accounting_settings_list
+msgid "Property Accounting Settings"
+msgstr "إعدادات المحاسبة العقارية"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "Property Invoice"
+msgstr "فاتورة عقارية"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__rent_income_account_id
+msgid "Rent Income Account"
+msgstr "حساب إيرادات الإيجار"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "Rent Invoice"
+msgstr "فاتورة إيجار"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__income_account_id
+msgid "Sales Income Account"
+msgstr "حساب إيرادات المبيعات"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__journal_id
+msgid "Sales Journal"
+msgstr "يومية المبيعات"
+
+#. module: majal_property_account
+#: model:ir.model,name:majal_property_account.model_majal_service_charge
+msgid "Service Charge"
+msgstr "رسوم الخدمة"
+
+#. module: majal_property_account
+#: model:ir.model.fields,field_description:majal_property_account.field_majal_property_accounting_settings__service_charge_income_account_id
+msgid "Service Charge Income Account"
+msgstr "حساب إيرادات رسوم الخدمة"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "Service Charge Invoice"
+msgstr "فاتورة رسوم خدمة"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "Service charge %(year)s — %(unit)s"
+msgstr "رسوم خدمة %(year)s — %(unit)s"
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/accounting_settings.py:0
+msgid "The sales journal must belong to the selected company."
+msgstr "يجب أن تنتمي يومية المبيعات إلى الشركة المحددة."
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "There is no residual amount to invoice."
+msgstr "لا يوجد مبلغ متبقٍ لإصدار فاتورة به."
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "There is no residual rent amount to invoice."
+msgstr "لا يوجد مبلغ إيجار متبقٍ لإصدار فاتورة به."
+
+#. module: majal_property_account
+#. odoo-python
+#: code:addons/majal_property_account/models/invoice_links.py:0
+msgid "There is no residual service charge to invoice."
+msgstr "لا توجد رسوم خدمة متبقية لإصدار فاتورة بها."

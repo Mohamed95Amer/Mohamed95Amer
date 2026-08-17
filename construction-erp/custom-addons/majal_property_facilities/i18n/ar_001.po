@@ -1,0 +1,313 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_facilities
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "%(request)s is already with Facilities as %(order)s."
+msgstr "%(request)s موجود بالفعل لدى المرافق باسم %(order)s."
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/facility_mirror.py:0
+msgid "%s was removed from the property register."
+msgstr "أُزيل %s من السجل العقاري."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_facility_location__majal_building_id
+msgid "Building"
+msgstr "المبنى"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "Closed: Facilities completed %s."
+msgstr "مغلق: أكملت المرافق %s."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_equipment__majal_occupant_partner_id
+msgid "Current Occupant"
+msgstr "الشاغل الحالي"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_facility_location__majal_development_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_equipment__majal_development_id
+msgid "Development"
+msgstr "المشروع العقاري"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_maintenance_request_form_facilities
+msgid "Escalate to Facilities"
+msgstr "تصعيد إلى المرافق"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "Escalated to Facilities as %s."
+msgstr "صُعّد إلى المرافق باسم %s."
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_development_form_facilities
+msgid "FM Locations"
+msgstr "مواقع إدارة المرافق"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_development_form_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_unit_form_facilities
+msgid "Facilities"
+msgstr "المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_building__facility_location_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_community__facility_location_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_development__facility_location_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_facility_mirror__facility_location_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_floor__facility_location_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_unit__facility_location_id
+msgid "Facilities Location"
+msgstr "موقع المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_facility_mirror
+msgid "Facilities Location Mirror"
+msgstr "مرآة مواقع المرافق"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/property_hierarchy.py:0
+msgid "Facilities Locations"
+msgstr "مواقع المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_development__facility_manager_user_id
+msgid "Facilities Manager"
+msgstr "مدير المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_development__facility_member_user_ids
+msgid "Facilities Team"
+msgstr "فريق المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_facility_location
+msgid "Facility Location"
+msgstr "موقع المرفق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_development__facility_location_count
+msgid "Facility Location Count"
+msgstr "عدد مواقع المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_building__facility_published
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_community__facility_published
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_development__facility_published
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_facility_mirror__facility_published
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_floor__facility_published
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_unit__facility_published
+msgid "Facility Published"
+msgstr "منشور في المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_development__facility_manager_user_id
+msgid "Given access to every location published from this development."
+msgstr "يُمنح صلاحية الوصول إلى كل موقع منشور من هذا المشروع العقاري."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_request__majal_lease_id
+msgid "Lease"
+msgstr "عقد الإيجار"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_maintenance_equipment
+msgid "Maintenance Equipment"
+msgstr "معدات الصيانة"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_maintenance_request
+msgid "Maintenance Request"
+msgstr "طلب صيانة"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_development__facility_auto_publish
+msgid "Mirror buildings, floors and units into Facilities as they are created, instead of waiting for handover."
+msgstr "انسخ المباني والطوابق والوحدات إلى المرافق فور إنشائها، بدلاً من انتظار التسليم."
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_maintenance_request_form_facilities
+msgid "Open Work Order"
+msgstr "فتح أمر العمل"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_maintenance_request_form_property
+msgid "Open the report"
+msgstr "فتح البلاغ"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_development_form_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_unit_form_facilities
+msgid "Publish to Facilities"
+msgstr "النشر إلى المرافق"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_development__facility_auto_publish
+msgid "Publish to Facilities automatically"
+msgstr "النشر إلى المرافق تلقائياً"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_facility_location_search_property
+msgid "Published from Property"
+msgstr "منشور من العقارات"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_development_form_facilities
+msgid "Publishing"
+msgstr "النشر"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_maintenance_request_form_property
+msgid "Raised from a tenant report. Closing this work order closes\n                    the report with it."
+msgstr "مرفوع من بلاغ مستأجر. إغلاق أمر العمل هذا يغلق البلاغ معه."
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "Raised from tenant report %s on unit %s."
+msgstr "مرفوع من بلاغ المستأجر %s على الوحدة %s."
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_building
+msgid "Real Estate Building"
+msgstr "مبنى عقاري"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_community
+msgid "Real Estate Community"
+msgstr "مجمع عقاري"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_development
+msgid "Real Estate Development"
+msgstr "مشروع عقاري"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_floor
+msgid "Real Estate Floor"
+msgstr "طابق عقاري"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_unit
+msgid "Real Estate Unit"
+msgstr "وحدة عقارية"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "Reopened: Facilities reopened %s."
+msgstr "أُعيد الفتح: أعادت المرافق فتح %s."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_request__majal_tenant_partner_id
+msgid "Reported By"
+msgstr "أبلغ عنه"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_facility_location__majal_development_id
+msgid "Set on locations published from the property register. Blank on locations created directly in Facilities, which is what keeps them out of the property team stamping."
+msgstr "يُضبط على المواقع المنشورة من السجل العقاري. ويبقى فارغاً على المواقع المنشأة مباشرة في المرافق، وهو ما يبقيها خارج ختم فريق العقارات."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_building__facility_location_id
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_community__facility_location_id
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_development__facility_location_id
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_facility_mirror__facility_location_id
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_floor__facility_location_id
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_unit__facility_location_id
+msgid "Set once this record has been published to Facilities."
+msgstr "يُضبط بمجرد نشر هذا السجل إلى المرافق."
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_development_form_facilities
+msgid "Team"
+msgstr "الفريق"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_request__majal_request_id
+msgid "Tenant Report"
+msgstr "بلاغ المستأجر"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_majal_maintenance_request__maintenance_request_id
+msgid "The Facilities work order raised to deal with this report."
+msgstr "أمر عمل المرافق المرفوع لمعالجة هذا البلاغ."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_maintenance_equipment__majal_unit_id
+msgid "The saleable unit this asset sits in, taken from its location."
+msgstr "الوحدة القابلة للبيع التي يقع فيها هذا الأصل، مأخوذة من موقعه."
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "The tenant report behind this work order was cancelled. It has been left open for Facilities to decide."
+msgstr "أُلغي بلاغ المستأجر الذي وراء أمر العمل هذا. وقد تُرك مفتوحاً لتقرر المرافق بشأنه."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,help:majal_property_facilities.field_maintenance_equipment__majal_occupant_partner_id
+msgid "The tenant under the unit's active lease, where there is one."
+msgstr "المستأجر بموجب عقد الإيجار النشط للوحدة، إن وُجد."
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_facility_location__majal_unit_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_equipment__majal_unit_id
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_request__majal_unit_id
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_handover
+msgid "Unit Handover"
+msgstr "تسليم وحدة"
+
+#. module: majal_property_facilities
+#: model:ir.model,name:majal_property_facilities.model_majal_maintenance_request
+msgid "Unit Maintenance Request"
+msgstr "طلب صيانة وحدة"
+
+#. module: majal_property_facilities
+#: model:ir.model.fields,field_description:majal_property_facilities.field_maintenance_equipment__majal_owner_partner_id
+msgid "Unit Owner"
+msgstr "مالك الوحدة"
+
+#. module: majal_property_facilities
+#: model_terms:ir.ui.view,arch_db:majal_property_facilities.view_majal_development_form_facilities
+msgid "Units join the Facilities location tree when they are\n                        handed over, or when published by hand. The team named\n                        here is what makes those locations visible to the\n                        technicians who work them."
+msgstr "تنضم الوحدات إلى شجرة مواقع المرافق عند تسليمها، أو عند نشرها يدوياً. والفريق المسمى هنا هو ما يجعل تلك المواقع ظاهرة للفنيين الذين يعملون عليها."
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+#: model:ir.model.fields,field_description:majal_property_facilities.field_majal_maintenance_request__maintenance_request_id
+msgid "Work Order"
+msgstr "أمر العمل"
+
+#. module: majal_property_facilities
+#. odoo-python
+#: code:addons/majal_property_facilities/models/maintenance_request.py:0
+msgid "Work order %s is still open in Facilities. Close it there, or unlink it from this report first."
+msgstr "أمر العمل %s ما زال مفتوحاً في المرافق. أغلقه هناك، أو افصله عن هذا البلاغ أولاً."
