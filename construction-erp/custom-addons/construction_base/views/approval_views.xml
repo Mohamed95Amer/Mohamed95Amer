@@ -144,10 +144,19 @@
         </field>
     </record>
 
+    <!-- groups_id is what makes this openable at all. A server action with no
+         groups falls back to requiring *write* on its own model
+         (ir.actions.server.run in base), and only the manager group has write
+         on construction.approval.step. So every ordinary approver — the site
+         engineer, the field user, the PM — clicked "Waiting for Me" and got an
+         access error naming a group they are not in, while the list it would
+         have shown is read-only and holds nothing but their own decisions.
+         Naming the group here replaces that fallback with the check we mean. -->
     <record id="action_approval_inbox" model="ir.actions.server">
         <field name="name">Waiting for Me</field>
         <field name="model_id" ref="model_construction_approval_step"/>
         <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('construction_base.group_construction_user'))]"/>
         <field name="code">action = model._inbox_action()</field>
     </record>
 

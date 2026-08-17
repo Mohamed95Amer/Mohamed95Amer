@@ -310,6 +310,44 @@ class ResUsersTenantSecurity(models.Model):
             rule_model.create(values)
 
     @api.model
+    def _majal_task_domain(self):
+        """project.task, with Odoo's own private tasks left reachable.
+
+        Every other model in the project map hangs off a project, so scoping
+        it by `project_id.company_id` is complete. A task does not: Odoo lets
+        a user keep private tasks with no project at all, and the To-do app
+        (installed as a dependency of project) creates one the first time
+        anybody opens its menu. Under a plain company clause that task can
+        never match -- project_id is False -- and because this rule is global
+        it is ANDed with core's "full access to own private task only", which
+        therefore cannot rescue it. The result was every persona, the Platform
+        Owner included, meeting an access error on a stock Odoo menu, and no
+        user in the database being able to keep a private task.
+
+        So the personal leg is ORed in on every branch, including the
+        facilities one: an FM user has no business in the construction
+        register, but their own to-do list is theirs.
+
+        The prefix arity is deliberate and fragile. `|` consumes exactly two
+        expressions; anything left over is ANDed in at the end, which would
+        quietly turn the OR into an AND. Each branch below is written so the
+        second operand is one complete expression -- hence the explicit `&`
+        in front of the company clause in the last branch, where the base
+        domain is three leaves rather than one.
+        """
+        mine = "'&', ('project_id', '=', False), ('user_ids', 'in', [user.id])"
+        company = "('project_id.company_id', 'in', company_ids)"
+        manager = "('project_id.majal_manager_id', '=', user.id)"
+        members = "('project_id.majal_member_ids', 'in', [user.id])"
+        return (
+            "[(1, '=', 1)] if user.share else "
+            f"([{mine}] if user.majal_industry_scope == 'facilities' else "
+            f"(['|', {mine}, {company}] "
+            "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
+            f"['|', {mine}, '&', {company}, '|', {manager}, {members}]))"
+        )
+
+    @api.model
     def _majal_install_tenant_rules(self):
         """Install company, workspace and assignment boundaries."""
         company = self.env.company
@@ -345,6 +383,8 @@ class ResUsersTenantSecurity(models.Model):
                 "([(0, '=', 1)] if user.majal_industry_scope == 'facilities' "
                 f"else ({allowed}))"
             )
+            if model_name == "project.task":
+                domain = self._majal_task_domain()
             self._majal_upsert_rule(
                 f"Majal tenant: {model_name}", model_name, domain
             )
