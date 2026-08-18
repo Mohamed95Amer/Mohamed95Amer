@@ -1,14 +1,16 @@
 # Majal continuation handoff
 
-> **Newest checkpoint: [`next-tool-2026-08-11/START_HERE.md`](next-tool-2026-08-11/START_HERE.md)**
-> — the Property suite, and one open UI defect that needs a browser to fix.
-> The 2026-07-31 checkpoint below remains the reference for the Construction
-> and Facilities platform.
+> **Newest checkpoint: [`property-merge-2026-08-18/START_HERE.md`](property-merge-2026-08-18/START_HERE.md)**
+> — Property merged into `codex/odoo19-ui-enhancement`, both suites bilingual,
+> workspace scope isolation fixed. Give the next tool the contents of
+> [`property-merge-2026-08-18/COPY_THIS_PROMPT.txt`](property-merge-2026-08-18/COPY_THIS_PROMPT.txt).
+> The earlier checkpoints below remain the reference for the Construction and
+> Facilities platform and for the outstanding UX round.
 
 Use this folder to continue the Majal work with Codex, Claude Code, Cursor, or
 another coding tool.
 
-> **Latest checkpoint:** start with
+> **Previous checkpoint:** start with
 > [`ux-pass-2026-08-13/START_HERE.md`](ux-pass-2026-08-13/START_HERE.md) and give
 > the next tool the contents of
 > [`ux-pass-2026-08-13/COPY_THIS_PROMPT.txt`](ux-pass-2026-08-13/COPY_THIS_PROMPT.txt).
@@ -18,7 +20,7 @@ another coding tool.
 > already read: exact file paths, the five requests that describe UI which does
 > not exist, and the traps that break module loading.
 >
-> **Previous checkpoint:**
+> **Older checkpoint:**
 > [`next-tool-2026-07-31/START_HERE.md`](next-tool-2026-07-31/START_HERE.md) and
 > [`next-tool-2026-07-31/COPY_THIS_PROMPT.txt`](next-tool-2026-07-31/COPY_THIS_PROMPT.txt)
 > — the UI, Arabic, dashboard, material-access and company-switcher work

@@ -1,0 +1,138 @@
+You are continuing work on MajalOps (Majal) — an Odoo 18 Community
+construction, facilities-management and property platform. The product brand
+is Majal, not Odoo.
+
+Repository: Mohamed95Amer/Mohamed95Amer
+Application source: construction-erp/
+Branch: codex/odoo19-ui-enhancement   (draft PR #7, open)
+Head commit: 42d491d
+Test baseline: 1044 tests, 0 failed, 0 errors — scripts/run-tests.sh all
+CI on the head commit: green.
+
+
+FIRST, BEFORE ANYTHING ELSE
+
+1. git status --short
+2. git log -1 --oneline
+3. Read construction-erp/handoff/property-merge-2026-08-18/START_HERE.md in
+   full. It is the checkpoint for this session and it records what was found
+   by reading and by driving the running app, so you do not re-derive it.
+
+Do not reset, clean, checkout over, or discard the worktree. Do not merge the
+branch wip/local-2026-07-31. Never push to a branch other than
+codex/odoo19-ui-enhancement without asking the owner first.
+
+
+WHERE THE WORK STANDS
+
+The Property suite (ten modules) was merged into this branch at 347cc79. It
+was never here before. Note: the branch people quote for it,
+codex/property-integration, does not exist on the remote, and neither do the
+commits c1abd26 or eb36396 — the real work is on
+codex/property-visual-staging-20260813, and that is what was merged. Do not
+go hunting for the other names.
+
+Since the merge, six fixes landed:
+
+  e5625ce  infrastructure scripts made shellcheck-clean
+  94cf40e  the Prometheus alert-rule CI step never actually ran promtool
+  fc75e02  workspace scope isolation — allow-lists, not deny-lists
+  f4c2478 / 0ded104  Arabic for all ten Property modules
+  e2a0caa  Property workspace strings made visible to the extractor
+  42d491d  the same for construction_ui, the larger half
+
+Two of these are worth understanding before you touch related code; both are
+explained in START_HERE.md:
+
+  * The scope enum grew and the tenant rules did not. majal_industry_scope
+    gained real_estate and property_facilities; every rule tested one literal
+    string, so both new values fell through every exclusion and a Property
+    user could read the whole construction and facilities registers. The gates
+    in majal_administration/models/tenant_security.py are allow-lists now
+    (CONSTRUCTION_SCOPES, FACILITY_SCOPES, PROPERTY_SCOPES). If you add a
+    workspace kind, add it to the right list or it grants nothing — that is
+    the correct default and a test asserts it.
+
+  * A complete .po catalogue is not a translated screen. Odoo's extractor only
+    sees a literal inside a _t() call, and the web catalogue is global across
+    modules, so one module's translation masks another's gap. Measure Arabic
+    by loading the screen and counting Latin words, not by counting entries.
+
+
+HOW TO VERIFY ANYTHING YOU CHANGE
+
+A green suite proves nothing about the UI, and admin proves nothing about
+anyone else — the superuser is exempt from record rules. Every real defect
+found on this branch survived because it had only ever been opened as admin.
+
+  * Drive the running app (scripts/run-local.sh, Playwright with
+    executable_path=/opt/pw-browsers/chromium). Wait on .o_main_navbar; never
+    wait for networkidle — the bus long-polls and it never fires. RPC faults
+    surface as .o_error_dialog, not as pageerror.
+  * Use personas holding exactly one role each, plus a control account holding
+    none. A screen that opens for the control is a leak; a screen that refuses
+    a role that needs it is a broken feature. Both are silent.
+  * Resolve action ids from ir_model_data at run time. Do not hardcode action
+    IDs — they differ by database, and a wrong id reads exactly like a
+    permissions failure.
+  * Make every probe assert its own premise. A broken probe and a broken
+    product look identical from outside.
+
+Traps that have already cost time (details in START_HERE.md): _t() returns a
+String subclass, so typeof reports "object" and a config walker will render
+[object Object]; exists() bypasses record rules — use search(); Odoo's cache
+lives on the transaction, so call env.invalidate_all() before reading as
+another user; post_init_hook fires on install only — use
+migrations/<version>/post-migrate.py for an installed module; hand-written RTL
+blocks must sit inside /*!rtl:begin:ignore*/ … /*!rtl:end:ignore*/ (bang form);
+Postgres in the container prints a misleading start failure and then comes up,
+so poll pg_isready.
+
+
+OPEN WORK, RANKED
+
+1. The Property concept assets are still publicly served. There is no _headers
+   or .cfignore, so Cloudflare publishes the whole website/ tree — the property
+   walkthrough video and three property-*-concept.png stills are fetchable at
+   guessable URLs although nothing links to them. Unlinked is not private.
+   Move them out of the publish root if that material should not be public.
+2. The 235 "empty list" menus from the persona sweep were never triaged. Most
+   are legitimately empty in a demo database; nobody has proved that none of
+   them is a broken domain.
+3. PR #7 is ~300 commits and ~3,400 files and has never been reviewed as a
+   whole. That is a release-process decision for the owner, not a technical one.
+
+Also still open from the earlier UX brief
+(handoff/ux-pass-2026-08-13/START_HERE.md): the Change Order restructure, asset
+depreciation, Majal Field defect capture and the drawing-revision compare.
+
+Decisions that belong to the owner, not to you — surface them, do not decide
+them: whether to ship a starter approval rule set (the rules in the tree are
+demo-only); whether commercial users may read the general ledger; the
+document-intake target models (5 of 11 templates have no target); OCR and its
+Tesseract dependency; and who may enable an AI provider against confidential
+documents.
+
+
+STANDING CONSTRAINTS
+
+  * Secrets come from environment variables. Never hardcode one, never commit
+    one.
+  * Website content rules (website/README.md): no invented statistics, no
+    invented social proof, no pricing, every number verifiable in the repo.
+    Screenshots must be real captures — remove the <figure> block rather than
+    substitute a stock image or a mock-up.
+  * Property is deliberately hidden from the public website for now, marked
+    "In development". Do not re-publish it without the owner asking.
+  * Do not add a proprietary-licensed module without the owner deciding
+    explicitly.
+  * Workflow guards compare a context value against a private sentinel by
+    identity, never for truthiness.
+  * Do not allow arbitrary model writes from user input; do not execute macros,
+    scripts, formulas or embedded files; treat uploaded documents as untrusted
+    and escape extracted HTML; preserve company and project isolation; never
+    call an AI provider with confidential document content unless the customer
+    has explicitly enabled it.
+
+Work in small commits, and run scripts/run-tests.sh all to 1044/0/0 before each
+one. Report honestly: if something is red, say so with the output.
