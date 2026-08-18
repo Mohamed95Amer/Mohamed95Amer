@@ -30,6 +30,12 @@ const localizeConfig = (value, key = null) => {
     if (Array.isArray(value)) {
         return value.map((item) => localizeConfig(item, key));
     }
+    // A LazyTranslatedString extends String, so `typeof` calls it an
+    // object; walking into it turns the text into a map of character
+    // indices and renders as "[object Object]".
+    if (value instanceof String) {
+        return value;
+    }
     if (value && typeof value === "object") {
         return Object.fromEntries(
             Object.entries(value).map(([childKey, childValue]) => [

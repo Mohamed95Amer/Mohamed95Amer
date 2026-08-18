@@ -10,6 +10,12 @@ const localizeItems = (value, key = null) => {
     if (Array.isArray(value)) {
         return value.map((item) => localizeItems(item, key));
     }
+    // A LazyTranslatedString extends String, so `typeof` calls it an
+    // object; walking into it turns the text into a map of character
+    // indices and renders as "[object Object]".
+    if (value instanceof String) {
+        return value;
+    }
     if (value && typeof value === "object") {
         return Object.fromEntries(
             Object.entries(value).map(([childKey, childValue]) => [
@@ -33,46 +39,46 @@ const today = isoDate();
 const PROPERTY_KPIS = [
     {
         key: "availableUnits",
-        label: "Available units",
+        label: _t("Available units"),
         model: "majal.unit",
         domain: [["status", "=", "available"]],
         action: "majal_real_estate.action_majal_unit",
         icon: "fa-th",
         tone: "teal",
-        hint: "On the market now",
+        hint: _t("On the market now"),
         workspace: "unit_inventory",
     },
     {
         key: "heldUnits",
-        label: "Units held",
+        label: _t("Units held"),
         model: "majal.reservation",
         domain: [["state", "=", "confirmed"]],
         action: "majal_real_estate.action_majal_reservation",
         icon: "fa-bookmark",
         tone: "blue",
-        hint: "Confirmed reservations",
+        hint: _t("Confirmed reservations"),
         workspace: "reservations",
     },
     {
         key: "activeLeases",
-        label: "Active tenancies",
+        label: _t("Active tenancies"),
         model: "majal.lease",
         domain: [["state", "=", "active"]],
         action: "majal_property_operations.action_majal_lease",
         icon: "fa-home",
         tone: "sand",
-        hint: "Occupied and billing",
+        hint: _t("Occupied and billing"),
         workspace: "leases",
     },
     {
         key: "handoversDue",
-        label: "Handovers in flight",
+        label: _t("Handovers in flight"),
         model: "majal.handover",
         domain: [["state", "in", ["draft", "scheduled", "inspection", "ready"]]],
         action: "majal_real_estate.action_majal_handover",
         icon: "fa-key",
         tone: "clay",
-        hint: "Not yet handed over",
+        hint: _t("Not yet handed over"),
         workspace: "handovers",
     },
 ];
@@ -83,8 +89,8 @@ const PROPERTY_KPIS = [
 const PROPERTY_FOCUS = [
     {
         key: "overdueInstallments",
-        label: "Payments overdue",
-        caption: "Past the due date",
+        label: _t("Payments overdue"),
+        caption: _t("Past the due date"),
         model: "majal.payment.installment",
         domain: [["is_overdue", "=", true]],
         action: "majal_real_estate.action_majal_payment_installment",
@@ -94,8 +100,8 @@ const PROPERTY_FOCUS = [
     },
     {
         key: "expiringHolds",
-        label: "Holds expiring",
-        caption: "Lapse today or sooner",
+        label: _t("Holds expiring"),
+        caption: _t("Lapse today or sooner"),
         model: "majal.reservation",
         domain: [["state", "=", "confirmed"], ["expiry_date", "<=", today]],
         action: "majal_real_estate.action_majal_reservation",
@@ -104,8 +110,8 @@ const PROPERTY_FOCUS = [
     },
     {
         key: "blockedHandovers",
-        label: "Handovers blocked",
-        caption: "Snags to clear",
+        label: _t("Handovers blocked"),
+        caption: _t("Snags to clear"),
         model: "majal.handover",
         domain: [["open_snag_count", ">", 0],
                  ["state", "in", ["draft", "scheduled", "inspection", "ready"]]],
@@ -116,8 +122,8 @@ const PROPERTY_FOCUS = [
     },
     {
         key: "openTenantRequests",
-        label: "Tenant requests open",
-        caption: "Somebody is waiting",
+        label: _t("Tenant requests open"),
+        caption: _t("Somebody is waiting"),
         model: "majal.maintenance.request",
         domain: [["state", "in", ["new", "in_progress"]]],
         action: "majal_property_operations.action_majal_maintenance_request",
@@ -129,19 +135,19 @@ const PROPERTY_FOCUS = [
 
 const PROPERTY_GROUPS = [
     {
-        title: "Portfolio",
-        subtitle: "What you own and what is in it",
+        title: _t("Portfolio"),
+        subtitle: _t("What you own and what is in it"),
         apps: [
             {
                 name: "Developments",
-                description: "Sites, communities, buildings and floors",
+                description: _t("Sites, communities, buildings and floors"),
                 icon: "fa-building",
                 tone: "navy",
                 workspace: "property_portfolio",
             },
             {
                 name: "Unit inventory",
-                description: "Stock, pricing, availability and status",
+                description: _t("Stock, pricing, availability and status"),
                 icon: "fa-th",
                 tone: "teal",
                 workspace: "unit_inventory",
@@ -149,33 +155,33 @@ const PROPERTY_GROUPS = [
         ],
     },
     {
-        title: "Selling",
-        subtitle: "From enquiry to signed sale",
+        title: _t("Selling"),
+        subtitle: _t("From enquiry to signed sale"),
         apps: [
             {
                 name: "Leads",
-                description: "Enquiries, budgets and what they want",
+                description: _t("Enquiries, budgets and what they want"),
                 icon: "fa-users",
                 tone: "amber",
                 workspace: "leads",
             },
             {
                 name: "Reservations",
-                description: "Units held for named buyers",
+                description: _t("Units held for named buyers"),
                 icon: "fa-handshake-o",
                 tone: "blue",
                 workspace: "reservations",
             },
             {
                 name: "Payments",
-                description: "Instalment schedules and arrears",
+                description: _t("Instalment schedules and arrears"),
                 icon: "fa-money",
                 tone: "sand",
                 workspace: "installments",
             },
             {
                 name: "Commissions",
-                description: "What brokers earned and what is paid",
+                description: _t("What brokers earned and what is paid"),
                 icon: "fa-percent",
                 tone: "slate",
                 workspace: "commissions",
@@ -183,33 +189,33 @@ const PROPERTY_GROUPS = [
         ],
     },
     {
-        title: "Delivering & operating",
-        subtitle: "Keys, tenancies and the people in the building",
+        title: _t("Delivering & operating"),
+        subtitle: _t("Keys, tenancies and the people in the building"),
         apps: [
             {
                 name: "Handovers",
-                description: "Inspections, snag lists and keys",
+                description: _t("Inspections, snag lists and keys"),
                 icon: "fa-key",
                 tone: "clay",
                 workspace: "handovers",
             },
             {
                 name: "Leases",
-                description: "Terms, renewals and occupancy",
+                description: _t("Terms, renewals and occupancy"),
                 icon: "fa-file-text-o",
                 tone: "violet",
                 workspace: "leases",
             },
             {
                 name: "Rent collection",
-                description: "What is due across every tenancy",
+                description: _t("What is due across every tenancy"),
                 icon: "fa-calendar-check-o",
                 tone: "sand",
                 workspace: "rent_collection",
             },
             {
                 name: "Tenant requests",
-                description: "Faults reported in occupied units",
+                description: _t("Faults reported in occupied units"),
                 icon: "fa-wrench",
                 tone: "coral",
                 workspace: "unit_requests",
