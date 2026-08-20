@@ -6,6 +6,7 @@ action is invisible until somebody clicks it.
 """
 
 from odoo.tests import TransactionCase, tagged
+from odoo.osv import expression
 
 # Keys declared in property_workspaces.js. Kept here rather than parsed from
 # the JS so that deleting a client action without deleting its config, or the
@@ -19,6 +20,23 @@ PROPERTY_WORKSPACE_KEYS = [
 
 @tagged("post_install", "-at_install")
 class TestPropertyMenus(TransactionCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        internal_group = cls.env.ref("base.group_user")
+        property_group = cls.env.ref(
+            "majal_real_estate.group_majal_real_estate_user")
+        cls.control_user = cls.env["res.users"].create({
+            "name": "Property action control",
+            "login": "property.action.control",
+            "groups_id": [(6, 0, internal_group.ids)],
+        })
+        cls.property_user = cls.env["res.users"].create({
+            "name": "Property action user",
+            "login": "property.action.user",
+            "groups_id": [(6, 0, (internal_group | property_group).ids)],
+        })
+
     def test_every_workspace_key_has_a_client_action(self):
         for key in PROPERTY_WORKSPACE_KEYS:
             action = self.env.ref(f"majal_property_ui.action_workspace_{key}")
@@ -102,3 +120,35 @@ class TestPropertyMenus(TransactionCase):
     def test_the_configuration_menu_is_called_settings(self):
         config = self.env.ref("majal_real_estate.menu_majal_real_estate_config")
         self.assertEqual(config.name, "Settings")
+
+    def test_property_client_actions_are_not_guessable_without_role(self):
+        action_model = self.env["ir.actions.client"]
+        property_actions = (
+            self.env.ref("majal_property_ui.action_property_home")
+            | sum(
+                (
+                    self.env.ref(f"majal_property_ui.action_workspace_{key}")
+                    for key in PROPERTY_WORKSPACE_KEYS
+                ),
+                action_model,
+            )
+        )
+        self.env.invalidate_all()
+
+        # Client actions are loaded through Odoo's action service; ordinary
+        # users do not have a direct ACL on ir.actions.client.  Evaluate the
+        # same record-rule domain as each persona, then execute that domain as
+        # system so this regression test measures the rule rather than the
+        # unrelated model ACL.
+        def visible_actions(user):
+            rule_domain = self.env["ir.rule"].with_user(user)._compute_domain(
+                "ir.actions.client", "read")
+            return action_model.search(expression.AND([
+                rule_domain,
+                [("id", "in", property_actions.ids)],
+            ]))
+
+        visible_to_control = visible_actions(self.control_user)
+        visible_to_property = visible_actions(self.property_user)
+        self.assertFalse(visible_to_control)
+        self.assertEqual(set(visible_to_property.ids), set(property_actions.ids))

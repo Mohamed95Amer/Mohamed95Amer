@@ -41,6 +41,16 @@ class MajalDevelopment(models.Model):
         tracking=True,
         help="Used to date payment milestones that fall due on handover.")
     description = fields.Text()
+    dashboard_image = fields.Image(
+        string="Control Centre Image",
+        max_width=2400,
+        max_height=1600,
+        help="Featured image shown for this development on the Property control centre.",
+    )
+    dashboard_featured = fields.Boolean(
+        string="Feature on Control Centre",
+        help="Use this development as the featured portfolio card. If several are marked, the most recently updated one is used.",
+    )
 
     community_ids = fields.One2many("majal.community", "development_id", string="Communities")
     building_ids = fields.One2many("majal.building", "development_id", string="Buildings")

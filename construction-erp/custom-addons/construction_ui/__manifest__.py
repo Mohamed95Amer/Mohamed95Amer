@@ -1,7 +1,7 @@
 {
     "name": "Majal Experience",
     "summary": "Majal construction and facilities workspaces",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Majal",
@@ -12,6 +12,7 @@
         "board",
         "project_todo",
         "spreadsheet_dashboard",
+        "spreadsheet_oca",
         "account",
         "purchase",
         "stock",
@@ -49,6 +50,7 @@
         "facility_floorplan",
     ],
     "data": [
+        "security/dashboard_security.xml",
         "security/ir.model.access.csv",
         "views/register_search_views.xml",
         "views/construction_home_views.xml",
@@ -86,6 +88,7 @@
             "construction_ui/static/src/workspace_hub/workspace_hub.xml",
             "construction_ui/static/src/workspace_hub/workspace_hub.scss",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.js",
+            "construction_ui/static/src/dashboard_hub/board_save_patch.js",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.xml",
             "construction_ui/static/src/dashboard_hub/dashboard_hub.scss",
             "construction_ui/static/src/systray/approvals_systray.js",

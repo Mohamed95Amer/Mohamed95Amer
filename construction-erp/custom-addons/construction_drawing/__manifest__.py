@@ -2,7 +2,7 @@
     "name": "Construction Drawings",
     "summary": "Drawing register with revision control, supersede workflow "
                "and bulk PDF upload",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Mohamed Amer",

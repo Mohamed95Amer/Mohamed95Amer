@@ -13,7 +13,7 @@ WEB_IFC_VERSION="0.0.77"      # MPL-2.0 — https://github.com/ThatOpen/engine_w
 THREE_VERSION="0.170.0"       # MIT     — https://github.com/mrdoob/three.js
 
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
-LIB="$HERE/custom-addons/construction_bim/static/lib"
+LIB="${BIM_LIB_DIR:-$HERE/custom-addons/construction_bim/static/lib}"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 

@@ -45,14 +45,14 @@ class TestMajalAppIcons(TransactionCase):
 
         self.assertEqual(unbranded, [])
 
-    def test_website_and_intelligence_icons_are_unique_majal_assets(self):
+    def test_website_is_hidden_and_intelligence_uses_a_majal_asset(self):
         website = self.env.ref("website.menu_website_configuration")
         intelligence = self.env.ref("majal_ai.menu_ai_root")
 
-        self.assertEqual(
-            website.web_icon,
-            "construction_ui,static/description/apps/website.svg",
-        )
+        # Website remains an installed technical dependency for the login and
+        # portals.  It is deliberately not a Majal workspace, so its icon is
+        # irrelevant and the root menu must remain inactive.
+        self.assertFalse(website.active, "Website must stay hidden from Majal users")
         self.assertEqual(
             intelligence.web_icon,
             "construction_ui,static/description/apps/intelligence.svg",

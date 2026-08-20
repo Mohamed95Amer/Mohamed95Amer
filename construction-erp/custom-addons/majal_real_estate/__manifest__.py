@@ -3,7 +3,7 @@
     "summary": "Property inventory and developer sales: developments, buildings, "
                "floors and units, with leads, unit reservations, payment plans, "
                "broker commissions and a buyer portal",
-    "version": "18.0.3.0.0",
+    "version": "18.0.3.1.0",
     "assets": {
         "web.assets_backend": [
             "majal_real_estate/static/src/scss/property_unit.scss",

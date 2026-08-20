@@ -30,6 +30,8 @@
                            statusbar_visible="planning,active,completed"/>
                 </header>
                 <sheet>
+                    <field name="dashboard_image" widget="image" class="oe_avatar"
+                           options="{'preview_image': 'dashboard_image'}"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_buildings" type="object"
                                 class="oe_stat_button" icon="fa-building-o">
@@ -50,6 +52,7 @@
                             <field name="developer_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="currency_id" invisible="1"/>
+                            <field name="dashboard_featured"/>
                         </group>
                         <group string="Location">
                             <field name="city"/>

@@ -5,6 +5,12 @@
         <field name="model">construction.drawing</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_compare_revisions" type="object"
+                            string="Compare revisions" icon="fa-columns"
+                            class="btn-primary"
+                            invisible="revision_count &lt; 2"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1><field name="number" placeholder="AR-101"/></h1>
@@ -17,6 +23,7 @@
                         </group>
                         <group>
                             <field name="current_revision_id"/>
+                            <field name="revision_count" invisible="1"/>
                         </group>
                     </group>
                     <notebook>

@@ -10,6 +10,7 @@ list_db = False
 server_wide_modules = base,web,majal_branding
 proxy_mode = True
 workers = 3
+gevent_port = 8072
 max_cron_threads = 1
 limit_request = 8192
 limit_time_cpu = 120

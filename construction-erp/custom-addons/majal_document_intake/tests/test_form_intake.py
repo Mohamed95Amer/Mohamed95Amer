@@ -135,6 +135,35 @@ class TestFormIntake(TransactionCase):
             set(template.question_ids.mapped("instructions")),
             {"permit_no", "date_of_works", "supervisor"})
 
+    def test_document_template_maps_its_uploaded_pdf_and_links_the_form(self):
+        document_template = self.env["majal.document.template"].create({
+            "name": "Client hot-works permit",
+            "code": "CLIENT-HW",
+            "document_type": "inspection",
+            "body_html": "<p>{{ company.name }}</p>",
+            "company_id": self.env.company.id,
+            "source_file": base64.b64encode(self.pdf),
+            "source_filename": "client-hot-works.pdf",
+        })
+
+        mapping_action = document_template.action_map_source_document()
+
+        upload = document_template.intake_upload_id
+        self.assertEqual(mapping_action["res_id"], upload.id)
+        self.assertEqual(upload.document_template_id, document_template)
+        self.assertEqual(upload.target_model, "construction.form.template")
+        self.assertEqual(upload.state, "parsed")
+        self.assertEqual(len(upload.field_ids), 3)
+
+        upload.action_apply()
+
+        self.assertTrue(document_template.mapped_form_template_id)
+        self.assertEqual(
+            len(document_template.mapped_form_template_id.question_ids), 3)
+        open_action = document_template.action_open_mapped_form()
+        self.assertEqual(
+            open_action["res_id"], document_template.mapped_form_template_id.id)
+
     def test_the_round_trip_puts_answers_in_the_right_boxes(self):
         upload = self._upload()
         upload.action_parse()

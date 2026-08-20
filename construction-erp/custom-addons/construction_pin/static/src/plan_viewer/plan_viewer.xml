@@ -78,6 +78,15 @@
                         <p>Loading sheet…</p>
                     </div>
                 </t>
+                <t t-elif="state.renderError">
+                    <div class="o_plan_empty o_plan_error">
+                        <i class="fa fa-exclamation-triangle fa-3x"/>
+                        <p class="fw-bold" t-esc="state.renderError"/>
+                        <button class="btn btn-primary" t-on-click="retryRender">
+                            <i class="fa fa-refresh me-1"/> Try again
+                        </button>
+                    </div>
+                </t>
                 <t t-elif="!state.sheetId">
                     <div class="o_plan_empty">
                         <i class="fa fa-map-o fa-3x"/>

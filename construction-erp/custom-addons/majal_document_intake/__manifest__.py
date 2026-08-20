@@ -1,7 +1,7 @@
 {
     "name": "Majal Document Intake",
     "summary": "Read a file, review the proposed mapping, then create the record",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Majal/Documents",
     "license": "LGPL-3",
     "author": "Majal",
@@ -16,7 +16,11 @@
         "views/mapping_views.xml",
         "views/intake_views.xml",
         "views/form_pdf_views.xml",
+        "views/document_template_views.xml",
         "views/menus.xml",
+    ],
+    "demo": [
+        "demo/document_template_demo.xml",
     ],
     "installable": True,
 }

@@ -2,7 +2,7 @@
     "name": "Construction BIM",
     "summary": "Index IFC models and link their elements to RFIs, defects, "
                "tasks and bill items, with a 3D viewer in the browser",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Mohamed Amer",

@@ -61,6 +61,22 @@ class ConstructionDrawing(models.Model):
         for drawing in self:
             drawing.revision_count = len(drawing.revision_ids)
 
+    def action_compare_revisions(self):
+        """Open the two newest revisions from the drawing itself.
+
+        The compare feature used to be reachable only from a tiny button on a
+        revision row.  A drawing-level action is both discoverable and gives a
+        deterministic default pair while preserving the revision pickers in
+        the compare screen.
+        """
+        self.ensure_one()
+        revisions = self.revision_ids.sorted(key=lambda revision: revision.id)
+        if len(revisions) < 2:
+            raise UserError(
+                self.env._("Upload at least two revisions before comparing them.")
+            )
+        return revisions[-1].action_compare_revisions()
+
 
 class ConstructionDrawingRevision(models.Model):
     _name = "construction.drawing.revision"

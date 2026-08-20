@@ -66,6 +66,13 @@ class MajalIntakeUpload(models.Model):
         domain="[('target_model', '=', target_model),"
                " ('company_id', '=', company_id)]",
     )
+    document_template_id = fields.Many2one(
+        "majal.document.template",
+        string="Source Template",
+        readonly=True,
+        copy=False,
+        ondelete="set null",
+    )
 
     field_ids = fields.One2many("majal.intake.field", "upload_id")
     row_count = fields.Integer(readonly=True)
@@ -293,6 +300,8 @@ class MajalIntakeUpload(models.Model):
             "res_model": template._name,
             "res_id": template.id,
         })
+        if self.document_template_id:
+            self.document_template_id.mapped_form_template_id = template
         return template
 
     def _preview(self, header, body):

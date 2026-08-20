@@ -31,10 +31,13 @@ COPY --chown=odoo:odoo construction-erp/oca-addons/ /mnt/oca-addons/
 COPY --chown=odoo:odoo construction-erp/third-party-addons/ /mnt/third-party-addons/
 COPY --chown=odoo:odoo construction-erp/NOTICE.md /usr/share/doc/majalops/NOTICE.md
 COPY --chown=odoo:odoo construction-erp/scripts/docker-entrypoint-majal.sh /usr/local/bin/majal-entrypoint
+COPY construction-erp/scripts/fetch-bim-libs.sh /tmp/fetch-bim-libs.sh
 COPY --chown=odoo:odoo infrastructure/docker/platform-entrypoint.sh /usr/local/bin/majal-platform-entrypoint
 COPY --chown=odoo:odoo infrastructure/docker/demo-entrypoint.sh /usr/local/bin/majal-demo-entrypoint
 RUN chmod 0755 /usr/local/bin/majal-entrypoint /usr/local/bin/majal-platform-entrypoint \
          /usr/local/bin/majal-demo-entrypoint \
+    && BIM_LIB_DIR=/mnt/custom-addons/construction_bim/static/lib bash /tmp/fetch-bim-libs.sh \
+    && rm -f /tmp/fetch-bim-libs.sh \
     && find /mnt/custom-addons /mnt/oca-addons /mnt/third-party-addons \
          -type d -exec chmod 0755 {} + \
     && find /mnt/custom-addons /mnt/oca-addons /mnt/third-party-addons \

@@ -1,0 +1,88 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+/AcroForm <<
+/Fields [ 5 0 R 6 0 R 7 0 R ]
+>>
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+>>
+/MediaBox [ 0.0 0.0 595 842 ]
+/Parent 2 0 R
+/Annots [ 5 0 R 6 0 R 7 0 R ]
+>>
+endobj
+5 0 obj
+<<
+/Type /Annot
+/Subtype /Widget
+/FT /Tx
+/T (permit\137no)
+/TU (Permit number)
+/V ()
+/Ff 0
+/Rect [ 50 700 500 735 ]
+>>
+endobj
+6 0 obj
+<<
+/Type /Annot
+/Subtype /Widget
+/FT /Tx
+/T (date\137of\137works)
+/TU (Date of works)
+/V ()
+/Ff 0
+/Rect [ 50 640 500 675 ]
+>>
+endobj
+7 0 obj
+<<
+/Type /Annot
+/Subtype /Widget
+/FT /Tx
+/T (supervisor)
+/TU (Supervisor)
+/V ()
+/Ff 0
+/Rect [ 50 580 500 615 ]
+>>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000054 00000 n 
+0000000113 00000 n 
+0000000208 00000 n 
+0000000332 00000 n 
+0000000466 00000 n 
+0000000607 00000 n 
+trailer
+<<
+/Size 8
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+736
+%%EOF

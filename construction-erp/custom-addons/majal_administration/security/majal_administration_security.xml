@@ -25,7 +25,10 @@
     <record id="group_user_administrator" model="res.groups">
         <field name="name">Client User Administrator</field>
         <field name="category_id" ref="module_category_majal_administration"/>
-        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('construction_ui.group_dashboard_designer'))
+        ]"/>
         <field name="comment">Can invite, deactivate and assign approved Majal roles without technical-system access.</field>
     </record>
     <!-- A monitoring agent needs one thing: to ask whether the platform is fit

@@ -2,7 +2,7 @@
     "name": "Construction Base",
     "summary": "Shared foundation for the construction suite: security groups, "
                "project extensions, document numbering mixin",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Construction",
     "license": "LGPL-3",
     "author": "Mohamed Amer",

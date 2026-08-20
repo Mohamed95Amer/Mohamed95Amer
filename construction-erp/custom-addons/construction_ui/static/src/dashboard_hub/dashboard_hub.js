@@ -3,6 +3,7 @@
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 
 const compact = (value) => {
@@ -34,6 +35,7 @@ export class MajalDashboardHub extends Component {
         this.action = useService("action");
         this.state = useState({
             loading: true,
+            canConfigure: false,
             portfolio: {},
             facilities: {
                 assets: 0,
@@ -42,7 +44,13 @@ export class MajalDashboardHub extends Component {
                 breached: 0,
             },
         });
-        onWillStart(() => this.load());
+        onWillStart(async () => {
+            const [canConfigure] = await Promise.all([
+                user.hasGroup("construction_ui.group_dashboard_designer"),
+                this.load(),
+            ]);
+            this.state.canConfigure = canConfigure;
+        });
     }
 
     async safeCount(model, domain = []) {
@@ -191,6 +199,18 @@ export class MajalDashboardHub extends Component {
 
     openAction(action) {
         return this.action.doAction(action);
+    }
+
+    createDashboard() {
+        return this.action.doAction("spreadsheet_oca.spreadsheet_spreadsheet_act_window", {
+            additionalContext: { default_name: _t("My management dashboard") },
+        });
+    }
+
+    manageDashboards() {
+        return this.action.doAction(
+            "spreadsheet_dashboard.spreadsheet_dashboard_action_configuration_dashboards"
+        );
     }
 }
 

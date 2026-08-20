@@ -169,6 +169,19 @@ class TestRevisionCompare(TransactionCase):
         self.assertEqual(action["params"]["left_id"], first.id)
         self.assertEqual(action["params"]["right_id"], second.id)
 
+    def test_drawing_button_opens_the_two_newest_revisions(self):
+        first = self._revision("A")
+        second = self._revision("B")
+        action = self.drawing.action_compare_revisions()
+        self.assertEqual(action["tag"], "construction_revision_compare")
+        self.assertEqual(action["params"]["left_id"], first.id)
+        self.assertEqual(action["params"]["right_id"], second.id)
+
+    def test_drawing_button_requires_two_revisions(self):
+        self._revision("A")
+        with self.assertRaises(UserError):
+            self.drawing.action_compare_revisions()
+
     def test_the_screen_is_handed_every_revision_newest_first(self):
         self._revision("A")
         second = self._revision("B")

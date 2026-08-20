@@ -132,6 +132,7 @@ export class PlanViewer extends Component {
             loading: true,
             uploading: false,
             hasSheet: false,
+            renderError: false,
             filters: {},
         });
         this._renderSeq = 0;
@@ -179,23 +180,32 @@ export class PlanViewer extends Component {
 
     async loadData() {
         this.state.loading = true;
-        const data = await this.orm.call(
-            this.pinModel, "get_plan_data", [this.state.sheetId]);
-        this.state.contextName = data.sheet.context_name;
-        this.state.sheetLabel = data.sheet.label;
-        this.state.sheets = data.sheets;
-        this.state.pins = data.pins;
-        if (data.pin_types?.length) {
-            this.state.pinTypes = data.pin_types;
+        this.state.renderError = false;
+        try {
+            const data = await this.orm.call(
+                this.pinModel, "get_plan_data", [this.state.sheetId]);
+            this.state.contextName = data.sheet.context_name;
+            this.state.sheetLabel = data.sheet.label;
+            this.state.sheets = data.sheets;
+            this.state.pins = data.pins;
+            if (data.pin_types?.length) {
+                this.state.pinTypes = data.pin_types;
+            }
+            const filters = {};
+            for (const type of this.state.pinTypes) {
+                filters[type.id] = this.state.filters[type.id] !== false;
+            }
+            this.state.filters = filters;
+            this.attachmentId = data.sheet.attachment_id;
+            this.state.hasSheet = Boolean(this.attachmentId);
+        } catch (error) {
+            this.state.renderError = _t(
+                "The plan data could not be loaded. Check your access and try again."
+            );
+            console.error(error);
+        } finally {
+            this.state.loading = false;
         }
-        const filters = {};
-        for (const type of this.state.pinTypes) {
-            filters[type.id] = this.state.filters[type.id] !== false;
-        }
-        this.state.filters = filters;
-        this.attachmentId = data.sheet.attachment_id;
-        this.state.hasSheet = Boolean(this.attachmentId);
-        this.state.loading = false;
     }
 
     async renderPdf({ fit = false } = {}) {
@@ -203,6 +213,7 @@ export class PlanViewer extends Component {
             return;
         }
         const seq = ++this._renderSeq;
+        this.state.renderError = false;
         try {
             this.pdfjs.GlobalWorkerOptions.workerSrc = WORKER_SRC;
             const pdf = await this.pdfjs.getDocument(
@@ -227,10 +238,18 @@ export class PlanViewer extends Component {
                 canvasContext: canvas.getContext("2d"), viewport,
             }).promise;
         } catch (error) {
+            this.state.renderError = _t(
+                "The PDF sheet could not be displayed. Replace it with a valid PDF or try again."
+            );
             this.notification.add(_t("Could not render the sheet PDF."),
                 { type: "danger" });
             console.error(error);
         }
+    }
+
+    async retryRender() {
+        await this.loadData();
+        await this.renderPdf({ fit: true });
     }
 
     async onSelectSheet(ev) {

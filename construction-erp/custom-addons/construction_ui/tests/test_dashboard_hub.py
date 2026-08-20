@@ -3,6 +3,15 @@ from odoo.tests import TransactionCase, tagged
 
 @tagged("post_install", "-at_install")
 class TestMajalDashboardHub(TransactionCase):
+    def test_dashboard_designer_role_has_both_editing_engines(self):
+        designer = self.env.ref("construction_ui.group_dashboard_designer")
+        implied = designer.trans_implied_ids
+        self.assertIn(self.env.ref("spreadsheet_oca.group_manager"), implied)
+        self.assertIn(
+            self.env.ref("spreadsheet_dashboard.group_dashboard_manager"),
+            implied,
+        )
+
     def test_dashboard_app_opens_management_hub(self):
         """The Dashboards app must never land on an empty workbook shell."""
         menu = self.env.ref(

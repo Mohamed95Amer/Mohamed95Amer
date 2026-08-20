@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menus are not a security boundary: an authenticated user can request
+         an ir.actions.client record by id. Keep the Property home and its ten
+         workspace actions unreadable unless the user holds the Property role.
+         The business-model ACLs remain the authoritative data boundary. -->
+    <record id="rule_property_client_actions" model="ir.rule">
+        <field name="name">Property client actions require Property access</field>
+        <field name="model_id" ref="base.model_ir_actions_client"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)] if user.has_group('majal_real_estate.group_majal_real_estate_user') else [('tag', 'not in', ['majal_property_ui.property_home', 'construction_ui.workspace.property_portfolio', 'construction_ui.workspace.unit_inventory', 'construction_ui.workspace.reservations', 'construction_ui.workspace.leads', 'construction_ui.workspace.installments', 'construction_ui.workspace.commissions', 'construction_ui.workspace.handovers', 'construction_ui.workspace.leases', 'construction_ui.workspace.rent_collection', 'construction_ui.workspace.unit_requests'])]</field>
+    </record>
+</odoo>

@@ -9,9 +9,17 @@
                 <h1>Management dashboards</h1>
                 <p>Start with the company-wide position, then move directly into the operation that needs attention.</p>
             </div>
-            <div class="o_mdh_status">
-                <span class="o_mdh_status_dot"/>
-                Live operational view
+            <div class="d-flex gap-2 align-items-center flex-wrap justify-content-end">
+                <button t-if="state.canConfigure" type="button" class="btn btn-light" t-on-click="manageDashboards">
+                    <i class="fa fa-sliders me-1"/> Manage dashboards
+                </button>
+                <button t-if="state.canConfigure" type="button" class="btn btn-warning" t-on-click="createDashboard">
+                    <i class="fa fa-plus me-1"/> Create dashboard
+                </button>
+                <div class="o_mdh_status">
+                    <span class="o_mdh_status_dot"/>
+                    Live operational view
+                </div>
             </div>
         </section>
 

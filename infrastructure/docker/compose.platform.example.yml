@@ -55,6 +55,7 @@ services:
       MAJAL_INITIAL_ADMIN_PASSWORD: ${MAJAL_INITIAL_ADMIN_PASSWORD}
     expose:
       - "8069"
+      - "8072"
     volumes:
       - majal-data:/var/lib/odoo
       - ${ODOO_CONFIG_FILE:-/etc/majalops/odoo.conf}:/etc/odoo/odoo.conf:ro

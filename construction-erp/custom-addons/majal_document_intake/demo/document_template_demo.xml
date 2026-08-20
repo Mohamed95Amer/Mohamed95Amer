@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="document_template_hot_works" model="majal.document.template">
+        <field name="name">Client hot-works permit</field>
+        <field name="code">CLIENT-HW-DEMO</field>
+        <field name="document_type">inspection</field>
+        <field name="body_html" type="html">
+            <p><strong>Hot-works permit</strong></p>
+            <p>{{ company.name }} · {{ project.name }}</p>
+        </field>
+        <field name="source_filename">client-hot-works-permit.pdf</field>
+        <field name="source_file" type="base64" file="majal_document_intake/demo/client-hot-works-permit.pdf"/>
+    </record>
+</odoo>

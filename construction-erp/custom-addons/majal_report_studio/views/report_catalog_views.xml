@@ -34,7 +34,7 @@
                 </header>
                 <sheet>
                     <div class="oe_title"><h1><field name="name"/></h1></div>
-                    <div class="majal_report_studio_intro alert alert-info">
+                    <div class="majal_report_studio_intro alert alert-info" role="status">
                         Choose the source record, then use its branded print action
                         to produce the final PDF.
                     </div>

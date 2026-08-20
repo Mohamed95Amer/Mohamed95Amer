@@ -10,6 +10,7 @@
         <field name="code">MH</field>
         <field name="developer_id" ref="demo_developer"/>
         <field name="state">active</field>
+        <field name="dashboard_featured">1</field>
         <field name="city">Dubai</field>
         <field name="land_area">185000</field>
         <field name="expected_handover_date"

@@ -48,6 +48,8 @@
                                    readonly="state != 'draft'"/>
                             <field name="target_model" readonly="state != 'draft'"/>
                             <field name="profile_id" readonly="state != 'draft'"/>
+                            <field name="document_template_id" readonly="1"
+                                   invisible="not document_template_id"/>
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company"/>
@@ -62,6 +64,10 @@
                     </group>
 
                     <notebook invisible="state == 'draft'">
+                        <page string="Document viewer" name="document_viewer"
+                              invisible="file_format != 'pdf-form'">
+                            <field name="file" widget="pdf_viewer" nolabel="1" readonly="1"/>
+                        </page>
                         <page string="Review the mapping" name="mapping">
                             <p class="text-muted">
                                 Confidence says which rule matched, not how

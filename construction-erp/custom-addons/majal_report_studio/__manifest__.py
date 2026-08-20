@@ -1,7 +1,7 @@
 {
     "name": "Majal Report Studio",
     "summary": "One branded catalogue for the reports already available in Majal",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Majal/Reporting",
     "license": "LGPL-3",
     "author": "Majal",

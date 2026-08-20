@@ -34,6 +34,23 @@ const isoDate = (offsetDays = 0) => {
 };
 const today = isoDate();
 
+const monthKey = (date) => (date || "").slice(0, 7);
+const recentMonths = (count = 8) => {
+    const months = [];
+    const cursor = new Date();
+    cursor.setDate(1);
+    for (let offset = count - 1; offset >= 0; offset--) {
+        const date = new Date(cursor.getFullYear(), cursor.getMonth() - offset, 1);
+        months.push({
+            key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`,
+            label: new Intl.DateTimeFormat(undefined, { month: "short" }).format(date),
+            scheduled: 0,
+            paid: 0,
+        });
+    }
+    return months;
+};
+
 // The portfolio in four numbers: what there is to sell, what is held, what is
 // owed and who is living in it.
 const PROPERTY_KPIS = [
@@ -241,11 +258,16 @@ export class PropertyHome extends Component {
                 portfolioValue: 0, occupancy: 0, collection: 0, openLeads: 0,
                 totalUnits: 0, available: 0, reserved: 0, blocked: 0, occupied: 0,
                 developmentName: _t("Featured development"),
+                developmentId: false,
+                developmentImage: false,
+                collectionTrend: recentMonths(),
+                selectedTrend: false,
             },
             operations: {
                 rentCollected: 0, rentScheduled: 0, leasesExpiring: 0,
                 openMaintenance: 0, urgentMaintenance: 0, serviceRate: 100,
                 maintenanceCards: [],
+                expiryBuckets: [],
             },
         });
         this.kpiDefinitions = localizeItems(PROPERTY_KPIS);
@@ -299,9 +321,12 @@ export class PropertyHome extends Component {
         const [units, leads, developments, rentLines, leases, requests, closed] = await Promise.all([
             safeRead("majal.unit", [], ["status", "list_price"]),
             safeRead("majal.lead", [["state", "=", "open"]], ["id"]),
-            safeRead("majal.development", [["state", "=", "active"]], ["name"]),
-            safeRead("majal.lease.rent.line", [], ["amount", "amount_paid"]),
-            safeRead("majal.lease", [["state", "=", "active"], ["end_date", "<=", isoDate(60)]], ["id"]),
+            safeRead("majal.development", [["state", "=", "active"]],
+                ["name", "dashboard_featured", "dashboard_image", "write_date"], 20),
+            safeRead("majal.lease.rent.line", [],
+                ["amount", "amount_paid", "due_date", "payment_date"]),
+            safeRead("majal.lease", [["state", "=", "active"], ["end_date", "<=", isoDate(60)]],
+                ["id", "end_date"]),
             safeRead("majal.maintenance.request", [["state", "in", ["new", "in_progress"]]],
                 ["name", "state", "priority", "unit_id", "user_id", "category"], 20),
             safeRead("majal.maintenance.request", [["state", "=", "done"]], ["id"]),
@@ -310,6 +335,39 @@ export class PropertyHome extends Component {
         const scheduled = rentLines.reduce((sum, line) => sum + (line.amount || 0), 0);
         const paid = rentLines.reduce((sum, line) => sum + (line.amount_paid || 0), 0);
         const occupied = count(["leased", "owner_occupied", "handed_over"]);
+        const featured = developments
+            .slice()
+            .sort((left, right) => Number(right.dashboard_featured) - Number(left.dashboard_featured)
+                || String(right.write_date || "").localeCompare(String(left.write_date || "")))[0];
+        const collectionTrend = recentMonths();
+        const trendByMonth = Object.fromEntries(collectionTrend.map((month) => [month.key, month]));
+        for (const line of rentLines) {
+            const scheduledMonth = trendByMonth[monthKey(line.due_date)];
+            if (scheduledMonth) {
+                scheduledMonth.scheduled += line.amount || 0;
+                scheduledMonth.paid += line.amount_paid || 0;
+            }
+        }
+        const maxTrend = Math.max(1, ...collectionTrend.map((month) => month.scheduled));
+        for (const month of collectionTrend) {
+            month.rate = month.scheduled ? month.paid / month.scheduled * 100 : 0;
+            month.height = Math.max(4, month.scheduled / maxTrend * 100);
+        }
+        const expiryBuckets = Array.from({ length: 8 }, (_, index) => ({
+            index,
+            label: _t("Week %s", index + 1),
+            count: 0,
+            tone: "empty",
+        }));
+        const now = new Date(`${today}T00:00:00`);
+        for (const lease of leases) {
+            const end = new Date(`${lease.end_date}T00:00:00`);
+            const week = Math.max(0, Math.min(7, Math.floor((end - now) / 604800000)));
+            expiryBuckets[week].count += 1;
+        }
+        for (const bucket of expiryBuckets) {
+            bucket.tone = bucket.count >= 3 ? "risk" : bucket.count ? "warn" : "ok";
+        }
         Object.assign(this.state.executive, {
             portfolioValue: units.reduce((sum, unit) => sum + (unit.list_price || 0), 0),
             occupancy: units.length ? occupied / units.length * 100 : 0,
@@ -317,7 +375,11 @@ export class PropertyHome extends Component {
             openLeads: leads.length, totalUnits: units.length, occupied,
             available: count(["available", "vacant"]), reserved: count(["reserved"]),
             blocked: count(["blocked", "under_maintenance"]),
-            developmentName: developments[0]?.name || _t("Featured development"),
+            developmentName: featured?.name || _t("Featured development"),
+            developmentId: featured?.id || false,
+            developmentImage: featured?.dashboard_image
+                ? `/web/image/majal.development/${featured.id}/dashboard_image` : false,
+            collectionTrend,
         });
         Object.assign(this.state.operations, {
             rentCollected: paid, rentScheduled: scheduled, leasesExpiring: leases.length,
@@ -325,6 +387,24 @@ export class PropertyHome extends Component {
             urgentMaintenance: requests.filter((request) => request.priority === "2").length,
             serviceRate: requests.length + closed.length ? closed.length / (requests.length + closed.length) * 100 : 100,
             maintenanceCards: requests.slice(0, 7),
+            expiryBuckets,
+        });
+    }
+
+    selectTrend(month) {
+        this.state.executive.selectedTrend = month;
+    }
+
+    async openFeaturedDevelopment() {
+        if (!this.state.executive.developmentId) {
+            return this.openWorkspace("property_portfolio");
+        }
+        await this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "majal.development",
+            res_id: this.state.executive.developmentId,
+            views: [[false, "form"]],
+            target: "current",
         });
     }
 

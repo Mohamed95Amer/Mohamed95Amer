@@ -19,7 +19,7 @@ export class MajalModuleDirectory extends Component {
 
     get apps() {
         return this.menuService.getApps().filter(
-            (app) => app.xmlid !== "base.menu_management"
+            (app) => !["base.menu_management", "website.menu_website_configuration"].includes(app.xmlid)
         );
     }
 
