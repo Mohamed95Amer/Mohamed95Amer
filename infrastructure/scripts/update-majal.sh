@@ -84,14 +84,46 @@ compose pull "$APP_SERVICE" || rollback_on_failure "Image pull failed."
 
 install_targets="${INSTALL_MODULES:-}"
 upgrade_targets="${UPGRADE_MODULES:-}"
+pre_install_targets="${PRE_INSTALL_MODULES:-}"
+pre_upgrade_targets="${PRE_UPGRADE_MODULES:-}"
 module_pattern='^([a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*)?$'
 
 [[ "$install_targets" =~ $module_pattern ]] || die "INSTALL_MODULES contains invalid characters."
 [[ "$upgrade_targets" =~ $module_pattern ]] || die "UPGRADE_MODULES contains invalid characters."
+[[ "$pre_install_targets" =~ $module_pattern ]] || die "PRE_INSTALL_MODULES contains invalid characters."
+[[ "$pre_upgrade_targets" =~ $module_pattern ]] || die "PRE_UPGRADE_MODULES contains invalid characters."
 
 db_name="$(env_value POSTGRES_DB)"
 db_user="$(env_value POSTGRES_USER)"
 db_pass="$(env_value POSTGRES_PASSWORD)"
+
+# Odoo module installation and upgrades must have a single registry writer.
+# Stop the serving process before any migration command so its cron workers or
+# web requests cannot concurrently update ir_module_module.  The database and
+# edge services stay online, and rollback_on_failure restores the old app.
+if [[ -n "$pre_install_targets" || -n "$pre_upgrade_targets" || -n "$install_targets" || -n "$upgrade_targets" ]]; then
+    printf 'Stopping the application service for exclusive module migration...\n'
+    compose stop --timeout 120 "$APP_SERVICE" || \
+        rollback_on_failure "Application service could not be stopped for migration."
+fi
+
+# Some additive releases introduce a new module that becomes a dependency of
+# an already-installed module.  Install that foundation, then upgrade the
+# existing dependent module before loading bridge data that uses its new
+# schema.  Empty by default; ordinary releases keep the shorter path.
+if [[ -n "$pre_install_targets" ]]; then
+    printf 'Installing prerequisite application modules...\n'
+    compose run --rm "$APP_SERVICE" \
+        odoo -d "$db_name" -i "$pre_install_targets" --stop-after-init || \
+        rollback_on_failure "Prerequisite module installation step failed."
+fi
+
+if [[ -n "$pre_upgrade_targets" ]]; then
+    printf 'Upgrading prerequisite-dependent application modules...\n'
+    compose run --rm "$APP_SERVICE" \
+        odoo -d "$db_name" -u "$pre_upgrade_targets" --stop-after-init || \
+        rollback_on_failure "Prerequisite module upgrade step failed."
+fi
 
 # Query requested INSTALL_MODULES that are not currently installed
 uninstalled_modules=""
@@ -120,19 +152,21 @@ SQL
 )" || rollback_on_failure "Upgrade module state query failed."
 fi
 
-if [[ -n "$uninstalled_modules" || -n "$to_upgrade" ]]; then
-    printf 'Executing single-invocation application module update/install step...\n'
-    migration_cmd=(odoo -d "$db_name")
-    if [[ -n "$uninstalled_modules" ]]; then
-        migration_cmd+=(-i "$uninstalled_modules")
-    fi
-    if [[ -n "$to_upgrade" ]]; then
-        migration_cmd+=(-u "$to_upgrade")
-    fi
-    migration_cmd+=(--stop-after-init)
-    compose run --rm "$APP_SERVICE" "${migration_cmd[@]}" || \
-        rollback_on_failure "Application module migration step failed."
-else
+if [[ -n "$uninstalled_modules" ]]; then
+    printf 'Installing new application modules before upgrading existing modules...\n'
+    compose run --rm "$APP_SERVICE" \
+        odoo -d "$db_name" -i "$uninstalled_modules" --stop-after-init || \
+        rollback_on_failure "Application module installation step failed."
+fi
+
+if [[ -n "$to_upgrade" ]]; then
+    printf 'Upgrading existing application modules after dependency installation...\n'
+    compose run --rm "$APP_SERVICE" \
+        odoo -d "$db_name" -u "$to_upgrade" --stop-after-init || \
+        rollback_on_failure "Application module upgrade step failed."
+fi
+
+if [[ -z "$uninstalled_modules" && -z "$to_upgrade" ]]; then
     printf 'No module installation or upgrade required for this update.\n'
 fi
 

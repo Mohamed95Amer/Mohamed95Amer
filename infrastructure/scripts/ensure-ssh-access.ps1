@@ -12,6 +12,7 @@ Set-StrictMode -Version Latest
 
 $apiToken = $env:HCLOUD_TOKEN
 if ([string]::IsNullOrWhiteSpace($apiToken)) { throw 'HCLOUD_TOKEN is required for SSH recovery.' }
+if ($AdminUser -notmatch '^[a-z_][a-z0-9_-]*[$]?$') { throw 'AdminUser is not a valid Linux account name.' }
 if (-not (Test-Path -LiteralPath $IdentityFile -PathType Leaf)) { throw "SSH identity not found: $IdentityFile" }
 $publicKeyFile = "$IdentityFile.pub"
 if (-not (Test-Path -LiteralPath $publicKeyFile -PathType Leaf)) { throw "SSH public key not found: $publicKeyFile" }
@@ -29,7 +30,14 @@ function Invoke-HetznerApi {
     param([string] $Method, [string] $Path, [object] $Body = $null)
     $parameters = @{ Method = $Method; Uri = "$apiBase$Path"; Headers = $headers }
     if ($null -ne $Body) { $parameters.Body = ($Body | ConvertTo-Json -Depth 12 -Compress) }
-    return Invoke-RestMethod @parameters
+    for ($attempt = 1; $attempt -le 5; $attempt++) {
+        try {
+            return Invoke-RestMethod @parameters
+        } catch {
+            if ($attempt -eq 5) { throw }
+            Start-Sleep -Seconds ([int][Math]::Pow(2, $attempt - 1))
+        }
+    }
 }
 
 function Wait-HetznerAction {
@@ -53,6 +61,7 @@ function Test-KeyOnlySsh {
     try {
         $ErrorActionPreference = 'Continue'
         & ssh.exe -p $SshPort -i $IdentityFile -o BatchMode=yes -o StrictHostKeyChecking=yes `
+            -o ConnectTimeout=10 -o ConnectionAttempts=1 `
             -o "UserKnownHostsFile=$KnownHosts" -o KexAlgorithms=curve25519-sha256 `
             -o HostKeyAlgorithms=ssh-ed25519 "$User@$ServerIp" $Command *> $null
         $exitCode = $LASTEXITCODE
@@ -151,21 +160,56 @@ done < <(lsblk -rpno NAME,TYPE,FSTYPE)
 [[ -n "$root_device" ]] || { echo 'Installed Ubuntu root partition not found.' >&2; exit 1; }
 mount "$root_device" "$mount_root"
 trap 'mountpoint -q "$mount_root" && umount "$mount_root"' EXIT
-install -d -m 0700 "$mount_root/root/.ssh"
-touch "$mount_root/root/.ssh/authorized_keys"
-chmod 0600 "$mount_root/root/.ssh/authorized_keys"
+admin_user='__ADMIN_USER__'
+admin_record="$(awk -F: -v user="$admin_user" '$1 == user { print; exit }' "$mount_root/etc/passwd")"
+[[ -n "$admin_record" ]] || { echo "Installed admin user $admin_user not found." >&2; exit 1; }
+IFS=: read -r _ _ admin_uid admin_gid _ admin_home _ <<< "$admin_record"
+admin_ssh_dir="$mount_root$admin_home/.ssh"
+admin_keys="$admin_ssh_dir/authorized_keys"
+install -d -m 0700 -o "$admin_uid" -g "$admin_gid" "$admin_ssh_dir"
+touch "$admin_keys"
+chown "$admin_uid:$admin_gid" "$admin_keys"
+chmod 0600 "$admin_keys"
 public_key="$(printf '%s' '__PUBLIC_KEY_BASE64__' | base64 -d)"
-grep -qxF "$public_key" "$mount_root/root/.ssh/authorized_keys" || \
-    printf '%s\n' "$public_key" >> "$mount_root/root/.ssh/authorized_keys"
+grep -qxF "$public_key" "$admin_keys" || printf '%s\n' "$public_key" >> "$admin_keys"
+# Earlier rejected-key recovery attempts can leave the operator IP persisted
+# in Fail2ban's database for an hour. Preserve the database for forensics, but
+# move it out of the active path so the valid recovered key can be verified.
+fail2ban_db="$mount_root/var/lib/fail2ban/fail2ban.sqlite3"
+if [[ -f "$fail2ban_db" ]]; then
+    fail2ban_backup="${fail2ban_db}.before-majalops-ssh-recovery.$(date -u +%Y%m%dT%H%M%SZ)"
+    mv "$fail2ban_db" "$fail2ban_backup"
+fi
+installed_host_key="$(cat "$mount_root/etc/ssh/ssh_host_ed25519_key.pub")"
 sync
-echo "Injected MajalOps administrator key into $root_device."
-'@.Replace('__PUBLIC_KEY_BASE64__', $publicKeyBase64)
+echo "Injected MajalOps administrator key for $admin_user into $root_device."
+echo "MAJAL_INSTALLED_HOST_KEY=$installed_host_key"
+'@.Replace('__PUBLIC_KEY_BASE64__', $publicKeyBase64).Replace('__ADMIN_USER__', $AdminUser)
+$repairScript = $repairScript -replace "`r`n", "`n"
 $repairScriptBase64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($repairScript))
 $rescueSshArgs = @('-p', "$SshPort", '-i', $IdentityFile, '-o', 'BatchMode=yes',
     '-o', 'StrictHostKeyChecking=yes', '-o', "UserKnownHostsFile=$rescueKnownHosts",
     '-o', 'KexAlgorithms=curve25519-sha256', '-o', 'HostKeyAlgorithms=ssh-ed25519')
-& ssh.exe @rescueSshArgs "root@$ServerIp" "printf '%s' '$repairScriptBase64' | base64 -d | bash"
-if ($LASTEXITCODE -ne 0) { throw 'Could not inject the administrator key into the installed Ubuntu system.' }
+$repairOutput = @(& ssh.exe @rescueSshArgs "root@$ServerIp" "printf '%s' '$repairScriptBase64' | base64 -d | bash -s")
+$repairExitCode = $LASTEXITCODE
+$repairOutput | Write-Output
+if ($repairExitCode -ne 0) { throw 'Could not inject the administrator key into the installed Ubuntu system.' }
+
+$installedHostKeyRecord = @($repairOutput | Where-Object { $_ -match '^MAJAL_INSTALLED_HOST_KEY=ssh-ed25519\s+[A-Za-z0-9+/=]+' } | Select-Object -First 1)
+if ($installedHostKeyRecord.Count -ne 1) { throw 'Could not read the installed Ubuntu ED25519 host key during recovery.' }
+$installedHostKey = $installedHostKeyRecord[0].Substring('MAJAL_INSTALLED_HOST_KEY='.Length).Trim()
+$installedHostKeyParts = @($installedHostKey -split '\s+')
+$knownHostName = if ($SshPort -eq 22) { $ServerIp } else { "[$ServerIp]:$SshPort" }
+$knownHostEntry = "$knownHostName $($installedHostKeyParts[0]) $($installedHostKeyParts[1])"
+$previousPreference = $ErrorActionPreference
+try {
+    $ErrorActionPreference = 'Continue'
+    & ssh-keygen.exe -R $knownHostName -f $knownHostsFile *> $null
+} finally {
+    $ErrorActionPreference = $previousPreference
+}
+Add-Content -LiteralPath $knownHostsFile -Value $knownHostEntry -Encoding ascii
+Write-Output "Pinned installed Ubuntu host key from the recovered disk."
 
 try {
     $diskBoot = Invoke-HetznerApi -Method POST -Path "/servers/$ServerId/actions/reboot"
@@ -183,10 +227,12 @@ try {
     }
     if ($rebootExitCode -notin @(0, 255)) { throw 'Could not reboot from the Rescue environment.' }
 }
-$rootReady = $false
-for ($attempt = 1; $attempt -le 60 -and -not $rootReady; $attempt++) {
-    Start-Sleep -Seconds 5
-    $rootReady = Test-KeyOnlySsh -User 'root'
+$adminReady = $false
+for ($attempt = 1; $attempt -le 20 -and -not $adminReady; $attempt++) {
+    # UFW's SSH limit rule treats rapid probes as abuse. Keep verification
+    # below that threshold while retaining an overall five-minute timeout.
+    Start-Sleep -Seconds 15
+    $adminReady = Test-KeyOnlySsh -User $AdminUser -Command 'sudo -n true'
 }
-if (-not $rootReady) { throw 'Ubuntu did not return with root key-only SSH access after Rescue recovery.' }
-Write-Output 'Recovered root key-only SSH access through the Hetzner Rescue System.'
+if (-not $adminReady) { throw "Ubuntu did not return with $AdminUser key-only sudo access after Rescue recovery." }
+Write-Output "Recovered $AdminUser key-only sudo access through the Hetzner Rescue System."

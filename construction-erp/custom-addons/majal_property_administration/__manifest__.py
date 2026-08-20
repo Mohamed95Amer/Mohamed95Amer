@@ -19,5 +19,9 @@ it in. Installed only where both are present.
     "data": ["data/access_roles.xml"],
     "post_init_hook": "post_init_reapply_access",
     "installable": True,
-    "auto_install": True,
+    # Install this bridge explicitly after majal_administration has been
+    # upgraded.  Auto-installing it while adding Real Estate to an older
+    # database can load its role data before the new role relation table
+    # exists.
+    "auto_install": False,
 }

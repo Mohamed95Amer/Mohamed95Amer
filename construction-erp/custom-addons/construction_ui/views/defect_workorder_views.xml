@@ -8,7 +8,10 @@
         <field name="model">construction.defect</field>
         <field name="inherit_id" ref="construction_defect.view_defect_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='reviewer_id']" position="after">
+            <!-- project_id exists in both the pre-workorder defect form and the
+                 current form.  Anchoring here keeps upgrades from older Majal
+                 databases valid; reviewer_id was introduced later. -->
+            <xpath expr="//field[@name='project_id']" position="after">
                 <field name="workorder_id" readonly="1"
                        invisible="not workorder_id"/>
             </xpath>
