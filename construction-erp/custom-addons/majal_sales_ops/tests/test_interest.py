@@ -131,12 +131,22 @@ class TestInterest(TransactionCase):
         self.assertEqual(outreach.link_ids.url,
                          "https://majalops.com/features.html")
 
-    def test_tokens_are_not_guessable_from_the_record_id(self):
+    def test_tokens_are_random_and_unique(self):
+        """A click URL must not be guessable from a neighbouring one.
+
+        An earlier version of this asserted that the record id did not appear
+        as a substring of the token, which is not a test of anything: a
+        one-digit id occurs in eight random hex characters about half the time,
+        so it failed on a fair coin rather than on a defect. The properties
+        that actually matter are that tokens are unique and drawn from a large
+        random space.
+        """
         lead = self._lead()
-        first = self.env["majal.outreach"].create(
-            {"lead_id": lead.id, "channel": "email"})
-        second = self.env["majal.outreach"].create(
-            {"lead_id": lead.id, "channel": "email"})
-        self.assertNotEqual(first.access_token, second.access_token)
-        self.assertNotIn(str(first.id), first.access_token[:8])
-        self.assertEqual(len(first.access_token), 32)
+        tokens = [
+            self.env["majal.outreach"].create(
+                {"lead_id": lead.id, "channel": "email"}).access_token
+            for _ in range(25)
+        ]
+        self.assertEqual(len(set(tokens)), 25, "tokens collided")
+        for token in tokens:
+            self.assertRegex(token, r"^[0-9a-f]{32}$")

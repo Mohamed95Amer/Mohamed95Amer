@@ -211,8 +211,15 @@ class TestMyDay(TransactionCase):
         self.env["facility.pm.plan"].create({
             "name": "Quarterly service", "equipment_id": asset.id,
             "maintenance_team_id": team.id, "trigger_type": "calendar",
+            # Two days, not one. This date is computed as the setup user and
+            # then queried as the technician, and context_today reads each
+            # user's own timezone — so near midnight in one of them the two
+            # disagree by a day, next_date lands exactly on today, and
+            # "urgent" (next_date < today) goes to zero while "count"
+            # (next_date <= today) still passes. Two days is unambiguous
+            # whichever side of midnight either user is on.
             "next_date": odoo_fields.Date.subtract(
-                odoo_fields.Date.context_today(self.env.user), days=1),
+                odoo_fields.Date.context_today(self.env.user), days=2),
         })
 
         section = self._section(self._my_day(technician), "pm_due")
