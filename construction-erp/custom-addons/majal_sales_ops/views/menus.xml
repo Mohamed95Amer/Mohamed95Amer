@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_sales_root" name="Majal Sales"
+              sequence="18"
+              groups="group_majal_sales_agent"/>
+
+    <menuitem id="menu_majal_pipeline" name="Pipeline"
+              parent="menu_majal_sales_root"
+              action="action_majal_pipeline" sequence="10"/>
+    <menuitem id="menu_majal_outreach" name="Outreach"
+              parent="menu_majal_sales_root"
+              action="action_majal_outreach" sequence="20"/>
+    <menuitem id="menu_majal_content_post" name="Social Posts"
+              parent="menu_majal_sales_root"
+              action="action_majal_content_post" sequence="30"/>
+
+    <menuitem id="menu_majal_config" name="Configuration"
+              parent="menu_majal_sales_root" sequence="90"
+              groups="group_majal_sales_manager"/>
+    <menuitem id="menu_majal_sequences" name="Sequences"
+              parent="menu_majal_config"
+              action="action_majal_sales_sequence" sequence="10"/>
+    <menuitem id="menu_majal_lead_sources" name="Lead Sources"
+              parent="menu_majal_config"
+              action="action_majal_lead_source" sequence="20"/>
+</odoo>

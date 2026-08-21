@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Outreach and social posts carry no money, so they match on kind
+             with a zero value band - the approval engine supports exactly
+             this ("a permit or an inspection has no value and is matched on
+             its kind alone").
+
+             require_other_user is False here and nowhere else in the suite.
+             On a construction document that control is essential: it stops
+             the person who wrote a variation approving their own. Here the
+             author is a machine and the approver is the only human in the
+             company, so requiring a second person would mean nothing could
+             ever be approved. The real separation comes from giving the
+             agents their own Odoo user - once that exists, turn this on. -->
+
+        <record id="approval_rule_outreach" model="construction.approval.rule">
+            <field name="name">Majal outreach — founder approves</field>
+            <field name="model_id" ref="model_majal_outreach"/>
+            <field name="amount_from">0.0</field>
+            <field name="amount_to">0.0</field>
+            <field name="require_other_user" eval="False"/>
+            <field name="sequence">10</field>
+        </record>
+        <record id="approval_rule_outreach_step" model="construction.approval.rule.step">
+            <field name="rule_id" ref="approval_rule_outreach"/>
+            <field name="name">Read before it is sent</field>
+            <field name="group_id" ref="group_majal_sales_manager"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="approval_rule_content" model="construction.approval.rule">
+            <field name="name">Majal social posts — founder approves</field>
+            <field name="model_id" ref="model_majal_content_post"/>
+            <field name="amount_from">0.0</field>
+            <field name="amount_to">0.0</field>
+            <field name="require_other_user" eval="False"/>
+            <field name="sequence">10</field>
+        </record>
+        <record id="approval_rule_content_step" model="construction.approval.rule.step">
+            <field name="rule_id" ref="approval_rule_content"/>
+            <field name="name">Read before it is posted</field>
+            <field name="group_id" ref="group_majal_sales_manager"/>
+            <field name="sequence">10</field>
+        </record>
+    </data>
+</odoo>

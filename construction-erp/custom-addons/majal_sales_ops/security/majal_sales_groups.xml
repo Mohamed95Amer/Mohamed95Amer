@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Two roles, because there are two jobs: something drafts, somebody
+             decides. Keeping them apart is what lets the approval engine's
+             "not the author" control mean anything - see the runbook on
+             giving the agents their own Odoo user. -->
+        <record id="group_majal_sales_agent" model="res.groups">
+            <field name="name">Majal Sales: Agent</field>
+            <field name="category_id" ref="base.module_category_sales_sales"/>
+            <field name="comment">Drafts leads, outreach and social posts. Cannot approve or send.</field>
+        </record>
+
+        <record id="group_majal_sales_manager" model="res.groups">
+            <field name="name">Majal Sales: Manager</field>
+            <field name="category_id" ref="base.module_category_sales_sales"/>
+            <field name="implied_ids" eval="[(4, ref('group_majal_sales_agent'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Approves outreach and social posts, edits sequences and sources.</field>
+        </record>
+    </data>
+</odoo>

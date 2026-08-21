@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Wording lives here, as versioned data, rather than being invented
+             per lead by a model. An agent fills the gaps; it does not write
+             the pitch. That is what keeps two thousand messages consistent
+             and keeps a bad sentence from reaching two thousand people.
+
+             Arabic first: these are contractors in Egypt, Saudi Arabia and
+             the UAE, and an Arabic opening from a company whose product is
+             Arabic-native is the point being made. dir="rtl" is set on the
+             wrapper because mail clients do not inherit it from anywhere. -->
+
+        <!-- ============ ENGLISH ============ -->
+        <record id="mail_template_en_step1" model="mail.template">
+            <field name="name">Majal outreach EN — 1. Variations</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Variations on {{ object.partner_name or object.name }}'s projects</field>
+            <field name="lang">en_US</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#1f2933;">
+    <p>Hello<t t-if="object.contact_name"> <t t-out="object.contact_name"/></t>,</p>
+    <p>A quick question about your current projects: once a variation is approved,
+       how long does it take to reach a payment application?</p>
+    <p>For most contractors we speak to the answer is weeks — and the gap stays
+       invisible until closeout, by which point the margin has already gone.</p>
+    <p>Majal keeps the BOQ, variations, valuations and site records connected in
+       one system, in Arabic and English. I can walk you through the commercial
+       exposure screen in about twelve minutes.</p>
+    <p>Worth a look?</p>
+    <p>Mohamed Amer<br/>Majal Ops — <a href="https://majalops.com">majalops.com</a></p>
+</div>
+                ]]>
+            </field>
+        </record>
+
+        <record id="mail_template_en_step2" model="mail.template">
+            <field name="name">Majal outreach EN — 2. What it looks like</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Re: Variations on {{ object.partner_name or object.name }}'s projects</field>
+            <field name="lang">en_US</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#1f2933;">
+    <p>Hello<t t-if="object.contact_name"> <t t-out="object.contact_name"/></t>,</p>
+    <p>Following up with something concrete rather than another pitch.</p>
+    <p>Two screens do most of the convincing. The first shows contract value,
+       certified value, committed cost and outstanding change across every live
+       project on one page. The second is the programme against its baseline,
+       with the critical path isolated.</p>
+    <p>Both are on <a href="https://majalops.com/features.html">majalops.com/features</a>,
+       along with a walkthrough video for construction.</p>
+    <p>If it looks relevant, I will set up a demo account with your own project
+       structure in it rather than a generic sandbox.</p>
+    <p>Mohamed Amer<br/>Majal Ops — <a href="https://majalops.com">majalops.com</a></p>
+</div>
+                ]]>
+            </field>
+        </record>
+
+        <record id="mail_template_en_step3" model="mail.template">
+            <field name="name">Majal outreach EN — 3. Guide, then close the file</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">Closing the file — but here is the guide anyway</field>
+            <field name="lang">en_US</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#1f2933;">
+    <p>Hello<t t-if="object.contact_name"> <t t-out="object.contact_name"/></t>,</p>
+    <p>I have not heard back, so I will stop writing — no hard feelings, the
+       timing is usually the reason.</p>
+    <p>Before I close the file: the Majal Construction user guide is worth
+       keeping whether or not you ever use the product. It sets out how
+       approvals, variations, valuations and site evidence fit together, and
+       several people have told me it was useful as a checklist against their
+       own process.</p>
+    <p>If the timing changes, reply to this message and I will pick it up.</p>
+    <p>Mohamed Amer<br/>Majal Ops — <a href="https://majalops.com">majalops.com</a></p>
+</div>
+                ]]>
+            </field>
+        </record>
+
+        <!-- ============ ARABIC ============ -->
+        <record id="mail_template_ar_step1" model="mail.template">
+            <field name="name">Majal outreach AR — 1. Variations</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">الأوامر التغييرية في مشاريع {{ object.partner_name or object.name }}</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.8;color:#1f2933;text-align:right;">
+    <p>تحية طيبة<t t-if="object.contact_name"> <t t-out="object.contact_name"/></t>،</p>
+    <p>سؤال سريع عن مشاريعكم الحالية: بعد اعتماد الأمر التغييري، كم يستغرق حتى يظهر في مستخلص؟</p>
+    <p>لدى معظم المقاولين الذين نتحدث إليهم تمتد المدة أسابيع، ولا تظهر الفجوة إلا عند التسليم النهائي، بعد أن يكون هامش الربح قد تآكل فعلاً.</p>
+    <p>يربط «مجال» جداول الكميات والأوامر التغييرية والمستخلصات وسجلات الموقع في نظام واحد، بالعربية والإنجليزية. يسعدني أن أعرض عليكم شاشة الانكشاف التجاري في اثنتي عشرة دقيقة تقريباً.</p>
+    <p>هل يستحق الأمر نظرة؟</p>
+    <p>محمد عامر<br/>مجال أوبس — <a href="https://majalops.com">majalops.com</a></p>
+</div>
+                ]]>
+            </field>
+        </record>
+
+        <record id="mail_template_ar_step2" model="mail.template">
+            <field name="name">Majal outreach AR — 2. What it looks like</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">متابعة: الأوامر التغييرية في مشاريع {{ object.partner_name or object.name }}</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.8;color:#1f2933;text-align:right;">
+    <p>تحية طيبة<t t-if="object.contact_name"> <t t-out="object.contact_name"/></t>،</p>
+    <p>أتابع معكم بشيء ملموس بدلاً من رسالة تعريفية أخرى.</p>
+    <p>هناك شاشتان تختصران الحديث. الأولى تعرض قيمة العقد والقيمة المعتمدة والتكلفة الملتزم بها والتغييرات المعلّقة لجميع المشاريع القائمة في صفحة واحدة. والثانية تعرض البرنامج الزمني مقارنةً بخط الأساس مع إبراز المسار الحرج.</p>
+    <p>كلتاهما متاحتان على <a href="https://majalops.com/features.html">majalops.com/features</a>، إلى جانب فيديو تفصيلي لقطاع المقاولات.</p>
+    <p>إذا وجدتم الأمر مناسباً، سأجهّز حساباً تجريبياً يحتوي على هيكل مشاريعكم أنتم، لا على بيانات عامة.</p>
+    <p>محمد عامر<br/>مجال أوبس — <a href="https://majalops.com">majalops.com</a></p>
+</div>
+                ]]>
+            </field>
+        </record>
+
+        <record id="mail_template_ar_step3" model="mail.template">
+            <field name="name">Majal outreach AR — 3. Guide, then close the file</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="subject">سأتوقف عن المتابعة — وهذا الدليل على أي حال</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.8;color:#1f2933;text-align:right;">
+    <p>تحية طيبة<t t-if="object.contact_name"> <t t-out="object.contact_name"/></t>،</p>
+    <p>لم يصلني رد منكم، لذا سأتوقف عن المتابعة — ولا مشكلة في ذلك إطلاقاً، فالتوقيت هو السبب عادةً.</p>
+    <p>قبل أن أغلق الملف: دليل مستخدم «مجال» للمقاولات يستحق الاحتفاظ به سواء استخدمتم النظام أم لا. فهو يوضح كيف تترابط الاعتمادات والأوامر التغييرية والمستخلصات وأدلة الموقع، وقد أخبرني عدد من الزملاء أنه كان مفيداً كقائمة مراجعة لإجراءاتهم الداخلية.</p>
+    <p>إذا تغيّر التوقيت، يكفي الرد على هذه الرسالة وسأتابع معكم.</p>
+    <p>محمد عامر<br/>مجال أوبس — <a href="https://majalops.com">majalops.com</a></p>
+</div>
+                ]]>
+            </field>
+        </record>
+    </data>
+</odoo>

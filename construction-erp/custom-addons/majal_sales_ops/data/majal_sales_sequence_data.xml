@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Two sequences, one per language, both written for the same three
+             markets. Twenty-one days and five touches: enough to survive a
+             holiday and a site visit, short enough that nobody feels chased.
+
+             The LinkedIn steps carry their wording inline because there is no
+             mail template for a channel that is not email. They are short on
+             purpose - a connection note has roughly three hundred characters
+             before it stops being read. -->
+
+        <record id="sequence_ar" model="majal.sales.sequence">
+            <field name="name">Construction — Arabic (AE, SA, EG)</field>
+            <field name="lang">ar</field>
+            <field name="country_codes">AE,SA,EG</field>
+            <field name="is_default" eval="True"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="sequence_ar_s1" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_ar"/>
+            <field name="sequence">10</field>
+            <field name="name">اليوم ٠ — الأوامر التغييرية</field>
+            <field name="day_offset">0</field>
+            <field name="channel">email</field>
+            <field name="mail_template_id" ref="mail_template_ar_step1"/>
+        </record>
+        <record id="sequence_ar_s2" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_ar"/>
+            <field name="sequence">20</field>
+            <field name="name">اليوم ٣ — طلب تواصل على لينكدإن</field>
+            <field name="day_offset">3</field>
+            <field name="channel">linkedin</field>
+            <field name="body">تحية طيبة، أتابع قطاع المقاولات في المنطقة وأتابع مشاريع شركتكم. أعمل على «مجال»، نظام تشغيل للمقاولات يربط جداول الكميات بالأوامر التغييرية والمستخلصات. يسعدني التواصل.</field>
+        </record>
+        <record id="sequence_ar_s3" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_ar"/>
+            <field name="sequence">30</field>
+            <field name="name">اليوم ٦ — الشاشتان</field>
+            <field name="day_offset">6</field>
+            <field name="channel">email</field>
+            <field name="mail_template_id" ref="mail_template_ar_step2"/>
+        </record>
+        <record id="sequence_ar_s4" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_ar"/>
+            <field name="sequence">40</field>
+            <field name="name">اليوم ١٠ — رسالة لينكدإن</field>
+            <field name="day_offset">10</field>
+            <field name="channel">linkedin</field>
+            <field name="body">شكراً على قبول التواصل. سؤال واحد فقط: بعد اعتماد الأمر التغييري لديكم، كم يستغرق حتى يظهر في مستخلص؟ هذه هي الفجوة التي بُني «مجال» لإغلاقها.</field>
+        </record>
+        <record id="sequence_ar_s5" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_ar"/>
+            <field name="sequence">50</field>
+            <field name="name">اليوم ١٤ — الدليل ثم الإغلاق</field>
+            <field name="day_offset">14</field>
+            <field name="channel">email</field>
+            <field name="mail_template_id" ref="mail_template_ar_step3"/>
+        </record>
+
+        <record id="sequence_en" model="majal.sales.sequence">
+            <field name="name">Construction — English (AE, SA, EG)</field>
+            <field name="lang">en</field>
+            <field name="country_codes">AE,SA,EG</field>
+            <field name="is_default" eval="True"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="sequence_en_s1" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_en"/>
+            <field name="sequence">10</field>
+            <field name="name">Day 0 — Variations</field>
+            <field name="day_offset">0</field>
+            <field name="channel">email</field>
+            <field name="mail_template_id" ref="mail_template_en_step1"/>
+        </record>
+        <record id="sequence_en_s2" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_en"/>
+            <field name="sequence">20</field>
+            <field name="name">Day 3 — LinkedIn connect</field>
+            <field name="day_offset">3</field>
+            <field name="channel">linkedin</field>
+            <field name="body">Hello — I follow contracting in the region and came across your projects. I work on Majal, an operations system for contractors that keeps the BOQ, variations and valuations connected. Would be glad to connect.</field>
+        </record>
+        <record id="sequence_en_s3" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_en"/>
+            <field name="sequence">30</field>
+            <field name="name">Day 6 — The two screens</field>
+            <field name="day_offset">6</field>
+            <field name="channel">email</field>
+            <field name="mail_template_id" ref="mail_template_en_step2"/>
+        </record>
+        <record id="sequence_en_s4" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_en"/>
+            <field name="sequence">40</field>
+            <field name="name">Day 10 — LinkedIn message</field>
+            <field name="day_offset">10</field>
+            <field name="channel">linkedin</field>
+            <field name="body">Thanks for connecting. One question: once a variation is approved on your projects, how long until it reaches a payment application? That gap is what Majal was built to close.</field>
+        </record>
+        <record id="sequence_en_s5" model="majal.sales.sequence.step">
+            <field name="sequence_id" ref="sequence_en"/>
+            <field name="sequence">50</field>
+            <field name="name">Day 14 — Guide, then close</field>
+            <field name="day_offset">14</field>
+            <field name="channel">email</field>
+            <field name="mail_template_id" ref="mail_template_en_step3"/>
+        </record>
+    </data>
+</odoo>

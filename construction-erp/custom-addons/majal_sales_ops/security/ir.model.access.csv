@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_lead_source_agent,majal.lead.source agent,model_majal_lead_source,majal_sales_ops.group_majal_sales_agent,1,0,0,0
+access_majal_lead_source_manager,majal.lead.source manager,model_majal_lead_source,majal_sales_ops.group_majal_sales_manager,1,1,1,1
+access_majal_sales_sequence_agent,majal.sales.sequence agent,model_majal_sales_sequence,majal_sales_ops.group_majal_sales_agent,1,0,0,0
+access_majal_sales_sequence_manager,majal.sales.sequence manager,model_majal_sales_sequence,majal_sales_ops.group_majal_sales_manager,1,1,1,1
+access_majal_sales_sequence_step_agent,majal.sales.sequence.step agent,model_majal_sales_sequence_step,majal_sales_ops.group_majal_sales_agent,1,0,0,0
+access_majal_sales_sequence_step_manager,majal.sales.sequence.step manager,model_majal_sales_sequence_step,majal_sales_ops.group_majal_sales_manager,1,1,1,1
+access_majal_outreach_agent,majal.outreach agent,model_majal_outreach,majal_sales_ops.group_majal_sales_agent,1,1,1,0
+access_majal_outreach_manager,majal.outreach manager,model_majal_outreach,majal_sales_ops.group_majal_sales_manager,1,1,1,1
+access_majal_content_post_agent,majal.content.post agent,model_majal_content_post,majal_sales_ops.group_majal_sales_agent,1,1,1,0
+access_majal_content_post_manager,majal.content.post manager,model_majal_content_post,majal_sales_ops.group_majal_sales_manager,1,1,1,1

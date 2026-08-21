@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Starter sources. Each one names a way a list can honestly be
+             built; none of them names the day job, and the constraint on the
+             model refuses any that does. -->
+        <record id="source_public_registry" model="majal.lead.source">
+            <field name="name">Public contractor registry</field>
+            <field name="code">public_registry</field>
+            <field name="kind">public_registry</field>
+            <field name="notes">Contractors listed in a public, searchable registry — for Saudi, the Muqawil platform (muqawil.org) lists SCA-classified contractors by specialisation, size and location. Record which registry and which filter was used.</field>
+        </record>
+        <record id="source_exhibition" model="majal.lead.source">
+            <field name="name">Exhibition directory</field>
+            <field name="code">exhibition</field>
+            <field name="kind">event</field>
+            <field name="notes">Public exhibitor and visitor directories from construction trade shows. Note the event and year.</field>
+        </record>
+        <record id="source_own_research" model="majal.lead.source">
+            <field name="name">Own research</field>
+            <field name="code">own_research</field>
+            <field name="kind">own_research</field>
+            <field name="notes">Companies found through independent desk research — project awards, company websites, professional networks.</field>
+        </record>
+        <record id="source_referral" model="majal.lead.source">
+            <field name="name">Referral</field>
+            <field name="code">referral</field>
+            <field name="kind">referral</field>
+            <field name="notes">Introduced by a personal contact. Record who introduced them.</field>
+        </record>
+        <record id="source_inbound_website" model="majal.lead.source">
+            <field name="name">Inbound — majalops.com</field>
+            <field name="code">inbound_website</field>
+            <field name="kind">inbound</field>
+            <field name="notes">Came through the contact form on majalops.com.</field>
+        </record>
+        <record id="source_inbound_social" model="majal.lead.source">
+            <field name="name">Inbound — social</field>
+            <field name="code">inbound_social</field>
+            <field name="kind">inbound</field>
+            <field name="notes">Reached out after a LinkedIn, Instagram or TikTok post.</field>
+        </record>
+    </data>
+</odoo>

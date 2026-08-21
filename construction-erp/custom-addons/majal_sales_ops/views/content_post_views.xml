@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_content_post_list" model="ir.ui.view">
+        <field name="name">majal.content.post.list</field>
+        <field name="model">majal.content.post</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'failed'"
+                  decoration-warning="state == 'manual'"
+                  decoration-muted="state in ('published','rejected')">
+                <field name="scheduled_datetime"/>
+                <field name="platform"/>
+                <field name="lang"/>
+                <field name="name"/>
+                <field name="pillar" optional="show"/>
+                <field name="state"/>
+                <field name="requires_manual_publish" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_content_post_form" model="ir.ui.view">
+        <field name="name">majal.content.post.form</field>
+        <field name="model">majal.content.post</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_for_approval" type="object"
+                            string="Send for approval" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm_manual_published" type="object"
+                            string="I published it" class="btn-primary"
+                            invisible="state != 'manual'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending,approved,published"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not requires_manual_publish">
+                        TikTok will not make an API post public until the
+                        developer app passes its audit — until then every
+                        posted item is forced to <b>SELF_ONLY</b> and nobody
+                        sees it. This post is queued for you to finish in the
+                        app, then press <b>I published it</b>.
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Internal label"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="platform"/>
+                            <field name="lang"/>
+                            <field name="pillar"/>
+                            <field name="requires_manual_publish"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_datetime"/>
+                            <field name="published_datetime"/>
+                            <field name="external_id"/>
+                            <field name="approval_summary"/>
+                        </group>
+                    </group>
+                    <group string="Caption">
+                        <field name="body" nolabel="1"
+                               readonly="state not in ('draft','pending')"/>
+                    </group>
+                    <group string="Media and link">
+                        <field name="media_path"
+                               placeholder="Path or URL of the image or video"/>
+                        <field name="link_url"/>
+                    </group>
+                    <group string="Failure" invisible="state != 'failed'">
+                        <field name="failure_reason" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_content_post" model="ir.actions.act_window">
+        <field name="name">Social Posts</field>
+        <field name="res_model">majal.content.post</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

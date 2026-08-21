@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_outreach_list" model="ir.ui.view">
+        <field name="name">majal.outreach.list</field>
+        <field name="model">majal.outreach</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'failed'"
+                  decoration-muted="state in ('sent','rejected')"
+                  decoration-bf="state == 'pending'">
+                <field name="scheduled_date"/>
+                <field name="lead_id"/>
+                <field name="channel"/>
+                <field name="lang"/>
+                <field name="subject"/>
+                <field name="state"/>
+                <field name="approval_summary" optional="show"/>
+                <field name="sent_date" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_outreach_form" model="ir.ui.view">
+        <field name="name">majal.outreach.form</field>
+        <field name="model">majal.outreach</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_for_approval" type="object"
+                            string="Send for approval" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_send_now" type="object"
+                            string="Send now" class="btn-primary"
+                            confirm="This bypasses the daily send cap that protects the domain's reputation. Send anyway?"
+                            invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending,approved,sent"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="step_id"/>
+                            <field name="channel"/>
+                            <field name="lang"/>
+                        </group>
+                        <group>
+                            <field name="email_to"/>
+                            <field name="scheduled_date"/>
+                            <field name="sent_date"/>
+                            <field name="approval_summary"/>
+                        </group>
+                    </group>
+                    <group string="Message">
+                        <field name="subject" nolabel="1"
+                               placeholder="Subject"
+                               readonly="state not in ('draft','pending')"/>
+                        <field name="body_html" nolabel="1"
+                               readonly="state not in ('draft','pending')"/>
+                    </group>
+                    <group string="Failure" invisible="state != 'failed'">
+                        <field name="failure_reason" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_outreach" model="ir.actions.act_window">
+        <field name="name">Outreach</field>
+        <field name="res_model">majal.outreach</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
