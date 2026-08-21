@@ -15,10 +15,22 @@
                 <templates>
                     <t t-name="card">
                         <article class="o_majal_approval_rule_card">
-                            <header>
+                            <!-- A div, not <header>. Odoo 18's kanban
+                                 compiler treats <header> inside t-name="card"
+                                 as a reserved element and never registers the
+                                 <field> nodes inside it, so the compiled card
+                                 asked archInfo.fieldNodes for an id that was
+                                 not there: "Cannot destructure property 'name'
+                                 of archInfo.fieldNodes[fieldId]". The whole
+                                 screen was Odoo's generic client error dialog
+                                 with nothing behind it. Every field here
+                                 renders fine outside the header; bisecting the
+                                 card one element at a time is what found it,
+                                 after three plausible guesses were wrong. -->
+                            <div class="o_majal_approval_rule_head">
                                 <strong><field name="name"/></strong>
                                 <field name="active" widget="boolean_toggle"/>
-                            </header>
+                            </div>
                             <div class="o_majal_approval_scope">
                                 <field name="scope_label"/>
                             </div>

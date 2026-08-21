@@ -8,7 +8,7 @@
         background: #fff;
         box-shadow: 0 4px 14px rgba(23, 50, 64, .08);
 
-        header,
+        .o_majal_approval_rule_head,
         .o_majal_approval_rule_meta {
             display: flex;
             align-items: center;
@@ -16,7 +16,7 @@
             gap: 10px;
         }
 
-        header strong { color: #173240; font-size: 1rem; }
+        .o_majal_approval_rule_head strong { color: #173240; font-size: 1rem; }
         .o_majal_approval_scope { margin: 12px 0; color: #5e7379; font-size: .82rem; }
         .o_majal_approval_rule_meta { color: #346d75; font-size: .78rem; }
     }
