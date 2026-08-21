@@ -85,12 +85,28 @@ class TestIcpScoring(TransactionCase):
             phone="0100 123 4567")
         self.assertEqual(lead.majal_phone_e164, "+201001234567")
         self.assertEqual(lead.majal_domain, "alnoor-eg.com")
-        self.assertEqual(lead.majal_dedup_key, "domain:alnoor-eg.com")
+        # The key identifies the person. The company domain is recorded
+        # separately, and is what groups colleagues rather than merging them.
+        self.assertEqual(lead.majal_dedup_key, "email:ali@alnoor-eg.com")
 
-    def test_duplicates_are_counted_not_merged(self):
-        """Detection only — merging two live leads is a decision, not a job
-        for an importer running at six in the morning."""
+    def test_colleagues_are_not_duplicates(self):
+        """This assertion used to run the other way, and it was wrong.
+
+        Keying identity on the employer collapsed seventeen engineers at one
+        municipality into a single lead on the first real import. Two people
+        who share a domain are two people.
+        """
         first = self._lead(country_id=self.ae.id, email_from="a@sameco.ae")
         second = self._lead(country_id=self.ae.id, email_from="b@sameco.ae")
+        self.assertNotEqual(first.majal_dedup_key, second.majal_dedup_key)
+        self.assertEqual(first.majal_duplicate_count, 0)
+        # They are still visibly colleagues — that is what the domain is for.
+        self.assertEqual(first.majal_domain, second.majal_domain)
+
+    def test_the_same_person_twice_is_a_duplicate(self):
+        """Detection only — merging two live leads is a decision, not a job
+        for an importer running at six in the morning."""
+        first = self._lead(country_id=self.ae.id, email_from="sara@sameco.ae")
+        second = self._lead(country_id=self.ae.id, email_from="Sara@SameCo.ae ")
         self.assertEqual(first.majal_dedup_key, second.majal_dedup_key)
         self.assertEqual(first.majal_duplicate_count, 1)
