@@ -92,12 +92,32 @@ Two Cloudflare specifics that catch people:
   tightening. Going straight to `reject` with a half-configured SPF silently
   bins your own mail.
 
-**Use a sending identity that is not `support@`.** Create
-`mohamed@majalops.com` in **Microsoft 365 Admin Center → Users → Active users**
-and keep `support@` for inbound. Cold outreach landing in the queue you use for
-live customer problems buries the problems, and a buyer replying to `support@`
-about a first contact has been told something unflattering about how the
-company is organised.
+**The sending identity.** `support@majalops.com` is the only licensed mailbox
+on the tenant, so outreach goes out from there for now — a decision taken
+knowingly, not an oversight.
+
+Two things follow from it.
+
+**Set a display name.** Not the bare address:
+
+```
+Mohamed Amer <support@majalops.com>
+```
+
+A first cold message is read as either "a person wrote to me" or "a system sent
+me something", and the display name does most of that work. From a role address
+it does nearly all of it.
+
+**Watch the inbox.** Outreach replies now land in the same place as live
+customer problems. At ten sends a day that is fine. If it starts burying real
+support mail, that is the signal to move — and moving is cheap:
+
+- an **alias** on the existing mailbox is free and instant (the tenant needs
+  `SendFromAliasEnabled`), or
+- a **shared mailbox** is free in Microsoft 365 — no licence, up to 50GB —
+  with Send As granted to the licensed account.
+
+Either way it is one system parameter to switch, and nothing else changes.
 
 ## 4. Point Odoo at the mailbox — OAuth, not a password
 
@@ -124,7 +144,7 @@ New registration**):
 
 Then **Outgoing Mail Servers → New**, tick the Outlook option, save, and press
 the authentication link — Microsoft asks you to sign in as
-`mohamed@majalops.com` and Odoo stores a refresh token. Repeat under
+`support@majalops.com` and Odoo stores a refresh token. Repeat under
 **Incoming Mail Servers** for IMAP.
 
 Incoming is not optional. It is what threads a prospect's reply back onto the
@@ -140,8 +160,8 @@ path Microsoft is closing. Try OAuth first.
 
 | Key | Value |
 |---|---|
-| `majal_sales_ops.sending_identity` | `mohamed@majalops.com` |
-| `majal_sales_ops.reply_to` | `mohamed@majalops.com` |
+| `majal_sales_ops.sending_identity` | `Mohamed Amer <support@majalops.com>` |
+| `majal_sales_ops.reply_to` | `support@majalops.com` |
 | `majal_sales_ops.daily_send_cap` | `10` to start |
 | `majal_sales_ops.inbound_secret` | a long random string — also set it as `MAJAL_INBOUND_SECRET` in Cloudflare Pages |
 

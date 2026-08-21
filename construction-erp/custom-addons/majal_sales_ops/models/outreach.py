@@ -224,10 +224,17 @@ class MajalOutreach(models.Model):
     def _sending_identity(self):
         """The address outreach goes out as.
 
-        Not the support mailbox. Cold outreach landing in the queue people use
-        for live customer problems buries the problems, and a buyer who
-        replies to `support@` about a first contact has been told something
-        unflattering about how the company is organised.
+        Set it to a full `Name <address>` rather than a bare address. A first
+        cold message is read as either "a person wrote to me" or "a system sent
+        me something", and the display name does most of that work — which
+        matters especially when the mailbox behind it is a role account like
+        support@, because the address alone says "system" before the subject
+        line is read.
+
+        A dedicated personal mailbox is better still, and on Microsoft 365 it
+        does not have to cost anything: an alias on an existing mailbox, or a
+        shared mailbox with Send As granted, are both free. Changing this is
+        one system parameter whenever that is set up.
         """
         config = self.env["ir.config_parameter"].sudo()
         return config.get_param(SENDER_PARAM) or (
