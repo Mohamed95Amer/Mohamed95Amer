@@ -107,4 +107,93 @@
         <field name="date_start"
                eval="(DateTime.today() - relativedelta(days=30)).strftime('%Y-%m-%d')"/>
     </record>
+
+    <!-- The people who actually log in.
+         The allocations above belong to demo employees with no user account,
+         so projecting them onto majal_member_ids produced an empty team,
+         and the tenant rules scope every register by membership below role
+         rank 40. The effect was that the shipped personas opened Majal to
+         zero projects, zero RFIs, zero defects and zero BOQs, while the
+         allocation board looked fully staffed.
+
+         Membership has one source of truth by design: allocations. So the
+         demo personas are allocated here rather than written onto the team
+         field directly, which the projection would overwrite on its next
+         sweep. -->
+
+    <record id="employee_demo_user_pm" model="hr.employee">
+        <field name="name">Omar Farouk</field>
+        <field name="job_title">Project Manager</field>
+        <field name="user_id" ref="construction_base.user_demo_pm"/>
+    </record>
+    <record id="employee_demo_user_qs" model="hr.employee">
+        <field name="name">Nadia Sabri</field>
+        <field name="job_title">Quantity Surveyor</field>
+        <field name="user_id" ref="construction_base.user_demo_qs"/>
+    </record>
+    <record id="employee_demo_user_engineer" model="hr.employee">
+        <field name="name">Yusuf Karim</field>
+        <field name="job_title">Site Engineer</field>
+        <field name="user_id" ref="construction_base.user_demo_engineer"/>
+    </record>
+    <record id="employee_demo_user_field" model="hr.employee">
+        <field name="name">Samir Hadid</field>
+        <field name="job_title">Site Supervisor</field>
+        <field name="user_id" ref="construction_base.user_demo_field"/>
+    </record>
+
+    <!-- Al Noor is the busy job: everyone is on it. -->
+    <record id="alloc_demo_alnoor_user_qs" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_user_qs"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_quantity_surveyor"/>
+        <field name="allocation_percent">60</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=100)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_alnoor_user_engineer" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_user_engineer"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_site_engineer"/>
+        <field name="allocation_percent">100</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=100)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_alnoor_user_field" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_user_field"/>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="role_id" ref="role_supervisor"/>
+        <field name="allocation_percent">100</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=80)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- Marina has a smaller commercial and engineering team, so the two
+         projects do not look identical to somebody clicking through. -->
+    <record id="alloc_demo_marina_user_qs" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_user_qs"/>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="role_id" ref="role_quantity_surveyor"/>
+        <field name="allocation_percent">40</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=60)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="alloc_demo_marina_user_engineer" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_user_engineer"/>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="role_id" ref="role_site_engineer"/>
+        <field name="allocation_percent">50</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=60)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- Kariat is at tender stage: commercial only. -->
+    <record id="alloc_demo_kariat_user_qs" model="majal.allocation">
+        <field name="employee_id" ref="employee_demo_user_qs"/>
+        <field name="project_id" ref="construction_base.project_demo_kariat"/>
+        <field name="role_id" ref="role_quantity_surveyor"/>
+        <field name="allocation_percent">20</field>
+        <field name="date_start"
+               eval="(DateTime.today() - relativedelta(days=20)).strftime('%Y-%m-%d')"/>
+    </record>
 </odoo>
