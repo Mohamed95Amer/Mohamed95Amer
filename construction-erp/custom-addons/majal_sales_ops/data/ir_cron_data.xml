@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_advance_sequences" model="ir.cron">
+        <field name="name">Majal Sales: draft today's due touches</field>
+        <field name="model_id" ref="model_majal_sales_sequence"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_advance_sequences()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_dispatch_approved" model="ir.cron">
+        <field name="name">Majal Sales: send approved outreach (capped)</field>
+        <field name="model_id" ref="model_majal_outreach"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_dispatch_approved()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_flag_manual_posts" model="ir.cron">
+        <field name="name">Majal Sales: move TikTok posts to the manual tray</field>
+        <field name="model_id" ref="model_majal_content_post"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_flag_manual_posts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- The cap starts low and is raised by hand as the domain warms. -->
+    <record id="param_daily_send_cap" model="ir.config_parameter">
+        <field name="key">majal_sales_ops.daily_send_cap</field>
+        <field name="value">10</field>
+    </record>
+</odoo>

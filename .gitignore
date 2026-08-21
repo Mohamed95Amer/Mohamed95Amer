@@ -23,3 +23,7 @@ __pycache__/
 # web-ifc's browser bundle alone is 6 MB.
 construction-erp/custom-addons/construction_bim/static/lib/web-ifc/
 construction-erp/custom-addons/construction_bim/static/lib/three/
+
+# Majal sales agents
+sales-agents/logs/
+sales-agents/**/*.local

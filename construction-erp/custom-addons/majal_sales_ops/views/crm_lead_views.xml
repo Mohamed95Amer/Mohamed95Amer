@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_majal" model="ir.ui.view">
+        <field name="name">crm.lead.form.majal</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Majal Pipeline" name="majal_pipeline"
+                      invisible="not majal_managed">
+                    <group>
+                        <group string="Provenance and fit">
+                            <field name="majal_managed"/>
+                            <field name="majal_source_id"
+                                   required="majal_managed"/>
+                            <field name="majal_country_code"/>
+                            <field name="majal_segment"/>
+                            <field name="majal_size_band"/>
+                            <field name="majal_role_class"/>
+                            <field name="majal_lang"/>
+                        </group>
+                        <group string="Score and sequence">
+                            <field name="majal_icp_score"/>
+                            <field name="majal_icp_tier"/>
+                            <field name="majal_sequence_id"/>
+                            <field name="majal_sequence_step"/>
+                            <field name="majal_sequence_state"/>
+                            <field name="majal_next_action_date"/>
+                        </group>
+                    </group>
+                    <group string="Matching keys" col="3">
+                        <field name="majal_phone_e164"/>
+                        <field name="majal_domain"/>
+                        <field name="majal_dedup_key"/>
+                        <field name="majal_duplicate_count"/>
+                        <button name="action_majal_show_duplicates"
+                                type="object" string="Review duplicates"
+                                class="btn-link"
+                                invisible="majal_duplicate_count == 0"/>
+                    </group>
+                    <field name="majal_outreach_ids" readonly="1">
+                        <list>
+                            <field name="scheduled_date"/>
+                            <field name="channel"/>
+                            <field name="subject"/>
+                            <field name="state"/>
+                            <field name="sent_date"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_list_majal" model="ir.ui.view">
+        <field name="name">crm.lead.list.majal</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <list string="Majal Pipeline" default_order="majal_icp_score desc">
+                <field name="majal_icp_tier"/>
+                <field name="majal_icp_score"/>
+                <field name="partner_name"/>
+                <field name="contact_name"/>
+                <field name="majal_country_code"/>
+                <field name="majal_segment"/>
+                <field name="majal_size_band"/>
+                <field name="majal_source_id"/>
+                <field name="majal_sequence_state"/>
+                <field name="majal_next_action_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_search_majal" model="ir.ui.view">
+        <field name="name">crm.lead.search.majal</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_name"/>
+                <field name="contact_name"/>
+                <field name="majal_source_id"/>
+                <filter name="tier_a" string="Tier A"
+                        domain="[('majal_icp_tier','=','a')]"/>
+                <filter name="due_today" string="Due today"
+                        domain="[('majal_next_action_date','&lt;=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="replied" string="Replied"
+                        domain="[('majal_sequence_state','=','replied')]"/>
+                <separator/>
+                <filter name="running" string="Sequence running"
+                        domain="[('majal_sequence_state','=','running')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="by_market" string="Market"
+                            context="{'group_by':'majal_country_code'}"/>
+                    <filter name="by_tier" string="Tier"
+                            context="{'group_by':'majal_icp_tier'}"/>
+                    <filter name="by_source" string="Source"
+                            context="{'group_by':'majal_source_id'}"/>
+                    <filter name="by_dedup" string="Identity (find duplicates)"
+                            context="{'group_by':'majal_dedup_key'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_pipeline" model="ir.actions.act_window">
+        <field name="name">Majal Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('majal_managed','=',True)]</field>
+        <field name="context">{'default_majal_managed': True}</field>
+        <field name="search_view_id" ref="view_crm_lead_search_majal"/>
+    </record>
+
+    <record id="action_majal_pipeline_list_view" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_crm_lead_list_majal"/>
+        <field name="act_window_id" ref="action_majal_pipeline"/>
+    </record>
+    <record id="action_majal_pipeline_form_view" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="act_window_id" ref="action_majal_pipeline"/>
+    </record>
+</odoo>
