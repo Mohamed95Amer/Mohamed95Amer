@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_facility_contract_manager,facility contract manager,contract.model_contract_contract,maintenance.group_equipment_manager,1,1,1,1
 access_facility_contract_line_manager,facility contract line manager,contract.model_contract_line,maintenance.group_equipment_manager,1,1,1,1
+access_facility_contract_modification_manager,facility contract modification manager,contract.model_contract_modification,maintenance.group_equipment_manager,1,1,1,0
