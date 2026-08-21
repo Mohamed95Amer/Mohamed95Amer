@@ -5,7 +5,15 @@ umask 027
 
 COMPOSE_FILE="${COMPOSE_FILE:-/opt/majalops/infrastructure/docker/compose.platform.yml}"
 ENV_FILE="${ENV_FILE:-/etc/majalops/platform.env}"
-HEALTH_URL="${HEALTH_URL:-https://platform.majalops.com/healthz}"
+# Derived from the host's own env file, not hardcoded to production.
+# Every deployment writes MAJAL_DOMAIN into /etc/majalops/platform.env, so
+# staging gates on staging and the platform gates on the platform. It used
+# to default to platform.majalops.com regardless, and majalops-deploy never
+# overrode it: a staging deploy asked production whether it was healthy, so
+# a broken staging release passed and a production incident failed an
+# unrelated staging deploy. The literal remains only as a last resort for a
+# host whose env file predates MAJAL_DOMAIN.
+HEALTH_URL="${HEALTH_URL:-}"
 DB_SERVICE="${DB_SERVICE:-db}"
 HTTP_TIMEOUT_SECONDS="${HTTP_TIMEOUT_SECONDS:-15}"
 DISK_WARN_PERCENT="${DISK_WARN_PERCENT:-80}"
@@ -15,9 +23,19 @@ LOG_FILE="${LOG_FILE:-${LOG_DIR}/healthcheck.log}"
 
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 compose() { docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" "$@"; }
+env_value() {
+    local key="$1"
+    [[ -f "$ENV_FILE" ]] || return 0
+    awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }' "$ENV_FILE"
+}
 
 [[ -f "$COMPOSE_FILE" ]] || die "COMPOSE_FILE not found: $COMPOSE_FILE"
 [[ -f "$ENV_FILE" ]] || die "ENV_FILE not found: $ENV_FILE"
+
+if [[ -z "$HEALTH_URL" ]]; then
+    majal_domain="$(env_value MAJAL_DOMAIN)"
+    HEALTH_URL="https://${majal_domain:-platform.majalops.com}/healthz"
+fi
 [[ "$HTTP_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] || die "HTTP_TIMEOUT_SECONDS must be an integer."
 command -v curl >/dev/null || die "curl is not installed."
 command -v docker >/dev/null || die "docker is not installed."

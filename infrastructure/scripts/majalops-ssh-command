@@ -1,16 +1,53 @@
 #!/usr/bin/env bash
+# Forced command for the deployment key. Allows exactly the three
+# majalops-deploy subcommands, in exactly the shapes the release workflow
+# sends, and nothing else.
+#
+# Every refusal now says which shape it got and which it expected. It used
+# to `exit 1` in silence, and that silence is expensive: a copy of this file
+# left behind on a host after `update` grew its module arguments refused
+# every deploy with no output at all. From the workflow log the failure was
+# indistinguishable from a sudo denial, a missing script, or a broken
+# update-majal.sh -- three wrong diagnoses were tried before the real one.
+#
+# Naming the arity leaks nothing. Anyone reaching this code already holds
+# the deployment key, and the allowed forms are in the repository.
 set -Eeuo pipefail
 IFS=$'\n\t'
 
+VERSION="2026-08-21"   # bump when the accepted shapes change
+
+refuse() {
+    # Join with real spaces. IFS is $'\n\t' for the rest of the script, and
+    # "${args[*]}" expands using IFS's first character -- which put every
+    # received word on its own line and pushed the guidance below off the
+    # top of a truncated SSH log. The one thing this function exists to
+    # show was the thing it mangled.
+    local received="<empty>"
+    if [[ "${#args[@]}" -gt 0 ]]; then
+        received="$(IFS=' '; printf '%s' "${args[*]}")"
+    fi
+    printf 'majalops-ssh-command (%s) refused this command: %s\n' \
+        "$VERSION" "$1" >&2
+    printf 'Received %s word(s): %s\n' "${#args[@]}" "$received" >&2
+    printf 'Accepted: registry-login <actor> | update <image> [<install> <upgrade>] | health\n' >&2
+    printf 'If the workflow is sending a form this host does not accept, the\n' >&2
+    printf 'copy of this file on the host is older than the one in the repo.\n' >&2
+    exit 1
+}
+
 original="${SSH_ORIGINAL_COMMAND:-}"
 IFS=' ' read -r -a args <<< "$original"
+
 [[ "${args[0]:-}" == "sudo" && "${args[1]:-}" == "/usr/local/sbin/majalops-deploy" ]] || {
     printf 'This key is restricted to MajalOps deployment automation.\n' >&2
     exit 1
 }
+
 case "${args[2]:-}" in
     registry-login)
-        [[ "${#args[@]}" -eq 4 ]] || exit 1
+        [[ "${#args[@]}" -eq 4 ]] \
+            || refuse "registry-login takes exactly one actor (4 words)"
         exec sudo /usr/local/sbin/majalops-deploy registry-login "${args[3]}"
         ;;
     update)
@@ -22,12 +59,16 @@ case "${args[2]:-}" in
                 exec sudo /usr/local/sbin/majalops-deploy update \
                     "${args[3]}" "${args[4]}" "${args[5]}"
                 ;;
-            *) exit 1 ;;
+            *)
+                refuse "update takes an image (4 words) or an image plus install and upgrade module lists (6 words)"
+                ;;
         esac
         ;;
     health)
-        [[ "${#args[@]}" -eq 3 ]] || exit 1
+        [[ "${#args[@]}" -eq 3 ]] || refuse "health takes no arguments (3 words)"
         exec sudo /usr/local/sbin/majalops-deploy health
         ;;
-    *) exit 1 ;;
+    *)
+        refuse "unknown subcommand ${args[2]:-<none>}"
+        ;;
 esac

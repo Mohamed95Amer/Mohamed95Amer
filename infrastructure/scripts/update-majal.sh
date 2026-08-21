@@ -8,7 +8,10 @@ ENV_FILE="${ENV_FILE:-/etc/majalops/platform.env}"
 APP_SERVICE="${APP_SERVICE:-majal}"
 EDGE_SERVICE="${EDGE_SERVICE:-caddy}"
 TARGET_IMAGE="${TARGET_IMAGE:-}"
-HEALTH_URL="${HEALTH_URL:-https://platform.majalops.com/healthz}"
+# Resolved from the host's own MAJAL_DOMAIN below, once ENV_FILE is known
+# to exist. Hardcoding production here meant a staging deploy health-gated
+# against production: a broken staging release passed its own gate.
+HEALTH_URL="${HEALTH_URL:-}"
 CONFIRM_UPDATE="${CONFIRM_UPDATE:-NO}"
 CREATE_BACKUP="${CREATE_BACKUP:-YES}"
 LOG_DIR="${LOG_DIR:-/var/log/majalops}"
@@ -35,6 +38,11 @@ set_env_value() {
 [[ "$TARGET_IMAGE" =~ @sha256:[a-fA-F0-9]{64}$ ]] || die "TARGET_IMAGE must use an immutable sha256 digest."
 [[ -f "$COMPOSE_FILE" ]] || die "COMPOSE_FILE not found: $COMPOSE_FILE"
 [[ -f "$ENV_FILE" ]] || die "ENV_FILE not found: $ENV_FILE"
+
+if [[ -z "$HEALTH_URL" ]]; then
+    majal_domain="$(env_value MAJAL_DOMAIN)"
+    HEALTH_URL="https://${majal_domain:-platform.majalops.com}/healthz"
+fi
 command -v docker >/dev/null || die "docker is not installed."
 
 current_image="$(env_value MAJAL_IMAGE)"
