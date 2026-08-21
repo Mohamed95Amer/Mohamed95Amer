@@ -25,6 +25,8 @@ class TestSubmittal(TransactionCase):
         cls.project = cls.env["project.project"].create(
             {"name": "Submittal Test Project", "is_construction": True}
         )
+        # On the job: the tenant rules scope the register by membership.
+        cls.project.majal_member_ids = [(6, 0, cls.reviewer.ids)]
         cls.submittal = cls.env["construction.submittal"].create(
             {
                 "name": "Test material approval",

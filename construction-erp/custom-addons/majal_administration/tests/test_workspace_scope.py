@@ -45,6 +45,15 @@ class TestWorkspaceScope(TransactionCase):
             company_id=self.company.id,
             company_ids=[(6, 0, [self.company.id])])
         user.majal_industry_scope = scope
+        # A senior access level, so the workspace scope is the only thing
+        # varying between these personas. Without one the role gate now
+        # refuses them company-wide reads -- correctly, but that would make
+        # every case here pass for the wrong reason and stop testing scope
+        # at all.
+        senior = self.env["majal.access.role"].search(
+            [("rank", ">=", 40)], order="rank", limit=1)
+        if senior:
+            user.majal_role_id = senior.id
         return user
 
     def _can_read(self, user, model, record):

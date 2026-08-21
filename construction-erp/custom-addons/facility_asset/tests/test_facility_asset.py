@@ -41,6 +41,14 @@ class TestFacilityAsset(TransactionCase):
                 [cls.env.ref("maintenance.group_equipment_manager").id],
             )],
         })
+        # Give them the estate they look after. The tenant rules scope
+        # facilities by membership, so a technician and a manager with no
+        # connection to these locations cannot see the asset that hangs off
+        # them.
+        (cls.site | cls.floor | cls.room).write({
+            "manager_user_id": cls.facility_manager.id,
+            "member_user_ids": [(6, 0, cls.technician.ids)],
+        })
 
     def test_location_hierarchy(self):
         self.assertEqual(self.room.complete_name, "Tower / L3 / Plant Room")

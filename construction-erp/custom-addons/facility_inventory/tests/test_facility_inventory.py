@@ -46,6 +46,12 @@ class TestFacilityInventory(TransactionCase):
                 [cls.env.ref("maintenance.group_equipment_manager").id],
             )],
         })
+        # The estate they look after; the tenant rules scope
+        # facilities by membership.
+        (cls.tower | cls.plantroom).write({
+            "manager_user_id": cls.facility_manager.id,
+            "member_user_ids": [(6, 0, cls.technician.ids)],
+        })
 
     def _stock_up(self, location, product, qty):
         store = location.ensure_store()

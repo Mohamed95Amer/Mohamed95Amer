@@ -271,6 +271,10 @@ class TestPermitApproval(TransactionCase):
                             "construction_base.group_construction_site_engineer")
         cls.safety = user("ptw_safety",
                           "construction_base.group_construction_manager")
+        # On the job: the tenant rules scope the register by
+        # membership.
+        cls.project.majal_member_ids = [
+            (6, 0, (cls.engineer | cls.safety).ids)]
         cls.env["construction.approval.rule"].create({
             "name": "Hot work",
             "model_id": cls.env["ir.model"]._get_id("construction.permit"),

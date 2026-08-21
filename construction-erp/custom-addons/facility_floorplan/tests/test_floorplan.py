@@ -39,6 +39,12 @@ class TestFloorplan(TransactionCase):
                 [cls.env.ref("maintenance.group_equipment_manager").id],
             )],
         })
+        # The estate they look after; the tenant rules scope
+        # facilities by membership.
+        (cls.location | cls.floor).write({
+            "manager_user_id": cls.facility_manager.id,
+            "member_user_ids": [(6, 0, cls.technician.ids)],
+        })
 
     def test_coordinate_constraint(self):
         with self.assertRaises(ValidationError):

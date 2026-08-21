@@ -41,6 +41,14 @@ class TestPreventiveMaintenance(TransactionCase):
                 [cls.env.ref("maintenance.group_equipment_manager").id],
             )],
         })
+        # This asset has no location, so the tenant rule routes
+        # visibility through the people named on the equipment
+        # itself. Name them, or neither can see the machine their
+        # maintenance plan is about.
+        cls.asset.write({
+            "technician_user_id": cls.technician.id,
+            "owner_user_id": cls.facility_manager.id,
+        })
 
     def _reading(self, value, day=None):
         self.env["facility.asset.meter.reading"].create({

@@ -2,6 +2,32 @@ from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
+# Who sees the whole company register rather than only what they manage or
+# belong to.
+#
+# This used to read `not user.majal_role_id or user.majal_role_id.rank >= 40`,
+# which made "no access level assigned" mean the same thing as Operations
+# Manager. Combined with `majal_industry_scope` defaulting to "All Suites",
+# a plain internal user holding nothing but base.group_user read every
+# construction project and every facility location in the company. Majal's
+# own invite wizard requires an access level, so the hole opened only for
+# users created around it -- Odoo's own Settings > Users form, an
+# integration, a portal account upgraded to internal.
+#
+# A tenancy boundary has to fail closed; that is the whole argument for the
+# scope allow-lists a few lines below, and the role gate was still failing
+# open. An unassigned user now reads nothing until somebody says otherwise,
+# which is a decision an administrator makes rather than one a default makes
+# for them.
+#
+# Existing role-less users keep exactly the access they had: migration
+# 18.0.1.3.0 assigns them the Operations Manager level, which is precisely
+# what the old expression granted them, so closing this changes nobody's
+# access on upgrade.
+SENIOR_RANK = 40
+SEES_WHOLE_COMPANY = f"(user.majal_role_id and user.majal_role_id.rank >= {SENIOR_RANK})"
+
+
 CONSTRUCTION_PROJECT_MODELS = {
     "project.project": "",
     "project.task": "project_id.",
@@ -435,7 +461,7 @@ class ResUsersTenantSecurity(models.Model):
             f"([{mine}] if user.majal_industry_scope not in "
             f"{CONSTRUCTION_SCOPES!r} else "
             f"(['|', {mine}, {company}] "
-            "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
+            f"if {SEES_WHOLE_COMPANY} else "
             f"['|', {mine}, '&', {company}, '|', {manager}, {members}]))"
         )
 
@@ -463,7 +489,7 @@ class ResUsersTenantSecurity(models.Model):
                 self._majal_validate_field_path(model_name, path)
             allowed = (
                 f"[('{company_path}', 'in', company_ids)] "
-                "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
+                f"if {SEES_WHOLE_COMPANY} else "
                 f"[('{company_path}', 'in', company_ids), '|', "
                 f"('{manager_path}', '=', user.id), "
                 f"('{members_path}', 'in', [user.id])]"
@@ -520,7 +546,7 @@ class ResUsersTenantSecurity(models.Model):
                 + _scope_gate(CONSTRUCTION_SCOPES)
                 + "else ("
                 f"[('{company_path}', 'in', company_ids)] "
-                "if (not user.majal_role_id or user.majal_role_id.rank >= 40) else "
+                f"if {SEES_WHOLE_COMPANY} else "
                 f"[('{company_path}', 'in', company_ids), '|', "
                 f"('{manager_path}', '=', user.id), "
                 f"('{members_path}', 'in', [user.id])]))"
@@ -564,7 +590,7 @@ class ResUsersTenantSecurity(models.Model):
                 "[(1, '=', 1)] if user.share else "
                 + _scope_gate(FACILITY_SCOPES)
                 + f"else ([('{company_path}', 'in', company_ids)] "
-                f"if (not user.majal_role_id or user.majal_role_id.rank >= 40) else {restricted}))",
+                f"if {SEES_WHOLE_COMPANY} else {restricted}))",
             )
 
         for model_name in FACILITY_SCOPE_ONLY_MODELS:

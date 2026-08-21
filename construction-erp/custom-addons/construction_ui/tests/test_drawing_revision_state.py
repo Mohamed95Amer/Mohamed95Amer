@@ -111,6 +111,13 @@ class TestDrawingRevisionTransitionGuard(TransactionCase):
         cls.engineer = user(
             "tg_engineer", "construction_base.group_construction_site_engineer")
         cls.pm = user("tg_pm", "construction_base.group_construction_pm")
+        # On the job: the tenant rules scope the register by
+        # membership, and the guard being tested is about write
+        # access, not about whether the drawing is visible.
+        cls.project.write({
+            "majal_manager_id": cls.pm.id,
+            "majal_member_ids": [(6, 0, cls.engineer.ids)],
+        })
 
     def _revision(self, letter="A"):
         attachment = self.env["ir.attachment"].create({

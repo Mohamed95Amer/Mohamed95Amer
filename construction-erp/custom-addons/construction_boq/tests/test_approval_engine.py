@@ -32,6 +32,18 @@ class ApprovalCase(TransactionCase):
         cls.pm = user("apr_pm", "construction_base.group_construction_pm")
         cls.boss = user("apr_boss", "construction_base.group_construction_manager")
 
+        # Put them on the job. The tenant rules scope every register by
+        # membership, so four people with construction groups and no
+        # connection to this project cannot see the document they are being
+        # asked to approve. That used to work only because an unassigned
+        # access level meant "see everything", which is the fail-open this
+        # branch closed -- the fixture was relying on it without saying so.
+        cls.project.write({
+            "majal_manager_id": cls.pm.id,
+            "majal_member_ids": [
+                (6, 0, (cls.engineer | cls.qs | cls.boss).ids)],
+        })
+
         # A stand-in document: the engine must work on anything that inherits
         # the mixin, and testing it through one concrete model would test that
         # model's workflow as much as the engine.

@@ -45,6 +45,11 @@ class TestProjectDocumentGuard(TransactionCase):
             ])],
         })
 
+        # On the job: the tenant rules scope every register by
+        # membership, so an engineer with no connection to this
+        # project cannot see the document the guard is about.
+        cls.project.majal_member_ids = [(6, 0, cls.user.ids)]
+
     def _document(self):
         return self.env["majal.project.document"].create({
             "name": "Subcontract award", "project_id": self.project.id,
@@ -98,6 +103,11 @@ class TestDrawingSignOffGuard(TransactionCase):
                     "construction_base.group_construction_site_engineer").id,
             ])],
         })
+
+        # On the job: the tenant rules scope every register by
+        # membership, so an engineer with no connection to this
+        # project cannot see the document the guard is about.
+        cls.project.majal_member_ids = [(6, 0, cls.user.ids)]
 
     def _revision(self, letter="A"):
         return self.env["construction.drawing.revision"].create(

@@ -40,6 +40,14 @@ class TestMyDay(TransactionCase):
                 cls.env.ref("base.group_user").id,
             ])],
         })
+        # Both are on this job. The tenant rules scope the registers by
+        # membership, so without this neither engineer can see the project
+        # their work sits on. `other` is here to prove My Day shows each
+        # person only their own items -- which needs them able to see the
+        # project and still get an empty day, not unable to see it at all.
+        cls.project.write({
+            "majal_member_ids": [(6, 0, (cls.engineer | cls.other).ids)],
+        })
 
     def _my_day(self, user):
         return self.env["construction.my.day"].with_user(user).my_day()
