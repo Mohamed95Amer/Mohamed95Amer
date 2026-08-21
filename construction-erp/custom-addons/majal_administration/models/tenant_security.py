@@ -267,6 +267,21 @@ class ProjectProject(models.Model):
                 is_const = self._context.get("default_is_construction")
             if is_const and not vals.get("company_id"):
                 vals["company_id"] = self.env.company.id
+            # Whoever creates a project manages it until somebody says
+            # otherwise. Without this the tenant rule below refuses the
+            # creation outright: it requires the row to name the user as
+            # manager or member, a brand new row names nobody, and Odoo
+            # applies record rules to `create` as well as to `read`. The
+            # effect was that the ACL granted project creation to the
+            # Project Manager role and the record rule then denied it --
+            # the product contradicting itself, with the role it is named
+            # after unable to create or see a single project.
+            #
+            # Skipped under sudo so module data and demo files keep saying
+            # exactly who owns what rather than silently acquiring the
+            # installing user.
+            if not self.env.su and not vals.get("majal_manager_id"):
+                vals["majal_manager_id"] = self.env.user.id
         return super().create(vals_list)
 
     @api.constrains("is_construction", "company_id")
@@ -293,6 +308,19 @@ class FacilityLocation(models.Model):
         string="Facility Team",
         domain="[('share', '=', False)]",
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Same reasoning as project.project above.
+
+        The facility rule is the same shape -- below rank 40 it requires
+        manager_user_id or member_user_ids to name the user -- so a facility
+        manager creating a location hit the same self-contradiction.
+        """
+        for vals in vals_list:
+            if not self.env.su and not vals.get("manager_user_id"):
+                vals["manager_user_id"] = self.env.user.id
+        return super().create(vals_list)
 
 
 class ResUsersTenantSecurity(models.Model):
