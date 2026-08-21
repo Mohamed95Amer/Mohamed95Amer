@@ -140,15 +140,18 @@ class MajalOutreach(models.Model):
         """Turn a step's wording into this lead's message."""
         if step.channel == "email" and step.mail_template_id:
             template = step.mail_template_id.with_context(lang=lead.majal_lang)
-            values = template._render_template(
-                template.body_html, "crm.lead", [lead.id], options={
-                    "post_process": True})
-            subjects = template._render_template(
-                template.subject, "crm.lead", [lead.id])
-            return subjects.get(lead.id), values.get(lead.id)
-        body = self.env["mail.render.mixin"]._render_template(
-            step.body or "", "crm.lead", [lead.id],
-        ).get(lead.id) if step.body else ""
+            bodies = template._render_field(
+                "body_html", [lead.id], options={"post_process": True})
+            subjects = template._render_field("subject", [lead.id])
+            return subjects.get(lead.id), bodies.get(lead.id)
+
+        # A non-email step has no template, only the wording on the step. Render
+        # it only when it actually carries a placeholder — running the engine
+        # over plain prose buys nothing and gives it a way to fail.
+        body = step.body or ""
+        if body and ("{{" in body or "t-out" in body):
+            body = self.env["mail.render.mixin"]._render_template(
+                body, "crm.lead", [lead.id]).get(lead.id, body)
         return step.name, body
 
     def action_submit_for_approval(self):
@@ -195,9 +198,11 @@ class MajalOutreach(models.Model):
     @api.model
     def _cron_dispatch_approved(self):
         """Send today's approved messages, up to the cap, oldest first."""
+        start_of_day = fields.Datetime.to_datetime(
+            fields.Date.context_today(self))
         sent_today = self.search_count([
             ("state", "=", "sent"),
-            ("sent_date", ">=", fields.Date.context_today(self)),
+            ("sent_date", ">=", start_of_day),
         ])
         remaining = self._daily_cap() - sent_today
         if remaining <= 0:

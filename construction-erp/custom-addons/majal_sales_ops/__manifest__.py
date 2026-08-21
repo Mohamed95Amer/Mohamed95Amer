@@ -19,8 +19,10 @@
         "security/ir.model.access.csv",
         "data/majal_lead_source_data.xml",
         "data/majal_approval_rule_data.xml",
-        "data/majal_sales_sequence_data.xml",
+        # Templates before sequences: the steps reference them by xml id, and
+        # a forward reference is an unresolved-id error at install time.
         "data/mail_template_data.xml",
+        "data/majal_sales_sequence_data.xml",
         "data/ir_cron_data.xml",
         "views/crm_lead_views.xml",
         "views/outreach_views.xml",

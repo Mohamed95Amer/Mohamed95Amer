@@ -5,6 +5,12 @@
              markets. Twenty-one days and five touches: enough to survive a
              holiday and a site visit, short enough that nobody feels chased.
 
+             Steps are inline rather than separate records, matching every
+             other parent-with-children in the suite. Written apart, the
+             parent exists for a moment with no children, and any check on the
+             collection either fires against an empty set or silently does not
+             fire at all - neither is what was meant.
+
              The LinkedIn steps carry their wording inline because there is no
              mail template for a channel that is not email. They are short on
              purpose - a connection note has roughly three hundred characters
@@ -16,47 +22,43 @@
             <field name="country_codes">AE,SA,EG</field>
             <field name="is_default" eval="True"/>
             <field name="sequence">10</field>
-        </record>
-
-        <record id="sequence_ar_s1" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_ar"/>
-            <field name="sequence">10</field>
-            <field name="name">اليوم ٠ — الأوامر التغييرية</field>
-            <field name="day_offset">0</field>
-            <field name="channel">email</field>
-            <field name="mail_template_id" ref="mail_template_ar_step1"/>
-        </record>
-        <record id="sequence_ar_s2" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_ar"/>
-            <field name="sequence">20</field>
-            <field name="name">اليوم ٣ — طلب تواصل على لينكدإن</field>
-            <field name="day_offset">3</field>
-            <field name="channel">linkedin</field>
-            <field name="body">تحية طيبة، أتابع قطاع المقاولات في المنطقة وأتابع مشاريع شركتكم. أعمل على «مجال»، نظام تشغيل للمقاولات يربط جداول الكميات بالأوامر التغييرية والمستخلصات. يسعدني التواصل.</field>
-        </record>
-        <record id="sequence_ar_s3" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_ar"/>
-            <field name="sequence">30</field>
-            <field name="name">اليوم ٦ — الشاشتان</field>
-            <field name="day_offset">6</field>
-            <field name="channel">email</field>
-            <field name="mail_template_id" ref="mail_template_ar_step2"/>
-        </record>
-        <record id="sequence_ar_s4" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_ar"/>
-            <field name="sequence">40</field>
-            <field name="name">اليوم ١٠ — رسالة لينكدإن</field>
-            <field name="day_offset">10</field>
-            <field name="channel">linkedin</field>
-            <field name="body">شكراً على قبول التواصل. سؤال واحد فقط: بعد اعتماد الأمر التغييري لديكم، كم يستغرق حتى يظهر في مستخلص؟ هذه هي الفجوة التي بُني «مجال» لإغلاقها.</field>
-        </record>
-        <record id="sequence_ar_s5" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_ar"/>
-            <field name="sequence">50</field>
-            <field name="name">اليوم ١٤ — الدليل ثم الإغلاق</field>
-            <field name="day_offset">14</field>
-            <field name="channel">email</field>
-            <field name="mail_template_id" ref="mail_template_ar_step3"/>
+            <field name="step_ids" eval="[
+                (0, 0, {
+                    'sequence': 10,
+                    'name': 'اليوم ٠ — الأوامر التغييرية',
+                    'day_offset': 0,
+                    'channel': 'email',
+                    'mail_template_id': ref('majal_sales_ops.mail_template_ar_step1'),
+                }),
+                (0, 0, {
+                    'sequence': 20,
+                    'name': 'اليوم ٣ — طلب تواصل على لينكدإن',
+                    'day_offset': 3,
+                    'channel': 'linkedin',
+                    'body': 'تحية طيبة، أتابع قطاع المقاولات في المنطقة وأتابع مشاريع شركتكم. أعمل على «مجال»، نظام تشغيل للمقاولات يربط جداول الكميات بالأوامر التغييرية والمستخلصات. يسعدني التواصل.',
+                }),
+                (0, 0, {
+                    'sequence': 30,
+                    'name': 'اليوم ٦ — الشاشتان',
+                    'day_offset': 6,
+                    'channel': 'email',
+                    'mail_template_id': ref('majal_sales_ops.mail_template_ar_step2'),
+                }),
+                (0, 0, {
+                    'sequence': 40,
+                    'name': 'اليوم ١٠ — رسالة لينكدإن',
+                    'day_offset': 10,
+                    'channel': 'linkedin',
+                    'body': 'شكراً على قبول التواصل. سؤال واحد فقط: بعد اعتماد الأمر التغييري لديكم، كم يستغرق حتى يظهر في مستخلص؟ هذه هي الفجوة التي بُني «مجال» لإغلاقها.',
+                }),
+                (0, 0, {
+                    'sequence': 50,
+                    'name': 'اليوم ١٤ — الدليل ثم الإغلاق',
+                    'day_offset': 14,
+                    'channel': 'email',
+                    'mail_template_id': ref('majal_sales_ops.mail_template_ar_step3'),
+                }),
+            ]"/>
         </record>
 
         <record id="sequence_en" model="majal.sales.sequence">
@@ -65,47 +67,43 @@
             <field name="country_codes">AE,SA,EG</field>
             <field name="is_default" eval="True"/>
             <field name="sequence">20</field>
-        </record>
-
-        <record id="sequence_en_s1" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_en"/>
-            <field name="sequence">10</field>
-            <field name="name">Day 0 — Variations</field>
-            <field name="day_offset">0</field>
-            <field name="channel">email</field>
-            <field name="mail_template_id" ref="mail_template_en_step1"/>
-        </record>
-        <record id="sequence_en_s2" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_en"/>
-            <field name="sequence">20</field>
-            <field name="name">Day 3 — LinkedIn connect</field>
-            <field name="day_offset">3</field>
-            <field name="channel">linkedin</field>
-            <field name="body">Hello — I follow contracting in the region and came across your projects. I work on Majal, an operations system for contractors that keeps the BOQ, variations and valuations connected. Would be glad to connect.</field>
-        </record>
-        <record id="sequence_en_s3" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_en"/>
-            <field name="sequence">30</field>
-            <field name="name">Day 6 — The two screens</field>
-            <field name="day_offset">6</field>
-            <field name="channel">email</field>
-            <field name="mail_template_id" ref="mail_template_en_step2"/>
-        </record>
-        <record id="sequence_en_s4" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_en"/>
-            <field name="sequence">40</field>
-            <field name="name">Day 10 — LinkedIn message</field>
-            <field name="day_offset">10</field>
-            <field name="channel">linkedin</field>
-            <field name="body">Thanks for connecting. One question: once a variation is approved on your projects, how long until it reaches a payment application? That gap is what Majal was built to close.</field>
-        </record>
-        <record id="sequence_en_s5" model="majal.sales.sequence.step">
-            <field name="sequence_id" ref="sequence_en"/>
-            <field name="sequence">50</field>
-            <field name="name">Day 14 — Guide, then close</field>
-            <field name="day_offset">14</field>
-            <field name="channel">email</field>
-            <field name="mail_template_id" ref="mail_template_en_step3"/>
+            <field name="step_ids" eval="[
+                (0, 0, {
+                    'sequence': 10,
+                    'name': 'Day 0 — Variations',
+                    'day_offset': 0,
+                    'channel': 'email',
+                    'mail_template_id': ref('majal_sales_ops.mail_template_en_step1'),
+                }),
+                (0, 0, {
+                    'sequence': 20,
+                    'name': 'Day 3 — LinkedIn connect',
+                    'day_offset': 3,
+                    'channel': 'linkedin',
+                    'body': 'Hello — I follow contracting in the region and came across your projects. I work on Majal, an operations system for contractors that keeps the BOQ, variations and valuations connected. Would be glad to connect.',
+                }),
+                (0, 0, {
+                    'sequence': 30,
+                    'name': 'Day 6 — The two screens',
+                    'day_offset': 6,
+                    'channel': 'email',
+                    'mail_template_id': ref('majal_sales_ops.mail_template_en_step2'),
+                }),
+                (0, 0, {
+                    'sequence': 40,
+                    'name': 'Day 10 — LinkedIn message',
+                    'day_offset': 10,
+                    'channel': 'linkedin',
+                    'body': 'Thanks for connecting. One question: once a variation is approved on your projects, how long until it reaches a payment application? That gap is what Majal was built to close.',
+                }),
+                (0, 0, {
+                    'sequence': 50,
+                    'name': 'Day 14 — Guide, then close',
+                    'day_offset': 14,
+                    'channel': 'email',
+                    'mail_template_id': ref('majal_sales_ops.mail_template_en_step3'),
+                }),
+            ]"/>
         </record>
     </data>
 </odoo>

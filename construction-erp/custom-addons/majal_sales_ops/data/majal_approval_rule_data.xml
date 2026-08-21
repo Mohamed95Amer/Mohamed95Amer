@@ -6,6 +6,14 @@
              this ("a permit or an inspection has no value and is matched on
              its kind alone").
 
+             Steps are created inline rather than as separate records. The
+             rule model checks for steps in its own create(), precisely
+             because "a constraint on a one2many does not fire when the field
+             is simply absent from the values" - so a rule written as one
+             record and its step as the next is rejected the moment the rule
+             lands, with no steps yet attached. Every other rule in the suite
+             is written this way for the same reason.
+
              require_other_user is False here and nowhere else in the suite.
              On a construction document that control is essential: it stops
              the person who wrote a variation approving their own. Here the
@@ -21,12 +29,11 @@
             <field name="amount_to">0.0</field>
             <field name="require_other_user" eval="False"/>
             <field name="sequence">10</field>
-        </record>
-        <record id="approval_rule_outreach_step" model="construction.approval.rule.step">
-            <field name="rule_id" ref="approval_rule_outreach"/>
-            <field name="name">Read before it is sent</field>
-            <field name="group_id" ref="group_majal_sales_manager"/>
-            <field name="sequence">10</field>
+            <field name="step_ids" eval="[(0, 0, {
+                'sequence': 10,
+                'name': 'Read before it is sent',
+                'group_id': ref('majal_sales_ops.group_majal_sales_manager'),
+            })]"/>
         </record>
 
         <record id="approval_rule_content" model="construction.approval.rule">
@@ -36,12 +43,11 @@
             <field name="amount_to">0.0</field>
             <field name="require_other_user" eval="False"/>
             <field name="sequence">10</field>
-        </record>
-        <record id="approval_rule_content_step" model="construction.approval.rule.step">
-            <field name="rule_id" ref="approval_rule_content"/>
-            <field name="name">Read before it is posted</field>
-            <field name="group_id" ref="group_majal_sales_manager"/>
-            <field name="sequence">10</field>
+            <field name="step_ids" eval="[(0, 0, {
+                'sequence': 10,
+                'name': 'Read before it is posted',
+                'group_id': ref('majal_sales_ops.group_majal_sales_manager'),
+            })]"/>
         </record>
     </data>
 </odoo>

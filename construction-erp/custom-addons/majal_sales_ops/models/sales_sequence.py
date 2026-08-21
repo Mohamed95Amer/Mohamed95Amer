@@ -142,7 +142,11 @@ class MajalSalesSequenceStep(models.Model):
 
     sequence_id = fields.Many2one(
         "majal.sales.sequence", required=True, ondelete="cascade")
-    sequence = fields.Integer(default=10)
+    # Labelled "Order" rather than left to default: `sequence` and
+    # `sequence_id` both auto-label to "Sequence", and Odoo warns that two
+    # fields on one model share a label — which is genuinely confusing in a
+    # form where one means "which sequence" and the other "in what order".
+    sequence = fields.Integer(default=10, string="Order")
     name = fields.Char(required=True, translate=True)
     day_offset = fields.Integer(
         required=True,
