@@ -1,19 +1,23 @@
 """The comparison keys, tested on the shapes a real list actually contains.
 
-These are pure functions, so this is a plain unit test with no database. That
-is the point of keeping them out of the models: the awkward cases are cheap to
-enumerate here and expensive to reproduce through the ORM.
+These are pure functions and need no database — but the case still derives from
+Odoo's TransactionCase rather than unittest.TestCase. Odoo's runner reads a
+`test_module` attribute that its own base classes provide, so a bare
+unittest.TestCase in a module's tests package fails collection with
+`AttributeError: 'TestNormalise' object has no attribute 'test_module'` and
+takes the whole database initialisation down with it.
+
+The transaction these tests open goes unused, which costs a few milliseconds
+and buys the tests actually running.
 """
 
-import unittest
-
-from odoo.tests import tagged
+from odoo.tests import TransactionCase, tagged
 
 from ..models import normalise
 
 
 @tagged("post_install", "-at_install")
-class TestNormalise(unittest.TestCase):
+class TestNormalise(TransactionCase):
 
     def test_egyptian_mobile_in_every_shape_it_arrives(self):
         for raw in ("0100 123 4567", "+20 100 123 4567", "00201001234567",
