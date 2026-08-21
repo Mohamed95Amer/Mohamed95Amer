@@ -21,14 +21,22 @@ not need your PC at all.
 
 ---
 
-## 1. Install the addon
+## 1. Get the addon onto staging
+
+`staging.majalops.com` is live, but it is running whatever branch was last
+deployed — `majal_sales_ops` is on `claude/majal-ops-sales-system-rxmcsn` and is
+not there yet. Deploy that branch, then install:
 
 ```powershell
 cd construction-erp\deploy\demo
 docker compose run --rm majal odoo -c /etc/odoo/odoo.conf -d erp `
-  -i majal_sales_ops --stop-after-init
+  -i majal_sales_ops,microsoft_outlook --stop-after-init
 docker compose up -d
 ```
+
+`microsoft_outlook` ships with Odoo (LGPL-3, category Hidden) and is what makes
+step 3 possible. It is not a dependency of `majal_sales_ops` on purpose — the
+sales module should not care who hosts your mail.
 
 Then in Odoo: **Settings → Users**, give yourself *Majal Sales: Manager*.
 
@@ -54,53 +62,103 @@ becomes real rather than nominal.
 reputation, and a reputation lost to unauthenticated bulk mail does not come
 back by apologising.
 
-DNS for majalops.com is on Cloudflare (the site is Cloudflare Pages), so this is
-free and takes minutes. Add three records:
+DNS is on Cloudflare (`dion` / `paityn` nameservers), mail is Microsoft 365.
+
+**First, look at what is already there.** The website's contact form sends
+through Resend from a `majalops.com` address, which means the domain was
+already verified with Resend and an SPF record almost certainly exists. **A
+domain may have only one SPF record.** Publishing a second one does not add to
+the first — it makes both invalid, and mail from *both* senders starts failing.
+Merge the includes into the single record instead.
 
 | Type | Name | Value |
 |---|---|---|
-| TXT | `@` | `v=spf1 include:<your mail host's SPF> ~all` |
-| TXT | `<selector>._domainkey` | the DKIM key your mail host gives you |
+| TXT | `@` | `v=spf1 include:spf.protection.outlook.com <keep whatever Resend include is already there> ~all` |
+| CNAME | `selector1._domainkey` | the value Microsoft gives you |
+| CNAME | `selector2._domainkey` | the value Microsoft gives you |
 | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:dmarc@majalops.com` |
 
-Start DMARC at `p=none` and read the reports for a fortnight before tightening
-to `quarantine`. Going straight to `reject` with a misconfigured SPF silently
-bins your own mail.
+The two DKIM values are generated per tenant — copy them from the Microsoft
+Defender portal (**Email & collaboration → Policies & rules → Threat policies →
+Email authentication settings → DKIM**), then enable signing for the domain
+there once the CNAMEs resolve.
+
+Two Cloudflare specifics that catch people:
+
+- **The DKIM CNAMEs must be DNS-only — grey cloud, not orange.** Proxying them
+  makes Cloudflare answer with its own record and Microsoft cannot verify the
+  key.
+- Start DMARC at `p=none` and read the reports for a fortnight before
+  tightening. Going straight to `reject` with a half-configured SPF silently
+  bins your own mail.
 
 **Use a sending identity that is not `support@`.** Create
-`mohamed@majalops.com` for outreach and leave `support@` for inbound. Cold
-outreach landing in the queue you use for live customer problems buries the
-problems, and a buyer replying to `support@` about a first contact has been told
-something unflattering about how the company is organised.
+`mohamed@majalops.com` in **Microsoft 365 Admin Center → Users → Active users**
+and keep `support@` for inbound. Cold outreach landing in the queue you use for
+live customer problems buries the problems, and a buyer replying to `support@`
+about a first contact has been told something unflattering about how the
+company is organised.
 
-Verify with a real send in step 7 — check the headers say SPF `pass`, DKIM
-`pass`, and DMARC aligned.
+## 4. Point Odoo at the mailbox — OAuth, not a password
 
-## 4. Point Odoo at the mailbox
+Microsoft has been retiring basic authentication for SMTP across Exchange
+Online. I could not confirm today exactly where `majalops.com` stands on that,
+and it does not matter: **use OAuth and the question never arises.** Odoo's
+`microsoft_outlook` module does both directions.
 
-**Settings → Technical → Email → Outgoing Mail Servers** — SMTP host, port 587,
-STARTTLS, `mohamed@majalops.com`, an app password if the host issues them.
-Press *Test Connection*.
+**Register an app once** in the Azure portal (**Entra ID → App registrations →
+New registration**):
 
-**Incoming Mail Servers** — IMAP for the same mailbox. This is what threads a
-prospect's reply back onto the lead and stands the sequence down, so it is not
-optional; without it you will keep chasing people who already answered.
+- Redirect URI: `https://staging.majalops.com/microsoft_outlook/confirm`
+  (web platform)
+- API permissions, delegated: `SMTP.Send`, `IMAP.AccessAsUser.All`,
+  `offline_access`
+- Create a client secret and note it before leaving the page
 
-**Settings → Technical → System Parameters**:
+**In Odoo**, Settings → Technical → System Parameters:
+
+| Key | Value |
+|---|---|
+| `microsoft_outlook_client_id` | the application (client) ID |
+| `microsoft_outlook_client_secret` | the secret value |
+
+Then **Outgoing Mail Servers → New**, tick the Outlook option, save, and press
+the authentication link — Microsoft asks you to sign in as
+`mohamed@majalops.com` and Odoo stores a refresh token. Repeat under
+**Incoming Mail Servers** for IMAP.
+
+Incoming is not optional. It is what threads a prospect's reply back onto the
+lead and stands the sequence down; without it you will keep chasing people who
+already answered.
+
+If OAuth turns out to be blocked by tenant policy, the fallback is basic SMTP
+on `smtp.office365.com:587` STARTTLS with an app password — but that requires
+SMTP AUTH to be enabled for the mailbox in the admin centre, and it is the
+path Microsoft is closing. Try OAuth first.
+
+**Settings → Technical → System Parameters**, for the sales module:
 
 | Key | Value |
 |---|---|
 | `majal_sales_ops.sending_identity` | `mohamed@majalops.com` |
 | `majal_sales_ops.reply_to` | `mohamed@majalops.com` |
 | `majal_sales_ops.daily_send_cap` | `10` to start |
+| `majal_sales_ops.inbound_secret` | a long random string — also set it as `MAJAL_INBOUND_SECRET` in Cloudflare Pages |
 
 Raise the cap by about 10 a week if bounces stay near zero. Thirty a day,
 hand-approved, is a healthy ceiling for one person.
 
+**While you are in Cloudflare Pages**, set `MAJAL_INBOUND_URL` to
+`https://staging.majalops.com/majal/inbound/website` and `MAJAL_INBOUND_SECRET`
+to match the parameter above. That is what turns a demo request on the website
+into a lead instead of an email.
+
 ## 5. Local model and CLIs
 
 ```powershell
-ollama pull qwen3:8b     # the same model Majal Intelligence defaults to
+# gpt-oss:20b is already installed and is what the scripts default to.
+# qwen3-coder:30b is also present but is tuned for code — the wrong instrument
+# for classifying contractors or rendering sales copy.
 ollama serve
 claude                   # sign in once
 codex login              # sign in once, ChatGPT plan
@@ -112,7 +170,7 @@ Set these for your user (System Properties → Environment Variables), not in a
 file in the repository:
 
 ```
-MAJAL_ODOO_URL   = https://your-majal-host
+MAJAL_ODOO_URL   = https://staging.majalops.com
 MAJAL_ODOO_DB    = erp
 MAJAL_ODOO_USER  = majal-agent
 MAJAL_ODOO_KEY   = <the API key from step 2>
@@ -231,6 +289,10 @@ the control working, not a bug.
 | Symptom | Cause |
 |---|---|
 | Preflight: muscle NOT ANSWERING | `ollama serve` is not running |
+| Ollama answers but the model is missing | the scripts default to `gpt-oss:20b`; set `MAJAL_MUSCLE_MODEL` to change it |
+| Microsoft rejects the SMTP login | basic auth is being retired — use the OAuth path in step 4 |
+| DKIM will not verify in the Defender portal | the CNAMEs are proxied; set them to DNS-only (grey cloud) |
+| Mail from the website *and* Odoo starts failing | two SPF records — there may only be one, merge the includes |
 | Odoo refused these credentials | `MAJAL_ODOO_KEY` must be an API key, not a password |
 | Import rejects everything as "country not recognised" | pass `--country AE\|SA\|EG` |
 | Nothing sends although approved | check the daily cap and the outgoing mail server |

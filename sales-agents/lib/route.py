@@ -34,9 +34,16 @@ import urllib.request
 
 OLLAMA_URL = os.environ.get(
     "MAJAL_OLLAMA_URL", "http://localhost:11434/v1/chat/completions")
-# The same default Majal Intelligence ships with, deliberately: one model to
-# pull, one to keep warm, one set of behaviour to learn.
-MUSCLE_MODEL = os.environ.get("MAJAL_MUSCLE_MODEL", "qwen3:8b")
+# What is actually installed on the machine this runs on, not what a document
+# assumed. A general-purpose model, deliberately: the muscle tier classifies
+# companies and renders sales copy, and a coding-tuned model is the wrong
+# instrument for both — qwen3-coder is the better choice for exactly none of
+# the work in this directory.
+#
+# Majal Intelligence inside the product defaults to qwen3:8b. This is a
+# different machine doing a different job, so the two do not have to agree;
+# override with MAJAL_MUSCLE_MODEL if that changes.
+MUSCLE_MODEL = os.environ.get("MAJAL_MUSCLE_MODEL", "gpt-oss:20b")
 
 BRAIN_TIMEOUT = int(os.environ.get("MAJAL_BRAIN_TIMEOUT", "300"))
 MUSCLE_TIMEOUT = int(os.environ.get("MAJAL_MUSCLE_TIMEOUT", "120"))

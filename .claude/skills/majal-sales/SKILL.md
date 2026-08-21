@@ -15,7 +15,7 @@ also a live demonstration of the product.
 Windows Task Scheduler          the clock
         │
    Claude Code                  the hub — subagents, skills, this file
-        ├── ollama qwen3:8b     MUSCLE  free, local, unlimited
+        ├── ollama gpt-oss:20b  MUSCLE  free, local, unlimited
         ├── codex exec          BRAIN   ChatGPT subscription
         ├── claude -p           BRAIN   Claude subscription
         ├── python scripts      LinkedIn, Instagram publishing
@@ -37,7 +37,7 @@ there is none left for the work that needs judgement.
 
 | Work | Tier |
 |---|---|
-| Scoring, classifying, cleaning, extracting, translating drafts, personalising a template N times | **Muscle** — `sales-agents/lib/route.py` → Ollama |
+| Scoring, classifying, cleaning, extracting, translating drafts, personalising a template N times | **Muscle** — `sales-agents/lib/route.py` → Ollama (`gpt-oss:20b`) |
 | Designing the rubric, authoring a template, answering a real reply, weekly strategy | **Brain** — this session, or `codex exec` |
 
 When acting as an agent: **do not do bulk work yourself.** Running two thousand
