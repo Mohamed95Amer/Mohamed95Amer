@@ -42,6 +42,18 @@ FREE_MAIL_HOSTS = frozenset({
 
 _EMAIL = re.compile(r"^[^@\s]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})$")
 
+# Hosts that appear in a "website" column but are somebody's profile, not their
+# company. A real list is full of these: 34 rows in the first import carried
+# linkedin.com as their website, and treating that as a company domain makes
+# thirty-four unrelated people look like colleagues.
+NON_COMPANY_HOSTS = frozenset({
+    "linkedin.com", "lnkd.in", "facebook.com", "fb.com", "instagram.com",
+    "twitter.com", "x.com", "tiktok.com", "youtube.com", "youtu.be",
+    "wa.me", "whatsapp.com", "t.me", "telegram.me", "snapchat.com",
+    "google.com", "goo.gl", "maps.app.goo.gl", "bit.ly", "linktr.ee",
+    "behance.net", "medium.com", "wordpress.com", "blogspot.com",
+})
+
 
 def clean_digits(raw):
     """Strip a phone number down to digits and at most one leading plus."""
@@ -130,7 +142,9 @@ def website_domain(raw):
     if value.startswith("www."):
         value = value[4:]
     value = value.split(":")[0]
-    return value if re.match(r"^[a-z0-9.-]+\.[a-z]{2,}$", value) else False
+    if not re.match(r"^[a-z0-9.-]+\.[a-z]{2,}$", value):
+        return False
+    return False if value in NON_COMPANY_HOSTS or value in FREE_MAIL_HOSTS else value
 
 
 def normalise_company(raw):
@@ -158,19 +172,33 @@ _LEGAL_SUFFIXES = frozenset({
 })
 
 
-def dedup_key(company=None, email=None, phone_e164=None, domain=None):
-    """The strongest identity available for a row, most reliable first.
+def dedup_key(company=None, name=None, email=None, phone_e164=None, domain=None):
+    """The strongest identity available for one *person*, most reliable first.
 
-    Returned as a ``(kind, value)`` pair so a caller can tell a domain match
-    from a name match and treat them differently — a shared domain is proof of
-    the same company, a matching flattened name is only strong evidence.
+    A lead is a person, not an employer. This keyed on the company domain
+    once, which reads as reasonable and is badly wrong on a real list: the
+    first import carried seventeen engineers at one municipality and sixteen at
+    another, and every one of them after the first would have been discarded as
+    a duplicate of a colleague. Of the 422 collisions that produced, four were
+    genuinely the same person.
+
+    So the company domain is not an identity here. It is still recorded on the
+    lead, and it is still what groups colleagues together and what an inbound
+    website form matches against — but two people who share an employer are two
+    leads.
+
+    Returned as a ``(kind, value)`` pair so a caller can tell an exact match on
+    an address from the weaker company-and-name guess.
     """
-    domain = domain or email_domain(email)
-    if domain:
-        return ("domain", domain)
+    if email:
+        cleaned = str(email).strip().lower()
+        if "@" in cleaned:
+            return ("email", cleaned)
     if phone_e164:
         return ("phone", phone_e164)
-    if email:
-        return ("email", str(email).strip().lower())
     company_key = normalise_company(company)
-    return ("company", company_key) if company_key else (False, False)
+    name_key = " ".join((name or "").lower().split())
+    if company_key and name_key:
+        return ("person", "%s|%s" % (company_key, name_key))
+    return ("person", name_key or company_key) if (name_key or company_key) \
+        else (False, False)

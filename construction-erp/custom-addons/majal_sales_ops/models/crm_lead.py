@@ -32,6 +32,11 @@ SEGMENT_POINTS = {
     "subcontractor": 15,
     "consultant": 12,
     "fm": 10,
+    # Authorities are genuine buyers — a municipality runs its own project and
+    # facilities teams — but they buy through tenders on a timescale a
+    # one-person sales operation cannot fund. Scored for what it costs to
+    # chase them, not for whether the product fits.
+    "government": 5,
     "other": 0,
 }
 
@@ -77,6 +82,7 @@ class CrmLead(models.Model):
             ("developer", "Developer"),
             ("consultant", "Consultant"),
             ("fm", "Facilities management"),
+            ("government", "Government / authority"),
             ("other", "Other"),
         ],
         default="contractor",
@@ -189,6 +195,7 @@ class CrmLead(models.Model):
             lead.majal_domain = domain
             kind, value = normalise.dedup_key(
                 company=lead.partner_name or lead.name,
+                name=lead.contact_name,
                 email=lead.email_from,
                 phone_e164=phone,
                 domain=domain,
@@ -198,8 +205,9 @@ class CrmLead(models.Model):
     majal_duplicate_count = fields.Integer(
         compute="_compute_majal_duplicate_count",
         string="Possible Duplicates",
-        help="Other managed leads sharing this one's strongest identity — the "
-             "same company domain, mobile or flattened name.",
+        help="Other managed leads that look like the same person — same "
+             "address, same mobile, or the same name at the same company. "
+             "Colleagues are not duplicates.",
     )
 
     @api.depends("majal_dedup_key")

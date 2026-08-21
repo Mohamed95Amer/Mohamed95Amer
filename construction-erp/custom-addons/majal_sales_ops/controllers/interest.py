@@ -106,16 +106,21 @@ class MajalInterest(http.Controller):
         reason = (payload.get("reason") or "other").strip()
         message = (payload.get("message") or "").strip()
 
-        from ..models import normalise
-        domain_key = normalise.email_domain(email)
+        # Match the person, then their employer. Matching the employer first
+        # would attach a demo request to whichever colleague happened to be
+        # imported earliest, and bury it in someone else's history.
         existing = Lead.search([
-            ("majal_managed", "=", True),
-            ("majal_dedup_key", "=", "domain:%s" % domain_key),
-        ], limit=1) if domain_key else Lead.browse()
-        if not existing and email:
-            existing = Lead.search([
-                ("majal_managed", "=", True), ("email_from", "=ilike", email),
-            ], limit=1)
+            ("majal_managed", "=", True), ("email_from", "=ilike", email),
+        ], limit=1) if email else Lead.browse()
+        if not existing:
+            from ..models import normalise
+            domain_key = normalise.email_domain(email)
+            if domain_key:
+                existing = Lead.search([
+                    ("majal_managed", "=", True),
+                    ("majal_domain", "=", domain_key),
+                    ("contact_name", "=ilike", name or "\u0000"),
+                ], limit=1)
 
         if existing:
             lead = existing

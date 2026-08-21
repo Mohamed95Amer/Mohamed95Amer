@@ -65,12 +65,48 @@ class TestNormalise(TransactionCase):
 
     def test_dedup_key_prefers_the_strongest_identity(self):
         self.assertEqual(
-            normalise.dedup_key(company="X", email="a@alnoor.ae",
+            normalise.dedup_key(company="X", name="Sara",
+                                email="a@alnoor.ae",
                                 phone_e164="+971501234567"),
-            ("domain", "alnoor.ae"))
-        # No company domain available, so the mobile is the best key left.
+            ("email", "a@alnoor.ae"))
+        # No address, so the mobile is the best key left.
         self.assertEqual(
-            normalise.dedup_key(company="X", email="a@gmail.com",
+            normalise.dedup_key(company="X", name="Sara",
                                 phone_e164="+971501234567"),
             ("phone", "+971501234567"))
+        # Neither: company and name together, which is only evidence.
+        self.assertEqual(
+            normalise.dedup_key(company="Al Noor LLC", name="Sara Haddad"),
+            ("person", "al noor|sara haddad"))
         self.assertEqual(normalise.dedup_key(), (False, False))
+
+    def test_colleagues_are_not_duplicates_of_each_other(self):
+        """The bug a real list found on its first run.
+
+        Seventeen engineers at one municipality shared a mail domain. Keying
+        identity on the employer discarded sixteen of them as duplicates of the
+        first, and of the 422 collisions that produced, four were genuinely the
+        same person.
+        """
+        first = normalise.dedup_key(
+            company="Dubai Municipality", name="Zayed Almarzooqi",
+            email="zamohammad@dm.gov.ae", domain="dm.gov.ae")
+        second = normalise.dedup_key(
+            company="Dubai Municipality", name="Alia Al Rais",
+            email="aaalrais@dm.gov.ae", domain="dm.gov.ae")
+        self.assertNotEqual(first, second)
+
+    def test_the_same_person_twice_still_collapses(self):
+        typed_one_way = normalise.dedup_key(
+            company="Emaar", name="Sara Haddad", email="Sara@Emaar.ae")
+        typed_another = normalise.dedup_key(
+            company="Emaar Properties", name="S. Haddad",
+            email="  sara@emaar.ae ")
+        self.assertEqual(typed_one_way, typed_another)
+
+    def test_a_profile_url_is_not_a_company_domain(self):
+        """A "website" column is full of these on a hand-built list."""
+        for host in ("https://linkedin.com/in/someone", "www.linkedin.com",
+                     "https://wa.me/971501234567", "instagram.com/majal"):
+            self.assertFalse(normalise.website_domain(host), host)
+        self.assertEqual(normalise.website_domain("www.trojan.ae"), "trojan.ae")

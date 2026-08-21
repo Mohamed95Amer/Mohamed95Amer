@@ -45,6 +45,9 @@ COLUMN_HINTS = {
     "city": ("city", "town", "emirate"),
     "size": ("size", "employees", "headcount", "staff", "employee count"),
     "segment": ("segment", "type", "category", "industry"),
+    "seniority": ("seniority", "seniority level", "level"),
+    "quality": ("data quality", "quality"),
+    "phone2": ("phone 2", "phone2", "mobile 2", "alternate phone"),
 }
 
 COUNTRY_ALIASES = {
@@ -56,6 +59,12 @@ COUNTRY_ALIASES = {
 }
 
 SEGMENT_ALIASES = {
+    # Authorities are a large slice of a UAE list — municipalities run their own
+    # project and facilities teams and are genuine buyers. They are scored low
+    # anyway: government procurement runs on tenders and years, which is the
+    # wrong shape for a one-person sales operation, not a comment on the fit.
+    "government": ("government", "authority", "municipality", "ministry",
+                   "public sector", "بلدية", "هيئة", "وزارة"),
     "contractor": ("contractor", "main contractor", "general contractor",
                    "construction", "building", "مقاولات", "مقاول"),
     "subcontractor": ("subcontractor", "sub contractor", "trade", "مقاول باطن"),
@@ -130,6 +139,21 @@ def size_band(value):
     return "large"
 
 
+SENIORITY_ROLE = {
+    "c-level / owner": "owner",
+    "c-level": "owner",
+    "owner": "owner",
+    # A head of engineering at a municipality or a contractor can decide. The
+    # rubric's "owner" band is about who can say yes, not about job titles.
+    "director / head": "owner",
+    "director": "owner",
+    "head": "owner",
+    "manager / lead": "project",
+    "manager": "project",
+    "technical / specialist": "other",
+}
+
+
 def role_class(title):
     text = (title or "").strip().lower()
     if not text:
@@ -148,7 +172,11 @@ def role_class(title):
     if any(w in text for w in ("it ", "information technology", "systems",
                                "digital", "erp", "تقنية")):
         return "it"
-    return "other"
+    # False, not "other". A title this function cannot place is not evidence
+    # that the person is junior — it is an absence of evidence, and returning a
+    # truthy value here meant the seniority column was never consulted for the
+    # 1,431 rows whose title simply did not contain a keyword.
+    return False
 
 
 def read_rows(path):
@@ -168,7 +196,11 @@ def build(row, mapping, default_country):
         if field in mapping else ""
 
     country = match_alias(get("country"), COUNTRY_ALIASES) or default_country
-    phone = normalise.to_e164(get("phone"), country)
+    # The second number is there for a reason: the first is sometimes a
+    # landline or mistyped, and throwing the row away when a usable mobile is
+    # sitting in the next column is careless.
+    phone = (normalise.to_e164(get("phone"), country)
+             or normalise.to_e164(get("phone2"), country))
     email = get("email_from").lower()
     domain = normalise.email_domain(email) or normalise.website_domain(
         get("website"))
@@ -192,14 +224,25 @@ def build(row, mapping, default_country):
         "majal_segment": match_alias(get("segment"), SEGMENT_ALIASES)
         or "contractor",
         "majal_size_band": size_band(get("size")),
-        "majal_role_class": role_class(get("function")),
+        # Title first, because it says what they do. Seniority second, because
+        # it at least says whether they can decide — and 749 rows here have no
+        # title at all, which would otherwise score them as if they were
+        # nobody in particular.
+        "majal_role_class": (
+            role_class(get("function"))
+            or SENIORITY_ROLE.get(get("seniority").strip().lower())
+            or ("other" if get("function") or get("seniority") else False)),
         # Arabic is the default for all three markets; the Writer switches a
         # lead to English when the research says the company works in it.
         "majal_lang": "ar",
     }
     key_kind, key_value = normalise.dedup_key(
-        company=company, email=email, phone_e164=phone, domain=domain)
-    return values, country, ("%s:%s" % (key_kind, key_value)) if key_kind else None
+        company=company, name=contact, email=email,
+        phone_e164=phone, domain=domain)
+    quality = get("quality").strip().lower()
+    return (values, country,
+            ("%s:%s" % (key_kind, key_value)) if key_kind else None,
+            quality)
 
 
 def main():
@@ -245,8 +288,13 @@ def main():
     examples = defaultdict(list)
 
     for number, row in enumerate(rows, start=2):   # row 1 is the header
-        values, country, key = build(row, mapping, args.country)
+        values, country, key, quality = build(row, mapping, args.country)
 
+        # The list already knows which rows are junk. Believe it.
+        if "test" in quality or "noise" in quality:
+            rejected["flagged as test/noise in the file"] += 1
+            examples["flagged as test/noise in the file"].append(number)
+            continue
         if not values["email_from"] and not values["phone"]:
             rejected["no email and no usable phone"] += 1
             examples["no email and no usable phone"].append(number)
