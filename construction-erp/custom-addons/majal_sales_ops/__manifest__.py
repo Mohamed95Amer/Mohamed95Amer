@@ -30,6 +30,7 @@
         "views/sequence_views.xml",
         "views/lead_source_views.xml",
         "views/menus.xml",
+        "views/app_icon_branding.xml",
     ],
     "installable": True,
 }

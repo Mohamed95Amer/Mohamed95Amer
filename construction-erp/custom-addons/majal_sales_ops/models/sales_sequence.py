@@ -13,8 +13,12 @@ before it, so a gap moves the whole tail back and the prospect still receives
 one message at a time.
 """
 
+import logging
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class MajalSalesSequence(models.Model):
@@ -100,11 +104,22 @@ class MajalSalesSequence(models.Model):
         drafted = 0
         for lead in leads:
             try:
-                drafted += 1 if lead.majal_sequence_id._advance(lead) else 0
+                # A savepoint, not commit/rollback. Isolating one lead's failure
+                # from the other two hundred is the requirement; taking the
+                # whole transaction with it is not. Odoo also forbids commit and
+                # rollback inside a test — it breaks the cursor the test rolls
+                # back on — so the previous version could never have been
+                # covered by one.
+                with self.env.cr.savepoint():
+                    if lead.majal_sequence_id._advance(lead):
+                        drafted += 1
             except Exception:  # noqa: BLE001 - one bad lead must not stop the run
-                self.env.cr.rollback()
+                _logger.exception(
+                    "Majal sequence could not advance lead %s", lead.id)
+                # The savepoint rolled back, so anything read before the failure
+                # may be stale.
+                lead.invalidate_recordset()
                 lead.sudo().write({"majal_sequence_state": "paused"})
-                self.env.cr.commit()
         return drafted
 
     def _advance(self, lead):

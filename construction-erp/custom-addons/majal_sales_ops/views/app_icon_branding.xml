@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Depending on `crm` installs three stock Odoo apps that were not here
+         before — CRM, Calendar and Contacts — each carrying an Odoo icon. That
+         breaks the white-label rule the productization plan sets out ("no Odoo
+         visual identity in the normal user experience"), and construction_ui's
+         icon test catches it.
+
+         The test's own comment says what to do: a vendored app arriving with a
+         stock icon gets rebranded rather than allow-listed, "because excusing a
+         stock icon is what would retire this check".
+
+         The assets live in construction_ui with the rest of the icon family —
+         that module owns branding and cannot reference a CRM menu, since it
+         does not depend on crm. The override records live here, where crm is a
+         dependency. Icon in the branding module, record in the module that
+         made it necessary. -->
+
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/crm.svg</field>
+    </record>
+    <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/calendar.svg</field>
+    </record>
+    <record id="contacts.menu_contacts" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/contacts.svg</field>
+    </record>
+</odoo>

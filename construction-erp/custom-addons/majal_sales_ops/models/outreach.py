@@ -35,6 +35,12 @@ SENDER_PARAM = "majal_sales_ops.sending_identity"
 REPLY_TO_PARAM = "majal_sales_ops.reply_to"
 DEFAULT_DAILY_CAP = 30
 
+# This module stores a two-letter language on the lead because that is what a
+# salesperson thinks in. Odoo does not: `with_context(lang="en")` raises
+# UserError("Invalid language code: en") and takes the whole nightly drafting
+# run down with it. Mapped here, once, at the boundary.
+MAIL_LANG = {"ar": "ar_001", "en": "en_US"}
+
 
 class MajalOutreach(models.Model):
     _name = "majal.outreach"
@@ -136,10 +142,31 @@ class MajalOutreach(models.Model):
         return outreach
 
     @api.model
+    def _installed_lang(self, short_code):
+        """The Odoo language code for a lead, but only if it is installed.
+
+        Two failures to avoid, not one. A bare "en" is not a language code and
+        raises. And a mapped code for a language nobody installed would raise
+        just as loudly — so an instance without Arabic renders the Arabic
+        template in the default language rather than failing every draft.
+        Returns False when there is nothing safe to set.
+        """
+        code = MAIL_LANG.get(short_code)
+        if not code:
+            return False
+        # res.lang search excludes inactive languages, which is the question
+        # being asked: not "does this code exist" but "is it usable here".
+        return code if self.env["res.lang"].search_count(
+            [("code", "=", code)]) else False
+
+    @api.model
     def _render_step(self, lead, step):
         """Turn a step's wording into this lead's message."""
         if step.channel == "email" and step.mail_template_id:
-            template = step.mail_template_id.with_context(lang=lead.majal_lang)
+            template = step.mail_template_id
+            lang = self._installed_lang(lead.majal_lang)
+            if lang:
+                template = template.with_context(lang=lang)
             bodies = template._render_field(
                 "body_html", [lead.id], options={"post_process": True})
             subjects = template._render_field("subject", [lead.id])
