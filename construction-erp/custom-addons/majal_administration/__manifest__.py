@@ -24,6 +24,7 @@
         "majal_ai",
         "majal_branding",
     ],
+    "demo": ["demo/tenant_membership_demo.xml"],
     "data": [
         "security/majal_administration_security.xml",
         "security/ir.model.access.csv",
