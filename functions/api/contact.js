@@ -19,6 +19,17 @@
  *
  * Until those exist the endpoint answers 503 and says so, rather than
  * accepting a message it is going to drop.
+ *
+ * Two further secrets are optional. Set both and the submission is also filed
+ * as a lead in Majal, so the pipeline sees the people who came to us rather
+ * than only the ones we wrote to first:
+ *
+ *   MAJAL_INBOUND_URL     https://erp.example/majal/inbound/website
+ *   MAJAL_INBOUND_SECRET  matches the majal_sales_ops.inbound_secret
+ *                         system parameter in Odoo
+ *
+ * Leave them unset and nothing changes: the email still goes, and the form
+ * behaves exactly as before.
  */
 
 const MAX = { name: 200, email: 320, company: 200, reason: 60, message: 8000 };
@@ -150,5 +161,42 @@ async function handlePost(request, env) {
     return reply(request, false, 502, "That didn't go through. Please try again in a moment.");
   }
 
+  // File it in the pipeline too. Deliberately after the email and
+  // deliberately unable to fail the request: the visitor's experience must not
+  // depend on an ERP being reachable, and an email that arrived is better than
+  // a 500 on the contact page of a site making a first impression.
+  await fileInPipeline(env, { name, email, company, reason, message });
+
   return reply(request, true, 200, "Thanks — your message is on its way.");
+}
+
+/**
+ * Best-effort hand-off to Majal.
+ *
+ * Everything here is swallowed on purpose. A misconfigured URL, an ERP that is
+ * down for an upgrade, a slow response — none of them are the visitor's
+ * problem, and none of them should turn a successful enquiry into an error
+ * page. Failures go to the Pages log, where somebody can find them.
+ */
+async function fileInPipeline(env, submission) {
+  const { MAJAL_INBOUND_URL, MAJAL_INBOUND_SECRET } = env;
+  if (!MAJAL_INBOUND_URL || !MAJAL_INBOUND_SECRET) return;
+
+  try {
+    const response = await fetch(MAJAL_INBOUND_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // Odoo's type="json" routes expect JSON-RPC rather than a bare object.
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "call",
+        params: { ...submission, secret: MAJAL_INBOUND_SECRET },
+      }),
+    });
+    if (!response.ok) {
+      console.error("majal inbound failed", response.status);
+    }
+  } catch (error) {
+    console.error("majal inbound unreachable", error);
+  }
 }

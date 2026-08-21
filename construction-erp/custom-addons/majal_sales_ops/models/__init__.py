@@ -4,4 +4,5 @@ from . import sales_sequence
 from . import outreach
 from . import content_post
 from . import crm_lead
+from . import interest
 from . import my_day

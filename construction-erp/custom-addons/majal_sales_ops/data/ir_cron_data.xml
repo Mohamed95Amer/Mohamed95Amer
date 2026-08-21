@@ -30,6 +30,16 @@
         <field name="active" eval="True"/>
     </record>
 
+    <record id="cron_decay_interest" model="ir.cron">
+        <field name="name">Majal Sales: re-score interest as it goes stale</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_decay_interest()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
     <!-- The cap starts low and is raised by hand as the domain warms. -->
     <record id="param_daily_send_cap" model="ir.config_parameter">
         <field name="key">majal_sales_ops.daily_send_cap</field>

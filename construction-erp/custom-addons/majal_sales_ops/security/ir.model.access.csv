@@ -9,3 +9,7 @@ access_majal_outreach_agent,majal.outreach agent,model_majal_outreach,majal_sale
 access_majal_outreach_manager,majal.outreach manager,model_majal_outreach,majal_sales_ops.group_majal_sales_manager,1,1,1,1
 access_majal_content_post_agent,majal.content.post agent,model_majal_content_post,majal_sales_ops.group_majal_sales_agent,1,1,1,0
 access_majal_content_post_manager,majal.content.post manager,model_majal_content_post,majal_sales_ops.group_majal_sales_manager,1,1,1,1
+access_majal_interest_event_agent,majal.interest.event agent,model_majal_interest_event,majal_sales_ops.group_majal_sales_agent,1,1,1,0
+access_majal_interest_event_manager,majal.interest.event manager,model_majal_interest_event,majal_sales_ops.group_majal_sales_manager,1,1,1,1
+access_majal_outreach_link_agent,majal.outreach.link agent,model_majal_outreach_link,majal_sales_ops.group_majal_sales_agent,1,1,1,0
+access_majal_outreach_link_manager,majal.outreach.link manager,model_majal_outreach_link,majal_sales_ops.group_majal_sales_manager,1,1,1,1

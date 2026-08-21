@@ -43,6 +43,23 @@ class ConstructionMyDay(models.AbstractModel):
                 ],
             },
             {
+                # Ahead of the manual tray on purpose: somebody who clicked
+                # through to the site this week and is not yet in a
+                # conversation is the warmest thing on this screen, and the
+                # window on that closes fast.
+                "key": "majal_warm",
+                "label": self.env._("Showing interest — no conversation yet"),
+                "model": "crm.lead",
+                "icon": "fa-fire",
+                "domain": lambda user, today: [
+                    ("majal_managed", "=", True),
+                    ("majal_engagement", "=", "warm"),
+                ],
+                "urgent": lambda today: [
+                    ("majal_interest_score", ">=", 40),
+                ],
+            },
+            {
                 "key": "majal_manual_posts",
                 "label": self.env._("Posts to publish by hand"),
                 "model": "majal.content.post",

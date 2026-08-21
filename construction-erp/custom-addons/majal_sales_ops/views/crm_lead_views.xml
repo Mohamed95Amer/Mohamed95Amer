@@ -28,6 +28,21 @@
                             <field name="majal_next_action_date"/>
                         </group>
                     </group>
+                    <group string="Interest — do they want us">
+                        <group>
+                            <field name="majal_interest_score"/>
+                            <field name="majal_engagement"/>
+                            <field name="majal_last_interest_at"/>
+                        </group>
+                    </group>
+                    <field name="majal_interest_ids" readonly="1">
+                        <list>
+                            <field name="occurred_at"/>
+                            <field name="kind"/>
+                            <field name="detail"/>
+                            <field name="weight"/>
+                        </list>
+                    </field>
                     <group string="Matching keys" col="3">
                         <field name="majal_phone_e164"/>
                         <field name="majal_domain"/>
@@ -56,7 +71,14 @@
         <field name="name">crm.lead.list.majal</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <list string="Majal Pipeline" default_order="majal_icp_score desc">
+            <!-- Ordered by interest before fit. Sorting a working queue by fit
+                 alone puts a contractor who has never heard of Majal above one
+                 who asked for a demo yesterday. -->
+            <list string="Majal Pipeline"
+                  default_order="majal_interest_score desc, majal_icp_score desc"
+                  decoration-bf="majal_engagement == 'warm'">
+                <field name="majal_engagement"/>
+                <field name="majal_interest_score"/>
                 <field name="majal_icp_tier"/>
                 <field name="majal_icp_score"/>
                 <field name="partner_name"/>
@@ -83,6 +105,12 @@
                         domain="[('majal_icp_tier','=','a')]"/>
                 <filter name="due_today" string="Due today"
                         domain="[('majal_next_action_date','&lt;=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="warm" string="Showing interest"
+                        domain="[('majal_engagement','=','warm')]"/>
+                <filter name="clicked" string="Clicked something"
+                        domain="[('majal_interest_ids.kind','=','email_click')]"/>
+                <filter name="asked_for_demo" string="Asked for a demo"
+                        domain="[('majal_interest_ids.kind','=','demo_request')]"/>
                 <filter name="replied" string="Replied"
                         domain="[('majal_sequence_state','=','replied')]"/>
                 <separator/>
@@ -95,6 +123,8 @@
                             context="{'group_by':'majal_icp_tier'}"/>
                     <filter name="by_source" string="Source"
                             context="{'group_by':'majal_source_id'}"/>
+                    <filter name="by_engagement" string="Engagement"
+                            context="{'group_by':'majal_engagement'}"/>
                     <filter name="by_dedup" string="Identity (find duplicates)"
                             context="{'group_by':'majal_dedup_key'}"/>
                 </group>

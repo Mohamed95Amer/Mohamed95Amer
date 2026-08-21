@@ -1,3 +1,4 @@
+from . import test_interest
 from . import test_normalise
 from . import test_provenance
 from . import test_scoring

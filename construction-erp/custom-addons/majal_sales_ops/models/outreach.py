@@ -21,6 +21,8 @@ signal, and the reputation it loses is not recoverable by apologising.
 """
 
 import logging
+import re
+import uuid
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -40,6 +42,10 @@ DEFAULT_DAILY_CAP = 30
 # UserError("Invalid language code: en") and takes the whole nightly drafting
 # run down with it. Mapped here, once, at the boundary.
 MAIL_LANG = {"ar": "ar_001", "en": "en_US"}
+
+# Only http(s) links are rewritten for click tracking. A mailto: or tel: is
+# not a page visit and routing one through a redirect would break it.
+_HREF = re.compile(r'href="(https?://[^"]+)"', re.I)
 
 
 class MajalOutreach(models.Model):
@@ -80,6 +86,11 @@ class MajalOutreach(models.Model):
     sent_date = fields.Datetime(readonly=True)
     failure_reason = fields.Text(readonly=True)
     mail_message_id = fields.Many2one("mail.message", readonly=True)
+    access_token = fields.Char(
+        default=lambda self: uuid.uuid4().hex, copy=False, readonly=True,
+        help="Identifies this message in a tracked click URL. Random rather "
+             "than the id, so a click URL cannot be guessed or enumerated.")
+    link_ids = fields.One2many("majal.outreach.link", "outreach_id")
 
     @api.depends("lead_id", "channel", "step_id")
     def _compute_name(self):
@@ -222,6 +233,40 @@ class MajalOutreach(models.Model):
         return config.get_param(SENDER_PARAM) or (
             self.env.company.email or False)
 
+    def _tracked_body(self):
+        """Rewrite outgoing links so a click can be seen.
+
+        The click URL carries an index into this message's own stored links,
+        never the destination itself. A `?url=` parameter would make the
+        endpoint an open redirect on majalops.com — anyone could send a link
+        that looks like ours and lands anywhere — and phishing from the domain
+        being used for cold outreach is not a trade worth making for simpler
+        code.
+        """
+        self.ensure_one()
+        body = self.body_html or ""
+        base = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        if not base:
+            return body
+
+        links = []
+
+        def swap(match):
+            url = match.group(1)
+            links.append(url)
+            return 'href="%s/majal/c/%s/%s"' % (
+                base.rstrip("/"), self.access_token, len(links) - 1)
+
+        rewritten = _HREF.sub(swap, body)
+        if not links:
+            return body
+        self.link_ids.unlink()
+        self.env["majal.outreach.link"].create([
+            {"outreach_id": self.id, "index": position, "url": url}
+            for position, url in enumerate(links)
+        ])
+        return rewritten
+
     @api.model
     def _cron_dispatch_approved(self):
         """Send today's approved messages, up to the cap, oldest first."""
@@ -259,7 +304,7 @@ class MajalOutreach(models.Model):
             try:
                 mail = self.env["mail.mail"].sudo().create({
                     "subject": record.subject or "",
-                    "body_html": record.body_html or "",
+                    "body_html": record._tracked_body(),
                     "email_from": sender,
                     "reply_to": reply_to,
                     "email_to": record.email_to,
@@ -296,3 +341,36 @@ class MajalOutreach(models.Model):
                 "Only approved messages can be sent. %s is not approved.",
                 not_approved[0].display_name))
         return self._send()
+
+
+class MajalOutreachLink(models.Model):
+    """One link in one sent message, and how often it was clicked.
+
+    Per-message rather than per-template so the Analyst can answer a question
+    the aggregate cannot: not "does the features link get clicked" but "who
+    clicked it".
+    """
+
+    _name = "majal.outreach.link"
+    _description = "Majal Outreach Link"
+    _order = "outreach_id, index"
+
+    outreach_id = fields.Many2one(
+        "majal.outreach", required=True, ondelete="cascade", index=True)
+    index = fields.Integer(required=True)
+    url = fields.Char(required=True)
+    click_count = fields.Integer(default=0, readonly=True)
+
+    _sql_constraints = [
+        ("unique_index_per_message", "unique(outreach_id, index)",
+         "A message cannot have two links at the same position."),
+    ]
+
+    def _register_click(self):
+        """Count the click and record the interest it represents."""
+        self.ensure_one()
+        self.sudo().click_count += 1
+        self.env["majal.interest.event"].record(
+            self.outreach_id.lead_id, "email_click",
+            detail=self.url, outreach=self.outreach_id)
+        return self.url
