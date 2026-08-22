@@ -65,6 +65,12 @@ class MajalLeadSource(models.Model):
             ("inbound", "Inbound — website or social"),
             ("event", "Event or exhibition"),
             ("partner", "Partner"),
+            # A list that arrived already assembled, from outside Majal. Its
+            # own category because it is the one kind whose lawful basis rests
+            # on facts this module cannot see — who compiled it, and on what
+            # footing it was passed on. Recording it as "own research" would
+            # bury exactly the question a reviewer needs to ask.
+            ("acquired_list", "Acquired list"),
         ],
         required=True,
         default="own_research",

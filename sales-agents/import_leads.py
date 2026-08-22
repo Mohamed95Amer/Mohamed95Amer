@@ -253,6 +253,15 @@ def main():
     parser.add_argument("--country", default=None,
                         help="Fallback ISO code (AE, SA, EG) for rows whose "
                              "country column is empty or unrecognised.")
+    parser.add_argument("--free-mail", choices=("defer", "include"),
+                        default="defer",
+                        help="What to do with gmail/hotmail/yahoo addresses. "
+                             "defer (the default) holds them out of this "
+                             "import and writes them to a sidecar CSV; "
+                             "include treats them like any other address.")
+    parser.add_argument("--deferred-csv", default=None,
+                        help="Where to write the deferred free-mail rows. "
+                             "Defaults to <csv_path>.free-mail.csv.")
     parser.add_argument("--commit", action="store_true",
                         help="Actually write. Without this it is a dry run.")
     parser.add_argument("--limit", type=int, default=0)
@@ -286,6 +295,7 @@ def main():
 
     seen, accepted, rejected = {}, [], Counter()
     examples = defaultdict(list)
+    deferred = []
 
     for number, row in enumerate(rows, start=2):   # row 1 is the header
         values, country, key, quality = build(row, mapping, args.country)
@@ -298,6 +308,16 @@ def main():
         if not values["email_from"] and not values["phone"]:
             rejected["no email and no usable phone"] += 1
             examples["no email and no usable phone"].append(number)
+            continue
+        # Held back, not discarded. These are real people at real contractors
+        # who happen to use a personal mailbox; they are worked through
+        # LinkedIn instead, and the sidecar file below is what makes the second
+        # wave a single command rather than a re-derivation.
+        if args.free_mail == "defer" and normalise.is_free_mail(
+                values["email_from"]):
+            rejected["free-mail address — deferred"] += 1
+            examples["free-mail address — deferred"].append(number)
+            deferred.append(row)
             continue
         if not key:
             rejected["nothing to identify the company by"] += 1
@@ -328,6 +348,16 @@ def main():
             shown = ", ".join(str(x) for x in examples[reason][:5])
             more = "" if len(examples[reason]) <= 5 else ", …"
             print("  %-38s %5s   rows %s%s" % (reason, count, shown, more))
+
+    if deferred:
+        path = args.deferred_csv or (args.csv_path + ".free-mail.csv")
+        with open(path, "w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=headers)
+            writer.writeheader()
+            writer.writerows(deferred)
+        print("\nDeferred %s free-mail rows to %s" % (len(deferred), path))
+        print("  Work these through LinkedIn, or import them later with "
+              "--free-mail include once the domain has a sending history.")
 
     if not args.commit:
         print("\nDry run — nothing written. Re-run with --commit when the "

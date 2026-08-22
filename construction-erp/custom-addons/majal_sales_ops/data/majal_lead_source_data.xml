@@ -34,6 +34,16 @@
             <field name="kind">inbound</field>
             <field name="notes">Came through the contact form on majalops.com.</field>
         </record>
+        <!-- The 2026 import. Named for what it is rather than for something
+             more comfortable: the constraint on this model exists to make
+             provenance auditable, and a source record that reads better than
+             the truth defeats the only purpose it has. -->
+        <record id="source_competitor_crm" model="majal.lead.source">
+            <field name="name">Acquired list — competing vendor CRM</field>
+            <field name="code">competitor_crm</field>
+            <field name="kind">acquired_list</field>
+            <field name="notes">Contacts exported from the CRM of a competing construction software vendor. Relevant by construction: everyone on it had already been qualified as a buyer of project software in the region. Two things are NOT established by the export itself and should be recorded here once known — (1) on what footing the list was obtained, and (2) whether the individuals were told their details could be passed to a third party. Corporate addresses only were imported; free-mail rows were deferred to the LinkedIn track. Every message carries a one-click unsubscribe, and an opt-out is honoured permanently and survives re-import.</field>
+        </record>
         <record id="source_inbound_social" model="majal.lead.source">
             <field name="name">Inbound — social</field>
             <field name="code">inbound_social</field>

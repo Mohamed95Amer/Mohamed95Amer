@@ -216,14 +216,16 @@ reports success for three weeks.
 ## 7. First leads
 
 ```powershell
-# 1. Create a lead source first, in Majal Sales -> Configuration -> Lead Sources,
-#    describing honestly how the list was assembled.
+# 1. Pick the lead source. Majal Sales -> Configuration -> Lead Sources.
+#    The module ships one per honest way a list gets built; the code below is
+#    the one for the acquired vendor list. If you assemble a new list, create
+#    a new source and describe how, in enough detail to be challenged on.
 
 # 2. Dry run. Read the mapping table and the rejection table.
-python sales-agents\import_leads.py leads.csv --source public_registry
+python sales-agents\import_leads.py crm_leads_all_details.csv --source competitor_crm
 
 # 3. When both look right:
-python sales-agents\import_leads.py leads.csv --source public_registry --commit
+python sales-agents\import_leads.py crm_leads_all_details.csv --source competitor_crm --commit
 
 # 4. Fill the gaps on the free local model.
 python sales-agents\enrich_leads.py --limit 200 --commit
@@ -232,6 +234,46 @@ python sales-agents\enrich_leads.py --limit 200 --commit
 Then in Majal: **Pipeline**, sort by ICP score, open the top 20, and start
 sequences. Approve the first day's drafts by hand and read every one — that is
 how you find out whether the templates are right while it is still cheap.
+
+### What the first real import does with 3,062 rows
+
+| | rows | |
+|---|---:|---|
+| Imported | **1,967** | corporate addresses, de-duplicated |
+| Deferred — free mail | 949 | written to `<file>.free-mail.csv`, worked via LinkedIn |
+| Dropped — flagged test/noise in the file | 90 | the list already knew |
+| Dropped — country not AE/SA/EG | 51 | pass `--country` to place them |
+| Dropped — duplicate within the file | 5 | |
+
+Of the 1,967, **1,935 are UAE**, 28 Saudi and 4 Egypt. Worth knowing before you
+plan around it: this list is a UAE list. An Egypt-first or Saudi-first run needs
+a different list, not a different filter.
+
+**Free mail is deferred, not discarded.** `--free-mail defer` is the default and
+holds gmail/hotmail/yahoo rows out of the email pipeline, writing them to a
+sidecar CSV beside the original. Two reasons, and only one of them is legal: a
+new sending domain is classified on who it mails first, and personal mailboxes
+in the UAE and Saudi sit under stricter consent rules than corporate ones. Bring
+them in later with `--free-mail include` once the domain has a sending history,
+or work them through LinkedIn where a personal address is not the channel.
+
+### Opt-out
+
+Every message carries a one-click unsubscribe — a visible link in the footer and
+the RFC 8058 headers that put a native "unsubscribe" button in Gmail and Outlook.
+Both point at `/majal/unsubscribe/<token>`, which **shows a confirmation page on
+GET and only acts on POST**. That is not ceremony: corporate mail scanners fetch
+every link in an incoming message before the recipient sees it, so a GET that
+unsubscribed would opt people out via their own employer's filter.
+
+An opt-out is permanent and takes effect on everything at once — the flag, the
+sequence, and any message already drafted or approved and sitting in tonight's
+queue. It survives re-import of the same list, and it does not copy onto a
+duplicated record. You can record one by hand from the lead form when somebody
+asks by phone or in a reply.
+
+The one thing the pipeline will not do is resume a sequence for someone who
+opted out; `action_majal_resume_sequence` raises rather than obeys.
 
 ## 8. Social
 

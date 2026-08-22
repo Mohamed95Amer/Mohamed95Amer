@@ -28,6 +28,24 @@
                             <field name="majal_next_action_date"/>
                         </group>
                     </group>
+                    <field name="majal_opted_out" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not majal_opted_out">
+                        This contact asked not to be emailed
+                        (<field name="majal_opt_out_source" readonly="1"
+                                nolabel="1" class="oe_inline"/>,
+                        <field name="majal_opt_out_date" readonly="1"
+                               nolabel="1" class="oe_inline"/>).
+                        Nothing will be sent to them. The record is kept so
+                        the request survives the next import of the same list.
+                    </div>
+                    <group>
+                        <button name="action_majal_opt_out" type="object"
+                                string="Record an opt-out"
+                                class="btn-link"
+                                confirm="This permanently stops all Majal outreach to this contact and withdraws anything already queued for them. It cannot be undone from this screen."
+                                invisible="majal_opted_out"/>
+                    </group>
                     <group string="Interest — do they want us">
                         <group>
                             <field name="majal_interest_score"/>
@@ -88,6 +106,7 @@
                 <field name="majal_size_band"/>
                 <field name="majal_source_id"/>
                 <field name="majal_sequence_state"/>
+                <field name="majal_opted_out" optional="show"/>
                 <field name="majal_next_action_date"/>
             </list>
         </field>
@@ -116,6 +135,9 @@
                 <separator/>
                 <filter name="running" string="Sequence running"
                         domain="[('majal_sequence_state','=','running')]"/>
+                <filter name="majal_opted_out" string="Opted out"
+                        domain="[('majal_opted_out','=',True)]"/>
+                <separator/>
                 <group expand="0" string="Group By">
                     <filter name="by_market" string="Market"
                             context="{'group_by':'majal_country_code'}"/>

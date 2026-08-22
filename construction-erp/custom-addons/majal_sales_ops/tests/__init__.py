@@ -1,5 +1,6 @@
 from . import test_interest
 from . import test_normalise
+from . import test_opt_out
 from . import test_provenance
 from . import test_scoring
 from . import test_sequence

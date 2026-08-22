@@ -118,6 +118,22 @@ def _is_plausible(national, spec):
     )
 
 
+def is_free_mail(raw):
+    """True when the address is a personal mailbox on a public provider.
+
+    ``email_domain`` returns ``False`` for both a gmail address and a string
+    that is not an address at all, which is the right answer for de-duplication
+    and the wrong one for deciding who to email. A cold message to a personal
+    Gmail is a different act from one to a company mailbox: it lands under
+    stricter consent rules in the UAE and Saudi, and it is what a new sending
+    domain gets classified on. That decision needs to see the difference.
+    """
+    if not raw:
+        return False
+    match = _EMAIL.match(str(raw).strip().lower())
+    return bool(match) and match.group(1) in FREE_MAIL_HOSTS
+
+
 def email_domain(raw):
     """The company domain behind an address, or ``False``.
 

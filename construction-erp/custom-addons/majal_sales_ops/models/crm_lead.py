@@ -142,10 +142,31 @@ class CrmLead(models.Model):
             ("paused", "Paused"),
             ("replied", "Replied"),
             ("done", "Finished"),
+            # Terminal, and the only state this module will not leave on its
+            # own. "paused" is a decision we made about a lead; "opted_out" is
+            # a decision the lead made about us, and the difference has to
+            # survive every later bulk action.
+            ("opted_out", "Opted Out"),
         ],
         default="running",
         index=True,
+        # A duplicated lead starts its own life. Without this a copy of an
+        # opted-out record would arrive already terminal — the flag beside it
+        # does not copy, so the two would disagree and the lead would sit in
+        # the pipeline never being touched and never showing why.
+        copy=False,
     )
+
+    majal_opted_out = fields.Boolean(
+        string="Opted Out", index=True, copy=False, readonly=True,
+        help="Set when the recipient asked to stop hearing from us. Nothing "
+             "in this module will email a lead carrying this flag.")
+    majal_opt_out_date = fields.Datetime(
+        string="Opted Out On", readonly=True, copy=False)
+    majal_opt_out_source = fields.Char(
+        string="Opt-out Route", readonly=True, copy=False,
+        help="How the request arrived — the unsubscribe link, a reply, or a "
+             "person recording it by hand.")
     majal_outreach_ids = fields.One2many(
         "majal.outreach", "lead_id", string="Outreach",
     )
@@ -304,7 +325,7 @@ class CrmLead(models.Model):
     def majal_start_sequence(self, sequence=None):
         """Put a lead on a sequence and schedule its first touch for today."""
         today = fields.Date.context_today(self)
-        for lead in self:
+        for lead in self.filtered(lambda l: not l.majal_opted_out):
             chosen = sequence or lead.majal_sequence_id or self.env[
                 "majal.sales.sequence"]._default_for(lead)
             if not chosen:
@@ -317,6 +338,48 @@ class CrmLead(models.Model):
             })
         return True
 
+    def majal_opt_out(self, source="unsubscribe-link"):
+        """Stop contacting this lead, and withdraw whatever is still queued.
+
+        Flagging the lead alone is not enough. Anything already drafted or
+        approved for them is sitting in a queue that a cron will happily send
+        tomorrow morning, so the request only actually takes effect if those
+        are cancelled in the same breath.
+
+        Deliberately not a delete: the record of having asked is the evidence
+        that the request was honoured, and removing the lead would let the
+        next import of the same list put them straight back into a sequence.
+        """
+        pending = self.env["majal.outreach"].sudo().search([
+            ("lead_id", "in", self.ids),
+            ("state", "in", ("draft", "pending", "approved")),
+        ])
+        for record in pending:
+            record._majal_set_state(
+                "rejected",
+                failure_reason=self.env._("Recipient opted out."))
+        for lead in self:
+            if lead.majal_opted_out:
+                continue
+            lead.sudo().write({
+                "majal_opted_out": True,
+                "majal_opt_out_date": fields.Datetime.now(),
+                "majal_opt_out_source": source,
+                "majal_sequence_state": "opted_out",
+                "majal_next_action_date": False,
+            })
+            lead.sudo().message_post(
+                body=self.env._(
+                    "Opted out of Majal outreach via %(source)s. "
+                    "%(count)s queued message(s) withdrawn.",
+                    source=source,
+                    count=len(pending.filtered(lambda r: r.lead_id == lead))))
+        return True
+
+    def action_majal_opt_out(self):
+        """Record an opt-out somebody asked for by phone, or in a reply."""
+        return self.majal_opt_out(source="recorded-by-hand")
+
     def action_majal_pause_sequence(self):
         return self.write({
             "majal_sequence_state": "paused",
@@ -324,6 +387,10 @@ class CrmLead(models.Model):
         })
 
     def action_majal_resume_sequence(self):
+        if any(self.mapped("majal_opted_out")):
+            raise ValidationError(self.env._(
+                "This lead asked not to be contacted. Resuming a sequence "
+                "for them is the one thing this pipeline will not do."))
         return self.write({
             "majal_sequence_state": "running",
             "majal_next_action_date": fields.Date.context_today(self),

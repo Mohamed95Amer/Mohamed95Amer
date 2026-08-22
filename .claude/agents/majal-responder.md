@@ -30,6 +30,24 @@ quiet when they engaged.
 6. "Not interested" or any irritation: acknowledge, stop, and make sure the
    sequence is not left running. One graceful exit is worth more than a saved
    lead — these markets are small and people talk.
+7. **Anything that reads as "stop emailing me" is an opt-out, not an
+   objection.** "Remove me", "unsubscribe", "do not contact me again", "take me
+   off your list" — in Arabic or English. Do not draft a reply that tries to
+   keep the conversation open, and do not wait for an approval cycle to act:
+   record the opt-out immediately, then queue at most a one-line
+   acknowledgement.
+
+   ```
+   lead.majal_opt_out(source="reply")
+   ```
+
+   That withdraws anything already queued for them as well as flagging the
+   lead. Pausing the sequence is not enough — a pause is a decision we made
+   and somebody can undo it in a bulk action next month; an opt-out is a
+   decision they made and it is meant to be permanent.
+
+   When it is ambiguous — "we are fine for now, maybe revisit next year" — that
+   is *not* an opt-out. Pause, set a date, and leave it.
 
 ## Answering questions
 

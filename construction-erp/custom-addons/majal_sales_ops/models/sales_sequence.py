@@ -98,6 +98,11 @@ class MajalSalesSequence(models.Model):
         leads = self.env["crm.lead"].search([
             ("majal_managed", "=", True),
             ("majal_sequence_state", "=", "running"),
+            # Redundant with the state above, and kept anyway: the flag is the
+            # thing a person checks when asked whether we honoured a request,
+            # so it is what the query that decides who gets written to should
+            # be reading.
+            ("majal_opted_out", "=", False),
             ("majal_next_action_date", "<=", today),
             ("majal_sequence_id", "!=", False),
         ])

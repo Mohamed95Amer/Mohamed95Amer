@@ -274,6 +274,67 @@ class MajalOutreach(models.Model):
         ])
         return rewritten
 
+    def _unsubscribe_url(self):
+        self.ensure_one()
+        base = self.env["ir.config_parameter"].sudo().get_param(
+            "web.base.url") or "https://majalops.com"
+        return "%s/majal/unsubscribe/%s" % (base.rstrip("/"), self.access_token)
+
+    def _compliance_footer(self):
+        """Who sent this, why it arrived, and how to stop it.
+
+        Appended after the click-tracking rewrite, never before: an unsubscribe
+        link routed through the click endpoint would score the person as
+        *interested* at the moment they asked to be left alone, and would put a
+        redirect between them and the one action they are entitled to take
+        without friction.
+
+        This is a cold message to someone who did not ask for it. In the UAE,
+        Saudi and Egypt alike, what makes that defensible is that the sender is
+        identifiable and the opt-out works on the first click — not the wording
+        of the pitch above it.
+        """
+        self.ensure_one()
+        url = self._unsubscribe_url()
+        sender = self._sending_identity() or ""
+        if (self.lead_id.majal_lang or "ar") == "ar":
+            return (
+                '<div dir="rtl" style="margin-top:24px;padding-top:12px;'
+                'border-top:1px solid #ddd;font-size:12px;color:#666;'
+                'text-align:right">'
+                '<p style="margin:0 0 6px">وصلتك هذه الرسالة لأننا نعتقد أن '
+                '<strong>مجال</strong> قد يفيد فريقك في إدارة المشاريع '
+                'والمقاولات. إن لم تكن مهتماً، نعتذر عن الإزعاج.</p>'
+                '<p style="margin:0">%s — '
+                '<a href="%s" style="color:#666">إلغاء الاشتراك</a>'
+                '</p></div>' % (sender, url)
+            )
+        return (
+            '<div style="margin-top:24px;padding-top:12px;'
+            'border-top:1px solid #ddd;font-size:12px;color:#666">'
+            '<p style="margin:0 0 6px">You are receiving this because we think '
+            '<strong>Majal Ops</strong> may be useful to your projects team. '
+            'If not, our apologies for the interruption.</p>'
+            '<p style="margin:0">%s — '
+            '<a href="%s" style="color:#666">Unsubscribe</a>'
+            '</p></div>' % (sender, url)
+        )
+
+    def _mail_headers(self, reply_to):
+        """RFC 8058 one-click unsubscribe.
+
+        Gmail and Outlook both surface a native "unsubscribe" control when
+        these two headers are present, and both weigh its absence when deciding
+        where bulk mail lands. Stored as a repr because `mail.mail.headers` is
+        a Text field that Odoo passes through ast.literal_eval.
+        """
+        self.ensure_one()
+        return repr({
+            "List-Unsubscribe": "<%s>, <mailto:%s?subject=unsubscribe>" % (
+                self._unsubscribe_url(), reply_to),
+            "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        })
+
     @api.model
     def _cron_dispatch_approved(self):
         """Send today's approved messages, up to the cap, oldest first."""
@@ -289,6 +350,7 @@ class MajalOutreach(models.Model):
         queue = self.search([
             ("state", "=", "approved"),
             ("channel", "=", "email"),
+            ("lead_id.majal_opted_out", "=", False),
             ("scheduled_date", "<=", fields.Date.context_today(self)),
         ], order="id asc", limit=remaining)
         return queue._send()
@@ -308,12 +370,23 @@ class MajalOutreach(models.Model):
                 record._majal_set_state(
                     "failed", failure_reason=self.env._("No email address."))
                 continue
+            # Checked here too, because action_send_now goes straight to this
+            # method without passing the cron's domain. A single unsubscribed
+            # address receiving one more message is the whole cost of getting
+            # this wrong, so it is worth checking on every path out.
+            if record.lead_id.majal_opted_out:
+                record._majal_set_state(
+                    "rejected",
+                    failure_reason=self.env._("Recipient opted out."))
+                continue
             try:
                 mail = self.env["mail.mail"].sudo().create({
                     "subject": record.subject or "",
-                    "body_html": record._tracked_body(),
+                    "body_html": (record._tracked_body()
+                                  + record._compliance_footer()),
                     "email_from": sender,
                     "reply_to": reply_to,
+                    "headers": record._mail_headers(reply_to),
                     "email_to": record.email_to,
                     # model/res_id are what let Odoo's mail gateway thread the
                     # reply back onto this lead instead of dropping it into a

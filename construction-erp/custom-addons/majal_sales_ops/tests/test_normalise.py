@@ -110,3 +110,24 @@ class TestNormalise(TransactionCase):
                      "https://wa.me/971501234567", "instagram.com/majal"):
             self.assertFalse(normalise.website_domain(host), host)
         self.assertEqual(normalise.website_domain("www.trojan.ae"), "trojan.ae")
+
+    # ------------------------------------------------------------------
+    # Free mail
+    # ------------------------------------------------------------------
+    def test_free_mail_is_distinguished_from_no_domain_at_all(self):
+        """email_domain answers False for both; the sender needs the
+        difference."""
+        self.assertTrue(normalise.is_free_mail("ahmed@gmail.com"))
+        self.assertTrue(normalise.is_free_mail("  Ahmed@HOTMAIL.com  "))
+        self.assertFalse(normalise.is_free_mail("ahmed@gulfcontracting.ae"))
+        # Not an address, so not a free-mail address either — the caller must
+        # not read False here as "this is a corporate mailbox".
+        self.assertFalse(normalise.is_free_mail("not an address"))
+        self.assertFalse(normalise.is_free_mail(""))
+        self.assertFalse(normalise.is_free_mail(False))
+
+    def test_a_company_on_a_free_host_is_still_free_mail(self):
+        """A contractor using a gmail address is the common case here, not an
+        edge one: 949 rows of the first real list."""
+        self.assertTrue(normalise.is_free_mail("info@yahoo.com"))
+        self.assertFalse(normalise.email_domain("info@yahoo.com"))
