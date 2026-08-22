@@ -369,10 +369,13 @@ class CrmLead(models.Model):
                 "majal_next_action_date": False,
             })
             lead.sudo().message_post(
+                # "route", not "source": Environment._ takes the translation
+                # string as a positional parameter of its own named `source`,
+                # so a placeholder called that collides with it and raises.
                 body=self.env._(
-                    "Opted out of Majal outreach via %(source)s. "
+                    "Opted out of Majal outreach via %(route)s. "
                     "%(count)s queued message(s) withdrawn.",
-                    source=source,
+                    route=source,
                     count=len(pending.filtered(lambda r: r.lead_id == lead))))
         return True
 
