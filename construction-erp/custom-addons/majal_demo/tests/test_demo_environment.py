@@ -113,10 +113,23 @@ class TestMajalDemoEnvironment(TransactionCase):
             ])]
         )
         self.assertEqual(sorted(rules.mapped(lambda rule: len(rule.step_ids))), [2, 3])
+        companies = self.contracting | self.facilities | self.property_company
         providers = self.env["majal.ai.provider"].sudo().search(
-            [("code", "=", "demo"), ("company_id", "in", [
-                self.contracting.id, self.facilities.id, self.property_company.id,
-            ])]
+            [("company_id", "in", companies.ids)]
         )
-        self.assertEqual(len(providers), 3)
-        self.assertTrue(all(provider.is_ready for provider in providers))
+        self.assertEqual(len(providers), 30)
+        for company in companies:
+            company_providers = providers.filtered(
+                lambda provider: provider.company_id == company
+            )
+            self.assertEqual(len(company_providers), 10)
+            self.assertEqual(
+                set(company_providers.mapped("code")),
+                {
+                    "local", "local_coder", "kimi", "openai", "gemini",
+                    "anthropic", "deepseek", "mistral", "groq", "demo",
+                },
+            )
+            demo = company_providers.filtered(lambda provider: provider.code == "demo")
+            self.assertTrue(demo.is_ready)
+            self.assertTrue(demo.enabled)

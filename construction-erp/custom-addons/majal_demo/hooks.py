@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from odoo import Command, fields
 from odoo.tools import file_open
+from odoo.addons.majal_ai.models.provider import PROVIDER_SPECS
 
 from .enterprise_demo import seed_enterprise_demo
 from .office_demo import seed_spreadsheets
@@ -75,25 +76,42 @@ def _enable_demo_intelligence(env, companies, users):
             "action_id": action.id,
             "groups_id": [Command.link(spreadsheet_group.id)],
         })
+    sequence_by_code = {
+        "local": 1,
+        "local_coder": 2,
+        "demo": 3,
+        "kimi": 10,
+        "openai": 20,
+        "gemini": 30,
+        "anthropic": 40,
+        "deepseek": 50,
+        "mistral": 60,
+        "groq": 70,
+    }
+    Provider = env["majal.ai.provider"].sudo()
     for company in companies:
-        provider = env["majal.ai.provider"].sudo().search(
-            [("code", "=", "demo"), ("company_id", "=", company.id)], limit=1
-        )
-        values = {
-            "name": "Majal Demo Guide",
-            "code": "demo",
-            "company_id": company.id,
-            "endpoint": "https://demo.majal.invalid/v1",
-            "model_name": "guided-demo",
-            "enabled": True,
-            "sequence": 3,
-            "daily_request_limit": 500,
-            "monthly_token_limit": 0,
-        }
-        if provider:
-            provider.write(values)
-        else:
-            env["majal.ai.provider"].sudo().create(values)
+        for code, spec in PROVIDER_SPECS.items():
+            provider = Provider.search(
+                [("code", "=", code), ("company_id", "=", company.id)],
+                limit=1,
+            )
+            values = {
+                "name": spec["label"],
+                "code": code,
+                "company_id": company.id,
+                "endpoint": spec["endpoint"],
+                "model_name": spec["model"],
+                "sequence": sequence_by_code[code],
+                "daily_request_limit": 500 if code == "demo" else 100,
+                "monthly_token_limit": 0 if code == "demo" else 500000,
+            }
+            if code == "demo":
+                values["enabled"] = True
+            if provider:
+                provider.write(values)
+            else:
+                values["enabled"] = code == "demo"
+                Provider.create(values)
 
 
 def _seed_approval_cycles(env, company, users):
