@@ -12,3 +12,14 @@ class TestMajalDocumentMenus(TransactionCase):
     def test_storage_configuration_uses_majal_language(self):
         storage = self.env.ref("dms.menu_dms_storage")
         self.assertEqual(storage.name, "Storage Backends")
+
+    def test_spreadsheets_are_inside_the_majal_documents_workspace(self):
+        root = self.env.ref("majal_documents.menu_majal_documents_root")
+        spreadsheets = self.env.ref(
+            "spreadsheet_oca.spreadsheet_spreadsheet_menu"
+        )
+        controlled = self.env.ref("majal_documents.menu_majal_sheets")
+        self.assertEqual(spreadsheets.parent_id, root)
+        self.assertEqual(spreadsheets.name, "Spreadsheets")
+        self.assertEqual(controlled.parent_id, root)
+        self.assertEqual(controlled.name, "Controlled Sheets")

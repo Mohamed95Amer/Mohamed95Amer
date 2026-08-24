@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Majal Spreadsheets">
+  <defs>
+    <linearGradient id="sheet" x1="18" y1="112" x2="108" y2="18" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B9C9A"/>
+      <stop offset="1" stop-color="#02496D"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="108" height="108" rx="27" fill="url(#sheet)"/>
+  <path d="M34 29h48l14 14v56H34z" fill="#fff" opacity=".96"/>
+  <path d="M82 29v15h14" fill="none" stroke="#BDE9E5" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M46 55h38M46 68h38M46 81h38M58 49v39M72 49v39" fill="none" stroke="#057B8A" stroke-width="5" stroke-linecap="round"/>
+</svg>

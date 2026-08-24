@@ -1,13 +1,14 @@
 {
     "name": "Majal Documents",
     "summary": "Client-branded, versioned documents and structured sheets",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Majal/Documents",
     "license": "LGPL-3",
     "depends": [
         "dms",
         "mail",
         "project",
+        "spreadsheet_oca",
         "web_editor",
         "majal_administration",
     ],
