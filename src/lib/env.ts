@@ -28,7 +28,9 @@ export const env = {
   cronSecret: () => required("CRON_SECRET"),
 
   // Gold price providers
-  primaryProvider: () => process.env.GOLD_PRICE_PRIMARY_PROVIDER ?? "mock",
+  // Defaults to the keyless provider so a fresh deploy shows real prices
+  // without any credentials. Set to goldapi/metalpriceapi/metalsdev for a paid feed.
+  primaryProvider: () => process.env.GOLD_PRICE_PRIMARY_PROVIDER ?? "goldapicom",
   backupProvider: () => process.env.GOLD_PRICE_BACKUP_PROVIDER ?? "mock",
   goldApiKey: () => process.env.GOLDAPI_API_KEY ?? "",
   metalPriceApiKey: () => process.env.METALPRICEAPI_API_KEY ?? "",

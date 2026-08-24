@@ -9,6 +9,19 @@ import { env } from "@/lib/env";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+/** Row returned by the claim_reservation() DB function. */
+interface ReservationRow {
+  id: string;
+  customer_user_id: string;
+  product_id: string;
+  vendor_id: string;
+  status: string;
+  quantity: number;
+  expires_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
 /**
  * Create a reservation. The price is computed entirely server-side and
  * snapshotted into order_price_snapshots. The frontend's displayed price is
@@ -64,20 +77,35 @@ export async function POST(request: Request) {
   const lockMinutes = settings?.reservation_lock_minutes ?? env.reservationLockMinutes();
   const expiresAt = new Date(Date.now() + lockMinutes * 60_000).toISOString();
 
-  const { data: reservation, error: resErr } = await admin
-    .from("reservations")
-    .insert({
-      customer_user_id: auth.user.id,
-      product_id: priced.product.id,
-      vendor_id: priced.product.vendor_id,
-      status: "pending_vendor_confirmation",
-      quantity: parsed.data.quantity,
-      expires_at: expiresAt,
+  // Claim through the DB function rather than a bare insert: it locks the
+  // product row and counts in-flight reservations, so two customers racing for
+  // the last unit cannot both succeed.
+  const { data: claimed, error: resErr } = await admin
+    .rpc("claim_reservation", {
+      p_customer_user_id: auth.user.id,
+      p_product_id: priced.product.id,
+      p_quantity: parsed.data.quantity,
+      p_expires_at: expiresAt,
     })
-    .select("*")
     .single();
+  const reservation = claimed as ReservationRow | null;
+
   if (resErr || !reservation) {
-    return NextResponse.json({ error: resErr?.message ?? "insert_failed" }, { status: 500 });
+    const raw = resErr?.message ?? "insert_failed";
+    // The function signals contention and validation failures by raising.
+    if (raw.includes("insufficient_stock")) {
+      return NextResponse.json(
+        { error: "insufficient_stock", message: "That item was just reserved by someone else." },
+        { status: 409 },
+      );
+    }
+    if (raw.includes("product_not_available") || raw.includes("product_not_found")) {
+      return NextResponse.json({ error: "product_unavailable" }, { status: 400 });
+    }
+    if (raw.includes("invalid_quantity")) {
+      return NextResponse.json({ error: "invalid_quantity" }, { status: 400 });
+    }
+    return NextResponse.json({ error: raw }, { status: 500 });
   }
 
   const { error: snapErr } = await admin.from("order_price_snapshots").insert({

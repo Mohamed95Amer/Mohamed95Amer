@@ -1,6 +1,7 @@
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
 import { getLatestTick, isFresh } from "@/lib/gold-price/service";
+import { refreshInBand } from "@/lib/gold-price/refresh-on-read";
 import { computePrice, type PriceBreakdown } from "./calc";
 
 export interface OfficialPriceResult {
@@ -60,10 +61,19 @@ export async function computeOfficialPriceForProduct(
     .single();
   if (setErr || !settings) throw new Error("Platform settings missing");
 
-  const tick = await getLatestTick();
+  const staleSeconds = settings.stale_price_seconds ?? env.stalePriceSeconds();
+
+  // Refresh before pricing if the newest tick has aged out. Without this a
+  // reservation attempted after a quiet period would fail the freshness gate
+  // below purely because nothing had polled the price endpoint recently.
+  let tick = await getLatestTick();
+  if (!tick || !isFresh(tick.fetched_at, staleSeconds)) {
+    await refreshInBand();
+    tick = (await getLatestTick()) ?? tick;
+  }
   if (!tick) throw new Error("No live gold price available");
 
-  const fresh = isFresh(tick.fetched_at, settings.stale_price_seconds ?? env.stalePriceSeconds());
+  const fresh = isFresh(tick.fetched_at, staleSeconds);
 
   const breakdown = computePrice({
     pricePerGram24kAed: Number(tick.price_per_gram_24k_aed),

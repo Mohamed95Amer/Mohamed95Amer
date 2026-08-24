@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
 import { refreshGoldPrice } from "@/lib/gold-price/service";
 import { isAuthorizedCron } from "@/lib/security/cron";
-import { env } from "@/lib/env";
 import { getServiceSupabase } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 /**
- * Refresh the live gold price. Designed to be called every minute by a cron
- * (Vercel Cron, Supabase Edge cron, GitHub Actions, etc.). To approximate
- * the 15–30s refresh cadence on a minute-granularity cron, the endpoint
- * performs N evenly-spaced refreshes within a single call.
+ * Refresh the live gold price once per invocation.
+ *
+ * This is a floor, not the main path. Vercel's Hobby plan only permits daily
+ * crons, so `/api/gold-price/latest` refreshes on read whenever the newest
+ * tick is stale — that is what keeps pricing live under real traffic. This
+ * endpoint guarantees a tick exists even during a quiet period, and gives an
+ * external scheduler (cron-job.org, GitHub Actions) something to call more
+ * often if you want proactive updates.
  *
  * Auth: Authorization: Bearer ${CRON_SECRET}  OR  x-cron-secret: ${CRON_SECRET}
  */
@@ -27,35 +31,23 @@ async function handle(request: Request) {
   if (!isAuthorizedCron(request)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-  const target = clamp(env.refreshIntervalSeconds(), 15, 60);
-  const ticksThisMinute = Math.max(1, Math.min(4, Math.floor(60 / target)));
-  const gapMs = Math.floor(60_000 / ticksThisMinute);
 
-  const outcomes = [];
-  for (let i = 0; i < ticksThisMinute; i++) {
-    try {
-      const outcome = await refreshGoldPrice();
-      outcomes.push({ index: i, ok: outcome.ok, attempts: outcome.attempts });
-      // Log degraded/failed ticks for admin visibility
-      if (!outcome.ok || outcome.tick?.status !== "ok") {
-        await logWarning(outcome);
-      }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      outcomes.push({ index: i, ok: false, error: message });
+  try {
+    const outcome = await refreshGoldPrice();
+    if (!outcome.ok || outcome.tick?.status !== "ok") {
+      await logWarning(outcome);
     }
-    if (i < ticksThisMinute - 1) {
-      await sleep(gapMs);
-    }
+    return NextResponse.json({
+      ok: outcome.ok,
+      status: outcome.tick?.status ?? "failed",
+      price_per_gram_24k_aed: outcome.tick?.price_per_gram_24k_aed ?? null,
+      source: outcome.tick?.source ?? null,
+      attempts: outcome.attempts,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
-  return NextResponse.json({ refreshedCount: outcomes.length, outcomes });
-}
-
-function clamp(n: number, lo: number, hi: number) {
-  return Math.min(hi, Math.max(lo, n));
-}
-function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
 }
 
 async function logWarning(outcome: Awaited<ReturnType<typeof refreshGoldPrice>>) {
