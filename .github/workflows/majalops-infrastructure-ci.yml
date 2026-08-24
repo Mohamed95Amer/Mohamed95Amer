@@ -106,9 +106,18 @@ jobs:
 
       - name: Validate Dockerfile can resolve build context
         run: |
+          # The three test -f lines below only prove files exist in the repo,
+          # and `docker build --check` is BuildKit's linter: it validates
+          # Dockerfile syntax and never resolves the context or executes a
+          # COPY. So this step could pass while a COPY source was excluded by
+          # the dockerignore -- which is exactly what happened when the
+          # migration contract was added, and the first thing to notice was a
+          # failed deploy. The validator below is what actually checks the
+          # thing this step is named after.
           test -f construction-erp/custom-addons/majal_branding/__manifest__.py
           test -f construction-erp/scripts/docker-entrypoint-majal.sh
           test -f infrastructure/docker/platform-entrypoint.sh
+          python3 infrastructure/scripts/validate-docker-context.py
           docker build --check \
             --file infrastructure/docker/Dockerfile.platform .
 
