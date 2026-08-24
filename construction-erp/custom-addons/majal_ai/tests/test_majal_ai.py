@@ -106,7 +106,12 @@ class TestMajalAi(TransactionCase):
                 "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
             }
         )
-        self.assertEqual(user.action_id, intelligence)
+        # Compare ids, not recordsets. res.users.action_id is a Many2one to
+        # ir.actions.actions, so it reads back as ir.actions.actions(id,)
+        # while env.ref gives ir.actions.client(id,). Odoo's BaseModel.__eq__
+        # compares _name as well as ids, so the recordsets differ even when
+        # they denote the same action.
+        self.assertEqual(user.action_id.id, intelligence.id)
         explicit = self.env["res.users"].create(
             {
                 "name": "Explicit Home",
@@ -115,7 +120,8 @@ class TestMajalAi(TransactionCase):
                 "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
             }
         )
-        self.assertEqual(explicit.action_id, self.env.ref("base.action_res_users"))
+        self.assertEqual(
+            explicit.action_id.id, self.env.ref("base.action_res_users").id)
 
     def test_demo_guide_is_network_free_and_only_ready_in_demo_database(self):
         self.demo.enabled = True
