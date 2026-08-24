@@ -16,7 +16,7 @@
                         </div>
                         <div>
                             <strong>Majal Intelligence</strong>
-                            <span>Construction &amp; facilities copilot</span>
+                            <span>Construction, facilities &amp; property copilot</span>
                         </div>
                         <button class="o_majal_ai_close btn" t-on-click="toggleSidebar"
                                 title="Close conversations">
@@ -35,7 +35,7 @@
                                     t-att-class="{'is-active': state.conversationId === conversation.id}"
                                     t-on-click="() => this.openConversation(conversation)">
                                 <span class="o_majal_ai_history_icon">
-                                    <i t-att-class="conversation.scope === 'facilities' ? 'fa fa-wrench' : conversation.scope === 'construction' ? 'fa fa-building' : 'fa fa-line-chart'"/>
+                                    <i t-att-class="conversation.scope === 'facilities' ? 'fa fa-wrench' : conversation.scope === 'construction' ? 'fa fa-building' : conversation.scope === 'property' ? 'fa fa-home' : 'fa fa-line-chart'"/>
                                 </span>
                                 <span class="o_majal_ai_history_name"
                                       t-esc="conversation.name"/>
@@ -72,6 +72,7 @@
                             <h1>
                                 <t t-if="state.scope === 'construction'">Construction Intelligence</t>
                                 <t t-elif="state.scope === 'facilities'">Facilities Intelligence</t>
+                                <t t-elif="state.scope === 'property'">Property Intelligence</t>
                                 <t t-elif="state.scope === 'guide'">Majal System Guide</t>
                                 <t t-else="">Portfolio Intelligence</t>
                             </h1>
@@ -109,6 +110,10 @@
                             <button t-att-class="{'is-active': state.scope === 'facilities'}"
                                     t-on-click="() => this.setScope('facilities')">
                                 <i class="fa fa-wrench"/> Facilities
+                            </button>
+                            <button t-att-class="{'is-active': state.scope === 'property'}"
+                                    t-on-click="() => this.setScope('property')">
+                                <i class="fa fa-home"/> Property
                             </button>
                             <button t-att-class="{'is-active': state.scope === 'guide'}"
                                     t-on-click="() => this.setScope('guide')">
@@ -155,7 +160,7 @@
                                 <t t-foreach="state.suggestions" t-as="suggestion"
                                    t-key="suggestion.label">
                                     <button t-on-click="() => this.useSuggestion(suggestion)">
-                                        <i t-att-class="suggestion.scope === 'facilities' ? 'fa fa-wrench' : suggestion.scope === 'construction' ? 'fa fa-building' : suggestion.scope === 'guide' ? 'fa fa-compass' : 'fa fa-line-chart'"/>
+                                        <i t-att-class="suggestion.scope === 'facilities' ? 'fa fa-wrench' : suggestion.scope === 'construction' ? 'fa fa-building' : suggestion.scope === 'property' ? 'fa fa-home' : suggestion.scope === 'guide' ? 'fa fa-compass' : 'fa fa-line-chart'"/>
                                         <span><small t-esc="suggestion.category"/><strong t-esc="suggestion.label"/></span>
                                         <i class="fa fa-arrow-right"/>
                                     </button>

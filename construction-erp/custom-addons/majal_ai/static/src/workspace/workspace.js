@@ -31,6 +31,7 @@ export class MajalAiWorkspace extends Component {
             providers: [],
             projects: [],
             equipment: [],
+            developments: [],
             conversations: [],
             suggestions: [],
             messages: [],
@@ -57,6 +58,7 @@ export class MajalAiWorkspace extends Component {
             this.state.providers = data.providers;
             this.state.projects = data.projects;
             this.state.equipment = data.equipment;
+            this.state.developments = data.developments || [];
             this.state.conversations = data.conversations;
             this.state.suggestions = data.suggestions;
             const preferred =

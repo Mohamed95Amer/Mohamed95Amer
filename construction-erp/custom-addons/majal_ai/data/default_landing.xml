@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <function model="res.users" name="action_set_majal_intelligence_home"/>
+</odoo>

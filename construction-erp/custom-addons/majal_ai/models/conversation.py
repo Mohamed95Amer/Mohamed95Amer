@@ -5,8 +5,8 @@ from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 
-SYSTEM_PROMPT = """You are Majal Intelligence, a bilingual construction and
-facilities copilot. Answer in the user's language. Be concise, practical and
+SYSTEM_PROMPT = """You are Majal Intelligence, a bilingual construction,
+facilities and property operations copilot. Answer in the user's language. Be concise, practical and
 honest. Use only the supplied Majal context for project-specific facts. Cite
 sources using [1], [2] and so on. If context is insufficient, say so.
 
@@ -27,10 +27,59 @@ PROMPT_LIBRARY = [
     ("facilities", "Maintenance", "Draft a preventive-maintenance action plan for critical equipment."),
     ("facilities", "SLA", "Show likely SLA breaches and the fastest safe recovery actions."),
     ("facilities", "Energy", "Suggest an energy and asset-performance review using the available records."),
+    ("property", "Portfolio", "Summarize unit availability, leads, reservations, collections and handover risks."),
+    ("property", "Sales", "Show the property sales pipeline and the next action for each urgent lead."),
+    ("property", "Collections", "Review overdue installments and propose a permission-safe follow-up plan."),
+    ("property", "Handover", "Which reserved units are blocked from handover and why?"),
     ("guide", "How to", "Show me how to create a construction project and prepare its first site records."),
     ("guide", "How to", "Show me how to register an asset, schedule preventive maintenance and close a work order."),
+    ("guide", "How to", "Show me the property workflow from lead and unit selection through reservation, collections and handover."),
+    ("guide", "Documents", "Show me how to create a document template, map its empty fields, preview it, approve it and sign it."),
+    ("guide", "Plans & BIM", "Show me how to upload plans or BIM, place workflow pins and compare drawing revisions."),
+    ("guide", "Spreadsheets", "Show me how to create and collaborate on a spreadsheet inside Majal Documents."),
     ("guide", "Navigation", "Where do I find approvals, documents, drawings, dashboards and user permissions?"),
 ]
+
+WORKFLOW_GUIDE = """
+MAJAL WORKFLOW GUIDE
+
+Construction delivery
+1. Projects > Projects: create the project, client, dates, contract value and team.
+2. Commercial: register tender papers and bids, then establish the approved BOQ and budget.
+3. Engineering: issue drawings by revision, RFIs and submittals through their review workflows.
+4. Majal Field: record daily logs, forms, observations, photos, quantities and offline actions.
+5. Quality & HSE: raise inspections, defects, snags, incidents and corrective actions.
+6. Commercial: control subcontracts, changes, progress claims, retention and exposure.
+7. Closeout: complete testing, approvals, as-built documents and handover records.
+
+Facilities service
+1. Facilities > Locations and Assets: establish the site hierarchy, tags, criticality and warranty data.
+2. Preventive Maintenance: define recurring plans and the responsible team.
+3. Work Orders: triage a request, assign a technician, reserve parts and monitor the SLA.
+4. Field completion: capture labour, parts, readings, evidence and customer confirmation.
+5. Supervisor review: validate the work and close only after required evidence is complete.
+
+Property sales and operations
+1. Property > Developments and Unit Inventory: define buildings, floors, unit types, prices and availability.
+2. Leads & Sales: qualify the lead, arrange a viewing and select an available unit.
+3. Reservation: record the offer, payment plan, documents and approval decision.
+4. Collections: monitor installments, receipts, cheques and overdue follow-up.
+5. Handover: complete inspection, snag closeout, document pack and customer acceptance.
+6. Operations: continue the unit history through lease, owner, maintenance and facility service records where enabled.
+
+Documents, spreadsheets and approvals
+1. Majal Documents > Templates: upload an approved source document and map only its intended empty fields.
+2. Intake: review extracted values; Majal must never write arbitrary models or execute embedded content.
+3. Preview the generated document inside Majal, then route its revision to Majal Approvals and Majal Sign.
+4. Majal Documents > Spreadsheets: create a collaborative workbook; use Controlled Sheets when a frozen revision and audit trail are required.
+5. Majal Approvals: use Waiting for me, review the source record, then approve, reject, delegate or request changes according to role.
+
+Plans and BIM
+1. Upload a PDF plan or IFC model against its project and revision.
+2. Open the viewer, select a sheet/storey and place a pin linked to an RFI, defect, task, asset or work order.
+3. Use drawing revision comparison for two approved revisions; keep superseded revisions read-only.
+4. BIM links remain record references: geometry does not replace the contractual source record.
+"""
 
 
 class MajalAiConversation(models.Model):
@@ -63,6 +112,7 @@ class MajalAiConversation(models.Model):
             ("portfolio", "Portfolio"),
             ("construction", "Construction"),
             ("facilities", "Facilities"),
+            ("property", "Property"),
             ("guide", "System Guide"),
         ],
         required=True,
@@ -104,6 +154,16 @@ class MajalAiConversation(models.Model):
             limit=80,
             order="name",
         )
+        developments = []
+        if (
+            "majal.development" in self.env
+            and self.env["majal.development"].check_access_rights(
+                "read", raise_exception=False
+            )
+        ):
+            developments = self.env["majal.development"].search_read(
+                [], ["name"], limit=80, order="name"
+            )
         conversations = self.search(
             [("user_id", "=", self.env.user.id), ("active", "=", True)],
             limit=30,
@@ -112,6 +172,7 @@ class MajalAiConversation(models.Model):
             "providers": [provider._sanitized() for provider in providers],
             "projects": projects,
             "equipment": equipment,
+            "developments": developments,
             "conversations": [
                 {
                     "id": conversation.id,
@@ -167,7 +228,7 @@ class MajalAiConversation(models.Model):
             raise ValidationError(_("Enter a question for Majal Intelligence."))
         if len(question) > 8000:
             raise ValidationError(_("Questions are limited to 8,000 characters."))
-        if scope not in {"portfolio", "construction", "facilities", "guide"}:
+        if scope not in {"portfolio", "construction", "facilities", "property", "guide"}:
             raise ValidationError(_("Unknown Majal Intelligence scope."))
 
         provider = self.env["majal.ai.provider"].sudo().browse(int(provider_id)).exists()
@@ -284,7 +345,7 @@ class MajalAiConversation(models.Model):
             lines.append(f"[{number}] {label}: {summary}")
 
         if self.scope == "guide":
-            return self._navigation_context(), []
+            return f"{self._navigation_context()}\n\n{WORKFLOW_GUIDE}", []
 
         if self.project_id:
             self.project_id.check_access_rights("read")
@@ -346,6 +407,28 @@ class MajalAiConversation(models.Model):
             )
             for request in requests:
                 add_record(request, self._record_summary(request))
+
+        if self.scope in {"portfolio", "property"}:
+            property_models = [
+                "majal.development",
+                "majal.unit",
+                "majal.lead",
+                "majal.reservation",
+                "majal.payment.installment",
+                "majal.handover",
+                "majal.property.document",
+            ]
+            for model_name in property_models:
+                if model_name not in self.env:
+                    continue
+                model = self.env[model_name]
+                if not model.check_access_rights("read", raise_exception=False):
+                    continue
+                records = model.search(
+                    [], limit=10, order="write_date desc"
+                )
+                for record in records:
+                    add_record(record, self._record_summary(record))
 
         if not lines:
             lines.append("No readable Majal records were found for this scope.")

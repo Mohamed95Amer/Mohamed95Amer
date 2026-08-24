@@ -12,6 +12,7 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 _logger = logging.getLogger(__name__)
 
 LOCAL_PROVIDER_CODES = {"local", "local_coder"}
+DEMO_PROVIDER_CODE = "demo"
 
 
 PROVIDER_SPECS = {
@@ -57,6 +58,34 @@ PROVIDER_SPECS = {
         "style": "anthropic",
         "requires_key": True,
     },
+    "deepseek": {
+        "label": "DeepSeek",
+        "endpoint": "https://api.deepseek.com/chat/completions",
+        "model": "deepseek-v4-flash",
+        "style": "openai",
+        "requires_key": True,
+    },
+    "mistral": {
+        "label": "Mistral AI",
+        "endpoint": "https://api.mistral.ai/v1/chat/completions",
+        "model": "mistral-small-latest",
+        "style": "openai",
+        "requires_key": True,
+    },
+    "groq": {
+        "label": "Groq",
+        "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+        "model": "openai/gpt-oss-120b",
+        "style": "openai",
+        "requires_key": True,
+    },
+    "demo": {
+        "label": "Majal Demo Guide",
+        "endpoint": "https://demo.majal.invalid/v1",
+        "model": "guided-demo",
+        "style": "demo",
+        "requires_key": False,
+    },
 }
 
 
@@ -74,6 +103,10 @@ class MajalAiProvider(models.Model):
             ("openai", "OpenAI"),
             ("gemini", "Gemini"),
             ("anthropic", "Claude"),
+            ("deepseek", "DeepSeek"),
+            ("mistral", "Mistral AI"),
+            ("groq", "Groq"),
+            ("demo", "Majal Demo Guide"),
         ],
         required=True,
         index=True,
@@ -133,6 +166,10 @@ class MajalAiProvider(models.Model):
                 provider.provider_note = _(
                     "Private local processing through Ollama. Keep the endpoint on a trusted private network."
                 )
+            elif provider.code == DEMO_PROVIDER_CODE:
+                provider.provider_note = _(
+                    "No-key guided answers for synthetic demonstration data. It never sends data outside Majal."
+                )
             else:
                 provider.provider_note = _(
                     "Bring your own API key. Provider usage charges and terms apply."
@@ -165,11 +202,18 @@ class MajalAiProvider(models.Model):
                 provider.code not in LOCAL_PROVIDER_CODES
                 or provider._local_runtime_enabled()
             )
+            demo_ready = (
+                provider.code != DEMO_PROVIDER_CODE
+                or provider.env["ir.config_parameter"].sudo().get_param(
+                    "majal.demo.installed"
+                ) == "True"
+            )
             provider.is_ready = bool(
                 provider.enabled
                 and provider.endpoint
                 and provider.model_name
                 and local_runtime_ready
+                and demo_ready
                 and (has_key or not spec.get("requires_key"))
             )
 
@@ -357,6 +401,8 @@ class MajalAiProvider(models.Model):
         api_key = self._get_api_key() if self.requires_key else False
         style = PROVIDER_SPECS[self.code]["style"]
         try:
+            if style == "demo":
+                return self._request_demo(messages)
             if style == "gemini":
                 return self._request_gemini(messages, system_prompt, api_key)
             if style == "anthropic":
@@ -406,12 +452,12 @@ class MajalAiProvider(models.Model):
                 # Ollama otherwise spends a large part of the response budget
                 # on hidden reasoning before returning user-visible content.
                 payload["reasoning_effort"] = "low"
-        elif self.code == "kimi":
+        elif self.code in {"kimi", "openai"}:
             payload.update({"temperature": 0.2, "max_completion_tokens": 1600})
         else:
-            # Current OpenAI reasoning models use max_completion_tokens and
-            # choose their own sampling behavior unless explicitly configured.
-            payload["max_completion_tokens"] = 1600
+            # DeepSeek, Mistral and Groq expose OpenAI-compatible endpoints
+            # but retain the broadly supported max_tokens parameter.
+            payload.update({"temperature": 0.2, "max_tokens": 1600})
         headers = {"Content-Type": "application/json"}
         if api_key:
             headers["Authorization"] = f"Bearer {api_key}"
@@ -431,6 +477,36 @@ class MajalAiProvider(models.Model):
             "input_tokens": usage.get("prompt_tokens", 0),
             "output_tokens": usage.get("completion_tokens", 0),
             "total_tokens": usage.get("total_tokens", 0),
+        }
+
+    def _request_demo(self, messages):
+        """Return an honest no-network guide for the synthetic demo.
+
+        This is deliberately not presented as a generative model.  It gives
+        evaluators a useful answer even when the owner has not connected a
+        paid provider, while keeping all data on the Majal server.
+        """
+        question = (messages[-1].get("content") or "").split(
+            "\n\nMAJAL CONTEXT:", 1
+        )[0].strip()
+        content = _(
+            "Majal Demo Guide is running in private guided mode.\n\n"
+            "For **%(question)s**:\n"
+            "1. Use the relevant workspace path shown in the System Guide.\n"
+            "2. Open the supplied synthetic record and review its source fields.\n"
+            "3. Follow its approval or operational stage; Majal will not approve, "
+            "post, sign or close it for you.\n"
+            "4. For a record-specific analysis with citations, connect a provider "
+            "in Intelligence Configuration.\n\n"
+            "Try the guided Construction, Facilities, Property, Documents, Plans, "
+            "BIM or Approvals prompts below.",
+            question=question or _("your request"),
+        )
+        return {
+            "content": content,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "total_tokens": 0,
         }
 
     def _request_gemini(self, messages, system_prompt, api_key):

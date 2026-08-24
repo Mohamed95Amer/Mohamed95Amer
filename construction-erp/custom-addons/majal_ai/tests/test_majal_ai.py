@@ -15,6 +15,7 @@ class TestMajalAi(TransactionCase):
         cls.local = cls.env.ref("majal_ai.provider_local")
         cls.local_coder = cls.env.ref("majal_ai.provider_local_coder")
         cls.kimi = cls.env.ref("majal_ai.provider_kimi")
+        cls.demo = cls.env.ref("majal_ai.provider_demo")
         cls.user_a = cls.env["res.users"].create(
             {
                 "name": "AI User A",
@@ -50,7 +51,10 @@ class TestMajalAi(TransactionCase):
         data = self.env["majal.ai.conversation"].bootstrap()
         self.assertEqual(
             {provider["code"] for provider in data["providers"]},
-            {"local", "local_coder", "kimi", "openai", "gemini", "anthropic"},
+            {
+                "local", "local_coder", "kimi", "openai", "gemini",
+                "anthropic", "deepseek", "mistral", "groq", "demo",
+            },
         )
         for provider in data["providers"]:
             self.assertNotIn("endpoint", provider)
@@ -74,8 +78,11 @@ class TestMajalAi(TransactionCase):
     def test_prompt_library_includes_scenarios_and_role_aware_guide(self):
         data = self.env["majal.ai.conversation"].with_user(self.user_a).bootstrap()
         scopes = {item["scope"] for item in data["suggestions"]}
-        self.assertEqual(scopes, {"portfolio", "construction", "facilities", "guide"})
-        self.assertGreaterEqual(len(data["suggestions"]), 12)
+        self.assertEqual(
+            scopes,
+            {"portfolio", "construction", "facilities", "property", "guide"},
+        )
+        self.assertGreaterEqual(len(data["suggestions"]), 20)
         guide = self.env["majal.ai.conversation"].with_user(self.user_a).create(
             {
                 "name": "How to use Majal",
@@ -86,7 +93,44 @@ class TestMajalAi(TransactionCase):
         context, citations = guide._build_context()
         self.assertIn("MAJAL ROLE-AWARE NAVIGATION GUIDE", context)
         self.assertIn("Majal Intelligence", context)
+        self.assertIn("Property sales and operations", context)
+        self.assertIn("Spreadsheets", context)
         self.assertEqual(citations, [])
+
+    def test_internal_users_land_on_intelligence_and_explicit_home_is_kept(self):
+        intelligence = self.env.ref("majal_ai.action_ai_workspace")
+        user = self.env["res.users"].create(
+            {
+                "name": "Default Intelligence Home",
+                "login": "default-intelligence-home",
+                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+            }
+        )
+        self.assertEqual(user.action_id, intelligence)
+        explicit = self.env["res.users"].create(
+            {
+                "name": "Explicit Home",
+                "login": "explicit-intelligence-home",
+                "action_id": self.env.ref("base.action_res_users").id,
+                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+            }
+        )
+        self.assertEqual(explicit.action_id, self.env.ref("base.action_res_users"))
+
+    def test_demo_guide_is_network_free_and_only_ready_in_demo_database(self):
+        self.demo.enabled = True
+        parameter = self.env["ir.config_parameter"].sudo()
+        parameter.set_param("majal.demo.installed", "True")
+        self.demo.invalidate_recordset(["is_ready"])
+        with patch(
+            "odoo.addons.majal_ai.models.provider.requests.post"
+        ) as request:
+            result = self.demo._request(
+                [{"role": "user", "content": "Show the property workflow"}],
+                "system",
+            )
+        request.assert_not_called()
+        self.assertIn("private guided mode", result["content"])
 
     def test_hosted_key_is_encrypted_and_never_computed_back(self):
         master_key = Fernet.generate_key().decode()

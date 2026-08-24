@@ -63,4 +63,46 @@
         <field name="enabled" eval="False"/>
         <field name="sequence">40</field>
     </record>
+
+    <record id="provider_deepseek" model="majal.ai.provider">
+        <field name="name">DeepSeek</field>
+        <field name="code">deepseek</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.deepseek.com/chat/completions</field>
+        <field name="model_name">deepseek-v4-flash</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="provider_mistral" model="majal.ai.provider">
+        <field name="name">Mistral AI</field>
+        <field name="code">mistral</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.mistral.ai/v1/chat/completions</field>
+        <field name="model_name">mistral-small-latest</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">60</field>
+    </record>
+
+    <record id="provider_groq" model="majal.ai.provider">
+        <field name="name">Groq</field>
+        <field name="code">groq</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.groq.com/openai/v1/chat/completions</field>
+        <field name="model_name">openai/gpt-oss-120b</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">70</field>
+    </record>
+
+    <record id="provider_demo" model="majal.ai.provider">
+        <field name="name">Majal Demo Guide</field>
+        <field name="code">demo</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://demo.majal.invalid/v1</field>
+        <field name="model_name">guided-demo</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">3</field>
+        <field name="daily_request_limit">500</field>
+        <field name="monthly_token_limit">0</field>
+    </record>
 </odoo>
