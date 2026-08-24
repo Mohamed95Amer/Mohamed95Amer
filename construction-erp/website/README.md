@@ -95,6 +95,10 @@ python3 -m http.server 8080 --directory construction-erp/website
 - **One stylesheet, custom-property driven.** Colours live in `:root` and are
   overridden wholesale in a `prefers-color-scheme: dark` block. Both modes are
   chosen, not derived — do not add a hard-coded colour outside the token block.
+- **The Majal palette is canonical.** Deep Teal `#02496D`, Teal `#057B8A`,
+  Aqua `#0B9C9A`, Mid Teal `#05617B`, Soft Background `#F3F8F8`, Dark Text
+  `#123844` and Pure White `#FFFFFF` are the public brand colours. Functional
+  success and danger states may use their dedicated semantic tokens.
 - **Logical properties.** `padding-inline`, `border-inline-start`,
   `margin-inline-end`, `text-align: start`. The product is bilingual and the
   site may follow; nothing here assumes left-to-right.

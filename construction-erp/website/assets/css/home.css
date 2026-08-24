@@ -5,10 +5,9 @@
  * stylesheet with a second one layered on top is where spacing quietly
  * cancels itself out.
  *
- * The palette is a drafting room rather than a brand deck — warm paper, ink
- * dark enough to sit a rendered model on, and an amber pulled from site
- * safety equipment rather than a generic corporate gold, spent once per
- * screen instead of scattered. */
+ * Majal's teal system carries the interface: deep teal anchors navigation,
+ * aqua identifies action, and a soft blue-white keeps dense product imagery
+ * and operational content calm and readable. */
 
 @font-face {
   font-family: "Big Shoulders";
@@ -27,21 +26,18 @@
 }
 
 :root {
-  /* Same "working drawings" palette as majal.css — warm paper, a confident
-     teal, an amber pulled from site safety equipment rather than a generic
-     corporate gold — so the home page and the inner pages read as one site. */
-  --ink:        #12181c;
-  --ink-soft:   #1e2a2f;
-  --paper:      #f7f4ee;
-  --surface:    #ffffff;
-  --teal:       #0e7a79;
-  --teal-deep:  #0a5f5e;
-  --gold:       #d97a1f;
-  --rule:       #e1d9c9;
-  --text:       #211d17;
-  --muted:      #6b6156;
-  --on-ink:     #efe7d8;
-  --on-ink-dim: #b3a897;
+  --ink:        #02496D;
+  --ink-soft:   #05617B;
+  --paper:      #F3F8F8;
+  --surface:    #FFFFFF;
+  --teal:       #057B8A;
+  --teal-deep:  #02496D;
+  --gold:       #0B9C9A;
+  --rule:       #D6E6E8;
+  --text:       #123844;
+  --muted:      #52717A;
+  --on-ink:     #FFFFFF;
+  --on-ink-dim: #CDE5E8;
 
   --display: "Big Shoulders", "Arial Narrow", system-ui, sans-serif;
   --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -52,22 +48,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
-    --paper:   #171310;
-    --surface: #221c15;
-    --text:    #efe7d8;
-    --muted:   #b3a897;
-    --rule:    #3a3226;
-    --teal:    #5fc2be;
-    --ink:     #0c1012;
+    --paper:   #012F49;
+    --surface: #02496D;
+    --text:    #FFFFFF;
+    --muted:   #B8D5D8;
+    --rule:    #05617B;
+    --teal:    #36C5C1;
+    --ink:     #01283E;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #171310; --surface: #221c15; --text: #efe7d8;
-  --muted: #b3a897; --rule: #3a3226; --teal: #5fc2be; --ink: #0c1012;
+  --paper: #012F49; --surface: #02496D; --text: #FFFFFF;
+  --muted: #B8D5D8; --rule: #05617B; --teal: #36C5C1; --ink: #01283E;
 }
 :root[data-theme="light"] {
-  --paper: #f7f4ee; --surface: #ffffff; --text: #211d17;
-  --muted: #6b6156; --rule: #e1d9c9; --teal: #0e7a79; --ink: #12181c;
+  --paper: #F3F8F8; --surface: #FFFFFF; --text: #123844;
+  --muted: #52717A; --rule: #D6E6E8; --teal: #057B8A; --ink: #02496D;
 }
 
 * { box-sizing: border-box; }
@@ -112,24 +108,18 @@ a { color: var(--teal-deep); }
   display: flex; align-items: center; gap: .6rem;
 }
 
-/* The mark: three floor plates in axonometric projection. Inline SVG rather
-   than an <img> so it takes its colour from the surface it sits on. */
 .logo-mark {
-  width: 1.7rem; height: 1.7rem; flex: 0 0 auto; overflow: visible;
+  width: 2rem; height: 2rem; flex: 0 0 auto; border-radius: .52rem;
+  box-shadow: 0 5px 16px rgba(2, 73, 109, .24);
 }
-.logo-mark .p3 { fill: currentColor; opacity: .4; }
-.logo-mark .p2 { fill: currentColor; opacity: .7; }
-.logo-mark .p1 { fill: var(--gold); }
-.logo-mark .p1, .logo-mark .p2, .logo-mark .p3 { transition: opacity .2s ease; }
-.brand:hover .logo-mark .p2, .brand:hover .logo-mark .p3 { opacity: 1; }
 .topnav { margin-left: auto; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
 .topnav a {
   color: var(--on-ink-dim); text-decoration: none;
   font-size: .88rem; letter-spacing: .02em; padding: .46rem .7rem; border-radius: 999px;
 }
 .topnav a:hover, .topnav a[aria-current] { color: var(--on-ink); background: rgba(255, 255, 255, .08); }
-.topnav a:last-child { color: #21170a; background: var(--gold); font-weight: 700; }
-.topnav a:last-child:hover { color: #21170a; background: #e8934a; }
+.topnav a:last-child { color: #FFFFFF; background: var(--teal); font-weight: 700; }
+.topnav a:last-child:hover { color: #FFFFFF; background: var(--teal-deep); }
 
 /* ---- mobile nav toggle ------------------------------------------------ */
 
@@ -178,7 +168,7 @@ a { color: var(--teal-deep); }
   padding: .65rem 1rem; text-align: center;
   font-size: .92rem;
 }
-.promo-banner strong { color: var(--gold); }
+.promo-banner strong { color: #FFFFFF; }
 .promo-banner a.btn-quiet {
   font: 700 .82rem/1 var(--body); letter-spacing: .02em;
   padding: .4rem .85rem; text-decoration: none;
@@ -214,7 +204,7 @@ a { color: var(--teal-deep); }
   background:
     linear-gradient(rgba(35, 96, 99, .08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(35, 96, 99, .08) 1px, transparent 1px),
-    #dfe6e3;
+    #D6E6E8;
   background-size: 2.5rem 2.5rem;
 }
 .hero-figure::after {
@@ -238,7 +228,7 @@ a { color: var(--teal-deep); }
 }
 .hero-visual-note span {
   font: 700 .68rem/1 var(--body); letter-spacing: .14em;
-  text-transform: uppercase; color: var(--gold);
+  text-transform: uppercase; color: #FFFFFF;
 }
 .hero-visual-note strong { font-size: .92rem; }
 /* No fade across the joining edge: the viewer's own background is light, so
@@ -253,8 +243,9 @@ a { color: var(--teal-deep); }
 .eyebrow {
   font: 700 .78rem/1 var(--body);
   letter-spacing: .18em; text-transform: uppercase;
-  color: var(--gold); margin: 0 0 1rem;
+  color: var(--teal-deep); margin: 0 0 1rem;
 }
+.hero .eyebrow { color: #FFFFFF; }
 .hero h1 {
   font: 700 clamp(2.6rem, 1.4rem + 5vw, 5rem)/0.94 var(--display);
   letter-spacing: -.005em; text-transform: uppercase;
@@ -276,9 +267,9 @@ a { color: var(--teal-deep); }
 }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
-.btn-primary { background: var(--gold); color: #21170a; }
+.btn-primary { background: var(--teal); color: #FFFFFF; }
 .btn-primary:hover {
-  background: #e8934a;
+  background: var(--teal-deep);
   box-shadow: 0 6px 18px color-mix(in srgb, var(--gold) 45%, transparent);
 }
 .btn-ghost { border-color: rgba(255, 255, 255, .35); color: var(--on-ink); }
@@ -330,7 +321,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 .compare figure { margin: 0; }
 .compare img {
   width: 100%; aspect-ratio: 8 / 7; object-fit: contain;
-  background: #efe9dd; border: 1px solid rgba(255, 255, 255, .14);
+  background: #E5F1F2; border: 1px solid rgba(255, 255, 255, .14);
 }
 .compare figcaption {
   margin-top: .7rem; font-size: .85rem; color: var(--on-ink-dim);
@@ -342,7 +333,7 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
   background: rgba(255, 255, 255, .1); color: var(--on-ink);
   flex: 0 0 auto;
 }
-.tagword.is-after { background: var(--gold); color: #21170a; }
+.tagword.is-after { background: var(--gold); color: #123844; }
 
 /* ---- capability stories: real screens at a readable size ------------- */
 
@@ -362,11 +353,11 @@ section { padding: clamp(3rem, 6vw, 5.5rem) 0; }
 .card:hover {
   transform: translateY(-2px);
   border-color: color-mix(in srgb, var(--teal) 45%, var(--rule));
-  box-shadow: 0 2px 4px rgba(18, 14, 8, .06), 0 16px 36px rgba(18, 14, 8, .12);
+  box-shadow: 0 2px 4px rgba(2, 73, 109, .06), 0 16px 36px rgba(2, 73, 109, .12);
 }
 .card-media {
   position: relative; display: block; overflow: hidden;
-  color: var(--on-ink); background: #e8eeec; text-decoration: none;
+  color: var(--on-ink); background: #E5F1F2; text-decoration: none;
   border-inline-end: 1px solid var(--rule);
 }
 .card:nth-child(even) .card-media { order: 2; border-inline-end: 0; border-inline-start: 1px solid var(--rule); }
@@ -533,7 +524,7 @@ details.more p {
 .footer-note {
   margin-top: 2.5rem; padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, .1);
-  color: #9a8f7e; max-width: 60ch;
+  color: var(--on-ink-dim); max-width: 60ch;
 }
 
 @media (prefers-reduced-motion: reduce) {

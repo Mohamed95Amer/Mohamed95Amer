@@ -2,19 +2,21 @@
 
 ## The logo
 
-`majal-mark.svg` is the Majal mark: three floor plates in axonometric
-projection — the drawing convention the product is built around, read as a
-building from the ground up. The bottom two plates recede, the top one carries
-the accent.
+`majal-mark.svg` is the production Majal mark: a white geometric M/building
+inside a rounded square that moves from Majal Aqua through Majal Teal to Majal
+Deep Teal. It is deliberately vector-based so it stays sharp in navigation,
+favicons and high-density displays.
 
-It ships **three** ways, and all three have to stay in step if the mark ever
+Two source forms are kept in this directory and must stay in step if the mark
 changes:
 
 | Where | Form | Why |
 |---|---|---|
-| `majal-mark.svg` | standalone file, literal colours | the brand asset — for anything outside this site |
-| inline `<svg class="logo-mark">` in every page header | `currentColor` + `var(--accent)` | so the mark takes its colour from the bar it sits on and follows the theme |
-| `<link rel="icon">` data URI in every `<head>` | literal colours | favicons cannot reference the stylesheet |
+| `majal-mark.svg` | compact vector with the official gradient | website header, favicon and scalable digital use |
+| `majal-logo-master.png` | transparent, high-resolution raster master | previews and tools that cannot consume SVG |
+
+Every public page references `/assets/img/majal-mark.svg` for both the header
+mark and favicon. Do not paste independent inline copies into page markup.
 
 The wordmark beside it is not a graphic — it is live text set in Big Shoulders
 Bold, uppercase, from `assets/fonts/`.
