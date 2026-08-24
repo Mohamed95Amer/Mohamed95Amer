@@ -458,7 +458,7 @@ def _seed_construction(env, company, users):
                 "revision": "A",
                 "attachment_id": old_attachment.id,
                 "state": "superseded",
-                "issued_for": "information",
+                "issued_for": "tender",
                 "issue_date": today - timedelta(days=45),
             })
 
