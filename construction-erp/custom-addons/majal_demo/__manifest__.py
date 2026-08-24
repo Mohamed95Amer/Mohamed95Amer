@@ -1,7 +1,7 @@
 {
     "name": "Majal Demo Environment",
     "summary": "Opt-in two-company acceptance dataset and role personas",
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.0.1",
     "category": "Majal/Quality Assurance",
     "license": "LGPL-3",
     "depends": [
