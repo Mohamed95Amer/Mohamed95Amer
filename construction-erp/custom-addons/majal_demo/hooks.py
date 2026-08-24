@@ -2,6 +2,11 @@ import base64
 from datetime import timedelta
 
 from odoo import Command, fields
+from odoo.tools import file_open
+
+from .enterprise_demo import seed_enterprise_demo
+from .office_demo import seed_spreadsheets
+from .property_demo import seed_property_demo
 
 
 DEMO_PASSWORD = "MajalDemo!2026"
@@ -10,6 +15,7 @@ DEMO_PASSWORD = "MajalDemo!2026"
 def _company(env, name, **values):
     company = env["res.company"].sudo().search([("name", "=", name)], limit=1)
     if company:
+        company.write(values)
         return company
     return env["res.company"].sudo().create({"name": name, **values})
 
@@ -58,6 +64,82 @@ def _partner(env, name, company, email):
             "email": email,
         }
     )
+
+
+def _enable_demo_intelligence(env, companies, users):
+    env["ir.config_parameter"].sudo().set_param("majal.demo.installed", "True")
+    action = env.ref("majal_ai.action_ai_workspace")
+    spreadsheet_group = env.ref("spreadsheet_oca.group_user")
+    for user in users:
+        user.sudo().write({
+            "action_id": action.id,
+            "groups_id": [Command.link(spreadsheet_group.id)],
+        })
+    for company in companies:
+        provider = env["majal.ai.provider"].sudo().search(
+            [("code", "=", "demo"), ("company_id", "=", company.id)], limit=1
+        )
+        values = {
+            "name": "Majal Demo Guide",
+            "code": "demo",
+            "company_id": company.id,
+            "endpoint": "https://demo.majal.invalid/v1",
+            "model_name": "guided-demo",
+            "enabled": True,
+            "sequence": 3,
+            "daily_request_limit": 500,
+            "monthly_token_limit": 0,
+        }
+        if provider:
+            provider.write(values)
+        else:
+            env["majal.ai.provider"].sudo().create(values)
+
+
+def _seed_approval_cycles(env, company, users):
+    model_id = env["ir.model"]._get_id("construction.boq")
+    rules = [
+        (
+            "Demo project commercial approval",
+            0,
+            500_000,
+            [("Project manager review", users["pm"]), ("Commercial review", users["ops"])],
+        ),
+        (
+            "Demo executive commercial approval",
+            500_000,
+            0,
+            [
+                ("Project manager review", users["pm"]),
+                ("Operations review", users["ops"]),
+                ("Company approval", users["admin"]),
+            ],
+        ),
+    ]
+    for name, amount_from, amount_to, steps in rules:
+        rule = env["construction.approval.rule"].sudo().search(
+            [("name", "=", name), ("company_id", "=", company.id)], limit=1
+        )
+        values = {
+            "name": name,
+            "company_id": company.id,
+            "model_id": model_id,
+            "amount_from": amount_from,
+            "amount_to": amount_to,
+            "step_ids": [
+                Command.create({
+                    "sequence": index * 10,
+                    "name": label,
+                    "user_id": user.id,
+                })
+                for index, (label, user) in enumerate(steps, 1)
+            ],
+        }
+        if rule:
+            values.pop("step_ids")
+            rule.write(values)
+        else:
+            env["construction.approval.rule"].sudo().create(values)
 
 
 def _project(env, name, code, company, manager, members, **values):
@@ -316,10 +398,8 @@ def _seed_construction(env, company, users):
         )
         inspection.action_start()
 
-    minimal_pdf = (
-        b"%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
-        b"2 0 obj<</Type/Pages/Count 0>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF"
-    )
+    with file_open("construction_pin/demo/floorplan.pdf", "rb") as handle:
+        plan_pdf = handle.read()
     for index, (number, title, revision) in enumerate(
         [("A-101", "Level 03 Plan", "C"), ("S-220", "Typical Slab Detail", "B")],
         start=1,
@@ -336,10 +416,16 @@ def _seed_construction(env, company, users):
                     "discipline": "architectural" if index == 1 else "structural",
                 }
             )
+        revision_record = env["construction.drawing.revision"].sudo().search(
+            [("drawing_id", "=", drawing.id), ("revision", "=", revision)], limit=1
+        )
+        if revision_record:
+            revision_record.attachment_id.write({"datas": base64.b64encode(plan_pdf)})
+        else:
             attachment = env["ir.attachment"].sudo().create(
                 {
                     "name": "%s-R%s.pdf" % (number, revision),
-                    "datas": base64.b64encode(minimal_pdf),
+                    "datas": base64.b64encode(plan_pdf),
                     "mimetype": "application/pdf",
                     "res_model": "construction.drawing",
                     "res_id": drawing.id,
@@ -356,6 +442,25 @@ def _seed_construction(env, company, users):
                     "issue_date": today - timedelta(days=index),
                 }
             )
+        if index == 1 and not env["construction.drawing.revision"].sudo().search(
+            [("drawing_id", "=", drawing.id), ("revision", "=", "A")], limit=1
+        ):
+            old_attachment = env["ir.attachment"].sudo().create({
+                "name": f"{number}-RA.pdf",
+                "datas": base64.b64encode(plan_pdf),
+                "mimetype": "application/pdf",
+                "res_model": "construction.drawing",
+                "res_id": drawing.id,
+                "company_id": company.id,
+            })
+            env["construction.drawing.revision"].sudo().create({
+                "drawing_id": drawing.id,
+                "revision": "A",
+                "attachment_id": old_attachment.id,
+                "state": "superseded",
+                "issued_for": "information",
+                "issue_date": today - timedelta(days=45),
+            })
 
     for offset in range(3):
         log_date = today - timedelta(days=offset)
@@ -569,6 +674,39 @@ def _seed_facilities(env, company, users):
                 "job_plan_id": job_plan.id,
             }
             env["maintenance.request"].sudo().create(values)
+    floorplan = env["facility.floorplan"].sudo().search(
+        [("name", "=", "Tower One — Level 3 Operations Plan"), ("location_id", "=", building.id)],
+        limit=1,
+    )
+    if not floorplan:
+        with file_open("facility_floorplan/demo/level3.pdf", "rb") as handle:
+            floorplan = env["facility.floorplan"].sudo().create({
+                "name": "Tower One — Level 3 Operations Plan",
+                "location_id": building.id,
+                "sheet_filename": "tower-one-level-3.pdf",
+                "sheet_file": base64.b64encode(handle.read()),
+                "note": "Synthetic floor plan for asset and work-order pin testing.",
+            })
+    pin_specs = [
+        ("AHU-T1-01", "asset", 0.32, 0.28, assets[:1]),
+        ("Reported ceiling leak", "note", 0.64, 0.55, env["maintenance.equipment"]),
+    ]
+    for name, pin_type, pos_x, pos_y, equipment in pin_specs:
+        values = {
+            "name": name,
+            "floorplan_id": floorplan.id,
+            "pin_type": pin_type,
+            "pos_x": pos_x,
+            "pos_y": pos_y,
+            "note": "Synthetic location-linked field observation.",
+        }
+        if equipment:
+            values["equipment_id"] = equipment.id
+        pin = env["facility.pin"].sudo().search(
+            [("name", "=", name), ("floorplan_id", "=", floorplan.id)], limit=1
+        )
+        if not pin:
+            env["facility.pin"].sudo().create(values)
     return root
 
 
@@ -681,6 +819,55 @@ def _seed_documents(env, company, project, users):
         )
         sheet.with_user(users["pm"]).action_freeze()
 
+    mapped = env["majal.document.template"].sudo().search(
+        [("code", "=", "DEMO-HOT-WORKS-MAP"), ("company_id", "=", company.id)],
+        limit=1,
+    )
+    with file_open("majal_document_intake/demo/client-hot-works-permit.pdf", "rb") as handle:
+        source_pdf = base64.b64encode(handle.read())
+    mapped_values = {
+        "name": "Client Hot Works Permit — Mapped PDF",
+        "code": "DEMO-HOT-WORKS-MAP",
+        "company_id": company.id,
+        "language": "en_US",
+        "document_type": "inspection",
+        "body_html": (
+            "<h3>Client hot works permit</h3>"
+            "<p>The source PDF is retained, previewed in Majal, mapped to "
+            "reviewable form fields and filled again after inspection.</p>"
+        ),
+        "source_filename": "client-hot-works-permit.pdf",
+        "source_file": source_pdf,
+    }
+    if mapped:
+        mapped.write(mapped_values)
+    else:
+        mapped = env["majal.document.template"].sudo().create(mapped_values)
+    if not mapped.mapped_form_template_id:
+        mapped.action_map_source_document()
+        if mapped.intake_upload_id.state == "parsed":
+            mapped.intake_upload_id.action_apply()
+
+    sign_request = env["majal.sign.request"].sudo().search(
+        [
+            ("document_id", "=", document.id),
+            ("version_id", "=", document.current_version_id.id),
+            ("signer_id", "=", users["admin"].id),
+            ("state", "=", "pending"),
+        ],
+        limit=1,
+    )
+    if not sign_request:
+        env["majal.sign.request"].sudo().create(
+            {
+                "document_id": document.id,
+                "version_id": document.current_version_id.id,
+                "signer_id": users["admin"].id,
+                "requested_by_id": users["pm"].id,
+                "note": "Demo signature request for the issued coordination letter.",
+            }
+        )
+
 
 def post_init_hook(env):
     contracting = _company(
@@ -703,13 +890,23 @@ def post_init_hook(env):
         majal_document_phone="+971 4 555 0200",
         majal_document_address="Abu Dhabi, United Arab Emirates — Demo Environment",
     )
+    property_company = _company(
+        env,
+        "Majal Demo Properties LLC",
+        majal_trading_name="Majal Demo Properties",
+        majal_registration_number="DEMO-RE-2026",
+        majal_tax_registration_number="100000000000003",
+        majal_document_email="property@demo.local",
+        majal_document_phone="+971 4 555 0300",
+        majal_document_address="Dubai, United Arab Emirates — Demo Environment",
+    )
 
     owner = _user(
         env, "demo.owner@majal.local", "Demo Platform Owner",
         contracting, "platform_owner", "both"
     )
     owner.sudo().write(
-        {"company_ids": [Command.set([contracting.id, facilities.id])]}
+        {"company_ids": [Command.set([contracting.id, facilities.id, property_company.id])]}
     )
     construction_users = {
         "owner": owner,
@@ -748,9 +945,49 @@ def post_init_hook(env):
             facilities, "field_user", "facilities"
         ),
     }
+    property_users = {
+        "director": _user(
+            env, "demo.property.director@majal.local", "Demo Property Director",
+            property_company, "operations_manager", "real_estate"
+        ),
+        "sales": _user(
+            env, "demo.property.sales@majal.local", "Demo Property Sales Manager",
+            property_company, "manager", "real_estate"
+        ),
+        "ops": _user(
+            env, "demo.property.ops@majal.local", "Demo Property Operations",
+            property_company, "manager", "property_facilities"
+        ),
+        "agent": _user(
+            env, "demo.property.agent@majal.local", "Demo Property Agent",
+            property_company, "field_user", "real_estate"
+        ),
+    }
 
     projects = _seed_construction(env, contracting, construction_users)
     _seed_facilities(env, facilities, facility_users)
     _seed_documents(env, contracting, projects[0], construction_users)
+    _seed_approval_cycles(env, contracting, construction_users)
+    seed_enterprise_demo(env)
+    seed_property_demo(env, property_company, property_users)
+    seed_spreadsheets(
+        env,
+        {
+            "contracting": (contracting, construction_users["pm"] | construction_users["ops"]),
+            "facilities": (facilities, facility_users["manager"] | facility_users["supervisor"]),
+            "property": (property_company, property_users["director"] | property_users["sales"] | property_users["ops"]),
+        },
+    )
+    all_user_ids = {
+        user.id
+        for user in (
+            list(construction_users.values())
+            + list(facility_users.values())
+            + list(property_users.values())
+        )
+    }
+    all_users = env["res.users"].browse(sorted(all_user_ids))
+    _enable_demo_intelligence(
+        env, contracting | facilities | property_company, all_users
+    )
     env["res.users"].sudo()._majal_install_tenant_rules()
-    env["ir.config_parameter"].sudo().set_param("majal.demo.installed", "True")

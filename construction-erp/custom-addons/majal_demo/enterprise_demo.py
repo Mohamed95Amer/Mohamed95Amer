@@ -510,7 +510,6 @@ def seed_enterprise_demo(env):
     env["ir.config_parameter"].sudo().set_param(
         "majal.enterprise_demo.version", VERSION
     )
-    env.cr.commit()
     return {
         "version": VERSION, "projects": len(projects), "tasks": total_tasks,
         "daily_logs": total_logs, "bim_model_id": bim.id,
