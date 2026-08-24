@@ -268,5 +268,6 @@ dialog input, dialog select, dialog textarea {
 }
 .mf-back:hover { background: rgba(255, 255, 255, .22); }
 .mf-back[hidden] { display: none; }
-/* The glyph points the way the language runs. */
-[dir="rtl"] .mf-back { transform: scaleX(-1); }
+/* Keep the label readable in RTL; only the directional glyph changes. */
+[dir="rtl"] .mf-back { transform: none; }
+[dir="rtl"] .mf-back > span:first-child { transform: rotate(180deg); }

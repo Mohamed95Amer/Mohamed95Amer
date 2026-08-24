@@ -22,9 +22,11 @@
                     <button id="backButton" class="mf-back" type="button"
                             aria-label="Back" hidden="hidden">←</button>
                     <div>
-                        <a class="mf-back" href="/app" aria-label="Back to Majal">
+                        <a class="mf-back" href="/app"
+                           t-att-aria-label="'العودة إلى Majal' if is_arabic else 'Back to Majal'">
                             <span aria-hidden="true">←</span>
-                            <span>Back to Majal</span>
+                            <span t-if="is_arabic">العودة إلى Majal</span>
+                            <span t-else="">Back to Majal</span>
                         </a>
                         <span class="mf-kicker">MAJAL FIELD</span>
                         <h1>Good work, <t t-esc="user_name"/></h1>
