@@ -18,7 +18,10 @@ class ResUsers(models.Model):
                 and not user.share
                 and user.has_group("base.group_user")
             ):
-                user.sudo().action_id = action
+                # ``action_id`` targets the generic ir.actions.actions model.
+                # An ir.actions.client recordset is therefore not a valid
+                # assignment value even though it represents the same row.
+                user.sudo().action_id = action.id
         return users
 
     @api.model
