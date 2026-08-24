@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
+import { ProductImage } from "@/components/ProductImage";
 import { getServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +10,7 @@ export default async function HomePage() {
   const [{ data: products }, { data: vendors }] = await Promise.all([
     supabase
       .from("products")
-      .select("id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, vendor_id")
+      .select("id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, images, vendor_id")
       .eq("product_status", "approved")
       .order("created_at", { ascending: false })
       .limit(6),
@@ -80,10 +81,15 @@ export default async function HomePage() {
           </div>
           <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {(products ?? []).map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="card p-5 hover:border-gold-300 transition">
-                <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>
-                <h3 className="mt-1 font-serif text-xl">{p.name}</h3>
-                <p className="text-sm text-ink-muted">{p.weight_grams}g</p>
+              <Link key={p.id} href={`/products/${p.id}`} className="card overflow-hidden hover:border-gold-300 transition">
+                <div className="aspect-[4/3] w-full overflow-hidden bg-bone-soft">
+                  <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} />
+                </div>
+                <div className="p-5">
+                  <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>
+                  <h3 className="mt-1 font-serif text-xl">{p.name}</h3>
+                  <p className="text-sm text-ink-muted">{p.weight_grams}g</p>
+                </div>
               </Link>
             ))}
             {(products ?? []).length === 0 && (

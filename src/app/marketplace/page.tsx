@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
+import { ProductImage } from "@/components/ProductImage";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, vendor_id, vendors(business_name, emirate)",
+      "id, name, category, karat, weight_grams, images, vendor_id, vendors(business_name, emirate)",
     )
     .eq("product_status", "approved")
     .order("created_at", { ascending: false })
@@ -64,7 +65,11 @@ export default async function MarketplacePage({ searchParams }: SP) {
         {(data ?? []).map((p) => {
           const v = (p.vendors as unknown as { business_name: string; emirate: string } | null);
           return (
-            <Link key={p.id} href={`/products/${p.id}`} className="card p-5 hover:border-gold-300 transition">
+            <Link key={p.id} href={`/products/${p.id}`} className="card overflow-hidden hover:border-gold-300 transition">
+              <div className="aspect-[4/3] w-full overflow-hidden bg-bone-soft">
+                <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} />
+              </div>
+              <div className="p-5">
               <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>
               <h2 className="mt-1 font-serif text-xl">{p.name}</h2>
               <p className="text-sm text-ink-muted">{p.weight_grams}g</p>
@@ -73,6 +78,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
                   Sold by <span className="text-ink font-medium">{v.business_name}</span> · {v.emirate}
                 </p>
               )}
+              </div>
             </Link>
           );
         })}

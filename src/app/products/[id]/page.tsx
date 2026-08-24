@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { LiveProductPrice } from "@/components/LiveProductPrice";
 import { ReserveButton } from "@/components/ReserveButton";
+import { ProductImage } from "@/components/ProductImage";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const { data: product } = await supabase
     .from("products")
     .select(
-      "id, name, description, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, certificate_number, hallmark_info, vendor_id, product_status, vendors(id, business_name, emirate, verification_status)",
+      "id, name, description, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors(id, business_name, emirate, verification_status)",
     )
     .eq("id", params.id)
     .single();
@@ -33,9 +34,13 @@ export default async function ProductPage({ params }: { params: { id: string } }
   return (
     <div className="container-pro grid gap-10 py-10 lg:grid-cols-5">
       <div className="lg:col-span-3 card p-6">
-        <div className="aspect-[4/3] w-full rounded-lg bg-gradient-to-br from-bone via-bone-soft to-bone-deep flex items-center justify-center text-ink-muted">
-          {/* Real product images would be rendered here */}
-          <span className="text-sm">Product image</span>
+        <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-bone-soft">
+          <ProductImage
+            category={product.category}
+            karat={product.karat}
+            name={product.name}
+            images={product.images}
+          />
         </div>
         <h1 className="mt-6 font-serif text-3xl">{product.name}</h1>
         <p className="mt-2 text-sm text-ink-muted">
