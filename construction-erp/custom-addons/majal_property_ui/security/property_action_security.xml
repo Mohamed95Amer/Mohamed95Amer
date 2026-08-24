@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Menus are not a security boundary: an authenticated user can request
-         an ir.actions.client record by id. Keep the Property home and its ten
-         workspace actions unreadable unless the user holds the Property role.
-         The business-model ACLs remain the authoritative data boundary. -->
+    <!-- READ THIS BEFORE COUNTING ON THE RULE BELOW: as of Odoo 18 it does
+         not run, and it cannot be made to run by fixing its domain.
+
+         Every path the web client uses to fetch an action reads as superuser.
+         In addons/web/controllers/action.py the /web/action/load endpoint does
+         `Actions.browse([action_id]).sudo().read(['type'])`, then
+         `request.env[action_type].sudo().browse([action_id])._get_action_dict()`,
+         and ir_actions.py's own `_get_action_dict` does `self.sudo().read()[0]`.
+         An ir.rule on ir.actions.client is bypassed at every one of them.
+         ir.actions.client also has no groups_id field (only act_window and
+         server do), so there is no built-in group gate for this model either.
+
+         What actually keeps Property closed:
+
+           * The menu tree. majal_real_estate.menu_majal_real_estate_root
+             carries groups="majal_real_estate.group_majal_real_estate_user",
+             and Odoo prunes the children of a menu the user cannot see. A user
+             without the Property role has no Property menu at all.
+
+           * The business-model ACLs and record rules. These are the
+             authoritative data boundary and always were. A user who guesses a
+             client action id can render an empty Property shell; every figure
+             inside it is fetched through the ordinary model checks and comes
+             back empty.
+
+         The rule is kept rather than deleted because it costs nothing and
+         would start working if Odoo ever stops sudo-ing that path. It is
+         explicitly NOT load-bearing, and a security review should not record
+         it as a control that is in force. -->
     <record id="rule_property_client_actions" model="ir.rule">
-        <field name="name">Property client actions require Property access</field>
+        <field name="name">Property client actions require Property access (inert on Odoo 18 -- see comment)</field>
         <field name="model_id" ref="base.model_ir_actions_client"/>
         <field name="global" eval="True"/>
         <field name="domain_force">[(1, '=', 1)] if user.has_group('majal_real_estate.group_majal_real_estate_user') else [('tag', 'not in', ['majal_property_ui.property_home', 'construction_ui.workspace.property_portfolio', 'construction_ui.workspace.unit_inventory', 'construction_ui.workspace.reservations', 'construction_ui.workspace.leads', 'construction_ui.workspace.installments', 'construction_ui.workspace.commissions', 'construction_ui.workspace.handovers', 'construction_ui.workspace.leases', 'construction_ui.workspace.rent_collection', 'construction_ui.workspace.unit_requests'])]</field>

@@ -30,6 +30,13 @@ COPY --chown=odoo:odoo construction-erp/custom-addons/ /mnt/custom-addons/
 COPY --chown=odoo:odoo construction-erp/oca-addons/ /mnt/oca-addons/
 COPY --chown=odoo:odoo construction-erp/third-party-addons/ /mnt/third-party-addons/
 COPY --chown=odoo:odoo construction-erp/NOTICE.md /usr/share/doc/majalops/NOTICE.md
+# Baked in so the migration contract travels with the exact image being
+# deployed. update-majal.sh reads it out of the image it is about to run,
+# which makes it impossible to deploy a release whose contract was never
+# read -- and needs no new deploy parameter, so a host running an older
+# ForceCommand keeps working.
+COPY --chown=odoo:odoo construction-erp/release/migration-contract.json \
+     /usr/share/doc/majalops/migration-contract.json
 COPY --chown=odoo:odoo construction-erp/scripts/docker-entrypoint-majal.sh /usr/local/bin/majal-entrypoint
 COPY construction-erp/scripts/fetch-bim-libs.sh /tmp/fetch-bim-libs.sh
 COPY --chown=odoo:odoo infrastructure/docker/platform-entrypoint.sh /usr/local/bin/majal-platform-entrypoint

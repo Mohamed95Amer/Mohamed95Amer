@@ -23,6 +23,23 @@ env_value() {
     local key="$1"
     awk -F= -v key="$key" '$1 == key { sub(/^[^=]*=/, ""); print; exit }' "$ENV_FILE"
 }
+read_migration_flag() {
+    # Read the contract out of the image being deployed, not out of the
+    # checkout on this host -- the host's copy of the repo can be any age, and
+    # the only thing that describes THIS release is the release itself.
+    local out
+    if ! out="$(docker run --rm --entrypoint cat "$TARGET_IMAGE" \
+            /usr/share/doc/majalops/migration-contract.json 2>/dev/null)"; then
+        die "Could not read the migration contract from $TARGET_IMAGE. Refusing to migrate a database against a release that does not declare whether the previous image can still read it."
+    fi
+    local flag
+    flag="$(printf '%s' "$out" | python3 -c 'import json,sys; print(json.load(sys.stdin)["flag"])' 2>/dev/null)" \
+        || die "The migration contract in $TARGET_IMAGE is not readable JSON with a flag."
+    case "$flag" in
+        none|forward-compatible|restore-required) printf '%s' "$flag" ;;
+        *) die "Unknown migration flag '$flag' in $TARGET_IMAGE." ;;
+    esac
+}
 set_env_value() {
     local key="$1" value="$2" source="$3" target="$4"
     awk -v key="$key" -v value="$value" '
@@ -59,7 +76,19 @@ if [[ "$current_image" == "$TARGET_IMAGE" ]]; then
 fi
 
 printf 'Rollback before update: take a Hetzner snapshot and retain %s.\n' "$current_image"
-printf 'This script performs no database migration. Stop if the release is not backward-compatible with the current schema.\n'
+
+# This script DOES migrate the database: the module install and upgrade steps
+# below run `odoo -i` and `odoo -u`, which execute every pending Odoo migration
+# script in the release. It used to print "This script performs no database
+# migration", which was the opposite of the truth and sat directly above the
+# rollback the operator was being asked to rely on.
+migration_flag="$(read_migration_flag)"
+printf 'Release migration contract: %s\n' "$migration_flag"
+case "$migration_flag" in
+    none)                printf 'This release runs no database migration.\n' ;;
+    forward-compatible)  printf 'The previous image can still read a database this release has migrated, so an automatic image rollback stays safe after migration.\n' ;;
+    restore-required)    printf 'WARNING: after migration the previous image can NOT read this database. Recovery from a post-migration failure is restore-from-backup, not image revert; this script will refuse to roll the image back on its own.\n' ;;
+esac
 
 if [[ "$CREATE_BACKUP" == "YES" ]]; then
     COMPOSE_FILE="$COMPOSE_FILE" ENV_FILE="$ENV_FILE" \
@@ -77,8 +106,31 @@ chmod --reference="$ENV_FILE" "$env_tmp"
 chown --reference="$ENV_FILE" "$env_tmp"
 mv "$env_tmp" "$ENV_FILE"
 
+# Set to 1 the moment a step that can execute Odoo migration scripts starts.
+# Before that point the database is untouched and reverting the image is a
+# clean undo; after it, the database has moved and the image is only half the
+# state.
+migrations_ran=0
+
 rollback_on_failure() {
     local message="$1"
+    if [[ "$migrations_ran" == "1" && "$migration_flag" == "restore-required" ]]; then
+        # Refusing on purpose. Reverting the image here would leave the
+        # previous release running against a database this release has already
+        # restructured -- for oca contract 18.0.2.0.0 that means fields moved
+        # to other modules and a deleted view -- and the script would report a
+        # successful rollback while the system quietly could not read its own
+        # data. A restore is the only correct recovery, and only a human can
+        # decide to take one.
+        printf 'ERROR: %s\n' "$message" >&2
+        printf 'REFUSING automatic image rollback: migrations have already run and this release is marked restore-required.\n' >&2
+        printf 'The database is migrated; the previous image cannot read it. Do NOT simply revert MAJAL_IMAGE.\n' >&2
+        printf 'Recover by restoring the backup taken at the start of this run:\n' >&2
+        printf '    %s/restore.sh\n' "$(dirname "$0")" >&2
+        printf 'The new image reference is left in place so the running state matches the database. Previous image was: %s\n' "$current_image" >&2
+        printf 'Environment before this update is retained at %s\n' "$env_backup" >&2
+        exit 1
+    fi
     printf 'ERROR: %s Restoring previous image reference.\n' "$message" >&2
     cp -a "$env_backup" "$ENV_FILE"
     compose up -d --wait --wait-timeout 900 --no-deps "$APP_SERVICE" || true
@@ -120,6 +172,7 @@ fi
 # existing dependent module before loading bridge data that uses its new
 # schema.  Empty by default; ordinary releases keep the shorter path.
 if [[ -n "$pre_install_targets" ]]; then
+    migrations_ran=1
     printf 'Installing prerequisite application modules...\n'
     compose run --rm "$APP_SERVICE" \
         odoo -d "$db_name" -i "$pre_install_targets" --stop-after-init || \
@@ -127,6 +180,7 @@ if [[ -n "$pre_install_targets" ]]; then
 fi
 
 if [[ -n "$pre_upgrade_targets" ]]; then
+    migrations_ran=1
     printf 'Upgrading prerequisite-dependent application modules...\n'
     compose run --rm "$APP_SERVICE" \
         odoo -d "$db_name" -u "$pre_upgrade_targets" --stop-after-init || \
@@ -161,6 +215,7 @@ SQL
 fi
 
 if [[ -n "$uninstalled_modules" ]]; then
+    migrations_ran=1
     printf 'Installing new application modules before upgrading existing modules...\n'
     compose run --rm "$APP_SERVICE" \
         odoo -d "$db_name" -i "$uninstalled_modules" --stop-after-init || \
@@ -168,6 +223,7 @@ if [[ -n "$uninstalled_modules" ]]; then
 fi
 
 if [[ -n "$to_upgrade" ]]; then
+    migrations_ran=1
     printf 'Upgrading existing application modules after dependency installation...\n'
     compose run --rm "$APP_SERVICE" \
         odoo -d "$db_name" -u "$to_upgrade" --stop-after-init || \

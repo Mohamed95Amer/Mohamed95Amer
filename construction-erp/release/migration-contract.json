@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "flag": "restore-required",
+  "modules_with_migrations": [
+    "base_tier_validation",
+    "contract",
+    "date_range",
+    "fieldservice",
+    "helpdesk_mgmt",
+    "helpdesk_mgmt_project",
+    "maintenance_plan",
+    "majal_administration",
+    "majal_ai",
+    "majal_dashboard",
+    "mis_builder"
+  ],
+  "notes": "restore-required because of oca-addons/contract 18.0.2.0.0. That migration is an OCA major-version restructure: it moves a dozen contract.line fields out to contract_line_successor and contract_termination, deletes the contract_template_line_form_view, and removes ir_model rows for four abstract models. Once it has run, the previous image is looking for fields and a view that are no longer where it expects them, so rolling the image back does not roll the database back. Recovery from a failed upgrade is restore-from-backup, not image revert. Every other migration in this release is additive -- the Majal ones write data and install record rules, the remaining OCA ones add columns -- and on their own would have been forward-compatible. Note the trigger: this only fires when upgrading a database whose contract module predates 18.0.2.0.0. A first install on an empty database registers 18.0.2.0.0 directly and runs no migration at all, so the first go-live deployment is not exposed to it."
+}

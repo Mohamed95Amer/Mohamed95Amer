@@ -44,6 +44,13 @@ jobs:
       - name: Compile every Python file
         run: python -m compileall -q custom-addons
 
+      # The contract records a human's judgement about whether the previous
+      # image can still read a database this release has migrated. It is only
+      # worth reading if it cannot go stale, so this fails when a module ships
+      # a migration the contract does not account for.
+      - name: Check the release migration contract
+        run: python3 ../infrastructure/scripts/validate-migration-contract.py
+
       - name: Parse every XML file
         run: |
           python - <<'PY'
