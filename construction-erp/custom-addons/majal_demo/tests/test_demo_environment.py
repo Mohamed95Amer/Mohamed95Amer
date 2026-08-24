@@ -89,7 +89,13 @@ class TestMajalDemoEnvironment(TransactionCase):
         for login, scope in expected.items():
             user = self.env["res.users"].sudo().search([("login", "=", login)], limit=1)
             self.assertEqual(user.majal_industry_scope, scope)
-            self.assertEqual(user.action_id, intelligence)
+            # Compare ids. res.users.action_id is a Many2one to
+            # ir.actions.actions, so it reads back as ir.actions.actions(id,)
+            # while env.ref gives ir.actions.client(id,), and Odoo's
+            # BaseModel.__eq__ compares _name as well as ids. The same
+            # comparison in majal_ai's test was fixed in cf5b512; this is the
+            # second copy of it.
+            self.assertEqual(user.action_id.id, intelligence.id)
         self.assertEqual(
             self.env["project.project"].with_user(
                 self.env["res.users"].sudo().search(
