@@ -6,7 +6,10 @@ umask 077
 COMPOSE_FILE="${COMPOSE_FILE:-/opt/majalops/infrastructure/docker/compose.platform.yml}"
 ENV_FILE="${ENV_FILE:-/etc/majalops/platform.env}"
 CADDYFILE="${CADDYFILE:-/opt/majalops/infrastructure/caddy/Caddyfile}"
-HEALTH_URL="${HEALTH_URL:-https://platform.majalops.com/healthz}"
+# Derived below from this host's own MAJAL_DOMAIN. Hardcoding the
+# platform host meant provisioning staging waited on, and then
+# health-gated against, production.
+HEALTH_URL="${HEALTH_URL:-}"
 HTTPS_READY_TIMEOUT_SECONDS="${HTTPS_READY_TIMEOUT_SECONDS:-180}"
 CONFIRM_INSTALL="${CONFIRM_INSTALL:-NO}"
 LOG_DIR="${LOG_DIR:-/var/log/majalops}"
@@ -34,6 +37,11 @@ trap on_exit EXIT
 [[ "$CONFIRM_INSTALL" == "YES" ]] || die "Set CONFIRM_INSTALL=YES only after the pre-deployment checklist is approved."
 [[ -f "$COMPOSE_FILE" ]] || die "COMPOSE_FILE not found: $COMPOSE_FILE"
 [[ -f "$ENV_FILE" ]] || die "ENV_FILE not found: $ENV_FILE"
+
+if [[ -z "$HEALTH_URL" ]]; then
+    majal_domain="$(env_value MAJAL_DOMAIN)"
+    HEALTH_URL="https://${majal_domain:-platform.majalops.com}/healthz"
+fi
 [[ -f "$CADDYFILE" ]] || die "CADDYFILE not found: $CADDYFILE"
 [[ "$HTTPS_READY_TIMEOUT_SECONDS" =~ ^[0-9]+$ ]] || die "HTTPS_READY_TIMEOUT_SECONDS must be an integer."
 [[ "$(stat -c '%a' "$ENV_FILE")" =~ ^(600|400)$ ]] || die "ENV_FILE must have mode 0600 or 0400."

@@ -8,7 +8,15 @@ ENV_FILE="${ENV_FILE:-/etc/majalops/platform.env}"
 APP_SERVICE="${APP_SERVICE:-majal}"
 PREVIOUS_IMAGE="${PREVIOUS_IMAGE:-}"
 CONFIRM_ROLLBACK="${CONFIRM_ROLLBACK:-NO}"
-HEALTH_URL="${HEALTH_URL:-https://majalops.com/web/health}"
+# Left empty so healthcheck.sh derives it from this host's own
+# MAJAL_DOMAIN. The old default was wrong twice over: it named the
+# production host regardless of which host was being rolled back, and
+# /web/health is not a route this system serves -- the endpoint is
+# /healthz, which Caddy maps to /majal/health. Because this value was
+# always non-empty it also overrode the derivation in healthcheck.sh,
+# so the one check that confirms a rollback actually worked was
+# curling a 404 on an unrelated site.
+HEALTH_URL="${HEALTH_URL:-}"
 LOG_DIR="${LOG_DIR:-/var/log/majalops}"
 LOG_FILE="${LOG_FILE:-${LOG_DIR}/rollback.log}"
 
