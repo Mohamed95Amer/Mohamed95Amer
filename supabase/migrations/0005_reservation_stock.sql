@@ -46,13 +46,20 @@ $$;
 --  status code. SECURITY DEFINER so it can insert regardless of RLS, and
 --  execute is revoked from anon/authenticated — only the service role calls it.
 -- ---------------------------------------------------------------------------
-create or replace function public.claim_reservation(
+-- Dropped first: CREATE OR REPLACE cannot change a function's return type.
+drop function if exists public.claim_reservation(uuid, uuid, integer, timestamptz);
+
+-- Returns SETOF rather than a bare composite so PostgREST always emits a row
+-- collection, which is what supabase-js .single() expects. A bare composite
+-- return is handled inconsistently across the two and is not worth the risk on
+-- the reservation path.
+create function public.claim_reservation(
   p_customer_user_id uuid,
   p_product_id uuid,
   p_quantity integer,
   p_expires_at timestamptz
 )
-returns public.reservations
+returns setof public.reservations
 language plpgsql
 security definer
 set search_path = public
@@ -102,7 +109,8 @@ begin
   )
   returning * into v_reservation;
 
-  return v_reservation;
+  return next v_reservation;
+  return;
 end
 $$;
 
