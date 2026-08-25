@@ -12,7 +12,7 @@ export default function TrustPage() {
     <div className="container-pro py-12">
       <h1 className="font-serif text-4xl">Trust & verification</h1>
       <p className="text-ink-muted mt-2 max-w-2xl">
-        Buying gold should be transparent. Here's how we keep it that way.
+        Buying gold should be transparent. Here&apos;s how we keep it that way.
       </p>
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         {items.map(([t, d]) => (

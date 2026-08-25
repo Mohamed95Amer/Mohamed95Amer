@@ -142,6 +142,41 @@ always matches the title.
 
 ---
 
+## 3b. Demo data currently in the database
+
+The project is seeded so every tab has content — it is a populated demo, not an
+empty shell.
+
+| | |
+|---|---|
+| Listings | 12 approved, all 12 with photos, covering 9 of the 10 categories |
+| Vendors | 5 approved across Dubai, Abu Dhabi and Sharjah |
+| Price ticks | 20, spanning ~2 hours |
+| Reservations | 3 — pending, paid, expired (so account/vendor/admin order views populate) |
+| Audit log | 5 entries |
+
+Demo logins exist for each role (`admin@getgold.app`, `vendor1..4@example.ae`,
+`demo@getgold.app`). Passwords were set for the four `vendorN@example.ae`
+accounts as `goldhub-demo-N`; the `@getgold.app` accounts predate this work and
+their passwords are not known here.
+
+**Two caveats on the demo data:**
+
+1. **Photos are hosted on a third-party CDN, not in your bucket.** They were
+   generated rather than photographed, and `products.images` holds absolute
+   CloudFront URLs. They render fine, but if those links expire the listings
+   fall back to the SVG drawings. There was no storage-upload tool available and
+   the network policy blocked fetching the files to copy them across. Re-upload
+   through the vendor form to move them into `product-images`.
+2. **Nobody has visually confirmed the photos match their listings.** They were
+   generated blind — the same egress policy blocks viewing them. Check before
+   showing this to anyone who matters.
+
+The price ticks are labelled `source: 'manual'`, not a provider id, because they
+were entered at the real market rate rather than fetched. On deploy the
+refresh-on-read path writes a real `goldapicom` tick over them within 10s — that
+flip is the signal live pricing works.
+
 ## 4. What is verified, and how
 
 | Area | Status | Evidence |
@@ -152,6 +187,9 @@ always matches the title.
 | Pricing math | Checked by hand | 277.49 × 0.916 × 12.5 + 250 + 50 = AED 3,477.26 |
 | Typecheck / build | Clean | `npx tsc --noEmit`, `npm run build` |
 | Internal links | No dead routes | all 29 routes cross-checked against every `href` |
+| Lint | Clean | `npx next lint` — an eslint config was added; there was none, so lint used to drop you into an interactive prompt |
+| Secrets | None committed | scanned for JWTs/service-role keys; `.env.local` is gitignored |
+| Stock accounting | Correct against demo data | bangle shows 2 available of 3, one held by a pending reservation |
 | Live gold fetch | **NOT VERIFIED** | no network egress in the build environment |
 | `available_quantity` RPC round trip | **NOT VERIFIED** | Supabase MCP dropped before it could run |
 

@@ -10,7 +10,7 @@ export default function LoginPage({ searchParams }: { searchParams: { next?: str
         <LoginForm next={searchParams.next} error={searchParams.error} />
       </div>
       <p className="text-sm text-ink-muted mt-4">
-        Don't have an account? <Link href="/register" className="underline">Create one</Link>
+        Don&apos;t have an account? <Link href="/register" className="underline">Create one</Link>
       </p>
     </div>
   );

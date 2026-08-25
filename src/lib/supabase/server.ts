@@ -5,7 +5,6 @@ import { env } from "@/lib/env";
 
 // Until codegen is wired, use a permissive client type so queries return
 // usable shapes rather than `never`.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyClient = SupabaseClient<any, "public", any>;
 
 /**
