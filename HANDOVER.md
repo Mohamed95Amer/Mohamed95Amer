@@ -41,14 +41,24 @@ npx vercel --prod          # select the EXISTING "goldhub" project
 Selecting the existing project matters: it already holds the Supabase credentials. A fresh project
 would need all four required vars set by hand.
 
-**The Cloudflare Pages check on PRs fails, and that is expected.** The repo has a Cloudflare Pages
-integration that auto-detects Next.js and runs a bare `next build`, which cannot produce something
-Pages can serve. This app targets Vercel: 13 API routes are pinned to `runtime = "nodejs"` (Pages
-needs the Edge runtime via `@cloudflare/next-on-pages`, which is not installed), and the crons in
-`vercel.json` are Vercel-specific. Making that check green means porting platforms, not fixing code.
-The decision taken was to stay on Vercel and disconnect the Pages integration
-(Cloudflare dashboard → Pages → the `mohamed95amer` project → Settings → disconnect Git). Until
-someone does that, treat a red Pages check as noise — every other check is green.
+**The Cloudflare Pages check on PRs fails, and it is unrelated to this app.** The repo is shared by
+several unrelated projects, and the Cloudflare Pages project `mohamed95amer` is configured for a
+different one:
+
+```
+Build command:  exit 0
+Build output:   construction-erp/website
+Production branch: codex/odoo19-ui-enhancement
+```
+
+It runs no build and serves a static directory. The GoldHub branches do not contain
+`construction-erp/website`, so the deploy fails on a missing output directory. That project serves
+`majalops.com` from the `codex/odoo19-ui-enhancement` branch, so **do not disconnect its Git
+integration** — that would break a live site. The fix applied was Settings → Branch control →
+Preview branch → **None**, which stops preview builds on every branch while production keeps
+deploying.
+
+GoldHub itself deploys to Vercel and has no Cloudflare dependency.
 
 **Repo/deploy mismatch to be aware of.** The Vercel projects (`goldhub`, `goldhub.ae` under team
 `mohamed95amers-projects`) are git-linked to `Mohamed95Amer/goldhub` — a *different* repo that this
