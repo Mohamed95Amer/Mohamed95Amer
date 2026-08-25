@@ -7,6 +7,8 @@
  * The fallback is inline SVG — no remote image host, nothing to break.
  */
 
+import { publicStorageUrl } from "@/lib/storage";
+
 export type ProductCategory =
   | "ring"
   | "necklace"
@@ -88,14 +90,25 @@ export function ProductImage({
   );
 }
 
+/**
+ * First usable photo, expanded from a storage path to a public URL.
+ * Accepts a bare string or an object with a `path`/`url` field, since the
+ * column is jsonb and has held both shapes.
+ */
 function firstPhoto(images: unknown): string | null {
   if (!Array.isArray(images)) return null;
   for (const entry of images) {
-    if (typeof entry === "string" && entry.trim()) return entry;
-    if (entry && typeof entry === "object") {
-      const url = (entry as { url?: unknown }).url;
-      if (typeof url === "string" && url.trim()) return url;
+    let raw: string | null = null;
+    if (typeof entry === "string") {
+      raw = entry;
+    } else if (entry && typeof entry === "object") {
+      const o = entry as { path?: unknown; url?: unknown };
+      if (typeof o.path === "string") raw = o.path;
+      else if (typeof o.url === "string") raw = o.url;
     }
+    if (!raw?.trim()) continue;
+    const resolved = publicStorageUrl(raw);
+    if (resolved) return resolved;
   }
   return null;
 }

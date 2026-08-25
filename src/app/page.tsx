@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductImage } from "@/components/ProductImage";
 import { getServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,6 @@ export default async function HomePage() {
       <section className="bg-bone">
         <div className="container-pro grid gap-10 py-20 md:grid-cols-2 md:items-center">
           <div>
-            <div className="mb-4"><GoldPriceBadge /></div>
             <h1 className="font-serif text-4xl leading-tight text-ink md:text-6xl">
               Buy gold from verified UAE gold shops —{" "}
               <span className="text-gold-500">with live transparent pricing.</span>
@@ -57,15 +57,26 @@ export default async function HomePage() {
       {/* Categories */}
       <section className="container-pro py-16">
         <h2 className="font-serif text-3xl">Browse categories</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+        <p className="mt-1 text-sm text-ink-muted">
+          Ten categories, from everyday chains to investment-grade bullion.
+        </p>
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
           {["ring", "necklace", "bracelet", "bangle", "chain", "pendant", "earring", "bar", "coin", "other"].map(
             (c) => (
               <Link
                 key={c}
                 href={`/marketplace?category=${c}`}
-                className="card p-5 text-center capitalize hover:border-gold-300 transition"
+                className="card group overflow-hidden p-0 transition hover:border-gold-300 hover:shadow-card"
               >
-                {c}
+                <div className="aspect-[4/3] overflow-hidden bg-bone-soft">
+                  <ProductImage
+                    category={c}
+                    karat={22}
+                    name={c}
+                    className="transition duration-300 group-hover:scale-[1.04]"
+                  />
+                </div>
+                <div className="px-3 py-2.5 text-center text-sm font-medium capitalize">{c}</div>
               </Link>
             ),
           )}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ProductImageUploader } from "./ProductImageUploader";
 
 interface ProductInitial {
   id?: string;
@@ -22,7 +23,7 @@ interface ProductInitial {
 const CATEGORIES = ["ring","necklace","bracelet","earring","bangle","chain","pendant","bar","coin","other"];
 const KARATS = [18, 21, 22, 24];
 
-export function ProductForm({ initial }: { initial?: ProductInitial }) {
+export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; vendorId?: string }) {
   const router = useRouter();
   const [form, setForm] = useState({
     name: initial?.name ?? "",
@@ -37,6 +38,7 @@ export function ProductForm({ initial }: { initial?: ProductInitial }) {
     certificate_number: initial?.certificate_number ?? "",
     hallmark_info: initial?.hallmark_info ?? "",
   });
+  const [images, setImages] = useState<string[]>(initial?.images ?? []);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState<"draft" | "submit" | null>(null);
 
@@ -57,7 +59,7 @@ export function ProductForm({ initial }: { initial?: ProductInitial }) {
         quantity: Number(form.quantity),
         certificate_number: form.certificate_number || null,
         hallmark_info: form.hallmark_info || null,
-        images: initial?.images ?? [],
+        images,
         submit_for_approval: submit,
       }),
     });
@@ -121,6 +123,11 @@ export function ProductForm({ initial }: { initial?: ProductInitial }) {
         <label className="label">Hallmark info</label>
         <input className="input" value={form.hallmark_info} onChange={(e) => set("hallmark_info", e.target.value)} />
       </div>
+      {vendorId && (
+        <div className="md:col-span-2">
+          <ProductImageUploader vendorId={vendorId} value={images} onChange={setImages} />
+        </div>
+      )}
       <div className="md:col-span-2">
         <label className="label">Description</label>
         <textarea className="input min-h-[100px]" value={form.description} onChange={(e) => set("description", e.target.value)} />
