@@ -18,6 +18,8 @@ export interface LiveGoldPriceState {
   isFresh: boolean;
   ageSeconds: number;
   staleAfterSeconds: number;
+  /** How often the price is refreshed, in seconds. Shown to customers. */
+  refreshIntervalSeconds: number;
   loading: boolean;
 }
 
@@ -39,13 +41,16 @@ export const GoldPriceContext = createContext<LiveGoldPriceState | null>(null);
  */
 export function GoldPriceProvider({
   children,
-  pollMs = 15000,
+  pollMs = 10000,
 }: {
   children: React.ReactNode;
   pollMs?: number;
 }) {
   const [tick, setTick] = useState<LiveTick | null>(null);
   const [staleAfterSeconds, setStaleAfterSeconds] = useState(60);
+  const [refreshIntervalSeconds, setRefreshIntervalSeconds] = useState(
+    Math.max(1, Math.round(pollMs / 1000)),
+  );
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(() => Date.now());
   const lastTickIdRef = useRef<number | null>(null);
@@ -63,9 +68,16 @@ export function GoldPriceProvider({
       try {
         const res = await fetch("/api/gold-price/latest", { cache: "no-store" });
         if (!res.ok) return;
-        const json = (await res.json()) as { tick: LiveTick | null; staleAfterSeconds: number };
+        const json = (await res.json()) as {
+          tick: LiveTick | null;
+          staleAfterSeconds: number;
+          refreshIntervalSeconds?: number;
+        };
         if (cancelled) return;
         setStaleAfterSeconds(json.staleAfterSeconds);
+        if (typeof json.refreshIntervalSeconds === "number" && json.refreshIntervalSeconds > 0) {
+          setRefreshIntervalSeconds(json.refreshIntervalSeconds);
+        }
         if (json.tick && json.tick.id !== lastTickIdRef.current) {
           lastTickIdRef.current = json.tick.id;
           setTick(json.tick);
@@ -115,7 +127,9 @@ export function GoldPriceProvider({
   const isFresh = !!tick && tick.status !== "failed" && ageSeconds <= staleAfterSeconds;
 
   return (
-    <GoldPriceContext.Provider value={{ tick, isFresh, ageSeconds, staleAfterSeconds, loading }}>
+    <GoldPriceContext.Provider
+      value={{ tick, isFresh, ageSeconds, staleAfterSeconds, refreshIntervalSeconds, loading }}
+    >
       {children}
     </GoldPriceContext.Provider>
   );

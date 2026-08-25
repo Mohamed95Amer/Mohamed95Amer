@@ -21,7 +21,7 @@ interface Props {
  * for the customer-facing display only.
  */
 export function LiveProductPrice(props: Props) {
-  const { tick, isFresh, ageSeconds, loading } = useLiveGoldPrice();
+  const { tick, isFresh, ageSeconds, refreshIntervalSeconds, loading } = useLiveGoldPrice();
 
   if (loading || !tick || tick.price_per_gram_24k_aed === null) {
     return (
@@ -44,10 +44,18 @@ export function LiveProductPrice(props: Props) {
 
   return (
     <div>
-      <div className="flex items-baseline gap-3">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <div className="font-serif text-3xl text-ink">{formatAed(breakdown.unitPriceAed)}</div>
-        {!isFresh && (
-          <span className="text-xs text-signal-warn font-medium">Price updating…</span>
+        {isFresh ? (
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium text-signal-ok">
+            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal-ok opacity-70" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-signal-ok" />
+            </span>
+            Live price
+          </span>
+        ) : (
+          <span className="text-xs font-medium text-signal-warn">Price updating…</span>
         )}
       </div>
       {props.showBreakdown && (
@@ -84,8 +92,9 @@ export function LiveProductPrice(props: Props) {
       )}
       {props.showFooter !== false && (
         <p className="mt-2 text-xs text-ink-muted">
-          Based on 24K @ {formatAed(Number(tick.price_per_gram_24k_aed))}/g ·{" "}
-          {isFresh ? `Updated ${ageSeconds}s ago` : "Refreshing…"}
+          Follows the live 24K rate of {formatAed(Number(tick.price_per_gram_24k_aed))}/g, rechecked
+          every {refreshIntervalSeconds}s ·{" "}
+          {isFresh ? `updated ${ageSeconds}s ago` : "refreshing now"}
         </p>
       )}
     </div>

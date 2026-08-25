@@ -39,8 +39,14 @@ export const env = {
     const n = Number(process.env.USD_AED_RATE);
     return Number.isFinite(n) && n > 0 ? n : 3.6725;
   },
+  // Two different thresholds, deliberately:
+  //  - stalePriceSeconds gates *reservations*. A quote older than this is not
+  //    trustworthy enough to sell against, so the reserve button locks.
+  //  - refreshIntervalSeconds decides how often we go back upstream. It is the
+  //    cadence customers actually see the number move at.
+  // Conflating them would mean the displayed price only changed once a minute.
   stalePriceSeconds: () => optionalNumber("GOLD_PRICE_STALE_AFTER_SECONDS", 60),
-  refreshIntervalSeconds: () => optionalNumber("GOLD_PRICE_REFRESH_INTERVAL_SECONDS", 20),
+  refreshIntervalSeconds: () => optionalNumber("GOLD_PRICE_REFRESH_INTERVAL_SECONDS", 10),
 
   // Platform pricing defaults
   platformFeeAed: () => optionalNumber("PLATFORM_FEE_AED", 0),

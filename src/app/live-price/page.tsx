@@ -1,5 +1,6 @@
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { getServiceSupabase } from "@/lib/supabase/server";
+import { env } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +12,18 @@ export default async function LivePricePage() {
     .order("fetched_at", { ascending: false })
     .limit(50);
 
+  // Read the real numbers rather than hardcoding a cadence in the copy —
+  // the previous text claimed 15–30s and had drifted out of date.
+  const refreshSeconds = env.refreshIntervalSeconds();
+  const staleSeconds = env.stalePriceSeconds();
+
   return (
     <div className="container-pro py-10">
       <h1 className="font-serif text-3xl">Live gold price</h1>
-      <p className="text-sm text-ink-muted">
-        Updated every 15–30 seconds from the configured provider. Stale prices automatically disable reservations.
+      <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+        Rechecked every {refreshSeconds} seconds against the live market. If a quote ever ages past{" "}
+        {staleSeconds} seconds we stop selling against it and reservations lock until a fresh one
+        lands — you are never charged off a stale rate.
       </p>
       <div className="mt-6"><GoldPriceBadge /></div>
 

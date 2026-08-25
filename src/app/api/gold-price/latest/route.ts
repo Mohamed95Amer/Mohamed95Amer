@@ -18,9 +18,12 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const staleAfterSeconds = env.stalePriceSeconds();
+    const refreshIntervalSeconds = env.refreshIntervalSeconds();
     let tick = await getLatestTick();
 
-    if (!tick || !isFresh(tick.fetched_at, staleAfterSeconds)) {
+    // Refresh on the display cadence, not the stale threshold: waiting for the
+    // quote to go stale would mean the price only visibly moved once a minute.
+    if (!tick || !isFresh(tick.fetched_at, refreshIntervalSeconds)) {
       await refreshInBand();
       // Re-read: refreshInBand swallows upstream failures, so this may still
       // return the previous tick. That is intentional — a stale price beats none.
@@ -29,7 +32,7 @@ export async function GET() {
 
     if (!tick) {
       return NextResponse.json(
-        { tick: null, isFresh: false, staleAfterSeconds },
+        { tick: null, isFresh: false, staleAfterSeconds, refreshIntervalSeconds },
         { status: 200, headers: { "Cache-Control": "no-store" } },
       );
     }
@@ -47,6 +50,7 @@ export async function GET() {
         },
         isFresh: isFresh(tick.fetched_at, staleAfterSeconds),
         staleAfterSeconds,
+        refreshIntervalSeconds,
       },
       { status: 200, headers: { "Cache-Control": "no-store" } },
     );

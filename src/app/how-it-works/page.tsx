@@ -1,3 +1,4 @@
+import { env } from "@/lib/env";
 export default function HowItWorksPage() {
   const steps = [
     [
@@ -10,7 +11,7 @@ export default function HowItWorksPage() {
     ],
     [
       "Prices update live",
-      "We fetch the 24K spot price every 15–30 seconds, convert to AED per gram, and recompute product prices using the configured formula.",
+      `We recheck the 24K spot price every ${env.refreshIntervalSeconds()} seconds, convert to AED per gram, and recompute every listing from it. A quote older than ${env.stalePriceSeconds()} seconds is not sold against — reservations lock until a fresh one lands.`,
     ],
     [
       "Reserve at the live price",
