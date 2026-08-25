@@ -4,13 +4,19 @@ import { useState } from "react";
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { useRouter } from "next/navigation";
 
-export function ReserveButton({ productId }: { productId: string }) {
+export function ReserveButton({
+  productId,
+  soldOut = false,
+}: {
+  productId: string;
+  soldOut?: boolean;
+}) {
   const router = useRouter();
   const { isFresh, tick } = useLiveGoldPrice();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const disabled = busy || !isFresh || !tick;
+  const disabled = busy || soldOut || !isFresh || !tick;
 
   async function onClick() {
     setBusy(true);
@@ -49,6 +55,8 @@ export function ReserveButton({ productId }: { productId: string }) {
       >
         {busy
           ? "Reserving…"
+          : soldOut
+          ? "Sold out"
           : !tick
           ? "Price unavailable"
           : !isFresh
