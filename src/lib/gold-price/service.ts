@@ -39,7 +39,10 @@ export async function refreshGoldPrice(): Promise<RefreshOutcome> {
   let degraded = false;
   let lastError = "";
 
-  for (const providerId of [primary, backup]) {
+  // Skip an unset backup rather than treating "" as a provider id.
+  const chain = [primary, backup].filter((id) => id && id.trim().length > 0);
+
+  for (const providerId of chain) {
     try {
       const provider = getProvider(providerId);
       const result = await provider.fetch({ usdAed });
@@ -52,8 +55,8 @@ export async function refreshGoldPrice(): Promise<RefreshOutcome> {
       const message = err instanceof Error ? err.message : String(err);
       attempts.push({ provider: providerId, ok: false, error: message });
       lastError = message;
-      if (providerId === primary) {
-        // continue to backup
+      if (providerId !== chain[chain.length - 1]) {
+        // more providers to try
         continue;
       }
     }

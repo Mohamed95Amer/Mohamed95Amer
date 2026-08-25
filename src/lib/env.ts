@@ -31,7 +31,11 @@ export const env = {
   // Defaults to the keyless provider so a fresh deploy shows real prices
   // without any credentials. Set to goldapi/metalpriceapi/metalsdev for a paid feed.
   primaryProvider: () => process.env.GOLD_PRICE_PRIMARY_PROVIDER ?? "goldapicom",
-  backupProvider: () => process.env.GOLD_PRICE_BACKUP_PROVIDER ?? "mock",
+  // Empty by default and deliberately NOT "mock". If the real source fails we
+  // would rather serve the last known real quote (marked stale, with
+  // reservations locked) than an invented number. Never point this at mock in
+  // production — a fabricated price on a gold marketplace is worse than none.
+  backupProvider: () => process.env.GOLD_PRICE_BACKUP_PROVIDER ?? "",
   goldApiKey: () => process.env.GOLDAPI_API_KEY ?? "",
   metalPriceApiKey: () => process.env.METALPRICEAPI_API_KEY ?? "",
   metalsDevApiKey: () => process.env.METALSDEV_API_KEY ?? "",
