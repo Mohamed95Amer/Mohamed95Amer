@@ -134,11 +134,13 @@ deliberately — a bare composite return is handled inconsistently by PostgREST/
 `ProductImage` prefers a real photo and otherwise draws an inline SVG of the category, so artwork
 always matches the title.
 
-> **The biggest remaining gap: there are no real photographs.** Every listing shows a drawing. For
-> jewellery this is the main thing separating it from a shop people buy from. The uploader
-> (`ProductImageUploader`) and the URL resolution are built and working, so the first vendor upload
-> replaces the drawing with no code change. This could not be done from the build environment
-> because every image host was blocked.
+`products.images` accepts either form: a storage path, or an absolute URL (which is passed through
+untouched). All 12 demo listings currently hold absolute URLs — see §3b for why that is a temporary
+state rather than the intended one.
+
+Vendors attach photos through `ProductImageUploader`, which uploads straight to the bucket under
+`<vendor_id>/` — the path prefix the bucket write policy checks. A listing with no photo falls back
+to the drawing rather than an empty frame.
 
 ---
 
