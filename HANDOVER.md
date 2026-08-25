@@ -41,6 +41,15 @@ npx vercel --prod          # select the EXISTING "goldhub" project
 Selecting the existing project matters: it already holds the Supabase credentials. A fresh project
 would need all four required vars set by hand.
 
+**The Cloudflare Pages check on PRs fails, and that is expected.** The repo has a Cloudflare Pages
+integration that auto-detects Next.js and runs a bare `next build`, which cannot produce something
+Pages can serve. This app targets Vercel: 13 API routes are pinned to `runtime = "nodejs"` (Pages
+needs the Edge runtime via `@cloudflare/next-on-pages`, which is not installed), and the crons in
+`vercel.json` are Vercel-specific. Making that check green means porting platforms, not fixing code.
+The decision taken was to stay on Vercel and disconnect the Pages integration
+(Cloudflare dashboard → Pages → the `mohamed95amer` project → Settings → disconnect Git). Until
+someone does that, treat a red Pages check as noise — every other check is green.
+
 **Repo/deploy mismatch to be aware of.** The Vercel projects (`goldhub`, `goldhub.ae` under team
 `mohamed95amers-projects`) are git-linked to `Mohamed95Amer/goldhub` — a *different* repo that this
 work is **not** in, and that I had no access to. So pushing to `Mohamed95Amer/Mohamed95Amer` does
