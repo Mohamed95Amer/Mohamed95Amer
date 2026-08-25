@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
-import { ProductImage } from "@/components/ProductImage";
+import { ProductCard } from "@/components/ProductCard";
 import { getServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export default async function HomePage() {
   const [{ data: products }, { data: vendors }] = await Promise.all([
     supabase
       .from("products")
-      .select("id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, images, vendor_id")
+      .select("id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)")
       .eq("product_status", "approved")
       .order("created_at", { ascending: false })
       .limit(6),
@@ -80,18 +80,11 @@ export default async function HomePage() {
             <Link href="/marketplace" className="text-sm text-ink-muted hover:text-ink">View all →</Link>
           </div>
           <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {(products ?? []).map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} className="card overflow-hidden hover:border-gold-300 transition">
-                <div className="aspect-[4/3] w-full overflow-hidden bg-bone-soft">
-                  <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} />
-                </div>
-                <div className="p-5">
-                  <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>
-                  <h3 className="mt-1 font-serif text-xl">{p.name}</h3>
-                  <p className="text-sm text-ink-muted">{p.weight_grams}g</p>
-                </div>
-              </Link>
-            ))}
+            {(products ?? []).map((p) => {
+              const v = p.vendors as unknown as
+                { business_name: string; emirate: string; verification_status: string } | null;
+              return <ProductCard key={p.id} p={{ ...p, available: p.quantity, vendor: v }} />;
+            })}
             {(products ?? []).length === 0 && (
               <p className="text-ink-muted">No approved listings yet.</p>
             )}

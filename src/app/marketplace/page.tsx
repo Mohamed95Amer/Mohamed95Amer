@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
-import { ProductImage } from "@/components/ProductImage";
+import { ProductCard } from "@/components/ProductCard";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, images, vendor_id, vendors(business_name, emirate)",
+      "id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
     )
     .eq("product_status", "approved")
     .order("created_at", { ascending: false })
@@ -25,6 +25,13 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (searchParams.q) query = query.ilike("name", `%${searchParams.q}%`);
 
   const { data } = await query;
+  const { data: fees } = await supabase
+    .from("platform_settings")
+    .select("platform_fee_aed, delivery_fee_aed")
+    .eq("id", true)
+    .maybeSingle();
+  const platformFee = Number(fees?.platform_fee_aed ?? 0);
+  const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
   return (
     <div className="container-pro py-10">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
@@ -63,23 +70,15 @@ export default async function MarketplacePage({ searchParams }: SP) {
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {(data ?? []).map((p) => {
-          const v = (p.vendors as unknown as { business_name: string; emirate: string } | null);
+          const v = p.vendors as unknown as
+            { business_name: string; emirate: string; verification_status: string } | null;
           return (
-            <Link key={p.id} href={`/products/${p.id}`} className="card overflow-hidden hover:border-gold-300 transition">
-              <div className="aspect-[4/3] w-full overflow-hidden bg-bone-soft">
-                <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} />
-              </div>
-              <div className="p-5">
-              <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>
-              <h2 className="mt-1 font-serif text-xl">{p.name}</h2>
-              <p className="text-sm text-ink-muted">{p.weight_grams}g</p>
-              {v && (
-                <p className="mt-3 text-xs text-ink-muted">
-                  Sold by <span className="text-ink font-medium">{v.business_name}</span> · {v.emirate}
-                </p>
-              )}
-              </div>
-            </Link>
+            <ProductCard
+              key={p.id}
+              p={{ ...p, available: p.quantity, vendor: v }}
+              platformFee={platformFee}
+              deliveryFee={deliveryFee}
+            />
           );
         })}
         {(data ?? []).length === 0 && (
