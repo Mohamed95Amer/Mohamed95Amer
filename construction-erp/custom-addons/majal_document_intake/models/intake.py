@@ -276,6 +276,16 @@ class MajalIntakeUpload(models.Model):
         if not accepted:
             raise UserError(_("No field has been accepted."))
 
+        # The same server-side gate the sheet and document paths use. Here
+        # target_field is the answer type, and it goes straight into a
+        # Selection: an unreviewed value arriving over RPC used to surface as
+        # a raw ORM ValueError from deep inside create(), which is neither a
+        # readable refusal nor a guarantee that nothing was written.
+        self.env["majal.intake.matcher"].check_writable(
+            "construction.form.template",
+            [line.target_field for line in accepted if line.target_field],
+        )
+
         template = self.env["construction.form.template"].create({
             "name": self.filename.rsplit(".", 1)[0],
             "code": (self.checksum or "")[:8].upper() or "PDFFORM",

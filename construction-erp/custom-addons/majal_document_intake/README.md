@@ -12,12 +12,31 @@ anything is created.
 
 ## What it deliberately does not do
 
-**It writes to `majal.document` and `majal.sheet`, and nothing else.** The BOQ,
-the tender register, the general ledger and the maintenance backlog are
-first-class models with their own workflows and their own approvals. Reaching
-into them from here would be an arbitrary-model write by another name, so
-`construction.boq` keeps its own importer and `account.move` is not a target.
-Widening this is a product decision, not a configuration change.
+**It writes to `majal.document`, `majal.sheet` and `construction.form.template`,
+and nothing else.** The BOQ, the tender register, the general ledger and the
+maintenance backlog are first-class models with their own workflows and their
+own approvals. Reaching into them from here would be an arbitrary-model write
+by another name, so `construction.boq` keeps its own importer and
+`account.move` is not a target.
+
+All three targets go through the same `_intake_writable_fields()` gate,
+though what it names differs. For `majal.document` and `majal.sheet` it is the
+set of field names an import may write. For `construction.form.template` the
+review line's target is not a field name at all — it is the question's answer
+type — so the gate names the values `answer_type` accepts, read off that
+Selection rather than restated.
+
+Reasoning that the form path needed no gate because its user input lands in a
+*value* position rather than a field name was wrong twice over, and both ways
+were reproducible. The onchange behind that cell asked the target model for
+its writable set regardless, so correcting a mis-detected answer type — the
+most ordinary edit on the review screen — raised `AttributeError`. And an
+answer type invented over RPC reached `create()` unchecked and surfaced as a
+raw ORM `ValueError` about a Selection value, from inside the write it was
+supposed to prevent. A value position is still user input.
+
+Widening the set of targets is a product decision, not a configuration
+change.
 
 **No OCR.** A scanned PDF has no text layer, and the parser says so rather
 than returning an empty table that looks like a successful read with no data
@@ -33,9 +52,10 @@ value printed beside it.
 
 `majal.document` and `majal.sheet` each expose `_intake_writable_fields()`,
 derived from the same field sets their own `write()` uses to decide what may be
-written. There is no second list. A new controlled field becomes importable
-automatically; a new workflow field becomes forbidden automatically. The
-alternative — a hand-maintained copy — is the one that grants write access to a
+written; `construction.form.template` exposes it too, derived from the
+`answer_type` Selection. There is no second list. A new controlled field
+becomes importable automatically; a new workflow field becomes forbidden
+automatically. The alternative — a hand-maintained copy — is the one that grants write access to a
 workflow field the day somebody forgets to update it.
 
 It is enforced in three places, because one is not enough:

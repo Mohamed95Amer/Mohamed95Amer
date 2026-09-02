@@ -41,6 +41,37 @@
                         <field name="error" readonly="1" nolabel="1"/>
                     </div>
 
+                    <!-- Shown before the file is read, because that is when
+                         the user is choosing what to upload. Without it the
+                         first time anyone learns a scanned PDF cannot be read
+                         is after they have picked one, hit the button and been
+                         refused, which reads as a broken feature rather than a
+                         boundary. Naming the limit up front is the difference. -->
+                    <div class="alert alert-info" role="alert"
+                         invisible="state != 'draft'">
+                        <p class="mb-1">
+                            <strong>What can be read.</strong>
+                            Spreadsheets (.xlsx), CSV, JSON, Word (.docx),
+                            plain text, and PDFs that contain real text or
+                            fillable form fields.
+                        </p>
+                        <p class="mb-1">
+                            <strong>What cannot.</strong>
+                            A scanned or photographed page is an image, so
+                            there is no text to read and nothing will be found.
+                            Reading those needs OCR, which Majal does not do
+                            yet. Export the original from the system that
+                            produced it, or use a PDF that was saved rather
+                            than scanned.
+                        </p>
+                        <p class="mb-0">
+                            <strong>Nothing is created yet.</strong>
+                            Reading the file only shows you what it says. You
+                            review every column and confirm before any record
+                            is made.
+                        </p>
+                    </div>
+
                     <group>
                         <group>
                             <field name="filename" readonly="state != 'draft'"/>
@@ -73,6 +104,21 @@
                                 Confidence says which rule matched, not how
                                 likely the answer is to be right. Read the
                                 value beside it before accepting.
+                            </p>
+                            <!-- On a PDF form the "Target field" column is not
+                                 a field at all, it is the answer type the
+                                 question will take, and "Sample value" is the
+                                 question itself. Two columns meaning something
+                                 other than their headings say is worth one
+                                 sentence rather than a support call. -->
+                            <p class="text-muted" invisible="file_format != 'pdf-form'">
+                                This is a PDF form, so each row is one box on
+                                it: <strong>Sample value</strong> is the
+                                question as the form asks it, and
+                                <strong>Target field</strong> is the kind of
+                                answer it takes — text, number, date, yes/no,
+                                photo or signature. Change that if a box was
+                                read as the wrong kind.
                             </p>
                             <field name="field_ids" nolabel="1"
                                    readonly="state != 'parsed'">
@@ -163,9 +209,15 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Import a document</p>
             <p>
-                Upload a CSV, JSON, XLSX, DOCX, PDF or text file. Majal reads
-                it, proposes which column belongs in which field, and shows you
-                the result before anything is created.
+                Upload a CSV, JSON, XLSX, DOCX or text file, or a PDF that
+                holds real text or fillable boxes. Majal reads it, proposes
+                which column belongs in which field, and shows you the result
+                before anything is created.
+            </p>
+            <p>
+                A scanned or photographed page is an image rather than text,
+                so there is nothing in it to read. Reading those needs OCR,
+                which Majal does not do yet.
             </p>
         </field>
     </record>

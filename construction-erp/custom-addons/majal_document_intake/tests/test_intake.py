@@ -60,6 +60,71 @@ class TestIntake(TransactionCase):
         values.update(extra)
         return self.env["majal.intake.upload"].create(values)
 
+    # -- Isolation of the review lines ---------------------------------
+
+    def test_another_user_cannot_read_or_edit_my_review_lines(self):
+        """majal.intake.field needs its own rules; a parent's do not cascade.
+
+        The upload is protected by rule_intake_upload_own, but Odoo does not
+        extend a record rule to a one2many child. Every internal user holds
+        read/write/unlink on majal.intake.field through the ACL, and those
+        rows carry sample_value — the actual cell contents of the file. So
+        without rules of its own, a colleague's payroll CSV is one search_read
+        away and its proposed mapping is editable over RPC.
+        """
+        mine = self._upload(
+            as_upload("Subject,Salary\nAugust payroll,48000\n"), "payroll.csv"
+        )
+        mine.action_parse()
+        self.assertTrue(mine.field_ids, "the upload should have review lines")
+
+        other = new_test_user(
+            self.env, login="intake-other", groups="base.group_user",
+            password="intake-other-password",
+        )
+        as_other = self.env["majal.intake.field"].with_user(other)
+
+        visible = as_other.search([("upload_id", "=", mine.id)])
+        self.assertFalse(
+            visible,
+            "another user can see the review lines of my upload, and with "
+            "them the values read out of my file",
+        )
+
+        # And cannot reach them by id either, which is the RPC shape.
+        with self.assertRaises(AccessError):
+            as_other.browse(mine.field_ids[0].id).read(["sample_value"])
+
+    def test_a_mapping_rule_from_another_company_is_out_of_reach(self):
+        """The company rule on a profile stops at the profile.
+
+        majal.intake.mapping.line carries a stored company_id and had no rule
+        of its own, so the lines — which are where a profile actually says
+        anything — were readable across companies, and writable by any
+        construction manager, while the profile they belong to was not. Same
+        omission as on the review lines, one model over.
+        """
+        other_company = self.env["res.company"].create({"name": "Other Co"})
+        profile = self.env["majal.intake.mapping.profile"].create({
+            "name": "Their letters",
+            "company_id": other_company.id,
+            "target_model": "majal.document",
+            "line_ids": [(0, 0, {"source_key": "Subject", "target_field": "name"})],
+        })
+
+        mine = new_test_user(
+            self.env, login="intake-mapping-reader", groups="base.group_user",
+            password="intake-mapping-reader-password",
+        )
+        as_mine = self.env["majal.intake.mapping.line"].with_user(mine)
+
+        self.assertFalse(
+            as_mine.search([("profile_id", "=", profile.id)]),
+            "a mapping rule belonging to another company is visible",
+        )
+        with self.assertRaises(AccessError):
+            as_mine.browse(profile.line_ids[0].id).read(["target_field"])
+
     # -- Parsing -------------------------------------------------------
 
     def test_a_csv_is_read_and_its_columns_proposed(self):

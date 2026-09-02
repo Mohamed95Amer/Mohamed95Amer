@@ -31,6 +31,23 @@ class ConstructionFormTemplate(models.Model):
     )
     has_source_pdf = fields.Boolean(compute="_compute_source_pdf")
 
+    @api.model
+    def _intake_writable_fields(self):
+        """Which answer types an import may set on a question.
+
+        This is the same contract majal.document and majal.sheet implement,
+        and the intake screen calls it on whichever model an upload targets.
+        Without it here, the question "what may an import write?" had no
+        answer for a PDF form, and the review line's onchange — the code path
+        behind correcting a mis-detected answer type — raised AttributeError.
+
+        For a form the writable positions are not field names but the values
+        of construction.form.question.answer_type, so the set is read off that
+        Selection rather than restated, which would drift.
+        """
+        question = self.env["construction.form.question"]
+        return {value for value, _label in question._fields["answer_type"].selection}
+
     def _compute_source_pdf(self):
         attachments = self.env["ir.attachment"].search([
             ("res_model", "=", self._name),

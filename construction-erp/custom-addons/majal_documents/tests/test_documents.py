@@ -148,13 +148,25 @@ class TestMajalControlledDocuments(TransactionCase):
 class TestMajalDmsTokens(DocumentsBaseCase):
     @classmethod
     def setUpClass(cls):
+        import contextlib
         from unittest.mock import patch
         super(DocumentsBaseCase, cls).setUpClass()
-        with patch.object(
-            cls.env.registry["res.users"],
-            "_check_password_policy",
-            lambda self, passwords: None,
-        ):
+
+        # _check_password_policy comes from auth_password_policy, which is
+        # pulled in by other modules rather than by this one. Patching it
+        # unconditionally made this class pass or fail depending on what else
+        # happened to be installed: green under run-tests.sh all, an
+        # AttributeError in setUpClass when majal_documents is run on its own.
+        # A test whose result depends on its neighbours is not testing this
+        # module.
+        users = cls.env.registry["res.users"]
+        relax_password_policy = contextlib.nullcontext()
+        if hasattr(users, "_check_password_policy"):
+            relax_password_policy = patch.object(
+                users, "_check_password_policy", lambda self, passwords: None,
+            )
+
+        with relax_password_policy:
             cls.access_group_model = cls.env["dms.access.group"]
             cls.storage_model = cls.env["dms.storage"]
             cls.directory_model = cls.env["dms.directory"]

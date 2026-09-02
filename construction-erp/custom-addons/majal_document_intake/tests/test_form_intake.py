@@ -14,7 +14,7 @@ import base64
 import io
 
 from odoo.exceptions import UserError
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import Form, TransactionCase, tagged
 
 
 def build_pdf_form(fields):
@@ -246,3 +246,49 @@ class TestFormIntake(TransactionCase):
 
         answer.answer_yes_no = "yes"
         self.assertEqual(inspection._pdf_values()["extinguisher"], "Yes")
+
+    def test_correcting_an_answer_type_does_not_crash(self):
+        """The review list invites this edit, so it must survive it.
+
+        target_field on a PDF-form upload is the answer type, and it is an
+        editable cell. The onchange behind it asks the target model which
+        fields an import may write — a question construction.form.template
+        could not answer, because only majal.document and majal.sheet
+        implement _intake_writable_fields. Correcting a mis-detected type,
+        the most ordinary thing a reviewer does on this screen, raised
+        AttributeError instead.
+        """
+        upload = self._upload()
+        upload.action_parse()
+        line = upload.field_ids.filtered(lambda f: f.source_key == "permit_no")
+
+        form = Form(upload, view="majal_document_intake.view_intake_upload_form")
+        with form.field_ids.edit(list(upload.field_ids).index(line)) as edited:
+            edited.target_field = "number"
+        form.save()
+
+        self.assertEqual(line.target_field, "number")
+
+    def test_an_answer_type_invented_over_rpc_is_refused(self):
+        """The review screen offers valid types; a write over RPC does not.
+
+        _apply_as_form copies target_field straight into answer_type, which is
+        a Selection. Without a gate the refusal came from the ORM at create
+        time, as a ValueError about a selection value — and only after the
+        template row had been reached. The import must be refused on its own
+        terms instead.
+        """
+        upload = self._upload()
+        upload.action_parse()
+        upload.field_ids.write({"decision": "accept"})
+        upload.field_ids[0].target_field = "arbitrary_string"
+
+        with self.assertRaises(UserError):
+            upload.action_apply()
+
+        self.assertFalse(
+            self.env["construction.form.template"].search(
+                [("name", "=", "hot-works-permit")]
+            ),
+            "a refused import must leave no template behind",
+        )
