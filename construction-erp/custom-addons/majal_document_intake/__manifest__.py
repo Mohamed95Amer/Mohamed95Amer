@@ -1,7 +1,7 @@
 {
     "name": "Majal Document Intake",
     "summary": "Read a file, review the proposed mapping, then create the record",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Majal/Documents",
     "license": "LGPL-3",
     "author": "Majal",

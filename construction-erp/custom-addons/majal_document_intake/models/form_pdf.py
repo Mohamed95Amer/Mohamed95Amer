@@ -122,7 +122,7 @@ class ConstructionFormInspection(models.Model):
             "res_model": self._name,
             "res_id": self.id,
         })
-        self.message_post(
+        self._message_log(
             body=_("Filled copy of %s produced.", source.name),
             attachment_ids=attachment.ids,
         )

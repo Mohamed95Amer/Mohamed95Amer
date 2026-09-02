@@ -359,7 +359,7 @@ class MajalIntakeUpload(models.Model):
                 "created_record_ref": f"construction.form.template,{template.id}",
                 "error": False,
             })
-            self.message_post(body=_(
+            self._message_log(body=_(
                 "Built the form %(name)s with %(count)s question(s) from "
                 "%(filename)s, SHA-256 %(checksum)s.",
                 name=template.name, count=len(template.question_ids),
@@ -421,7 +421,19 @@ class MajalIntakeUpload(models.Model):
             "created_record_ref": f"{self.target_model},{record.id}",
             "error": False,
         })
-        self.message_post(body=_(
+        # _message_log, not message_post, and the same everywhere in this
+        # module. These are provenance notes — what was created, from which
+        # file, at which checksum — not messages to people, so notifying
+        # followers was never the point. It is also the difference between a
+        # working import and a broken one: message_post asks mail for the
+        # author's address and raises "Unable to send message, please
+        # configure the sender's email address" when the posting user's
+        # partner has no email. That rolls back the transaction it is meant to
+        # be recording, so the record vanishes, the upload stays in review,
+        # and the user is told about email configuration. Site users created
+        # without an email address are ordinary, and losing their imports to
+        # an audit note is not a trade worth making.
+        self._message_log(body=_(
             "Applied to %(record)s. Source %(filename)s, SHA-256 "
             "%(checksum)s, %(fields)s field(s) mapped.",
             record=record.display_name,
@@ -466,7 +478,7 @@ class MajalIntakeUpload(models.Model):
                 self.created_record_ref or _("a record"),
             ))
         self.write({"state": "rejected"})
-        self.message_post(body=_("Rejected. Nothing was created."))
+        self._message_log(body=_("Rejected. Nothing was created."))
         return True
 
     def action_reset(self):

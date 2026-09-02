@@ -125,6 +125,49 @@ class TestIntake(TransactionCase):
         with self.assertRaises(AccessError):
             as_mine.browse(profile.line_ids[0].id).read(["target_field"])
 
+    def test_a_user_without_an_email_address_can_still_import(self):
+        """An audit note must not be able to destroy the thing it records.
+
+        message_post asks mail for the author's address and raises "Unable to
+        send message, please configure the sender's email address" when the
+        posting user's partner has none. Because the note is posted inside
+        action_apply, that UserError rolled back the transaction it was meant
+        to be recording: the document was never created, the upload stayed in
+        review, and the user was told about email configuration rather than
+        about their import. Site users created without an email are ordinary,
+        so this was the whole feature failing for them.
+
+        Found by driving the screens in a browser, not by the suite — every
+        test user here is built by new_test_user, which fills in an email.
+        """
+        user = new_test_user(
+            self.env, login="intake-no-email", groups="base.group_user",
+            password="intake-no-email-password",
+        )
+        user.partner_id.email = False
+        self.assertFalse(
+            user.partner_id.email_formatted,
+            "the fixture must actually have no address for this to test anything",
+        )
+
+        # Created by that user, not merely read as them: the own-records rule
+        # keys off create_uid, and an upload made by somebody else would fail
+        # for a reason that has nothing to do with what is being tested.
+        upload = self.env["majal.intake.upload"].with_user(user).create({
+            "file": as_upload("Subject,Date\nSite handover letter,2026-09-01\n"),
+            "filename": "letters.csv",
+            "company_id": self.env.company.id,
+        })
+        upload.action_parse()
+        upload.field_ids.write({"decision": "accept"})
+
+        upload.action_apply()
+
+        self.assertEqual(upload.state, "applied")
+        self.assertTrue(
+            upload.created_record_ref, "the import must leave a record behind"
+        )
+
     # -- Parsing -------------------------------------------------------
 
     def test_a_csv_is_read_and_its_columns_proposed(self):
