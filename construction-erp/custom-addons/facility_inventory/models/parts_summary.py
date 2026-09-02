@@ -115,7 +115,16 @@ class FacilityPartsSummary(models.Model):
                     UNION
                     SELECT location_id, product_id FROM minimums
                 )
-                SELECT row_number() OVER () AS id,
+                -- Ordered, because this id is the primary key Odoo caches
+                -- and re-reads by. row_number() over an unordered scan
+                -- renumbers whenever the planner picks a different order, so
+                -- a row found by search could be fetched back as a different
+                -- product's position — reading as a wrong quantity or a
+                -- spurious below-minimum flag rather than as an error.
+                -- construction.material.summary, the same view one module
+                -- over, has always ordered it; this one was left out.
+                SELECT row_number() OVER (ORDER BY k.location_id, k.product_id)
+                           AS id,
                        k.location_id,
                        s.facility_location_id,
                        k.product_id,
