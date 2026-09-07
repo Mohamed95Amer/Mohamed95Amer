@@ -46,12 +46,25 @@ class TestFacilityInventory(TransactionCase):
                 [cls.env.ref("maintenance.group_equipment_manager").id],
             )],
         })
-        # The estate they look after; the tenant rules scope
-        # facilities by membership.
-        (cls.tower | cls.plantroom).write({
-            "manager_user_id": cls.facility_manager.id,
-            "member_user_ids": [(6, 0, cls.technician.ids)],
-        })
+        # The estate they look after; the tenant rules scope facilities by
+        # membership. Both fields arrive with majal_administration, which is
+        # not in this module's dependency chain — so they are there under
+        # run-tests.sh all and absent when this module is installed on its
+        # own, where setUpClass died with "Invalid field 'manager_user_id'"
+        # and the whole class errored out before a single test ran. Writing
+        # them only when they exist keeps the tenant scoping under test where
+        # it is real, instead of making the module untestable in isolation.
+        estate = cls.tower | cls.plantroom
+        tenant_values = {
+            name: value
+            for name, value in (
+                ("manager_user_id", cls.facility_manager.id),
+                ("member_user_ids", [(6, 0, cls.technician.ids)]),
+            )
+            if name in estate._fields
+        }
+        if tenant_values:
+            estate.write(tenant_values)
 
     def _stock_up(self, location, product, qty):
         store = location.ensure_store()
