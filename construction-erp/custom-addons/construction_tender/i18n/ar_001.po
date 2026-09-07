@@ -1,0 +1,686 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/bid.py:0
+msgid "%s has already been awarded."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid ""
+"<br/>\n"
+"                            <strong>Budget:</strong>"
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "<span class=\"o_stat_text\">Subcontract</span>"
+msgstr ""
+
+#. modules: construction_material, construction_meeting, construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_meeting.report_minutes_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "<strong>Project:</strong>"
+msgstr "<strong>المشروع:</strong>"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid ""
+"A bid with unpriced lines has not offered the\n"
+"                                whole scope — compare the line prices before\n"
+"                                the totals."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.actions.act_window,help:construction_tender.action_tender
+msgid ""
+"A tender package is a scope several subcontractors price against\n"
+"               identical lines, so the bids can be compared line by line and\n"
+"               awarded straight into a subcontract."
+msgstr ""
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "Add the scope lines bidders must price before issuing."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__amount
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__amount_total
+msgid "Amount Total"
+msgstr "الإجمالي"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Award"
+msgstr "الترسية"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Award Target"
+msgstr "هدف الترسية"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid ""
+"Award this package to this bidder? A subcontract will be created and the "
+"other bids marked unsuccessful."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__awarded
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender_bid__state__awarded
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_search
+msgid "Awarded"
+msgstr "تم الترسية"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__awarded_bid_id
+msgid "Awarded Bid"
+msgstr "العرض المُرسى"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/bid.py:0
+msgid "Awarded to %(bidder)s for %(amount)s. Subcontract %(sc)s created."
+msgstr ""
+
+#. modules: construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__boq_line_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__boq_line_id
+msgid "BOQ Item"
+msgstr "بند جدول كميات"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__bid_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__bid_id
+msgid "Bid"
+msgstr "العرض"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Bid Comparison"
+msgstr "مقارنة العروض"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__bid_count
+msgid "Bid Count"
+msgstr "عدد العروض"
+
+#. module: construction_tender
+#: model:ir.actions.report,name:construction_tender.action_report_tender_leveling
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "Bid Leveling Sheet"
+msgstr "كشف تسوية العروض"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__variance_vs_budget
+msgid "Bid total less the package budget. Positive is over budget."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__bidder_id
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Bidder"
+msgstr "المتقدم"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+#: model:ir.actions.act_window,name:construction_tender.action_tender_bid
+#: model:ir.ui.menu,name:construction_tender.menu_tender_bids
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_list
+msgid "Bids"
+msgstr "العروض"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Bids Received"
+msgstr "العروض المستلمة"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__boq_id
+msgid ""
+"Bill the package scope was taken from. Its cost lines give the budget each "
+"bid is measured against."
+msgstr ""
+
+#. modules: construction_material, construction_report, construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__budget_cost
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_list
+msgid "Budget"
+msgstr "الدخل\n"
+
+#. modules: construction_report, construction_tender
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_budget_cost
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_budget_cost
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__budget_cost
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__budget_cost
+msgid "Budget Cost"
+msgstr "التكلفة التقديرية"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__budget_cost
+msgid "Budget for the package, summed from the BOQ cost of its lines."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__award_saving
+msgid ""
+"Budget less the awarded value. Negative means the award is over budget and "
+"the project's committed cost has risen."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid_line__budget_cost
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_line__budget_cost
+msgid "Budgeted cost for this quantity, from the linked BOQ line."
+msgstr ""
+
+#. modules: construction_material, construction_tender, construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. modules: construction_material, construction_tender, construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_material.selection__construction_material_issue__state__cancelled
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__cancelled
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__cancelled
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__closing_date
+msgid "Closing Date"
+msgstr "تاريخ الإغلاق "
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Complete"
+msgstr "مكتمل"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_line__boq_line_id
+msgid "Cost line this scope item is measured against."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.actions.act_window,help:construction_tender.action_tender
+msgid "Create your first package"
+msgstr ""
+
+#. modules: construction_material, construction_tender, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__currency_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__currency_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__currency_id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_location__currency_id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__currency_id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__closing_date
+msgid "Deadline for bidders to submit."
+msgstr ""
+
+#. modules: construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__description
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__name
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__name
+msgid "Description"
+msgstr "الوصف"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Exclusions, assumptions, alternatives..."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__highest_bid
+msgid "Highest Bid"
+msgstr "أعلى عرض"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__validity_days
+msgid "How long the bidder holds the price."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_search
+msgid "In Leveling"
+msgstr "قيد التسوية"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "Invite at least one bidder."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender_bid__state__invited
+msgid "Invited"
+msgstr "مدعو"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__is_complete
+msgid "Is Complete"
+msgstr "مكتمل "
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__is_late
+msgid "Is Late"
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Issue to Bidders"
+msgstr "الإصدار للمتقدمين"
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__issued
+msgid "Issued to Bidders"
+msgstr "صادر للمتقدمين"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Late"
+msgstr "متأخر"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__lead_time_days
+msgid "Lead Time (days)"
+msgstr "مدة التوريد (أيام)"
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__leveling
+msgid "Leveling"
+msgstr "التسوية"
+
+#. modules: construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__line_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__line_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__line_ids
+msgid "Line"
+msgstr "البند "
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "Line comparison"
+msgstr "مقارنة البنود"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Load Scope Lines"
+msgstr "تحميل بنود النطاق"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__lowest_bid
+msgid "Lowest Bid"
+msgstr "أدنى عرض"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "No bids have been submitted yet, so there is nothing to level."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender_bid__state__rejected
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Not Successful"
+msgstr "غير فائز"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__validity_days
+msgid "Offer Valid (days)"
+msgstr "العرض ساري (أيام)"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "Only a draft package can be issued."
+msgstr ""
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/bid.py:0
+msgid "Only a submitted or shortlisted bid can be awarded."
+msgstr ""
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/bid.py:0
+msgid "Only an invited bid can be submitted."
+msgstr ""
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "Only an issued package can go to leveling."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_search
+msgid "Open Packages"
+msgstr "حزم مفتوحة"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/bid.py:0
+msgid "Price the scope before submitting."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Priced Scope"
+msgstr "النطاق المُسعَّر"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Pull BOQ Lines"
+msgstr "Pull بند جدول الكمياتs"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__notes
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Qualifications"
+msgstr ""
+
+#. modules: construction_material, construction_tender, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__quantity
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__quantity
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__quantity
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__quantity
+msgid "Quantity"
+msgstr "الكمية"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__unit_rate
+msgid "Rate"
+msgstr "المعدل "
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Reinstate"
+msgstr "إعادة السريان"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_list
+msgid "Saving"
+msgstr "الوفر"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__award_saving
+msgid "Saving vs Budget"
+msgstr "الوفر مقابل الموازنة"
+
+#. modules: construction_tender, facility_contract
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Scope"
+msgstr "النطاق"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "Scope line"
+msgstr "بند النطاق"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__unpriced_line_count
+msgid "Scope lines this bidder left unpriced — an incomplete bid."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__description
+msgid "Scope of Works"
+msgstr "نطاق الأعمال"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Scope of works..."
+msgstr ""
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "Set a source BOQ before pulling its lines in."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Shortlist"
+msgstr "القائمة المختصرة"
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender_bid__state__shortlisted
+msgid "Shortlisted"
+msgstr "في القائمة المختصرة"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__boq_id
+msgid "Source BOQ"
+msgstr "جدول الكميات المصدر"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Start Leveling"
+msgstr "بدء التسوية"
+
+#. modules: construction_hse, construction_meeting, construction_tender,
+#. construction_whatsapp, facility_portal
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_incident_search
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_permit_search
+#: model_terms:ir.ui.view,arch_db:construction_meeting.report_minutes_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_search
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_search
+#: model_terms:ir.ui.view,arch_db:facility_portal.portal_my_requests
+#: model_terms:ir.ui.view,arch_db:facility_portal.portal_request_page
+msgid "Status"
+msgstr "الحالة"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__subcontract_id
+msgid "Subcontract"
+msgstr "عقد مقاول باطن"
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__subcontract_id
+msgid "Subcontract created when the package was awarded."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Submit Bid"
+msgstr "تقديم العرض"
+
+#. module: construction_tender
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender_bid__state__submitted
+msgid "Submitted"
+msgstr "مُرسل"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__submitted_bid_count
+msgid "Submitted Bid Count"
+msgstr "عدد العروض المقدمة"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__submitted_on
+msgid "Submitted On"
+msgstr "تم الإرسال في "
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__is_late
+msgid "Submitted after the package closing date."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__tender_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__tender_id
+msgid "Tender"
+msgstr "العطاء"
+
+#. module: construction_tender
+#: model:ir.model,name:construction_tender.model_construction_tender_bid
+msgid "Tender Bid"
+msgstr "عرض عطاء"
+
+#. module: construction_tender
+#: model:ir.model,name:construction_tender.model_construction_tender_bid_line
+msgid "Tender Bid Line"
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__tender_line_id
+msgid "Tender Line"
+msgstr "بند عطاء"
+
+#. module: construction_tender
+#: model:ir.model,name:construction_tender.model_construction_tender
+msgid "Tender Package"
+msgstr "حزمة عطاء"
+
+#. module: construction_tender
+#: model:ir.actions.act_window,name:construction_tender.action_tender
+#: model:ir.ui.menu,name:construction_tender.menu_tender
+msgid "Tender Packages"
+msgstr "حزم العطاءات"
+
+#. module: construction_tender
+#: model:ir.model,name:construction_tender.model_construction_tender_line
+msgid "Tender Scope Line"
+msgstr "بند نطاق العطاء"
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/bid.py:0
+msgid "The package must be issued or in leveling to award it."
+msgstr ""
+
+#. module: construction_tender
+#. odoo-python
+#: code:addons/construction_tender/models/tender.py:0
+msgid "The scope can only be changed while the package is draft."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.constraint,message:construction_tender.constraint_construction_tender_bid_bidder_uniq
+msgid "This bidder has already been invited to the package."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid_line__variance
+msgid "This line's price against its budget. Positive is over budget."
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.constraint,message:construction_tender.constraint_construction_tender_bid_line_line_uniq
+msgid "This scope line is already priced on the bid."
+msgstr ""
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Total"
+msgstr "الإجمالي"
+
+#. modules: construction_hse, construction_tender
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__trade
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__trade
+msgid "Trade"
+msgstr "التخصص"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Unpriced"
+msgstr "غير مُسعَّر"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__unpriced_line_count
+msgid "Unpriced Line Count"
+msgstr ""
+
+#. modules: construction_material, construction_tender, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__uom_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__uom_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__uom_id
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_list
+msgid "UoM"
+msgstr "وحدة القياس"
+
+#. modules: construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__variance
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Variance"
+msgstr "الفرق"
+
+#. module: construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__variance_vs_budget
+msgid "Variance Vs Budget"
+msgstr "الفرق مقابل الموازنة"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "e.g. HVAC package"
+msgstr ""
+
+#. module: construction_tender
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__trade
+msgid "e.g. HVAC, Blockwork, Waterproofing."
+msgstr "مثال: تكييف، مبانٍ، عزل مائي."
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "not priced"
+msgstr "غير مُسعَّر"
+
+#. module: construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "vs Budget"
+msgstr "مقابل الموازنة"

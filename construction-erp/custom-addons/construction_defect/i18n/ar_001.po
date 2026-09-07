@@ -1,0 +1,683 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_state
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_state
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_state
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_state
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_state
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_state
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_state
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_state
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_state
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_type_icon
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_type_icon
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_type_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_type_icon
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_type_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_type_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_type_icon
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_type_icon
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_type_icon
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_defect
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__architectural
+msgid "Architectural / Finishes"
+msgstr "معماري / تشطيبات"
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__assigned_user_id
+msgid "Assigned To"
+msgstr "مسند إلى"
+
+#. modules: construction_base, construction_change_order, construction_defect,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__ball_in_court_id
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_defect
+#. odoo-python
+#: code:addons/construction_defect/models/construction_defect.py:0
+msgid "Cannot perform this action while the defect is '%s'."
+msgstr "لا يمكن تنفيذ هذا الإجراء عندما تكون حالة العيب «%s»."
+
+#. module: construction_defect
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__civil
+msgid "Civil / External"
+msgstr "مدني / أعمال خارجية"
+
+#. modules: construction_defect, construction_rfi, construction_subcontractor,
+#. construction_submittal, construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. modules: construction_base, construction_defect, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields.selection,name:construction_base.selection__project_project__construction_stage__closed
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__closed
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__state__closed
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract__state__closed
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__closed
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__closed
+msgid "Closed"
+msgstr "مغلق"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__color
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__color
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__color
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__color
+msgid "Color"
+msgstr "اللون"
+
+#. module: construction_defect
+#: model:ir.model,name:construction_defect.model_construction_defect
+msgid "Construction Defect / Punch Item"
+msgstr "عيب إنشائي / ملاحظة استلام"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__critical
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__critical
+msgid "Critical"
+msgstr "حرج"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+msgid "DLP Defects"
+msgstr "عيوب فترة الضمان"
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__date_identified
+msgid "Date Identified"
+msgstr "تاريخ التحديد"
+
+#. modules: construction_base, construction_change_order, construction_defect,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__date_required
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__date_required
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__date_required
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__date_required
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__date_required
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__date_required
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__date_required
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__date_required
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__date_required
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. modules: construction_base, construction_change_order, construction_defect,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_base.field_construction_document_mixin__date_required
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__date_required
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__date_required
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__date_required
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__date_required
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__date_required
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__date_required
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__date_required
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__date_required
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. modules: construction_defect, construction_ui
+#. odoo-python
+#. odoo-javascript
+#: code:addons/construction_defect/models/construction_pin.py:0
+#: model:ir.model.fields,field_description:construction_defect.field_construction_pin__defect_id
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__defect_ids
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Defect"
+msgstr "عيب"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+msgid "Defect / Punch List Report"
+msgstr "تقرير العيوب / قائمة الملاحظات"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+msgid "Defect title"
+msgstr "عنوان العيب"
+
+#. modules: construction_defect, construction_ui
+#. odoo-javascript
+#: model:ir.actions.act_window,name:construction_defect.action_construction_defect
+#: model:ir.actions.client,name:construction_ui.action_workspace_defects
+#: model:ir.ui.menu,name:construction_defect.menu_construction_defect
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Defects & Punch List"
+msgstr "العيوب وقائمة الملاحظات"
+
+#. modules: construction_base, construction_defect
+#: model:ir.model.fields.selection,name:construction_base.selection__project_project__construction_stage__dlp
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__phase__dlp
+msgid "Defects Liability Period"
+msgstr "فترة ضمان العيوب"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+msgid "Describe the defect…"
+msgstr "صِف العيب..."
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+msgid "Due Date"
+msgstr "موعد إجراء المكالمة "
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_type_icon
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_type_icon
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_type_icon
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_type_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_type_icon
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_type_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_type_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_type_icon
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_type_icon
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_type_icon
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__high
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__high
+msgid "High"
+msgstr "مرتفع"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_exception_icon
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_exception_icon
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_exception_icon
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_exception_icon
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_exception_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_exception_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_exception_icon
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_exception_icon
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_exception_icon
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. modules: construction_defect, construction_form
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__in_progress
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__in_progress
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. modules: construction_base, construction_change_order, construction_defect,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__is_overdue
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__is_overdue
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__is_overdue
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__is_overdue
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__is_overdue
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__is_overdue
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__is_overdue
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__is_overdue
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__is_overdue
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. modules: construction_daily_log, construction_defect, construction_form,
+#. facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__location
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__location
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__location
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__location_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__location_id
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_list
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_search
+msgid "Location"
+msgstr "الموقع"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__low
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__low
+msgid "Low"
+msgstr "منخفض"
+
+#. modules: construction_base, construction_defect, construction_rfi
+#: model:ir.model.fields.selection,name:construction_base.selection__project_project__project_type__mep
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__mep
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__mep
+msgid "MEP"
+msgstr "ميكانيكا وكهرباء وصحي"
+
+#. modules: construction_defect, facility_asset
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__severity__medium
+#: model:ir.model.fields.selection,name:facility_asset.selection__maintenance_equipment__criticality__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_summary
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_summary
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_summary
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_summary
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_summary
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_summary
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_summary
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_summary
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_summary
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_summary
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_type_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_type_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_type_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_type_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_type_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_type_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_type_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_type_id
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_type_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. modules: construction_change_order, construction_defect, construction_rfi
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_event__state__open
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__open
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+msgid "Open"
+msgstr "مفتوح"
+
+#. modules: construction_defect, construction_rfi, construction_ui
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Overdue"
+msgstr "متأخر"
+
+#. modules: construction_base, construction_change_order, construction_defect,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_base.field_construction_document_mixin__ball_in_court_id
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__ball_in_court_id
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__ball_in_court_id
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__ball_in_court_id
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__ball_in_court_id
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__ball_in_court_id
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__ball_in_court_id
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__ball_in_court_id
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__ball_in_court_id
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_defect
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__responsible_subcontractor_id
+msgid "Party responsible for rectifying the defect (portal-assignable)."
+msgstr "الطرف المسؤول عن تصحيح العيب ويمكن إسناده عبر البوابة."
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__phase
+msgid "Phase"
+msgstr "المرحلة"
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__photo_before
+msgid "Photo (Defect)"
+msgstr "صورة العيب"
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__photo_after
+msgid "Photo (Rectified)"
+msgstr "صورة بعد التصحيح"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+msgid "Photos"
+msgstr "الصور "
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_ids
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_ids
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_ids
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_ids
+msgid "Pin"
+msgstr "علامة"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_count
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_count
+msgid "Pin Count"
+msgstr "عدد العلامات"
+
+#. module: construction_defect
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__phase__punch
+msgid "Pre-Handover Punch"
+msgstr "ملاحظات ما قبل التسليم"
+
+#. module: construction_defect
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__phase
+msgid ""
+"Punch = snagging before handover; DLP = warranty defect after taking-over."
+msgstr ""
+"قائمة الملاحظات تخص ما قبل التسليم، وفترة ضمان العيوب تخص ما بعد الاستلام."
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+msgid "Punch List"
+msgstr "قائمة الملاحظات"
+
+#. module: construction_defect
+#: model:ir.actions.report,name:construction_defect.action_report_defect
+msgid "Punch List / Defect Report"
+msgstr "قائمة الملاحظات / تقرير العيوب"
+
+#. modules: construction_defect, construction_ui
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_ui.action_workspace_quality_hub
+#: model:ir.ui.menu,name:construction_defect.menu_construction_quality
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Quality & QA"
+msgstr "الجودة وضمان الجودة"
+
+#. module: construction_defect
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__ready
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+msgid "Ready for Inspection"
+msgstr "جاهز للفحص"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+msgid "Ref"
+msgstr "المرجع"
+
+#. modules: construction_base, construction_change_order, construction_defect,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__reference
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__reference
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__reference
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__reference
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__reference
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__reference
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__reference
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__reference
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__reference
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__reference
+msgid "Reference"
+msgstr "المرجع"
+
+#. modules: construction_defect, construction_form, construction_rfi
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+msgid "Reopen"
+msgstr "إعادة فتح"
+
+#. module: construction_defect
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__state__reopened
+msgid "Reopened"
+msgstr "أُعيد فتحه"
+
+#. module: construction_defect
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+msgid "Responsible"
+msgstr "المسؤول"
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__responsible_subcontractor_id
+msgid "Responsible Subcontractor"
+msgstr "المقاول الباطن المسؤول"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_user_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_user_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_user_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_user_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_user_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_user_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_user_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_user_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_user_id
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_user_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_defect
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__severity
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+msgid "Severity"
+msgstr "درجة الخطورة"
+
+#. modules: construction_defect, construction_form
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Start"
+msgstr "بدء"
+
+#. modules: construction_defect, construction_pin, construction_rfi,
+#. construction_ui, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__status
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__status
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__status
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+msgid "Status"
+msgstr "الحالة"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_state
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_state
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_state
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_state
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_state
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_state
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_state
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_state
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_state
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_state
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الأنشطة المعتمدة على الحالة\n"
+"المتأخرة: تاريخ الاستحقاق مر\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"المخطط: الأنشطة المستقبلية."
+
+#. modules: construction_defect, construction_drawing, construction_rfi
+#: model:ir.model.fields.selection,name:construction_defect.selection__construction_defect__trade__structural
+#: model:ir.model.fields.selection,name:construction_drawing.selection__construction_drawing__discipline__structural
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__discipline__structural
+msgid "Structural"
+msgstr "إنشائي"
+
+#. modules: construction_defect, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__subcontractor_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__subcontractor_id
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+msgid "Subcontractor"
+msgstr "المقاول الباطن"
+
+#. modules: construction_defect, construction_drawing, construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__name
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+msgid "Title"
+msgstr "اللقب "
+
+#. modules: construction_daily_log, construction_defect,
+#. construction_subcontractor
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__trade
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__trade
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__trade
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Trade"
+msgstr "التخصص"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_exception_decoration
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_exception_decoration
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_exception_decoration
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_decoration
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_exception_decoration
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_exception_decoration
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_exception_decoration
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_exception_decoration
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_exception_decoration
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_exception_decoration
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
+
+#. module: construction_defect
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__location
+msgid "Where on site, e.g. Level 3 lobby, grid C3."
+msgstr "الموقع داخل المشروع، مثال: بهو الطابق الثالث، المحور C3."

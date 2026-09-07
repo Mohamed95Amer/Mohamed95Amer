@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- website replaces web.login_layout at priority 20. Apply afterwards so
+         installing QR/NFC's website dependency cannot bring the generic site
+         header, footer or vendor branding back onto Majal sign-in. -->
+    <template id="majal_login_layout"
+              inherit_id="web.login_layout"
+              name="Majal Login"
+              priority="99">
+        <xpath expr="//t[@t-call='website.layout']" position="replace">
+            <t t-call="web.frontend_layout">
+                <t t-set="title">Majal</t>
+                <t t-set="html_data" t-value="{'style': 'height: 100%;'}"/>
+                <t t-set="body_classname" t-value="'bg-100'"/>
+                <t t-set="no_header" t-value="True"/>
+                <t t-set="no_footer" t-value="True"/>
+
+                <div class="container py-5">
+                    <div t-attf-class="card border-0 mx-auto bg-100 {{login_card_classes}} o_database_list">
+                        <div class="card-body">
+                            <div class="o_majal_login_brand" aria-label="Majal">
+                                <span class="o_majal_login_mark" aria-hidden="true">
+                                    <svg viewBox="0 0 48 48" role="img">
+                                        <path d="M8 35V18l16-9 16 9v17l-16 9z"/>
+                                        <path d="M16 33V21l8-4 8 4v12"/>
+                                        <path d="M24 17v27"/>
+                                    </svg>
+                                </span>
+                                <span class="o_majal_login_wordmark">
+                                    <strong>Majal</strong>
+                                    <small>Construction &amp; Facilities</small>
+                                </span>
+                            </div>
+                            <t t-out="0"/>
+                            <div class="o_majal_login_footer">
+                                Smart project and facility operations
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <function model="res.users" name="write">
+        <value eval="[ref('base.user_admin'), ref('base.user_root')]"/>
+        <value eval="{'action_id': ref('construction_ui.action_construction_home')}"/>
+    </function>
+</odoo>

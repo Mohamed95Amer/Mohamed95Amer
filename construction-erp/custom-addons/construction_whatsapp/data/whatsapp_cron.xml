@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Messages are queued by the business operation that caused them and
+         sent here, so a slow API never blocks a save. -->
+    <record id="cron_whatsapp_dispatch" model="ir.cron">
+        <field name="name">WhatsApp: send queued messages</field>
+        <field name="model_id" ref="model_whatsapp_message"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_dispatch()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="cron_whatsapp_chase_actions" model="ir.cron">
+        <field name="name">WhatsApp: chase stuck meeting actions</field>
+        <field name="model_id" ref="construction_meeting.model_construction_meeting_action"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_chase_stuck_actions()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

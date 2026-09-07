@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: majal_app
+      PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      ODOO_ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env}
+      MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:-}
+      MAJAL_AI_CA_BUNDLE: ${MAJAL_AI_CA_BUNDLE:-}
+      # Workstation Docker may reach Ollama through host.docker.internal.
+      # Hosted deployments intentionally do not inherit this opt-in.
+      MAJAL_AI_LOCAL_ENABLED: ${MAJAL_AI_LOCAL_ENABLED:-true}
+    entrypoint:
+      - /bin/bash
+      - /usr/local/bin/majal-entrypoint
+    command:
+      - odoo
+    volumes:
+      - ./scripts/docker-entrypoint-majal.sh:/usr/local/bin/majal-entrypoint:ro
+      - ./custom-addons:/mnt/custom-addons:ro
+      - ./oca-addons:/mnt/oca-addons:ro
+      - ./third-party-addons:/mnt/third-party-addons:ro
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - odoo-data:/var/lib/odoo
+    ports:
+      - "8069:8069"
+
+volumes:
+  db-data:
+  odoo-data:

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_intake_upload_form" model="ir.ui.view">
+        <field name="name">majal.intake.upload.form</field>
+        <field name="model">majal.intake.upload</field>
+        <field name="arch" type="xml">
+            <form string="Document Intake">
+                <header>
+                    <button name="action_parse" type="object" string="Read the file"
+                            class="btn-primary" invisible="state not in ('draft',)"/>
+                    <button name="action_parse" type="object" string="Read it again"
+                            invisible="state != 'parsed'"/>
+                    <button name="action_apply" type="object" string="Create the record"
+                            class="btn-primary" invisible="state != 'parsed'"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state in ('applied', 'rejected')"/>
+                    <button name="action_reset" type="object" string="Start over"
+                            invisible="state != 'parsed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,parsed,applied"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_record" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not created_record_ref">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Created</span>
+                                <span class="o_stat_text">record</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not duplicate_of_id">
+                        A file with exactly these contents has already been
+                        imported. Importing it again would duplicate the record.
+                        <field name="duplicate_of_id" readonly="1"/>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not error">
+                        <field name="error" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <!-- Shown before the file is read, because that is when
+                         the user is choosing what to upload. Without it the
+                         first time anyone learns a scanned PDF cannot be read
+                         is after they have picked one, hit the button and been
+                         refused, which reads as a broken feature rather than a
+                         boundary. Naming the limit up front is the difference. -->
+                    <div class="alert alert-info" role="alert"
+                         invisible="state != 'draft'">
+                        <p class="mb-1">
+                            <strong>What can be read.</strong>
+                            Spreadsheets (.xlsx), CSV, JSON, Word (.docx),
+                            plain text, and PDFs that contain real text or
+                            fillable form fields.
+                        </p>
+                        <p class="mb-1">
+                            <strong>What cannot.</strong>
+                            A scanned or photographed page is an image, so
+                            there is no text to read and nothing will be found.
+                            Reading those needs OCR, which Majal does not do
+                            yet. Export the original from the system that
+                            produced it, or use a PDF that was saved rather
+                            than scanned.
+                        </p>
+                        <p class="mb-0">
+                            <strong>Nothing is created yet.</strong>
+                            Reading the file only shows you what it says. You
+                            review every column and confirm before any record
+                            is made.
+                        </p>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="filename" readonly="state != 'draft'"/>
+                            <field name="file" filename="filename"
+                                   readonly="state != 'draft'"/>
+                            <field name="target_model" readonly="state != 'draft'"/>
+                            <field name="profile_id" readonly="state != 'draft'"/>
+                            <field name="document_template_id" readonly="1"
+                                   invisible="not document_template_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="project_id"/>
+                            <field name="file_format" readonly="1"
+                                   invisible="state == 'draft'"/>
+                            <field name="row_count" readonly="1"
+                                   invisible="state == 'draft'"/>
+                            <field name="checksum" readonly="1"
+                                   invisible="state == 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook invisible="state == 'draft'">
+                        <page string="Document viewer" name="document_viewer"
+                              invisible="file_format != 'pdf-form'">
+                            <field name="file" widget="pdf_viewer" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Review the mapping" name="mapping">
+                            <p class="text-muted">
+                                Confidence says which rule matched, not how
+                                likely the answer is to be right. Read the
+                                value beside it before accepting.
+                            </p>
+                            <!-- On a PDF form the "Target field" column is not
+                                 a field at all, it is the answer type the
+                                 question will take, and "Sample value" is the
+                                 question itself. Two columns meaning something
+                                 other than their headings say is worth one
+                                 sentence rather than a support call. -->
+                            <p class="text-muted" invisible="file_format != 'pdf-form'">
+                                This is a PDF form, so each row is one box on
+                                it: <strong>Sample value</strong> is the
+                                question as the form asks it, and
+                                <strong>Target field</strong> is the kind of
+                                answer it takes — text, number, date, yes/no,
+                                photo or signature. Change that if a box was
+                                read as the wrong kind.
+                            </p>
+                            <field name="field_ids" nolabel="1"
+                                   readonly="state != 'parsed'">
+                                <list editable="bottom" create="false"
+                                      delete="false"
+                                      decoration-muted="decision == 'reject'"
+                                      decoration-success="confidence &gt;= 90"
+                                      decoration-warning="confidence &gt; 0 and confidence &lt; 75">
+                                    <field name="sequence" column_invisible="1"/>
+                                    <field name="source_key" readonly="1"/>
+                                    <field name="sample_value" readonly="1"/>
+                                    <field name="target_field"/>
+                                    <field name="confidence" readonly="1"
+                                           widget="progressbar"/>
+                                    <field name="reason" readonly="1"
+                                           optional="show"/>
+                                    <field name="override_value"/>
+                                    <field name="required" optional="hide"/>
+                                    <field name="default_value" optional="hide"/>
+                                    <field name="decision"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="What was read" name="preview">
+                            <field name="preview_html" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_intake_upload_list" model="ir.ui.view">
+        <field name="name">majal.intake.upload.list</field>
+        <field name="model">majal.intake.upload</field>
+        <field name="arch" type="xml">
+            <list string="Intake" sample="1"
+                  decoration-muted="state == 'rejected'"
+                  decoration-success="state == 'applied'">
+                <field name="create_date"/>
+                <field name="filename"/>
+                <field name="file_format"/>
+                <field name="target_model"/>
+                <field name="project_id" optional="show"/>
+                <field name="row_count" optional="show"/>
+                <field name="create_uid" optional="show"/>
+                <field name="duplicate_of_id" optional="hide"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_intake_upload_search" model="ir.ui.view">
+        <field name="name">majal.intake.upload.search</field>
+        <field name="model">majal.intake.upload</field>
+        <field name="arch" type="xml">
+            <search string="Intake">
+                <field name="filename"/>
+                <field name="checksum"/>
+                <field name="project_id"/>
+                <filter name="filter_to_review" string="Waiting for review"
+                        domain="[('state', '=', 'parsed')]"/>
+                <filter name="filter_mine" string="Mine"
+                        domain="[('create_uid', '=', uid)]"/>
+                <filter name="filter_duplicates" string="Possible duplicates"
+                        domain="[('duplicate_of_id', '!=', False)]"/>
+                <separator/>
+                <filter name="filter_applied" string="Applied"
+                        domain="[('state', '=', 'applied')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_user" string="Uploaded by"
+                            context="{'group_by': 'create_uid'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_intake_upload" model="ir.actions.act_window">
+        <field name="name">Document Intake</field>
+        <field name="res_model">majal.intake.upload</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_intake_upload_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Import a document</p>
+            <p>
+                Upload a CSV, JSON, XLSX, DOCX or text file, or a PDF that
+                holds real text or fillable boxes. Majal reads it, proposes
+                which column belongs in which field, and shows you the result
+                before anything is created.
+            </p>
+            <p>
+                A scanned or photographed page is an image rather than text,
+                so there is nothing in it to read. Reading those needs OCR,
+                which Majal does not do yet.
+            </p>
+        </field>
+    </record>
+</odoo>

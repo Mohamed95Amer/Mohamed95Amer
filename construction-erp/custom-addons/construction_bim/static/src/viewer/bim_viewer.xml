@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_bim.Viewer">
+        <div class="o_bim_viewer">
+            <header class="o_bim_bar">
+                <div class="o_bim_title">
+                    <span class="o_bim_eyebrow">BIM MODEL</span>
+                    <h1 t-esc="state.info.name"/>
+                    <small>
+                        <t t-esc="state.info.project"/> ·
+                        <!-- " · rev " stays on one line: Owl looks a text node
+                             up with its own whitespace intact, so wrapping it
+                             here would strand the Arabic entry. -->
+                        <t t-esc="state.info.discipline"/> · rev <t t-esc="state.info.revision"/>
+                    </small>
+                </div>
+                <div class="o_bim_tools" t-if="!state.librariesMissing and !state.error">
+                    <select class="o_bim_select" t-if="storeys.length"
+                            t-on-change="(ev) => this.setStorey(ev.target.value)">
+                        <option value="all">All storeys</option>
+                        <option t-foreach="storeys" t-as="level" t-key="level"
+                                t-att-value="level" t-esc="level"/>
+                    </select>
+                    <button t-if="!state.compatibilityMode"
+                            t-att-class="{'active': state.placing}"
+                            t-on-click="startPlacing"
+                            title="Click the model to drop a pin">
+                        <i class="fa fa-map-marker"/> Pin
+                    </button>
+                    <button t-on-click="isolateSelection"
+                            t-att-disabled="!state.selected"
+                            title="Hide everything except the selection">
+                        <i class="fa fa-crosshairs"/> Isolate
+                    </button>
+                    <button t-on-click="hideSelection"
+                            t-att-disabled="!state.selected"
+                            title="Hide the selected element">
+                        <i class="fa fa-eye-slash"/> Hide
+                    </button>
+                    <button t-if="!state.compatibilityMode"
+                            t-att-class="{'active': state.sectionOn}"
+                            t-on-click="toggleSection" title="Cut through the model">
+                        <i class="fa fa-scissors"/> Section
+                    </button>
+                    <button t-if="state.hasSchedule"
+                            t-att-class="{'active': state.fourD}"
+                            t-on-click="toggleFourD"
+                            title="Show the model as it should stand on a date">
+                        <i class="fa fa-calendar"/> 4D
+                    </button>
+                    <button t-on-click="fitView" title="Frame the selection">
+                        <i class="fa fa-expand"/> Fit
+                    </button>
+                    <button t-on-click="toggleCompatibility"
+                            t-att-class="{'active': state.compatibilityMode}"
+                            title="Use a graphics-safe model view">
+                        <i class="fa fa-shield"/>
+                        <t t-if="state.compatibilityMode">Full 3D</t>
+                        <t t-else="">Safe view</t>
+                    </button>
+                    <select t-if="!state.compatibilityMode and state.info.federation and state.info.federation.length"
+                            class="o_bim_select o_bim_overlay_select"
+                            t-on-change="(ev) => this.onOverlayPicked(ev.target.value)">
+                        <option value="">Overlay a model…</option>
+                        <option t-foreach="state.info.federation" t-as="entry"
+                                t-key="entry.id" t-att-value="entry.id">
+                            <t t-esc="entry.name"/>
+                        </option>
+                    </select>
+                    <select t-if="!state.compatibilityMode"
+                            class="o_bim_select o_bim_shading"
+                            t-on-change="onShadingChange"
+                            title="What the colours mean">
+                        <option value="shaded"
+                                t-att-selected="state.shading === 'shaded'">
+                            Shaded — one material
+                        </option>
+                        <option value="class"
+                                t-att-selected="state.shading === 'class'">
+                            Colour by element class
+                        </option>
+                        <option value="status"
+                                t-att-selected="state.shading === 'status'">
+                            Colour by record status
+                        </option>
+                        <option value="original"
+                                t-att-selected="state.shading === 'original'">
+                            Original colours from the file
+                        </option>
+                    </select>
+                    <button t-if="!state.compatibilityMode"
+                            t-on-click="toggleEdges"
+                            t-att-class="state.edgesOn ? 'o_bim_on' : ''"
+                            title="Draw the outline of every element">
+                        <i class="fa fa-square-o"/> Edges
+                    </button>
+                    <button t-on-click="showEverything"
+                            t-att-disabled="!state.hidden and !state.isolated and state.storey === 'all'"
+                            title="Show everything again">
+                        <i class="fa fa-refresh"/> Reset
+                    </button>
+                    <button class="o_bim_mobile_details"
+                            t-on-click="showDetails"
+                            title="Open linked records and model details">
+                        <i class="fa fa-list"/> Details
+                    </button>
+                </div>
+                <div class="o_bim_counts">
+                    <span><strong t-esc="state.info.element_count"/> elements</span>
+                    <span><strong t-esc="state.info.linked_count"/> linked</span>
+                    <span><strong t-esc="state.pins.length"/>
+                        <t t-if="state.pins.length === 1"> pin</t>
+                        <t t-else=""> pins</t>
+                    </span>
+                </div>
+            </header>
+
+            <div class="o_bim_body">
+                <div class="o_bim_stage">
+                    <canvas t-ref="canvas"/>
+
+                    <div t-if="state.compatibilityMode"
+                         class="o_bim_compatibility"
+                         role="status">
+                        <i class="fa fa-shield"/>
+                        <span>
+                            <strong>Compatibility view</strong>
+                            Your browser blocked GPU rendering. The model, navigation, status colours and linked records remain available.
+                        </span>
+                    </div>
+
+                    <div t-if="state.loading" class="o_bim_overlay">
+                        <i class="fa fa-cube fa-spin"/>
+                        <p t-esc="state.progress"/>
+                    </div>
+
+                    <div t-if="state.librariesMissing" class="o_bim_overlay o_bim_setup">
+                        <i class="fa fa-download"/>
+                        <h2>The 3D libraries are not installed</h2>
+                        <p>
+                            They are fetched by a setup script rather than committed — web-ifc's browser build alone is 6 MB. Run this once, then reload:
+                        </p>
+                        <pre>Windows:
+powershell -ExecutionPolicy Bypass -File scripts\fetch-bim-libs.ps1
+
+Mac or Linux:
+./scripts/fetch-bim-libs.sh</pre>
+                        <button class="btn btn-primary"
+                                t-on-click="reloadViewer">
+                            <i class="fa fa-refresh"/> Reload viewer
+                        </button>
+                        <p class="o_bim_muted">
+                            Everything else on this model — the element index and its linked records — works without them.
+                        </p>
+                    </div>
+
+                    <div t-if="state.error" class="o_bim_overlay o_bim_error">
+                        <i class="fa fa-exclamation-triangle"/>
+                        <h2>The model could not be drawn</h2>
+                        <p t-esc="state.error"/>
+                        <button class="btn btn-primary"
+                                t-on-click="reloadViewer">
+                            <i class="fa fa-refresh"/> Try again
+                        </button>
+                    </div>
+
+                    <div t-if="state.sectionOn" class="o_bim_section">
+                        <label for="bim_section">Cut height</label>
+                        <input id="bim_section" type="range" min="0" max="100"
+                               t-att-value="state.sectionHeight"
+                               t-on-input="(ev) => this.setSectionHeight(ev.target.value)"/>
+                        <span><t t-esc="state.sectionHeight"/>%</span>
+                    </div>
+
+                    <!-- Clash strip: only when the viewer was opened from a
+                         test, because clash review is a different job from
+                         looking at a model. -->
+                    <div t-if="state.clashTest" class="o_bim_clash">
+                        <span class="o_bim_eyebrow">CLASH TEST</span>
+                        <strong t-esc="state.clashTest.name"/>
+                        <small>
+                            against <t t-esc="state.clashTest.model_b.name"/>, tolerance <t t-esc="state.clashTest.tolerance"/>
+                        </small>
+                        <div class="o_bim_clash_actions">
+                            <button class="btn btn-sm btn-primary"
+                                    t-att-disabled="state.busy"
+                                    t-on-click="startClashRun">
+                                <i class="fa fa-bolt"/> Run test
+                            </button>
+                            <button class="btn btn-sm btn-secondary"
+                                    t-on-click="openClashList">
+                                Open results
+                            </button>
+                        </div>
+                        <p t-if="state.clashSummary" class="o_bim_clash_summary">
+                            <t t-esc="state.clashSummary.found"/> found ·
+                            <t t-esc="state.clashSummary.created"/> new ·
+                            <t t-esc="state.clashSummary.resolved"/> resolved
+                        </p>
+                    </div>
+
+                    <!-- What is in this model, and how much of it. Doubles as
+                         the legend and as the way to look at one class at a
+                         time, which is what makes the classes readable
+                         without relying on telling six colours apart. -->
+                    <div t-if="state.classes.length and !state.compatibilityMode"
+                         class="o_bim_legend">
+                        <div class="o_bim_legend_head">
+                            <span class="o_bim_eyebrow">IN THIS MODEL</span>
+                            <button t-if="anyClassHidden"
+                                    class="o_bim_legend_all"
+                                    t-on-click="showAllClasses">Show all</button>
+                        </div>
+                        <div t-foreach="state.classes" t-as="row" t-key="row.name"
+                             t-attf-class="o_bim_legend_row {{ row.visible ? '' : 'o_bim_off' }}">
+                            <button class="o_bim_legend_eye"
+                                    t-on-click="() => this.toggleClass(row.name)"
+                                    t-attf-title="Hide or show {{ row.name }}">
+                                <i t-attf-class="fa fa-{{ row.visible ? 'eye' : 'eye-slash' }}"/>
+                            </button>
+                            <button class="o_bim_legend_name"
+                                    t-on-click="() => this.isolateClass(row.name)"
+                                    t-attf-title="Show only {{ row.name }}">
+                                <span class="o_bim_swatch"
+                                      t-attf-style="background: {{ state.shading === 'class' ? row.colour : '#c9c6bd' }}"/>
+                                <span class="o_bim_legend_label" t-esc="row.name"/>
+                                <span class="o_bim_legend_count" t-esc="row.count"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div t-if="state.overlays.length" class="o_bim_overlays">
+                        <span class="o_bim_eyebrow">OVERLAID</span>
+                        <button t-foreach="state.overlays" t-as="row" t-key="row.id"
+                                t-attf-class="o_bim_overlay_chip o_bim_disc_{{ row.discipline }} {{ row.visible ? 'active' : '' }}"
+                                t-on-click="() => this.toggleOverlay(row.id)">
+                            <i t-attf-class="fa fa-{{ row.visible ? 'eye' : 'eye-slash' }}"/>
+                            <t t-esc="row.name"/>
+                        </button>
+                    </div>
+
+                    <div t-if="state.busy" class="o_bim_busy">
+                        <i class="fa fa-circle-o-notch fa-spin"/>
+                        <t t-esc="state.progress"/>
+                    </div>
+
+                    <div t-if="state.fourD" class="o_bim_fourd">
+                        <label for="bim_play">On</label>
+                        <input id="bim_play" type="date"
+                               t-att-min="state.scheduleFrom"
+                               t-att-max="state.scheduleTo"
+                               t-att-value="state.playDate"
+                               t-on-change="(ev) => this.setPlayDate(ev.target.value)"/>
+                        <input class="o_bim_play_range" type="range" min="0" max="100"
+                               t-att-value="playPercent"
+                               t-on-input="(ev) => this.setPlayPercent(ev.target.value)"/>
+                        <span class="o_bim_fourd_key">
+                            <i class="fa fa-square"/> under construction
+                        </span>
+                    </div>
+
+                    <div t-if="state.placing" class="o_bim_hint">
+                        <i class="fa fa-map-marker"/>
+                        Click a point on the model to drop the pin.
+                        <button class="btn btn-sm btn-link" t-on-click="cancelDraft">Cancel</button>
+                    </div>
+
+                    <div t-if="state.draft" class="o_bim_draft">
+                        <span class="o_bim_eyebrow">NEW PIN</span>
+                        <label for="pin_type">What is it?</label>
+                        <select id="pin_type" t-model="state.draft.pin_type">
+                            <option t-foreach="pinTypes" t-as="type" t-key="type.id"
+                                    t-att-value="type.id" t-esc="type.label"/>
+                        </select>
+                        <label for="pin_name">Title</label>
+                        <input id="pin_name" type="text" t-model="state.draft.name"
+                               placeholder="e.g. Crack at third window"/>
+                        <label for="pin_note">Detail</label>
+                        <textarea id="pin_note" rows="2" t-model="state.draft.note"
+                                  placeholder="What needs doing here"/>
+                        <label for="pin_photo">Photo (optional)</label>
+                        <!-- capture asks a phone for the rear camera rather
+                             than the library: on site the picture is being
+                             taken now, of the thing being pinned. Ignored on
+                             a desktop, where this stays a file picker. -->
+                        <input id="pin_photo" type="file" accept="image/*"
+                               capture="environment" t-on-change="onDraftPhoto"/>
+                        <div t-if="state.draft.photoError" class="text-danger small"
+                             t-esc="state.draft.photoError"/>
+                        <img t-if="state.draft.photoPreview"
+                             class="o_bim_draft_photo"
+                             t-att-src="state.draft.photoPreview"
+                             alt="Selected photo"/>
+                        <div class="o_bim_draft_actions">
+                            <button class="btn btn-sm btn-primary" t-on-click="saveDraft">
+                                Drop pin
+                            </button>
+                            <button class="btn btn-sm btn-link" t-on-click="cancelDraft">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <div t-if="state.selected" class="o_bim_selection">
+                        <t t-if="state.selected.pin">
+                            <span class="o_bim_eyebrow" t-esc="state.selected.eyebrow"/>
+                            <strong t-esc="state.selected.title"/>
+                            <button t-if="state.selected.pin.pin_type !== 'note'"
+                                    class="btn btn-sm btn-primary"
+                                    t-on-click="() => this.openPin(state.selected.pin)">
+                                Open record
+                            </button>
+                        </t>
+                        <t t-elif="state.selected.element">
+                            <span class="o_bim_eyebrow"
+                                  t-esc="state.selected.element.ifc_type"/>
+                            <strong t-esc="state.selected.element.name or state.selected.element.ifc_type"/>
+                            <p t-if="state.selected.element.is_linked"
+                               t-esc="state.selected.element.link_summary"/>
+                            <p t-else="">Nothing attached to this element yet.</p>
+                            <button class="btn btn-sm btn-primary"
+                                    t-on-click="() => this.openElement(state.selected.element)">
+                                <t t-if="state.selected.element.is_linked">Open linked records</t>
+                                <t t-else="">Open element</t>
+                            </button>
+                        </t>
+                        <t t-else="">
+                            <span class="o_bim_eyebrow">NOTHING LINKED</span>
+                            <strong>Element <t t-esc="state.selected.expressID"/></strong>
+                        </t>
+                        <dl t-if="state.selected.properties" class="o_bim_props">
+                            <t t-foreach="state.selected.properties" t-as="row"
+                               t-key="row.label">
+                                <dt t-esc="row.label"/>
+                                <dd t-esc="row.value"/>
+                            </t>
+                        </dl>
+                        <!-- The property sets the authoring tool wrote: fire
+                             ratings, references, whether it is load bearing.
+                             Fetched on selection rather than sent with the
+                             model, which would be tens of thousands of rows. -->
+                        <t t-if="state.selected.psets and state.selected.psets.length">
+                            <button class="o_bim_pset_toggle"
+                                    t-on-click="() => this.state.showPsets = !this.state.showPsets">
+                                <i t-attf-class="fa fa-caret-{{ state.showPsets ? 'down' : 'right' }}"/>
+                                <t t-esc="state.selected.psets.length"/> properties
+                            </button>
+                            <dl t-if="state.showPsets" class="o_bim_props o_bim_psets">
+                                <t t-foreach="state.selected.psets" t-as="row"
+                                   t-key="row.id">
+                                    <dt t-esc="row.name"/>
+                                    <dd>
+                                        <t t-esc="row.value"/>
+                                        <small t-if="row.pset" t-esc="row.pset"/>
+                                    </dd>
+                                </t>
+                            </dl>
+                        </t>
+                    </div>
+                </div>
+
+                <aside class="o_bim_side" t-ref="side">
+                    <button class="o_bim_mobile_model"
+                            t-on-click="showModel">
+                        <i class="fa fa-cube"/> Back to model
+                    </button>
+                    <div class="o_bim_tabs">
+                        <button t-att-class="{'active': state.tab === 'elements'}"
+                                t-on-click="() => this.setTab('elements')">
+                            Elements
+                            <span class="o_bim_badge" t-esc="state.elements.length"/>
+                        </button>
+                        <button t-att-class="{'active': state.tab === 'pins'}"
+                                t-on-click="() => this.setTab('pins')">
+                            Pins
+                            <span class="o_bim_badge" t-esc="state.pins.length"/>
+                        </button>
+                    </div>
+                    <input class="o_bim_search" type="search"
+                           t-att-placeholder="state.tab === 'pins' ? 'Search pins…' : 'Search elements…'"
+                           t-model="state.search"/>
+                    <div class="o_bim_filters">
+                        <button t-att-class="{'active': state.filter === 'all'}"
+                                t-on-click="() => this.setFilter('all')">All</button>
+                        <button t-att-class="{'active': state.filter === 'blocked'}"
+                                t-on-click="() => this.setFilter('blocked')">Blocked</button>
+                        <button t-att-class="{'active': state.filter === 'open'}"
+                                t-on-click="() => this.setFilter('open')">Open</button>
+                        <button t-att-class="{'active': state.filter === 'done'}"
+                                t-on-click="() => this.setFilter('done')">Done</button>
+                        <button t-if="state.tab === 'elements'"
+                                t-att-class="{'active': state.filter === 'none'}"
+                                t-on-click="() => this.setFilter('none')">Unlinked</button>
+                    </div>
+
+                    <t t-if="state.tab === 'pins'">
+                        <div t-if="listedPins.length" class="o_bim_list">
+                            <div t-foreach="listedPins" t-as="pin" t-key="pin.id"
+                                 t-attf-class="o_bim_item o_bim_pin_row o_bucket_{{ pin.bucket }}">
+                                <button class="o_bim_pin_main"
+                                        t-on-click="() => this.focusPin(pin)"
+                                        title="Fly the camera to this pin">
+                                    <i t-attf-class="fa {{ this.pinIcon(pin.pin_type) }}"/>
+                                    <span>
+                                        <strong t-esc="pin.name"/>
+                                        <small t-esc="pin.note or pin.status"/>
+                                        <em t-if="pin.storey" t-esc="pin.storey"/>
+                                    </span>
+                                </button>
+                                <button class="o_bim_pin_open"
+                                        t-on-click="() => this.openPin(pin)"
+                                        title="Open the record this pin stands for">
+                                    <i class="fa fa-external-link"/>
+                                </button>
+                            </div>
+                        </div>
+                        <div t-else="" class="o_bim_empty">
+                            <i class="fa fa-map-marker"/>
+                            <p t-if="state.pins.length">
+                                No pin matches the current filter.
+                            </p>
+                            <p t-else="">
+                                No pins yet. Click <strong>Pin</strong>, then click the spot on the model — the task, RFI or defect is created where you put it.
+                            </p>
+                        </div>
+                    </t>
+
+                    <div t-elif="visibleElements.length" class="o_bim_list">
+                        <button t-foreach="visibleElements" t-as="element"
+                                t-key="element.id"
+                                t-attf-class="o_bim_item o_bucket_{{ element.link_bucket }}"
+                                t-on-click="() => this.openElement(element)">
+                            <span class="o_bim_dot"/>
+                            <span>
+                                <!-- Plenty of IFC elements are exported
+                                     unnamed. The type is what identifies them
+                                     to a human, so it stands in rather than
+                                     leaving a blank row. -->
+                                <strong t-esc="element.name or element.ifc_type"/>
+                                <small t-esc="element.link_summary or element.ifc_type"/>
+                                <em t-if="element.storey" t-esc="element.storey"/>
+                            </span>
+                        </button>
+                    </div>
+                    <div t-else="" class="o_bim_empty">
+                        <i class="fa fa-cube"/>
+                        <p t-if="state.elements.length">
+                            No element matches the current filter.
+                        </p>
+                        <p t-else="">
+                            No elements indexed for this model yet. Upload an IFC file and index it, and every element in it appears here.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </t>
+</templates>

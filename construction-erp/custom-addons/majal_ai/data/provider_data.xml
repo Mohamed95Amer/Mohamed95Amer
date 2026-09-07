@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="provider_local" model="majal.ai.provider">
+        <field name="name">Ollama General</field>
+        <field name="code">local</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">http://host.docker.internal:11434/v1/chat/completions</field>
+        <field name="model_name">gpt-oss:20b</field>
+        <field name="enabled" eval="True"/>
+        <field name="sequence">1</field>
+        <field name="daily_request_limit">100</field>
+        <field name="monthly_token_limit">0</field>
+    </record>
+
+    <record id="provider_local_coder" model="majal.ai.provider">
+        <field name="name">Ollama Technical</field>
+        <field name="code">local_coder</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">http://host.docker.internal:11434/v1/chat/completions</field>
+        <field name="model_name">qwen3-coder:30b</field>
+        <field name="enabled" eval="True"/>
+        <field name="sequence">2</field>
+        <field name="daily_request_limit">100</field>
+        <field name="monthly_token_limit">0</field>
+    </record>
+
+    <record id="provider_kimi" model="majal.ai.provider">
+        <field name="name">Kimi</field>
+        <field name="code">kimi</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.moonshot.ai/v1/chat/completions</field>
+        <field name="model_name">kimi-k3</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="provider_openai" model="majal.ai.provider">
+        <field name="name">OpenAI</field>
+        <field name="code">openai</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.openai.com/v1/chat/completions</field>
+        <field name="model_name">gpt-5.6-luna</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="provider_gemini" model="majal.ai.provider">
+        <field name="name">Gemini</field>
+        <field name="code">gemini</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://generativelanguage.googleapis.com/v1beta/models</field>
+        <field name="model_name">gemini-3.5-flash-lite</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="provider_anthropic" model="majal.ai.provider">
+        <field name="name">Claude</field>
+        <field name="code">anthropic</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.anthropic.com/v1/messages</field>
+        <field name="model_name">claude-sonnet-5</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="provider_deepseek" model="majal.ai.provider">
+        <field name="name">DeepSeek</field>
+        <field name="code">deepseek</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.deepseek.com/chat/completions</field>
+        <field name="model_name">deepseek-v4-flash</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="provider_mistral" model="majal.ai.provider">
+        <field name="name">Mistral AI</field>
+        <field name="code">mistral</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.mistral.ai/v1/chat/completions</field>
+        <field name="model_name">mistral-small-latest</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">60</field>
+    </record>
+
+    <record id="provider_groq" model="majal.ai.provider">
+        <field name="name">Groq</field>
+        <field name="code">groq</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://api.groq.com/openai/v1/chat/completions</field>
+        <field name="model_name">openai/gpt-oss-120b</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">70</field>
+    </record>
+
+    <record id="provider_demo" model="majal.ai.provider">
+        <field name="name">Majal Demo Guide</field>
+        <field name="code">demo</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="endpoint">https://demo.majal.invalid/v1</field>
+        <field name="model_name">guided-demo</field>
+        <field name="enabled" eval="False"/>
+        <field name="sequence">3</field>
+        <field name="daily_request_limit">500</field>
+        <field name="monthly_token_limit">0</field>
+    </record>
+</odoo>

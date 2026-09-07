@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Majal</title>
+  <desc id="desc">A white geometric Majal monogram inside a rounded teal square.</desc>
+  <defs>
+    <linearGradient id="majal-gradient" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#0B9C9A"/>
+      <stop offset="0.48" stop-color="#057B8A"/>
+      <stop offset="1" stop-color="#02496D"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#majal-gradient)"/>
+  <path d="M256 105 400 190v150l-144 85-144-85V190l144-85Z"
+        fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linejoin="round"/>
+  <path d="M190 325v-95l66-40 66 40v95M256 190v235"
+        fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The work order a defect raised, reachable from the defect. Lives in
+         construction_ui because that is the layer that depends on both
+         construction_defect and maintenance. -->
+    <record id="view_defect_form_workorder" model="ir.ui.view">
+        <field name="name">construction.defect.form.workorder</field>
+        <field name="model">construction.defect</field>
+        <field name="inherit_id" ref="construction_defect.view_defect_form"/>
+        <field name="arch" type="xml">
+            <!-- project_id exists in both the pre-workorder defect form and the
+                 current form.  Anchoring here keeps upgrades from older Majal
+                 databases valid; reviewer_id was introduced later. -->
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="workorder_id" readonly="1"
+                       invisible="not workorder_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_form_template_list" model="ir.ui.view">
+        <field name="name">construction.form.template.list</field>
+        <field name="model">construction.form.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/><field name="name"/><field name="project_id"/>
+                <field name="question_count" string="Questions"/>
+                <field name="recurring"/><field name="next_run_date"/>
+                <field name="inspection_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_form_template_form" model="ir.ui.view">
+        <field name="name">construction.form.template.form</field>
+        <field name="model">construction.form.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_new_inspection" type="object"
+                            string="Start Inspection" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" text="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+                    <group>
+                        <group><field name="code"/><field name="project_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id"/>
+                            <field name="recurring"/>
+                            <group invisible="not recurring" colspan="2">
+                                <field name="recurrence_interval"/>
+                                <field name="recurrence_unit"/>
+                                <field name="next_run_date"/>
+                            </group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Questions">
+                            <field name="question_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="section"/><field name="name"/>
+                                    <field name="answer_type"/><field name="required"/>
+                                    <field name="instructions"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Instructions"><field name="description"/></page>
+                    </notebook>
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_form_inspection_list" model="ir.ui.view">
+        <field name="name">construction.form.inspection.list</field>
+        <field name="model">construction.form.inspection</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/><field name="scheduled_date"/>
+                <field name="project_id"/><field name="template_id"/>
+                <field name="inspector_id"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="score"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-info="state == 'submitted'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_form_inspection_form" model="ir.ui.view">
+        <field name="name">construction.form.inspection.form</field>
+        <field name="model">construction.form.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'in_progress'"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="state != 'submitted'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state != 'submitted'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_reset" type="object" string="Reopen"
+                            invisible="state not in ['submitted', 'rejected']"/>
+                    <button name="action_pass_remaining" type="object"
+                            string="Mark Rest as Yes"
+                            invisible="state != 'in_progress' or remaining_count == 0"
+                            help="Answer every outstanding Yes/No check with Yes.
+                                  Anything already answered is left as it is."/>
+                    <!-- Alongside Print, not inside it: the PDF is the record
+                         you issue, the spreadsheet is the one you sort and
+                         count, and they are wanted at different moments. -->
+                    <button name="action_export_xlsx" type="object"
+                            string="Export to Excel" invisible="state == 'draft'"
+                            help="The answers as a spreadsheet, for sorting and
+                                  counting. Print gives the signed record."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group><field name="template_id" readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="state != 'draft'"/>
+                            <field name="location"/></group>
+                        <group><field name="scheduled_date"/><field name="inspector_id"/>
+                            <field name="completed_date"/><field name="score"/>
+                            <label for="progress" string="Completed"/>
+                            <div class="o_row">
+                                <field name="progress" widget="progressbar"/>
+                                <field name="answered_count" invisible="1"/>
+                                <field name="question_count" invisible="1"/>
+                                <field name="remaining_count" invisible="1"/>
+                                <field name="uses_text" invisible="1"/>
+                                <field name="uses_number" invisible="1"/>
+                                <field name="uses_date" invisible="1"/>
+                                <field name="uses_binary" invisible="1"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Checklist">
+                            <field name="answer_ids" readonly="state not in ['draft', 'in_progress']">
+                                <list editable="bottom" create="0" delete="0"
+                                      decoration-danger="is_failed"
+                                      decoration-muted="not is_answered">
+                                    <field name="sequence" column_invisible="True"/>
+                                    <field name="is_failed" column_invisible="True"/>
+                                    <field name="is_answered" column_invisible="True"/>
+                                    <field name="section" readonly="1" optional="show"/>
+                                    <field name="question_id" readonly="1"/>
+                                    <field name="instructions" readonly="1" optional="hide"/>
+                                    <field name="is_required" column_invisible="True"/>
+                                    <field name="answer_type" column_invisible="True"/>
+                                    <field name="answer_yes_no" string="Answer"
+                                           invisible="answer_type != 'yes_no'"/>
+                                    <field name="answer_text" string="Text"
+                                           invisible="answer_type != 'text'"
+                                           column_invisible="not parent.uses_text"/>
+                                    <field name="answer_number" string="Value"
+                                           invisible="answer_type != 'number'"
+                                           column_invisible="not parent.uses_number"/>
+                                    <field name="answer_date" string="Date"
+                                           invisible="answer_type != 'date'"
+                                           column_invisible="not parent.uses_date"/>
+                                    <field name="answer_binary" string="Attachment"
+                                           filename="answer_filename"
+                                           invisible="answer_type not in ['photo', 'signature']"
+                                           column_invisible="not parent.uses_binary"/>
+                                    <field name="answer_filename" column_invisible="True"/>
+                                    <field name="comment"/>
+                                </list>
+                                <!-- Odoo picks the kanban sub-view on a small
+                                     screen. Without one, a phone gets the list:
+                                     a 577px table squeezed into 390px, which
+                                     truncates the question to "Wall finish…" —
+                                     the one thing an inspector has to read.
+                                     Tapping a card opens the form below. -->
+                                <kanban class="o_kanban_mobile">
+                                    <field name="is_failed"/>
+                                    <field name="is_answered"/>
+                                    <field name="answer_type"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div t-attf-class="o_form_answer_card {{ record.is_failed.raw_value ? 'o_answer_failed' : '' }}">
+                                                <small t-if="record.section.value"
+                                                       class="text-muted"
+                                                       t-esc="record.section.value"/>
+                                                <div class="fw-bold">
+                                                    <field name="question_id"/>
+                                                </div>
+                                                <div t-if="record.instructions.value"
+                                                     class="text-muted small">
+                                                    <field name="instructions"/>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <field name="answer_yes_no"
+                                                           widget="badge"
+                                                           invisible="answer_type != 'yes_no'"
+                                                           decoration-danger="answer_yes_no == 'no'"
+                                                           decoration-success="answer_yes_no == 'yes'"/>
+                                                    <field name="answer_text"
+                                                           invisible="answer_type != 'text'"/>
+                                                    <field name="answer_number"
+                                                           invisible="answer_type != 'number'"/>
+                                                    <field name="answer_date"
+                                                           invisible="answer_type != 'date'"/>
+                                                    <span t-if="!record.is_answered.raw_value"
+                                                          class="badge text-bg-light">
+                                                        Not answered
+                                                    </span>
+                                                </div>
+                                                <div t-if="record.comment.value"
+                                                     class="text-muted small fst-italic">
+                                                    <field name="comment"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <!-- The dialog behind a tapped card. Radio
+                                     buttons rather than a dropdown: answering
+                                     is one tap, which is the whole difference
+                                     on site. -->
+                                <form>
+                                    <sheet>
+                                        <div class="oe_title">
+                                            <small class="text-muted">
+                                                <field name="section" readonly="1"/>
+                                            </small>
+                                            <h2><field name="question_id" readonly="1"/></h2>
+                                            <p class="text-muted">
+                                                <field name="instructions" readonly="1"/>
+                                            </p>
+                                        </div>
+                                        <field name="answer_type" invisible="1"/>
+                                        <group>
+                                            <field name="answer_yes_no" widget="radio"
+                                                   options="{'horizontal': True}"
+                                                   nolabel="1"
+                                                   invisible="answer_type != 'yes_no'"/>
+                                            <field name="answer_text"
+                                                   invisible="answer_type != 'text'"/>
+                                            <field name="answer_number"
+                                                   invisible="answer_type != 'number'"/>
+                                            <field name="answer_date"
+                                                   invisible="answer_type != 'date'"/>
+                                            <field name="answer_binary"
+                                                   filename="answer_filename"
+                                                   invisible="answer_type not in ['photo', 'signature']"/>
+                                            <field name="answer_filename" invisible="1"/>
+                                            <field name="comment"
+                                                   placeholder="What is wrong, and where"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Notes"><field name="notes"/></page>
+                    </notebook>
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_form_inspection_search" model="ir.ui.view">
+        <field name="name">construction.form.inspection.search</field>
+        <field name="model">construction.form.inspection</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="project_id"/>
+                <field name="template_id" filter_domain="[('template_id', '=', self)]"/>
+                <field name="inspector_id"/>
+                <filter name="my_inspections" string="My Inspections"
+                        domain="[('inspector_id', '=', uid)]"/>
+                <separator/>
+                <filter name="open_inspections" string="Still Open"
+                        domain="[('state', 'in', ['draft', 'in_progress'])]"/>
+                <filter name="awaiting_approval" string="Awaiting Approval"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter name="rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter name="this_week" string="Scheduled This Week"
+                        domain="[('scheduled_date', '&gt;=', (context_today() + relativedelta(weeks=-1, weekday=0)).strftime('%Y-%m-%d')),
+                                 ('scheduled_date', '&lt;=', (context_today() + relativedelta(weekday=6)).strftime('%Y-%m-%d'))]"/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_template" string="Form"
+                        context="{'group_by': 'template_id'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_form_templates" model="ir.actions.act_window">
+        <field name="name">Form Templates</field>
+        <field name="res_model">construction.form.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Build a form, or start from a standard one</p>
+            <p>
+                Thirteen standard forms install with the module — snagging,
+                pre and post pour, blockwork, MEP first fix, firestopping,
+                waterproofing, finishes, deliveries, safety walk and handover.
+                Copy one and edit it rather than starting from nothing.
+            </p>
+        </field>
+    </record>
+
+    <!-- Reachable after install too: somebody who deleted a form, or who
+         upgrades to a release that adds one, can pull in what is missing. -->
+    <record id="action_install_form_library" model="ir.actions.server">
+        <field name="name">Install Standard Forms</field>
+        <field name="model_id" ref="model_construction_form_library"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_install_library()</field>
+    </record>
+    <record id="action_form_inspections" model="ir.actions.act_window">
+        <field name="name">Inspections</field>
+        <field name="res_model">construction.form.inspection</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_form_inspection_search"/>
+    </record>
+    <menuitem id="menu_construction_forms" name="Forms &amp; Inspections"
+              parent="construction_daily_log.menu_construction_site"
+              action="action_form_inspections" sequence="20"/>
+    <menuitem id="menu_construction_form_templates" name="Form Templates"
+              parent="construction_base.menu_construction_config"
+              action="action_form_templates" sequence="40"/>
+    <menuitem id="menu_install_form_library" name="Install Standard Forms"
+              parent="construction_base.menu_construction_config"
+              action="action_install_form_library" sequence="45"/>
+
+    <!-- Send a whole selection for approval from the list-view cog. The
+         engine always looped over the recordset; until now nothing could
+         hand it more than one record. -->
+    <record id="action_request_approval_construction_form_inspection" model="ir.actions.server">
+        <field name="name">Request Approval</field>
+        <field name="model_id" ref="model_construction_form_inspection"/>
+        <field name="binding_model_id" ref="model_construction_form_inspection"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_request_approval_selected()</field>
+    </record>
+</odoo>

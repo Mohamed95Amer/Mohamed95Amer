@@ -1,0 +1,45 @@
+# Arabic (ar_001) translations for majal_api.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "Majal Integrations"
+msgstr "تكاملات مجال"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "API Clients"
+msgstr "عملاء الواجهة البرمجية"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "Integration user"
+msgstr "مستخدم التكامل"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "Rotate key"
+msgstr "تدوير المفتاح"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "Revoke"
+msgstr "إبطال"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "Revoked"
+msgstr "مُبطَل"
+
+#. module: majal_api
+#: model:ir.ui.menu,name:majal_api.menu_placeholder
+msgid "Active"
+msgstr "نشط"
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.ActivityMenu" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o-mail-ActivityMenu-empty')]/span" position="replace">
+            <div class="o_majal_activity_empty">
+                <i class="fa fa-check-circle" aria-hidden="true"/>
+                <strong>All caught up</strong>
+                <span>There are no activities waiting for you.</span>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o-mail-ActivityGroup')]/img" position="replace">
+            <span class="o_majal_activity_glyph" aria-hidden="true">
+                <i t-att-class="'fa ' + (
+                    group.model === 'maintenance.request' ? 'fa-wrench' :
+                    group.model === 'account.move' ? 'fa-file-text-o' :
+                    group.model === 'purchase.order' ? 'fa-shopping-cart' :
+                    group.model === 'project.task' ? 'fa-tasks' :
+                    group.model === 'project.project' ? 'fa-building-o' :
+                    'fa-calendar-check-o'
+                )"/>
+            </span>
+        </xpath>
+    </t>
+</templates>

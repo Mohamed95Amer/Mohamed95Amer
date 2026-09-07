@@ -1,0 +1,122 @@
+// A board reads this on a laptop in a meeting, so the four headline numbers
+// come first at a size you can read from across a table, and the detail is
+// underneath for whoever asks.
+.o_exposure {
+    height: 100%;
+    min-height: 0;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 20px 56px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+}
+
+.o_exposure_head {
+    margin-bottom: 20px;
+
+    h1 { margin: 0; font-size: 1.5rem; }
+    p { margin: 2px 0 0; color: #6b7a76; }
+}
+
+.o_exposure_tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.o_exposure_tile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid #dfe5e2;
+    border-radius: 8px;
+
+    strong { font-size: 1.5rem; }
+    small { color: #8d9b97; }
+}
+
+.o_exposure_label {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #6b7a76;
+}
+
+.o_exposure_pending {
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    background: #fdf6e6;
+    border: 1px solid #e8d9ac;
+    border-radius: 6px;
+}
+
+.o_exposure_block { margin-bottom: 28px; }
+
+.o_exposure_block_head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+
+    h2 { margin: 0; font-size: 1.05rem; }
+    small { color: #8d9b97; }
+}
+
+.o_exposure_table {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #dfe5e2;
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+
+    th, td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #eef2f0;
+    }
+
+    th {
+        font-size: .76rem;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: #6b7a76;
+        background: #f7faf8;
+    }
+
+    tbody tr:last-child td { border-bottom: 0; }
+}
+
+.o_exposure_row {
+    cursor: pointer;
+
+    &:hover { background: #f6f9f7; }
+}
+
+// A prompt to ask, not a verdict.
+.o_exposure_watch { color: #b8860b; font-weight: 600; }
+.o_exposure_high { color: #c0483c; font-weight: 600; }
+
+.o_exposure_loading {
+    padding: 56px;
+    text-align: center;
+    color: #6b7a76;
+}
+
+// Wide tables scroll inside themselves rather than pushing the page sideways.
+@media (max-width: 900px) {
+    .o_exposure_block { overflow-x: auto; }
+    .o_exposure_table { min-width: 760px; }
+}
+
+@media (max-width: 575.98px) {
+    .o_exposure { padding: 16px 12px 40px; }
+    .o_exposure_block_head { align-items: flex-start; }
+}

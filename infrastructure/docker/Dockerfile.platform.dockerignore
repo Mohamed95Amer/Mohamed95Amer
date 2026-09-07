@@ -1,0 +1,14 @@
+**
+!construction-erp/NOTICE.md
+!construction-erp/release/migration-contract.json
+!construction-erp/custom-addons/**
+!construction-erp/oca-addons/**
+!construction-erp/third-party-addons/**
+!construction-erp/scripts/docker-entrypoint-majal.sh
+!construction-erp/scripts/fetch-bim-libs.sh
+!infrastructure/docker/platform-entrypoint.sh
+!infrastructure/docker/demo-entrypoint.sh
+!infrastructure/docker/requirements-platform.lock.txt
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/

@@ -1,0 +1,21 @@
+{
+  "zone": "majalops.com",
+  "records": [
+    {
+      "type": "A",
+      "name": "platform.majalops.com",
+      "content": "SERVER_IPV4",
+      "ttl": 1,
+      "proxied": false,
+      "comment": "MajalOps platform server; enable proxy only after origin HTTPS passes"
+    },
+    {
+      "type": "AAAA",
+      "name": "platform.majalops.com",
+      "content": "SERVER_IPV6_IF_ENABLED",
+      "ttl": 1,
+      "proxied": false,
+      "comment": "Create only after IPv6 firewall and origin connectivity are verified"
+    }
+  ]
+}

@@ -1,0 +1,453 @@
+$majal-deep: #132f3b;
+$majal-ink: #20343d;
+$majal-muted: #6b7b82;
+$majal-line: #dfe6e8;
+$majal-page: #f3f6f6;
+
+.o_majal_workspace {
+    --majal-accent: #567f91;
+    height: 100%;
+    min-height: 0;
+    padding: clamp(18px, 3vw, 42px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    color: $majal-ink;
+    background:
+        radial-gradient(circle at 92% 2%, rgba(79,129,133,.09), transparent 27rem),
+        $majal-page;
+
+    &.o_tone_navy { --majal-accent: #4c6c7b; }
+    &.o_tone_blue { --majal-accent: #64879a; }
+    &.o_tone_teal { --majal-accent: #5b8d87; }
+    &.o_tone_sand { --majal-accent: #a48a5b; }
+    &.o_tone_clay { --majal-accent: #a16f64; }
+    &.o_tone_violet { --majal-accent: #7b748d; }
+    &.o_tone_slate { --majal-accent: #667b83; }
+
+    > * {
+        width: 100%;
+        max-width: 1540px;
+        margin-inline: auto;
+    }
+
+    button:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--majal-accent) 35%, transparent);
+        outline-offset: 2px;
+    }
+}
+
+.o_majal_workspace_nav {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 12px;
+    padding: 6px 8px;
+}
+
+.o_majal_back {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 11px;
+    border: 0;
+    border-radius: 9px;
+    color: #38545f;
+    background: transparent;
+    font-weight: 700;
+    &:hover { background: #e8eeee; }
+}
+
+.o_majal_breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #879499;
+    font-size: .78rem;
+    .fa { color: #b5c0c3; }
+    strong { color: #455c66; font-weight: 650; }
+}
+
+.o_majal_live {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    padding: 7px 10px;
+    border: 1px solid #dce5e4;
+    border-radius: 99px;
+    color: #657a7e;
+    background: rgba(255,255,255,.72);
+    font-size: .72rem;
+    i {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: #62ad91; box-shadow: 0 0 0 4px rgba(#62ad91,.12);
+    }
+}
+
+.o_majal_workspace_hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 36px;
+    min-height: 220px;
+    padding: clamp(28px, 4vw, 50px);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 22px;
+    color: white;
+    background:
+        radial-gradient(circle at 87% 22%, color-mix(in srgb, var(--majal-accent) 34%, transparent), transparent 26rem),
+        linear-gradient(112deg, #102b37, #244956);
+    box-shadow: 0 17px 43px rgba(14,39,49,.15);
+}
+
+.o_majal_workspace_identity {
+    display: flex;
+    max-width: 900px;
+    align-items: flex-start;
+    gap: 22px;
+    .o_majal_workspace_icon {
+        display: grid;
+        width: 58px; height: 58px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 16px;
+        color: #e2c993;
+        background: rgba(255,255,255,.07);
+        font-size: 1.35rem;
+    }
+    h1 {
+        margin: 6px 0 8px;
+        color: white;
+        font-size: clamp(2rem, 3.5vw, 3.15rem);
+        font-weight: 740;
+        letter-spacing: -.043em;
+        line-height: 1.03;
+    }
+    p {
+        max-width: 760px;
+        margin: 0;
+        color: rgba(255,255,255,.68);
+        font-size: 1rem;
+        line-height: 1.55;
+    }
+}
+
+.o_majal_eyebrow {
+    color: #b59a67;
+    font-size: .68rem;
+    font-weight: 780;
+    letter-spacing: .12em;
+}
+
+.o_majal_workspace_hero .o_majal_eyebrow { color: #dbc28c; }
+
+.o_majal_workspace_actions {
+    display: flex;
+    min-width: 170px;
+    flex-direction: column;
+    gap: 9px;
+    .btn {
+        min-height: 43px;
+        padding: 9px 15px;
+        border-radius: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+}
+
+.o_majal_primary {
+    color: #17313b;
+    border-color: #d7bd86;
+    background: #d7bd86;
+    &:hover { color: #17313b; border-color: #e1cca0; background: #e1cca0; }
+    .fa { margin-left: 6px; }
+}
+
+.o_majal_secondary {
+    color: white;
+    border-color: rgba(255,255,255,.18);
+    background: rgba(255,255,255,.07);
+    &:hover { color: white; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.12); }
+}
+
+.o_majal_metrics {
+    display: grid;
+    // auto-fit, not a fixed 4: workspaces expose 2–4 operational counts and the
+    // row should fill the width whichever number applies.
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 13px;
+    margin: 16px auto 25px;
+}
+
+.o_majal_metric {
+    display: flex;
+    min-height: 104px;
+    align-items: center;
+    gap: 13px;
+    padding: 17px;
+    border: 1px solid $majal-line;
+    border-top: 3px solid var(--majal-accent);
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 5px 17px rgba(15,42,52,.045);
+    > span {
+        display: grid;
+        width: 41px; height: 41px;
+        flex: 0 0 auto;
+        place-items: center;
+        border-radius: 11px;
+        color: var(--majal-accent);
+        background: color-mix(in srgb, var(--majal-accent) 12%, white);
+    }
+    > div { display: flex; min-width: 0; flex-direction: column; }
+    strong { font-size: 1.4rem; line-height: 1; }
+    small { margin-top: 5px; color: #65777f; }
+    em { margin-top: 3px; color: #9aa6aa; font-size: .65rem; font-style: normal; }
+    &.o_loading { border-top-color: #cbd6d9; }
+}
+
+// Metric tiles are buttons: each one opens its filtered list.
+.o_majal_metric_action {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+
+    .o_majal_metric_go {
+        margin-left: auto;
+        color: #b6c1c6;
+        opacity: 0;
+        transform: translateX(-4px);
+        transition: opacity .14s ease, transform .14s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+        border-color: var(--majal-accent);
+        box-shadow: 0 10px 24px rgba(15,42,52,.12);
+        transform: translateY(-2px);
+
+        .o_majal_metric_go { color: var(--majal-accent); opacity: 1; transform: translateX(0); }
+    }
+
+    &:active { transform: translateY(0); }
+
+    // A metric that represents risk (overdue, rejected, high severity) reads red
+    // as soon as it is non-zero, so problems are visible without reading labels.
+    &.o_tone_alert {
+        --majal-accent: #c0483c;
+    }
+}
+
+// Touch targets: keep the arrow affordance out of the way but never shrink the
+// tile below a comfortable tap area on phones.
+@media (hover: none) {
+    .o_majal_metric_action .o_majal_metric_go { opacity: .5; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_majal_metric_action,
+    .o_majal_metric_action .o_majal_metric_go {
+        transition: none;
+        transform: none;
+    }
+}
+
+.o_majal_detail_grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(320px, .75fr);
+    gap: 16px;
+}
+
+.o_majal_panel {
+    border: 1px solid $majal-line;
+    border-radius: 17px;
+    background: white;
+    box-shadow: 0 7px 22px rgba(15,42,52,.04);
+    > header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid #ebeff0;
+        h2 { margin: 4px 0 0; font-size: 1.25rem; letter-spacing: -.025em; }
+        .btn { color: #466b74; font-weight: 700; }
+    }
+}
+
+.o_majal_recent_list { padding: 8px; }
+.o_majal_recent_item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    text-align: left;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    transition: background .14s ease, transform .14s ease;
+    &:hover { background: #eff4f4; transform: translateX(2px); }
+    > span:nth-child(2) { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+    strong { overflow: hidden; color: #2b414a; font-size: .86rem; text-overflow: ellipsis; white-space: nowrap; }
+    small { margin-top: 3px; color: #8b999e; font-size: .69rem; }
+    > .fa { color: #a9b4b7; font-size: .7rem; }
+}
+
+.o_majal_recent_icon {
+    display: grid;
+    width: 36px; height: 36px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 9px;
+    color: var(--majal-accent);
+    background: color-mix(in srgb, var(--majal-accent) 11%, white);
+}
+
+.o_majal_empty {
+    display: flex;
+    min-height: 250px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    color: #829095;
+    text-align: center;
+    > .fa { margin-bottom: 12px; color: #a9b8bb; font-size: 1.7rem; }
+    strong { color: #4b626a; }
+    p { margin: 5px 0 0; font-size: .78rem; }
+}
+
+.o_majal_flow {
+    > header { display: block; }
+    ol { margin: 0; padding: 10px 20px 18px; list-style: none; }
+    li {
+        position: relative;
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        &:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 40px;
+            bottom: -7px;
+            left: 14px;
+            width: 1px;
+            background: #dfe7e8;
+        }
+        > span {
+            z-index: 1;
+            display: grid;
+            width: 29px; height: 29px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 9px;
+            color: var(--majal-accent);
+            background: color-mix(in srgb, var(--majal-accent) 12%, white);
+            font-size: .75rem;
+            font-weight: 800;
+        }
+        strong { font-size: .84rem; }
+        p { margin: 3px 0 0; color: $majal-muted; font-size: .72rem; line-height: 1.45; }
+    }
+}
+
+.o_majal_related {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    margin-top: 16px;
+    padding: 20px 22px;
+    border: 1px solid $majal-line;
+    border-radius: 16px;
+    background: rgba(255,255,255,.72);
+    h2 { margin: 4px 0 0; font-size: 1.15rem; letter-spacing: -.022em; }
+}
+
+.o_majal_related_list {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    gap: 8px;
+    > button {
+        display: flex;
+        min-width: 185px;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 10px;
+        text-align: left;
+        border: 1px solid #e0e7e8;
+        border-radius: 11px;
+        background: white;
+        transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+        &:hover {
+            border-color: #cbd7d9;
+            box-shadow: 0 6px 15px rgba(15,42,52,.07);
+            transform: translateY(-1px);
+        }
+        > span:nth-child(2) { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+        strong { overflow: hidden; color: #2d454e; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+        small { margin-top: 2px; overflow: hidden; color: #939fa3; font-size: .57rem; text-overflow: ellipsis; white-space: nowrap; }
+        > .fa { color: #aab5b8; font-size: .65rem; }
+    }
+}
+
+.o_majal_related_icon {
+    --related-tone: #668598;
+    display: grid;
+    width: 31px; height: 31px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--related-tone);
+    background: color-mix(in srgb, var(--related-tone) 12%, white);
+    &.o_tone_navy { --related-tone: #4c6c7b; }
+    &.o_tone_blue { --related-tone: #64879a; }
+    &.o_tone_teal { --related-tone: #5b8d87; }
+    &.o_tone_sand { --related-tone: #a48a5b; }
+    &.o_tone_clay { --related-tone: #a16f64; }
+    &.o_tone_violet { --related-tone: #7b748d; }
+    &.o_tone_slate { --related-tone: #667b83; }
+}
+
+@media (max-width: 1199.98px) {
+    .o_majal_related { align-items: flex-start; flex-direction: column; }
+    .o_majal_related_list { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+}
+
+@media (max-width: 991.98px) {
+    .o_majal_metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_majal_detail_grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 767.98px) {
+    .o_majal_workspace_hero { align-items: flex-start; flex-direction: column; }
+    .o_majal_workspace_actions { width: 100%; flex-direction: row; }
+    .o_majal_breadcrumb { display: none; }
+}
+
+@media (max-width: 575.98px) {
+    .o_majal_workspace { padding: 12px; }
+    .o_majal_workspace_hero { padding: 25px 20px; border-radius: 17px; }
+    .o_majal_workspace_identity { flex-direction: column; }
+    .o_majal_workspace_actions { flex-direction: column; }
+    // Two-up keeps the four operational counts visible without scrolling on a
+    // phone; one per row pushed the workspace links far below the fold.
+    .o_majal_metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .o_majal_metric { min-height: 92px; padding: 13px; gap: 10px; }
+    .o_majal_metric > span { width: 34px; height: 34px; }
+    .o_majal_metric strong { font-size: 1.2rem; }
+    .o_majal_metric .o_majal_metric_go { display: none; }
+    .o_majal_live { display: none; }
+    .o_majal_related_list > button { width: 100%; }
+}

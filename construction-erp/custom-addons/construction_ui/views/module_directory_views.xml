@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_majal_module_directory" model="ir.actions.client">
+        <field name="name">Majal Modules</field>
+        <field name="tag">construction_ui.module_directory</field>
+    </record>
+
+    <!-- Replace the vendor marketplace with the modules actually available
+         to this signed-in user. This removes unsupported subscriptions,
+         edition upgrades and third-party sales links from the client UI. -->
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="name">Majal Modules</field>
+        <field name="action" ref="action_majal_module_directory"/>
+    </record>
+</odoo>

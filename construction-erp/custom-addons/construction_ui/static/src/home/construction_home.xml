@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_ui.ConstructionHome">
+        <main class="o_construction_home">
+            <section class="o_construction_hero">
+                <div class="o_construction_hero_copy">
+                    <span class="o_construction_eyebrow">MAJAL · CONSTRUCTION COMMAND CENTER</span>
+                    <h1>Good work starts with a clear view.</h1>
+                    <p>Projects, field operations, commercial control and facilities—together in one place.</p>
+                    <div class="o_construction_hero_actions">
+                        <button class="btn o_construction_btn_primary"
+                                t-on-click="() => this.openWorkspace('projects')">
+                            <i class="fa fa-building-o"/> Project dashboard
+                        </button>
+                        <button class="btn o_construction_btn_secondary"
+                                t-on-click="() => this.openAction('construction_ui.action_construction_my_dashboard')">
+                            <i class="fa fa-thumb-tack"/> My workspace
+                        </button>
+                    </div>
+                </div>
+                <div class="o_construction_hero_meta">
+                    <div class="o_construction_meta_line">
+                        <span class="o_construction_date" t-esc="today"/>
+                        <div class="o_construction_status"><span/> Live</div>
+                    </div>
+                    <div class="o_construction_focus_panel">
+                        <header>
+                            <span><i class="fa fa-bolt"/> Today's focus</span>
+                            <small>Live priorities</small>
+                        </header>
+                        <div class="o_construction_focus_items">
+                            <button t-foreach="focusItems" t-as="item" t-key="item.key"
+                                    class="o_construction_focus_item"
+                                    t-on-click="() => this.openFocus(item)">
+                                <span class="o_construction_focus_icon">
+                                    <i t-attf-class="fa {{ item.icon }}"/>
+                                </span>
+                                <span>
+                                    <strong t-att-class="{'o_skeleton': state.loading}"
+                                            t-esc="state.kpis[item.key]"/>
+                                    <small t-esc="item.label"/>
+                                    <em t-esc="item.caption"/>
+                                </span>
+                                <i class="fa fa-arrow-right"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="o_construction_kpis" aria-label="Project overview">
+                <button t-foreach="kpiDefinitions" t-as="kpi" t-key="kpi.key"
+                        t-attf-class="o_construction_kpi o_tone_{{ kpi.tone }}"
+                        t-on-click="() => this.openWorkspace(kpi.workspace)">
+                    <span class="o_construction_kpi_icon"><i t-attf-class="fa {{ kpi.icon }}"/></span>
+                    <span class="o_construction_kpi_copy">
+                        <strong t-att-class="{'o_skeleton': state.loading}"
+                                t-esc="state.kpis[kpi.key]"/>
+                        <small t-esc="kpi.label"/>
+                        <em t-esc="kpi.hint"/>
+                    </span>
+                    <i class="fa fa-arrow-right o_construction_kpi_arrow"/>
+                </button>
+            </section>
+
+            <section class="o_construction_workspace">
+                <div class="o_construction_section_intro">
+                    <div>
+                        <span class="o_construction_eyebrow">WORKSPACES</span>
+                        <h2>Choose where you want to work</h2>
+                    </div>
+                    <p>Every workspace opens directly into the records your team uses most.</p>
+                </div>
+                <div class="o_construction_groups">
+                    <article class="o_construction_group"
+                             t-foreach="appGroups" t-as="group" t-key="group.title">
+                        <header>
+                            <div><h3 t-esc="group.title"/><p t-esc="group.subtitle"/></div>
+                            <span t-esc="formatAppCount(group.apps.length)"/>
+                        </header>
+                        <div class="o_construction_apps">
+                            <button t-foreach="group.apps" t-as="app" t-key="app.name"
+                                    class="o_construction_app"
+                                    t-on-click="() => this.openWorkspace(app.workspace)">
+                                <span t-attf-class="o_construction_app_icon o_tone_{{ app.tone }}">
+                                    <i t-attf-class="fa {{ app.icon }}"/>
+                                </span>
+                                <span class="o_construction_app_copy">
+                                    <strong t-esc="app.name"/>
+                                    <small t-esc="app.description"/>
+                                </span>
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <aside class="o_construction_saved_view_tip">
+                <span class="o_construction_tip_icon"><i class="fa fa-star-o"/></span>
+                <div>
+                    <strong>Build your personal Majal workspace</strong>
+                    <p>Save filtered records, charts and analysis so your most important views are always one click away.</p>
+                </div>
+                <button class="btn btn-link"
+                        t-on-click="() => this.openAction('construction_ui.action_construction_my_dashboard')">
+                    Open My Workspace <i class="fa fa-arrow-right"/>
+                </button>
+            </aside>
+        </main>
+    </t>
+</templates>

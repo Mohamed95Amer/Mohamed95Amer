@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_client_user_list" model="ir.ui.view">
+        <field name="name">res.users.majal.client.list</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <list string="Client Users" create="0" edit="0" delete="0"
+                  decoration-muted="not active">
+                <header>
+                    <button name="action_open_majal_invite" type="object"
+                            string="Create Client User" class="btn-primary"
+                            display="always"/>
+                </header>
+                <field name="name"/>
+                <field name="login"/>
+                <field name="majal_role_id"/>
+                <field name="majal_industry_scope"/>
+                <field name="majal_capability_pack_ids"
+                       widget="many2many_tags"
+                       optional="show"/>
+                <field name="majal_access_summary" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_client_user_form" model="ir.ui.view">
+        <field name="name">res.users.majal.client.form</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <form string="Client User" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_majal_access_wizard" type="object"
+                            string="Change Access" class="btn-primary"/>
+                    <button name="action_majal_toggle_active" type="object"
+                            string="Deactivate" class="btn-secondary"
+                            invisible="not active"/>
+                    <button name="action_majal_toggle_active" type="object"
+                            string="Reactivate" class="btn-secondary"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Client user</span>
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted">
+                            <field name="majal_access_summary" readonly="1"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Identity">
+                            <field name="login" readonly="1"/>
+                            <field name="email" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                        <group string="Majal Access">
+                            <field name="majal_role_id" readonly="1"/>
+                            <field name="majal_industry_scope" readonly="1"/>
+                            <field name="majal_capability_pack_ids"
+                                   widget="many2many_tags"
+                                   readonly="1"/>
+                            <field name="lang" readonly="1"/>
+                            <field name="tz" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info mt-3" role="alert">
+                        Access levels are controlled through Majal roles. Raw technical
+                        permissions are intentionally hidden. Optional capability packs
+                        are explicit, role-limited and recorded in the administration audit.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_majal_client_user_search" model="ir.ui.view">
+        <field name="name">res.users.majal.client.search</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="login"/>
+                <field name="majal_role_id"/>
+                <filter name="active_users" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive_users" string="Inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_role" string="Access Level"
+                            context="{'group_by': 'majal_role_id'}"/>
+                    <filter name="group_scope" string="Workspace"
+                            context="{'group_by': 'majal_industry_scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_client_users" model="ir.actions.act_window">
+        <field name="name">Users &amp; Access</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_majal_client_user_list"/>
+        <field name="search_view_id" ref="view_majal_client_user_search"/>
+        <field name="domain">[('share', '=', False), ('login', 'not in', ['default', '__system__'])]</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="groups_id" eval="[(4, ref('group_user_administrator'))]"/>
+    </record>
+
+    <record id="action_majal_client_users_scoped" model="ir.actions.server">
+        <field name="name">Users &amp; Access</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_majal_client_users()</field>
+        <field name="groups_id" eval="[(4, ref('group_user_administrator'))]"/>
+    </record>
+</odoo>

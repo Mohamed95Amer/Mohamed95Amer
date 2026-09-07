@@ -1,0 +1,121 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_home_construction
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_rfis
+msgid "RFIs"
+msgstr "طلبات المعلومات"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_home_construction
+msgid "Requests for information awaiting you"
+msgstr "طلبات المعلومات التي تنتظر ردك"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_home_construction
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_defects
+msgid "Defects"
+msgstr "الملاحظات"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_home_construction
+msgid "Punch / snagging items assigned to you"
+msgstr "بنود الملاحظات المسندة إليك"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_home_construction
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_subcontracts
+msgid "Subcontracts"
+msgstr "عقود الباطن"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_home_construction
+msgid "Your subcontracts and payment certificates"
+msgstr "عقود الباطن وشهادات الدفع الخاصة بك"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_rfis
+msgid "There are no RFIs for you yet."
+msgstr "لا توجد طلبات معلومات لك حتى الآن."
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_defects
+msgid "No defects assigned to you."
+msgstr "لا توجد ملاحظات مسندة إليك."
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_subcontracts
+msgid "You have no subcontracts."
+msgstr "لا توجد لديك عقود باطن."
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_rfis
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_defects
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_rfis
+msgid "Subject"
+msgstr "الموضوع"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_rfis
+msgid "Due"
+msgstr "تاريخ الاستحقاق"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_defects
+msgid "Title"
+msgstr "العنوان"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_defects
+msgid "Severity"
+msgstr "الأهمية"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_rfi_page
+msgid "Question"
+msgstr "السؤال"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_rfi_page
+msgid "Answer"
+msgstr "الإجابة"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_defect_page
+msgid "Mark ready for inspection"
+msgstr "جاهز للفحص"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_subcontract_page
+msgid "Payment certificates"
+msgstr "شهادات الدفع"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_subcontract_page
+msgid "Cert"
+msgstr "الشهادة"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_subcontracts
+msgid "Subcontract"
+msgstr "عقد الباطن"
+
+#. module: construction_portal
+#: model_terms:ir.ui.view,arch_db:construction_portal.portal_my_subcontracts
+msgid "Trade"
+msgstr "التخصص"

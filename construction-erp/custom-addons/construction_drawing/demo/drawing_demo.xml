@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="drawing_ar101" model="construction.drawing">
+        <field name="name">Ground Floor Plan</field>
+        <field name="number">AR-101</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">architectural</field>
+    </record>
+    <record id="drawing_ar101_reva" model="construction.drawing.revision">
+        <field name="drawing_id" ref="drawing_ar101"/>
+        <field name="revision">A</field>
+        <field name="issued_for">tender</field>
+    </record>
+    <record id="drawing_ar101_revb" model="construction.drawing.revision">
+        <field name="drawing_id" ref="drawing_ar101"/>
+        <field name="revision">B</field>
+        <field name="issued_for">construction</field>
+    </record>
+
+    <record id="drawing_st201" model="construction.drawing">
+        <field name="name">Raft Foundation Layout</field>
+        <field name="number">ST-201</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">structural</field>
+    </record>
+    <record id="drawing_st201_reva" model="construction.drawing.revision">
+        <field name="drawing_id" ref="drawing_st201"/>
+        <field name="revision">A</field>
+        <field name="issued_for">construction</field>
+    </record>
+
+    <record id="drawing_me301" model="construction.drawing">
+        <field name="name">Typical Floor HVAC Layout</field>
+        <field name="number">ME-301</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">mechanical</field>
+    </record>
+    <record id="drawing_me301_reva" model="construction.drawing.revision">
+        <field name="drawing_id" ref="drawing_me301"/>
+        <field name="revision">A</field>
+        <field name="issued_for">approval</field>
+    </record>
+</odoo>

@@ -1,0 +1,265 @@
+You are auditing and improving the MajalOps repository.
+
+Repository:
+C:\Users\hossi\Documents\Odoo\_codex_dashboard
+
+Git root:
+C:\Users\hossi\Documents\Odoo\_codex_dashboard
+
+Application source:
+construction-erp/
+
+Current branch:
+codex/property-integration
+
+Latest local commit:
+eb36396 — Create unified Majal workspace entry point
+
+Product identity:
+Majal, not Odoo. It is a unified construction, facilities-management, and
+property platform.
+
+Important current implementation:
+- custom-addons/construction_ui/
+  - Unified Majal home page for Construction, Facilities Management, and
+    Property.
+  - Main files:
+    - static/src/home/construction_home.js
+    - static/src/home/construction_home.xml
+    - static/src/home/construction_home.scss
+    - __manifest__.py
+  - construction_ui is now marked as an application so it appears in the
+    application catalogue.
+
+[NOTE — the brief as supplied was truncated here, mid-sentence, at a second
+bullet beginning "- custom". Whatever followed is missing from this file. If
+that section named further modules or constraints, re-supply it; do not treat
+this document as the complete original brief.]
+
+
+IMPORTANT PROPERTY SCOPE CLARIFICATION
+
+Do not assume that Majal already has a complete property-management domain.
+
+First audit the actual checkout and identify which of these exist:
+
+1. Asset-side property management:
+   - Estate portfolio reporting.
+   - Buildings and facility locations.
+   - Asset values after depreciation.
+   - Maintenance spend.
+   - Planned-versus-reactive maintenance.
+   - Facility site/building/floor/room hierarchy.
+
+2. Tenancy-side property management:
+   - Leases.
+   - Tenancies.
+   - Rent schedules.
+   - Occupancy.
+   - Arrears.
+   - Lettable units.
+   - Tenants.
+   - Rent collection.
+   - Renewals.
+   - Handover.
+
+The current known asset-side report is:
+
+- Model/report: majal.estate.report
+- Expected meaning: one row per building showing assets, book value after
+  depreciation, maintenance spend, and planned-versus-reactive split.
+- Every number must trace to an actual record.
+- Do not invent occupancy, rent, arrears, or tenant figures.
+
+Inspect the source before making conclusions. Search for:
+
+- estate_report.py
+- majal.estate.report
+- facility.location
+- facility_contract
+- contract.contract
+- lease
+- tenancy
+- tenant
+- occupancy
+- rent
+- arrears
+- lettable unit
+- APP_GROUPS
+- property workspace actions
+
+If leases, tenants, rent, or occupancy models do not exist, clearly report
+that the Property pillar is currently asset/estate management only.
+
+Do not fabricate tenancy data to make the dashboard look complete.
+
+The current product decision is:
+
+- Asset-side estate reporting can be used now.
+- Tenancy/property-leasing management is a separate future product scope.
+- Adding lease and tenant models requires an explicit architecture and product
+  decision.
+- If tenancy models are already present on another branch, identify them and
+  compare them, but do not merge branches automatically.
+
+UNIFIED HOME CHECK
+
+The unified Majal home currently presents Construction, Facilities Management,
+and Property.
+
+Verify whether this is accurate for the actual installed features.
+
+If only asset-side estate features exist, use an honest label such as:
+
+- Property Assets
+- Estate Portfolio
+- Property Operations (asset side)
+
+Do not present leasing, rent, occupancy, or tenant workflows unless the
+corresponding models and workflows really exist.
+
+Inspect APP_GROUPS in:
+
+custom-addons/construction_ui/static/src/home/construction_home.js
+
+The known version has four groups:
+
+- Field operations
+- Engineering
+- Commercial
+- Facilities
+
+There may be no real Property group or property actions in that file. Add a
+Property group only when it links to real installed actions and models.
+
+PROPERTY AUDIT ACCEPTANCE CRITERIA
+
+The audit must answer:
+
+1. Does a real Property module exist in this checkout?
+2. Is it only an estate/asset report?
+3. Are lease and tenancy models implemented?
+4. Which property actions and menus are installed?
+5. Which users can access them?
+6. Does the unified home link to real property functionality?
+7. Are the numbers traceable to actual records?
+8. Are any labels or screenshots claiming unsupported features?
+9. Should the unified home be renamed to reflect the real scope?
+10. What is the safest implementation plan for adding leases and tenants later?
+
+If tenancy functionality is missing, do not build it silently during this
+audit. Produce a separate proposal covering:
+
+- lease and tenancy models
+- units and availability
+- rent schedules
+- invoices and collections
+- deposits
+- arrears
+- renewals
+- tenant portal
+- approvals
+- accounting integration
+- security and record rules
+- migration strategy
+- test data strategy
+
+The final report must separate:
+
+A. Existing and verified asset-side property functionality.
+
+B. Missing tenancy-side functionality.
+
+C. Safe fixes that can be implemented now.
+
+D. Product decisions that require owner approval.
+
+
+FINDINGS ALREADY ESTABLISHED — DO NOT RE-DERIVE
+
+These were verified on branch codex/odoo19-ui-enhancement at commit 6bcd6ca
+(CI green: 728 tests, 0 failed, 0 errors). That branch is NOT
+codex/property-integration, so re-confirm on the checkout in front of you
+before relying on them — but do not repeat the search from scratch.
+
+Acceptance criteria 1-3, on codex/odoo19-ui-enhancement:
+
+- No Property module exists. None of the 43 modules in custom-addons/ matches
+  property/estate/lease/tenant/rent.
+- The Property pillar is asset/estate only: majal.estate.report in
+  custom-addons/majal_dashboard/models/estate_report.py, a SQL view at one row
+  per building.
+- No lease, tenancy, rent, occupancy, arrears or lettable-unit model exists.
+
+Three substring false positives will mislead a grep. All three are unrelated
+to real estate, and finding them is not evidence of a property domain:
+
+- construction.bim.property  — IFC property SETS in the BIM viewer.
+- construction.retention.release — matches "lease" inside "re-lease".
+- maintenance.request — matches "tenan" inside "main-tenan-ce".
+
+Field-level hits behave the same way: release_type, amount_release and
+_default_release_amount all belong to retention release in
+construction_progress_billing, not to letting.
+
+Acceptance criterion 6, on codex/odoo19-ui-enhancement: the unified home does
+NOT link to property functionality. APP_GROUPS in construction_home.js has
+exactly four groups — Field operations, Engineering, Commercial, Facilities —
+and no Property group. Note also that on that branch construction_ui is
+"application": False, and there are TWO home components rather than one:
+static/src/home/construction_home.js and
+static/src/facility_home/facility_home.js. The brief above describes a single
+unified home marked as an application, which is true of
+codex/property-integration and not of codex/odoo19-ui-enhancement. Establish
+which is in front of you before acting.
+
+Acceptance criterion 7: the estate report's figures are traceable. Its
+docstring records why it stops at the asset side — building an occupancy or
+arrears panel would have required inventing data, which the site content rules
+forbid. Preserve that reasoning if you extend the report.
+
+WHERE THE TWO BRANCHES DIVERGE
+
+codex/property-integration is ahead on exactly the things this audit is about:
+a unified home, construction_ui as an application, and whatever property work
+prompted the branch name. codex/odoo19-ui-enhancement is ahead on dashboards,
+depreciation, the security guards and CI. Those are the conflicts to expect on
+merge. Do not merge either branch automatically.
+
+
+CONSTRAINTS THAT STILL APPLY
+
+- Secrets come from environment variables. Never hardcode, never commit one.
+- Website content rules (website/README.md): no invented statistics, no
+  invented social proof, no pricing. Every number verifiable in the repo.
+- Screenshots on the site must be real captures. If you cannot produce one,
+  remove the <figure> block rather than substitute a mock-up.
+- Do not add a proprietary-licensed module without the owner deciding
+  explicitly.
+- Keep workflow guards unforgeable: compare context values against a private
+  object by identity, never a truthy check.
+- The product brand is Majal, not Odoo.
+
+TWO RULES THAT REPEATEDLY COST TIME ON THIS PROJECT
+
+1. A clean install proves nothing about whether a feature works. On the
+   dashboard branch, four separate features installed perfectly and were
+   broken, and the Python suite was green through every one. The most recent:
+   a dashboard panel wired with no context took the ENTIRE board down with a
+   client error dialog, and no test saw it. If you touch UI or JS, drive it in
+   a browser (Playwright, executable_path=/opt/pw-browsers/chromium, wait on
+   .o_main_navbar, never networkidle) and listen for pageerror.
+
+2. Read the API before writing against it. Assumed field names have caused
+   most of the defects on this project. Two recent examples, both of which
+   made a test pass while measuring nothing: res.users.share is computed from
+   group membership, so share=True on create is silently discarded; and
+   fields.Image runs every write through PIL, so arbitrary bytes raise before
+   any logic under test is reached.
+
+Also run scripts/init-db.sh, not only scripts/run-tests.sh. The suite never
+loads a language; init-db.sh loads ar_001, and a malformed .po entry has taken
+the whole install down while the suite stayed green.
+
+Before you start, run: git status --short && git log --oneline -5
+Report what you find before changing anything.

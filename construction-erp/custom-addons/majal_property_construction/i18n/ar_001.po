@@ -1,0 +1,181 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_construction
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_construction
+#. odoo-python
+#: code:addons/majal_property_construction/models/majal_building.py:0
+msgid "%(building)s is under %(building_project)s, but its development is delivered by %(development_project)s."
+msgstr "%(building)s يتبع %(building_project)s، لكن مشروعه العقاري يسلّمه %(development_project)s."
+
+#. module: majal_property_construction
+#. odoo-python
+#: code:addons/majal_property_construction/models/majal_development.py:0
+msgid "%s has no taking-over date set yet."
+msgstr "لم يُحدد بعد تاريخ استلام لـ %s."
+
+#. module: majal_property_construction
+#. odoo-python
+#: code:addons/majal_property_construction/models/majal_development.py:0
+msgid "%s is not linked to a construction project."
+msgstr "%s غير مرتبط بمشروع إنشاء."
+
+#. module: majal_property_construction
+#: model:ir.model,name:majal_property_construction.model_construction_defect
+msgid "Construction Defect / Punch Item"
+msgstr "ملاحظة إنشائية"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_majal_building__project_id
+#: model:ir.model.fields,field_description:majal_property_construction.field_majal_development__project_id
+msgid "Construction Project"
+msgstr "مشروع الإنشاء"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_majal_development__project_stage
+msgid "Construction Stage"
+msgstr "مرحلة الإنشاء"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_majal_development__project_taking_over_date
+msgid "Construction Taking-Over Date"
+msgstr "تاريخ الاستلام الإنشائي"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_construction_defect__unit_development_id
+msgid "Development"
+msgstr "المشروع العقاري"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_project_project__development_count
+msgid "Development Count"
+msgstr "عدد المشاريع"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_project_project__development_ids
+msgid "Developments"
+msgstr "المشاريع العقارية"
+
+#. module: majal_property_construction
+#: model:ir.model,name:majal_property_construction.model_majal_handover_snag
+msgid "Handover Snag"
+msgstr "ملاحظة تسليم"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_majal_handover_form_construction
+msgid "Import Site Punch Items"
+msgstr "استيراد ملاحظات الموقع"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_majal_handover_form_construction
+msgid "Open Site Punch Items"
+msgstr "ملاحظات موقع مفتوحة"
+
+#. module: majal_property_construction
+#: model:ir.model,name:majal_property_construction.model_project_project
+msgid "Project"
+msgstr "المشروع"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_project_form_property
+msgid "Property"
+msgstr "العقارات"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_project_project__property_unit_count
+msgid "Property Unit Count"
+msgstr "عدد الوحدات العقارية"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_majal_development_form_construction
+msgid "Pull handover date from construction"
+msgstr "جلب تاريخ التسليم من الإنشاء"
+
+#. module: majal_property_construction
+#: model:ir.model,name:majal_property_construction.model_majal_building
+msgid "Real Estate Building"
+msgstr "مبنى عقاري"
+
+#. module: majal_property_construction
+#: model:ir.model,name:majal_property_construction.model_majal_development
+msgid "Real Estate Development"
+msgstr "مشروع عقاري"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_project_form_property
+msgid "Saleable Units"
+msgstr "الوحدات القابلة للبيع"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,help:majal_property_construction.field_majal_building__project_id
+msgid "Set only where a building is delivered by its own project, separately from the rest of the development."
+msgstr "يُضبط فقط عندما يُسلَّم المبنى بمشروع خاص به، منفصلاً عن بقية المشروع العقاري."
+
+#. module: majal_property_construction
+#: model:ir.model.fields,help:majal_property_construction.field_majal_handover_snag__defect_id
+msgid "Set when this snag was imported from the construction punch list rather than raised at the handover inspection."
+msgstr "يُضبط عندما تُستورد الملاحظة من قائمة ملاحظات الإنشاء بدلاً من رفعها في معاينة التسليم."
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_majal_handover__site_defect_count
+msgid "Site Defect Count"
+msgstr "عدد ملاحظات الموقع"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_majal_handover_snag__defect_id
+msgid "Site Punch Item"
+msgstr "ملاحظة موقع"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_defect_form_property
+msgid "Site-wide item — leave empty"
+msgstr "بند على مستوى الموقع — اتركه فارغاً"
+
+#. module: majal_property_construction
+#: model:ir.model.fields,help:majal_property_construction.field_majal_development__project_id
+msgid "The construction project delivering this development."
+msgstr "مشروع الإنشاء الذي يسلّم هذا المشروع العقاري."
+
+#. module: majal_property_construction
+#: model:ir.model.fields,help:majal_property_construction.field_construction_defect__unit_id
+msgid "The saleable unit this punch item was found in, where it is inside one. Site-wide items leave this empty."
+msgstr "الوحدة القابلة للبيع التي وُجدت فيها الملاحظة، إن كانت داخل وحدة. أما بنود الموقع العامة فتترك هذا فارغاً."
+
+#. module: majal_property_construction
+#. odoo-python
+#: code:addons/majal_property_construction/models/majal_handover.py:0
+msgid "There are no new outstanding punch items on %s."
+msgstr "لا توجد ملاحظات معلقة جديدة على %s."
+
+#. module: majal_property_construction
+#: model:ir.model.fields,field_description:majal_property_construction.field_construction_defect__unit_id
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: majal_property_construction
+#: model:ir.model,name:majal_property_construction.model_majal_handover
+msgid "Unit Handover"
+msgstr "تسليم وحدة"
+
+#. module: majal_property_construction
+#. odoo-python
+#: code:addons/majal_property_construction/models/project_project.py:0
+msgid "Units"
+msgstr "الوحدات"
+
+#. module: majal_property_construction
+#: model_terms:ir.ui.view,arch_db:majal_property_construction.view_project_form_property
+msgid "View units"
+msgstr "عرض الوحدات"

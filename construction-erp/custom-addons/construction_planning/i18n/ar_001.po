@@ -1,0 +1,589 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. modules: construction_planning, construction_progress_billing
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__progress
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__pct_complete
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "% Complete"
+msgstr "% الإنجاز"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "%(count)s activities scheduled across %(projects)s projects."
+msgstr "تمت جدولة %(count)s أنشطة عبر %(projects)s مشاريع."
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid ""
+"%(count)s activities scheduled — %(critical)s on the critical path. "
+"Programme finish: %(finish)s (%(days)s working days)."
+msgstr ""
+"تمت جدولة %(count)s أنشطة — منها %(critical)s على المسار الحرج. نهاية "
+"البرنامج: %(finish)s (%(days)s أيام عمل)."
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_link.py:0
+msgid "A task cannot depend on itself."
+msgstr "لا يمكن أن تعتمد المهمة على نفسها."
+
+#. modules: construction_daily_log, construction_planning
+#. odoo-javascript
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__activity_ids
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Activity"
+msgstr "النشاط"
+
+#. module: construction_planning
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Baseline"
+msgstr "خط الأساس"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_project__baseline_date
+msgid "Baseline Date"
+msgstr "تاريخ خط الأساس"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__baseline_finish
+msgid "Baseline Finish"
+msgstr "نهاية خط الأساس"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__baseline_start
+msgid "Baseline Start"
+msgstr "بداية خط الأساس"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "Baseline captured"
+msgstr "تم اعتماد خط الأساس"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_link.py:0
+msgid "Both tasks of a dependency must be in the same project."
+msgstr "يجب أن تكون مهمتا الاعتمادية ضمن المشروع نفسه."
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.edit_project_reschedule
+msgid ""
+"Capture the current schedule as the baseline? Existing baseline values will "
+"be overwritten."
+msgstr ""
+"هل تريد حفظ الجدول الحالي كخط أساس؟ سيتم استبدال قيم خط الأساس الحالية."
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__cpm_early_finish
+msgid "Cpm Early Finish"
+msgstr "النهاية المبكرة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__cpm_early_start
+msgid "Cpm Early Start"
+msgstr "البداية المبكرة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__cpm_late_finish
+msgid "Cpm Late Finish"
+msgstr "النهاية المتأخرة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__cpm_late_start
+msgid "Cpm Late Start"
+msgstr "البداية المتأخرة"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
+msgid "Critical Path"
+msgstr "المسار الحرج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Critical path"
+msgstr "المسار الحرج"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_project__critical_task_count
+msgid "Critical Task Count"
+msgstr "عدد المهام الحرجة"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid ""
+"Current schedule saved as baseline. Future reschedules will show variance "
+"against it."
+msgstr ""
+"تم حفظ الجدول الحالي كخط أساس. ستُظهر عمليات إعادة الجدولة اللاحقة الانحراف "
+"عنه."
+
+#. module: construction_planning
+#: model:ir.actions.act_window,name:construction_planning.action_task_links
+#: model:ir.ui.menu,name:construction_planning.menu_construction_dependencies
+msgid "Dependencies"
+msgstr "الاعتماديات"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__planned_duration
+msgid "Duration (working days)"
+msgstr "المدة (أيام عمل)"
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_project__scheduled_start
+msgid "Earliest scheduled activity start (CPM)."
+msgstr "أبكر بداية مجدولة للنشاط وفق المسار الحرج."
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__finish_variance_days
+msgid "Finish Variance (wd)"
+msgstr "انحراف النهاية (أيام عمل)"
+
+#. module: construction_planning
+#: model:ir.model.fields.selection,name:construction_planning.selection__construction_task_link__link_type__ff
+msgid "Finish → Finish"
+msgstr "نهاية ← نهاية"
+
+#. module: construction_planning
+#: model:ir.model.fields.selection,name:construction_planning.selection__construction_task_link__link_type__fs
+msgid "Finish → Start"
+msgstr "نهاية ← بداية"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__is_critical
+msgid "Is Critical"
+msgstr "مهمة حرجة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__is_milestone
+msgid "Is Milestone"
+msgstr "معلم رئيسي"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__lag_days
+msgid "Lag (working days)"
+msgstr "الفاصل (أيام عمل)"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_project__last_rescheduled
+msgid "Last Rescheduled"
+msgstr "آخر إعادة جدولة"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Late Dates (CPM)"
+msgstr "التواريخ المتأخرة"
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_project__scheduled_finish
+msgid "Latest scheduled activity finish (CPM)."
+msgstr "آخر نهاية مجدولة للنشاط وفق المسار الحرج."
+
+#. module: construction_planning
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Milestones"
+msgstr "مؤشرات التقدم "
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "No activities to schedule in this project."
+msgstr "لا توجد أنشطة لجدولتها في هذا المشروع."
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_task__constraint_date
+msgid "Optional constraint: the activity cannot start before this date."
+msgstr "قيد اختياري: لا يمكن أن يبدأ النشاط قبل هذا التاريخ."
+
+#. module: construction_planning
+#: model:ir.ui.menu,name:construction_planning.menu_construction_planning_root
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Planning"
+msgstr "التخطيط"
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_construction_task_link__lag_days
+msgid "Positive delays the successor; negative allows overlap (lead)."
+msgstr "القيمة الموجبة تؤخر النشاط اللاحق والسالبة تسمح بالتداخل."
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__predecessor_id
+msgid "Predecessor"
+msgstr "النشاط السابق"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__predecessor_task_ids
+msgid "Predecessor Activities"
+msgstr "الأنشطة السابقة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__predecessor_link_ids
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Predecessors"
+msgstr "الأنشطة السابقة"
+
+#. module: construction_planning
+#: model:ir.ui.menu,name:construction_planning.menu_construction_programme
+msgid "Programme"
+msgstr "البرنامج الزمني"
+
+#. module: construction_planning
+#: model:ir.actions.act_window,name:construction_planning.action_construction_planning
+msgid "Programme (Schedule)"
+msgstr "البرنامج الزمني"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_project__schedule_duration_days
+msgid "Programme Duration (wd)"
+msgstr "مدة البرنامج (أيام عمل)"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_project_form_schedule_summary
+msgid "Programme Summary"
+msgstr "ملخص البرنامج"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "Programme rescheduled"
+msgstr "تمت إعادة جدولة البرنامج"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.edit_project_reschedule
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_list_planning
+msgid "Reschedule (CPM)"
+msgstr "إعادة الجدولة (المسار الحرج)"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Reschedule Project"
+msgstr "إعادة جدولة المشروع"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Schedule (CPM)"
+msgstr "الجدول (المسار الحرج)"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_project__scheduled_finish
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__planned_finish
+msgid "Scheduled Finish"
+msgstr "النهاية المجدولة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_project__scheduled_start
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__planned_start
+msgid "Scheduled Start"
+msgstr "البداية المجدولة"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.edit_project_reschedule
+msgid "Set Baseline"
+msgstr "اعتماد خط الأساس"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
+msgid "Slipped vs Baseline"
+msgstr "الانحراف عن خط الأساس"
+
+#. module: construction_planning
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
+msgid "Stage"
+msgstr "المرحلة"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__constraint_date
+msgid "Start No Earlier Than"
+msgstr "لا يبدأ قبل"
+
+#. module: construction_planning
+#: model:ir.model.fields.selection,name:construction_planning.selection__construction_task_link__link_type__sf
+msgid "Start → Finish"
+msgstr "بداية ← نهاية"
+
+#. module: construction_planning
+#: model:ir.model.fields.selection,name:construction_planning.selection__construction_task_link__link_type__ss
+msgid "Start → Start"
+msgstr "بداية ← بداية"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__successor_id
+msgid "Successor"
+msgstr "النشاط اللاحق"
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__successor_link_ids
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Successors"
+msgstr "الأنشطة اللاحقة"
+
+#. modules: construction_pin, construction_planning, facility_workorder
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: model:ir.model,name:construction_planning.model_project_task
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__task_id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__task_ids
+msgid "Task"
+msgstr "المهمة"
+
+#. module: construction_planning
+#: model:ir.model,name:construction_planning.model_construction_task_link
+msgid "Task Dependency"
+msgstr "اعتمادية مهمة"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_link.py:0
+msgid "This dependency would create a cycle in the schedule."
+msgstr "ستنشئ هذه الاعتمادية حلقة مغلقة في الجدول الزمني."
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__total_float
+msgid "Total Float (days)"
+msgstr "السماح الكلي (أيام)"
+
+#. modules: construction_planning, facility_asset
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__link_type
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_search
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_failure_code_search
+msgid "Type"
+msgstr "النوع"
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_task__predecessor_task_ids
+msgid "Used to draw dependency arrows on the timeline."
+msgstr "يُستخدم لرسم أسهم الاعتماديات على الخط الزمني."
+
+#. module: construction_planning
+#: model:ir.model.fields,field_description:construction_planning.field_project_task__wbs_code
+msgid "WBS"
+msgstr "هيكل تجزئة العمل"
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_project__baseline_date
+msgid "When the current baseline was captured."
+msgstr "تاريخ اعتماد خط الأساس الحالي."
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_project__schedule_duration_days
+msgid "Working days between scheduled start and finish."
+msgstr "أيام العمل بين البداية والنهاية المجدولتين."
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_task__total_float
+msgid "Working days the activity can slip without delaying the project."
+msgstr "أيام العمل التي يمكن أن يتأخرها النشاط دون تأخير المشروع."
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_task__planned_duration
+msgid "Working days the activity occupies. Ignored for milestones."
+msgstr "عدد أيام العمل التي يستغرقها النشاط، ولا تُحتسب للمعالم الرئيسية."
+
+#. module: construction_planning
+#: model:ir.actions.client,name:construction_planning.action_programme_gantt
+#: model:ir.ui.menu,name:construction_planning.menu_programme_gantt
+msgid "Programme Gantt"
+msgstr "مخطط البرنامج الزمني"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Day"
+msgstr "يوم"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Week"
+msgstr "أسبوع"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Month"
+msgstr "شهر"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Quarter"
+msgstr "ربع سنة"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Critical only"
+msgstr "المسار الحرج فقط"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "On critical path"
+msgstr "على المسار الحرج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Behind baseline"
+msgstr "متأخر عن خط الأساس"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Worst slip"
+msgstr "أكبر تأخير"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Complete"
+msgstr "مكتمل"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Loading programme…"
+msgstr "جارٍ تحميل البرنامج الزمني…"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "The programme could not be loaded."
+msgstr "تعذر تحميل البرنامج الزمني."
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid ""
+"No scheduled activities. Set planned start and finish dates on the project's"
+" tasks, then run the schedule to compute the critical path."
+msgstr ""
+"لا توجد أنشطة مجدولة. حدد تاريخي البداية والنهاية المخططين لمهام المشروع، ثم"
+" شغّل الجدولة لحساب المسار الحرج."
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Today"
+msgstr "اليوم"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "On programme"
+msgstr "وفق البرنامج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Milestone"
+msgstr "معلم رئيسي"
+
+#. module: construction_planning
+#: model:ir.model.fields,help:construction_planning.field_project_task__finish_variance_days
+msgid ""
+"Working days the scheduled finish has slipped (+) or gained (-) against the "
+"baseline."
+msgstr ""
+"عدد أيام العمل التي تأخرت (+) أو تقدمت (-) فيها النهاية المجدولة عن خط "
+"الأساس."
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "%(count)s activities scheduled — %(critical)s on the critical "
+msgstr "تمت جدولة %(count)s أنشطة — منها %(critical)s على المسار الحرج "
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "%s%% complete"
+msgstr "مكتمل %s%%"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Ahead of baseline by %s working days"
+msgstr "متقدم عن خط الأساس بـ %s أيام عمل"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_boq_link.py:0
+msgid "Bill Items"
+msgstr "بنود جدول الكميات"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/project_project.py:0
+msgid "Current schedule saved as baseline. Future reschedules "
+msgstr "تم حفظ الجدول الحالي كخط أساس. عمليات إعادة الجدولة اللاحقة "
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Float: %s working days"
+msgstr "الفائض الزمني: %s أيام عمل"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "On the critical path"
+msgstr "على المسار الحرج"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Phase %s"
+msgstr "المرحلة %s"
+
+#. module: construction_planning
+#. odoo-python
+#: code:addons/construction_planning/models/task_boq_link.py:0
+msgid "Programme Activities"
+msgstr "أنشطة البرنامج الزمني"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "Slipped %s working days behind baseline"
+msgstr "تأخر %s أيام عمل عن خط الأساس"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.js:0
+msgid "WBS %s"
+msgstr "رمز هيكل تجزئة العمل %s"
+
+#. module: construction_planning
+#. odoo-javascript
+#: code:addons/construction_planning/static/src/gantt/gantt.xml:0
+msgid "Zoom"
+msgstr "التكبير"

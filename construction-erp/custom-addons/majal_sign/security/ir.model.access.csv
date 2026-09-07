@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_sign_request_user,majal.sign.request user,model_majal_sign_request,base.group_user,1,1,1,1
+access_majal_sign_request_manager,majal.sign.request manager,model_majal_sign_request,majal_sign.group_sign_manager,1,1,1,1

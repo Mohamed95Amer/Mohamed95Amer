@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_facility_location_list" model="ir.ui.view">
+        <field name="name">facility.location.list</field>
+        <field name="model">facility.location</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="complete_name" string="Location"/>
+                <field name="location_type"/>
+                <field name="code"/>
+                <field name="asset_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_facility_location_form" model="ir.ui.view">
+        <field name="name">facility.location.form</field>
+        <field name="model">facility.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_assets" type="object"
+                                class="oe_stat_button" icon="fa-cubes">
+                            <field name="asset_count" widget="statinfo"
+                                   string="Assets"/>
+                        </button>
+                        <button name="action_view_open_requests" type="object"
+                                class="oe_stat_button" icon="fa-wrench"
+                                invisible="not open_request_count">
+                            <field name="open_request_count" widget="statinfo"
+                                   string="Open Work Orders"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Location name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="location_type"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="complete_name" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="child_ids" context="{'default_parent_id': id}">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="location_type"/>
+                            <field name="code"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_facility_location_search" model="ir.ui.view">
+        <field name="name">facility.location.search</field>
+        <field name="model">facility.location</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="group_type" string="Type"
+                        context="{'group_by': 'location_type'}"/>
+                <filter name="group_parent" string="Parent"
+                        context="{'group_by': 'parent_id'}"/>
+                <!-- The site → building → floor → room tree is the spine of a
+                     CAFM system and the register had no way to show it: the
+                     model is _parent_store with a parent_path, but the only
+                     way down was opening a location and using its inline
+                     child list. Community has no hierarchy view, so the
+                     hierarchized search panel is where the tree lives. -->
+                <searchpanel>
+                    <field name="parent_id" icon="fa-sitemap" enable_counters="1"
+                           hierarchize="1" limit="0" string="Location"/>
+                    <field name="location_type" icon="fa-building-o"
+                           enable_counters="1" string="Type"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_facility_location" model="ir.actions.act_window">
+        <field name="name">Locations</field>
+        <field name="res_model">facility.location</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

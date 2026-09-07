@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_sign_manager" model="res.groups">
+        <field name="name">eSign Manager</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">May cancel signing requests and review the signing register.</field>
+    </record>
+    <record id="rule_sign_request_company" model="ir.rule">
+        <field name="name">Majal signatures are company scoped</field>
+        <field name="model_id" ref="model_majal_sign_request"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

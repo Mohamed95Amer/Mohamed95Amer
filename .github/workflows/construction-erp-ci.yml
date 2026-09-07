@@ -1,0 +1,323 @@
+name: Construction ERP CI
+
+# Only the ERP is covered here. The repository root also holds an unrelated
+# Next.js app, so paths are filtered rather than running this on every commit.
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "construction-erp/**"
+      - ".github/workflows/construction-erp-ci.yml"
+  pull_request:
+    paths:
+      - "construction-erp/**"
+      - ".github/workflows/construction-erp-ci.yml"
+  workflow_dispatch:
+
+# A push to a branch that has an open pull request fires two runs — one for
+# each event. Keying the group on the ref alone put both in the same group, so
+# with cancel-in-progress they cancelled each other and the run that had
+# already passed every job was still reported as failed. Pull-request runs are
+# keyed by PR number and push runs by ref, so they no longer collide; a second
+# push supersedes its own earlier run, which is the behaviour that was wanted.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: construction-erp
+
+jobs:
+  # A fast gate that needs neither Odoo nor a database. Catches the mistakes
+  # that would otherwise burn ten minutes of test time to discover.
+  static:
+    name: Syntax and manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile every Python file
+        run: python -m compileall -q custom-addons
+
+      # The contract records a human's judgement about whether the previous
+      # image can still read a database this release has migrated. It is only
+      # worth reading if it cannot go stale, so this fails when a module ships
+      # a migration the contract does not account for.
+      - name: Check the release migration contract
+        run: python3 ../infrastructure/scripts/validate-migration-contract.py
+
+      - name: Parse every XML file
+        run: |
+          python - <<'PY'
+          import glob
+          import sys
+          import xml.dom.minidom
+
+          failed = []
+          for path in glob.glob("custom-addons/**/*.xml", recursive=True):
+              if "/static/lib/" in path:
+                  continue
+              try:
+                  xml.dom.minidom.parse(path)
+              except Exception as err:
+                  failed.append(f"{path}: {err}")
+          for line in failed:
+              print(line)
+          sys.exit(1 if failed else 0)
+          PY
+
+      - name: Check manifests are loadable and declare a licence
+        run: |
+          python - <<'PY'
+          import ast
+          import glob
+          import sys
+
+          problems = []
+          for path in sorted(glob.glob("custom-addons/*/__manifest__.py")):
+              try:
+                  manifest = ast.literal_eval(open(path).read())
+              except Exception as err:
+                  problems.append(f"{path}: not a literal dict ({err})")
+                  continue
+              for key in ("name", "version", "license", "depends"):
+                  if not manifest.get(key):
+                      problems.append(f"{path}: missing {key}")
+          for line in problems:
+              print(line)
+          print(f"{len(glob.glob('custom-addons/*/__manifest__.py'))} manifests checked")
+          sys.exit(1 if problems else 0)
+          PY
+
+      - name: Check the module lists agree
+        run: |
+          python - <<'PY'
+          import glob
+          import os
+          import re
+          import sys
+
+          def listed(path):
+              text = open(path).read()
+              match = re.search(r'MODULES="([^"]+)"', text)
+              return set(match.group(1).split(",")) if match else set()
+
+          on_disk = {
+              os.path.basename(os.path.dirname(p))
+              for p in glob.glob("custom-addons/*/__manifest__.py")
+          }
+          tests = listed("scripts/run-tests.sh")
+          init = listed("scripts/init-db.sh")
+
+          # init-db also installs third-party accounting, which is not ours.
+          init_ours = {m for m in init if m in on_disk}
+
+          # Modules deliberately left out, and why. This list is the whole
+          # point of the check: a new module missing from the scripts is
+          # almost always an oversight, so the exceptions have to be stated
+          # rather than tolerated.
+          #
+          #   majal_demo — an opt-in acceptance dataset. Its post_init_hook
+          #   creates a second company and a set of persona logins sharing one
+          #   password. Installing that into every test database and every
+          #   developer's init would seed both with data nobody asked for, and
+          #   it carries no tests of its own. auto_install is False for the
+          #   same reason.
+          intentionally_excluded = {"majal_demo"}
+
+          missing_from_tests = on_disk - tests - intentionally_excluded
+          missing_from_init = on_disk - init_ours - intentionally_excluded
+
+          # An exception that no longer names a real module is a stale
+          # exception, and the next one added under it inherits the silence.
+          stale = intentionally_excluded - on_disk
+          if stale:
+              print("excluded but not on disk:", sorted(stale))
+              sys.exit(1)
+          if missing_from_tests:
+              print("not in scripts/run-tests.sh:", sorted(missing_from_tests))
+          if missing_from_init:
+              print("not in scripts/init-db.sh:", sorted(missing_from_init))
+          print(f"{len(on_disk)} modules on disk")
+          sys.exit(1 if (missing_from_tests or missing_from_init) else 0)
+          PY
+
+  tests:
+    name: Odoo test suite
+    runs-on: ubuntu-latest
+    needs: static
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U odoo"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      PGHOST: localhost
+      PGUSER: odoo
+      PGPASSWORD: odoo
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system libraries Odoo's wheels build against
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --no-install-recommends \
+            libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev \
+            libjpeg-dev zlib1g-dev libpq-dev
+
+      # rtlcss builds the Arabic stylesheet. Without it Odoo serves a bundle
+      # named .rtl.min.css that is really the left-to-right sheet, so the
+      # install job would pass while Arabic renders in an English layout.
+      - name: Install rtlcss so the Arabic bundle is really mirrored
+        run: sudo npm install -g rtlcss
+
+      - name: Read the Odoo pin
+        id: pin
+        run: echo "sha=$(tr -d '[:space:]' < ODOO_PINNED_SHA)" >> "$GITHUB_OUTPUT"
+
+      # The Odoo tree is ~500 MB and is not committed, so it is cached against
+      # the pin rather than cloned on every run.
+      - name: Cache the Odoo source
+        id: odoo-cache
+        uses: actions/cache@v4
+        with:
+          path: construction-erp/vendor/odoo
+          key: odoo-src-${{ steps.pin.outputs.sha }}
+
+      - name: Fetch Odoo at the pinned commit
+        if: steps.odoo-cache.outputs.cache-hit != 'true'
+        run: ./scripts/fetch-odoo.sh
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ steps.pin.outputs.sha }}-${{ hashFiles('construction-erp/requirements-oca.txt') }}
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip wheel
+          pip install -r vendor/odoo/requirements.txt
+          pip install -r requirements-oca.txt
+
+      - name: Run the whole suite
+        run: |
+          set -o pipefail
+          ./scripts/run-tests.sh all 2>&1 | tee ci-tests.log
+
+      # run-tests.sh exits 0 as long as odoo-bin does, and odoo-bin's exit code
+      # has historically not always reflected a failed assertion — so the
+      # result line is checked explicitly rather than trusted.
+      - name: Assert the suite actually reported zero failures
+        run: |
+          if ! grep -qE "0 failed, 0 error\(s\)" ci-tests.log; then
+            echo "::error::the test summary did not report a clean run"
+            grep -E "FAIL:|ERROR:|failed, |error\(s\)" ci-tests.log | tail -40
+            exit 1
+          fi
+          grep -E "tests when loading database" ci-tests.log | tail -1
+
+      - name: Keep the log when something breaks
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: odoo-test-log
+          path: construction-erp/ci-tests.log
+          retention-days: 7
+
+  install:
+    name: Install with demo data
+    runs-on: ubuntu-latest
+    needs: static
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U odoo"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      PGHOST: localhost
+      PGUSER: odoo
+      PGPASSWORD: odoo
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system libraries Odoo's wheels build against
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --no-install-recommends \
+            libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev \
+            libjpeg-dev zlib1g-dev libpq-dev
+
+      # rtlcss builds the Arabic stylesheet. Without it Odoo serves a bundle
+      # named .rtl.min.css that is really the left-to-right sheet, so the
+      # install job would pass while Arabic renders in an English layout.
+      - name: Install rtlcss so the Arabic bundle is really mirrored
+        run: sudo npm install -g rtlcss
+
+      - name: Read the Odoo pin
+        id: pin
+        run: echo "sha=$(tr -d '[:space:]' < ODOO_PINNED_SHA)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache the Odoo source
+        id: odoo-cache
+        uses: actions/cache@v4
+        with:
+          path: construction-erp/vendor/odoo
+          key: odoo-src-${{ steps.pin.outputs.sha }}
+
+      - name: Fetch Odoo at the pinned commit
+        if: steps.odoo-cache.outputs.cache-hit != 'true'
+        run: ./scripts/fetch-odoo.sh
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ steps.pin.outputs.sha }}-${{ hashFiles('construction-erp/requirements-oca.txt') }}
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip wheel
+          pip install -r vendor/odoo/requirements.txt
+          pip install -r requirements-oca.txt
+
+      # A green test suite and a demo database that will not build are two
+      # different things: demo data has caught real bugs in this repo that the
+      # tests did not.
+      - name: Initialise a database with every module and demo data
+        run: ./scripts/init-db.sh ci_demo

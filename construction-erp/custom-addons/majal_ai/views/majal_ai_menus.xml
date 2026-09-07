@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_ai_workspace" model="ir.actions.client">
+        <field name="name">Majal Intelligence</field>
+        <field name="tag">majal_ai.workspace</field>
+    </record>
+
+    <menuitem id="menu_ai_root"
+              name="Majal Intelligence"
+              action="action_ai_workspace"
+              sequence="7"
+              groups="base.group_user"
+              web_icon="construction_ui,static/description/apps/intelligence.svg"/>
+
+    <menuitem id="menu_ai_workspace"
+              name="Assistant"
+              parent="menu_ai_root"
+              action="action_ai_workspace"
+              sequence="1"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_ai_configuration"
+              name="Configuration"
+              parent="menu_ai_root"
+              sequence="90"
+              groups="majal_ai.group_ai_manager,base.group_system"/>
+
+    <menuitem id="menu_ai_providers"
+              name="Providers"
+              parent="menu_ai_configuration"
+              action="action_ai_providers"
+              sequence="10"
+              groups="majal_ai.group_ai_manager,base.group_system"/>
+
+    <menuitem id="menu_ai_usage"
+              name="Usage &amp; Audit"
+              parent="menu_ai_configuration"
+              action="action_ai_usage"
+              sequence="20"
+              groups="majal_ai.group_ai_manager,base.group_system"/>
+</odoo>

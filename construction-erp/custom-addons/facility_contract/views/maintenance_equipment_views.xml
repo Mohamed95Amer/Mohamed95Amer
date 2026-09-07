@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_maintenance_equipment_contract_facilities_security" model="ir.ui.view">
+        <field name="name">maintenance.equipment.contract.facilities.security</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance_equipment_contract.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <field name="contract_ids" position="attributes">
+                <attribute name="groups">maintenance.group_equipment_manager</attribute>
+            </field>
+            <button name="action_view_contracts" position="attributes">
+                <attribute name="groups">maintenance.group_equipment_manager</attribute>
+            </button>
+        </field>
+    </record>
+
+    <record id="view_maintenance_equipment_contract_search_facilities_security" model="ir.ui.view">
+        <field name="name">maintenance.equipment.contract.search.facilities.security</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance_equipment_contract.hr_equipment_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="has_contracts" position="attributes">
+                <attribute name="groups">maintenance.group_equipment_manager</attribute>
+            </filter>
+            <filter name="no_contracts" position="attributes">
+                <attribute name="groups">maintenance.group_equipment_manager</attribute>
+            </filter>
+        </field>
+    </record>
+</odoo>

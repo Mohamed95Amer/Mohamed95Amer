@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mapping_profile_form" model="ir.ui.view">
+        <field name="name">majal.intake.mapping.profile.form</field>
+        <field name="model">majal.intake.mapping.profile</field>
+        <field name="arch" type="xml">
+            <form string="Mapping Profile">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Consultant's monthly letter"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="target_model"/>
+                            <field name="document_type"
+                                   invisible="target_model != 'majal.document'"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Rules" name="rules">
+                            <p class="text-muted">
+                                Only fields an import is permitted to write can
+                                be named here. The list is taken from the
+                                target model's own rules, so a field the
+                                workflow protects can never be added.
+                            </p>
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="source_key"/>
+                                    <field name="target_field"/>
+                                    <field name="required"/>
+                                    <field name="default_value"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mapping_profile_list" model="ir.ui.view">
+        <field name="name">majal.intake.mapping.profile.list</field>
+        <field name="model">majal.intake.mapping.profile</field>
+        <field name="arch" type="xml">
+            <list string="Mapping Profiles" sample="1">
+                <field name="name"/>
+                <field name="target_model"/>
+                <field name="document_type" optional="show"/>
+                <field name="note" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_mapping_profile" model="ir.actions.act_window">
+        <field name="name">Mapping Profiles</field>
+        <field name="res_model">majal.intake.mapping.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Save a mapping you use often</p>
+            <p>
+                A profile remembers which column in a supplier's file belongs
+                in which Majal field, so the next file from the same source is
+                mapped without being re-read by hand.
+            </p>
+        </field>
+    </record>
+</odoo>

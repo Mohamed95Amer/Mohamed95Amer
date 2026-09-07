@@ -1,0 +1,2589 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 21:40+0000\n"
+"PO-Revision-Date: 2026-07-25 21:40+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid ""
+"%(a)s clashes with %(b)s by %(overlap).3f at (%(x).2f, %(y).2f, %(z).2f). "
+"Please confirm which moves."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "%(count)s topic(s) imported from %(name)s."
+msgstr "تم استيراد %(count)s موضوع من %(name)s."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "%(found)s clash(es) found, %(created)s new."
+msgstr "تم العثور على %(found)s تعارض، منها %(created)s جديد."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "%s could not be downloaded."
+msgstr "تعذر تنزيل %s."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "%s created and pinned."
+msgstr "تم إنشاء %s وتثبيته."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "%s issue(s) exported as BCF 2.1."
+msgstr "تم تصدير %s ملاحظة بصيغة BCF 2.1."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ""
+",\n"
+"                            tolerance"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ""
+", then click\n"
+"                                the spot on the model — the task, RFI or defect is\n"
+"                                created where you put it."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "4D"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__name_a
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid "A"
+msgstr "A"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid ""
+"A clash test compares two models. Testing a model against itself reports "
+"every element that touches its neighbour."
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.constraint,message:construction_bim.constraint_construction_bim_property_property_unique
+msgid "A property appears once per element."
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_needaction
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_needaction
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__active
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash__status__active
+msgid "Active"
+msgstr "نشط"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_state
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_type_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__added
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Added"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__added_count
+msgid "Added Count"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "All"
+msgstr "الكل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "All storeys"
+msgstr "كل الطوابق"
+
+#. module: construction_bim
+#: model:ir.model.constraint,message:construction_bim.constraint_construction_bim_element_global_id_per_model
+msgid "An element appears once per model."
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash__status__approved
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__approved
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__architectural
+msgid "Architectural"
+msgstr "معماري"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__area
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Area"
+msgstr "المنطقة "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__assigned_user_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Assigned To"
+msgstr "مسند إلى"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Assigned to Me"
+msgstr "المسند إليّ"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "Attach an IFC file first."
+msgstr "أرفق ملف IFC أولاً."
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_attachment_count
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_attachment_count
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__author_id
+msgid "Author"
+msgstr "الكاتب "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__name_b
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid "B"
+msgstr "B"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__bcf_file
+msgid "BCF Archive"
+msgstr "ملف BCF"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_bcf
+msgid "BCF Exchange"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_list
+msgid "BCF Topic"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.ui.menu,name:construction_bim.menu_bim_root
+msgid "BIM"
+msgstr "نمذجة معلومات البناء"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_clash
+msgid "BIM Clash"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_clash_test
+msgid "BIM Clash Test"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_demo
+msgid "BIM Demo Loader"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_element
+msgid "BIM Element"
+msgstr "عنصر الموديل"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_property
+msgid "BIM Element Property"
+msgstr "خاصية عنصر النموذج"
+
+#. module: construction_bim
+#: model:ir.actions.act_window,name:construction_bim.action_bim_element
+msgid "BIM Elements"
+msgstr "عناصر الموديل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "BIM MODEL"
+msgstr "نموذج معلومات البناء"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_model
+msgid "BIM Model"
+msgstr "موديل نمذجة معلومات البناء"
+
+#. module: construction_bim
+#: model:ir.actions.act_window,name:construction_bim.action_bim_model
+msgid "BIM Models"
+msgstr "موديلات نمذجة معلومات البناء"
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_pin
+msgid "BIM Pin"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_comparison
+msgid "BIM Revision Comparison"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_bim_comparison_line
+msgid "BIM Revision Comparison Line"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model,name:construction_bim.model_construction_boq_line
+msgid "BOQ Line"
+msgstr "بند جدول الكميات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__ball_in_court_id
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__bcf_filename
+msgid "Bcf Filename"
+msgstr "Bcf اسم الملف"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__bcf_guid
+msgid "Bcf Guid"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Bill Item"
+msgstr "بند المقايسة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_element_count
+msgid "Bim Element Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_measure
+msgid "Bim Measure"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_variance
+msgid "Bim Variance"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_variance_percent
+msgid "Bim Variance Percent"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_element__link_bucket__blocked
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_pin__bucket__blocked
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+msgid "Blocked"
+msgstr "معلّق"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__boq_line_id
+msgid "Boq Line"
+msgstr "بند جدول الكميات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__bucket
+msgid "Bucket"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Building the model…"
+msgstr "جارٍ بناء النموذج…"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "CLASH TEST"
+msgstr "فحص التعارض"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_x
+msgid "Cam Target X"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_y
+msgid "Cam Target Y"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_target_z
+msgid "Cam Target Z"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_x
+msgid "Cam X"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_y
+msgid "Cam Y"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__cam_z
+msgid "Cam Z"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Camera X"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Camera Y"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Camera Z"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bcf_import_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_comparison_line__is_linked
+msgid ""
+"Carried an RFI, defect, task or bill item. A removal here needs somebody's "
+"attention."
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__change_type
+msgid "Change Type"
+msgstr "نوع التغيير"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Changed"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__changed_count
+msgid "Changed Count"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_compare.py:0
+msgid "Choose the revision to compare against."
+msgstr "اختر الإصدار المراد المقارنة به."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_compare.py:0
+msgid "Choose two different revisions."
+msgstr "اختر إصدارين مختلفين."
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__civil
+msgid "Civil"
+msgstr "مدني"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__clash_ids
+msgid "Clash"
+msgstr "تعارض"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__clash_count
+msgid "Clash Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.actions.act_window,name:construction_bim.action_clash_test
+#: model:ir.ui.menu,name:construction_bim.menu_bim_clash_tests
+msgid "Clash Tests"
+msgstr "اختبارات التعارض"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid ""
+"Clash test run: %(found)s found, %(created)s new, %(closed)s resolved since "
+"the last run."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "Clash: %s"
+msgstr "تعارض: %s"
+
+#. module: construction_bim
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.actions.act_window,name:construction_bim.action_clash
+#: model:ir.ui.menu,name:construction_bim.menu_bim_clashes
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
+msgid "Clashes"
+msgstr "التعارضات"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Click a point on the model to drop the pin."
+msgstr "انقر نقطة على النموذج لوضع المؤشر."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Click the model to drop a pin"
+msgstr "انقر النموذج لوضع مؤشر"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__resolved_by_run
+msgid "Closed automatically because the last run no longer found it."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid ""
+"Closed automatically: the last run of this test no\n"
+"                        longer found these two overlapping."
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Compare"
+msgstr "المقارنة"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Compare Revisions"
+msgstr "مقارنة المراجعات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__comparison_id
+msgid "Comparison"
+msgstr "مقارنة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__count
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Count"
+msgstr "التعداد "
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__state__current
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+msgid "Current"
+msgstr "الحالي "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Cut height"
+msgstr "ارتفاع المقطع"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Cut through the model"
+msgstr "عمل مقطع في النموذج"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__defect_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__defect_id
+msgid "Defect"
+msgstr "عيب"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Detail"
+msgstr "تفصيل "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__discipline
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+msgid "Discipline"
+msgstr "التخصص"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__display_name
+msgid "Display Name"
+msgstr "اسم العرض "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_element__link_bucket__done
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_pin__bucket__done
+msgid "Done"
+msgstr "منجز"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Downloading the IFC file…"
+msgstr "جارٍ تنزيل ملف IFC…"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Drop pin"
+msgstr "وضع مؤشر"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__electrical
+msgid "Electrical"
+msgstr "كهربائي"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__element_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__element_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Element"
+msgstr "العنصر"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__element_a_id
+msgid "Element A"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__element_b_id
+msgid "Element B"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__element_count
+msgid "Element Count"
+msgstr "عدد العناصر"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__global_id
+msgid "Element GlobalId"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_pin__element_id
+msgid "Element the pin was dropped on, when the click landed on one."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__element_ids
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Elements"
+msgstr "العناصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ""
+"Everything else on this model — the element index and\n"
+"                            its linked records — works without them."
+msgstr ""
+"كلthing else on this model — the element index and\n"
+"                            its مرتبط records — works without them."
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Export BCF"
+msgstr "تصدير BCF"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__federated
+msgid "Federated"
+msgstr "مُوحّد"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__ifc_filename
+msgid "File Name"
+msgstr "اسم الملف"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__file_size
+msgid "File Size"
+msgstr "حجم الملف"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Fit"
+msgstr "ملاءمة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Fly the camera to this pin"
+msgstr "توجيه الكاميرا إلى هذه العلامة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_follower_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_follower_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_partner_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_partner_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء) "
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_type_icon
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Frame the selection"
+msgstr "تأطير التحديد"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+msgid "From BCF"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__base_model_id
+msgid "From Revision"
+msgstr "من المراجعة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Give the pin a name."
+msgstr "أعطِ المؤشر اسماً."
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__global_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__global_id
+msgid "Global"
+msgstr "شامل"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__global_id_a
+msgid "Global Id A"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__global_id_b
+msgid "Global Id B"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "GlobalId"
+msgstr "المعرّف العام"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+msgid "Gone from the model"
+msgstr "غير موجود في الموديل"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid ""
+"Hand the issues to Solibri, Navisworks or                                   "
+"BIMcollab as a BCF 2.1 archive."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+msgid "Has Linked Elements"
+msgstr "به عناصر مرتبطة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__has_message
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__has_message
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__has_quantities
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+msgid "Has Quantities"
+msgstr "يحتوي كميات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__is_linked
+msgid "Has Records"
+msgstr "مرتبط بسجلات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__has_viewpoint
+msgid "Has Viewpoint"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Hide"
+msgstr "إخفاء "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Hide everything except the selection"
+msgstr "إخفاء كل شيء عدا التحديد"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Hide the selected element"
+msgstr "إخفاء العنصر المحدد"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__ifc_file
+msgid "IFC File"
+msgstr "ملف IFC"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+msgid "IFC Type"
+msgstr "نوع عنصر IFC"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "IFC type"
+msgstr "نوع IFC"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_exception_icon
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__message_needaction
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__message_needaction
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__message_has_error
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__message_has_sms_error
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__message_has_error
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__message_has_sms_error
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_has_error
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__ifc_type
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__ifc_type
+msgid "Ifc Type"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bcf_import_form
+msgid "Import"
+msgstr "استيراد"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: model:ir.model,name:construction_bim.model_construction_bim_bcf_import
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Import BCF"
+msgstr "استيراد BCF"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "Imported Topics"
+msgstr "الموضوعات المستوردة"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+msgid "Imported topic"
+msgstr "موضوع مستورد"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Index Elements"
+msgstr "فهرسة العناصر"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__index_error
+msgid "Index Error"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__state__indexed
+msgid "Indexed"
+msgstr "مفهرس"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "Indexed %(count)s elements across %(storeys)s storey(s)."
+msgstr "Indexed %(count)s عنصر across %(storeys)s storey(s)."
+
+#. module: construction_bim
+#: model_terms:ir.actions.act_window,help:construction_bim.action_bim_model
+msgid ""
+"Indexing reads the elements out of the file so an RFI, a defect\n"
+"                or a bill item can be attached to a specific wall or duct — and\n"
+"                stay attached when the model is re-exported."
+msgstr ""
+"Indexing reads the عنصر out of the file so an RFI, a defect\n"
+"                or a bill item can be attached to a specific wall or duct — and\n"
+"                stay attached when the model is re-exported."
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_is_follower
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_is_follower
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__is_linked
+msgid "Is Linked"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__is_orphan
+msgid "Is Orphan"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Isolate"
+msgstr "عزل"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_pin__global_id
+msgid ""
+"Kept alongside the element link so a pin survives the element record being "
+"rebuilt."
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__last_run
+msgid "Last Run"
+msgstr "آخر تشغيل "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__last_run_skipped
+msgid "Last Run Skipped"
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__length
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Length"
+msgstr "الطول"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__line_ids
+msgid "Line"
+msgstr "البند "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__link_bucket
+msgid "Link Bucket"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__link_summary
+msgid "Link Summary"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Linked"
+msgstr "مرتبط"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__linked_count
+#: model:ir.ui.menu,name:construction_bim.menu_bim_elements
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Linked Elements"
+msgstr "العناصر المرتبطة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+msgid "Linked records"
+msgstr "السجلات المرتبطة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_search_bim
+msgid "Linked to a model that measures less than the bill."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Loading %s…"
+msgstr "جارٍ تحميل %s…"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Loading the model to test against…"
+msgstr "جارٍ تحميل النموذج المراد الفحص مقابله…"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__measure
+msgid "Measure"
+msgstr "قياس"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__mechanical
+msgid "Mechanical"
+msgstr "ميكانيكي"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_has_error
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_has_error
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_bcf_import__model_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__model_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__model_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__model_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+msgid "Model"
+msgstr "الطراز"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__model_a_id
+msgid "Model A"
+msgstr "النموذج أ"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__model_b_id
+msgid "Model B"
+msgstr "النموذج ب"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/boq_bridge.py:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_element_ids
+msgid "Model Elements"
+msgstr "عناصر النموذج"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_search_bim
+msgid "Model Over Bill"
+msgstr "النموذج أكثر من المقايسة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_form_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_list_bim
+msgid "Model Qty"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_boq_line__bim_quantity
+msgid "Model Quantity"
+msgstr "كمية النموذج"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_search_bim
+msgid "Model Under Bill"
+msgstr "النموذج أقل من المقايسة"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_boq_line__bim_variance
+msgid ""
+"Model quantity less billed quantity. Negative means the model contains less "
+"than the bill is measured against."
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.ui.menu,name:construction_bim.menu_bim_models
+msgid "Models"
+msgstr "النماذج"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__moved
+msgid "Moved storey"
+msgstr "نُقل إلى دور آخر"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "NEW PIN"
+msgstr "مؤشر جديد"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "NOTHING LINKED"
+msgstr "لا يوجد ارتباط"
+
+#. modules: construction_bim, construction_form
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash_test__state__draft
+msgid "Never run"
+msgstr "لم يُشغّل بعد"
+
+#. modules: construction_bim, construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash__status__new
+msgid "New"
+msgstr "جديد"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_summary
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_type_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_element__is_orphan
+msgid ""
+"No longer present in the latest indexed file, but kept because records are "
+"attached to it."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "No pin matches the current filter."
+msgstr "لا يطابق أي مؤشر عامل التصفية الحالي."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "No pins yet. Click"
+msgstr "لا توجد مؤشرات بعد. انقر"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "No topics could be read from that archive."
+msgstr "تعذرت قراءة أي مواضيع من هذا الأرشيف."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid ""
+"No topics found. A BCF archive holds one folder per topic, each containing a"
+" markup.bcf."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__note
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__note
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__note
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_pin__bucket__none
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid "Note"
+msgstr "الملاحظات"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_element__link_bucket__none
+msgid "Nothing linked"
+msgstr "لا يوجد ارتباط"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ""
+"Nothing linked yet. Attach an RFI, a defect, a task\n"
+"                            or a bill item to an element and it will be coloured\n"
+"                            in the model."
+msgstr ""
+"Nothing مرتبط yet. Attach an RFI, a defect, a task\n"
+"                            or a bill item to an element and it will be coloured\n"
+"                            in the model."
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__now
+msgid "Now"
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء "
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__message_needaction_counter
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__message_needaction_counter
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__message_has_error_counter
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__message_has_error_counter
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "OVERLAID"
+msgstr "مركّب"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Object type"
+msgstr "نوع الكائن"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "On"
+msgstr "في"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_element__link_bucket__open
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_pin__bucket__open
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Open 3D Viewer"
+msgstr "فتح العارض ثلاثي الأبعاد"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__open_count
+msgid "Open Count"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Open Linked Record"
+msgstr "فتح السجل المرتبط"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open linked records"
+msgstr "فتح السجلات المرتبطة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open record"
+msgstr "فتح السجل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open results"
+msgstr "فتح النتائج"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open the record this pin stands for"
+msgstr "فتح السجل الذي تمثله هذه العلامة"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Outstanding"
+msgstr "غير منجز"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__overlap
+msgid "Overlap"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__tolerance
+msgid ""
+"Overlap below this is ignored, in the model's own units. A tolerance of zero"
+" reports every touching surface — two walls meeting at a corner are not a "
+"clash."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Overlay a model…"
+msgstr "إضافة نموذج فوقه..."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Parsing geometry…"
+msgstr "جارٍ تحليل الهندسة…"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_bim
+#: model_terms:ir.actions.act_window,help:construction_bim.action_clash_test
+msgid ""
+"Pick two models — structure against MEP is the usual one — and\n"
+"                run the test from the viewer. What it finds is elements whose\n"
+"                bounding boxes overlap beyond the tolerance, which is a broad\n"
+"                phase rather than a triangle-precise test: some of what it\n"
+"                reports will be fine, and approving one keeps it quiet on every\n"
+"                future run."
+msgstr ""
+"Pick two models — structure against MEP is the usual one — and\n"
+"                run the test from the viewer. What it finds is عنصر whose\n"
+"                bounding boxes overlap beyond the tolerance, which is a broad\n"
+"                phase rather than a triangle-precise test: some of what it\n"
+"                reports will be fine, and approving one keeps it quiet on every\n"
+"                future run."
+
+#. module: construction_bim
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__pin_id
+msgid "Pin"
+msgstr "علامة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__pin_count
+msgid "Pin Count"
+msgstr "عدد العلامات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__pin_type
+msgid "Pin Type"
+msgstr "نوع العلامة"
+
+#. module: construction_bim
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__pin_ids
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Pins"
+msgstr "العلامات"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__plumbing
+msgid "Plumbing"
+msgstr "أعمال صحية"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__pos_x
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__pos_x
+msgid "Pos X"
+msgstr "الموضع س"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__pos_y
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__pos_y
+msgid "Pos Y"
+msgstr "الموضع ص"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__pos_z
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__pos_z
+msgid "Pos Z"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_form
+msgid "Position in the model"
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__project_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__project_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__project_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__project_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__project_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__property_ids
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Properties"
+msgstr "الخصائص "
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+msgid "Property"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__property_count
+msgid "Property Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__pset
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+msgid "Property Set"
+msgstr "مجموعة الخصائص"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+msgid "Quantities"
+msgstr "الكميات"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_area
+msgid "Quantity Area"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_count
+msgid "Quantity Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_length
+msgid "Quantity Length"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "Quantity Takeoff — %s"
+msgstr "حصر الكميات — %s"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_volume
+msgid "Quantity Volume"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__quantity_weight
+msgid "Quantity Weight"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__quantity
+msgid "Quantity changed"
+msgstr "تغيرت الكمية"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+msgid "RFI"
+msgstr "طلب معلومات"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid "Raise RFI"
+msgstr "إصدار طلب معلومات"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "Raised from clash test %s."
+msgstr "مُنشأ من فحص التعارض %s."
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__rating_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__rating_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__rating_ids
+msgid "Ratings"
+msgstr "التقييمات "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Reading the model…"
+msgstr "جارٍ قراءة النموذج…"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__reference
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__removed
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid "Removed"
+msgstr "تمت الإزالة "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__removed_count
+msgid "Removed Count"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_comparison_line__change_type__renamed
+msgid "Renamed"
+msgstr "أُعيدت التسمية"
+
+#. modules: construction_bim, construction_form
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Reopen"
+msgstr "إعادة فتح"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Reset"
+msgstr "إعادة ضبط"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash__status__resolved
+msgid "Resolved"
+msgstr "تم الحل"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__resolved_by_run
+msgid "Resolved By Run"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__resolved_count
+msgid "Resolved Count"
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_user_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__last_run_skipped
+msgid "Results found but not stored, because the run hit the cap."
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash__status__reviewed
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid "Reviewed"
+msgstr "تمت المراجعة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__revision
+msgid "Revision"
+msgstr "المراجعة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__rfi_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__rfi_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__rfi_id
+msgid "Rfi"
+msgstr "طلب معلومات"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_clash_test__state__run
+msgid "Run"
+msgstr "تشغيل"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
+msgid "Run in Viewer"
+msgstr "التشغيل في العارض"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Run test"
+msgstr "تشغيل الاختبار"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+
+#. modules: construction_bim, construction_form
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__section
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__section
+msgid "Section"
+msgstr "القسم"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Seen and accepted — not a problem."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid ""
+"Seen, and not a problem. Survives every                                   "
+"future run of the test."
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__sequence
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__sequence
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Set as Current"
+msgstr "تعيين كنسخة حالية"
+
+#. module: construction_bim
+#: model_terms:ir.actions.act_window,help:construction_bim.action_clash_test
+msgid "Set up a clash test"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Show everything again"
+msgstr "إظهار كل شيء من جديد"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Show the model as it should stand on a date"
+msgstr "عرض النموذج كما ينبغي أن يكون في تاريخ محدد"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__overlap
+msgid ""
+"Smallest overlap across the three axes, in the model's units. The depth of "
+"the intersection, not its volume."
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__state
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__state
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__state
+msgid "State"
+msgstr "الحالة"
+
+#. modules: construction_bim, construction_form
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__status
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__status
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Status"
+msgstr "الحالة"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_state
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الأنشطة المعتمدة على الحالة\n"
+"المتأخرة: تاريخ الاستحقاق مر\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"المخطط: الأنشطة المستقبلية."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+msgid "Status: %s"
+msgstr "الحالة: %s"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__step_id
+msgid "Step"
+msgstr "خطوة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__storey
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__storey
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__storey
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+msgid "Storey"
+msgstr "الطابق"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__structural
+msgid "Structural"
+msgstr "إنشائي"
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__state__superseded
+msgid "Superseded"
+msgstr "ملغى بأحدث"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Tag"
+msgstr "علامة تصنيف "
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "Takeoff"
+msgstr "الحصر"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_pin.py:0
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__task_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_pin__task_id
+msgid "Task"
+msgstr "المهمة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__test_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_search
+msgid "Test"
+msgstr "اختبار"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "Testing…"
+msgstr "جارٍ الفحص…"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid ""
+"That archive expands to far more than a BCF should. It has not been read."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "That file is not a BCF archive (a BCF is a zip)."
+msgstr "هذا الملف ليس أرشيف BCF (وأرشيف BCF ملف مضغوط)."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "That file is too large to be a BCF archive."
+msgstr "حجم هذا الملف أكبر من أن يكون أرشيف BCF."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "The 3D libraries are not installed"
+msgstr "مكتبات العرض ثلاثي الأبعاد غير مثبتة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "The IFC file could not be downloaded."
+msgstr "تعذر تنزيل ملف IFC."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "The file could not be read as IFC: %s"
+msgstr "تعذرت قراءة الملف بصيغة IFC: %s"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "The model could not be drawn"
+msgstr "تعذر رسم النموذج"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
+msgid ""
+"The test runs in the browser, where the                                   "
+"geometry is."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
+msgid ""
+"The test runs in the browser: open it in the viewer,\n"
+"                        which loads both models and reports what overlaps.\n"
+"                        Results come back here."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ""
+"They are fetched by a setup script rather than\n"
+"                            committed — web-ifc's browser build alone is 6 MB.\n"
+"                            Run this once, then reload:"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_comparison_form
+msgid ""
+"This is the only revision of this discipline so far. Pick a\n"
+"                    model to compare it against, or upload the next revision and\n"
+"                    come back."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model has no pins to export."
+msgstr "لا توجد مؤشرات في هذا النموذج للتصدير."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model is %(size)s MB. Split it by discipline before indexing."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Title"
+msgstr "العنوان"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison__target_model_id
+msgid "To Revision"
+msgstr "إلى المراجعة"
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__tolerance
+msgid "Tolerance"
+msgstr "السماحية"
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_pin__bcf_guid
+msgid ""
+"Topic GUID this pin came from, or was last exported as, so a round trip "
+"through another tool updates the pin rather than creating a second one "
+"beside it."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_list
+msgid "Total"
+msgstr "الإجمالي"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid ""
+"Turn this into the question somebody has to"
+"                                   answer, pinned where the clash is."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_pin_search
+msgid "Type"
+msgstr "النوع"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_exception_decoration
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bcf_import_form
+msgid ""
+"Upload a BCF 2.1 archive exported from Solibri, Navisworks,\n"
+"                    BIMcollab, Revizto or any other tool that speaks BCF. Topics\n"
+"                    that came from here originally are matched on their GUID and\n"
+"                    updated, so a round trip does not duplicate them."
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.actions.act_window,help:construction_bim.action_bim_model
+msgid "Upload an IFC model"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__state__draft
+msgid "Uploaded"
+msgstr "تم التحميل"
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_property__value
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_property_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Value"
+msgstr "القيمة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_form_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_boq_line_list_bim
+msgid "Variance"
+msgstr "الفرق"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__volume
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Volume"
+msgstr "الحجم "
+
+#. module: construction_bim
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_comparison_line__was
+msgid "Was"
+msgstr ""
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash__website_message_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_clash_test__website_message_ids
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني "
+
+#. modules: construction_bim, construction_form
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash__website_message_ids
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_clash_test__website_message_ids
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني "
+
+#. module: construction_bim
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_boq_line__bim_measure__weight
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_takeoff
+msgid "Weight"
+msgstr "الوزن"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid ""
+"What changed against the previous revision of"
+"                                   this discipline."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "What is it?"
+msgstr "ما هو؟"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "What needs doing here"
+msgstr "ما المطلوب عمله هنا"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_form
+msgid "Where"
+msgstr ""
+
+#. module: construction_bim
+#: model:ir.model.fields,help:construction_bim.field_construction_boq_line__bim_measure
+msgid ""
+"Which model quantity answers this line. Taken from the unit of measure, and "
+"editable where the model measures it differently."
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "against"
+msgstr "مقابل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "e.g. Crack at third window"
+msgstr "مثال: شرخ عند النافذة الثالثة"
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_clash_test_form
+msgid "e.g. Structure vs MEP — Level 03"
+msgstr ""
+
+#. module: construction_bim
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_form
+msgid "e.g. Tower — architectural"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "elements"
+msgstr "عنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "found ·"
+msgstr "تم العثور ·"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "linked"
+msgstr "مرتبط"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "new ·"
+msgstr "جديد ·"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "pin"
+msgstr "علامة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "pins"
+msgstr "علامة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "properties"
+msgstr "الخصائص "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "resolved"
+msgstr "تمت المعالجة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "scripts/fetch-bim-libs.sh"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "under construction"
+msgstr "قيد التنفيذ"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ""
+"·\n"
+"                        rev"
+msgstr ""
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "%(a)s clashes with %(b)s by %(overlap).3f at "
+msgstr "يتعارض %(a)s مع %(b)s بمقدار %(overlap).3f عند "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ", then click the spot on the model — the task, RFI or defect is created where you put it."
+msgstr "، ثم انقر الموضع على النموذج — تُنشأ المهمة أو طلب المعلومات أو العيب في المكان الذي حددته."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid ", tolerance"
+msgstr "، التفاوت"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "A clash test compares two models. Testing a model against "
+msgstr "يقارن فحص التعارض نموذجين. فحص نموذج مقابل "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Back to model"
+msgstr "العودة إلى النموذج"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_clash.py:0
+msgid "Clash test run: %(found)s found, %(created)s new, "
+msgstr "نتيجة فحص التعارض: %(found)s تعارض، منها %(created)s جديد، "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Colour by element class"
+msgstr "التلوين حسب فئة العنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Colour by record status"
+msgstr "التلوين حسب حالة السجل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Compatibility view"
+msgstr "عرض التوافق"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Details"
+msgstr "التفاصيل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Draw the outline of every element"
+msgstr "رسم حدود كل عنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Edges"
+msgstr "الحواف"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Everything else on this model — the element index and its linked records — works without them."
+msgstr "كل ما عدا ذلك في هذا النموذج — فهرس العناصر والسجلات المرتبطة به — يعمل بدونها."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Full 3D"
+msgstr "ثلاثي الأبعاد الكامل"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "IN THIS MODEL"
+msgstr "في هذا النموذج"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "No element matches the current filter."
+msgstr "لا يطابق أي عنصر عامل التصفية الحالي."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "No elements indexed for this model yet. Upload an IFC file and index it, and every element in it appears here."
+msgstr "لم تُفهرس أي عناصر لهذا النموذج بعد. ارفع ملف IFC وافهرسه، وسيظهر هنا كل عنصر فيه."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "No topics found. A BCF archive holds one folder per topic, "
+msgstr "لم يُعثر على مواضيع. يحتوي أرشيف BCF على مجلد لكل موضوع، "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Nothing attached to this element yet."
+msgstr "لا شيء مرفق بهذا العنصر بعد."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open element"
+msgstr "فتح العنصر"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Open linked records and model details"
+msgstr "فتح السجلات المرتبطة وتفاصيل النموذج"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Original colours from the file"
+msgstr "الألوان الأصلية من الملف"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Photo (optional)"
+msgstr "صورة (اختياري)"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "Quantities come from the IfcElementQuantity sets an "
+msgstr "تأتي الكميات من مجموعات IfcElementQuantity التي "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Reload viewer"
+msgstr "إعادة تحميل العارض"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Safe view"
+msgstr "العرض الآمن"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Selected photo"
+msgstr "الصورة المختارة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Shaded — one material"
+msgstr "مظلل — خامة واحدة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Show all"
+msgstr "إظهار الكل"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bcf.py:0
+msgid "That archive expands to far more than a BCF "
+msgstr "يتوسع هذا الأرشيف إلى أكبر بكثير من أرشيف BCF "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "That file is not an image."
+msgstr "هذا الملف ليس صورة."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "That photo is larger than 12MB."
+msgstr "حجم الصورة يتجاوز 12 ميغابايت."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "They are fetched by a setup script rather than committed — web-ifc's browser build alone is 6 MB. Run this once, then reload:"
+msgstr "تُجلب هذه المكتبات عبر سكربت إعداد بدلاً من إدراجها في المستودع — فنسخة web-ifc للمتصفح وحدها 6 ميغابايت. شغّل هذا مرة واحدة ثم أعد التحميل:"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "This browser could not create either a WebGL or Canvas 2D context."
+msgstr "تعذر على هذا المتصفح إنشاء سياق WebGL أو Canvas 2D."
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model carries no quantities"
+msgstr "لا يحمل هذا النموذج أي كميات"
+
+#. module: construction_bim
+#. odoo-python
+#: code:addons/construction_bim/models/bim_model.py:0
+msgid "This model is %(size)s MB. Split it by discipline before "
+msgstr "حجم هذا النموذج %(size)s ميغابايت. قسّمه حسب التخصص قبل "
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Try again"
+msgstr "أعد المحاولة"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Unlinked"
+msgstr "غير مرتبط"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Use a graphics-safe model view"
+msgstr "استخدام عرض آمن للرسوميات"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "What the colours mean"
+msgstr "دلالة الألوان"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Windows: powershell -ExecutionPolicy Bypass -File scripts\\fetch-bim-libs.ps1 Mac or Linux: ./scripts/fetch-bim-libs.sh"
+msgstr "ويندوز: powershell -ExecutionPolicy Bypass -File scripts\\fetch-bim-libs.ps1 ماك أو لينكس: ./scripts/fetch-bim-libs.sh"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "Your browser blocked GPU rendering. The model, navigation, status colours and linked records remain available."
+msgstr "حظر متصفحك العرض عبر معالج الرسوميات. يبقى النموذج والتنقل وألوان الحالة والسجلات المرتبطة متاحة."
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+msgid "· rev"
+msgstr "· إصدار"
+
+#. module: construction_bim
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.js:0
+msgid "—"
+msgstr "—"

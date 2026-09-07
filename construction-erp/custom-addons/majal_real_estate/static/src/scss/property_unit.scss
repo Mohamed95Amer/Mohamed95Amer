@@ -1,0 +1,21 @@
+.o_form_view .o_majal_unit_sheet { max-width: none !important; background:#f3f6f6; }
+.o_majal_unit_overview { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(340px,.75fr); gap:14px; margin-bottom:16px; }
+.o_majal_unit_photo,.o_majal_unit_summary,.o_majal_unit_lifecycle { overflow:hidden; border:1px solid #dce5e6; border-radius:16px; background:#fff; box-shadow:0 8px 24px rgba(20,57,66,.055); }
+.o_majal_unit_photo { position:relative; min-height:360px; background:#dce7e7; }
+.o_majal_unit_photo .o_field_image,.o_majal_unit_photo img { width:100% !important; height:100% !important; max-width:none !important; max-height:430px !important; object-fit:cover; }
+.o_majal_unit_photo > span { position:absolute; inset:auto auto 16px 16px; padding:7px 10px; color:#fff; border-radius:8px; background:rgba(17,55,64,.75); }
+.o_majal_unit_summary { padding:22px; }
+.o_majal_unit_summary h1 { margin:7px 0 3px; color:#173b43; font-size:2rem; }
+.o_majal_unit_summary h2 { margin:18px 0; color:#173b43; font-size:1.8rem; }
+.o_majal_unit_summary > small { color:#2f817d; font-weight:700; text-transform:uppercase; }
+.o_majal_unit_badges { display:flex; gap:6px; }
+.o_majal_unit_badges > span { padding:4px 8px; color:#7a6828; border-radius:999px; background:#f8edc9; font-size:.7rem; }
+.o_majal_unit_facts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:14px 0; border-block:1px solid #e6ebec; }
+.o_majal_unit_facts span { display:grid; } .o_majal_unit_facts small { color:#899699; font-size:.65rem; }
+.o_majal_readiness { display:grid; gap:6px; margin-top:14px; } .o_majal_readiness .o_form_label { display:flex; justify-content:space-between; color:#617276; font-size:.75rem; font-weight:400; }
+.o_majal_unit_lifecycle { display:grid; grid-template-columns:repeat(6,1fr); margin-bottom:16px; padding:18px; }
+.o_majal_unit_lifecycle span { position:relative; display:grid; justify-items:center; gap:5px; color:#829093; font-size:.72rem; }
+.o_majal_unit_lifecycle span:not(:last-child)::after { content:""; position:absolute; top:17px; left:calc(50% + 21px); width:calc(100% - 42px); height:2px; background:#dfe6e7; }
+.o_majal_unit_lifecycle i { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:#e7eeee; font-style:normal; font-weight:700; }
+.o_majal_unit_lifecycle .done i { color:#fff; background:#238b86; } .o_majal_unit_lifecycle .done::after { background:#238b86 !important; } .o_majal_unit_lifecycle .current i { color:#5d470f; background:#d8b14f; box-shadow:0 0 0 5px #f8efd7; }
+@media(max-width:900px){.o_majal_unit_overview{grid-template-columns:1fr}.o_majal_unit_lifecycle{overflow-x:auto;min-width:700px}}

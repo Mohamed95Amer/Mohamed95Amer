@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_documents_root"
+              name="Majal Documents"
+              sequence="42"
+              web_icon="construction_ui,static/description/apps/documents.svg"
+              groups="base.group_user"/>
+    <record id="dms.main_menu_dms" model="ir.ui.menu">
+        <field name="name">File Library</field>
+        <field name="parent_id" ref="menu_majal_documents_root"/>
+        <field name="sequence">40</field>
+        <field name="web_icon">construction_ui,static/description/apps/apps.svg</field>
+    </record>
+    <record id="dms.menu_dms_storage" model="ir.ui.menu">
+        <field name="name">Storage Backends</field>
+    </record>
+    <record id="spreadsheet_oca.spreadsheet_spreadsheet_menu" model="ir.ui.menu">
+        <field name="name">Spreadsheets</field>
+        <field name="parent_id" ref="menu_majal_documents_root"/>
+        <field name="sequence">30</field>
+        <field name="web_icon">construction_ui,static/description/apps/spreadsheet.svg</field>
+    </record>
+    <menuitem id="menu_majal_documents"
+              name="Controlled Documents"
+              parent="menu_majal_documents_root"
+              action="action_majal_documents"
+              sequence="10"/>
+    <menuitem id="menu_majal_document_approvals"
+              name="Waiting for My Approval"
+              parent="menu_majal_documents_root"
+              action="action_majal_document_approvals"
+              sequence="20"/>
+    <menuitem id="menu_majal_sheets"
+              name="Controlled Sheets"
+              parent="menu_majal_documents_root"
+              action="action_majal_sheets"
+              sequence="35"/>
+    <menuitem id="menu_majal_document_configuration"
+              name="Configuration"
+              parent="menu_majal_documents_root"
+              sequence="90"/>
+    <menuitem id="menu_majal_document_templates"
+              name="Document Templates"
+              parent="menu_majal_document_configuration"
+              action="action_majal_document_templates"
+              sequence="10"/>
+</odoo>

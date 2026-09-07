@@ -1,0 +1,219 @@
+name: majalops-platform
+
+services:
+  caddy:
+    image: ${CADDY_IMAGE:?Set CADDY_IMAGE to a reviewed immutable image}
+    restart: unless-stopped
+    depends_on:
+      majal:
+        condition: service_healthy
+    environment:
+      MAJAL_DOMAIN: ${MAJAL_DOMAIN}
+      TLS_EMAIL: ${TLS_EMAIL}
+      CADDY_LOG_PATH: /var/log/caddy/access.log
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${CADDYFILE_PATH:-/opt/majalops/infrastructure/caddy/Caddyfile}:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+      - caddy-logs:/var/log/caddy
+    networks:
+      - edge
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "5"
+
+  majal:
+    image: ${MAJAL_IMAGE:?Set MAJAL_IMAGE to a reviewed immutable image}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: ${POSTGRES_USER}
+      PASSWORD: ${POSTGRES_PASSWORD}
+      ODOO_ADMIN_PASSWD: ${MAJAL_DATABASE_MANAGER_SECRET}
+      MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:-}
+      MAJAL_AI_CA_BUNDLE: ${MAJAL_AI_CA_BUNDLE:-}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MAJAL_MODULES: ${MAJAL_MODULES}
+      MAJAL_INITIAL_ADMIN_LOGIN: ${MAJAL_INITIAL_ADMIN_LOGIN}
+      MAJAL_INITIAL_ADMIN_PASSWORD: ${MAJAL_INITIAL_ADMIN_PASSWORD}
+    expose:
+      - "8069"
+      - "8072"
+    volumes:
+      - majal-data:/var/lib/odoo
+      - ${ODOO_CONFIG_FILE:-/etc/majalops/odoo.conf}:/etc/odoo/odoo.conf:ro
+    networks:
+      - edge
+      - backend
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    stop_grace_period: 90s
+    init: true
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login', timeout=10)"
+      interval: 30s
+      timeout: 12s
+      retries: 5
+      start_period: 10m
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "5"
+
+  demo:
+    profiles: ["demo"]
+    image: ${MAJAL_IMAGE:?Set MAJAL_IMAGE to a reviewed immutable image}
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint:
+      - /usr/local/bin/majal-demo-entrypoint
+    command:
+      - odoo
+    environment:
+      HOST: db
+      USER: ${MAJAL_DEMO_DB_USER:-majal_demo_inactive}
+      PASSWORD: ${MAJAL_DEMO_DB_PASSWORD:-inactive}
+      ODOO_ADMIN_PASSWD: ${MAJAL_DATABASE_MANAGER_SECRET}
+      POSTGRES_DB: ${MAJAL_DEMO_DB:-majal_demo_inactive}
+      MAJAL_DEMO_MODULES: ${MAJAL_DEMO_MODULES:-}
+      MAJAL_DEMO_LOGIN: ${MAJAL_DEMO_LOGIN:-demo.owner@majal.local}
+      MAJAL_DEMO_PASSWORD: ${MAJAL_DEMO_PASSWORD:-inactive}
+      MAJAL_DEMO_DOMAIN: ${MAJAL_DEMO_DOMAIN:-demo.majalops.com}
+      MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:-}
+      MAJAL_AI_CA_BUNDLE: ${MAJAL_AI_CA_BUNDLE:-}
+      MAJAL_AI_LOCAL_ENABLED: "false"
+    expose:
+      - "8069"
+      - "8072"
+    volumes:
+      - majal-demo-data:/var/lib/odoo
+      - ${DEMO_ODOO_CONFIG_FILE:-/opt/majalops/infrastructure/configs/odoo.demo.conf.example}:/etc/odoo/odoo.conf:ro
+    networks:
+      - edge
+      - backend
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    init: true
+    stop_grace_period: 45s
+    mem_limit: 1536m
+    cpus: 1.25
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login', timeout=10)"
+      interval: 20s
+      timeout: 12s
+      retries: 10
+      start_period: 15m
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "3"
+
+  db:
+    image: ${POSTGRES_IMAGE:?Set POSTGRES_IMAGE to a reviewed immutable image}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: --data-checksums
+    command:
+      - postgres
+      - -c
+      - shared_buffers=${PG_SHARED_BUFFERS:-1GB}
+      - -c
+      - effective_cache_size=${PG_EFFECTIVE_CACHE_SIZE:-3GB}
+      - -c
+      - maintenance_work_mem=${PG_MAINTENANCE_WORK_MEM:-256MB}
+      - -c
+      - work_mem=${PG_WORK_MEM:-16MB}
+      - -c
+      - max_connections=${PG_MAX_CONNECTIONS:-100}
+      - -c
+      - checkpoint_completion_target=0.9
+      - -c
+      - wal_compression=on
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - effective_io_concurrency=200
+      - -c
+      - max_worker_processes=${PG_MAX_WORKER_PROCESSES:-4}
+      - -c
+      - max_parallel_workers=${PG_MAX_PARALLEL_WORKERS:-4}
+      - -c
+      - max_parallel_workers_per_gather=${PG_MAX_PARALLEL_WORKERS_PER_GATHER:-2}
+      - -c
+      - log_min_duration_statement=${PG_LOG_MIN_DURATION_STATEMENT:-1000}
+      - -c
+      - log_checkpoints=on
+      - -c
+      - log_lock_waits=on
+    expose:
+      - "5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    shm_size: 256m
+    stop_grace_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "5"
+
+networks:
+  edge:
+  backend:
+    internal: true
+
+volumes:
+  caddy-data:
+  caddy-config:
+  caddy-logs:
+  majal-data:
+  majal-demo-data:
+  postgres-data:

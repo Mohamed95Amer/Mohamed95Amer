@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_defect_user,construction.defect user,model_construction_defect,construction_base.group_construction_user,1,1,1,0
+access_defect_engineer,construction.defect engineer,model_construction_defect,construction_base.group_construction_site_engineer,1,1,1,1

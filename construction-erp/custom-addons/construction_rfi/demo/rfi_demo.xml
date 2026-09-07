@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rfi_demo_draft" model="construction.rfi">
+        <field name="name">Clarify raft reinforcement lap lengths</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">structural</field>
+        <field name="question"><![CDATA[<p>Drawing ST-201 Rev.A shows T32 bars but the schedule states T25. Please confirm which governs and the required lap length.</p>]]></field>
+        <field name="drawing_revision_ids" eval="[(4, ref('construction_drawing.drawing_st201_reva'))]"/>
+    </record>
+
+    <record id="rfi_demo_submitted" model="construction.rfi">
+        <field name="name">Ceiling void clash — HVAC duct vs beam</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">mep</field>
+        <field name="state">submitted</field>
+        <field name="ball_in_court_id" ref="construction_base.partner_demo_consultant"/>
+        <field name="cost_impact" eval="True"/>
+        <field name="question"><![CDATA[<p>The 600x400 supply duct on ME-301 Rev.A clashes with beam B-12 in the level 3 corridor. Propose rerouting or a beam penetration detail.</p>]]></field>
+        <field name="drawing_revision_ids" eval="[(4, ref('construction_drawing.drawing_me301_reva'))]"/>
+    </record>
+
+    <record id="rfi_demo_answered" model="construction.rfi">
+        <field name="name">Lobby floor finish specification</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="discipline">architectural</field>
+        <field name="state">answered</field>
+        <field name="question"><![CDATA[<p>Please confirm the stone type and finish for the ground floor lobby shown on AR-101 Rev.B.</p>]]></field>
+        <field name="answer"><![CDATA[<p>Use honed Crema Marfil marble, 20 mm, as per finishes schedule FS-03.</p>]]></field>
+    </record>
+
+    <record id="rfi_marina_clash" model="construction.rfi">
+        <field name="name">Pile cap reinforcement clash at grid F4</field>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="question">&lt;p&gt;Bottom mat clashes with the ground beam
+            starter bars. Confirm the revised arrangement.&lt;/p&gt;</field>
+        <field name="date_required" eval="(DateTime.today() - relativedelta(days=9)).strftime('%Y-%m-%d')"/>
+        <field name="ball_in_court_id" ref="construction_base.partner_demo_consultant"/>
+    </record>
+    <function model="construction.rfi" name="action_submit">
+        <value eval="[ref('rfi_marina_clash')]"/>
+    </function>
+</odoo>

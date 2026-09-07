@@ -1,0 +1,500 @@
+:root {
+    --majal-nav: #173240;
+    --majal-primary: #346d75;
+    --majal-primary-dark: #295a61;
+    --majal-accent: #c59b52;
+    --majal-page: #f4f6f7;
+    --majal-surface: #ffffff;
+    --majal-soft: #edf3f3;
+    --majal-border: #dce4e7;
+    --majal-text: #263842;
+    --majal-muted: #687983;
+}
+
+.o_web_client {
+    --bs-primary: var(--majal-primary);
+    --bs-link-color: var(--majal-primary);
+
+    .o_main_navbar {
+        background: var(--majal-nav) !important;
+    }
+
+    .btn-primary {
+        border-color: var(--majal-primary) !important;
+        background: var(--majal-primary) !important;
+
+        &:hover,
+        &:focus,
+        &:active {
+            border-color: var(--majal-primary-dark) !important;
+            background: var(--majal-primary-dark) !important;
+        }
+    }
+
+    a,
+    .btn-link,
+    .text-primary {
+        color: var(--majal-primary);
+    }
+
+    .form-check-input:checked {
+        border-color: var(--majal-primary);
+        background-color: var(--majal-primary);
+    }
+
+    .bg-primary,
+    .text-bg-primary,
+    .badge.bg-primary,
+    .o-discuss-badge {
+        color: white !important;
+        background-color: var(--majal-primary) !important;
+    }
+
+    .bg-primary-subtle {
+        background-color: #e2efee !important;
+    }
+
+    .border-primary {
+        border-color: var(--majal-primary) !important;
+    }
+
+    .o_view_nocontent {
+        .o_view_nocontent_smiling_face::before,
+        .o_view_nocontent_neutral_face::before,
+        .o_view_nocontent_empty_folder::before {
+            width: 160px;
+            height: 150px;
+            background: transparent url("/majal_branding/static/src/img/empty-state.svg") no-repeat center / contain;
+        }
+
+        .o_nocontent_help {
+            color: var(--majal-muted);
+
+            p:first-of-type {
+                color: var(--majal-text);
+                font-weight: 700;
+            }
+        }
+    }
+}
+
+.o_base_settings_view .o_form_renderer {
+    --settings__tab-bg: #f0f3f4;
+    --settings__tab-bg--active: #dfeceb;
+    --settings__tab-color: #52656f;
+    --settings__title-bg: #eef2f3;
+
+    .settings_tab .tab.selected {
+        color: var(--majal-nav);
+        box-shadow: inset 3px 0 0 var(--majal-primary) !important;
+        font-weight: 700;
+    }
+}
+
+// Written as it should appear in Arabic; keep rtlcss off it.
+/*!rtl:begin:ignore*/
+[dir="rtl"] .o_base_settings_view .o_form_renderer .settings_tab .tab.selected {
+    box-shadow: inset -3px 0 0 var(--majal-primary) !important;
+}
+/*!rtl:end:ignore*/
+
+.dropdown-menu:has(.o-mail-MessagingMenu),
+.dropdown-menu:has(.o-mail-ActivityMenu) {
+    width: calc(100vw - 20px);
+    max-width: 470px;
+    max-height: 680px;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid var(--majal-border);
+    border-radius: 16px;
+    background: var(--majal-page);
+    box-shadow: 0 22px 60px rgba(12, 31, 41, .2);
+}
+
+.o-mail-MessagingMenu,
+.o-mail-ActivityMenu {
+    max-height: 670px;
+    color: var(--majal-text);
+    background:
+        radial-gradient(circle at 95% 0, color-mix(in srgb, var(--majal-accent) 13%, transparent), transparent 34%),
+        var(--majal-page);
+}
+
+@media (max-height: 738px) {
+    .dropdown-menu:has(.o-mail-MessagingMenu),
+    .dropdown-menu:has(.o-mail-ActivityMenu) {
+        max-height: calc(100vh - 58px);
+    }
+
+    .o-mail-MessagingMenu,
+    .o-mail-ActivityMenu {
+        max-height: calc(100vh - 62px);
+    }
+}
+
+.o-mail-MessagingMenu-header {
+    min-height: 52px;
+    padding: 8px 12px !important;
+    border-bottom: 1px solid var(--majal-border);
+    background: rgba(255, 255, 255, .92) !important;
+}
+
+.o-mail-MessagingMenu-list {
+    gap: 7px !important;
+    padding: 9px !important;
+}
+
+.o-mail-NotificationItem {
+    min-height: 68px;
+    padding: 9px 10px !important;
+    border: 1px solid var(--majal-border) !important;
+    border-radius: 12px !important;
+    color: var(--majal-text);
+    background: rgba(255, 255, 255, .92) !important;
+    box-shadow: 0 2px 7px rgba(12, 31, 41, .035);
+    transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+
+    &:hover,
+    &.o-active {
+        border-color: color-mix(in srgb, var(--majal-primary) 40%, white) !important;
+        background: white !important;
+        box-shadow: 0 7px 18px rgba(12, 31, 41, .08);
+        transform: translateY(-1px);
+    }
+
+    &.o-important {
+        border-inline-start: 4px solid var(--majal-primary) !important;
+        background: #f5faf9 !important;
+    }
+
+    .o-mail-NotificationItem-avatarContainer {
+        width: 44px;
+        height: 44px;
+
+        img {
+            border: 2px solid white;
+            border-radius: 11px !important;
+            box-shadow: 0 2px 8px rgba(12, 31, 41, .1);
+        }
+    }
+
+    .o-mail-NotificationItem-name {
+        color: var(--majal-text);
+        font-size: .86rem;
+    }
+
+    .o-mail-NotificationItem-text,
+    .o-mail-NotificationItem-date {
+        color: var(--majal-muted);
+    }
+
+    .o-mail-NotificationItem-unreadIndicator {
+        top: 13px;
+        left: 5px;
+        color: var(--majal-primary);
+        transform: none;
+    }
+
+    .o-mail-NotificationItem-counter {
+        color: white !important;
+        background: var(--majal-primary) !important;
+    }
+}
+
+.o-mail-ActivityMenu {
+    overflow-y: auto;
+    padding: 8px;
+
+    .o-mail-ActivityGroup {
+        min-height: 66px;
+        margin-bottom: 7px;
+        align-items: center;
+        border: 1px solid var(--majal-border);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .94);
+        box-shadow: 0 2px 7px rgba(12, 31, 41, .035);
+
+        &:hover {
+            border-color: color-mix(in srgb, var(--majal-primary) 38%, white);
+            background: white;
+            box-shadow: 0 7px 18px rgba(12, 31, 41, .075);
+        }
+
+        [name="activityTitle"] {
+            color: var(--majal-text);
+            font-weight: 700;
+        }
+
+        .btn-link {
+            color: var(--majal-primary);
+        }
+    }
+
+    .o_majal_activity_glyph {
+        display: inline-flex;
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        color: white;
+        background: linear-gradient(145deg, var(--majal-primary), var(--majal-nav));
+        box-shadow: 0 6px 13px rgba(23, 50, 64, .16);
+        font-size: 1.05rem;
+    }
+
+    .o_majal_activity_empty {
+        display: flex;
+        min-height: 180px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        text-align: center;
+
+        i {
+            color: var(--majal-primary);
+            font-size: 2rem;
+        }
+
+        strong {
+            color: var(--majal-text);
+            font-size: 1rem;
+        }
+    }
+}
+
+.o-mail-Discuss {
+    --majal-discuss-sidebar: 292px;
+    background: var(--majal-page);
+
+    .o-mail-DiscussSidebar {
+        width: var(--majal-discuss-sidebar);
+        min-width: var(--majal-discuss-sidebar);
+        padding: 10px 8px;
+        border-inline-end: 1px solid var(--majal-border);
+        background:
+            radial-gradient(circle at 12% 0, rgba(197,155,82,.11), transparent 30%),
+            #edf2f3 !important;
+
+        button {
+            border-radius: 9px;
+            transition: background .14s ease, color .14s ease, transform .14s ease;
+
+            &:hover { background: rgba(255,255,255,.72); }
+            &:active { transform: translateY(1px); }
+        }
+
+        .o-active,
+        [aria-selected="true"] {
+            color: var(--majal-nav) !important;
+            background: #fff !important;
+            box-shadow: 0 3px 10px rgba(12,31,41,.08), inset 3px 0 0 var(--majal-primary);
+        }
+    }
+
+    .o-mail-Thread {
+        background:
+            linear-gradient(rgba(244, 246, 247, .94), rgba(244, 246, 247, .94)),
+            radial-gradient(circle at 20% 10%, rgba(52, 109, 117, .08), transparent 34%);
+    }
+
+    .o-mail-Message {
+        width: calc(100% - 24px);
+        max-width: 920px;
+        margin-inline: auto;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        transition: background .14s ease, border-color .14s ease, box-shadow .14s ease;
+
+        &:hover {
+            border-color: rgba(220,228,231,.88);
+            background: rgba(255, 255, 255, .86);
+            box-shadow: 0 4px 14px rgba(12,31,41,.04);
+        }
+
+        .o-mail-Message-avatar { border-radius: 11px; box-shadow: 0 2px 8px rgba(12,31,41,.10); }
+        .o-mail-Message-author { color: var(--majal-nav); font-weight: 750; }
+        .o-mail-Message-date { color: #89979d; }
+    }
+
+    .o-mail-Composer {
+        max-width: 940px;
+        margin: 10px auto 13px;
+        border: 1px solid var(--majal-border);
+        border-radius: 17px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(12, 31, 41, .085);
+
+        &:focus-within {
+            border-color: rgba(52,109,117,.58);
+            box-shadow: 0 10px 32px rgba(12,31,41,.10), 0 0 0 3px rgba(52,109,117,.08);
+        }
+
+        .btn { border-radius: 10px; }
+    }
+
+    .o-mail-Discuss-header,
+    .o-mail-Thread-header {
+        min-height: 64px;
+        border-bottom: 1px solid var(--majal-border);
+        background: rgba(255,255,255,.94);
+        backdrop-filter: blur(10px);
+    }
+
+    .o-mail-Discuss-core { min-width: 0; }
+
+    .o-mail-Thread-empty {
+        max-width: 460px;
+        margin: auto;
+        padding: 28px;
+        border: 1px solid var(--majal-border);
+        border-radius: 18px;
+        text-align: center;
+        background: rgba(255,255,255,.78);
+        box-shadow: 0 12px 35px rgba(12,31,41,.06);
+    }
+}
+
+// To-do is a workboard in Majal, not a generic rich-text sample. Keep the
+// editor readable on long site and facilities checklists and give headings a
+// quiet visual hierarchy without changing the stored note itself.
+.o_majal_todo_route .oe_description .note-editable {
+    max-width: 980px;
+    margin: 24px auto 40px;
+    padding: clamp(22px, 4vw, 52px) !important;
+    border: 1px solid var(--majal-border);
+    border-radius: 22px;
+    color: var(--majal-text);
+    background: linear-gradient(145deg, #fff 0%, #f3f8f8 100%);
+    box-shadow: 0 16px 45px rgba(12, 31, 41, .08);
+
+    h1 {
+        margin-bottom: 18px;
+        color: var(--majal-nav);
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        letter-spacing: -.025em;
+    }
+
+    h2,
+    h3 {
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid var(--majal-border);
+        color: var(--majal-primary-dark);
+    }
+
+    blockquote,
+    ul,
+    ol {
+        padding: 14px 18px;
+        border-inline-start: 4px solid var(--majal-accent);
+        border-radius: 0 12px 12px 0;
+        background: rgba(255, 255, 255, .72);
+    }
+
+    input[type="checkbox"] { accent-color: var(--majal-primary); }
+}
+
+// The messaging systray is rendered inside a fixed overlay whose width can be
+// inherited from the desktop viewport. Pin the actual popover as a compact
+// panel; the previous generic dropdown rule did not beat that overlay width.
+.o-mail-DiscussSystray {
+    width: calc(100vw - 24px) !important;
+    max-width: 475px !important;
+    max-width: calc(100vw - 24px) !important;
+    min-width: 0 !important;
+    max-height: calc(100vh - 58px) !important;
+    overflow: hidden !important;
+    border: 1px solid var(--majal-border) !important;
+    border-radius: 16px !important;
+    background: var(--majal-page) !important;
+    box-shadow: 0 22px 60px rgba(12, 31, 41, .2) !important;
+}
+
+.o-mail-DiscussSystray .o-mail-MessagingMenu {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: calc(100vh - 60px) !important;
+    overflow: hidden;
+}
+
+/*!rtl:begin:ignore*/
+// The inset shadow is already on the correct edge for Arabic; mirroring it
+// again would move the selection marker back to the left of the sidebar.
+[dir="rtl"] .o-mail-Discuss .o-mail-DiscussSidebar .o-active,
+[dir="rtl"] .o-mail-Discuss .o-mail-DiscussSidebar [aria-selected="true"] {
+    box-shadow: 0 3px 10px rgba(12,31,41,.08), inset -3px 0 0 var(--majal-primary);
+}
+/*!rtl:end:ignore*/
+
+@media (max-width: 991.98px) {
+    .o-mail-Discuss { --majal-discuss-sidebar: 250px; }
+}
+
+@media (max-width: 767.98px) {
+    .o-mail-Discuss {
+        --majal-discuss-sidebar: min(86vw, 330px);
+        .o-mail-Message { max-width: calc(100% - 10px); }
+        .o-mail-Composer { margin: 6px 7px 9px; border-radius: 14px; }
+    }
+}
+
+.o_majal_system_card {
+    display: flex;
+    max-width: 580px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--majal-border);
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fff, #f3f7f7);
+
+    strong {
+        color: var(--majal-nav);
+    }
+
+    span {
+        color: var(--majal-muted);
+    }
+
+    a {
+        margin-inline-start: auto;
+        font-weight: 700;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .dropdown-menu:has(.o-mail-MessagingMenu),
+    .dropdown-menu:has(.o-mail-ActivityMenu) {
+        width: calc(100vw - 12px);
+        max-height: calc(100dvh - 50px);
+        border-radius: 13px;
+    }
+
+    .o-mail-MessagingMenu,
+    .o-mail-ActivityMenu {
+        max-height: calc(100dvh - 54px);
+        overscroll-behavior: contain;
+    }
+
+    .o-mail-DiscussSystray {
+        width: calc(100vw - 12px) !important;
+        max-width: calc(100vw - 12px) !important;
+        border-radius: 13px !important;
+    }
+
+    .o_majal_system_card a {
+        width: 100%;
+        margin-inline-start: 0;
+    }
+}
+// The client workspace is intentionally single-company from the user's
+// perspective. Keep a CSS fallback in addition to the registry/template
+// overrides so the switcher cannot flash while assets initialise.
+.o_switch_company_menu,
+.o_burger_menu_companies {
+    display: none !important;
+}

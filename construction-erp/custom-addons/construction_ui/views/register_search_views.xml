@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Filters and grouping for the registers that had none.
+
+        A register with three demo rows looks fine without them. A register
+        with three thousand rows and no way to ask "mine", "overdue" or
+        "group by project" is a list somebody scrolls, which is not a way to
+        run a project. These are the registers that grow: every one of them
+        gains a value in the hundreds or thousands on a live job.
+
+        They live here rather than in each owning module because that is
+        where the rest of the Majal experience layer already sits, and one
+        file is easier to keep consistent than fourteen. The domains use only
+        fields the models already store — is_overdue on the document mixin is
+        a searchable compute, so "Overdue" is one filter rather than a date
+        expression repeated fourteen times.
+    -->
+
+    <!-- ================= Engineering ================= -->
+    <record id="view_submittal_search" model="ir.ui.view">
+        <field name="name">construction.submittal.search</field>
+        <field name="model">construction.submittal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="subcontractor_id"/>
+                <field name="spec_section"/>
+                <filter name="filter_open" string="Open"
+                        domain="[('state', 'in', ('draft', 'submitted', 'revise_resubmit'))]"/>
+                <filter name="filter_mine" string="Waiting on Me"
+                        domain="[('ball_in_court_id', '=', uid)]"/>
+                <filter name="filter_overdue" string="Overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <separator/>
+                <filter name="filter_rejected" string="Revise &amp; Resubmit"
+                        domain="[('state', '=', 'revise_resubmit')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'submittal_type'}"/>
+                    <filter name="group_court" string="Ball in Court"
+                            context="{'group_by': 'ball_in_court_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_drawing_revision_search" model="ir.ui.view">
+        <field name="name">construction.drawing.revision.search</field>
+        <field name="model">construction.drawing.revision</field>
+        <field name="arch" type="xml">
+            <!-- No `name` here: a revision is identified by its drawing and
+                 its letter, which is why the model sets _rec_name to
+                 display_name rather than carrying a title of its own. -->
+            <search>
+                <field name="drawing_id"/>
+                <field name="revision"/>
+                <field name="project_id"/>
+                <filter name="filter_current" string="Current"
+                        domain="[('state', '=', 'current')]"/>
+                <filter name="filter_superseded" string="Superseded"
+                        domain="[('state', '=', 'superseded')]"/>
+                <separator/>
+                <filter name="filter_awaiting" string="Awaiting Sign-off"
+                        domain="[('approval_state', '=', 'submitted')]"/>
+                <filter name="filter_returned" string="Returned"
+                        domain="[('approval_state', '=', 'rejected')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_drawing" string="Drawing"
+                            context="{'group_by': 'drawing_id'}"/>
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_approval" string="Sign-off"
+                            context="{'group_by': 'approval_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= Commercial ================= -->
+    <record id="view_boq_search" model="ir.ui.view">
+        <field name="name">construction.boq.search</field>
+        <field name="model">construction.boq</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <filter name="filter_draft" string="Being Priced"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="filter_locked" string="Locked"
+                        domain="[('state', '=', 'locked')]"/>
+                <separator/>
+                <filter name="filter_varied" string="Carries Variations"
+                        domain="[('amount_variation_total', '!=', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_progress_claim_search" model="ir.ui.view">
+        <field name="name">construction.progress.claim.search</field>
+        <field name="model">construction.progress.claim</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="boq_id"/>
+                <filter name="filter_open" string="Not Yet Certified"
+                        domain="[('state', 'in', ('draft', 'submitted'))]"/>
+                <filter name="filter_certified" string="Certified, Not Invoiced"
+                        domain="[('state', '=', 'certified')]"/>
+                <filter name="filter_unpaid" string="Invoiced, Unpaid"
+                        domain="[('state', '=', 'invoiced')]"/>
+                <separator/>
+                <filter name="filter_this_year" string="This Year"
+                        domain="[('date_to', '&gt;=', (context_today() - relativedelta(days=365)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_period" string="Period"
+                            context="{'group_by': 'date_to:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_change_event_search" model="ir.ui.view">
+        <field name="name">construction.change.event.search</field>
+        <field name="model">construction.change.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <filter name="filter_open" string="Open"
+                        domain="[('state', '=', 'open')]"/>
+                <filter name="filter_converted" string="Became a Variation"
+                        domain="[('state', '=', 'converted')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_origin" string="Origin"
+                            context="{'group_by': 'origin'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_change_order_search" model="ir.ui.view">
+        <field name="name">construction.change.order.search</field>
+        <field name="model">construction.change.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="boq_id"/>
+                <filter name="filter_pending" string="Awaiting Decision"
+                        domain="[('state', 'in', ('draft', 'submitted'))]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="filter_rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter name="filter_additions" string="Additions"
+                        domain="[('amount_sell_total', '&gt;', 0)]"/>
+                <filter name="filter_omissions" string="Omissions"
+                        domain="[('amount_sell_total', '&lt;', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'change_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_subcontract_search" model="ir.ui.view">
+        <field name="name">construction.subcontract.search</field>
+        <field name="model">construction.subcontract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="subcontractor_id"/>
+                <field name="trade"/>
+                <filter name="filter_live" string="Live"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_closed" string="Closed"
+                        domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <!-- Filtered through the payment certificates rather than on
+                     amount_retained: that field is computed from the latest
+                     certificate and not stored, so it cannot be searched. -->
+                <filter name="filter_retained" string="Holding Retention"
+                        domain="[('payment_ids.retention_cumulative', '&gt;', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_sub" string="Subcontractor"
+                            context="{'group_by': 'subcontractor_id'}"/>
+                    <filter name="group_trade" string="Trade"
+                            context="{'group_by': 'trade'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_subcontract_payment_search" model="ir.ui.view">
+        <field name="name">construction.subcontract.payment.search</field>
+        <field name="model">construction.subcontract.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="subcontract_id"/>
+                <field name="subcontractor_id"/>
+                <filter name="filter_open" string="Not Yet Certified"
+                        domain="[('state', 'in', ('draft', 'submitted'))]"/>
+                <filter name="filter_certified" string="Certified, Not Billed"
+                        domain="[('state', '=', 'certified')]"/>
+                <filter name="filter_unpaid" string="Billed, Unpaid"
+                        domain="[('state', '=', 'billed')]"/>
+                <separator/>
+                <filter name="filter_backcharged" string="Carries Back-charges"
+                        domain="[('backcharge_this', '!=', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_sub" string="Subcontractor"
+                            context="{'group_by': 'subcontractor_id'}"/>
+                    <filter name="group_contract" string="Subcontract"
+                            context="{'group_by': 'subcontract_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_date" string="Month"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_tender_bid_search" model="ir.ui.view">
+        <field name="name">construction.tender.bid.search</field>
+        <field name="model">construction.tender.bid</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tender_id"/>
+                <field name="bidder_id"/>
+                <field name="project_id"/>
+                <filter name="filter_submitted" string="Submitted"
+                        domain="[('state', 'in', ('submitted', 'shortlisted', 'awarded'))]"/>
+                <filter name="filter_shortlisted" string="Shortlisted"
+                        domain="[('state', '=', 'shortlisted')]"/>
+                <filter name="filter_awarded" string="Awarded"
+                        domain="[('state', '=', 'awarded')]"/>
+                <separator/>
+                <filter name="filter_late" string="Late"
+                        domain="[('is_late', '=', True)]"/>
+                <filter name="filter_incomplete" string="Unpriced Lines"
+                        domain="[('is_complete', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_tender" string="Package"
+                            context="{'group_by': 'tender_id'}"/>
+                    <filter name="group_bidder" string="Bidder"
+                            context="{'group_by': 'bidder_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= Approvals ================= -->
+    <record id="view_approval_request_search" model="ir.ui.view">
+        <field name="name">construction.approval.request.search</field>
+        <field name="model">construction.approval.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="requested_by_id"/>
+                <filter name="filter_pending" string="Pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="filter_rejected" string="Rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter name="filter_mine" string="Raised by Me"
+                        domain="[('requested_by_id', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_model" string="Document Type"
+                            context="{'group_by': 'res_model'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_requester" string="Raised By"
+                            context="{'group_by': 'requested_by_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- majal.sheet's search view lives in majal_documents, which this module
+         does not depend on: a view cannot be validated against a model that
+         is not in the registry yet. -->
+
+    <!-- ================= HSE ================= -->
+    <record id="view_toolbox_talk_search" model="ir.ui.view">
+        <field name="name">construction.toolbox.talk.search</field>
+        <field name="model">construction.toolbox.talk</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="topic"/>
+                <field name="project_id"/>
+                <field name="presenter_id"/>
+                <filter name="filter_this_month" string="This Month"
+                        domain="[('talk_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_presenter" string="Presenter"
+                            context="{'group_by': 'presenter_id'}"/>
+                    <filter name="group_month" string="Month"
+                            context="{'group_by': 'talk_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

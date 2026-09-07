@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_sc_payment" model="ir.actions.report">
+        <field name="name">Subcontractor Payment Certificate</field>
+        <field name="model">construction.subcontract.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_subcontractor.report_sc_payment_document</field>
+        <field name="report_file">construction_subcontractor.report_sc_payment_document</field>
+        <field name="binding_model_id" ref="model_construction_subcontract_payment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_sc_payment_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="pay">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Subcontractor Payment Certificate No.
+                            <span t-field="pay.sequence_no"/></h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Subcontractor:</strong>
+                                <span t-field="pay.subcontractor_id"/><br/>
+                                <strong>Subcontract:</strong>
+                                <span t-field="pay.subcontract_id"/><br/>
+                                <strong>Reference:</strong>
+                                <span t-field="pay.reference"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong>
+                                <span t-field="pay.date"/>
+                            </div>
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Description</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Cumulative Qty</th>
+                                    <th class="text-end">Cumulative Amount</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="pay.line_ids" t-as="line">
+                                    <td t-field="line.name"/>
+                                    <td class="text-end" t-field="line.unit_rate"/>
+                                    <td class="text-end" t-field="line.qty_cumulative"/>
+                                    <td class="text-end" t-field="line.amount_cumulative"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-6 offset-6">
+                                <table class="table table-sm">
+                                    <tr><td>Work this period</td>
+                                        <td class="text-end" t-field="pay.gross_this"/></tr>
+                                    <tr><td>Less retention</td>
+                                        <td class="text-end" t-field="pay.retention_this"/></tr>
+                                    <tr><td>Less back-charges</td>
+                                        <td class="text-end" t-field="pay.backcharge_this"/></tr>
+                                    <tr class="border-top">
+                                        <td><strong>Net payable</strong></td>
+                                        <td class="text-end">
+                                            <strong t-field="pay.amount_due"/></td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

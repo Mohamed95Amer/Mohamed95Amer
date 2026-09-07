@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_incident_form" model="ir.ui.view">
+        <field name="name">construction.incident.form</field>
+        <field name="model">construction.incident</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_investigate" type="object"
+                            string="Start Investigation" class="btn-primary"
+                            invisible="state != 'reported'"/>
+                    <button name="action_record_actions" type="object"
+                            string="Raise Actions" class="btn-primary"
+                            invisible="state != 'investigating'"/>
+                    <button name="action_close" type="object" string="Close"
+                            class="btn-primary" invisible="state != 'actions'"
+                            groups="construction_hse.group_hse_officer"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="state != 'closed'"
+                            groups="construction_hse.group_hse_officer"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Lost Time Injury"
+                            bg_color="text-bg-danger" invisible="not is_lti"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Short description"/></h1>
+                        <h3 class="text-muted"><field name="reference" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="incident_class"/>
+                            <field name="severity"/>
+                            <field name="is_lti"/>
+                            <field name="days_lost" invisible="not is_lti"/>
+                            <field name="reportable"/>
+                        </group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="occurred_on"/>
+                            <field name="location"/>
+                            <field name="contractor_id"/>
+                            <field name="reported_by_id"/>
+                            <field name="permit_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="What Happened" name="what">
+                            <field name="description" placeholder="Sequence of events..."/>
+                            <separator string="Immediate Action Taken"/>
+                            <field name="immediate_action"
+                                   placeholder="Made safe, area isolated, ..."/>
+                            <field name="photo" widget="image" class="oe_avatar"/>
+                        </page>
+                        <page string="Investigation" name="investigation">
+                            <group>
+                                <field name="investigator_id"/>
+                            </group>
+                            <separator string="Root Cause"/>
+                            <field name="root_cause"
+                                   placeholder="Why it happened, not who did it..."/>
+                        </page>
+                        <page string="Corrective Actions" name="actions">
+                            <field name="action_progress" widget="progressbar"/>
+                            <field name="action_ids">
+                                <list editable="bottom"
+                                      decoration-muted="done"
+                                      decoration-danger="not done and deadline &lt; current_date">
+                                    <field name="name"/>
+                                    <field name="responsible_id"/>
+                                    <field name="deadline"/>
+                                    <field name="done" widget="boolean_toggle"/>
+                                    <field name="done_date" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_incident_list" model="ir.ui.view">
+        <field name="name">construction.incident.list</field>
+        <field name="model">construction.incident</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_lti" decoration-muted="state == 'closed'">
+                <field name="reference"/>
+                <field name="occurred_on"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="incident_class"/>
+                <field name="severity"/>
+                <field name="is_lti" string="LTI"/>
+                <field name="reportable"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'closed'"
+                       decoration-warning="state in ('investigating', 'actions')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_incident_search" model="ir.ui.view">
+        <field name="name">construction.incident.search</field>
+        <field name="model">construction.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <filter name="lti" string="Lost Time Injuries"
+                        domain="[('is_lti', '=', True)]"/>
+                <filter name="near_miss" string="Near Misses"
+                        domain="[('incident_class', '=', 'near_miss')]"/>
+                <filter name="reportable" string="Reportable"
+                        domain="[('reportable', '=', True)]"/>
+                <filter name="open" string="Not Closed"
+                        domain="[('state', '!=', 'closed')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_class" string="Classification"
+                            context="{'group_by': 'incident_class'}"/>
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_incident" model="ir.actions.act_window">
+        <field name="name">Incidents &amp; Near Misses</field>
+        <field name="res_model">construction.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No incidents recorded</p>
+            <p>Record near misses as well as injuries — they are the warnings
+               that arrive without a cost.</p>
+        </field>
+    </record>
+</odoo>

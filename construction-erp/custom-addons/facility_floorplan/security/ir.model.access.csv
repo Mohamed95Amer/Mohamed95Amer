@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_floorplan_manager,facility.floorplan manager,model_facility_floorplan,maintenance.group_equipment_manager,1,1,1,1
+access_floorplan_all,facility.floorplan read,model_facility_floorplan,base.group_user,1,0,0,0
+access_facility_pin_manager,facility.pin manager,model_facility_pin,maintenance.group_equipment_manager,1,1,1,1
+access_facility_pin_all,facility.pin user,model_facility_pin,base.group_user,1,1,1,0

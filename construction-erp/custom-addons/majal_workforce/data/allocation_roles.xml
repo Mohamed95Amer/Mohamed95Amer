@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Starting roles, not a fixed ladder. They are records precisely so a
+         contractor can rename them and add their own without a release. -->
+    <record id="role_project_manager" model="majal.allocation.role">
+        <field name="name">Project Manager</field>
+        <field name="code">project_manager</field>
+        <field name="scope">construction</field>
+        <field name="sequence">10</field>
+        <field name="is_lead">True</field>
+    </record>
+    <record id="role_construction_manager" model="majal.allocation.role">
+        <field name="name">Construction Manager</field>
+        <field name="code">construction_manager</field>
+        <field name="scope">construction</field>
+        <field name="sequence">20</field>
+        <field name="is_lead">True</field>
+    </record>
+    <record id="role_site_engineer" model="majal.allocation.role">
+        <field name="name">Site Engineer</field>
+        <field name="code">site_engineer</field>
+        <field name="scope">construction</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="role_quantity_surveyor" model="majal.allocation.role">
+        <field name="name">Quantity Surveyor</field>
+        <field name="code">quantity_surveyor</field>
+        <field name="scope">construction</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="role_foreman" model="majal.allocation.role">
+        <field name="name">Foreman</field>
+        <field name="code">foreman</field>
+        <field name="scope">construction</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="role_hse_officer" model="majal.allocation.role">
+        <field name="name">HSE Officer</field>
+        <field name="code">hse_officer</field>
+        <field name="scope">both</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="role_facility_manager" model="majal.allocation.role">
+        <field name="name">Facility Manager</field>
+        <field name="code">facility_manager</field>
+        <field name="scope">facilities</field>
+        <field name="sequence">70</field>
+        <field name="is_lead">True</field>
+    </record>
+    <record id="role_supervisor" model="majal.allocation.role">
+        <field name="name">Supervisor</field>
+        <field name="code">supervisor</field>
+        <field name="scope">facilities</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="role_technician" model="majal.allocation.role">
+        <field name="name">Technician</field>
+        <field name="code">technician</field>
+        <field name="scope">facilities</field>
+        <field name="sequence">90</field>
+    </record>
+    <!-- Recorded on the job, no system access: this is most of a site. -->
+    <record id="role_labourer" model="majal.allocation.role">
+        <field name="name">Labourer</field>
+        <field name="code">labourer</field>
+        <field name="scope">construction</field>
+        <field name="sequence">100</field>
+        <field name="grants_access">False</field>
+    </record>
+    <!-- The role an adopted or backfilled membership lands on. -->
+    <record id="role_team_member" model="majal.allocation.role">
+        <field name="name">Team Member</field>
+        <field name="code">team_member</field>
+        <field name="scope">both</field>
+        <field name="sequence">200</field>
+    </record>
+</odoo>

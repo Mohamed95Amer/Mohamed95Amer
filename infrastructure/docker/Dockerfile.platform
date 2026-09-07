@@ -1,0 +1,55 @@
+# syntax=docker/dockerfile:1.7
+ARG ODOO_BASE_IMAGE=odoo:18.0
+FROM ${ODOO_BASE_IMAGE}
+
+ARG VCS_REF=unknown
+ARG BUILD_VERSION=dev
+ARG BUILD_DATE=unknown
+
+LABEL org.opencontainers.image.title="MajalOps Platform" \
+      org.opencontainers.image.description="Majal construction and facilities operations platform" \
+      org.opencontainers.image.source="https://github.com/Mohamed95Amer/Mohamed95Amer" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.version="${BUILD_VERSION}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.licenses="LGPL-3.0-or-later AND AGPL-3.0-or-later"
+
+USER root
+
+COPY infrastructure/docker/requirements-platform.lock.txt /tmp/requirements-platform.lock.txt
+RUN pip3 install \
+      --no-cache-dir \
+      --break-system-packages \
+      --require-hashes \
+      --no-deps \
+      -r /tmp/requirements-platform.lock.txt \
+    && python3 -c "import openupgradelib, pypdf, xlrd, xlsxwriter" \
+    && rm -f /tmp/requirements-platform.lock.txt
+
+COPY --chown=odoo:odoo construction-erp/custom-addons/ /mnt/custom-addons/
+COPY --chown=odoo:odoo construction-erp/oca-addons/ /mnt/oca-addons/
+COPY --chown=odoo:odoo construction-erp/third-party-addons/ /mnt/third-party-addons/
+COPY --chown=odoo:odoo construction-erp/NOTICE.md /usr/share/doc/majalops/NOTICE.md
+# Baked in so the migration contract travels with the exact image being
+# deployed. update-majal.sh reads it out of the image it is about to run,
+# which makes it impossible to deploy a release whose contract was never
+# read -- and needs no new deploy parameter, so a host running an older
+# ForceCommand keeps working.
+COPY --chown=odoo:odoo construction-erp/release/migration-contract.json \
+     /usr/share/doc/majalops/migration-contract.json
+COPY --chown=odoo:odoo construction-erp/scripts/docker-entrypoint-majal.sh /usr/local/bin/majal-entrypoint
+COPY construction-erp/scripts/fetch-bim-libs.sh /tmp/fetch-bim-libs.sh
+COPY --chown=odoo:odoo infrastructure/docker/platform-entrypoint.sh /usr/local/bin/majal-platform-entrypoint
+COPY --chown=odoo:odoo infrastructure/docker/demo-entrypoint.sh /usr/local/bin/majal-demo-entrypoint
+RUN chmod 0755 /usr/local/bin/majal-entrypoint /usr/local/bin/majal-platform-entrypoint \
+         /usr/local/bin/majal-demo-entrypoint \
+    && BIM_LIB_DIR=/mnt/custom-addons/construction_bim/static/lib bash /tmp/fetch-bim-libs.sh \
+    && rm -f /tmp/fetch-bim-libs.sh \
+    && find /mnt/custom-addons /mnt/oca-addons /mnt/third-party-addons \
+         -type d -exec chmod 0755 {} + \
+    && find /mnt/custom-addons /mnt/oca-addons /mnt/third-party-addons \
+         -type f -exec chmod 0644 {} +
+
+USER odoo
+ENTRYPOINT ["/usr/local/bin/majal-platform-entrypoint"]
+CMD ["odoo"]

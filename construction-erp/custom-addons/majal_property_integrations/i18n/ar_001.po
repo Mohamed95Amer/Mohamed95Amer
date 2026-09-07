@@ -1,0 +1,863 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_integrations
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "API channels require an integration provider."
+msgstr "تتطلب قنوات الواجهة البرمجية مزود تكامل."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "Activate an approved, ready provider before queueing publication."
+msgstr "فعّل مزوداً معتمداً وجاهزاً قبل إدراج النشر في الطابور."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__active
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_geo.py:0
+msgid "Add an address or coordinates before opening the map."
+msgstr "أضف عنواناً أو إحداثيات قبل فتح الخريطة."
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_settings_form
+msgid "Advance Notice (days)"
+msgstr "الإشعار المسبق (أيام)"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_channel__mode__api
+msgid "Approved API Adapter"
+msgstr "محول واجهة برمجية معتمد"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_channel_form
+msgid "Approved API Connection"
+msgstr "اتصال واجهة برمجية معتمد"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__body_html
+msgid "Body Html"
+msgstr "نص HTML"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__state__cancelled
+msgid "Cancelled"
+msgstr "ملغى"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Canonical Snapshot"
+msgstr "اللقطة المعتمدة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__channel_id
+msgid "Channel"
+msgstr "القناة"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Channel Publication"
+msgstr "نشر على قناة"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+#: model:ir.actions.act_window,name:majal_property_integrations.action_listing_publication
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing__publication_ids
+#: model:ir.ui.menu,name:majal_property_integrations.menu_property_publications
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_list
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_listing_form_publications
+msgid "Channel Publications"
+msgstr "عمليات النشر على القنوات"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "Channel codes use letters, numbers, hyphens or underscores."
+msgstr "تستخدم رموز القنوات حروفاً أو أرقاماً أو شرطات أو شرطات سفلية."
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_listing_form_publications
+msgid "Channels"
+msgstr "القنوات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__checksum
+msgid "Checksum"
+msgstr "المجموع التحققي"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__company_id
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__company_id
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__company_id
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "Complete these fields before preparing publication: %(items)s"
+msgstr "أكمل هذه الحقول قبل تجهيز النشر: %(items)s"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Confirm Published"
+msgstr "تأكيد النشر"
+
+#. module: majal_property_integrations
+#: model:ir.ui.menu,name:majal_property_integrations.menu_property_connections
+msgid "Connections"
+msgstr "الاتصالات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_channel__mode__export
+msgid "Controlled Export"
+msgstr "تصدير مُدار"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "Controlled-export channels do not make external network calls."
+msgstr "لا تجري قنوات التصدير المُدار أي اتصالات شبكية خارجية."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__create_uid
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__create_uid
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__create_uid
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__create_date
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__create_date
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__create_date
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_notification_settings__email_enabled
+msgid "Creates messages in the native outgoing-mail queue. Delivery still depends on a separately tested mail server."
+msgstr "ينشئ رسائل في طابور البريد الصادر الأصلي. ويبقى التسليم معتمداً على خادم بريد مُختبر بشكل منفصل."
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_settings_form
+msgid "Delivery"
+msgstr "التسليم"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__display_name
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__display_name
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__display_name
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__document_days
+msgid "Document Days"
+msgstr "أيام المستند"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__kind__document
+msgid "Document Expiry"
+msgstr "انتهاء المستند"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "Document expires: %(name)s"
+msgstr "انتهاء مستند: %(name)s"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_publication__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__due_date
+msgid "Due Date"
+msgstr "تاريخ الاستحقاق"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "Due date:"
+msgstr "تاريخ الاستحقاق:"
+
+#. module: majal_property_integrations
+#: model:ir.model.constraint,message:majal_property_integrations.constraint_majal_property_notification_settings_company_unique
+msgid "Each company can have one Property reminder policy."
+msgstr "لكل شركة سياسة تذكير عقاري واحدة."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__email_enabled
+msgid "Email Enabled"
+msgstr "البريد مفعّل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__state__queued
+msgid "Email Queued"
+msgstr "البريد في الطابور"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__email_to
+msgid "Email To"
+msgstr "البريد إلى"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__external_id
+msgid "External"
+msgstr "خارجي"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_publication__state__failed
+msgid "Failed"
+msgstr "فشل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (الشركاء)"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة Font Awesome مثل fa-tasks"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__id
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__id
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__id
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "أيقونة للدلالة على نشاط استثنائي."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__idempotency_key
+msgid "Idempotency Key"
+msgstr "مفتاح عدم التكرار"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "عند التحديد، تتطلب الرسائل الجديدة انتباهك."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__message_has_error
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "عند التحديد، توجد رسائل بها خطأ في التسليم."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__installment_days
+msgid "Installment Days"
+msgstr "أيام القسط"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_channel_form
+msgid "Internal Notes"
+msgstr "ملاحظات داخلية"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__job_id
+msgid "Job"
+msgstr "المهمة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__kind
+msgid "Kind"
+msgstr "النوع"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__last_error
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Last Error"
+msgstr "آخر خطأ"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__write_uid
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__write_uid
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__write_uid
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__write_date
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__write_date
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__write_date
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__latitude
+msgid "Latitude"
+msgstr "خط العرض"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_geo.py:0
+msgid "Latitude must be between -90 and 90."
+msgstr "يجب أن يكون خط العرض بين -90 و90."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__lease_days
+msgid "Lease Days"
+msgstr "أيام عقد الإيجار"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__kind__lease
+msgid "Lease Expiry"
+msgstr "انتهاء عقد الإيجار"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "Lease renewal due: %(name)s"
+msgstr "تجديد إيجار مستحق: %(name)s"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__listing_id
+msgid "Listing"
+msgstr "الإعلان"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_channel_form
+msgid "Listing Channel"
+msgstr "قناة الإعلان"
+
+#. module: majal_property_integrations
+#: model:ir.actions.act_window,name:majal_property_integrations.action_listing_channel
+#: model:ir.ui.menu,name:majal_property_integrations.menu_property_listing_channels
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_channel_list
+msgid "Listing Channels"
+msgstr "قنوات الإعلان"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__longitude
+msgid "Longitude"
+msgstr "خط الطول"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_geo.py:0
+msgid "Longitude must be between -180 and 180."
+msgstr "يجب أن يكون خط الطول بين -180 و180."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__mail_id
+msgid "Mail"
+msgstr "البريد"
+
+#. module: majal_property_integrations
+#: model:ir.model,name:majal_property_integrations.model_majal_property_listing
+msgid "Majal Property Listing"
+msgstr "إعلان عقاري في مجال"
+
+#. module: majal_property_integrations
+#: model:ir.actions.server,name:majal_property_integrations.ir_cron_generate_property_reminders_ir_actions_server
+msgid "Majal Property: Generate reminders"
+msgstr "عقارات مجال: توليد التذكيرات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__map_url
+msgid "Map Url"
+msgstr "رابط الخريطة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسالة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__mode
+msgid "Mode"
+msgstr "الوضع"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطي"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__state__skipped
+msgid "No Email"
+msgstr "بلا بريد"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__notes
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب إجراءً"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل ذات خطأ التسليم"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_majal_development_form_integrations
+msgid "Open Map"
+msgstr "فتح الخريطة"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_form
+msgid "Open Record"
+msgstr "فتح السجل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__partner_id
+msgid "Partner"
+msgstr "الشريك"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__kind__installment
+msgid "Payment Installment"
+msgstr "قسط الدفع"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "Payment due: %(name)s"
+msgstr "دفعة مستحقة: %(name)s"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Prepare Snapshot"
+msgstr "تجهيز اللقطة"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "Prepare a valid publication snapshot first."
+msgstr "جهّز لقطة نشر صالحة أولاً."
+
+#. module: majal_property_integrations
+#: model:res.groups,name:majal_property_integrations.group_majal_property_integration_manager
+msgid "Property Integration Manager"
+msgstr "مدير تكامل العقارات"
+
+#. module: majal_property_integrations
+#: model:ir.module.category,name:majal_property_integrations.module_category_majal_property_integrations
+msgid "Property Integrations"
+msgstr "تكاملات العقارات"
+
+#. module: majal_property_integrations
+#: model:ir.model,name:majal_property_integrations.model_majal_property_listing_channel
+msgid "Property Listing Channel"
+msgstr "قناة إعلان عقاري"
+
+#. module: majal_property_integrations
+#: model:ir.model,name:majal_property_integrations.model_majal_property_listing_publication
+msgid "Property Listing Publication"
+msgstr "نشر إعلان عقاري"
+
+#. module: majal_property_integrations
+#: model:ir.model,name:majal_property_integrations.model_majal_property_notification
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_form
+msgid "Property Reminder"
+msgstr "تذكير عقاري"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_settings_form
+msgid "Property Reminder Policy"
+msgstr "سياسة التذكير العقاري"
+
+#. module: majal_property_integrations
+#: model:ir.model,name:majal_property_integrations.model_majal_property_notification_settings
+msgid "Property Reminder Settings"
+msgstr "إعدادات التذكير العقاري"
+
+#. module: majal_property_integrations
+#: model:ir.actions.act_window,name:majal_property_integrations.action_property_notification
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_list
+msgid "Property Reminders"
+msgstr "التذكيرات العقارية"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_channel__provider_id
+msgid "Provider"
+msgstr "المزود"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing__publication_count
+msgid "Publication Count"
+msgstr "عدد عمليات النشر"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_publication__state__published
+msgid "Published"
+msgstr "منشور"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__published_at
+msgid "Published At"
+msgstr "نُشر في"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Queue API Publication"
+msgstr "إدراج نشر الواجهة البرمجية"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_form
+msgid "Queue Email"
+msgstr "إدراج البريد"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_publication__state__queued
+msgid "Queued"
+msgstr "في الطابور"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__rating_ids
+msgid "Ratings"
+msgstr "التقييمات"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_publication__state__ready
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__state__ready
+msgid "Ready"
+msgstr "جاهز"
+
+#. module: majal_property_integrations
+#: model:ir.model,name:majal_property_integrations.model_majal_development
+msgid "Real Estate Development"
+msgstr "مشروع عقاري"
+
+#. module: majal_property_integrations
+#: model:ir.ui.menu,name:majal_property_integrations.menu_property_reminders
+msgid "Reminder Center"
+msgstr "مركز التذكيرات"
+
+#. module: majal_property_integrations
+#: model:ir.actions.act_window,name:majal_property_integrations.action_property_notification_settings
+#: model:ir.ui.menu,name:majal_property_integrations.menu_property_reminder_settings
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_property_notification_settings_list
+msgid "Reminder Policies"
+msgstr "سياسات التذكير"
+
+#. module: majal_property_integrations
+#: model:ir.model.constraint,message:majal_property_integrations.constraint_majal_property_notification_settings_valid_windows
+msgid "Reminder windows must be between 0 and 365 days."
+msgstr "يجب أن تكون نوافذ التذكير بين 0 و365 يوماً."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__res_id
+msgid "Res"
+msgstr "السجل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__res_model
+msgid "Res Model"
+msgstr "نموذج السجل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification_settings__reservation_days
+msgid "Reservation Days"
+msgstr "أيام الحجز"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__kind__reservation
+msgid "Reservation Expiry"
+msgstr "انتهاء الحجز"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "Reservation expires: %(name)s"
+msgstr "انتهاء حجز: %(name)s"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسالة النصية"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_notification__state__sent
+msgid "Sent"
+msgstr "مُرسل"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__snapshot
+msgid "Snapshot"
+msgstr "اللقطة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__state
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__address_state_id
+msgid "State / Emirate"
+msgstr "المنطقة / الإمارة"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "الحالة بناءً على الأنشطة\nمتأخر: تجاوز تاريخ الاستحقاق\nاليوم: تاريخ النشاط هو اليوم\nمخطط: أنشطة مستقبلية."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__street
+msgid "Street"
+msgstr "الشارع"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__street2
+msgid "Street2"
+msgstr "الشارع 2"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_notification__subject
+msgid "Subject"
+msgstr "الموضوع"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "The channel and provider must use the same company."
+msgstr "يجب أن تستخدم القناة والمزود الشركة نفسها."
+
+#. module: majal_property_integrations
+#: model:ir.model.constraint,message:majal_property_integrations.constraint_majal_property_listing_channel_code_company_unique
+msgid "The channel code must be unique inside the company."
+msgstr "يجب أن يكون رمز القناة فريداً داخل الشركة."
+
+#. module: majal_property_integrations
+#: model:ir.model.constraint,message:majal_property_integrations.constraint_majal_property_notification_positive_res_id
+msgid "The linked record ID must be positive."
+msgstr "يجب أن يكون معرّف السجل المرتبط موجباً."
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "The linked record no longer exists."
+msgstr "لم يعد السجل المرتبط موجوداً."
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "The listing and channel must belong to the same company."
+msgstr "يجب أن ينتمي الإعلان والقناة إلى الشركة نفسها."
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "The reminder and linked record must use the same company."
+msgstr "يجب أن يستخدم التذكير والسجل المرتبط الشركة نفسها."
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/property_notification.py:0
+msgid "The reminder must link to an existing record."
+msgstr "يجب أن يرتبط التذكير بسجل قائم."
+
+#. module: majal_property_integrations
+#: model:ir.model.constraint,message:majal_property_integrations.constraint_majal_property_listing_publication_listing_channel_unique
+msgid "This listing already has a publication for this channel."
+msgstr "لهذا الإعلان نشر على هذه القناة بالفعل."
+
+#. module: majal_property_integrations
+#: model:ir.model.constraint,message:majal_property_integrations.constraint_majal_property_notification_company_idempotency_unique
+msgid "This reminder has already been created."
+msgstr "أُنشئ هذا التذكير بالفعل."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط الاستثنائي على السجل."
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_property_listing_publication__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,help:majal_property_integrations.field_majal_property_listing_publication__website_message_ids
+msgid "Website communication history"
+msgstr "سجل مراسلات الموقع"
+
+#. module: majal_property_integrations
+#: model_terms:ir.ui.view,arch_db:majal_property_integrations.view_listing_publication_form
+msgid "Withdraw"
+msgstr "سحب"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields.selection,name:majal_property_integrations.selection__majal_property_listing_publication__state__withdrawn
+msgid "Withdrawn"
+msgstr "مسحوب"
+
+#. module: majal_property_integrations
+#: model:ir.model.fields,field_description:majal_property_integrations.field_majal_development__zip
+msgid "Zip"
+msgstr "الرمز البريدي"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "cover image"
+msgstr "صورة الغلاف"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "development address or coordinates"
+msgstr "عنوان المشروع العقاري أو إحداثياته"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "positive listing price"
+msgstr "سعر إعلان موجب"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "public description"
+msgstr "وصف عام"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "public title"
+msgstr "عنوان عام"
+
+#. module: majal_property_integrations
+#. odoo-python
+#: code:addons/majal_property_integrations/models/listing_publication.py:0
+msgid "published listing status"
+msgstr "حالة إعلان منشور"

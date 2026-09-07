@@ -1,0 +1,1496 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* construction_form
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-07 21:11+0000\n"
+"PO-Revision-Date: 2026-08-07 21:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid ""
+"%(point)s is a hold point. Release it against the inspection that evidences "
+"it, or record who authorised proceeding without one."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "%s outstanding check(s) marked as Yes."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/form_library.py:0
+msgid "%s standard form(s) added."
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid ""
+"<br/>\n"
+"                        <strong>Inspector:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>المفتش:</strong>"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid ""
+"<br/>\n"
+"                        <strong>Location:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>الموقع:</strong>"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid ""
+"<br/>\n"
+"                        <strong>Score:</strong>"
+msgstr ""
+"<br/>\n"
+"                        <strong>النتيجة:</strong>"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid ""
+"<i class=\"fa fa-hand-paper-o me-2\"/>\n"
+"                        <span>This is an open hold point. The work it governs\n"
+"                              must not proceed until it is released.</span>"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "<span class=\"o_stat_text\">Sign-offs</span>"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid "<strong>Date:</strong>"
+msgstr "<strong>التاريخ:</strong>"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid "<strong>Project:</strong>"
+msgstr "<strong>المشروع:</strong>"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_answer__is_failed
+msgid "A Yes/No check answered No. These are what become defects."
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid ""
+"A hold point stops the work until it is\n"
+"                                released. A witness point invites somebody —\n"
+"                                if they do not attend, the work proceeds."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_point__point_type
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__point_type
+msgid ""
+"A hold point stops the work until it is released. A witness point invites "
+"somebody; if they do not attend, work proceeds."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "A plan with no inspection points governs nothing."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__acceptance_criteria
+msgid "Acceptance Criteria"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity
+msgid "Activity"
+msgstr "النشاط"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_state
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__is_blocking
+msgid "An unreleased hold point. The work it governs must not proceed."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__answer_ids
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Answer"
+msgstr "الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_binary
+msgid "Answer Binary"
+msgstr "مرفق الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_date
+msgid "Answer Date"
+msgstr "تاريخ الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_filename
+msgid "Answer Filename"
+msgstr "اسم ملف الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_number
+msgid "Answer Number"
+msgstr "الإجابة الرقمية"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_text
+msgid "Answer Text"
+msgstr "نص الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_type
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__answer_type
+msgid "Answer Type"
+msgstr "نوع الإجابة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__answer_yes_no
+msgid "Answer Yes No"
+msgstr "إجابة نعم / لا"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid ""
+"Answer every outstanding Yes/No check with Yes."
+"                                   Anything already answered is left as it "
+"is."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__answered_count
+msgid "Answered Count"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__approval_state
+msgid "Approval"
+msgstr "للاعتماد"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__approval_blocked
+msgid "Approval Blocked"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__approval_request_ids
+msgid "Approval Requests"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__approval_summary
+msgid "Approval Summary"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__approved
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__state__approved
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_search
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__architectural
+msgid "Architectural"
+msgstr "معماري"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Attachment"
+msgstr "مرفق"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Awaiting Approval"
+msgstr "بانتظار الاعتماد"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__ball_in_court_id
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__stage__before
+msgid "Before the Work"
+msgstr "قبل العمل"
+
+#. module: construction_form
+#: model_terms:ir.actions.act_window,help:construction_form.action_form_templates
+msgid "Build a form, or start from a standard one"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__name
+msgid "Check"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__template_id
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Checklist"
+msgstr "قائمة مرجعية "
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__civil
+msgid "Civil / Structural"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__responsible_party__client
+msgid "Client / Employer"
+msgstr "العميل / صاحب العمل"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__comment
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid "Comment"
+msgstr "تعليق"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "Complete all required questions before submitting: %s"
+msgstr "أكمل جميع الأسئلة المطلوبة قبل الإرسال: %s"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Completed"
+msgstr "منجز"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__completed_date
+msgid "Completed Date"
+msgstr "تاريخ الإنجاز"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_answer
+msgid "Construction Form Answer"
+msgstr "إجابة نموذج إنشائي"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_question
+msgid "Construction Form Question"
+msgstr "سؤال نموذج إنشائي"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_template
+msgid "Construction Form Template"
+msgstr "قالب نموذج إنشائي"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_inspection
+msgid "Construction Inspection"
+msgstr "فحص إنشائي"
+
+#. module: construction_form
+#: model:ir.actions.server,name:construction_form.ir_cron_recurring_inspections_ir_actions_server
+msgid "Construction: Generate Recurring Inspections"
+msgstr "الإنشاءات: Generate متكرر Inspections"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__responsible_party__consultant
+msgid "Consultant / Engineer"
+msgstr "الاستشاري / المهندس"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__responsible_party__contractor
+msgid "Contractor"
+msgstr "المقاول"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__date
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__date_signed
+msgid "Date Signed"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__days
+msgid "Days"
+msgstr "الأيام"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__responsible_id
+msgid "Default Inspector"
+msgstr "المفتش الافتراضي"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__description
+msgid "Description"
+msgstr "الوصف"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__discipline
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_search
+msgid "Discipline"
+msgstr "التخصص"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__display_name
+msgid "Display Name"
+msgstr "اسم العرض "
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__point_type__review
+msgid "Document Review"
+msgstr "مراجعة مستندات"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__draft
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__stage__during
+msgid "During the Work"
+msgstr "أثناء العمل"
+
+#. module: construction_form
+#: model:ir.model.constraint,message:construction_form.constraint_construction_form_answer_question_inspection_uniq
+msgid "Each question can only be answered once per inspection."
+msgstr "لا يمكن الإجابة عن كل سؤال أكثر من مرة في الفحص الواحد."
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__electrical
+msgid "Electrical"
+msgstr "كهربائي"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "Every Yes/No check on this inspection is answered."
+msgstr "كل Yes/No check on this inspection is answered."
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/form_library.py:0
+msgid "Every standard form is already installed."
+msgstr "كل standard form is already installed."
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__inspection_id
+msgid "Evidence"
+msgstr "الدليل"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء) "
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_type_icon
+#: model:ir.model.fields,help:construction_form.field_construction_itp__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Form"
+msgstr "الاستمارة "
+
+#. module: construction_form
+#: model:ir.actions.act_window,name:construction_form.action_form_templates
+#: model:ir.ui.menu,name:construction_form.menu_construction_form_templates
+msgid "Form Templates"
+msgstr "قوالب النماذج"
+
+#. module: construction_form
+#: model:ir.ui.menu,name:construction_form.menu_construction_forms
+msgid "Forms & Inspections"
+msgstr "النماذج وعمليات التفتيش"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة "
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_list
+msgid "Hold"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__point_type__hold
+msgid "Hold Point"
+msgstr "نقطة توقف"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__hold_point_count
+msgid "Hold Point Count"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Hold Points"
+msgstr "نقاط التوقف"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "Hold point released without inspection. Authority: %s"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_project_project__blocking_hold_point_count
+msgid "Hold points still unreleased. Each one is work that must not proceed."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_itp_point
+msgid "ITP Inspection Point"
+msgstr "نقطة فحص في الخطة"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_itp_record
+msgid "ITP Sign-Off"
+msgstr "اعتماد نقطة فحص"
+
+#. module: construction_form
+#: model:ir.actions.act_window,name:construction_form.action_itp_record
+#: model:ir.ui.menu,name:construction_form.menu_itp_record
+msgid "ITP Sign-Offs"
+msgstr "اعتمادات نقاط الفحص"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_icon
+#: model:ir.model.fields,help:construction_form.field_construction_itp__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_itp__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_itp__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_itp__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__in_progress
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__infrastructure
+msgid "Infrastructure"
+msgstr "بنية تحتية"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__inspection_id
+msgid "Inspection"
+msgstr "فحص"
+
+#. module: construction_form
+#: model:ir.actions.act_window,name:construction_form.action_itp
+#: model:ir.ui.menu,name:construction_form.menu_itp
+msgid "Inspection & Test Plans"
+msgstr "خطط الفحص والاختبار"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__inspection_count
+msgid "Inspection Count"
+msgstr "عدد الفحوصات"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Inspection Points"
+msgstr "نقاط الفحص"
+
+#. module: construction_form
+#: model:ir.actions.report,name:construction_form.action_report_form_inspection
+msgid "Inspection Report"
+msgstr "تقرير الفحص"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_itp
+msgid "Inspection and Test Plan"
+msgstr "خطة الفحص والاختبار"
+
+#. module: construction_form
+#: model:ir.actions.act_window,name:construction_form.action_form_inspections
+msgid "Inspections"
+msgstr "عمليات التفتيش"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__inspector_id
+msgid "Inspector"
+msgstr "المفتش"
+
+#. module: construction_form
+#: model:ir.actions.server,name:construction_form.action_install_form_library
+#: model:ir.ui.menu,name:construction_form.menu_install_form_library
+msgid "Install Standard Forms"
+msgstr "تثبيت النماذج القياسية"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__instructions
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__instructions
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_form
+msgid "Instructions"
+msgstr "التعليمات"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__is_answered
+msgid "Is Answered"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__is_blocking
+msgid "Is Blocking"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__is_failed
+msgid "Is Failed"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__itp_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__itp_id
+msgid "Itp"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__location
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__location
+msgid "Location"
+msgstr "الموقع"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Mark Rest as Yes"
+msgstr "تعليم الباقي بنعم"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__mechanical
+msgid "Mechanical"
+msgstr "ميكانيكي"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__months
+msgid "Months"
+msgstr "شهور"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "My Inspections"
+msgstr "فحوصاتي"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_answer__answer_yes_no__na
+msgid "N/A"
+msgstr "لا ينطبق"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "New"
+msgstr "جديد"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "New Inspection"
+msgstr "فحص جديد"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_summary
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__next_run_date
+msgid "Next Run Date"
+msgstr "تاريخ التشغيل التالي"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_answer__answer_yes_no__no
+msgid "No"
+msgstr "لا"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Not answered"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__notes
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__notes
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__notes
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid "Notes…"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__number
+msgid "Number"
+msgstr "رقم"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء "
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_itp__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_itp__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__stage__after
+msgid "On Completion"
+msgstr "عند الإنجاز"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "Only a draft plan can be approved."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "Only a pending sign-off can be rejected."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "Only a pending sign-off can be released."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_project_project__blocking_hold_point_count
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_search
+msgid "Open Hold Points"
+msgstr "نقاط التوقف المفتوحة"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "Open Hold Points — %s"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_record__state__pending
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_search
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__photo
+msgid "Photo"
+msgstr "صورة"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_search
+msgid "Plan"
+msgstr "تخطيط"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Plan title"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__discipline__plumbing
+msgid "Plumbing / Drainage"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__point_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__point_id
+msgid "Point"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__point_count
+msgid "Point Count"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__point_type
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__point_type
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_search
+msgid "Point Type"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_list
+msgid "Points"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__progress
+msgid "Progress"
+msgstr "مدى التقدم "
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_project_project
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__project_id
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_search
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__question_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__question_ids
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+msgid "Question"
+msgstr "السؤال"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__question_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__question_count
+msgid "Question Count"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_list
+msgid "Questions"
+msgstr "الأسئلة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__rating_ids
+msgid "Ratings"
+msgstr "التقييمات "
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__record_ids
+msgid "Record"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__record_count
+msgid "Record Count"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__recurrence_interval
+msgid "Recurrence Interval"
+msgstr "فاصل التكرار"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__recurrence_unit
+msgid "Recurrence Unit"
+msgstr "وحدة التكرار"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__recurring
+msgid "Recurring"
+msgstr "متكرر"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__reference
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid "Reject"
+msgstr "رفض"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__rejected
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_record__state__rejected
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid "Release"
+msgstr "إصدار"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_record__state__released
+msgid "Released"
+msgstr "مُفرج عنه"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__remaining_count
+msgid "Remaining Count"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid "Reopen"
+msgstr "إعادة فتح"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__is_required
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__required
+msgid "Required"
+msgstr "مطلوب"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__date_required
+msgid "Required By"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_user_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__revision
+msgid "Revision"
+msgstr "المراجعة"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_point__template_id
+msgid "Run this check as a real inspection rather than a signature."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__scheduled_date
+msgid "Scheduled Date"
+msgstr "التاريخ المجدول"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Scheduled This Week"
+msgstr "مجدولة هذا الأسبوع"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__score
+msgid "Score"
+msgstr "النتيجة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__section
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__section
+msgid "Section"
+msgstr "القسم"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__sequence
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__sequence
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid ""
+"Set a project on '%s' before scheduling it: a recurring inspection has to be"
+" raised against one job."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__progress
+msgid "Share of the checklist answered, as a percentage."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "Sign-offs — %s"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__signature
+msgid "Signature"
+msgstr "التوقيع"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__signed_by_id
+msgid "Signed By"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__specification_ref
+msgid "Specification Reference"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__stage
+msgid "Stage"
+msgstr "المرحلة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__reference_standard
+msgid "Standard / Clause"
+msgstr "المعيار / البند"
+
+#. module: construction_form
+#: model:ir.model,name:construction_form.model_construction_form_library
+msgid "Standard Form Library"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Start"
+msgstr "بدء"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_template_form
+msgid "Start Inspection"
+msgstr "بدء الفحص"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__state
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__state
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_state
+#: model:ir.model.fields,help:construction_form.field_construction_itp__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الأنشطة المعتمدة على الحالة\n"
+"المتأخرة: تاريخ الاستحقاق مر\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"المخطط: الأنشطة المستقبلية."
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+msgid "Still Open"
+msgstr "ما زالت مفتوحة"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Submit"
+msgstr "إرسال"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__submitted
+msgid "Submitted"
+msgstr "مُرسل"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_form
+msgid "Supersede"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp__state__superseded
+msgid "Superseded"
+msgstr "ملغى بأحدث"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__point_type__surveillance
+msgid "Surveillance"
+msgstr "مراقبة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__template_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__template_id
+msgid "Template"
+msgstr "قالب "
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__text
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Text"
+msgstr "نص"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp__specification_ref
+msgid "The clause of the specification this plan implements."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__inspection_id
+msgid "The completed inspection that evidences this sign-off."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/itp.py:0
+msgid "The inspection evidencing %(point)s has not been completed yet."
+msgstr ""
+
+#. module: construction_form
+#. odoo-python
+#: code:addons/construction_form/models/construction_form.py:0
+msgid "The question is not part of this inspection template."
+msgstr "السؤال ليس ضمن قالب الفحص هذا."
+
+#. module: construction_form
+#: model:ir.model.constraint,message:construction_form.constraint_construction_form_template_positive_interval
+msgid "The recurrence interval must be greater than zero."
+msgstr "يجب أن يكون فاصل التكرار أكبر من صفر."
+
+#. module: construction_form
+#: model:ir.model.constraint,message:construction_form.constraint_construction_form_template_code_company_uniq
+msgid "The template code must be unique per company."
+msgstr "يجب أن يكون رمز القالب فريداً داخل الشركة."
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp__activity
+msgid "The work this plan governs, e.g. 'Reinforced concrete substructure'."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__responsible_party__third_party
+msgid "Third-Party / Authority"
+msgstr "طرف ثالث / جهة رسمية"
+
+#. module: construction_form
+#: model_terms:ir.actions.act_window,help:construction_form.action_form_templates
+msgid ""
+"Thirteen standard forms install with the module — snagging,\n"
+"                pre and post pour, blockwork, MEP first fix, firestopping,\n"
+"                waterproofing, finishes, deliveries, safety walk and handover.\n"
+"                Copy one and edit it rather than starting from nothing."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__approval_blocked
+msgid ""
+"True while an approval is outstanding, so a form can stop offering the "
+"button that needs it."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_decoration
+#: model:ir.model.fields,help:construction_form.field_construction_itp__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__uses_binary
+msgid "Uses Binary"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__uses_date
+msgid "Uses Date"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__uses_number
+msgid "Uses Number"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__uses_text
+msgid "Uses Text"
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Value"
+msgstr "القيمة"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_point__responsible_party
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__responsible_party
+msgid "Verified By"
+msgstr "يتحقق منه"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__waiver_reason
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid "Waiver"
+msgstr "تنازل"
+
+#. module: construction_form
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_itp_record__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني "
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_itp__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني "
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__weeks
+msgid "Weeks"
+msgstr "أسابيع"
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "What is wrong, and where"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_point__acceptance_criteria
+msgid ""
+"What makes this a pass. A criterion nobody wrote down is a criterion argued "
+"about on site."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__location
+msgid "What this sign-off covers — the pour, the zone, the run."
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_record__waiver_reason
+msgid ""
+"Where a hold point is released without an inspection, who authorised "
+"proceeding and why."
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_itp_record_form
+msgid ""
+"Where a hold point is released without an inspection, who authorised "
+"proceeding and why…"
+msgstr ""
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_itp_point__point_type__witness
+msgid "Witness Point"
+msgstr "نقطة إشهاد"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_answer__answer_yes_no__yes
+msgid "Yes"
+msgstr "نعم"
+
+#. module: construction_form
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__yes_no
+msgid "Yes / No / N/A"
+msgstr "نعم / لا / لا ينطبق"
+
+#. module: construction_form
+#: model:ir.model.fields,help:construction_form.field_construction_itp_point__reference_standard
+msgid "e.g. SBC 304, BS EN 12390-3, spec clause 03300."
+msgstr ""
+
+#. module: construction_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+msgid "Export to Excel"
+msgstr "تصدير إلى إكسل"
+
+#. module: construction_form
+#: model:ir.actions.server,name:construction_form.action_request_approval_construction_form_inspection
+msgid "Request Approval"
+msgstr "طلب الاعتماد"

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_safety_list" model="ir.ui.view">
+        <field name="name">project.project.safety.list</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <list string="Safety Statistics" create="false"
+                  decoration-danger="hse_lti_count &gt; 0">
+                <field name="name"/>
+                <field name="construction_stage" optional="hide"/>
+                <field name="hse_manhours" sum="Manhours"/>
+                <field name="hse_incident_count" sum="Incidents"/>
+                <field name="hse_near_miss_count" sum="Near misses" optional="hide"/>
+                <field name="hse_lti_count" sum="LTIs"/>
+                <field name="hse_days_lost" sum="Days lost" optional="hide"/>
+                <field name="hse_ltifr" string="LTIFR"/>
+                <field name="hse_days_since_lti" string="Days since LTI"/>
+                <field name="hse_live_permit_count" string="Live permits" optional="hide"/>
+                <field name="hse_open_action_count" string="Open actions"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_project_safety_form" model="ir.ui.view">
+        <field name="name">project.project.safety.form</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <form string="Safety Statistics" create="false" edit="false">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_hse_incidents" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="hse_incident_count" widget="statinfo"
+                                   string="Incidents"/>
+                        </button>
+                        <button name="action_open_hse_permits" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="hse_live_permit_count" widget="statinfo"
+                                   string="Live Permits"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Exposure">
+                            <field name="hse_manhours"/>
+                            <field name="hse_open_action_count"/>
+                        </group>
+                        <group string="Outcomes">
+                            <field name="hse_near_miss_count"/>
+                            <field name="hse_lti_count"/>
+                            <field name="hse_days_lost"/>
+                            <field name="hse_ltifr"/>
+                            <field name="hse_days_since_lti"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        LTIFR is lost-time injuries per one million hours
+                        worked, taken from the labour hours recorded on the
+                        project's daily site logs. "Days since last LTI" reads
+                        -1 when none has been recorded.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_safety" model="ir.actions.act_window">
+        <field name="name">Safety Statistics</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_construction', '=', True)]</field>
+        <field name="view_id" ref="view_project_safety_list"/>
+    </record>
+</odoo>

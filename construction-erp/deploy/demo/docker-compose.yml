@@ -1,0 +1,91 @@
+name: majal-demo
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: majal_admin
+      POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
+      POSTGRES_DB: postgres
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./postgres/init-majal.sh:/docker-entrypoint-initdb.d/10-majal-app.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U majal_admin -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    networks:
+      - private
+
+  majal:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # HOST/USER/PASSWORD are the Odoo image's own names for the database
+      # connection; Odoo reads them directly.
+      HOST: db
+      USER: majal_app
+      PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      ODOO_ADMIN_PASSWD: ${ODOO_ADMIN_PASSWD:?Set ODOO_ADMIN_PASSWD in .env}
+      MAJAL_AI_MASTER_KEY: ${MAJAL_AI_MASTER_KEY:?Set MAJAL_AI_MASTER_KEY in .env}
+      # And these are what restore_database.py needs. Without them a restore
+      # stops at "Database recovery credentials were not supplied" — which is
+      # a thing you find out on the day you are restoring. The admin role is
+      # named here too because the script's fallback is "odoo" while this
+      # stack's superuser is majal_admin, so the fallback connects as a role
+      # that does not exist.
+      MAJAL_DB_APP_USER: majal_app
+      MAJAL_DB_APP_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MAJAL_DB_ADMIN_USER: majal_admin
+      MAJAL_DB_ADMIN_PASSWORD: ${DB_ADMIN_PASSWORD:?Set DB_ADMIN_PASSWORD in .env}
+    entrypoint:
+      - /bin/bash
+      - /usr/local/bin/majal-entrypoint
+    command:
+      - odoo
+    expose:
+      - "8069"
+    volumes:
+      - ../../scripts/docker-entrypoint-majal.sh:/usr/local/bin/majal-entrypoint:ro
+      - ../../custom-addons:/mnt/custom-addons:ro
+      - ../../oca-addons:/mnt/oca-addons:ro
+      - ../../third-party-addons:/mnt/third-party-addons:ro
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - majal-data:/var/lib/odoo
+    restart: unless-stopped
+    networks:
+      - private
+
+  edge:
+    image: caddy:2.10
+    depends_on:
+      - majal
+    environment:
+      DEMO_HOST: ${DEMO_HOST:?Set DEMO_HOST in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+    networks:
+      - private
+
+networks:
+  private:
+    driver: bridge
+
+volumes:
+  db-data:
+  majal-data:
+  caddy-data:
+  caddy-config:

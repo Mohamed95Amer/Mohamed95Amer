@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_majal_document_company_project" model="ir.rule">
+        <field name="name">Majal documents: company and project assignment</field>
+        <field name="model_id" ref="model_majal_document"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if user.majal_role_id and user.majal_role_id.rank &gt;= 40 else [('company_id', 'in', company_ids), '|', ('project_id', '=', False), '|', ('project_id.majal_manager_id', '=', user.id), ('project_id.majal_member_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_majal_document_version_company" model="ir.rule">
+        <field name="name">Majal document versions: company</field>
+        <field name="model_id" ref="model_majal_document_version"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if user.majal_role_id and user.majal_role_id.rank &gt;= 40 else [('company_id', 'in', company_ids), '|', ('document_id.project_id', '=', False), '|', ('document_id.project_id.majal_manager_id', '=', user.id), ('document_id.project_id.majal_member_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_majal_document_template_company" model="ir.rule">
+        <field name="name">Majal document templates: company</field>
+        <field name="model_id" ref="model_majal_document_template"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_majal_sheet_company_project" model="ir.rule">
+        <field name="name">Majal sheets: company and project assignment</field>
+        <field name="model_id" ref="model_majal_sheet"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if user.majal_role_id and user.majal_role_id.rank &gt;= 40 else [('company_id', 'in', company_ids), '|', ('project_id', '=', False), '|', ('project_id.majal_manager_id', '=', user.id), ('project_id.majal_member_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_majal_sheet_line_company" model="ir.rule">
+        <field name="name">Majal sheet lines: company</field>
+        <field name="model_id" ref="model_majal_sheet_line"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)] if user.majal_role_id and user.majal_role_id.rank &gt;= 40 else [('company_id', 'in', company_ids), '|', ('sheet_id.project_id', '=', False), '|', ('sheet_id.project_id.majal_manager_id', '=', user.id), ('sheet_id.project_id.majal_member_ids', 'in', [user.id])]</field>
+    </record>
+</odoo>

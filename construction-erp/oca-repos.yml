@@ -1,0 +1,88 @@
+# Pinned OCA (Odoo Community Association) sources.
+# All repos pinned to an exact commit on their 18.0 branch.
+# scripts/fetch-vendor.sh reads this file, shallow-clones each repo at the pinned
+# commit, and copies ONLY the whitelisted modules into oca-addons/.
+#
+# To update a pin: git ls-remote https://github.com/OCA/<repo>.git refs/heads/18.0
+# then re-run scripts/fetch-vendor.sh and commit the refreshed oca-addons/.
+
+odoo_version: "18.0"
+
+repos:
+  field-service:
+    url: https://github.com/OCA/field-service.git
+    commit: 02698ce4f21bd9c1bca486eae44de9206e5e3c28
+    modules:
+      - fieldservice
+      - fieldservice_stock
+      - fieldservice_sale
+      - fieldservice_recurring
+      - fieldservice_project
+      - fieldservice_activity
+  dms:
+    url: https://github.com/OCA/dms.git
+    commit: 6da958550a511dfa382c1f4208d6024adb4a5d95
+    modules:
+      - dms
+  helpdesk:
+    url: https://github.com/OCA/helpdesk.git
+    commit: b483a2d58ab3a664c1d112500f0cffa654e958ae
+    modules:
+      - helpdesk_mgmt
+      - helpdesk_mgmt_project
+  contract:
+    url: https://github.com/OCA/contract.git
+    commit: 0ebd97d9cdabc3591587d19c27564a4efbc68a33
+    modules:
+      - contract
+      - contract_variable_quantity
+  server-ux:
+    url: https://github.com/OCA/server-ux.git
+    commit: d6dc132bd2d1c57933664c036acd62a84e2737da
+    modules:
+      - base_tier_validation
+      - base_tier_validation_formula
+      - date_range
+  maintenance:
+    url: https://github.com/OCA/maintenance.git
+    commit: 7f45248ffef4ea07c6767b3c1ca6d549f785acd0
+    modules:
+      - base_maintenance
+      - maintenance_plan
+      - maintenance_equipment_hierarchy
+      - maintenance_request_purchase
+      - maintenance_equipment_contract
+  # Standard financial statements are provided by the Odoo Mates accounting
+  # suite in third-party-addons/ (see docs/reuse-decisions.md); OCA
+  # account-financial-reporting is intentionally not vendored to avoid two
+  # overlapping report engines. mis-builder is kept for custom CVR/WIP reports.
+  mis-builder:
+    url: https://github.com/OCA/mis-builder.git
+    commit: 223b9774af49c7059cbc24c86d531c7aaf642831
+    modules:
+      - mis_builder
+      - mis_builder_budget
+  web:
+    url: https://github.com/OCA/web.git
+    commit: fedf87bfa4243dec6c74bede0e3a1379bf9cd135
+    modules:
+      - web_responsive
+      - web_notify
+      - web_timeline
+  reporting-engine:
+    url: https://github.com/OCA/reporting-engine.git
+    commit: 52e03a544f25b789ed34a0e842603ce0b80f36aa
+    modules:
+      - report_xlsx
+  # Odoo's spreadsheet_dashboard (core) can display a dashboard but not edit
+  # one — editing is Enterprise's spreadsheet_edition. These give Community a
+  # real spreadsheet editor and let a user build their own dashboard from a
+  # pivot without writing a module, which is what "My Dashboards" has to mean
+  # if it is to mean anything. AGPL-3 / LGPL-3.
+  spreadsheet:
+    url: https://github.com/OCA/spreadsheet.git
+    commit: 6663df26dc5119b466ac70092530414e128848fe
+    modules:
+      - spreadsheet_oca
+      - spreadsheet_dashboard_oca
+      - spreadsheet_dashboard_purchase_oca

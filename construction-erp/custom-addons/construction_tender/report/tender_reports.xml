@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_tender_leveling" model="ir.actions.report">
+        <field name="name">Bid Leveling Sheet</field>
+        <field name="model">construction.tender</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_tender.report_leveling_document</field>
+        <field name="report_file">construction_tender.report_leveling_document</field>
+        <field name="binding_model_id" ref="model_construction_tender"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_leveling_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="tender">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Bid Leveling Sheet</h2>
+                        <h4 class="text-muted">
+                            <span t-field="tender.reference"/> —
+                            <span t-field="tender.name"/>
+                        </h4>
+                        <p>
+                            <strong>Project:</strong>
+                            <span t-field="tender.project_id.name"/><br/>
+                            <strong>Budget:</strong>
+                            <span t-field="tender.budget_cost"/>
+                        </p>
+                        <t t-set="bids"
+                           t-value="tender.bid_ids.filtered(lambda b: b.state in ('submitted','shortlisted','awarded'))"/>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Bidder</th>
+                                    <th class="text-end">Total</th>
+                                    <th class="text-end">vs Budget</th>
+                                    <th class="text-end">Unpriced</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="bids" t-as="bid">
+                                    <td><span t-field="bid.bidder_id.name"/></td>
+                                    <td class="text-end"><span t-field="bid.amount_total"/></td>
+                                    <td class="text-end"><span t-field="bid.variance_vs_budget"/></td>
+                                    <td class="text-end"><span t-field="bid.unpriced_line_count"/></td>
+                                    <td><span t-field="bid.state"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5>Line comparison</h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Scope line</th>
+                                    <th class="text-end">Budget</th>
+                                    <th t-foreach="bids" t-as="bid" class="text-end">
+                                        <span t-field="bid.bidder_id.name"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="tender.line_ids" t-as="line">
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-end"><span t-field="line.budget_cost"/></td>
+                                    <td t-foreach="bids" t-as="bid" class="text-end">
+                                        <t t-set="bl"
+                                           t-value="bid.line_ids.filtered(lambda l: l.tender_line_id == line)"/>
+                                        <span t-if="bl" t-field="bl[0].amount"/>
+                                        <span t-else="" class="text-muted">not priced</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

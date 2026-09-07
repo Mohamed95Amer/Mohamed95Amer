@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_api_client_list" model="ir.ui.view">
+        <field name="name">majal.api.client.list</field>
+        <field name="model">majal.api.client</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active" decoration-success="active">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="scope"/>
+                <field name="key_hint"/>
+                <field name="last_used_at"/>
+                <field name="request_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_majal_api_client_form" model="ir.ui.view">
+        <field name="name">majal.api.client.form</field>
+        <field name="model">majal.api.client</field>
+        <field name="arch" type="xml">
+            <form string="Majal API Client">
+                <header>
+                    <button name="action_rotate_key" string="Rotate Key"
+                            type="object" class="oe_highlight"/>
+                    <button name="action_revoke" string="Revoke Access"
+                            type="object" class="btn-secondary" invisible="not active"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <div class="alert alert-warning" role="alert">
+                        The full API key is shown only once after rotation. Store it in a secret manager.
+                    </div>
+                    <group>
+                        <field name="company_id"/>
+                        <field name="user_id"/>
+                        <field name="scope"/>
+                        <field name="key_hint" readonly="1"/>
+                        <field name="last_used_at" readonly="1"/>
+                        <field name="request_count" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_majal_api_key_wizard_form" model="ir.ui.view">
+        <field name="name">majal.api.key.wizard.form</field>
+        <field name="model">majal.api.key.wizard</field>
+        <field name="arch" type="xml">
+            <form string="New Majal API Key">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        Copy this key now. Majal will never display it again.
+                    </div>
+                    <group>
+                        <field name="client_id"/>
+                        <field name="token" password="True" readonly="1"/>
+                    </group>
+                </sheet>
+                <footer><button string="Close" special="cancel" class="btn-primary"/></footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_majal_api_clients" model="ir.actions.act_window">
+        <field name="name">API Clients</field>
+        <field name="res_model">majal.api.client</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

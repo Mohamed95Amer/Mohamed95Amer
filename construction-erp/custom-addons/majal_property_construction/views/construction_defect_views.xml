@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_defect_form_property" model="ir.ui.view">
+        <field name="name">construction.defect.form.property</field>
+        <field name="model">construction.defect</field>
+        <field name="inherit_id" ref="construction_defect.view_defect_form"/>
+        <field name="arch" type="xml">
+            <field name="project_id" position="after">
+                <field name="unit_id"
+                       options="{'no_create': True}"
+                       placeholder="Site-wide item — leave empty"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_defect_list_property" model="ir.ui.view">
+        <field name="name">construction.defect.list.property</field>
+        <field name="model">construction.defect</field>
+        <field name="inherit_id" ref="construction_defect.view_defect_list"/>
+        <field name="arch" type="xml">
+            <field name="location" position="before">
+                <field name="unit_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_defect_search_property" model="ir.ui.view">
+        <field name="name">construction.defect.search.property</field>
+        <field name="model">construction.defect</field>
+        <field name="inherit_id" ref="construction_defect.view_defect_search"/>
+        <field name="arch" type="xml">
+            <field name="project_id" position="after">
+                <field name="unit_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

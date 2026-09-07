@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_equipment_form_facility" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.facility</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <field name="location" position="after">
+                <field name="facility_location_id"/>
+                <field name="parent_id"/>
+                <field name="criticality" widget="badge"
+                       decoration-danger="criticality in ('high', 'critical')"
+                       decoration-warning="criticality == 'medium'"/>
+                <field name="barcode"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="purchase_value"/>
+                <field name="expected_life_years"/>
+                <field name="warranty_active" widget="boolean_toggle"/>
+            </field>
+            <xpath expr="//page[@name='product_information']" position="after">
+                <page string="Meters" name="meters">
+                    <field name="meter_ids">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="uom"/>
+                            <field name="current_value"/>
+                            <field name="last_reading_date"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Spare Parts" name="spares">
+                    <field name="spare_line_ids">
+                        <list editable="bottom">
+                            <field name="product_id"/>
+                            <field name="min_qty"/>
+                            <field name="note"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_meter_form" model="ir.ui.view">
+        <field name="name">facility.asset.meter.form</field>
+        <field name="model">facility.asset.meter</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="equipment_id"/>
+                            <field name="uom"/>
+                        </group>
+                        <group>
+                            <field name="current_value"/>
+                            <field name="last_reading_date"/>
+                        </group>
+                    </group>
+                    <field name="reading_ids">
+                        <list editable="bottom">
+                            <field name="date"/>
+                            <field name="value"/>
+                            <field name="user_id"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_meter" model="ir.actions.act_window">
+        <field name="name">Meters</field>
+        <field name="res_model">facility.asset.meter</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_meter_list" model="ir.ui.view">
+        <field name="name">facility.asset.meter.list</field>
+        <field name="model">facility.asset.meter</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="equipment_id"/>
+                <field name="name"/>
+                <field name="uom"/>
+                <field name="current_value"/>
+                <field name="last_reading_date"/>
+            </list>
+        </field>
+    </record>
+</odoo>

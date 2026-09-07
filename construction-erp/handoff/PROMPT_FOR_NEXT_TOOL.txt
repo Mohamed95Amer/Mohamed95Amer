@@ -1,0 +1,97 @@
+IMPORTANT — newer checkpoint available:
+Use handoff\next-tool-2026-07-31\COPY_THIS_PROMPT.txt instead of this older
+29 July prompt. Read handoff\next-tool-2026-07-31\START_HERE.md first.
+
+Continue the Majal construction and facilities product in:
+
+C:\Users\hossi\Documents\Odoo\construction-erp
+
+Branch:
+codex/odoo19-ui-enhancement
+
+First read completely:
+1. C:\Users\hossi\Documents\Odoo\construction-erp\handoff\README.md
+2. C:\Users\hossi\Documents\Odoo\construction-erp\docs\full-system-audit-2026-07-28.md
+3. C:\Users\hossi\Documents\Odoo\construction-erp\docs\documents-and-offline.md
+4. C:\Users\hossi\Documents\Odoo\construction-erp\docs\security.md
+5. C:\Users\hossi\Documents\Odoo\construction-erp\docs\productization-plan.md
+
+There is valuable local work and a local checkpoint may exist. Preserve it.
+Do not reset, clean, checkout, discard, or overwrite the worktree. Run
+`git status --short` and `git log -1 --oneline` first.
+
+The previous tool completed a multi-role full-system audit and implemented a
+large remediation pass:
+- tenant/project/facility assignment security;
+- protected roles, approvals, documents/drawings and restore requests;
+- new `majal_documents` module;
+- new `majal_field_offline` module;
+- new opt-in `majal_demo` acceptance-data module;
+- tests and documentation.
+
+Static Python/XML/JavaScript checks passed, but Odoo installation/runtime tests
+and the first full Odoo validation cycle are now complete:
+- clean install: 137 modules;
+- final clean full custom suite: 482 tests, 0 failures, 0 errors on
+  `majal_full_20260729_2`;
+- cloned existing-database upgrade passed;
+- phone-sized Construction, Facilities, BIM, Documents and Majal Field checks
+  passed;
+- a destructive backup/restore drill passed only on the disposable clone,
+  including database, 777-file filestore and audit-receipt verification.
+
+Read the exact evidence and remaining exceptions in:
+C:\Users\hossi\Documents\Odoo\construction-erp\docs\validation-2026-07-29.md
+
+The live system is Docker on port 8069 using database `erp`. Do not modify,
+drop or test destructively against `erp`.
+
+Available isolated databases:
+- clean validation: `majal_ci_20260728`;
+- upgraded/restored clone: `majal_upgrade_20260729`.
+
+Use another port such as 8079 for isolated HTTP validation. Never point a
+destructive command at `erp`.
+
+Docker executable:
+C:\Users\hossi\AppData\Local\Programs\DockerDesktop\resources\bin\docker.exe
+
+Primary objective:
+1. test true server-unavailable/airplane-mode behavior on a real device;
+2. test physical QR/NFC and representative remote-device BIM/WebGL;
+3. add missing adversarial cross-company tests and extend the remaining
+   facility-model CRUD matrix;
+4. finish document/PDF template and client-key AI acceptance;
+5. update the audit with evidence;
+6. only after the remaining gates pass, upgrade live `erp`, smoke-test and
+   push.
+
+Pay special attention to:
+- `custom-addons/majal_administration/models/tenant_security.py`
+- `custom-addons/majal_administration/scripts/restore_database.py`
+- `custom-addons/construction_base/models/approval_mixin.py`
+- `custom-addons/construction_base/models/approval_request.py`
+- `custom-addons/construction_ui/models/project_workspace.py`
+- `custom-addons/majal_documents/`
+- `custom-addons/majal_field_offline/`
+- `custom-addons/majal_demo/hooks.py`
+
+Controlled capability packs for Procurement, Inventory, Finance, HR, Website
+and AI Administration are implemented and tested. Preserve their strict
+one-tier-per-family, minimum-role, Platform Owner approval, HR/FM separation
+and unrelated-group-removal guarantees when modifying access code.
+
+The Capability Catalog and access dialogs passed visual acceptance on the
+isolated clone. The focused Administration suite passes 22 module tests / 20
+Odoo aggregate tests. Arabic was installed on the clone and Administration
+navigation, headings, all 12 capability rows and descriptions passed a clean
+RTL browser check. Exact evidence is in `docs/validation-2026-07-29.md`.
+
+Be honest about these boundaries:
+- Majal internal sign-off is checksum-bound operational approval, not a
+  qualified electronic signature.
+- The structured document/sheet editor is not lossless arbitrary DOCX/XLSX
+  editing.
+- Offline is intentionally limited to safe field actions.
+- Local recovery slots do not replace encrypted off-machine backups.
+- A temporary public tunnel is not a production sales/demo deployment.

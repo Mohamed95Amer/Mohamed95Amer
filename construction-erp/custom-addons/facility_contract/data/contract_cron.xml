@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A contract that lapses unnoticed keeps producing work orders and stops
+         producing invoices, so the end date has to chase somebody rather than
+         wait to be looked at. -->
+    <record id="cron_facility_contract_renewal" model="ir.cron">
+        <field name="name">Facilities: flag contracts due for renewal</field>
+        <field name="model_id" ref="contract.model_contract_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_flag_renewals()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

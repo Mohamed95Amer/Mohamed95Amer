@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_unit_form_operations" model="ir.ui.view">
+        <field name="name">majal.unit.form.operations</field>
+        <field name="model">majal.unit</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_unit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_leases" type="object"
+                        class="oe_stat_button" icon="fa-file-text-o"
+                        invisible="not lease_ids">
+                    <field name="lease_count" widget="statinfo" string="Leases"/>
+                </button>
+                <button name="action_view_maintenance_requests" type="object"
+                        class="oe_stat_button" icon="fa-wrench"
+                        invisible="not maintenance_request_ids">
+                    <field name="open_maintenance_count" widget="statinfo"
+                           string="Open Requests"/>
+                </button>
+            </xpath>
+            <field name="owner_id" position="after">
+                <field name="tenant_id" invisible="not tenant_id"/>
+                <field name="active_lease_id" invisible="not active_lease_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_majal_unit_list_operations" model="ir.ui.view">
+        <field name="name">majal.unit.list.operations</field>
+        <field name="model">majal.unit</field>
+        <field name="inherit_id" ref="majal_real_estate.view_majal_unit_list"/>
+        <field name="arch" type="xml">
+            <field name="status" position="before">
+                <field name="tenant_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

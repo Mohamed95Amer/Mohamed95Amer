@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_drawing_upload_form" model="ir.ui.view">
+        <field name="name">construction.drawing.upload.form</field>
+        <field name="model">construction.drawing.upload</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="project_id"/>
+                    <field name="issued_for"/>
+                    <field name="split_pages"/>
+                    <field name="file_ids" widget="many2many_binary"/>
+                </group>
+                <footer>
+                    <button name="action_import" type="object" string="Import"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_drawing_upload" model="ir.actions.act_window">
+        <field name="name">Bulk Upload Drawings</field>
+        <field name="res_model">construction.drawing.upload</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_drawing_upload"
+              name="Bulk Upload Drawings"
+              parent="construction_base.menu_construction_engineering"
+              action="action_drawing_upload"
+              sequence="15"/>
+</odoo>

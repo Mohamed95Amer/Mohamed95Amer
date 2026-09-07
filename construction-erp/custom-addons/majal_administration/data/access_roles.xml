@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- The standard levels: no company_id, so every company sees them until
+         it makes its own copy. What each one grants lives here rather than in
+         Python, because a company is expected to edit it. -->
+    <record id="role_platform_owner" model="majal.access.role">
+        <field name="name">Platform Owner</field>
+        <field name="code">platform_owner</field>
+        <field name="rank">60</field>
+        <field name="description">Full platform governance, recovery, security settings and all operations.</field>
+        <field name="group_ids" eval="[(6, 0, [ref('majal_administration.group_platform_owner')])]"/>
+        <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_manager'), ref('project.group_project_manager'), ref('project.group_project_stages')])]"/>
+        <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="role_company_admin" model="majal.access.role">
+        <field name="name">Company Administrator</field>
+        <field name="code">company_admin</field>
+        <field name="rank">50</field>
+        <field name="description">Manages client users and all operations, but cannot restore databases or access hidden technical controls.</field>
+        <field name="group_ids" eval="[(6, 0, [ref('majal_administration.group_user_administrator')])]"/>
+        <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_manager'), ref('project.group_project_manager'), ref('project.group_project_stages')])]"/>
+        <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="role_operations_manager" model="majal.access.role">
+        <field name="name">Operations Manager</field>
+        <field name="code">operations_manager</field>
+        <field name="rank">40</field>
+        <field name="description">Leads the selected construction or facilities operation across projects and teams.</field>
+        <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_manager'), ref('project.group_project_manager'), ref('project.group_project_stages')])]"/>
+        <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="role_manager" model="majal.access.role">
+        <field name="name">Project / Facility Manager</field>
+        <field name="code">manager</field>
+        <field name="rank">30</field>
+        <field name="description">Controls day-to-day delivery for the selected industry workspace.</field>
+        <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_pm'), ref('project.group_project_manager'), ref('project.group_project_stages')])]"/>
+        <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_manager')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="role_supervisor" model="majal.access.role">
+        <field name="name">Engineer / Supervisor</field>
+        <field name="code">supervisor</field>
+        <field name="rank">20</field>
+        <field name="description">Supervises site or facilities work and updates operational records.</field>
+        <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_site_engineer'), ref('project.group_project_user')])]"/>
+        <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_supervisor')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_user')])]"/>
+    </record>
+    <record id="role_field_user" model="majal.access.role">
+        <field name="name">Field User / Technician</field>
+        <field name="code">field_user</field>
+        <field name="rank">10</field>
+        <field name="description">Works on assigned operational records with no administration access.</field>
+        <field name="construction_group_ids" eval="[(6, 0, [ref('construction_base.group_construction_user'), ref('project.group_project_user')])]"/>
+        <field name="facility_group_ids" eval="[(6, 0, [ref('majal_administration.group_facilities_user')])]"/>
+        <field name="real_estate_group_ids" eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_user')])]"/>
+    </record>
+
+    <record id="base.user_admin" model="res.users">
+        <field name="majal_role_id" ref="role_platform_owner"/>
+        <field name="majal_industry_scope">both</field>
+    </record>
+    <record id="base.user_root" model="res.users">
+        <field name="majal_role_id" ref="role_platform_owner"/>
+        <field name="majal_industry_scope">both</field>
+    </record>
+</odoo>

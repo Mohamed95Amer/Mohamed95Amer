@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_section_cvr_list" model="ir.ui.view">
+        <field name="name">construction.boq.section.cvr.list</field>
+        <field name="model">construction.boq.section</field>
+        <field name="arch" type="xml">
+            <list string="Section CVR" create="false"
+                  decoration-danger="cvr_margin_variance &lt; 0">
+                <field name="boq_id" optional="hide"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="cvr_contract_value" sum="Value"/>
+                <field name="cvr_certified_value" sum="Certified"/>
+                <field name="cvr_percent_complete" string="% Cert."/>
+                <field name="cvr_budget_cost" sum="Budget" optional="hide"/>
+                <field name="cvr_committed_cost" sum="Committed" optional="hide"/>
+                <field name="cvr_forecast_margin" sum="Forecast margin"
+                       decoration-danger="cvr_forecast_margin &lt; 0"/>
+                <field name="cvr_forecast_margin_percent" string="Margin %" optional="hide"/>
+                <field name="cvr_margin_variance" sum="Movement"
+                       decoration-danger="cvr_margin_variance &lt; 0"
+                       decoration-success="cvr_margin_variance &gt; 0"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_section_cvr" model="ir.actions.act_window">
+        <field name="name">CVR by Section</field>
+        <field name="res_model">construction.boq.section</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_section_cvr_list"/>
+        <field name="context">{'search_default_group_boq': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No priced sections yet</p>
+            <p>A project-level CVR says the job is losing money; this says which
+               part of it.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_section_cvr"
+              name="CVR by Section"
+              parent="construction_base.menu_construction_commercial"
+              action="action_section_cvr"
+              sequence="62"
+              groups="construction_base.group_construction_commercial"/>
+</odoo>

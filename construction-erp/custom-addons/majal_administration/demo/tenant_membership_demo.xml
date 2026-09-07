@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Give the demo personas the membership the tenant rules ask for.
+
+        The rules scope every register by membership below role rank 40: a
+        project is visible to a Project Manager only if majal_manager_id
+        names them or majal_member_ids contains them. The demo projects and
+        locations named nobody, so five of the seven shipped personas -
+        omar.pm, nadia.qs, yusuf.engineer, samir.site and layla.fm - logged
+        in to zero projects, zero RFIs, zero defects and zero BOQs.
+
+        Only hala.director (rank 40) and tariq.tech (no role at all) saw
+        anything, which is why this survived: the two accounts most likely
+        to be used for a look around are exactly the two the rule does not
+        constrain.
+
+        These fields belong to majal_administration and the records belong
+        to construction_base and facility_asset, so the assignment can only
+        live here - this is the one module that depends on all three.
+
+        Project *membership* is deliberately not set here. majal_workforce
+        projects majal_member_ids from allocations and would overwrite any
+        direct write on its next sweep, so the demo team is allocated in
+        majal_workforce/demo/allocation_demo.xml instead. majal_manager_id
+        is not projected, so it stays here.
+    -->
+
+    <record id="construction_base.project_demo_alnoor" model="project.project">
+        <field name="majal_manager_id" ref="construction_base.user_demo_pm"/>
+    </record>
+
+    <record id="construction_base.project_demo_marina" model="project.project">
+        <field name="majal_manager_id" ref="construction_base.user_demo_pm"/>
+    </record>
+
+    <!-- Kariat is at tender stage and deliberately has a thinner team: a
+         portfolio where every project has the same five people on it does
+         not exercise the rule at all. -->
+    <record id="construction_base.project_demo_kariat" model="project.project">
+        <field name="majal_manager_id" ref="construction_base.user_demo_pm"/>
+    </record>
+
+    <!-- The facilities side has the same rule and the same gap: layla.fm is
+         the Facility Manager persona and saw none of the three locations. -->
+    <record id="facility_asset.loc_tower" model="facility.location">
+        <field name="manager_user_id" ref="facility_asset.user_demo_fm_manager"/>
+        <field name="member_user_ids" eval="[(6, 0, [
+            ref('facility_asset.user_demo_technician'),
+        ])]"/>
+    </record>
+
+    <record id="facility_asset.loc_l3" model="facility.location">
+        <field name="manager_user_id" ref="facility_asset.user_demo_fm_manager"/>
+        <field name="member_user_ids" eval="[(6, 0, [
+            ref('facility_asset.user_demo_technician'),
+        ])]"/>
+    </record>
+
+    <record id="facility_asset.loc_l3_plantroom" model="facility.location">
+        <field name="manager_user_id" ref="facility_asset.user_demo_fm_manager"/>
+        <field name="member_user_ids" eval="[(6, 0, [
+            ref('facility_asset.user_demo_technician'),
+        ])]"/>
+    </record>
+
+    <!-- The technician persona shipped with no access level at all, which
+         used to mean "sees the whole company" and now correctly means
+         "sees nothing". Give them the level their job implies, so the demo
+         contains no internal user relying on an unassigned default. -->
+    <record id="facility_asset.user_demo_technician" model="res.users">
+        <field name="majal_role_id" ref="majal_administration.role_field_user"/>
+    </record>
+</odoo>

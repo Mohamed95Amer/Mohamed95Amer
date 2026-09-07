@@ -1,0 +1,23 @@
+{
+    "name": "Majal Demo Environment",
+    "summary": "Opt-in two-company acceptance dataset and role personas",
+    "version": "18.0.2.0.2",
+    "category": "Majal/Quality Assurance",
+    "license": "LGPL-3",
+    "depends": [
+        "construction_ui",
+        "majal_documents",
+        "majal_document_intake",
+        "majal_field_offline",
+        "majal_ai",
+        "majal_property_ui",
+        "majal_dashboard",
+        "majal_approval_studio",
+        "majal_sign",
+    ],
+    "data": [],
+    "post_init_hook": "post_init_hook",
+    "application": False,
+    "installable": True,
+    "auto_install": False,
+}

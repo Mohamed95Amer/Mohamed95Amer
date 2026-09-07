@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bid_form" model="ir.ui.view">
+        <field name="name">construction.tender.bid.form</field>
+        <field name="model">construction.tender.bid</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_load_scope" type="object"
+                            string="Load Scope Lines"
+                            invisible="state not in ('draft', 'invited')"/>
+                    <button name="action_submit" type="object" string="Submit Bid"
+                            class="btn-primary"
+                            invisible="state not in ('draft', 'invited')"/>
+                    <button name="action_shortlist" type="object" string="Shortlist"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_award" type="object" string="Award"
+                            class="btn-primary"
+                            invisible="state not in ('submitted', 'shortlisted')"
+                            confirm="Award this package to this bidder? A subcontract will be created and the other bids marked unsuccessful."/>
+                    <button name="action_reject" type="object" string="Not Successful"
+                            invisible="state not in ('invited', 'submitted', 'shortlisted')"/>
+                    <button name="action_reset" type="object" string="Reinstate"
+                            invisible="state != 'rejected'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="invited,submitted,shortlisted,awarded"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Awarded" bg_color="text-bg-success"
+                            invisible="state != 'awarded'"/>
+                    <widget name="web_ribbon" title="Late" bg_color="text-bg-warning"
+                            invisible="not is_late"/>
+                    <div class="oe_title">
+                        <h1><field name="bidder_id" placeholder="Bidder"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="tender_id"/>
+                            <field name="project_id"/>
+                            <field name="submitted_on"/>
+                            <field name="is_late"/>
+                        </group>
+                        <group>
+                            <field name="amount_total"/>
+                            <field name="variance_vs_budget"
+                                   decoration-danger="variance_vs_budget &gt; 0"
+                                   decoration-success="variance_vs_budget &lt; 0"/>
+                            <field name="unpriced_line_count"/>
+                            <field name="is_complete"/>
+                            <field name="validity_days"/>
+                            <field name="lead_time_days"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Priced Scope" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom" create="false">
+                                    <field name="sequence" column_invisible="1"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="quantity" readonly="1"/>
+                                    <field name="unit_rate"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="budget_cost" readonly="1" sum="Budget"/>
+                                    <field name="variance" sum="Variance"
+                                           decoration-danger="variance &gt; 0"
+                                           decoration-success="variance &lt; 0"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Qualifications" name="notes">
+                            <field name="notes"
+                                   placeholder="Exclusions, assumptions, alternatives..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bid_list" model="ir.ui.view">
+        <field name="name">construction.tender.bid.list</field>
+        <field name="model">construction.tender.bid</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'awarded'"
+                  decoration-muted="state == 'rejected'"
+                  decoration-warning="is_late or not is_complete">
+                <field name="tender_id"/>
+                <field name="bidder_id"/>
+                <field name="project_id" optional="hide"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="variance_vs_budget"/>
+                <field name="unpriced_line_count" string="Unpriced"/>
+                <field name="is_late" string="Late"/>
+                <field name="submitted_on"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'awarded'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_tender_bid" model="ir.actions.act_window">
+        <field name="name">Bids</field>
+        <field name="res_model">construction.tender.bid</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

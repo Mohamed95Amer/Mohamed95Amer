@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="permit_hot_work" model="construction.permit">
+        <field name="name">Welding to roof steelwork</field>
+        <field name="permit_type">hot_work</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="location">Level 12, grid D</field>
+        <field name="contractor_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="valid_from" eval="DateTime.now().strftime('%Y-%m-%d 07:00:00')"/>
+        <field name="valid_to" eval="DateTime.now().strftime('%Y-%m-%d 17:00:00')"/>
+        <field name="workers_count">4</field>
+        <field name="description">Welding of secondary steel connections.</field>
+    </record>
+    <record id="permit_prec_1" model="construction.permit.precaution">
+        <field name="permit_id" ref="permit_hot_work"/>
+        <field name="sequence">10</field>
+        <field name="name">Fire extinguishers present and fire watch assigned</field>
+    </record>
+    <record id="permit_prec_2" model="construction.permit.precaution">
+        <field name="permit_id" ref="permit_hot_work"/>
+        <field name="sequence">20</field>
+        <field name="name">Combustibles removed or covered within 10 m</field>
+    </record>
+    <record id="permit_prec_3" model="construction.permit.precaution">
+        <field name="permit_id" ref="permit_hot_work"/>
+        <field name="sequence">30</field>
+        <field name="name">Gas cylinders secured upright with flashback arrestors</field>
+    </record>
+
+    <record id="incident_near_miss" model="construction.incident">
+        <field name="name">Scaffold board dropped from level 6</field>
+        <field name="incident_class">near_miss</field>
+        <field name="severity">high</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="location">East elevation, exclusion zone</field>
+        <field name="description">A loose board fell to the exclusion zone below.
+            No one was in the area at the time.</field>
+        <field name="immediate_action">Area re-barricaded and scaffold inspected.</field>
+    </record>
+
+    <record id="talk_edge_protection" model="construction.toolbox.talk">
+        <field name="topic">Edge protection and dropped objects</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="contractor_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="location">Level 6</field>
+        <field name="key_points">Tethering tools, board fixing, exclusion zones.</field>
+    </record>
+    <record id="talk_attendee_1" model="construction.toolbox.attendee">
+        <field name="talk_id" ref="talk_edge_protection"/>
+        <field name="name">Ahmed Al Balushi</field>
+        <field name="trade">Scaffolder</field>
+    </record>
+    <record id="talk_attendee_2" model="construction.toolbox.attendee">
+        <field name="talk_id" ref="talk_edge_protection"/>
+        <field name="name">Rajesh Kumar</field>
+        <field name="trade">Steel fixer</field>
+    </record>
+</odoo>

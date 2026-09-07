@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_backup_snapshot_list" model="ir.ui.view">
+        <field name="name">majal.backup.snapshot.list</field>
+        <field name="model">majal.backup.snapshot</field>
+        <field name="arch" type="xml">
+            <list string="Recovery Points" create="0" edit="0" delete="0"
+                  decoration-success="state == 'verified'"
+                  decoration-muted="state == 'empty'"
+                  decoration-danger="state == 'error'">
+                <header>
+                    <button name="action_create_now" type="object"
+                            string="Backup Now" class="btn-primary"
+                            display="always"/>
+                </header>
+                <field name="slot_sequence" column_invisible="1"/>
+                <field name="slot_label"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'verified'"
+                       decoration-danger="state == 'error'"/>
+                <field name="backup_date"/>
+                <field name="age_display"/>
+                <field name="size_display"/>
+                <field name="verified_at"/>
+                <field name="created_by_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_backup_snapshot_form" model="ir.ui.view">
+        <field name="name">majal.backup.snapshot.form</field>
+        <field name="model">majal.backup.snapshot</field>
+        <field name="arch" type="xml">
+            <form string="Verified Recovery Point" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_verify" type="object" string="Verify Again"
+                            class="btn-primary" invisible="state == 'empty'"/>
+                    <button name="action_download" type="object" string="Download"
+                            groups="majal_administration.group_platform_owner"
+                            invisible="state != 'verified'"/>
+                    <button name="action_prepare_restore" type="object"
+                            string="Prepare Restore" class="btn-secondary"
+                            groups="majal_administration.group_platform_owner"
+                            invisible="state != 'verified'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="empty,pending,verified,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Recovery point</span>
+                        <h1><field name="slot_label"/></h1>
+                        <div class="text-muted"><field name="age_display"/></div>
+                    </div>
+                    <div class="alert alert-success" role="alert"
+                         invisible="state != 'verified'">
+                        This archive includes the database, uploaded documents,
+                        integrity checksum and installed-module manifest.
+                    </div>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="state != 'error'">
+                        <field name="error_message" nolabel="1"/>
+                    </div>
+                    <group>
+                        <group string="Recovery">
+                            <field name="slot"/>
+                            <field name="backup_date"/>
+                            <field name="verified_at"/>
+                            <field name="created_by_id"/>
+                        </group>
+                        <group string="Integrity">
+                            <field name="database_name"/>
+                            <field name="archive_name"/>
+                            <field name="size_display"/>
+                            <field name="checksum"/>
+                            <field name="release_version"/>
+                            <field name="module_count"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning mt-3" role="alert">
+                        Restore is intentionally two-step: a Platform Owner prepares a
+                        short-lived request, then a deployment operator stops the
+                        application and executes it. This prevents a web session from
+                        replacing the live database.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_backup_snapshots" model="ir.actions.act_window">
+        <field name="name">Backup &amp; Recovery</field>
+        <field name="res_model">majal.backup.snapshot</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_majal_backup_snapshot_list"/>
+        <field name="groups_id" eval="[(4, ref('group_backup_operator'))]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first verified recovery point</p>
+            <p>
+                Majal retains at most seven curated slots: three daily,
+                weekly, two-week, monthly and three-month checkpoints.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_majal_restore_request_list" model="ir.ui.view">
+        <field name="name">majal.restore.request.list</field>
+        <field name="model">majal.restore.request</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0"
+                  decoration-warning="state == 'prepared'"
+                  decoration-muted="state in ('expired', 'cancelled')">
+                <field name="name"/>
+                <field name="snapshot_id"/>
+                <field name="state" widget="badge"/>
+                <field name="requested_by_id"/>
+                <field name="expires_at"/>
+                <button name="action_cancel" type="object" string="Cancel"
+                        invisible="state != 'prepared'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_majal_restore_requests" model="ir.actions.act_window">
+        <field name="name">Restore Requests</field>
+        <field name="res_model">majal.restore.request</field>
+        <field name="view_mode">list</field>
+        <field name="groups_id" eval="[(4, ref('group_platform_owner'))]"/>
+    </record>
+
+    <record id="view_majal_admin_audit_list" model="ir.ui.view">
+        <field name="name">majal.admin.audit.list</field>
+        <field name="model">majal.admin.audit</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="create_date"/>
+                <field name="event_type" widget="badge"/>
+                <field name="summary"/>
+                <field name="actor_name"/>
+                <field name="target_user_id"/>
+                <field name="snapshot_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_majal_admin_audit" model="ir.actions.act_window">
+        <field name="name">Administration Audit</field>
+        <field name="res_model">majal.admin.audit</field>
+        <field name="view_mode">list</field>
+        <field name="groups_id" eval="[(4, ref('group_platform_owner'))]"/>
+    </record>
+</odoo>

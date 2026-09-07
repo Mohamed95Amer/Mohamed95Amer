@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_lead_stage_list" model="ir.ui.view">
+        <field name="name">majal.lead.stage.list</field>
+        <field name="model">majal.lead.stage</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="is_won"/>
+                <field name="fold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_majal_lead_stage" model="ir.actions.act_window">
+        <field name="name">Lead Stages</field>
+        <field name="res_model">majal.lead.stage</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_majal_lead_kanban" model="ir.ui.view">
+        <field name="name">majal.lead.kanban</field>
+        <field name="model">majal.lead</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id">
+                <field name="stage_id"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_record_top mb-0">
+                            <strong class="o_kanban_record_title">
+                                <field name="name"/>
+                            </strong>
+                        </div>
+                        <div><field name="contact_name"/></div>
+                        <div><field name="development_id"/></div>
+                        <div>
+                            <field name="budget" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </div>
+                        <div class="o_kanban_record_bottom mt-2">
+                            <div class="oe_kanban_bottom_left">
+                                <field name="priority" widget="priority"/>
+                                <span t-if="record.state.raw_value == 'won'"
+                                      class="badge text-bg-success ms-1">Won</span>
+                                <span t-if="record.state.raw_value == 'lost'"
+                                      class="badge text-bg-danger ms-1">Lost</span>
+                            </div>
+                            <div class="oe_kanban_bottom_right">
+                                <field name="user_id" widget="many2one_avatar_user"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_majal_lead_list" model="ir.ui.view">
+        <field name="name">majal.lead.list</field>
+        <field name="model">majal.lead</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'lost'" decoration-success="state == 'won'">
+                <field name="name"/>
+                <field name="contact_name"/>
+                <field name="phone" optional="show"/>
+                <field name="email" optional="hide"/>
+                <field name="development_id"/>
+                <field name="unit_type_id" optional="hide"/>
+                <field name="budget" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'won'"
+                       decoration-danger="state == 'lost'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_lead_form" model="ir.ui.view">
+        <field name="name">majal.lead.form</field>
+        <field name="model">majal.lead</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_create_reservation" type="object"
+                            string="Reserve a Unit" class="btn-primary"
+                            invisible="state == 'lost'"/>
+                    <button name="action_mark_won" type="object" string="Mark Won"
+                            invisible="state == 'won'"/>
+                    <button name="action_mark_lost" type="object" string="Mark Lost"
+                            invisible="state != 'open'"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="state == 'open'"/>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_reservations" type="object"
+                                class="oe_stat_button" icon="fa-bookmark">
+                            <field name="reservation_count" widget="statinfo"
+                                   string="Reservations"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Won" bg_color="text-bg-success"
+                            invisible="state != 'won'"/>
+                    <widget name="web_ribbon" title="Lost" bg_color="text-bg-danger"
+                            invisible="state != 'lost'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. 2BR enquiry - Marina Heights"/></h1>
+                    </div>
+                    <group>
+                        <group string="Contact">
+                            <field name="partner_id"/>
+                            <field name="contact_name"/>
+                            <field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/>
+                        </group>
+                        <group string="Interest">
+                            <field name="development_id"/>
+                            <field name="unit_type_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="budget"/>
+                            <field name="source"/>
+                        </group>
+                        <group string="Assignment">
+                            <field name="user_id"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="expected_close_date"/>
+                        </group>
+                        <group string="Outcome">
+                            <field name="state"/>
+                            <field name="lost_reason" invisible="state != 'lost'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_majal_lead_search" model="ir.ui.view">
+        <field name="name">majal.lead.search</field>
+        <field name="model">majal.lead</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="contact_name"/>
+                <field name="partner_id"/>
+                <field name="development_id"/>
+                <field name="user_id"/>
+                <filter string="Open" name="open" domain="[('state', '=', 'open')]"/>
+                <filter string="Won" name="won" domain="[('state', '=', 'won')]"/>
+                <filter string="Lost" name="lost" domain="[('state', '=', 'lost')]"/>
+                <separator/>
+                <filter string="My Leads" name="my_leads" domain="[('user_id', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Stage" name="group_stage"
+                            context="{'group_by': 'stage_id'}"/>
+                    <filter string="Salesperson" name="group_user"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter string="Development" name="group_development"
+                            context="{'group_by': 'development_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_lead" model="ir.actions.act_window">
+        <field name="name">Leads</field>
+        <field name="res_model">majal.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_majal_lead_search"/>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+</odoo>

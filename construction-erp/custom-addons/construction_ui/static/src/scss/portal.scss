@@ -1,0 +1,120 @@
+// Majal look for the customer/subcontractor portal.
+//
+// The backend design layer (backend.scss) lives in web.assets_backend, which
+// frontend portal pages never load — so the palette is restated here for the
+// web.assets_frontend bundle. Same values as backend.scss; keep them in sync.
+$ui-navy: #173240;
+$ui-primary: #346d75;
+$ui-primary-hover: #2b5e65;
+$ui-accent: #c59b52;
+$ui-page: #f4f6f7;
+$ui-border: #dfe4e7;
+$ui-text: #263842;
+$ui-muted: #697983;
+
+.o_portal,
+.o_portal_wrap {
+    color: $ui-text;
+
+    // Quiet the default portal heading into the Majal navy.
+    h1, h2, h3, h4, h5 {
+        color: $ui-navy;
+    }
+
+    a:not(.btn) {
+        color: $ui-primary;
+
+        &:hover,
+        &:focus {
+            color: $ui-primary-hover;
+        }
+    }
+
+    .btn-primary {
+        border-color: $ui-primary;
+        background-color: $ui-primary;
+
+        &:hover,
+        &:focus,
+        &:active {
+            border-color: $ui-primary-hover;
+            background-color: $ui-primary-hover;
+        }
+    }
+
+    // Document cards on /my — align with the backend app tiles.
+    .o_portal_docs .o_portal_index_card,
+    .o_portal_docs .card {
+        border: 1px solid $ui-border;
+        border-radius: 10px;
+        box-shadow: 0 1px 3px rgba(12, 31, 41, .06);
+        transition: box-shadow .14s ease, border-color .14s ease;
+
+        &:hover {
+            border-color: $ui-primary;
+            box-shadow: 0 4px 14px rgba(12, 31, 41, .12);
+        }
+    }
+
+    // Construction document tables (RFIs, defects, subcontracts).
+    .table {
+        thead th {
+            border-bottom: 2px solid $ui-border;
+            color: $ui-muted;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            font-size: .78rem;
+        }
+
+        // References and certificate numbers stay LTR even in Arabic.
+        td .o_majal_ref {
+            direction: ltr;
+            unicode-bidi: isolate;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+
+    .badge.text-bg-info {
+        background-color: $ui-primary !important;
+    }
+
+    .badge.text-bg-secondary {
+        background-color: $ui-muted !important;
+    }
+}
+
+// Arabic / RTL refinements mirroring rtl.scss, applied to the portal.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
+html[dir="rtl"] {
+    .o_portal,
+    .o_portal_wrap {
+        font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+        text-align: right;
+
+        .table th,
+        .table td {
+            text-align: right;
+        }
+
+        // Dates, amounts and references remain left-to-right and readable.
+        .o_majal_ref,
+        .o_majal_num {
+            direction: ltr;
+            text-align: right;
+            unicode-bidi: isolate;
+        }
+
+        dl.row dt {
+            text-align: right;
+        }
+
+        .fa-arrow-right,
+        .fa-chevron-right {
+            transform: rotate(180deg);
+        }
+    }
+}
+/*!rtl:end:ignore*/

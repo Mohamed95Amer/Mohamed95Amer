@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_document_template_mapping" model="ir.ui.view">
+        <field name="name">majal.document.template.mapping</field>
+        <field name="model">majal.document.template</field>
+        <field name="inherit_id" ref="majal_documents.view_majal_document_template_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_map_source_document" type="object"
+                            string="Detect and map fields" class="btn-primary"
+                            invisible="not source_file"/>
+                    <button name="action_open_mapped_form" type="object"
+                            string="Open mapped form"
+                            invisible="not mapped_form_template_id"/>
+                </header>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Source document and mapping" name="source_mapping">
+                    <div class="alert alert-info" role="alert">
+                        Upload the customer's current fillable PDF. Majal displays it here,
+                        detects its empty fields, and asks you to review every mapping before
+                        a reusable form is created.
+                    </div>
+                    <group>
+                        <field name="source_filename" invisible="1"/>
+                        <field name="source_file" filename="source_filename"/>
+                        <field name="intake_upload_id" readonly="1"/>
+                        <field name="mapped_form_template_id" readonly="1"/>
+                    </group>
+                    <field name="source_file" widget="pdf_viewer" nolabel="1"
+                           invisible="not source_file"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

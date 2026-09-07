@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_statement_list" model="ir.ui.view">
+        <field name="name">majal.owner.statement.list</field>
+        <field name="model">majal.owner.statement</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'paid'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="development_id" optional="show"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="amount_income" sum="Collected"/>
+                <field name="amount_deductions" sum="Deducted"/>
+                <field name="amount_net" sum="Payable"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'paid'"
+                       decoration-info="state == 'confirmed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_statement_form" model="ir.ui.view">
+        <field name="name">majal.owner.statement.form</field>
+        <field name="model">majal.owner.statement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_gather" type="object"
+                            string="Gather the Period" class="btn-primary"
+                            invisible="state != 'draft'"
+                            confirm="This rebuilds the statement from scratch. Continue?"/>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_mark_paid" type="object" string="Record Payout"
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('paid', 'cancelled')"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state in ('draft', 'paid')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Owner">
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="development_id" readonly="state != 'draft'"
+                                   placeholder="Every development"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Period">
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="commission_rate" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Settlement">
+                            <field name="amount_income"/>
+                            <field name="amount_deductions"/>
+                            <field name="amount_net"
+                                   class="oe_subtotal_footer_separator"/>
+                            <field name="payment_date" invisible="state != 'paid'"/>
+                            <field name="payment_reference" invisible="state != 'paid'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Statement" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom"
+                                      decoration-success="is_income"
+                                      decoration-muted="not is_income">
+                                    <field name="date"/>
+                                    <field name="kind"/>
+                                    <field name="name"/>
+                                    <field name="unit_id"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="is_income" column_invisible="1"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_statement_search" model="ir.ui.view">
+        <field name="name">majal.owner.statement.search</field>
+        <field name="model">majal.owner.statement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="development_id"/>
+                <filter string="To Pay Out" name="confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Paid" name="paid" domain="[('state', '=', 'paid')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Owner" name="group_owner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_statement" model="ir.actions.act_window">
+        <field name="name">Owner Statements</field>
+        <field name="res_model">majal.owner.statement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_statement_search"/>
+    </record>
+</odoo>

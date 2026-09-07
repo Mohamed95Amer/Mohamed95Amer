@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Majal</title>
+<meta name="description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
+<link rel="canonical" href="https://majalops.com/contact.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Majal">
+<meta property="og:title" content="Contact — Majal">
+<meta property="og:description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
+<meta property="og:url" content="https://majalops.com/contact.html">
+<meta property="og:image" content="https://majalops.com/assets/img/hero-bim.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contact — Majal">
+<meta name="twitter:description" content="Get in touch with Majal, or ask for a free demo call — a short form, read and answered by a person, not a sales queue.">
+<meta name="twitter:image" content="https://majalops.com/assets/img/hero-bim.png">
+<meta name="theme-color" content="#02496D">
+<link rel="stylesheet" href="/assets/css/majal.css?v=20260824a">
+<link rel="icon" href="/assets/img/majal-mark.svg" type="image/svg+xml">
+</head>
+<body class="on-page">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/"><img class="logo-mark" src="/assets/img/majal-mark.svg" alt="" width="32" height="32">Majal <span class="tag">Construction &amp; FM ERP</span></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Menu"><span class="bar"></span></label>
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/features.html">Platform</a></li>
+        <li><a href="/insights/">Insights</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/about.html#partners">Docs</a></li>
+        <li><a class="nav-cta" href="/contact.html" aria-current="page">Book a demo</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="prose">
+      <h1>Contact</h1>
+      <p class="lede">
+        A question about Majal, or a request for a free demo call — this form reaches a
+        person, not a sales queue. There is no live chat and no phone line yet; email is
+        the honest answer for how a reply comes back.
+      </p>
+      <p class="lede"><a href="mailto:Support@majalops.com">Support@majalops.com</a> · We usually reply by email.</p>
+    </div>
+  </div>
+</div>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <!--
+        Posts to /api/contact — the Pages Function at /functions/api/contact.js
+        in the repository root, not in this directory: Cloudflare discovers
+        Functions from the Pages project root. Without JavaScript this is a
+        plain POST and the Function redirects to /thanks.html; the script at the
+        bottom of this page upgrades it to a fetch() that stays on the page.
+      -->
+      <form class="contact" id="contact-form" action="/api/contact" method="POST" novalidate>
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-error">
+          <p class="field-error" id="name-error" hidden>Enter your name.</p>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-error">
+          <p class="field-error" id="email-error" hidden>Enter a valid email address.</p>
+        </div>
+
+        <div class="field">
+          <label for="company">Company <span class="optional">(optional)</span></label>
+          <input type="text" id="company" name="company" autocomplete="organization">
+        </div>
+
+        <div class="field">
+          <label for="reason">What is this about</label>
+          <select id="reason" name="reason">
+            <option value="demo">Book a free demo call</option>
+            <option value="general">General question</option>
+            <option value="implementation">Implementation and deployment</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required aria-describedby="message-error"></textarea>
+          <p class="field-error" id="message-error" hidden>Enter a message.</p>
+        </div>
+
+        <input type="hidden" name="_subject" value="Majal contact form">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+        <div class="submit-row">
+          <button type="submit" class="btn btn-primary">
+            <span class="btn-label">Send</span>
+          </button>
+          <span class="meta">Read and answered by a person — no automated reply, no SLA promised.</span>
+        </div>
+
+        <p class="form-status" id="form-status" role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="band tinted">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Product and implementation information</h2>
+      <p>
+        Release documentation, build instructions and the corresponding source are supplied
+        to the applicable deployment recipients. Tell us what you are evaluating and we will
+        send the material that matches that release.
+      </p>
+      <dl class="facts">
+        <dt>Source</dt>
+        <dd><a href="#contact-form">Request release source and build access</a></dd>
+        <dt>Documentation</dt>
+        <dd><a href="/about.html#partners">Documentation status and coverage</a></dd>
+        <dt>Implementation</dt>
+        <dd><a href="/about.html#delivery">Discuss delivery options</a></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/features.html#construction">Construction</a></li>
+          <li><a href="/features.html#facilities">Facilities</a></li>
+          <li><a href="/features.html#bim">BIM</a></li>
+          <li><a href="/features.html#modules">Module list</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Read</h2>
+        <ul>
+          <li><a href="/insights/">Insights</a></li>
+          <li><a href="/about.html#partners">Documentation status</a></li>
+          <li><a href="/about.html#delivery">Delivery options</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="/about.html">About Majal</a></li>
+          <li><a href="/about.html#partners">Licensing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Try it</h2>
+        <ul>
+          <li><a href="/contact.html">Book a free demo</a></li>
+          <li><a href="/about.html#delivery">Delivery options</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <p>Majal is a product of MajalOps. Customer-specific implementation, security and integration documentation is shared privately during an approved engagement.</p>
+      <p>Customer-specific implementation, security and integration details are shared privately during an approved engagement.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var form = document.getElementById("contact-form");
+  if (!form) return;
+
+  var status = document.getElementById("form-status");
+  var button = form.querySelector("button[type=submit]");
+  var buttonLabel = button.querySelector(".btn-label");
+  var submitting = false;
+
+  var required = ["name", "email", "message"];
+
+  function fieldValid(field) {
+    if (field.id === "email") {
+      return field.value.trim() !== "" && field.checkValidity();
+    }
+    return field.value.trim() !== "";
+  }
+
+  function showError(id, show) {
+    var err = document.getElementById(id + "-error");
+    var field = document.getElementById(id);
+    if (!err || !field) return;
+    err.hidden = !show;
+    field.setAttribute("aria-invalid", show ? "true" : "false");
+  }
+
+  function validate() {
+    var ok = true;
+    required.forEach(function (id) {
+      var field = document.getElementById(id);
+      var valid = fieldValid(field);
+      showError(id, !valid);
+      if (!valid) ok = false;
+    });
+    return ok;
+  }
+
+  required.forEach(function (id) {
+    var field = document.getElementById(id);
+    field.addEventListener("blur", function () { showError(id, !fieldValid(field)); });
+    field.addEventListener("input", function () {
+      if (field.getAttribute("aria-invalid") === "true") showError(id, !fieldValid(field));
+    });
+  });
+
+  function setStatus(message, kind) {
+    status.hidden = !message;
+    status.textContent = message;
+    status.classList.remove("is-success", "is-error");
+    if (kind) status.classList.add("is-" + kind);
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (submitting) return;
+
+    if (!validate()) {
+      setStatus("Fix the highlighted fields before sending.", "error");
+      var firstInvalid = form.querySelector('[aria-invalid="true"]');
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    submitting = true;
+    button.disabled = true;
+    buttonLabel.textContent = "Sending…";
+    setStatus("", null);
+
+    fetch(form.action, {
+      method: "POST",
+      body: new FormData(form),
+      headers: { Accept: "application/json" },
+    })
+      .then(function (response) {
+        // The endpoint answers JSON with its own message — a rejected field or
+        // an unconfigured mailer says something more useful than "try again".
+        return response.json().then(
+          function (data) { return { ok: response.ok, message: data && data.message }; },
+          function () { return { ok: response.ok, message: null }; }
+        );
+      })
+      .then(function (result) {
+        if (result.ok) {
+          setStatus(result.message || "Thanks — your message is on its way. Expect a reply by email.", "success");
+          form.reset();
+        } else {
+          setStatus(result.message || "That didn't go through. Please try again in a moment.", "error");
+        }
+      })
+      .catch(function () {
+        setStatus("That didn't go through — check your connection and try again.", "error");
+      })
+      .finally(function () {
+        submitting = false;
+        button.disabled = false;
+        buttonLabel.textContent = "Send";
+      });
+  });
+})();
+</script>
+
+</body>
+</html>

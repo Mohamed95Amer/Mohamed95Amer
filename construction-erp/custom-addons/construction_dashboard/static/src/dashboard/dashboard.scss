@@ -1,0 +1,380 @@
+// Executive dashboard — Majal palette.
+$d-navy: #173240;
+$d-primary: #346d75;
+$d-accent: #c59b52;
+$d-bad: #c0483c;
+$d-warn: #d08b2c;
+$d-good: #3f7d5c;
+$d-line: #dfe4e7;
+$d-muted: #697983;
+
+.o_cdash {
+    overflow: auto;
+    height: 100%;
+    padding: 16px;
+    background: #f4f6f7;
+    color: #263842;
+
+    .o_bad { color: $d-bad; }
+    .o_warn { color: $d-warn; }
+}
+
+.o_cdash_placeholder {
+    padding: 40px;
+    color: $d-muted;
+    text-align: center;
+}
+
+// ---- Hero ----------------------------------------------------------------
+.o_cdash_hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 26px;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, $d-navy 0%, #22485a 100%);
+    color: white;
+
+    // Set explicit foreground colours because backend theme heading rules can
+    // otherwise override inherited white and make this headline unreadable.
+    h1 {
+        margin: 4px 0 6px;
+        color: #f8fbfc !important;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -.015em;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, .32);
+    }
+    p {
+        margin: 0;
+        color: rgba(255,255,255,.86) !important;
+        font-size: .87rem;
+    }
+}
+
+.o_cdash_eyebrow {
+    color: $d-accent;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .13em;
+}
+
+.o_cdash_hero_flags {
+    display: flex;
+    gap: 10px;
+
+    .o_cdash_flag {
+        display: flex;
+        min-width: 96px;
+        flex-direction: column;
+        padding: 9px 13px;
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 11px;
+        background: rgba(255,255,255,.07);
+
+        strong { font-size: 1.35rem; line-height: 1; }
+        small { margin-top: 3px; color: rgba(255,255,255,.72); font-size: .66rem; }
+
+        &.o_bad_bg { border-color: rgba(192,72,60,.6); background: rgba(192,72,60,.22); }
+        &.o_warn_bg { border-color: rgba(208,139,44,.6); background: rgba(208,139,44,.2); }
+    }
+}
+
+// ---- KPI strip -----------------------------------------------------------
+.o_cdash_kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.o_cdash_kpi {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    border: 1px solid $d-line;
+    border-top: 3px solid $d-primary;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(15,42,52,.05);
+    cursor: pointer;
+    transition: transform .13s ease, box-shadow .13s ease;
+
+    &:hover { box-shadow: 0 8px 20px rgba(15,42,52,.12); transform: translateY(-2px); }
+
+    .o_cdash_kpi_val { color: $d-navy; font-size: 1.5rem; font-weight: 700; line-height: 1.1; }
+    .o_cdash_kpi_lbl { margin-top: 4px; font-size: .8rem; font-weight: 600; }
+    .o_cdash_kpi_sub { margin-top: 2px; color: $d-muted; font-size: .68rem; }
+}
+
+// ---- Project picker ------------------------------------------------------
+.o_cdash_picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 12px;
+    border: 1px solid $d-line;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    background: white;
+
+    .o_cdash_picker_lbl {
+        margin-right: 4px;
+        color: $d-muted;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+    .o_cdash_picker_actions { margin-left: auto; }
+}
+
+.o_cdash_chip {
+    padding: 5px 12px;
+    border: 1px solid $d-line;
+    border-radius: 999px;
+    background: white;
+    color: $d-muted;
+    font-size: .78rem;
+    transition: all .13s ease;
+
+    &:hover { border-color: $d-primary; color: $d-primary; }
+    &.o_on { border-color: $d-primary; background: $d-primary; color: white; }
+}
+
+// ---- Cards ---------------------------------------------------------------
+.o_cdash_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.o_cdash_card {
+    padding: 16px 18px;
+    border: 1px solid $d-line;
+    border-radius: 13px;
+    margin-bottom: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(15,42,52,.045);
+
+    > header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+
+        h3 { margin: 0; color: $d-navy; font-size: .95rem; font-weight: 700; }
+    }
+}
+
+.o_cdash_span2 { grid-column: span 2; }
+@media (max-width: 900px) { .o_cdash_span2 { grid-column: span 1; } }
+
+.o_cdash_hint { margin: 10px 0 0; color: $d-muted; font-size: .68rem; }
+
+.o_cdash_metric_tabs {
+    display: flex;
+    overflow-x: auto;
+    max-width: 100%;
+    gap: 4px;
+
+    button {
+        padding: 4px 9px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        background: transparent;
+        color: $d-muted;
+        font-size: .7rem;
+        white-space: nowrap;
+
+        &:hover { background: rgba(52,109,117,.09); }
+        &.o_on { border-color: $d-primary; background: rgba(52,109,117,.12); color: $d-primary; font-weight: 700; }
+    }
+}
+
+// ---- Comparison bars -----------------------------------------------------
+.o_cdash_bar_row {
+    display: grid;
+    align-items: center;
+    gap: 10px;
+    grid-template-columns: 130px 1fr 74px;
+    padding: 5px 0;
+    cursor: pointer;
+
+    &:hover .o_cdash_bar_name { color: $d-primary; }
+
+    .o_cdash_bar_name {
+        overflow: hidden;
+        font-size: .78rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .o_cdash_bar_track {
+        overflow: hidden;
+        height: 15px;
+        border-radius: 4px;
+        background: #eef1f2;
+    }
+    .o_cdash_bar_fill {
+        display: block;
+        height: 100%;
+        border-radius: 4px;
+        transition: width .25s ease;
+
+        &.o_neg { opacity: .85; }
+    }
+    .o_cdash_bar_val {
+        color: $d-navy;
+        font-size: .76rem;
+        font-weight: 700;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+// ---- Watchlist -----------------------------------------------------------
+.o_cdash_clear { color: $d-good; font-size: .8rem; }
+
+.o_cdash_watch {
+    max-height: 260px;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 7px 2px;
+        border-bottom: 1px solid rgba(223,228,231,.7);
+        cursor: pointer;
+
+        &:hover { background: rgba(52,109,117,.05); }
+        &:last-child { border-bottom: 0; }
+
+        .o_cdash_watch_dot {
+            width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%;
+        }
+        &.o_bad .o_cdash_watch_dot { background: $d-bad; }
+        &.o_warn .o_cdash_watch_dot { background: $d-warn; }
+
+        .o_cdash_watch_body {
+            display: flex; min-width: 0; flex: 1; flex-direction: column;
+            strong { color: #263842; font-size: .78rem; }
+            small { color: $d-muted; font-size: .67rem; }
+        }
+        .o_cdash_watch_val { font-size: .76rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    }
+}
+
+// ---- Progress ------------------------------------------------------------
+.o_cdash_progress {
+    padding: 7px 0;
+    cursor: pointer;
+
+    .o_cdash_progress_head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 4px;
+        font-size: .75rem;
+
+        > span:last-child { color: $d-muted; font-variant-numeric: tabular-nums; }
+    }
+    .o_cdash_progress_track {
+        overflow: hidden; height: 9px; border-radius: 5px; background: #eef1f2;
+    }
+    .o_cdash_progress_fill {
+        height: 100%;
+        border-radius: 5px;
+        background: linear-gradient(90deg, $d-primary, #4c8577);
+        transition: width .3s ease;
+    }
+}
+
+// ---- Cost structure ------------------------------------------------------
+.o_cdash_legend {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: $d-muted;
+    font-size: .66rem;
+
+    i { display: inline-block; width: 11px; height: 8px; border-radius: 2px; }
+}
+
+.o_cdash_cost {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(223,228,231,.6);
+    cursor: pointer;
+
+    &:last-child { border-bottom: 0; }
+
+    .o_cdash_cost_name {
+        margin-bottom: 5px;
+        font-size: .78rem;
+        em { margin-left: 7px; font-size: .68rem; font-style: normal; font-weight: 700; }
+    }
+    .o_cdash_cost_bars { display: flex; flex-direction: column; gap: 3px; }
+    .o_cdash_cost_bar {
+        height: 8px;
+        min-width: 2px;
+        border-radius: 3px;
+        transition: width .25s ease;
+    }
+}
+
+// ---- Table ---------------------------------------------------------------
+.o_cdash_table_wrap { overflow-x: auto; }
+
+.o_cdash_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .78rem;
+
+    th, td {
+        padding: 7px 10px;
+        border-bottom: 1px solid $d-line;
+        text-align: right;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    thead th {
+        color: $d-muted;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+    .o_cdash_table_lbl { color: $d-navy; font-weight: 600; }
+    tbody tr:hover { background: rgba(52,109,117,.05); }
+}
+
+// Arabic / RTL
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
+html[dir="rtl"] .o_cdash {
+    .o_cdash_picker_actions { margin-right: auto; margin-left: 0; }
+    .o_cdash_bar_val { text-align: left; }
+    .o_cdash_table th, .o_cdash_table td { text-align: left; }
+    .o_cdash_table th:first-child, .o_cdash_table td:first-child { text-align: right; }
+    .o_cdash_cost_name em { margin-right: 7px; margin-left: 0; }
+}
+/*!rtl:end:ignore*/
+
+@media (prefers-reduced-motion: reduce) {
+    .o_cdash_kpi, .o_cdash_bar_fill, .o_cdash_progress_fill, .o_cdash_cost_bar {
+        transition: none;
+    }
+    .o_cdash_kpi:hover { transform: none; }
+}

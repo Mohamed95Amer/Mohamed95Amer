@@ -1,0 +1,325 @@
+.o_plan_viewer {
+    // Eye-friendly palette: soft neutral canvas, white chrome, semantic pins.
+    --pv-bg: #eef1f6;
+    --pv-chrome: #ffffff;
+    --pv-border: #e3e7ee;
+    --pv-text: #374151;
+    --pv-muted: #8a94a6;
+    --pv-accent: #4c6ef5;
+    --pv-open: #e5484d;
+    --pv-progress: #f59f00;
+    --pv-done: #2f9e44;
+    --pv-info: #1c7ed6;
+
+    background: var(--pv-bg);
+    color: var(--pv-text);
+    min-height: 0;
+    overflow: hidden;
+
+    // ------------------------------------------------------------------
+    // Toolbar
+    // ------------------------------------------------------------------
+    .o_plan_toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 8px 16px;
+        background: var(--pv-chrome);
+        border-bottom: 1px solid var(--pv-border);
+        box-shadow: 0 1px 3px rgba(20, 30, 60, 0.06);
+        z-index: 2;
+    }
+
+    .o_plan_toolbar_left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .o_plan_project {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .o_plan_rev_select {
+        width: auto;
+        max-width: 220px;
+        border-color: var(--pv-border);
+    }
+
+    .o_plan_toolbar_right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+
+        .btn-light {
+            border: 1px solid var(--pv-border);
+            background: var(--pv-chrome);
+            color: var(--pv-text);
+            &:hover { background: #f3f5f9; }
+        }
+    }
+
+    .o_btn_addpin {
+        background: var(--pv-accent);
+        border: 1px solid var(--pv-accent);
+        color: #fff;
+        font-weight: 600;
+
+        &:hover { filter: brightness(1.08); color: #fff; }
+        &.active {
+            background: #fff;
+            color: var(--pv-accent);
+        }
+        &:disabled { opacity: 0.5; }
+    }
+
+    // ------------------------------------------------------------------
+    // Legend / filter chips
+    // ------------------------------------------------------------------
+    .o_plan_legend {
+        display: flex;
+        gap: 6px;
+    }
+
+    .o_legend_chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--pv-border);
+        background: var(--pv-chrome);
+        color: var(--pv-text);
+        font-size: 12px;
+        cursor: pointer;
+        transition: opacity 0.15s ease, background 0.15s ease;
+
+        i { color: var(--pv-accent); }
+        &:hover { background: #f3f5f9; }
+        &.o_chip_off {
+            opacity: 0.4;
+            text-decoration: line-through;
+        }
+    }
+
+    .o_chip_count {
+        background: #edf0f7;
+        border-radius: 999px;
+        padding: 0 7px;
+        font-weight: 600;
+        font-size: 11px;
+    }
+
+    // ------------------------------------------------------------------
+    // Add-pin hint banner
+    // ------------------------------------------------------------------
+    .o_plan_hint {
+        padding: 6px 16px;
+        background: #eef4ff;
+        border-bottom: 1px solid #d4e2ff;
+        color: #2b4acb;
+        font-size: 13px;
+
+        kbd {
+            background: #fff;
+            color: #2b4acb;
+            border: 1px solid #d4e2ff;
+            border-radius: 4px;
+            padding: 0 5px;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Stage / sheet
+    // ------------------------------------------------------------------
+    .o_plan_scroll { scroll-behavior: smooth; }
+
+    .o_plan_stage {
+        display: flex;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    .o_plan_sheet {
+        position: relative;
+        display: inline-block;
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 0 4px 18px rgba(20, 30, 60, 0.14);
+        overflow: hidden;
+
+        &.o_add_mode { cursor: crosshair; }
+        canvas { display: block; max-width: none; }
+    }
+
+    // ------------------------------------------------------------------
+    // Pins
+    // ------------------------------------------------------------------
+    .o_plan_pin {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        z-index: 1;
+
+        .o_pin_dot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50% 50% 50% 4px;
+            border: 2.5px solid #fff;
+            box-shadow: 0 2px 8px rgba(20, 30, 60, 0.35);
+            color: #fff;
+            font-size: 13px;
+            transition: transform 0.12s ease;
+        }
+
+        .o_pin_tip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.3;
+            padding: 5px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            max-width: 260px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.12s ease;
+        }
+
+        &:hover {
+            z-index: 3;
+            .o_pin_dot { transform: scale(1.18); }
+            .o_pin_tip { opacity: 1; }
+        }
+
+        &.o_pin--open .o_pin_dot { background: var(--pv-open); }
+        &.o_pin--in_progress .o_pin_dot { background: var(--pv-progress); }
+        &.o_pin--done .o_pin_dot { background: var(--pv-done); }
+        &.o_pin--info .o_pin_dot { background: var(--pv-info); }
+    }
+
+    // ------------------------------------------------------------------
+    // Empty / loading states
+    // ------------------------------------------------------------------
+    .o_plan_empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 55vh;
+        text-align: center;
+        color: var(--pv-muted);
+
+        i { color: #c3cbd9; }
+        p { margin: 0; max-width: 420px; }
+        .fw-bold { color: var(--pv-text); font-size: 16px; }
+    }
+}
+
+@media (max-width: 767.98px) {
+    .o_plan_viewer {
+        .o_plan_toolbar {
+            align-items: stretch;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            padding: 10px 12px;
+        }
+        .o_plan_toolbar_left,
+        .o_plan_toolbar_right,
+        .o_plan_legend {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .o_plan_toolbar_right {
+            margin-left: 0;
+
+            .btn { min-height: 42px; white-space: nowrap; }
+        }
+        .o_plan_rev_select { min-width: 150px; flex: 1; }
+        .o_plan_legend {
+            flex-wrap: nowrap;
+            padding-bottom: 2px;
+            overscroll-behavior-x: contain;
+        }
+        .o_legend_chip { min-height: 40px; flex: 0 0 auto; }
+        .o_plan_stage { justify-content: flex-start; padding: 12px; }
+        .o_plan_scroll {
+            min-height: 0;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+}
+
+// ----------------------------------------------------------------------
+// New-pin dialog: big type picker buttons
+// ----------------------------------------------------------------------
+.o_pin_type_picker {
+    display: flex;
+    gap: 10px;
+
+    .o_pin_type_btn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 14px 8px;
+        border-radius: 8px;
+        border: 1.5px solid #e3e7ee;
+        background: #fff;
+        color: #374151;
+        transition: border-color 0.12s ease, background 0.12s ease;
+
+        &:hover { background: #f6f8fc; }
+        &.selected {
+            border-color: #4c6ef5;
+            background: #eef2ff;
+            color: #2b4acb;
+            font-weight: 600;
+        }
+    }
+}
+
+// A pin carrying a photograph says so before it is opened. Small, because it
+// rides on a marker that already has to stay legible over a busy drawing.
+.o_pin_has_photo {
+    position: absolute;
+    top: -4px;
+    inset-inline-end: -4px;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #112f3d;
+    color: #f1c75b;
+    font-size: 8px;
+    pointer-events: none;
+}
+
+// Bounded so a portrait photo from a phone cannot push the tooltip off the
+// sheet; the full image is one click away on the record.
+.o_pin_tip_photo {
+    display: block;
+    max-width: 220px;
+    max-height: 160px;
+    margin-top: 6px;
+    border-radius: 4px;
+    object-fit: cover;
+}

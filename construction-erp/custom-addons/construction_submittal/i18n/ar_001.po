@@ -1,0 +1,247 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_submittal
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+msgid "Approve as Noted"
+msgstr "اعتماد مع ملاحظات"
+
+#. module: construction_submittal
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__approved_as_noted
+msgid "Approved as Noted"
+msgstr "معتمد مع ملاحظات"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__can_review
+msgid "Can Review"
+msgstr "يمكن المراجعة "
+
+#. modules: construction_submittal, construction_ui
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Documents"
+msgstr "المستندات"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__has_comment
+msgid "Has Comment"
+msgstr "توجد ملاحظة"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__hide_reviews
+msgid "Hide Reviews"
+msgstr "إخفاء المراجعات"
+
+#. module: construction_submittal
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__has_comment
+msgid "If set, Allow the reviewer to leave a comment on the review."
+msgstr "عند التفعيل يمكن للمراجع إضافة ملاحظة على المراجعة."
+
+#. module: construction_submittal
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__submittal_type__material
+msgid "Material Approval"
+msgstr "اعتماد مواد"
+
+#. module: construction_submittal
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__submittal_type__method
+msgid "Method Statement"
+msgstr "بيان طريقة التنفيذ"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__need_validation
+msgid "Need Validation"
+msgstr "يحتاج اعتماد"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__next_review
+msgid "Next Review"
+msgstr "المراجعة التالية"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__next_revision_id
+msgid "Next Revision"
+msgstr "المراجعة التالية"
+
+#. module: construction_submittal
+#. odoo-python
+#: code:addons/construction_submittal/models/submittal.py:0
+msgid "Only approved submittals can be closed."
+msgstr "يمكن إغلاق التقديمات المعتمدة فقط."
+
+#. module: construction_submittal
+#. odoo-python
+#: code:addons/construction_submittal/models/submittal.py:0
+msgid "Only draft submittals can be submitted."
+msgstr "يمكن إرسال التقديمات المسودة فقط."
+
+#. module: construction_submittal
+#. odoo-python
+#: code:addons/construction_submittal/models/submittal.py:0
+msgid "Only submittals under review can be approved."
+msgstr "يمكن اعتماد التقديمات قيد المراجعة فقط."
+
+#. module: construction_submittal
+#. odoo-python
+#: code:addons/construction_submittal/models/submittal.py:0
+msgid "Only submittals under review can be returned."
+msgstr "يمكن إعادة التقديمات قيد المراجعة فقط."
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__subcontractor_id
+msgid "Originating Subcontractor"
+msgstr "المقاول الباطن المصدر"
+
+#. module: construction_submittal
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__submittal_type__prequalification
+msgid "Prequalification"
+msgstr "التأهيل المسبق"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__previous_revision_id
+msgid "Previous Revision"
+msgstr "المراجعة السابقة"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__rejected_message
+msgid "Rejected Message"
+msgstr "رسالة الرفض"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__review_comment
+msgid "Review Comment"
+msgstr "ملاحظات المراجعة"
+
+#. module: construction_submittal
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+msgid "Review Comments"
+msgstr "ملاحظات المراجعة"
+
+#. module: construction_submittal
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__review_comment
+msgid "Reviewer's comments returned with the review decision."
+msgstr "ملاحظات المراجع المرفقة بقرار المراجعة."
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__reviewer_ids
+msgid "Reviewers"
+msgstr "المراجعون"
+
+#. module: construction_submittal
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__revise_resubmit
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+msgid "Revise & Resubmit"
+msgstr "تعديل وإعادة تقديم"
+
+#. modules: construction_drawing, construction_pin, construction_submittal,
+#. construction_ui
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__revision_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__revision
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__revision_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__revision
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Revision"
+msgstr "المراجعة"
+
+#. module: construction_submittal
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__submittal_type__shop_drawing
+msgid "Shop Drawing"
+msgstr "رسم تنفيذي"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__spec_section
+msgid "Spec Section"
+msgstr "قسم المواصفات"
+
+#. module: construction_submittal
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__spec_section
+msgid "Specification section reference, e.g. 09 30 00 Tiling."
+msgstr "مرجع قسم المواصفات، مثال: 09 30 00 أعمال البلاط."
+
+#. module: construction_submittal
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__subcontractor_id
+msgid "Subcontractor/supplier that produced this submittal, if any."
+msgstr "المقاول الباطن أو المورد الذي أعد هذا التقديم إن وجد."
+
+#. module: construction_submittal
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+msgid "Submit for Review"
+msgstr "إرسال للمراجعة"
+
+#. modules: construction_submittal, construction_ui
+#. odoo-javascript
+#: model:ir.model,name:construction_submittal.model_construction_submittal
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__submittal_ids
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Submittal"
+msgstr "تقديم فني"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__submittal_type
+msgid "Submittal Type"
+msgstr "نوع التقديم"
+
+#. module: construction_submittal
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+msgid "Submittal title"
+msgstr "عنوان التقديم"
+
+#. modules: construction_submittal, construction_ui
+#. odoo-javascript
+#: model:ir.actions.act_window,name:construction_submittal.action_construction_submittal
+#: model:ir.actions.client,name:construction_ui.action_workspace_submittals
+#: model:ir.ui.menu,name:construction_submittal.menu_construction_submittal
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Submittals"
+msgstr "التقديمات الفنية"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__attachment_ids
+msgid "Submitted Documents"
+msgstr "المستندات المقدمة"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__to_validate_message
+msgid "To Validate Message"
+msgstr "رسالة طلب الاعتماد"
+
+#. modules: construction_submittal, construction_ui
+#. odoo-javascript
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__submitted
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__under_review
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Under Review"
+msgstr "قيد المراجعة"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__validated
+msgid "Validated"
+msgstr "تم التصديق "
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__validated_message
+msgid "Validated Message"
+msgstr "رسالة الاعتماد"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__validation_status
+msgid "Validation Status"
+msgstr "حالة الاعتماد"
+
+#. module: construction_submittal
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__review_ids
+msgid "Validations"
+msgstr "الاعتمادات"

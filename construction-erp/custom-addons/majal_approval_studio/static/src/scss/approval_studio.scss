@@ -1,0 +1,23 @@
+.o_majal_approval_rules {
+    .o_majal_approval_rule_card {
+        min-height: 150px;
+        padding: 16px;
+        border: 1px solid #dbe5e5;
+        border-top: 4px solid #346d75;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(23, 50, 64, .08);
+
+        .o_majal_approval_rule_head,
+        .o_majal_approval_rule_meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .o_majal_approval_rule_head strong { color: #173240; font-size: 1rem; }
+        .o_majal_approval_scope { margin: 12px 0; color: #5e7379; font-size: .82rem; }
+        .o_majal_approval_rule_meta { color: #346d75; font-size: .78rem; }
+    }
+}

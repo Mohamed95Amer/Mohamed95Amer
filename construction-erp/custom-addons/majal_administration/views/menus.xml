@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_administration_root"
+              name="Administration"
+              sequence="92"
+              web_icon="construction_ui,static/description/apps/administration.svg"
+              groups="majal_administration.group_user_administrator"/>
+    <menuitem id="menu_majal_client_users"
+              name="Users &amp; Access"
+              parent="menu_majal_administration_root"
+              action="action_majal_client_users_scoped"
+              sequence="10"/>
+    <menuitem id="menu_majal_access_levels"
+              name="Access Levels"
+              parent="menu_majal_administration_root"
+              action="action_majal_access_levels"
+              sequence="12"/>
+    <menuitem id="menu_majal_capability_packs"
+              name="Capability Catalog"
+              parent="menu_majal_administration_root"
+              action="action_majal_capability_packs"
+              sequence="15"/>
+    <menuitem id="menu_majal_backup_snapshots"
+              name="Backup &amp; Recovery"
+              parent="menu_majal_administration_root"
+              action="action_majal_backup_snapshots"
+              sequence="20"
+              groups="majal_administration.group_backup_operator"/>
+    <menuitem id="menu_majal_restore_requests"
+              name="Restore Requests"
+              parent="menu_majal_administration_root"
+              action="action_majal_restore_requests"
+              sequence="30"
+              groups="majal_administration.group_platform_owner"/>
+    <menuitem id="menu_majal_admin_audit"
+              name="Administration Audit"
+              parent="menu_majal_administration_root"
+              action="action_majal_admin_audit"
+              sequence="40"
+              groups="majal_administration.group_platform_owner"/>
+</odoo>

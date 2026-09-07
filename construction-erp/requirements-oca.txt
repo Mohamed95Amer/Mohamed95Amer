@@ -1,0 +1,7 @@
+# Python dependencies required by the vendored OCA modules and custom addons,
+# beyond what ships with the odoo:18.0 image.
+pypdf>=3.0            # construction_drawing bulk PDF split
+openupgradelib        # some OCA migrations import it
+xlsxwriter            # report_xlsx
+xlrd                  # xlsx import wizards
+odoo-test-helper      # OCA test suites (base_tier_validation)

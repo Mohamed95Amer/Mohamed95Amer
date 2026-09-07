@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_progress_claim_form" model="ir.ui.view">
+        <field name="name">construction.progress.claim.form</field>
+        <field name="model">construction.progress.claim</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_load_lines" type="object"
+                            string="Reload from BOQ" icon="fa-refresh"
+                            invisible="state != 'draft'"/>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_certify" type="object" string="Certify"
+                            class="btn-primary" invisible="state != 'submitted'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_create_invoice" type="object"
+                            string="Create Invoice" class="btn-primary"
+                            invisible="state != 'certified'"/>
+                    <button name="action_mark_paid" type="object"
+                            string="Mark Paid" invisible="state != 'invoiced'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3>
+                            IPC No. <field name="sequence_no" readonly="1"
+                                           class="oe_inline"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="boq_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="previous_claim_id"
+                                   invisible="not previous_claim_id"/>
+                            <field name="move_payment_state"
+                                   invisible="not move_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_contract"/>
+                            <field name="retention_percent"/>
+                            <field name="retention_cap_percent"/>
+                            <field name="amount_work_done_cumulative"/>
+                            <field name="amount_work_done_previous"/>
+                            <field name="amount_this_period"/>
+                            <field name="retention_this"/>
+                            <field name="amount_due" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Measured Work" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom" default_order="section_id">
+                                    <field name="section_id"/>
+                                    <field name="name"/>
+                                    <!-- Contract and previous quantities stay
+                                         visible: they are what the QS reads
+                                         across to decide the period figure.
+                                         Cumulative is just their sum. -->
+                                    <field name="qty_contract"/>
+                                    <field name="unit_rate" optional="hide"/>
+                                    <field name="qty_previous"/>
+                                    <field name="qty_this_period"/>
+                                    <field name="qty_cumulative" optional="hide"/>
+                                    <field name="pct_complete" widget="progressbar"/>
+                                    <field name="amount_this" sum="This Period"/>
+                                    <field name="amount_cumulative" sum="Cumulative"
+                                           optional="show"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_progress_claim_list" model="ir.ui.view">
+        <field name="name">construction.progress.claim.list</field>
+        <field name="model">construction.progress.claim</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="sequence_no"/>
+                <field name="date_to"/>
+                <field name="amount_this_period"/>
+                <field name="retention_this" optional="show"/>
+                <field name="amount_due"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('submitted', 'certified')"
+                       decoration-success="state in ('invoiced', 'paid')"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_progress_claim" model="ir.actions.act_window">
+        <field name="name">Progress Claims (IPC)</field>
+        <field name="res_model">construction.progress.claim</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_progress_claim"
+              name="Progress Claims (IPC)"
+              parent="construction_base.menu_construction_commercial"
+              action="action_progress_claim"
+              sequence="20"/>
+
+    <!-- Send a whole selection for approval from the list-view cog. The
+         engine always looped over the recordset; until now nothing could
+         hand it more than one record. -->
+    <record id="action_request_approval_construction_progress_claim" model="ir.actions.server">
+        <field name="name">Request Approval</field>
+        <field name="model_id" ref="model_construction_progress_claim"/>
+        <field name="binding_model_id" ref="model_construction_progress_claim"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_request_approval_selected()</field>
+    </record>
+</odoo>

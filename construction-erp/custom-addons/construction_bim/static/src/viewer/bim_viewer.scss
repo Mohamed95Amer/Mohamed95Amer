@@ -1,0 +1,784 @@
+.o_bim_viewer {
+    --bim-ink: #16211f;
+    --bim-muted: #5a6b67;
+    --bim-rule: #d3dbd8;
+    --bim-deep: #123a3c;
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: #eef1ef;
+    color: var(--bim-ink);
+}
+
+.o_bim_bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 20px;
+    background: var(--bim-deep);
+    color: #fff;
+
+    // Odoo's own h1 colour applies inside a client action, so the bar has to
+    // say so explicitly or the title renders dark on dark.
+    h1 { margin: 2px 0 0; font-size: 1.25rem; font-weight: 600; color: #fff; }
+    small { color: rgba(255, 255, 255, .68); font-size: .78rem; }
+}
+
+.o_bim_eyebrow {
+    font-size: .66rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .58);
+}
+
+.o_bim_counts {
+    display: flex;
+    gap: 20px;
+    font-size: .82rem;
+    color: rgba(255, 255, 255, .78);
+
+    strong { display: block; font-size: 1.3rem; color: #fff; }
+}
+
+.o_bim_body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    flex: 1;
+    min-height: 0;
+}
+
+.o_bim_stage {
+    position: relative;
+    min-height: 0;
+
+    canvas { display: block; width: 100%; height: 100%; }
+}
+
+.o_bim_overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 32px;
+    text-align: center;
+    background: rgba(238, 241, 239, .96);
+
+    > .fa { font-size: 2rem; color: var(--bim-deep); }
+    h2 { font-size: 1.05rem; margin: 0; }
+    p { max-width: 46ch; color: var(--bim-muted); margin: 0; }
+    pre {
+        background: #fff;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+        padding: 8px 14px;
+        margin: 0;
+    }
+}
+
+.o_bim_error > .fa { color: #97382f; }
+.o_bim_muted { color: var(--bim-muted); font-size: .84rem; }
+
+.o_bim_compatibility {
+    position: absolute;
+    z-index: 3;
+    top: 14px;
+    left: 50%;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    width: calc(100% - 28px);
+    max-width: 560px;
+    padding: 9px 13px;
+    color: #173c3b;
+    background: rgba(247, 251, 248, .96);
+    border: 1px solid #a9c4bc;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(18, 58, 60, .12);
+    transform: translateX(-50%);
+    pointer-events: none;
+
+    > .fa { margin-top: 2px; color: #2f7d5c; }
+    span { font-size: .76rem; line-height: 1.35; }
+    strong { display: block; font-size: .8rem; }
+}
+
+.o_bim_selection {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 12px 28px -18px rgba(18, 58, 60, .5);
+
+    .o_bim_eyebrow { color: var(--bim-muted); }
+    p { margin: 0 0 6px; font-size: .84rem; color: var(--bim-muted); }
+}
+
+.o_bim_side {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-left: 1px solid var(--bim-rule);
+    background: #fff;
+}
+
+.o_bim_mobile_details,
+.o_bim_mobile_model {
+    display: none !important;
+}
+
+.o_bim_filters {
+    display: flex;
+    gap: 4px;
+    padding: 10px;
+    border-bottom: 1px solid var(--bim-rule);
+
+    button {
+        flex: 1;
+        padding: 5px 6px;
+        font-size: .76rem;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+        background: #fff;
+        color: var(--bim-muted);
+        cursor: pointer;
+
+        &.active { background: var(--bim-deep); border-color: var(--bim-deep); color: #fff; }
+        &:focus-visible { outline: 2px solid var(--bim-deep); outline-offset: 2px; }
+    }
+}
+
+.o_bim_list { overflow-y: auto; }
+
+.o_bim_item {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    text-align: left;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--bim-rule);
+    cursor: pointer;
+
+    &:hover { background: #f4f7f5; }
+    &:focus-visible { outline: 2px solid var(--bim-deep); outline-offset: -2px; }
+
+    span { display: flex; flex-direction: column; min-width: 0; }
+    strong { font-size: .86rem; }
+    small { font-size: .76rem; color: var(--bim-muted); }
+    em { font-size: .7rem; color: #8d9b97; font-style: normal; }
+}
+
+// Pin rows carry two actions: fly there, or open the record. Splitting them
+// keeps "show me where" one click away from "open the defect", which are
+// different intentions on site.
+.o_bim_pin_row {
+    align-items: stretch;
+    padding: 0;
+
+    .o_bim_pin_main {
+        display: flex;
+        flex: 1;
+        gap: 10px;
+        min-width: 0;
+        padding: 10px 12px;
+        text-align: left;
+        background: none;
+        border: 0;
+        cursor: pointer;
+
+        > i { margin-top: 3px; color: #b9c4c8; }
+    }
+
+    .o_bim_pin_open {
+        flex: 0 0 auto;
+        padding: 0 12px;
+        color: var(--bim-muted);
+        background: none;
+        border: 0;
+        border-left: 1px solid var(--bim-rule);
+        cursor: pointer;
+
+        &:hover { color: var(--bim-deep); background: #eef3f0; }
+    }
+
+    &:hover { background: none; }
+    .o_bim_pin_main:hover { background: #f4f7f5; }
+}
+
+.o_bucket_blocked .o_bim_pin_main > i { color: #c0483c; }
+.o_bucket_open .o_bim_pin_main > i { color: #d8a13a; }
+.o_bucket_done .o_bim_pin_main > i { color: #2f7d5c; }
+
+// Clash review is a job with a beginning and an end, so it gets its own panel
+// rather than another button in a toolbar that already has seven.
+.o_bim_clash {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 320px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, .97);
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(20, 38, 31, .12);
+
+    small { color: var(--bim-muted); }
+}
+
+.o_bim_clash_actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.o_bim_clash_summary {
+    margin: 4px 0 0;
+    font-size: .8rem;
+    color: var(--bim-deep);
+}
+
+.o_bim_overlays {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.o_bim_overlay_chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    font-size: .78rem;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid var(--bim-rule);
+    border-left: 3px solid #8b6f9c;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:not(.active) { opacity: .5; }
+    &.o_bim_disc_structural { border-left-color: #6b7f9e; }
+    &.o_bim_disc_mechanical { border-left-color: #3f8f7a; }
+    &.o_bim_disc_electrical { border-left-color: #c9a227; }
+    &.o_bim_disc_plumbing { border-left-color: #4a90a4; }
+    &.o_bim_disc_architectural { border-left-color: #9a7bb0; }
+}
+
+.o_bim_busy {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: .82rem;
+    background: rgba(20, 38, 31, .9);
+    color: #fff;
+    border-radius: 20px;
+}
+
+// The 4D strip sits along the bottom of the stage, where a programme belongs:
+// out of the model, and readable while dragging.
+.o_bim_fourd {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    font-size: .82rem;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(20, 38, 31, .12);
+
+    label { margin: 0; color: var(--bim-muted); }
+    input[type="date"] {
+        padding: 3px 6px;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+    }
+    .o_bim_play_range { width: 260px; }
+}
+
+.o_bim_fourd_key {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--bim-muted);
+
+    i { color: #1f6f8b; }
+}
+
+.o_bim_pset_toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 0;
+    font-size: .78rem;
+    color: var(--bim-deep);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.o_bim_psets {
+    max-height: 220px;
+    overflow-y: auto;
+
+    dd small {
+        display: block;
+        color: #8d9b97;
+        font-size: .68rem;
+    }
+}
+
+.o_bim_tabs {
+    display: flex;
+    border-bottom: 1px solid var(--bim-rule);
+
+    button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 8px;
+        font-size: .82rem;
+        color: var(--bim-muted);
+        background: none;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+
+        &:hover { background: #f4f7f5; }
+        &.active {
+            color: var(--bim-deep);
+            font-weight: 600;
+            border-bottom-color: var(--bim-deep);
+        }
+    }
+}
+
+.o_bim_badge {
+    padding: 1px 7px;
+    font-size: .7rem;
+    color: var(--bim-muted);
+    background: #eef1ef;
+    border-radius: 10px;
+}
+
+.o_bim_dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    background: #b9c4c8;
+}
+
+.o_bucket_blocked .o_bim_dot { background: #c0483c; }
+.o_bucket_open .o_bim_dot { background: #d8a13a; }
+.o_bucket_done .o_bim_dot { background: #2f7d5c; }
+
+.o_bim_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--bim-muted);
+
+    .fa { font-size: 1.6rem; color: #b9c4c8; }
+    p { font-size: .84rem; margin: 0; }
+}
+
+@media (max-width: 991.98px) {
+    .o_bim_bar {
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .o_bim_tools {
+        order: 3;
+        width: 100%;
+        margin-inline-start: 0;
+    }
+    .o_bim_body {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(320px, 60vh) auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+        scroll-behavior: smooth;
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+    }
+    .o_bim_side {
+        min-height: 280px;
+        max-height: none;
+        border-top: 1px solid var(--bim-rule);
+        border-left: 0;
+    }
+    .o_bim_mobile_details,
+    .o_bim_mobile_model {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .o_bim_mobile_model {
+        min-height: 44px;
+        margin: 10px 10px 0;
+        color: var(--bim-deep);
+        border: 1px solid var(--bim-rule);
+        border-radius: 7px;
+        background: #f5f8f6;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .o_bim_bar {
+        align-items: stretch;
+        padding: 11px 12px;
+    }
+    .o_bim_title h1 {
+        overflow: hidden;
+        font-size: 1.05rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .o_bim_tools {
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+
+        button,
+        .o_bim_select {
+            min-height: 42px;
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+    }
+    .o_bim_counts {
+        width: 100%;
+        gap: 24px;
+        padding-bottom: 2px;
+        overflow-x: auto;
+    }
+    .o_bim_body {
+        grid-template-rows: minmax(300px, 56vh) auto;
+    }
+    .o_bim_overlay {
+        padding: 22px 16px;
+
+        pre {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+    }
+    .o_bim_selection,
+    .o_bim_clash,
+    .o_bim_draft {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+    }
+    .o_bim_overlays {
+        top: 12px;
+        right: 12px;
+        max-width: calc(100% - 24px);
+    }
+    .o_bim_section {
+        right: 12px;
+        left: 12px;
+        flex-wrap: wrap;
+
+        input[type="range"] { min-width: 0; flex: 1; }
+    }
+    .o_bim_fourd {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        flex-wrap: wrap;
+        transform: none;
+
+        .o_bim_play_range { width: 100%; }
+    }
+}
+
+/* ---------- toolbar ---------- */
+.o_bim_tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-inline-start: auto;
+
+    button, .o_bim_select {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        font-size: .78rem;
+        color: #fff;
+        background: rgba(255, 255, 255, .1);
+        border: 1px solid rgba(255, 255, 255, .22);
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover:not(:disabled) { background: rgba(255, 255, 255, .2); }
+        &:disabled { opacity: .4; cursor: default; }
+        &:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+        &.active { background: #fff; color: var(--bim-deep); border-color: #fff; }
+    }
+
+    .o_bim_select option { color: var(--bim-ink); }
+}
+
+/* ---------- section slider ---------- */
+.o_bim_section {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    font-size: .8rem;
+    background: #fff;
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 12px 28px -18px rgba(18, 58, 60, .5);
+
+    input[type="range"] { width: 160px; }
+    span { font-variant-numeric: tabular-nums; min-width: 3.5ch; }
+}
+
+/* ---------- pin placement ---------- */
+.o_bim_hint {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: .84rem;
+    color: #fff;
+    background: var(--bim-deep);
+    border-radius: 999px;
+    box-shadow: 0 12px 28px -18px rgba(18, 58, 60, .6);
+
+    .btn-link { color: #fff; text-decoration: underline; padding: 0; }
+}
+
+.o_bim_draft {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 16px 36px -20px rgba(18, 58, 60, .6);
+
+    .o_bim_eyebrow { color: var(--bim-muted); margin-bottom: 4px; }
+    label { font-size: .74rem; color: var(--bim-muted); margin-top: 6px; }
+    input, select, textarea {
+        width: 100%;
+        padding: 5px 8px;
+        font-size: .84rem;
+        border: 1px solid var(--bim-rule);
+        border-radius: 4px;
+    }
+}
+
+.o_bim_draft_actions { display: flex; gap: 6px; margin-top: 10px; }
+
+/* ---------- element properties ---------- */
+.o_bim_props {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 10px;
+    margin: 6px 0 0;
+    font-size: .78rem;
+
+    dt { color: var(--bim-muted); }
+    dd { margin: 0; overflow-wrap: anywhere; }
+}
+
+/* ---------- search ---------- */
+.o_bim_search {
+    margin: 10px 10px 0;
+    padding: 6px 10px;
+    font-size: .82rem;
+    border: 1px solid var(--bim-rule);
+    border-radius: 4px;
+
+    &:focus-visible { outline: 2px solid var(--bim-deep); outline-offset: 1px; }
+}
+
+// ---------------------------------------------------------------------------
+// The class legend
+//
+// Bottom-left, opposite the overlay chips, so a federated model with both on
+// screen does not stack them. It is a panel rather than a floating row because
+// it scrolls: a structural export routinely carries a dozen classes and the
+// tail matters — a model that turns out to be mostly IFCREINFORCINGBAR is
+// telling you what kind of file you were sent.
+// ---------------------------------------------------------------------------
+
+.o_bim_legend {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    width: 208px;
+    max-height: 46%;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 8px 6px;
+    background: rgba(255, 255, 255, .95);
+    border: 1px solid var(--bim-rule);
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(20, 38, 31, .1);
+    overflow-y: auto;
+}
+
+.o_bim_legend_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.o_bim_legend_all {
+    padding: 0;
+    font-size: .72rem;
+    background: none;
+    border: 0;
+    color: #346d75;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.o_bim_legend_row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    // Hidden classes stay listed and stay legible. Dropping them out of the
+    // legend would make it impossible to bring one back.
+    &.o_bim_off .o_bim_legend_name { opacity: .45; }
+}
+
+.o_bim_legend_eye,
+.o_bim_legend_name {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 5px;
+    background: none;
+    border: 0;
+    border-radius: 4px;
+    font-size: .79rem;
+    color: var(--bim-ink, #263842);
+    cursor: pointer;
+
+    &:hover { background: rgba(52, 109, 117, .09); }
+}
+
+.o_bim_legend_eye { flex: 0 0 auto; color: #687983; }
+.o_bim_legend_name { flex: 1 1 auto; min-width: 0; text-align: left; }
+
+.o_bim_swatch {
+    flex: 0 0 auto;
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    // The swatch is a solid block of the same colour the mesh is drawn in, so
+    // matching it to the model is a comparison of two flat samples rather than
+    // of a flat sample against a shaded surface.
+    border: 1px solid rgba(0, 0, 0, .18);
+}
+
+.o_bim_legend_label {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_bim_legend_count {
+    flex: 0 0 auto;
+    font-variant-numeric: tabular-nums;
+    font-size: .72rem;
+    color: #687983;
+}
+
+.o_bim_shading { max-width: 190px; }
+
+// The edge toggle reads as pressed while edges are on, because it is a state
+// and not an action.
+.o_bim_tools button.o_bim_on {
+    background: #346d75;
+    border-color: #295a61;
+    color: #fff;
+}
+
+@media (max-width: 767.98px) {
+    // A 208px panel over a 390px canvas hides the model it is describing.
+    // Half width, shorter, and out of the way of the bottom toolbar.
+    .o_bim_legend {
+        left: 12px;
+        bottom: 12px;
+        width: 150px;
+        max-height: 34%;
+    }
+}
+
+// Bounded so a portrait phone photo cannot stretch the draft panel over the
+// model it is describing.
+.o_bim_draft_photo {
+    display: block;
+    max-width: 100%;
+    max-height: 130px;
+    margin-top: 6px;
+    border-radius: 4px;
+    object-fit: cover;
+}

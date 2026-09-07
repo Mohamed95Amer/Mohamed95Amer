@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_developer" model="res.partner">
+        <field name="name">Majal Properties</field>
+        <field name="is_company">1</field>
+    </record>
+
+    <record id="demo_development_marina_heights" model="majal.development">
+        <field name="name">Marina Heights</field>
+        <field name="code">MH</field>
+        <field name="developer_id" ref="demo_developer"/>
+        <field name="state">active</field>
+        <field name="dashboard_featured">1</field>
+        <field name="city">Dubai</field>
+        <field name="land_area">185000</field>
+        <field name="expected_handover_date"
+               eval="(DateTime.today() + relativedelta(months=18)).strftime('%Y-%m-%d')"/>
+        <field name="description">Waterfront mixed-use development: two
+            residential towers over a shared podium, facing the marina.</field>
+    </record>
+
+    <record id="demo_community_marina_heights" model="majal.community">
+        <field name="name">Marina Heights Community</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="description">Shared podium, pool deck and retail frontage
+            serving both towers.</field>
+    </record>
+
+    <record id="demo_building_tower_a" model="majal.building">
+        <field name="name">Tower A</field>
+        <field name="code">A</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="community_id" ref="demo_community_marina_heights"/>
+        <field name="building_type">tower</field>
+        <field name="planned_floor_count">25</field>
+    </record>
+
+    <record id="demo_building_tower_b" model="majal.building">
+        <field name="name">Tower B</field>
+        <field name="code">B</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="community_id" ref="demo_community_marina_heights"/>
+        <field name="building_type">tower</field>
+        <field name="planned_floor_count">18</field>
+    </record>
+
+    <record id="demo_floor_a_16" model="majal.floor">
+        <field name="name">Floor 16</field>
+        <field name="number">16</field>
+        <field name="building_id" ref="demo_building_tower_a"/>
+    </record>
+    <record id="demo_floor_a_17" model="majal.floor">
+        <field name="name">Floor 17</field>
+        <field name="number">17</field>
+        <field name="building_id" ref="demo_building_tower_a"/>
+    </record>
+    <record id="demo_floor_a_18" model="majal.floor">
+        <field name="name">Floor 18</field>
+        <field name="number">18</field>
+        <field name="building_id" ref="demo_building_tower_a"/>
+    </record>
+    <record id="demo_floor_b_9" model="majal.floor">
+        <field name="name">Floor 9</field>
+        <field name="number">9</field>
+        <field name="building_id" ref="demo_building_tower_b"/>
+    </record>
+    <record id="demo_floor_b_10" model="majal.floor">
+        <field name="name">Floor 10</field>
+        <field name="number">10</field>
+        <field name="building_id" ref="demo_building_tower_b"/>
+    </record>
+
+    <record id="demo_unit_type_1br_a" model="majal.unit.type">
+        <field name="name">1BR Type A</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="unit_category">1br</field>
+        <field name="bedrooms">1</field>
+        <field name="bathrooms">2</field>
+        <field name="suite_area">720</field>
+        <field name="balcony_area">90</field>
+        <field name="typical_price">1180000</field>
+        <field name="finish_notes">Standard finish: engineered timber flooring,
+            quartz kitchen counters.</field>
+    </record>
+
+    <record id="demo_unit_type_2br_b" model="majal.unit.type">
+        <field name="name">2BR Type B</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="unit_category">2br</field>
+        <field name="bedrooms">2</field>
+        <field name="bathrooms">3</field>
+        <field name="suite_area">1030</field>
+        <field name="balcony_area">140</field>
+        <field name="typical_price">1850000</field>
+        <field name="finish_notes">Upgraded finish: marble flooring in living
+            areas, premium kitchen appliances.</field>
+    </record>
+
+    <!-- One row per floor per tower, mirroring what the unit generation
+         wizard would produce: kept as static demo records so demo
+         data does not depend on running a wizard action at install time. -->
+    <record id="demo_unit_a1601" model="majal.unit">
+        <field name="name">A-1601</field>
+        <field name="floor_id" ref="demo_floor_a_16"/>
+        <field name="unit_type_id" ref="demo_unit_type_1br_a"/>
+        <field name="unit_category">1br</field>
+        <field name="bedrooms">1</field>
+        <field name="bathrooms">2</field>
+        <field name="suite_area">720</field>
+        <field name="balcony_area">90</field>
+        <field name="view">Marina</field>
+        <field name="orientation">NW</field>
+        <field name="parking_ref">P1-116</field>
+        <field name="list_price">1180000</field>
+        <field name="status">available</field>
+        <field name="listing_readiness">92</field>
+        <field name="marketing_image" type="base64" file="majal_real_estate/static/src/img/unit-interior.png"/>
+    </record>
+    <record id="demo_unit_a1604" model="majal.unit">
+        <field name="name">A-1604</field>
+        <field name="floor_id" ref="demo_floor_a_16"/>
+        <field name="unit_type_id" ref="demo_unit_type_2br_b"/>
+        <field name="unit_category">2br</field>
+        <field name="bedrooms">2</field>
+        <field name="bathrooms">3</field>
+        <field name="suite_area">1030</field>
+        <field name="balcony_area">140</field>
+        <field name="view">Marina</field>
+        <field name="orientation">NW</field>
+        <field name="parking_ref">P2-144</field>
+        <field name="list_price">1850000</field>
+        <field name="status">reserved</field>
+        <field name="listing_readiness">88</field>
+        <field name="marketing_image" type="base64" file="majal_real_estate/static/src/img/unit-interior.png"/>
+    </record>
+    <record id="demo_unit_a1704" model="majal.unit">
+        <field name="name">A-1704</field>
+        <field name="floor_id" ref="demo_floor_a_17"/>
+        <field name="unit_type_id" ref="demo_unit_type_2br_b"/>
+        <field name="unit_category">2br</field>
+        <field name="bedrooms">2</field>
+        <field name="bathrooms">3</field>
+        <field name="suite_area">1030</field>
+        <field name="balcony_area">140</field>
+        <field name="view">Marina</field>
+        <field name="orientation">NW</field>
+        <field name="parking_ref">P2-145</field>
+        <field name="list_price">1910000</field>
+        <field name="status">sold</field>
+    </record>
+    <record id="demo_unit_a1804" model="majal.unit">
+        <field name="name">A-1804</field>
+        <field name="floor_id" ref="demo_floor_a_18"/>
+        <field name="unit_type_id" ref="demo_unit_type_2br_b"/>
+        <field name="unit_category">2br</field>
+        <field name="bedrooms">2</field>
+        <field name="bathrooms">3</field>
+        <field name="suite_area">1030</field>
+        <field name="balcony_area">140</field>
+        <field name="view">Marina</field>
+        <field name="orientation">NW</field>
+        <field name="parking_ref">P2-146</field>
+        <field name="list_price">1980000</field>
+        <field name="status">available</field>
+    </record>
+    <record id="demo_unit_b0901" model="majal.unit">
+        <field name="name">B-0901</field>
+        <field name="floor_id" ref="demo_floor_b_9"/>
+        <field name="unit_type_id" ref="demo_unit_type_1br_a"/>
+        <field name="unit_category">1br</field>
+        <field name="bedrooms">1</field>
+        <field name="bathrooms">2</field>
+        <field name="suite_area">720</field>
+        <field name="balcony_area">90</field>
+        <field name="view">Garden</field>
+        <field name="orientation">SE</field>
+        <field name="parking_ref">P1-058</field>
+        <field name="list_price">1120000</field>
+        <field name="status">available</field>
+    </record>
+    <record id="demo_unit_b1001" model="majal.unit">
+        <field name="name">B-1001</field>
+        <field name="floor_id" ref="demo_floor_b_10"/>
+        <field name="unit_type_id" ref="demo_unit_type_1br_a"/>
+        <field name="unit_category">1br</field>
+        <field name="bedrooms">1</field>
+        <field name="bathrooms">2</field>
+        <field name="suite_area">720</field>
+        <field name="balcony_area">90</field>
+        <field name="view">Garden</field>
+        <field name="orientation">SE</field>
+        <field name="parking_ref">P1-059</field>
+        <field name="list_price">1135000</field>
+        <field name="status">blocked</field>
+    </record>
+
+    <record id="demo_broker" model="res.partner">
+        <field name="name">Gulf Estates Brokerage</field>
+        <field name="is_company">1</field>
+        <field name="is_majal_broker" eval="True"/>
+        <field name="broker_commission_rate">2.0</field>
+    </record>
+
+    <record id="demo_payment_plan" model="majal.payment.plan">
+        <field name="name">20/50/30 Construction Linked</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="note">Standard off-plan plan for Marina Heights.</field>
+        <field name="line_ids" eval="[
+            (0, 0, {'sequence': 10, 'name': 'On booking',
+                    'percentage': 20, 'trigger': 'booking'}),
+            (0, 0, {'sequence': 20, 'name': 'During construction',
+                    'percentage': 50, 'trigger': 'days_after', 'offset_days': 180}),
+            (0, 0, {'sequence': 30, 'name': 'On handover',
+                    'percentage': 30, 'trigger': 'handover'}),
+        ]"/>
+    </record>
+
+    <record id="demo_buyer_khalid" model="res.partner">
+        <field name="name">Khalid Al Marzooqi</field>
+    </record>
+    <record id="demo_buyer_layla" model="res.partner">
+        <field name="name">Layla Haddad</field>
+    </record>
+
+    <!-- These carry their state directly rather than being confirmed through
+         the workflow, matching the unit statuses declared statically above:
+         A-1604 is reserved, A-1704 is sold. -->
+    <record id="demo_reservation_a1604" model="majal.reservation">
+        <field name="unit_id" ref="demo_unit_a1604"/>
+        <field name="partner_id" ref="demo_buyer_khalid"/>
+        <field name="reservation_date"
+               eval="(DateTime.today() - relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+        <field name="expiry_date"
+               eval="(DateTime.today() + relativedelta(days=8)).strftime('%Y-%m-%d')"/>
+        <field name="sale_price">1850000</field>
+        <field name="reservation_fee">50000</field>
+        <field name="state">confirmed</field>
+        <field name="payment_plan_id" ref="demo_payment_plan"/>
+        <field name="broker_id" ref="demo_broker"/>
+        <field name="commission_rate">2.0</field>
+    </record>
+
+    <record id="demo_installment_1" model="majal.payment.installment">
+        <field name="reservation_id" ref="demo_reservation_a1604"/>
+        <field name="sequence">10</field>
+        <field name="name">On booking</field>
+        <field name="due_date"
+               eval="(DateTime.today() - relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+        <field name="percentage">20</field>
+        <field name="amount">370000</field>
+        <field name="amount_paid">370000</field>
+        <field name="payment_date"
+               eval="(DateTime.today() - relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+    </record>
+    <record id="demo_installment_2" model="majal.payment.installment">
+        <field name="reservation_id" ref="demo_reservation_a1604"/>
+        <field name="sequence">20</field>
+        <field name="name">During construction</field>
+        <field name="due_date"
+               eval="(DateTime.today() + relativedelta(days=174)).strftime('%Y-%m-%d')"/>
+        <field name="percentage">50</field>
+        <field name="amount">925000</field>
+    </record>
+    <record id="demo_installment_3" model="majal.payment.installment">
+        <field name="reservation_id" ref="demo_reservation_a1604"/>
+        <field name="sequence">30</field>
+        <field name="name">On handover</field>
+        <field name="due_date"
+               eval="(DateTime.today() + relativedelta(months=18)).strftime('%Y-%m-%d')"/>
+        <field name="percentage">30</field>
+        <field name="amount">555000</field>
+    </record>
+
+    <record id="demo_reservation_a1704" model="majal.reservation">
+        <field name="unit_id" ref="demo_unit_a1704"/>
+        <field name="partner_id" ref="demo_buyer_layla"/>
+        <field name="reservation_date"
+               eval="(DateTime.today() - relativedelta(days=40)).strftime('%Y-%m-%d')"/>
+        <field name="expiry_date"
+               eval="(DateTime.today() - relativedelta(days=26)).strftime('%Y-%m-%d')"/>
+        <field name="sale_price">1910000</field>
+        <field name="reservation_fee">50000</field>
+        <field name="state">converted</field>
+    </record>
+
+    <record id="demo_lead_open" model="majal.lead">
+        <field name="name">2BR enquiry - Marina Heights</field>
+        <field name="contact_name">Noura Al Suwaidi</field>
+        <field name="email">noura.example@example.com</field>
+        <field name="phone">+971 50 000 0000</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="unit_type_id" ref="demo_unit_type_2br_b"/>
+        <field name="budget">1900000</field>
+        <field name="source">Website</field>
+        <field name="priority">2</field>
+        <field name="stage_id" ref="lead_stage_viewing"/>
+    </record>
+
+    <record id="demo_lead_won" model="majal.lead">
+        <field name="name">1BR enquiry - Tower B</field>
+        <field name="partner_id" ref="demo_buyer_khalid"/>
+        <field name="contact_name">Khalid Al Marzooqi</field>
+        <field name="development_id" ref="demo_development_marina_heights"/>
+        <field name="unit_type_id" ref="demo_unit_type_1br_a"/>
+        <field name="budget">1200000</field>
+        <field name="source">Broker referral</field>
+        <field name="stage_id" ref="lead_stage_reserved"/>
+        <field name="state">won</field>
+    </record>
+</odoo>

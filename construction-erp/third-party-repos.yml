@@ -1,0 +1,28 @@
+# Pinned third-party (non-OCA) community Odoo modules.
+# Vendored into third-party-addons/ by scripts/fetch-vendor.sh.
+#
+#   scripts/fetch-vendor.sh third-party-repos.yml third-party-addons
+#
+# To update a pin: git ls-remote <url> refs/heads/18.0, then re-run the script
+# and commit the refreshed third-party-addons/.
+
+odoo_version: "18.0"
+
+repos:
+  # Odoo Mates "Accounting Community" — the free full-accounting suite for
+  # Odoo Community (financial reports, assets, budgets, fiscal year, recurring
+  # payments, daily reports, customer follow-ups). All modules LGPL-3.
+  # Replaces the Enterprise-only accounting apps; chosen over building this
+  # from scratch. https://apps.odoo.com/apps/modules/18.0/om_account_accountant
+  odoomates:
+    url: https://github.com/odoomates/odooapps.git
+    commit: 084b961178c725a8e05c73c6a6e6e8a1827e8861
+    modules:
+      - accounting_pdf_reports
+      - om_account_accountant
+      - om_account_asset
+      - om_account_budget
+      - om_account_daily_reports
+      - om_account_followup
+      - om_fiscal_year
+      - om_recurring_payments

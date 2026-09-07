@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_advance_payment_form" model="ir.ui.view">
+        <field name="name">construction.advance.payment.form</field>
+        <field name="model">construction.advance.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_request_approval" type="object"
+                            string="Request Approval" class="btn-primary"
+                            invisible="state != 'submitted' or approval_state != 'none'"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary"
+                            invisible="state != 'submitted' or approval_state != 'none'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_create_invoice" type="object"
+                            string="Create Invoice" class="btn-primary"
+                            invisible="state != 'approved'"/>
+                    <button name="action_mark_paid" type="object"
+                            string="Mark Paid" invisible="state != 'invoiced'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,invoiced,paid"/>
+                </header>
+                <sheet>
+                    <field name="approval_state" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="approval_state != 'pending'">
+                        <field name="approval_summary" nolabel="1" readonly="1"/>
+                    </div>
+                    <!-- An advance outstanding against a guarantee that
+                         lapsed is an unsecured loan. That is the fact worth
+                         interrupting somebody for. -->
+                    <div class="alert alert-danger d-flex align-items-center"
+                         role="alert" invisible="not guarantee_lapsed">
+                        <i class="fa fa-shield me-2" title="Guarantee warning"/>
+                        <field name="guarantee_warning" nolabel="1" readonly="1"
+                               class="oe_inline"/>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_claims" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Certificates</span>
+                            </div>
+                        </button>
+                        <button name="action_view_invoice" type="object"
+                                class="oe_stat_button" icon="fa-money"
+                                invisible="not move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Description"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="date_advance"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                        </group>
+                        <group string="Recovery">
+                            <label for="recovery_percent"/>
+                            <div class="o_row">
+                                <field name="recovery_percent" class="oe_inline"/>
+                                <span class="oe_inline"> % of each certificate</span>
+                            </div>
+                            <label for="recovery_start_percent"/>
+                            <div class="o_row">
+                                <field name="recovery_start_percent"
+                                       class="oe_inline"/>
+                                <span class="oe_inline"> % complete before recovery starts</span>
+                            </div>
+                            <field name="amount_recovered" readonly="1"/>
+                            <field name="amount_outstanding" readonly="1"
+                                   class="oe_subtotal_footer_separator"/>
+                            <field name="recovery_complete" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Advance Payment Guarantee">
+                        <group>
+                            <field name="guarantee_reference"/>
+                            <field name="guarantee_bank"/>
+                        </group>
+                        <group>
+                            <field name="guarantee_expiry"/>
+                            <field name="guarantee_lapsed" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_advance_payment_list" model="ir.ui.view">
+        <field name="name">construction.advance.payment.list</field>
+        <field name="model">construction.advance.payment</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-danger="guarantee_lapsed">
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="date_advance"/>
+                <field name="amount" sum="Advanced"/>
+                <field name="recovery_percent" optional="hide"/>
+                <field name="amount_recovered" optional="show"/>
+                <field name="amount_outstanding" sum="Outstanding"/>
+                <field name="guarantee_expiry" optional="show"/>
+                <field name="guarantee_lapsed" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submitted'"
+                       decoration-success="state in ('approved', 'invoiced', 'paid')"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_advance_payment_search" model="ir.ui.view">
+        <field name="name">construction.advance.payment.search</field>
+        <field name="model">construction.advance.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <filter name="filter_live" string="Live"
+                        domain="[('state', 'in', ('submitted', 'approved', 'invoiced', 'paid'))]"/>
+                <filter name="filter_lapsed" string="Guarantee Lapsed"
+                        domain="[('guarantee_lapsed', '=', True)]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_advance_payment" model="ir.actions.act_window">
+        <field name="name">Advance Payments</field>
+        <field name="res_model">construction.advance.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_advance_payment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No advance on any project</p>
+            <p>An advance is paid up front against a bank guarantee and
+               recovered as a slice of every payment certificate until it is
+               square.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_advance_payment"
+              name="Advance Payments"
+              parent="construction_base.menu_construction_commercial"
+              action="action_advance_payment"
+              sequence="24"/>
+
+    <!-- The deduction, on the certificate it is taken from. -->
+    <record id="view_progress_claim_form_advance" model="ir.ui.view">
+        <field name="name">construction.progress.claim.form.advance</field>
+        <field name="model">construction.progress.claim</field>
+        <field name="inherit_id" ref="view_progress_claim_form"/>
+        <field name="arch" type="xml">
+            <field name="retention_this" position="after">
+                <field name="advance_id" invisible="not advance_id"/>
+                <field name="advance_recovery_this"
+                       invisible="not advance_id"/>
+                <field name="advance_recovery_cumulative"
+                       invisible="not advance_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Send a whole selection for approval from the list-view cog. The
+         engine always looped over the recordset; until now nothing could
+         hand it more than one record. -->
+    <record id="action_request_approval_construction_advance_payment" model="ir.actions.server">
+        <field name="name">Request Approval</field>
+        <field name="model_id" ref="model_construction_advance_payment"/>
+        <field name="binding_model_id" ref="model_construction_advance_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_request_approval_selected()</field>
+    </record>
+</odoo>

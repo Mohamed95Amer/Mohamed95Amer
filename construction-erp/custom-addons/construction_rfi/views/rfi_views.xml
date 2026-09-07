@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rfi_form" model="ir.ui.view">
+        <field name="name">construction.rfi.form</field>
+        <field name="model">construction.rfi</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_answer" type="object" string="Mark Answered"
+                            class="btn-primary" invisible="state != 'submitted'"/>
+                    <button name="action_close" type="object" string="Close"
+                            class="btn-primary" invisible="state != 'answered'"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="state not in ('answered', 'closed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,answered,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Subject"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="discipline"/>
+                            <field name="raised_by_id"/>
+                            <field name="ball_in_court_id"/>
+                            <field name="date_required"/>
+                            <field name="is_overdue" invisible="not is_overdue"
+                                   decoration-danger="is_overdue"/>
+                        </group>
+                        <group>
+                            <field name="date_submitted"/>
+                            <field name="date_answered"/>
+                            <field name="answered_by_id"/>
+                            <field name="cost_impact"/>
+                            <field name="schedule_impact"/>
+                            <field name="portal_visible"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Question" name="question">
+                            <field name="question"/>
+                        </page>
+                        <page string="Answer" name="answer">
+                            <field name="answer" readonly="state in ('answered', 'closed')"/>
+                        </page>
+                        <page string="Drawings" name="drawings">
+                            <field name="drawing_revision_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_rfi_list" model="ir.ui.view">
+        <field name="name">construction.rfi.list</field>
+        <field name="model">construction.rfi</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="ball_in_court_id"/>
+                <field name="date_required"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submitted'"
+                       decoration-success="state in ('answered', 'closed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_rfi_search" model="ir.ui.view">
+        <field name="name">construction.rfi.search</field>
+        <field name="model">construction.rfi</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <filter name="filter_open" string="Open"
+                        domain="[('state', 'in', ('draft', 'submitted'))]"/>
+                <filter name="filter_overdue" string="Overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <!-- ball_in_court_id is a res.partner (it names whoever's turn
+                     it is, and that is not always somebody with a login) —
+                     ball_in_court_id.user_ids is the stock reverse of
+                     res.users.partner_id, so this reaches "am I that partner"
+                     without a new field. -->
+                <filter name="filter_mine" string="Waiting on Me"
+                        domain="[('ball_in_court_id.user_ids', 'in', [uid])]"/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_construction_rfi" model="ir.actions.act_window">
+        <field name="name">RFIs</field>
+        <field name="res_model">construction.rfi</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_construction_rfi"
+              name="RFIs"
+              parent="construction_base.menu_construction_engineering"
+              action="action_construction_rfi"
+              sequence="20"/>
+</odoo>

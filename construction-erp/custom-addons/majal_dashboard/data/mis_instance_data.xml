@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- A ready-to-run instance of the trading summary.
+
+             The template on its own is a definition, not a screen. Shipping
+             only the definition means a user opening Financial Reports lands
+             on an empty list and concludes the feature is missing — which is
+             what happened the first time this was driven in a browser.
+
+             Periods are relative, not fixed. Fixed dates would be correct in
+             2026 and quietly wrong every year after, which is the kind of
+             error nobody notices until a board pack goes out with last
+             year's window on it. Relative periods resolve against the
+             report's base date, so this stays right without being edited.
+
+             Two periods rather than one: a margin with nothing to compare it
+             against is a number, and what a director needs is a direction.
+             offset=0 is the current year, offset=-1 the one before it. -->
+
+        <!-- company_id is set to nothing on purpose, and has to be stated
+             rather than left out. Left out, it defaults to whichever company
+             was active when the module was installed, and mis_builder's own
+             multi-company rule then hides the instance from every other
+             company: the Financial board refused the Platform Owner, the
+             company administrator and the operations manager, because the
+             only instance in the database belonged to a company none of them
+             were in. False is the leg that rule already provides for a
+             record the whole database is meant to share. -->
+        <record id="mis_instance_trading" model="mis.report.instance">
+            <field name="name">Trading Summary — this year against last</field>
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="comparison_mode" eval="True"/>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="mis_instance_period_current" model="mis.report.instance.period">
+            <field name="report_instance_id" ref="mis_instance_trading"/>
+            <field name="name">This year</field>
+            <field name="sequence">10</field>
+            <field name="mode">relative</field>
+            <field name="type">y</field>
+            <field name="offset">0</field>
+            <field name="duration">1</field>
+        </record>
+
+        <record id="mis_instance_period_previous" model="mis.report.instance.period">
+            <field name="report_instance_id" ref="mis_instance_trading"/>
+            <field name="name">Last year</field>
+            <field name="sequence">20</field>
+            <field name="mode">relative</field>
+            <field name="type">y</field>
+            <field name="offset">-1</field>
+            <field name="duration">1</field>
+        </record>
+    </data>
+</odoo>

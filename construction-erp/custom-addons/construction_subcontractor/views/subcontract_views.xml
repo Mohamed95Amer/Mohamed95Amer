@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Subcontract -->
+    <record id="view_subcontract_form" model="ir.ui.view">
+        <field name="name">construction.subcontract.form</field>
+        <field name="model">construction.subcontract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_new_payment" type="object"
+                            string="New Payment Certificate" class="btn-primary"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_close" type="object" string="Close"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-money" disabled="1">
+                            <field name="payment_count" widget="statinfo"
+                                   string="Payments"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Subcontract title"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="subcontractor_id"/>
+                            <field name="trade"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_total"/>
+                            <field name="retention_percent"/>
+                            <field name="retention_cap_percent"/>
+                            <field name="amount_certified"/>
+                            <field name="amount_retained"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scope" name="scope">
+                            <field name="line_ids" readonly="state == 'closed'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="boq_line_id"/>
+                                    <field name="name"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_rate"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Payment Certificates" name="payments">
+                            <field name="payment_ids">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="sequence_no"/>
+                                    <field name="date"/>
+                                    <field name="gross_this"/>
+                                    <field name="retention_this"/>
+                                    <field name="backcharge_this"/>
+                                    <field name="amount_due"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state in ('submitted', 'certified')"
+                                           decoration-success="state in ('billed', 'paid')"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_subcontract_list" model="ir.ui.view">
+        <field name="name">construction.subcontract.list</field>
+        <field name="model">construction.subcontract</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="subcontractor_id"/>
+                <field name="trade"/>
+                <field name="amount_total"/>
+                <field name="amount_certified"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_subcontract" model="ir.actions.act_window">
+        <field name="name">Subcontracts</field>
+        <field name="res_model">construction.subcontract</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Payment certificate -->
+    <record id="view_sc_payment_form" model="ir.ui.view">
+        <field name="name">construction.subcontract.payment.form</field>
+        <field name="model">construction.subcontract.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_certify" type="object" string="Certify"
+                            class="btn-primary" invisible="state != 'submitted'"
+                            groups="construction_base.group_construction_pm"/>
+                    <button name="action_create_bill" type="object"
+                            string="Create Vendor Bill" class="btn-primary"
+                            invisible="state != 'certified'"/>
+                    <button name="action_mark_paid" type="object"
+                            string="Mark Paid" invisible="state != 'billed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_bill" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Vendor Bill</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3>Cert No. <field name="sequence_no" readonly="1"
+                                            class="oe_inline"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="subcontract_id"/>
+                            <field name="project_id" invisible="1"/>
+                            <field name="subcontractor_id"/>
+                            <field name="date"/>
+                            <field name="previous_payment_id"
+                                   invisible="not previous_payment_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_subcontract"/>
+                            <field name="gross_this"/>
+                            <field name="retention_this"/>
+                            <field name="backcharge_this"/>
+                            <field name="amount_due"
+                                   class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Measured Work" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="qty_contract"/>
+                                    <field name="unit_rate"/>
+                                    <field name="qty_previous"/>
+                                    <field name="qty_this_period"/>
+                                    <field name="qty_cumulative"/>
+                                    <field name="amount_this" sum="This Period"/>
+                                    <field name="amount_cumulative" sum="Cumulative"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Back-Charges" name="backcharges">
+                            <field name="backcharge_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="defect_id"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_sc_payment_list" model="ir.ui.view">
+        <field name="name">construction.subcontract.payment.list</field>
+        <field name="model">construction.subcontract.payment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="subcontract_id"/>
+                <field name="subcontractor_id"/>
+                <field name="date"/>
+                <field name="amount_due"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('billed', 'paid')"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_sc_payment" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">construction.subcontract.payment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_subcontract"
+              name="Subcontracts"
+              parent="construction_base.menu_construction_commercial"
+              action="action_subcontract"
+              sequence="40"/>
+    <menuitem id="menu_sc_payment"
+              name="Payments"
+              parent="construction_base.menu_construction_commercial"
+              action="action_sc_payment"
+              sequence="45"/>
+</odoo>

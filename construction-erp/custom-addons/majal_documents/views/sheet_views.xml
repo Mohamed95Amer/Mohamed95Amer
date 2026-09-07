@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_sheet_list" model="ir.ui.view">
+        <field name="name">majal.sheet.list</field>
+        <field name="model">majal.sheet</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'frozen'" decoration-muted="state == 'archived'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="sheet_type"/>
+                <field name="project_id"/>
+                <field name="sheet_date"/>
+                <field name="revision"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'frozen'"
+                       decoration-muted="state == 'archived'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_sheet_form" model="ir.ui.view">
+        <field name="name">majal.sheet.form</field>
+        <field name="model">majal.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Structured Sheet">
+                <header>
+                    <button name="action_freeze" string="Freeze Revision"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_new_revision" string="Start New Revision"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'frozen'"/>
+                    <button name="action_export_csv" string="Export CSV"
+                            type="object" class="btn-secondary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,frozen,archived"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Frozen"
+                            bg_color="text-bg-success" invisible="state != 'frozen'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Sheet title"/></h1>
+                        <div class="text-muted"><field name="reference"/></div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="state != 'draft'"/>
+                            <field name="sheet_type" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="sheet_date" readonly="state != 'draft'"/>
+                            <field name="currency_id" readonly="state != 'draft'"/>
+                            <field name="revision"/>
+                            <field name="checksum"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sheet Editor" name="editor">
+                            <field name="line_ids" nolabel="1" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="description"/>
+                                    <field name="unit"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_rate"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="note" optional="hide"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_total"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" widget="html"
+                                   readonly="state != 'draft'"/>
+                        </page>
+                        <page string="Revision Evidence" name="evidence">
+                            <group>
+                                <field name="frozen_by_id"/>
+                                <field name="frozen_at"/>
+                                <field name="checksum"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Filters and grouping: a sheet register grows without limit, and
+         "which of these are still open" is the question asked of it most. -->
+    <record id="view_majal_sheet_search" model="ir.ui.view">
+        <field name="name">majal.sheet.search</field>
+        <field name="model">majal.sheet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_frozen" string="Frozen"
+                        domain="[('state', '=', 'frozen')]"/>
+                <filter name="filter_archived" string="Archived"
+                        domain="[('state', '=', 'archived')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_month" string="Month"
+                            context="{'group_by': 'sheet_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_sheets" model="ir.actions.act_window">
+        <field name="name">Structured Sheets</field>
+        <field name="res_model">majal.sheet</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

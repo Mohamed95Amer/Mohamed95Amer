@@ -1,0 +1,81 @@
+; majalops.com — Cloudflare DNS import
+;
+; Paste into Cloudflare: DNS > Records > Import and Export > Import.
+; Cloudflare manages SOA and NS itself and ignores them here, so they are
+; deliberately absent.
+;
+; ORIGIN_IP is 203.0.113.10 throughout. That address is from the range RFC 5737
+; reserves for documentation: it is guaranteed not to route anywhere, so an
+; unfinished import cannot quietly point a live name at somebody else's server.
+; Replace every occurrence before importing:
+;
+;     sed -i 's/203\.0\.113\.10/YOUR.SERVER.IP/g' majalops.com.zone
+;
+; TTL is 300 while the migration settles. Raise it to 3600 once the addresses
+; have stopped moving — a five-minute TTL is a nuisance to nobody but is the
+; difference between a ten-minute and a one-hour fix when something is wrong.
+
+$TTL 300
+
+; ---------------------------------------------------------------------------
+; The site
+; ---------------------------------------------------------------------------
+
+; Apex. Proxy this one (orange cloud) — it is the only way to get a redirect
+; rule from majalops.com to www without running a server for it.
+@                       300     IN  A       203.0.113.10
+
+www                     300     IN  CNAME   majalops.com.
+
+; ---------------------------------------------------------------------------
+; The application
+; ---------------------------------------------------------------------------
+
+; The Odoo demo, served by deploy/demo (Caddy on 80/443 in front of Odoo on
+; 8069). Set DEMO_HOST=demo.majalops.com in that stack's .env.
+;
+; Import this DNS-only (grey cloud) and leave it that way until Caddy has
+; issued its certificate: the HTTP-01 challenge is far less trouble when the
+; request reaches your server rather than Cloudflare's edge. Switch to proxied
+; afterwards, and only with SSL/TLS mode set to Full (strict) — Flexible puts
+; Cloudflare on HTTPS and your origin on HTTP, which Caddy answers with a
+; redirect to HTTPS, and the two loop until the browser gives up.
+demo                    300     IN  A       203.0.113.10
+
+; Odoo's API is not a separate service — XML-RPC and JSON-RPC answer on the
+; same host as the application. This name is therefore an alias, not a tier,
+; and it exists so the address can be published now and moved later without
+; reprinting anything. If a real gateway ever appears, repoint it here.
+api                     300     IN  CNAME   demo.majalops.com.
+
+; ---------------------------------------------------------------------------
+; Placeholders — these resolve nowhere until the service behind them exists
+; ---------------------------------------------------------------------------
+
+; Cloudflare Pages, built from construction-erp/docs/. Replace with the
+; <project>.pages.dev hostname Pages gives you, then add the custom domain on
+; the Pages side; it will verify against this record.
+docs                    300     IN  CNAME   majalops-docs.pages.dev.
+
+; Status page. Every provider (Better Stack, Instatus, Statuspage) hands you a
+; hostname to point at, and every one of them requires the record to be
+; DNS-only — a proxied status page is a status page that goes down with the
+; thing it reports on.
+status                  300     IN  CNAME   status-provider.example.net.
+
+; ---------------------------------------------------------------------------
+; Mail — the domain sends no email, and says so
+; ---------------------------------------------------------------------------
+;
+; A new domain with no SPF and no DMARC is a free From: address for anybody who
+; wants one, and a Majal invoice is a plausible thing to forge. These two
+; records say the domain sends nothing and that anything claiming otherwise
+; should be rejected outright.
+;
+; The moment you add real email (Google Workspace, Zoho, Cloudflare Email
+; Routing), both of these must change or your own mail will be binned. There is
+; no MX record here for the same reason: adding one blindly during a migration
+; is how mail silently stops.
+
+@                       300     IN  TXT     "v=spf1 -all"
+_dmarc                  300     IN  TXT     "v=DMARC1; p=reject; rua=mailto:dmarc@majalops.com"

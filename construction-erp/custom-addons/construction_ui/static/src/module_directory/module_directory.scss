@@ -1,0 +1,91 @@
+.o_majal_module_directory {
+    min-height: 100%;
+    padding: clamp(24px, 4vw, 56px);
+    color: #263842;
+    background:
+        radial-gradient(circle at 90% 4%, rgba(197, 155, 82, .16), transparent 28%),
+        #f4f6f7;
+
+    > header {
+        max-width: 760px;
+        margin-bottom: 28px;
+        span { color: #987439; font-size: .72rem; font-weight: 800; letter-spacing: .15em; }
+        h1 { margin: 7px 0 8px; color: #173240; font-size: clamp(1.8rem, 3vw, 2.8rem); letter-spacing: -.035em; }
+        p { margin: 0; color: #687983; font-size: 1rem; }
+    }
+
+    > aside {
+        display: flex;
+        max-width: 920px;
+        gap: 10px;
+        margin-top: 24px;
+        padding: 13px 16px;
+        border: 1px solid #dce4e7;
+        border-radius: 12px;
+        color: #5d6f78;
+        background: rgba(255,255,255,.76);
+        i { color: #346d75; margin-top: 3px; }
+    }
+}
+
+.o_majal_module_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 13px;
+    max-width: 1200px;
+}
+
+.o_majal_module_card {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) 18px;
+    align-items: center;
+    gap: 13px;
+    min-height: 92px;
+    padding: 15px;
+    border: 1px solid #dce4e7;
+    border-radius: 15px;
+    color: #263842;
+    text-align: start;
+    background: rgba(255,255,255,.94);
+    box-shadow: 0 5px 18px rgba(12,31,41,.045);
+    transition: .18s ease;
+
+    &:hover, &:focus-visible {
+        border-color: rgba(52,109,117,.48);
+        outline: 0;
+        box-shadow: 0 12px 28px rgba(12,31,41,.09);
+        transform: translateY(-2px);
+    }
+    > i { color: #9cacb2; }
+}
+
+.o_majal_module_icon {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 15px;
+    color: #fff;
+    background: #346d75;
+    overflow: hidden;
+    img { width: 100%; height: 100%; }
+}
+
+.o_majal_module_copy {
+    min-width: 0;
+    strong, small { display: block; }
+    strong { overflow: hidden; color: #173240; text-overflow: ellipsis; white-space: nowrap; }
+    small { margin-top: 4px; color: #718189; }
+}
+
+/*!rtl:begin:ignore*/
+// Already written for a right-to-left screen. rtlcss mirrors every
+// directional declaration it is given, so without the fence it would flip
+// this rotation back and the chevron would point the wrong way in Arabic.
+[dir="rtl"] .o_majal_module_card > i { transform: rotate(180deg); }
+/*!rtl:end:ignore*/
+
+@media (max-width: 575.98px) {
+    .o_majal_module_directory { padding: 20px 13px; }
+    .o_majal_module_grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,420 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Add pin"
+msgstr "إضافة علامة"
+
+#. modules: construction_boq, construction_drawing, construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Click anywhere on the sheet to place the pin — press"
+msgstr "انقر في أي مكان على اللوحة لوضع العلامة — اضغط"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__color
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__color
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__color
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__color
+msgid "Color"
+msgstr "اللون"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "Could not render the sheet PDF."
+msgstr "تعذر عرض ملف اللوحة PDF."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Create pin"
+msgstr "إنشاء علامة"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Description (optional)"
+msgstr "الوصف (اختياري)"
+
+#. modules: construction_drawing, construction_pin, construction_ui
+#. odoo-javascript
+#: model:ir.model,name:construction_pin.model_construction_drawing
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__drawing_id
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__drawing_ids
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Drawing"
+msgstr "الرسم"
+
+#. module: construction_pin
+#: model:ir.model,name:construction_pin.model_construction_pin
+msgid "Drawing Pin"
+msgstr "علامة على الرسم"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Esc"
+msgstr "خروج "
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Fit to width"
+msgstr "ملاءمة العرض"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Loading sheet…"
+msgstr "جارٍ تحميل اللوحة..."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "New pin"
+msgstr "علامة جديدة"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "No PDF sheet uploaded yet"
+msgstr "لم يتم رفع لوحة PDF بعد"
+
+#. modules: construction_pin, facility_asset, facility_floorplan
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__note
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__note
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__note
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__note
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__note
+msgid "Note"
+msgstr "الملاحظات"
+
+#. module: construction_pin
+#: model_terms:ir.ui.view,arch_db:construction_pin.view_pin_form
+msgid "Note details…"
+msgstr "تفاصيل الملاحظة..."
+
+#. module: construction_pin
+#: model_terms:ir.ui.view,arch_db:construction_pin.view_pin_form
+msgid "Open Linked Record"
+msgstr "فتح السجل المرتبط"
+
+#. modules: construction_pin, facility_floorplan
+#: model_terms:ir.ui.view,arch_db:construction_pin.view_drawing_form_pin
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_list
+msgid "Open Plan Viewer"
+msgstr "فتح عارض المخططات"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Open a sheet to view it."
+msgstr "افتح لوحة لعرضها."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Pick a drawing or floor plan, then Open Plan Viewer."
+msgstr "اختر رسماً أو مخطط طابق ثم افتح عارض المخططات."
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_ids
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_ids
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_ids
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_ids
+msgid "Pin"
+msgstr "علامة"
+
+#. modules: construction_defect, construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_construction_rfi__pin_count
+#: model:ir.model.fields,field_description:construction_pin.field_project_task__pin_count
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__pin_count
+msgid "Pin Count"
+msgstr "عدد العلامات"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pin_type
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__pin_type
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__pin_type
+msgid "Pin Type"
+msgstr "نوع العلامة"
+
+#. module: construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+msgid "Pin coordinates must be normalized between 0 and 1."
+msgstr "يجب أن تكون إحداثيات العلامة بين 0 و1."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "Pin created."
+msgstr "تم إنشاء العلامة."
+
+#. module: construction_pin
+#: model:ir.model,name:construction_pin.model_plan_pin_mixin
+msgid "Plan Pin Mixin"
+msgstr "خصائص علامات المخطط"
+
+#. module: construction_pin
+#: model:ir.actions.act_window,name:construction_pin.action_construction_pin
+msgid "Plan Pins"
+msgstr "علامات المخطط"
+
+#. modules: construction_pin, construction_ui
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_pin.action_plan_viewer
+#: model:ir.actions.client,name:construction_ui.action_workspace_plan_viewer
+#: model:ir.ui.menu,name:construction_pin.menu_plan_viewer
+#: model_terms:ir.ui.view,arch_db:construction_pin.view_drawing_form_pin
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Plan Viewer"
+msgstr "عارض المخططات"
+
+#. module: construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/drawing.py:0
+msgid "Plan Viewer — %s"
+msgstr "عارض المخططات — %s"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "Please choose a PDF file."
+msgstr "اختر ملف PDF."
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pos_x
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__pos_x
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__pos_x
+msgid "Pos X"
+msgstr "الموضع س"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__pos_y
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__pos_y
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__pos_y
+msgid "Pos Y"
+msgstr "الموضع ص"
+
+#. modules: construction_change_order, construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_event__origin__rfi
+msgid "RFI"
+msgstr "طلب معلومات"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Replace PDF"
+msgstr "استبدال PDF"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Replace the sheet PDF"
+msgstr "استبدال ملف اللوحة PDF"
+
+#. modules: construction_drawing, construction_pin, construction_submittal,
+#. construction_ui
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__revision_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__revision
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__revision_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__revision
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Revision"
+msgstr "المراجعة"
+
+#. modules: construction_pin, construction_ui
+#. odoo-javascript
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__rfi_id
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__rfi_ids
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Rfi"
+msgstr "طلب معلومات"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "Sheet uploaded."
+msgstr "تم رفع اللوحة."
+
+#. modules: construction_defect, construction_pin, construction_rfi,
+#. construction_ui, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__status
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__status
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__status
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+msgid "Status"
+msgstr "الحالة"
+
+#. modules: construction_pin, facility_floorplan
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__status_bucket
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__status_bucket
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__status_bucket
+msgid "Status Bucket"
+msgstr "مجموعة الحالة"
+
+#. modules: construction_pin, construction_planning, facility_workorder
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: model:ir.model,name:construction_planning.model_project_task
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__task_id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__task_ids
+msgid "Task"
+msgstr "المهمة"
+
+#. modules: construction_defect, construction_drawing, construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__name
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+msgid "Title"
+msgstr "اللقب "
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "Upload failed — is the file a valid PDF?"
+msgstr "فشل الرفع — هل الملف PDF صالح؟"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Upload sheet PDF"
+msgstr "رفع ملف اللوحة PDF"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid ""
+"Upload the drawing sheet to start pinning tasks,\n"
+"                            RFIs and notes on the plan."
+msgstr ""
+"ارفع لوحة الرسم لبدء وضع علامات المهام وطلبات المعلومات والملاحظات على "
+"المخطط."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Zoom"
+msgstr "تحجيم "
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Zoom in"
+msgstr "تكبير"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Zoom out"
+msgstr "تصغير"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "e.g. Cracked tile at column C3"
+msgstr "مثال: بلاطة متشققة عند العمود C3"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "to cancel."
+msgstr "للإلغاء."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Photo (optional)"
+msgstr "صورة (اختياري)"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Photo attached to this pin"
+msgstr "صورة مرفقة بهذا المؤشر"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Remove"
+msgstr "إزالة"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Selected photo"
+msgstr "الصورة المختارة"
+
+#. module: construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+msgid "That file is not an image Majal can read. Use a JPEG or PNG."
+msgstr "هذا الملف ليس صورة يمكن لمجال قراءتها. استخدم صيغة JPEG أو PNG."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "That file is not an image."
+msgstr "هذا الملف ليس صورة."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.js:0
+msgid "That photo is larger than %sMB."
+msgstr "حجم الصورة يتجاوز %s ميغابايت."
+
+#. module: construction_pin
+#. odoo-python
+#: code:addons/construction_pin/models/plan_pin_mixin.py:0
+msgid "That photograph is larger than the %(limit)s MB limit."
+msgstr "حجم الصورة يتجاوز الحد المسموح به وهو %(limit)s ميغابايت."
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "This pin has a photo"
+msgstr "هذا المؤشر يحتوي على صورة"
+
+#. module: construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+msgid "Upload the drawing sheet to start pinning tasks, RFIs and notes on the plan."
+msgstr "ارفع لوحة الرسم لتبدأ بتثبيت المهام وطلبات المعلومات والملاحظات على المخطط."

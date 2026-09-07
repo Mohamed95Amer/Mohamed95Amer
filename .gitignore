@@ -12,3 +12,14 @@ dist
 .turbo
 .eslintcache
 coverage
+
+# construction-erp
+construction-erp/vendor/
+construction-erp/.env
+__pycache__/
+*.pyc
+
+# BIM viewer libraries: fetched by scripts/fetch-bim-libs.sh, not committed.
+# web-ifc's browser bundle alone is 6 MB.
+construction-erp/custom-addons/construction_bim/static/lib/web-ifc/
+construction-erp/custom-addons/construction_bim/static/lib/three/

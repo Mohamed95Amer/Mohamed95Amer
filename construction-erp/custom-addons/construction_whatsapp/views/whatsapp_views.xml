@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Account -->
+    <record id="view_whatsapp_account_form" model="ir.ui.view">
+        <field name="name">whatsapp.account.form</field>
+        <field name="model">whatsapp.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_test_connection" type="object"
+                            string="Test Connection" class="btn-primary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,connected"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_messages" type="object"
+                                icon="fa-comments" class="oe_stat_button">
+                            <field name="message_count" string="Messages"
+                                   widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Majal site number"/></h1>
+                    </div>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="state != 'error'">
+                        <field name="last_error" nolabel="1"/>
+                    </div>
+                    <group>
+                        <group string="Meta Configuration">
+                            <field name="phone_number_id"/>
+                            <field name="business_account_id"/>
+                            <field name="api_version"/>
+                        </group>
+                        <group string="Credentials">
+                            <field name="access_token" password="True"
+                                   groups="base.group_system"/>
+                            <field name="webhook_verify_token"
+                                   groups="base.group_system"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Point Meta's webhook at
+                        <code>https://your-odoo-domain/whatsapp/webhook</code>
+                        and use the verify token above.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_whatsapp_account_list" model="ir.ui.view">
+        <field name="name">whatsapp.account.list</field>
+        <field name="model">whatsapp.account</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="phone_number_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'connected'"
+                       decoration-danger="state == 'error'"/>
+                <field name="message_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_whatsapp_account" model="ir.actions.act_window">
+        <field name="name">WhatsApp Accounts</field>
+        <field name="res_model">whatsapp.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Connect a WhatsApp number</p>
+            <p>
+                You need a Meta Business account, a verified business and a phone
+                number dedicated to the API. Messages you send are billed by Meta
+                per template; replies within 24 hours are free.
+            </p>
+        </field>
+    </record>
+
+    <!-- Template -->
+    <record id="view_whatsapp_template_form" model="ir.ui.view">
+        <field name="name">whatsapp.template.form</field>
+        <field name="model">whatsapp.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="template_name"/>
+                            <field name="lang_code"/>
+                            <field name="category"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True}"/>
+                            <field name="body_params"
+                                   placeholder="reference, project_id.name, date_required"/>
+                        </group>
+                    </group>
+                    <group string="Resolves to">
+                        <field name="preview" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_whatsapp_template_list" model="ir.ui.view">
+        <field name="name">whatsapp.template.list</field>
+        <field name="model">whatsapp.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="template_name"/>
+                <field name="lang_code"/>
+                <field name="category"/>
+                <field name="model_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_whatsapp_template" model="ir.actions.act_window">
+        <field name="name">WhatsApp Templates</field>
+        <field name="res_model">whatsapp.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Message -->
+    <record id="view_whatsapp_message_list" model="ir.ui.view">
+        <field name="name">whatsapp.message.list</field>
+        <field name="model">whatsapp.message</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'failed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="create_date" string="When"/>
+                <field name="direction"/>
+                <field name="partner_id"/>
+                <field name="phone"/>
+                <field name="record_name" string="About"/>
+                <field name="body"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('delivered', 'read')"
+                       decoration-danger="state == 'failed'"
+                       decoration-warning="state == 'queued'"/>
+                <field name="error" optional="hide"/>
+                <field name="attempts" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_whatsapp_message_form" model="ir.ui.view">
+        <field name="name">whatsapp.message.form</field>
+        <field name="model">whatsapp.message</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_retry" type="object" string="Retry"
+                            invisible="state != 'failed'" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'queued'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="direction"/>
+                            <field name="partner_id"/>
+                            <field name="phone"/>
+                            <field name="template_id"/>
+                        </group>
+                        <group>
+                            <field name="account_id"/>
+                            <field name="record_name" string="About"/>
+                            <field name="sent_on"/>
+                            <field name="wa_message_id"/>
+                            <field name="attempts"/>
+                        </group>
+                    </group>
+                    <group string="Message">
+                        <field name="body" nolabel="1"/>
+                    </group>
+                    <group string="Error" invisible="not error">
+                        <field name="error" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_whatsapp_message_search" model="ir.ui.view">
+        <field name="name">whatsapp.message.search</field>
+        <field name="model">whatsapp.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="phone"/>
+                <field name="partner_id"/>
+                <field name="record_name"/>
+                <filter name="failed" string="Failed"
+                        domain="[('state', '=', 'failed')]"/>
+                <filter name="queued" string="Waiting to send"
+                        domain="[('state', '=', 'queued')]"/>
+                <filter name="incoming" string="Replies"
+                        domain="[('direction', '=', 'in')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Recipient"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_whatsapp_message" model="ir.actions.act_window">
+        <field name="name">WhatsApp Messages</field>
+        <field name="res_model">whatsapp.message</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing sent yet</p>
+            <p>
+                Messages are queued by the events that cause them — an RFI
+                landing in someone's court, a defect assigned, an SLA about to
+                breach — and sent every five minutes.
+            </p>
+        </field>
+    </record>
+</odoo>

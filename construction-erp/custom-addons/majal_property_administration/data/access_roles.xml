@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The property half of each shipped level. Managers get the manager
+         group, everyone below gets the user group, matching how the
+         construction and facilities columns are graded. -->
+    <record id="majal_administration.role_platform_owner" model="majal.access.role">
+        <field name="real_estate_group_ids"
+               eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="majal_administration.role_company_admin" model="majal.access.role">
+        <field name="real_estate_group_ids"
+               eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="majal_administration.role_operations_manager" model="majal.access.role">
+        <field name="real_estate_group_ids"
+               eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="majal_administration.role_manager" model="majal.access.role">
+        <field name="real_estate_group_ids"
+               eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_manager')])]"/>
+    </record>
+    <record id="majal_administration.role_supervisor" model="majal.access.role">
+        <field name="real_estate_group_ids"
+               eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_user')])]"/>
+    </record>
+    <record id="majal_administration.role_field_user" model="majal.access.role">
+        <field name="real_estate_group_ids"
+               eval="[(6, 0, [ref('majal_real_estate.group_majal_real_estate_user')])]"/>
+    </record>
+</odoo>

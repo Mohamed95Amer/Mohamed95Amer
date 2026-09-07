@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="task_excavation" model="project.task">
+        <field name="name">Excavation &amp; shoring</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="wbs_code">1.1</field>
+        <field name="planned_duration">10</field>
+        <field name="planned_start">2026-02-02 08:00:00</field>
+        <field name="planned_finish">2026-02-13 17:00:00</field>
+    </record>
+    <record id="task_raft" model="project.task">
+        <field name="name">Raft foundation</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="wbs_code">1.2</field>
+        <field name="planned_duration">15</field>
+        <field name="planned_start">2026-02-16 08:00:00</field>
+        <field name="planned_finish">2026-03-06 17:00:00</field>
+    </record>
+    <record id="task_columns" model="project.task">
+        <field name="name">Columns &amp; cores to L10</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="wbs_code">2.1</field>
+        <field name="planned_duration">20</field>
+        <field name="planned_start">2026-03-09 08:00:00</field>
+        <field name="planned_finish">2026-04-03 17:00:00</field>
+    </record>
+    <record id="task_super_milestone" model="project.task">
+        <field name="name">Superstructure to L10 complete</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="wbs_code">2.M</field>
+        <field name="is_milestone" eval="True"/>
+        <field name="planned_duration">0</field>
+        <field name="planned_start">2026-04-03 17:00:00</field>
+        <field name="planned_finish">2026-04-03 17:00:00</field>
+    </record>
+
+    <record id="link_exc_raft" model="construction.task.link">
+        <field name="predecessor_id" ref="task_excavation"/>
+        <field name="successor_id" ref="task_raft"/>
+        <field name="link_type">FS</field>
+    </record>
+    <record id="link_raft_columns" model="construction.task.link">
+        <field name="predecessor_id" ref="task_raft"/>
+        <field name="successor_id" ref="task_columns"/>
+        <field name="link_type">FS</field>
+    </record>
+    <record id="link_columns_milestone" model="construction.task.link">
+        <field name="predecessor_id" ref="task_columns"/>
+        <field name="successor_id" ref="task_super_milestone"/>
+        <field name="link_type">FS</field>
+    </record>
+
+    <!-- Run the CPM engine so the demo shows computed float / critical path. -->
+    <function model="project.project" name="action_reschedule">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
+
+    <!-- Freeze that as the baseline (the Primavera 'target'), then let the
+         foundation overrun by a week and reschedule again. A programme with a
+         baseline and no variance demonstrates nothing: this leaves the demo
+         showing real drift, which is what the Gantt exists to make visible. -->
+    <function model="project.project" name="action_set_baseline">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
+
+    <function model="project.task" name="write">
+        <value eval="[ref('task_raft')]"/>
+        <value eval="{'planned_duration': 20}"/>
+    </function>
+
+    <function model="project.project" name="action_reschedule">
+        <value eval="[ref('construction_base.project_demo_alnoor')]"/>
+    </function>
+</odoo>

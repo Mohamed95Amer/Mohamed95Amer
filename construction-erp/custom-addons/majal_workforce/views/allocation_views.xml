@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_allocation_list" model="ir.ui.view">
+        <field name="name">majal.allocation.list</field>
+        <field name="model">majal.allocation</field>
+        <field name="arch" type="xml">
+            <list string="Allocations" sample="1"
+                  decoration-muted="state == 'ended'"
+                  decoration-info="state == 'planned'">
+                <field name="employee_id"/>
+                <field name="role_id"/>
+                <field name="project_id" optional="show"/>
+                <field name="location_id" optional="show"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="allocation_percent" optional="show"/>
+                <field name="user_id" optional="hide"/>
+                <field name="is_overallocated" optional="hide"/>
+                <field name="is_retained" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-info="state == 'planned'"/>
+                <field name="company_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_allocation_form" model="ir.ui.view">
+        <field name="name">majal.allocation.form</field>
+        <field name="model">majal.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Allocation">
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not is_overallocated">
+                        This person is committed to more than a full week over
+                        these dates. That is allowed — it is shown so it is a
+                        decision rather than a surprise.
+                    </div>
+                    <div class="alert alert-info" role="status"
+                         invisible="not is_retained">
+                        This allocation has ended, but their access is being
+                        kept because they still hold approvals on this work.
+                        Sign or hand those over and the access lapses on its
+                        own.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="user_id" readonly="1"
+                                   invisible="not user_id"/>
+                            <div class="text-muted" colspan="2"
+                                 invisible="user_id">
+                                No system account — recorded on the work, with
+                                nothing to sign in to.
+                            </div>
+                            <field name="role_id"/>
+                        </group>
+                        <group>
+                            <field name="target_kind" invisible="1"/>
+                            <field name="project_id"
+                                   readonly="location_id"/>
+                            <field name="location_id"
+                                   readonly="project_id"/>
+                            <field name="cascade_children"
+                                   invisible="not location_id"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                        <group string="Load and access">
+                            <field name="allocation_percent"/>
+                            <field name="grants_access"/>
+                            <field name="is_overallocated" invisible="1"/>
+                            <field name="is_retained" invisible="1"/>
+                            <field name="origin" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="e.g. covering mobilisation only"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_majal_allocation_search" model="ir.ui.view">
+        <field name="name">majal.allocation.search</field>
+        <field name="model">majal.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="project_id"/>
+                <field name="location_id"/>
+                <field name="role_id"/>
+                <filter name="filter_active" string="On the work now"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="filter_planned" string="Starting later"
+                        domain="[('state', '=', 'planned')]"/>
+                <filter name="filter_ending" string="Ending within 30 days"
+                        domain="[('date_end', '!=', False),
+                                 ('date_end', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                                 ('date_end', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="filter_over" string="Over-allocated"
+                        domain="[('is_overallocated', '=', True)]"/>
+                <filter name="filter_retained" string="Held for approvals"
+                        domain="[('is_retained', '=', True)]"/>
+                <filter name="filter_no_login" string="No system account"
+                        domain="[('user_id', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_location" string="Location"
+                            context="{'group_by': 'location_id'}"/>
+                    <filter name="group_employee" string="Person"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_role" string="Role"
+                            context="{'group_by': 'role_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_majal_allocations" model="ir.actions.act_window">
+        <field name="name">Allocations</field>
+        <field name="res_model">majal.allocation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Put people on the work</p>
+            <p>An allocation says who is on a project or a site, in what role,
+               over what dates. For anyone with a login it is also what lets
+               them see that work — so the team list and the access list are
+               the same list, kept in one place.</p>
+        </field>
+    </record>
+
+    <record id="view_majal_allocation_role_list" model="ir.ui.view">
+        <field name="name">majal.allocation.role.list</field>
+        <field name="model">majal.allocation.role</field>
+        <field name="arch" type="xml">
+            <list string="Allocation Roles" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="scope"/>
+                <field name="is_lead"/>
+                <field name="grants_access"/>
+                <field name="default_percent"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_majal_allocation_roles" model="ir.actions.act_window">
+        <field name="name">Allocation Roles</field>
+        <field name="res_model">majal.allocation.role</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

@@ -1,0 +1,4558 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* construction_ui
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "%(total)s open, %(urgent)s of them late."
+msgstr "%(total)s مفتوح، منها %(urgent)s متأخر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s SLA breaches"
+msgstr "%s تجاوز لمستوى الخدمة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "%s apps"
+msgstr "%s تطبيقات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s at risk"
+msgstr "%s معرضة للخطر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s certified"
+msgstr "%s مصدق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s days worst slip"
+msgstr "أكبر تأخير %s يومًا"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "%s open, none late."
+msgstr "%s مفتوح، ولا شيء متأخر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "%s overdue RFIs"
+msgstr "%s طلب معلومات متأخر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "100% progressed"
+msgstr "مكتمل 100٪"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_kanban
+msgid "<i class=\"fa fa-building-o me-1\" title=\"Project\"/>"
+msgstr "<i class=\"fa fa-building-o me-1\" title=\"المشروع\"/>"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.majal_login_layout
+msgid "<span class=\"o_majal_login_wordmark\">\n                                    <strong>Majal</strong>\n                                    <small>Construction &amp; Facilities</small>\n                                </span>"
+msgstr "<span class=\"o_majal_login_wordmark\">\n                                    <strong>مجال</strong>\n                                    <small>الإنشاءات والمرافق</small>\n                                </span>"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "A Project Manager or the named approver must decide this document."
+msgstr "يجب أن يبت في هذا المستند مدير المشروع أو المعتمد المُسمّى."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "A Project Manager or the named approver must sign off this drawing."
+msgstr "يجب أن يعتمد هذا الرسم مدير المشروع أو المعتمد المُسمّى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "A competent person confirms controls and signs."
+msgstr "يؤكد شخص مؤهل الضوابط ويوقّع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "A project-aware landing page for daily records, structured forms, inspections, quantities and field observations."
+msgstr "واجهة مرتبطة بالمشاريع للسجلات اليومية والنماذج والفحوصات والكميات والملاحظات الميدانية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "A single view of active projects, delivery activity and recently updated project records."
+msgstr "شاشة موحدة للمشاريع النشطة وأنشطة التنفيذ وآخر تحديثات سجلات المشاريع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "A work order takes them out, and cost follows the stock."
+msgstr "يخرجها أمر العمل، وتتبع التكلفة المخزون."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "ASSET INTELLIGENCE"
+msgstr "ذكاء الأصول"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "ASSURANCE & CLOSE-OUT"
+msgstr "الضمان والإغلاق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "ASSURANCE WORKFLOW"
+msgstr "سير عمل الضمان"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Across %s locations"
+msgstr "عبر %s مواقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Act"
+msgstr "إجراء"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_needaction
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Actions open"
+msgstr "إجراءات مفتوحة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Active records"
+msgstr "السجلات النشطة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_state
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_type_icon
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Added recently"
+msgstr "أُضيف مؤخراً"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Added to the contract"
+msgstr "أُضيف إلى العقد"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+msgid "Additions"
+msgstr "إضافات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Agreed, open for variation"
+msgstr "متفق عليه، مفتوح للتغيير"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__amount
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "An open RFI sits on them"
+msgstr "عليها طلب معلومات مفتوح"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Analytical Workbooks"
+msgstr "مصنفات التحليل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Answered"
+msgstr "تمت الإجابة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/sidebar/majal_sidebar.xml:0
+msgid "Applications"
+msgstr "التطبيقات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__approval_state
+msgid "Approval State"
+msgstr "حالة الموافقة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Approval Trail"
+msgstr "سجل الاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/systray/approvals_systray.xml:0
+msgid "Approvals"
+msgstr "الاعتمادات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Approve commercial documents and payment outcomes."
+msgstr "اعتمد المستندات التجارية ونتائج الدفعات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Approve the BOQ: contract value and target cost."
+msgstr "اعتمد جدول الكميات: قيمة العقد والتكلفة المستهدفة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__approved
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__approved_by_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__approved_by_id
+msgid "Approved By"
+msgstr "اعتمد بواسطة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__approved_date
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__approved_date
+msgid "Approved Date"
+msgstr "تاريخ الاعتماد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__approver_id
+msgid "Approver"
+msgstr "المعتمِد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Architectural"
+msgstr "معماري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Archived, not generating"
+msgstr "مؤرشف، لا يولّد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Assess cost, time and supporting information."
+msgstr "قيّم التكلفة والوقت والمعلومات الداعمة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_meters
+msgid "Asset Meters"
+msgstr "عدادات الأصول"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_assets
+msgid "Asset Portfolio"
+msgstr "محفظة الأصول"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Asset dashboard"
+msgstr "لوحة الأصول"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Assets, preventive maintenance, work orders and floor plans in one operational view."
+msgstr "الأصول والصيانة الوقائية وأوامر العمل ومخططات الطوابق في شاشة تشغيلية واحدة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Assign observations and verify corrective action."
+msgstr "أسند الملاحظات وتحقق من الإجراء التصحيحي."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Assign ownership and move the work forward."
+msgstr "أسند الملكية وادفع العمل إلى الأمام."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Assign responsibility and track corrective work."
+msgstr "أسند المسؤولية وتابع أعمال التصحيح."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Assign the team and complete the maintenance work."
+msgstr "أسند الفريق وأكمل أعمال الصيانة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Attach RFIs, defects, tasks and bill items to elements."
+msgstr "أرفق طلبات المعلومات والملاحظات والمهام وبنود الجدول بالعناصر."
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_attachment_count
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Authorise high-risk activity for a stated window, once its precautions are confirmed."
+msgstr "صرّح بالنشاط عالي الخطورة لفترة محددة، بعد تأكيد احتياطاته."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Available now"
+msgstr "متاح الآن"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+msgid "Awaiting Decision"
+msgstr "بانتظار القرار"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+msgid "Awaiting Sign-off"
+msgstr "بانتظار الاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awaiting answer"
+msgstr "بانتظار الرد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awaiting approval"
+msgstr "بانتظار الموافقة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awaiting certification"
+msgstr "بانتظار الاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awaiting payment"
+msgstr "بانتظار الدفع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awaiting sign-off"
+msgstr "بانتظار الاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Award"
+msgstr "الترسية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Award subcontracts and certify progress both ways."
+msgstr "أرسِ مقاولات الباطن واعتمد التقدم في الاتجاهين."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Awarded"
+msgstr "تم الترسية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awarded and running"
+msgstr "مُرسى وجارٍ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Awarded over budget"
+msgstr "أُرسي فوق الموازنة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_bim
+msgid "BIM Models"
+msgstr "موديلات نمذجة معلومات البناء"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "BOQs"
+msgstr "جداول الكميات"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "BOQs & Estimates"
+msgstr "جداول الكميات والتقديرات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/sidebar/majal_sidebar.xml:0
+msgid "Back"
+msgstr "رجوع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__ball_in_court_id
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Baseline"
+msgstr "خط الأساس"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_event_search
+msgid "Became a Variation"
+msgstr "أصبح أمر تغيير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Behind baseline"
+msgstr "متأخر عن الخط الأساسي"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+msgid "Being Priced"
+msgstr "قيد التسعير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Being carried out"
+msgstr "قيد التنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Being prepared"
+msgstr "قيد الإعداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Being priced"
+msgstr "قيد التسعير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Being rectified"
+msgstr "قيد المعالجة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Below minimum"
+msgstr "دون الحد الأدنى"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Bidder"
+msgstr "المتقدم"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__bid_request
+msgid "Bidding Request"
+msgstr "طلب تقديم عرض"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Bids in, decision pending"
+msgstr "العروض وردت، القرار معلق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_boq
+msgid "Bill of Quantities"
+msgstr "جدول الكميات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+msgid "Billed, Unpaid"
+msgstr "مفوتر وغير مدفوع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Blocked elements"
+msgstr "عناصر معطلة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__boq_ids
+msgid "Boq"
+msgstr "جدول الكميات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__boq_count
+msgid "Boq Count"
+msgstr "عدد جداول الكميات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Brief"
+msgstr "التوعية"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Budget Cost"
+msgstr "التكلفة التقديرية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Build"
+msgstr "إعداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Build your personal Majal workspace"
+msgstr "أنشئ مساحة عملك الشخصية في مجال"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Bulk Upload Drawings"
+msgstr "رفع الرسومات بالجملة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "COMMERCIAL"
+msgstr "التجاري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "COMMERCIAL GOVERNANCE"
+msgstr "الحوكمة التجارية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "COMMERCIAL POSITION"
+msgstr "الموقف التجاري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "CONDITION MONITORING"
+msgstr "مراقبة الحالة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "CONNECTED WORKSPACES"
+msgstr "مساحات العمل المرتبطة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "CONSTRUCTION"
+msgstr "الإنشاءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "CONTRACT MARGIN"
+msgstr "هامش العقد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "COST & CONTRACT"
+msgstr "التكلفة والعقد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "COST BASELINE"
+msgstr "خط أساس التكلفة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Calendar-driven"
+msgstr "حسب التقويم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Cannot start yet"
+msgstr "لا يمكن البدء بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture"
+msgstr "تسجيل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture change orders, evaluate impact and maintain an auditable variation workflow."
+msgstr "التقط أوامر التغيير، وقيّم أثرها، واحتفظ بمسار تغيير قابل للتدقيق."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture current-period quantities and cumulative progress."
+msgstr "سجّل كميات الفترة الحالية والتقدم التراكمي."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture identity, location, ownership and warranty data."
+msgstr "سجّل الهوية والموقع والملكية وبيانات الضمان."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture location, severity, trade and evidence."
+msgstr "سجّل الموقع ودرجة الخطورة والتخصص والأدلة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture tender, contract, quantities, costs and target margin."
+msgstr "سجّل العطاء والعقد والكميات والتكاليف والهامش المستهدف."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture the event while the detail is fresh."
+msgstr "سجّل الواقعة بينما التفاصيل حديثة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Capture who attended, signed on site."
+msgstr "سجّل من حضر ووقّع في الموقع."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+msgid "Carries Back-charges"
+msgstr "عليه خصومات مرتدة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+msgid "Carries Variations"
+msgstr "عليه أوامر تغيير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Carry"
+msgstr "الترحيل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Carry a record of some kind"
+msgstr "يحمل سجلاً من نوع ما"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Certified"
+msgstr "المعتمد"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+msgid "Certified, Not Billed"
+msgstr "معتمد وغير مفوتر"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+msgid "Certified, Not Invoiced"
+msgstr "معتمد ولم تصدر فاتورته"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Certify"
+msgstr "اعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_change_orders
+msgid "Change Control"
+msgstr "إدارة التغييرات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Choose a dashboard"
+msgstr "اختر لوحة إدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Choose a template and define the inspection scope."
+msgstr "اختر قالباً وحدد نطاق الفحص."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Choose where you want to work"
+msgstr "اختر مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Circulate the minutes with owners and dates."
+msgstr "عمّم المحضر مع المسؤولين والتواريخ."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Circulated, actions running"
+msgstr "عُمّم، والإجراءات جارية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Civil & external"
+msgstr "الأعمال المدنية والخارجية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Cleared for construction"
+msgstr "معتمد للتنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Close delivery and transition assets into operations."
+msgstr "أغلق مرحلة التنفيذ وانقل الأصول إلى التشغيل."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Close the corrective actions and the loop."
+msgstr "أغلق الإجراءات التصحيحية واستكمل الدورة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Close the record with a traceable decision and sign-off."
+msgstr "أغلق السجل بقرار واعتماد قابلين للتتبع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__closed
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Closed out"
+msgstr "مغلق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Closing out and under warranty"
+msgstr "الإقفال وتحت الضمان"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Commercial & BOQ"
+msgstr "التجاري وجداول الكميات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Commercial & Responsibility"
+msgstr "التجاري والمسؤولية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_commercial_hub
+msgid "Commercial Control"
+msgstr "الرقابة التجارية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Commercial Exposure"
+msgstr "الموقف التجاري"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:construction_ui.menu_commercial_overview
+msgid "Commercial Overview"
+msgstr "نظرة عامة تجارية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Commit"
+msgstr "تعاقد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Commitments exceed the budget"
+msgstr "الالتزامات تتجاوز الموازنة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Committed above the estimate"
+msgstr "التزام فوق التقدير"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Compare contract value, margin, programme, quality, safety, and material performance across every project."
+msgstr "قارن قيمة العقود والهامش والبرنامج والجودة والسلامة وأداء المواد عبر جميع المشاريع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Compare earned margin with the margin tendered."
+msgstr "قارن الهامش المحقق بالهامش المطروح في المناقصة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Compare line by line — totals hide unpriced scope."
+msgstr "قارن بنداً ببند — الإجماليات تخفي نطاقاً غير مُسعّر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Complete"
+msgstr "مكتمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Complete checks, evidence and field observations."
+msgstr "أكمل الفحوصات والأدلة والملاحظات الميدانية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Complete the record with a clear audit trail."
+msgstr "أكمل السجل بمسار تدقيق واضح."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Complete workspace"
+msgstr "كامل مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Completed packages"
+msgstr "الحزم المكتملة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Completed projects"
+msgstr "المشاريع المكتملة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Confirm priority, asset, location and required response."
+msgstr "أكد الأولوية والأصل والموقع والاستجابة المطلوبة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Confirm the answer resolves the field requirement."
+msgstr "تأكد أن الإجابة تعالج احتياج الموقع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Connect tender documents, quotations, sales orders, BOQs, change and payment control."
+msgstr "اربط مستندات العطاءات وعروض الأسعار وأوامر البيع وجداول الكميات والتغييرات والدفعات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Connect work orders, PM plans, meters and job plans."
+msgstr "اربط أوامر العمل وخطط الصيانة الوقائية والعدادات وخطط العمل."
+
+#. module: construction_ui
+#: model:ir.model,name:construction_ui.model_construction_defect
+msgid "Construction Defect / Punch Item"
+msgstr "عيب إنشائي / ملاحظة استلام"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Construction Operations"
+msgstr "عمليات الإنشاءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Consume"
+msgstr "الصرف"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Consumed"
+msgstr "المستهلك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Consumption and waste against the priced quantity."
+msgstr "الاستهلاك والهدر مقابل الكمية المُسعّرة."
+
+#. module: construction_ui
+#: model:ir.model,name:construction_ui.model_res_partner
+msgid "Contact"
+msgstr "جهة الاتصال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Continue without losing context"
+msgstr "تابع العمل دون فقدان السياق"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__contract
+msgid "Contract"
+msgstr "العقد"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Contract Amount"
+msgstr "قيمة العقد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Contract dates to hit"
+msgstr "تواريخ العقد الواجب بلوغها"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Contract portfolio"
+msgstr "محفظة العقود"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Control"
+msgstr "رقابة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Control drawing metadata, revisions and the current approved information set."
+msgstr "اضبط بيانات الرسومات ومراجعاتها وحزمة المعلومات المعتمدة الحالية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Control inspections, quality assurance forms, snags, observations and technical submittals from one place."
+msgstr "أدر الفحوصات ونماذج ضمان الجودة والملاحظات والتقديمات الفنية من مكان واحد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Control measured scope, quantities, rates and the commercial baseline for each project."
+msgstr "اضبط النطاق المقاس والكميات والأسعار وخط الأساس التجاري لكل مشروع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate"
+msgstr "تنسيق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate RFIs, submittals and drawing revision comments."
+msgstr "نسّق طلبات المعلومات والتقديمات وملاحظات مراجعات الرسومات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate drawings, revisions, RFIs and submittals with a controlled approval trail."
+msgstr "نسّق الرسومات والمراجعات وطلبات المعلومات والتقديمات ضمن سجل اعتماد مُحكم."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate engineering, site and commercial workstreams."
+msgstr "نسّق مسارات الهندسة والموقع والأعمال التجارية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate ownership, review and formal response."
+msgstr "نسّق المسؤولية والمراجعة والرد الرسمي."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate reviewers, comments and response cycles."
+msgstr "نسّق المراجعين والملاحظات ودورات الرد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Coordinate technical submissions, multi-reviewer decisions and approval status."
+msgstr "نسّق التقديمات الفنية وقرارات المراجعين وحالة الاعتماد."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Coordination"
+msgstr "التنسيق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_cvr
+msgid "Cost Value Reconciliation"
+msgstr "مطابقة التكلفة بالقيمة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Counts towards LTIFR"
+msgstr "يُحتسب ضمن معدل إصابات الوقت الضائع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Cover"
+msgstr "التغطية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Cover the topic with the crew before work starts."
+msgstr "غطِّ الموضوع مع الطاقم قبل بدء العمل."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Create a new drawing revision instead of replacing a submitted sheet."
+msgstr "أنشئ إصداراً جديداً من الرسم بدلاً من استبدال لوحة تم تقديمها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Create and classify the operational record."
+msgstr "أنشئ السجل التشغيلي وصنّفه."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Create new"
+msgstr "إنشاء جديد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Create reusable maintenance methods, tasks, labour guidance and parts requirements."
+msgstr "أنشئ طرق صيانة ومهام وإرشادات عمالة ومتطلبات قطع قابلة لإعادة الاستخدام."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Create the drawing record and classify its discipline."
+msgstr "أنشئ سجل الرسم وحدد تخصصه."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Create the first record to start this Majal workspace."
+msgstr "أنشئ أول سجل لبدء مساحة العمل هذه في مجال."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Create the invoice and track payment completion."
+msgstr "أنشئ الفاتورة وتابع إكمال السداد."
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Critical & high"
+msgstr "حرج ومرتفع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Critical and high risk"
+msgstr "خطورة حرجة ومرتفعة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+msgid "Current"
+msgstr "الحالي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Current operating set"
+msgstr "السجلات التشغيلية الحالية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "DELIVERY PLANNING"
+msgstr "تخطيط التنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "DESIGN COORDINATION"
+msgstr "تنسيق التصميم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "DESIGN INFORMATION"
+msgstr "معلومات التصميم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_daily_logs
+msgid "Daily Site Logs"
+msgstr "السجلات اليومية للموقع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__decision_note
+msgid "Decision Note"
+msgstr "ملاحظات القرار"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/defect_workorder.py:0
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__defect_ids
+msgid "Defect"
+msgstr "عيب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_defects
+msgid "Defects & Punch List"
+msgstr "العيوب وقائمة الملاحظات"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Defects assigned to me"
+msgstr "العيوب المسندة إليّ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Define the subcontract scope, value and commercial terms."
+msgstr "حدد نطاق عقد المقاول الباطن وقيمته وشروطه التجارية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Deliver"
+msgstr "التنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Deliveries land in the project's site store."
+msgstr "تصل التوريدات إلى مستودع موقع المشروع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Describe the information gap and reference project context."
+msgstr "صِف نقص المعلومات واربطه بسياق المشروع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Describe the work, the window and the precautions."
+msgstr "صف العمل والفترة والاحتياطات."
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__description
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Description"
+msgstr "الوصف"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__display_name
+msgid "Display Name"
+msgstr "اسم العرض"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Document"
+msgstr "المستند"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__date_document
+msgid "Document Date"
+msgstr "تاريخ المستند"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__document_type
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+msgid "Document Type"
+msgstr "نوع المستند"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Document decisions can only be changed through workflow actions."
+msgstr "لا يمكن تغيير قرارات المستند إلا من خلال إجراءات سير العمل."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Document title"
+msgstr "عنوان المستند"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Documents"
+msgstr "المستندات"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model:ir.actions.act_window,name:construction_ui.action_majal_project_documents
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__majal_document_ids
+#: model:ir.ui.menu,name:construction_ui.menu_majal_project_documents
+msgid "Documents & Commercial"
+msgstr "المستندات والأعمال التجارية"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Documents & Tender"
+msgstr "المستندات والعطاءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Done outside the scope of cover"
+msgstr "أُنجز خارج نطاق التغطية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.model.fields.selection,name:construction_ui.selection__construction_drawing_revision__approval_state__draft
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__draft
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__drawing_ids
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+msgid "Drawing"
+msgstr "الرسم"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__drawing_count
+msgid "Drawing Count"
+msgstr "عدد الرسومات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_drawings
+msgid "Drawing Register"
+msgstr "سجل الرسومات"
+
+#. module: construction_ui
+#: model:ir.model,name:construction_ui.model_construction_drawing_revision
+msgid "Drawing Revision"
+msgstr "مراجعة رسم"
+
+#. module: construction_ui
+#: model:ir.actions.act_window,name:construction_ui.action_majal_drawing_revisions
+msgid "Drawing Revisions & Sign-off"
+msgstr "مراجعات الرسومات والاعتماد"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Drawing sign-off can only be changed through workflow actions."
+msgstr "لا يمكن تغيير اعتماد الرسم إلا من خلال إجراءات سير العمل."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Drawings"
+msgstr "الرسومات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Due for renewal"
+msgstr "مستحق التجديد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Each view is filtered by your company, role, and assigned work."
+msgstr "يُرشَّح كل عرض حسب شركتك ودورك والأعمال المسندة إليك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Ends within 60 days"
+msgstr "ينتهي خلال 60 يوماً"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Engineering"
+msgstr "الهندسة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_engineering_hub
+msgid "Engineering & Information"
+msgstr "الهندسة وإدارة المعلومات"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Engineering Approvals"
+msgstr "الاعتمادات الهندسية"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__engineering_item_count
+msgid "Engineering Item Count"
+msgstr "عدد السجلات الهندسية"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:construction_ui.menu_engineering_overview
+msgid "Engineering Overview"
+msgstr "نظرة عامة هندسية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Entitlement not yet delivered"
+msgstr "الاستحقاق لم يُسلَّم بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Establish the root cause, not the culprit."
+msgstr "حدّد السبب الجذري، لا تبحث عن مُلام."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Evaluate"
+msgstr "تقييم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Evaluate changes, commitments and measured progress."
+msgstr "قيّم التغييرات والالتزامات والتقدم المقاس."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Every workspace opens directly into the records your team uses most."
+msgstr "تفتح كل مساحة عمل مباشرة على السجلات الأكثر استخداماً لفريقك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Execute"
+msgstr "تنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Executive Portfolio"
+msgstr "محفظة الإدارة التنفيذية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Expired"
+msgstr "منتهي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "FACILITIES"
+msgstr "إدارة المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "FIELD OPERATIONS"
+msgstr "عمليات الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Facilities Operations"
+msgstr "عمليات إدارة المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Facilities overview"
+msgstr "نظرة عامة على المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_floor_plans
+msgid "Facility Floor Plans"
+msgstr "مخططات طوابق المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Facility assets"
+msgstr "أصول المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Failed, needs re-inspection"
+msgstr "فشل، يحتاج إعادة معاينة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_failure_codes
+msgid "Failure Knowledge"
+msgstr "معرفة الأعطال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Failure hurts most"
+msgstr "العطل هنا الأشد أثراً"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Fee against absorbed cost, with recoverable work separated."
+msgstr "الأتعاب مقابل التكلفة المستوعبة، مع فصل العمل القابل للاسترداد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Feed incident lessons into the next talk."
+msgstr "أدخل الدروس المستفادة من الحوادث في الجلسة التالية."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Field Quality"
+msgstr "جودة الموقع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__attachment_ids
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Files & Attachments"
+msgstr "الملفات والمرفقات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Find assets and maintenance activity in their physical building context."
+msgstr "اعثر على الأصول وأنشطة الصيانة ضمن سياقها الفعلي في المبنى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Finishing later than planned"
+msgstr "ينتهي متأخراً عن المخطط"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Fitted to assets"
+msgstr "مركّب على الأصول"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_follower_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_partner_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء)"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_type_icon
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Forecast below the tendered margin"
+msgstr "التوقع دون هامش المناقصة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_inspections
+msgid "Forms & Inspections"
+msgstr "النماذج وعمليات التفتيش"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Forms, submittals & snags"
+msgstr "النماذج والتقديمات والملاحظات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Frame and foundations"
+msgstr "الهيكل والأساسات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Free lessons — keep them coming"
+msgstr "دروس بلا إصابات — استمر في الإبلاغ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Frozen baseline"
+msgstr "خط أساس مجمّد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.xml:0
+msgid "Gathering your day…"
+msgstr "نجمع مهام يومك…"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__general
+msgid "General Document"
+msgstr "مستند عام"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "GlobalIds are stable, so the links survive the next export."
+msgstr "معرّفات GlobalId ثابتة، فتبقى الروابط بعد التصدير التالي."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Gone from the model"
+msgstr "غير موجود في الموديل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Good afternoon"
+msgstr "مساء الخير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Good evening"
+msgstr "طاب مساؤك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Good morning"
+msgstr "صباح الخير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Good work starts with a clear view."
+msgstr "العمل الجيد يبدأ برؤية واضحة."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_event_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_toolbox_talk_search
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "HIGH-RISK CONTROL"
+msgstr "ضبط الأعمال عالية المخاطر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Hand the area back and close the permit out."
+msgstr "أعد تسليم المنطقة وأقفل التصريح."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Handover"
+msgstr "التسليم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Handover & DLP"
+msgstr "التسليم وفترة الصيانة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__has_message
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Have an approved BOQ baseline"
+msgstr "لديها خط أساس معتمد لجدول الكميات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Held but not yet circulated"
+msgstr "منعقد ولم يُعمّم بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "High severity"
+msgstr "خطورة مرتفعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Hold"
+msgstr "الحجز"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+msgid "Holding Retention"
+msgstr "محتجز منه ضمان"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "How work moves"
+msgstr "مراحل سير العمل"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "INFORMATION FLOW"
+msgstr "تدفق المعلومات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_exception_icon
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Identify"
+msgstr "تحديد"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_needaction
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها."
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_has_error
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_has_sms_error
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_has_error
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "In execution"
+msgstr "قيد التنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "In leveling"
+msgstr "قيد المعادلة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "In progress"
+msgstr "قيد التنفيذ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "In store"
+msgstr "في المخزن"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "In workflow"
+msgstr "ضمن سير العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_incidents
+msgid "Incidents & Near Misses"
+msgstr "الحوادث وشبه الحوادث"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Index"
+msgstr "الفهرسة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Inspect"
+msgstr "فحص"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Inspect the result and close with evidence."
+msgstr "افحص النتيجة وأغلقها بالأدلة."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Inspections"
+msgstr "عمليات التفتيش"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Investigate"
+msgstr "التحقيق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Investigation or actions outstanding"
+msgstr "التحقيق أو الإجراءات ما زالت مفتوحة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Invoiced"
+msgstr "مفوتر"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+msgid "Invoiced, Unpaid"
+msgstr "مفوتر وغير مدفوع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_is_follower
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Issue"
+msgstr "الصرف"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Issued"
+msgstr "صادر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Issued, awaiting prices"
+msgstr "صدر، بانتظار الأسعار"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Last 30 days"
+msgstr "آخر 30 يوماً"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Late"
+msgstr "متأخر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Latest workspace updates"
+msgstr "آخر تحديثات مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Layouts and finishes"
+msgstr "المخططات والتشطيبات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Level"
+msgstr "المعادلة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Link"
+msgstr "الربط"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Linked"
+msgstr "مرتبط"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+msgid "Live"
+msgstr "مباشر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Live commercial exposure"
+msgstr "الانكشاف التجاري المباشر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Live now"
+msgstr "مباشر الآن"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Live operational view"
+msgstr "عرض تشغيلي مباشر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Live priorities"
+msgstr "أولويات مباشرة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Live projects"
+msgstr "المشاريع الجارية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Live workspace"
+msgstr "مساحة عمل مباشرة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Loading workspace"
+msgstr "جارٍ تحميل مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_locations
+msgid "Location Hierarchy"
+msgstr "التسلسل الهرمي للمواقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+msgid "Locked"
+msgstr "مقفل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Losing money"
+msgstr "يخسر مالاً"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Lost time injuries"
+msgstr "إصابات مفقودة الوقت"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "MAJAL CONTROL CENTRE"
+msgstr "مركز تحكم مجال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "MAJAL · CONSTRUCTION COMMAND CENTER"
+msgstr "مجال · مركز قيادة الإنشاءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "MAJAL · FACILITIES OPERATIONS CENTER"
+msgstr "مجال · مركز عمليات المرافق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "MEP"
+msgstr "ميكانيكا وكهرباء وصحي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "MODEL COORDINATION"
+msgstr "تنسيق النموذج"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Maintain"
+msgstr "صيانة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/defect_workorder.py:0
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_maintenance_contracts
+msgid "Maintenance Contracts"
+msgstr "عقود الصيانة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_job_plans
+msgid "Maintenance Job Plans"
+msgstr "خطط أعمال الصيانة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_work_orders
+msgid "Maintenance Work Orders"
+msgstr "أوامر صيانة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.majal_login_layout
+msgid "Majal"
+msgstr "مجال"
+
+#. module: construction_ui
+#: model:ir.actions.client,name:construction_ui.action_construction_home
+msgid "Majal Construction"
+msgstr "مجال للإنشاءات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__majal_document_count
+msgid "Majal Document Count"
+msgstr "عدد مستندات مجال"
+
+#. module: construction_ui
+#: model:ir.actions.client,name:construction_ui.action_facility_home
+msgid "Majal Facilities"
+msgstr "مجال لإدارة المرافق"
+
+#. module: construction_ui
+#: model:ir.actions.client,name:construction_ui.action_majal_module_directory
+msgid "Majal Modules"
+msgstr "وحدات مجال"
+
+#. module: construction_ui
+#: model:ir.model,name:construction_ui.model_majal_project_document
+msgid "Majal Project Document"
+msgstr "مستند مشروع مجال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/module_directory/module_directory.xml:0
+msgid "Majal modules"
+msgstr "وحدات مجال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Manage subcontract scope, commitments, certificates, retention and back-charges."
+msgstr "أدر نطاق المقاول الباطن والالتزامات والشهادات والاحتجاز والخصومات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Manage the WBS, task ownership, dependencies and the path to on-time delivery."
+msgstr "أدر هيكل تجزئة العمل ومسؤوليات المهام والاعتماديات ومسار التسليم في الموعد."
+
+#. module: construction_ui
+#: model:ir.actions.client,name:construction_ui.action_majal_dashboard_hub
+msgid "Management Dashboards"
+msgstr "لوحات الإدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Management dashboards"
+msgstr "لوحات الإدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Management indicators"
+msgstr "مؤشرات الإدارة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Margin eroding"
+msgstr "تآكل الهامش"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Mark the correct revision current for project use."
+msgstr "عيّن المراجعة الصحيحة كمراجعة حالية للاستخدام بالمشروع."
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__material_issue_count
+msgid "Material Issue Count"
+msgstr "عدد صرفيات المواد"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Material Issues"
+msgstr "أوامر صرف المواد"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Materials"
+msgstr "المواد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_materials
+msgid "Materials & Site Stores"
+msgstr "المواد ومخازن الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Materials leave the store against a BOQ item."
+msgstr "تخرج المواد من المستودع مقابل بند في جدول الكميات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Materials with a budget"
+msgstr "مواد لها موازنة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Measure"
+msgstr "قياس"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Measure progress and control payment certificates."
+msgstr "قس التقدم واضبط شهادات الدفع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Mechanical, electrical, plumbing"
+msgstr "الميكانيكا والكهرباء والسباكة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Meet"
+msgstr "الاجتماع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__meeting_count
+msgid "Meeting Count"
+msgstr "عدد الاجتماعات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Meetings"
+msgstr "الاجتماعات"
+
+#. module: construction_ui
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_meetings
+msgid "Meetings & Minutes"
+msgstr "الاجتماعات والمحاضر"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_has_error
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Meter-driven"
+msgstr "حسب العداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Milestones"
+msgstr "مؤشرات التقدم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Minutes still carrying work"
+msgstr "محاضر ما زالت تحمل أعمالاً"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Minutes to issue"
+msgstr "محاضر للإصدار"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Minutes whose actions carry forward on their own, so the item nobody is doing cannot quietly disappear."
+msgstr "محاضر تُرحّل إجراءاتها تلقائياً، حتى لا يختفي بصمت البند الذي لا يعمل عليه أحد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Missed the promised allowance"
+msgstr "تجاوز المهلة الموعودة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Mobilise"
+msgstr "التجهيز"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/module_directory/module_directory.xml:0
+msgid "Modules available to you"
+msgstr "الوحدات المتاحة لك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Monitor assets, locations, work orders, preventive maintenance, service levels, contracts, and parts."
+msgstr "راقب الأصول والمواقع وأوامر العمل والصيانة الوقائية ومستويات الخدمة والعقود وقطع الغيار."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Monitor manpower, equipment, activities, weather and delays recorded by the site team."
+msgstr "تابع العمالة والمعدات والأنشطة والطقس والتأخيرات المسجلة بواسطة فريق الموقع."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_toolbox_talk_search
+msgid "Month"
+msgstr "الشهر"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي"
+
+#. module: construction_ui
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_my_day
+#: model:ir.model,name:construction_ui.model_construction_my_day
+#: model:ir.ui.menu,name:construction_ui.menu_facility_my_day
+#: model:ir.ui.menu,name:construction_ui.menu_my_day
+msgid "My Day"
+msgstr "يومي"
+
+#. module: construction_ui
+#: model:ir.actions.act_window,name:construction_ui.action_construction_my_dashboard
+#: model:ir.actions.act_window,name:construction_ui.action_facility_my_dashboard
+#: model:ir.ui.menu,name:construction_ui.menu_construction_my_dashboard
+#: model:ir.ui.menu,name:construction_ui.menu_facility_my_dashboard
+msgid "My Workspace"
+msgstr "مساحة عملي"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "My inspections"
+msgstr "عمليات الفحص الخاصة بي"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "My tasks"
+msgstr "مهامي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "My workspace"
+msgstr "مساحة عملي"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Name the assets, the scope and the SLA that was sold."
+msgstr "حدد الأصول والنطاق ومستوى الخدمة المتفق عليه."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Navigate sites, buildings, floors, rooms and zones with connected operational records."
+msgstr "تصفح المواقع والمباني والطوابق والغرف والمناطق مع السجلات التشغيلية المرتبطة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Near misses"
+msgstr "شبه الحوادث"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+msgid "Needs Action"
+msgstr "يتطلب اتخاذ إجراء"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "New %s"
+msgstr "%s جديد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "New, not yet scheduled"
+msgstr "جديد ولم يُجدول"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_summary
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_type_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "No activity yet"
+msgstr "لا يوجد نشاط بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.xml:0
+msgid "No approvals, no defects assigned, no inspections due. Anything raised for you today will appear here."
+msgstr "لا اعتمادات، ولا عيوب مسندة إليك، ولا عمليات فحص مستحقة. سيظهر هنا كل ما يُسند إليك اليوم."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+msgid "Not Yet Certified"
+msgstr "لم يُعتمد بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Not closed or cancelled"
+msgstr "غير مغلق أو ملغي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Not recoverable"
+msgstr "غير قابل للاسترداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Not yet awarded"
+msgstr "لم يُرسَ بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Not yet closed"
+msgstr "لم يُغلق بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Not yet issued"
+msgstr "لم يصدر بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Not yet submitted"
+msgstr "لم يُقدَّم بعد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.xml:0
+msgid "Nothing is waiting on you"
+msgstr "لا شيء بانتظارك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.js:0
+msgid "Nothing is waiting on you."
+msgstr "لا شيء بانتظارك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Nothing outstanding"
+msgstr "لا شيء معلق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Notifiable to the regulator"
+msgstr "يستلزم الإبلاغ للجهة الرقابية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Now a subcontract commitment"
+msgstr "أصبح التزام مقاولة من الباطن"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_needaction_counter
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_has_error_counter
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "ON-SITE DELIVERY"
+msgstr "التنفيذ في الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "OWNER VIEW"
+msgstr "عرض المالك"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+msgid "Omissions"
+msgstr "حذوفات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "On site"
+msgstr "بالموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "On site now"
+msgstr "في الموقع الآن"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "On the critical path"
+msgstr "على المسار الحرج"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "One controlled register for tender papers, bidding requests,\n                        quotations, sales orders, contracts and authority documents."
+msgstr "سجل مُحكم واحد لمستندات العطاءات وطلبات تقديم العروض وعروض الأسعار وأوامر البيع والعقود ومستندات الجهات الرسمية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "One prioritised queue for approvals, overdue actions, assigned defects, inspections, and work orders."
+msgstr "قائمة واحدة مرتبة للاعتمادات والإجراءات المتأخرة والعيوب والفحوص وأوامر العمل المسندة إليك."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only %s can decide this document."
+msgstr "لا يمكن أن يبت في هذا المستند سوى %s."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only %s can sign off this drawing."
+msgstr "لا يمكن أن يعتمد هذا الرسم سوى %s."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only a Project Manager can close documents."
+msgstr "لا يمكن إغلاق المستندات إلا لمدير المشروع."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only a Project Manager can reset documents."
+msgstr "لا يمكن إعادة تعيين المستندات إلا لمدير المشروع."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only a Project Manager can reset drawing sign-off."
+msgstr "لا يمكن إعادة تعيين اعتماد الرسم إلا لمدير المشروع."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only draft or rejected documents can be submitted."
+msgstr "يمكن إرسال المستندات المسودة أو المرفوضة فقط."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only draft or returned revisions can be submitted."
+msgstr "يمكن إرسال المراجعات المسودة أو المعادة فقط."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only signed-off revisions can be published as current."
+msgstr "لا يمكن نشر المراجعة كمراجعة حالية إلا بعد اعتمادها."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only submitted documents can be approved."
+msgstr "يمكن اعتماد المستندات المُرسلة فقط."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only submitted documents can be returned."
+msgstr "يمكن إعادة المستندات المُرسلة فقط."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Only submitted revisions can be signed off."
+msgstr "يمكن اعتماد المراجعات المُرسلة فقط."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/module_directory/module_directory.xml:0
+msgid "Only supported, installed Majal workspaces are shown. System packages and edition upgrades are managed by the platform team."
+msgstr "تُعرض فقط مساحات عمل مجال المدعومة والمثبتة. أما حزم النظام وترقيات الإصدار فيديرها فريق المنصة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_event_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+msgid "Open"
+msgstr "مفتوح"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Drawing Register"
+msgstr "فتح سجل المخططات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Inspections & QA Forms"
+msgstr "فتح الفحوصات ونماذج الجودة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Material Issues"
+msgstr "صرفيات مواد مفتوحة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Material Position"
+msgstr "فتح موقف المواد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Open My Workspace"
+msgstr "فتح مساحة عملي"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Site Store"
+msgstr "فتح مستودع الموقع"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Snags & Observations"
+msgstr "فتح الملاحظات والمشاهدات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open Submittals"
+msgstr "فتح التقديمات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/module_directory/module_directory.xml:0
+msgid "Open a workspace below. Availability follows your role and company permissions."
+msgstr "افتح مساحة عمل أدناه. يتبع التوفر دورك وصلاحيات شركتك."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Open actions move to the next meeting, keeping their age."
+msgstr "تنتقل الإجراءات المفتوحة إلى الاجتماع التالي محتفظةً بعمرها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open configurable spreadsheet dashboards for finance, sales, inventory, and other installed business areas."
+msgstr "افتح لوحات جداول قابلة للضبط للمالية والمبيعات والمخزون ومجالات الأعمال المثبتة الأخرى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open defects"
+msgstr "العيوب المفتوحة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Open information records"
+msgstr "فتح سجلات المعلومات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open projects, site records, engineering workflows, commercial controls, and the daily risk picture."
+msgstr "افتح المشاريع وسجلات الموقع ومسارات الهندسة والضوابط التجارية وصورة المخاطر اليومية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Open records"
+msgstr "فتح السجلات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Open work orders"
+msgstr "أوامر العمل المفتوحة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/module_directory/module_directory.xml:0
+msgid "Open workspace"
+msgstr "فتح مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Optimise"
+msgstr "تحسين"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_event_search
+msgid "Origin"
+msgstr "الأصل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Out of warranty"
+msgstr "خارج الضمان"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Out to bid"
+msgstr "مطروح للمناقصة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Over budget"
+msgstr "تجاوز الموازنة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Overcommitted"
+msgstr "التزام زائد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+msgid "Overdue"
+msgstr "متأخر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Overdue actions"
+msgstr "إجراءات متأخرة"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:construction_ui.menu_construction_home
+#: model:ir.ui.menu,name:construction_ui.menu_facility_home
+msgid "Overview"
+msgstr "نظرة عامة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "PAYMENT CONTROL"
+msgstr "الرقابة على الدفعات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "PDF & Sign-off"
+msgstr "ملف PDF والاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "PERSONAL CONTROL"
+msgstr "المتابعة الشخصية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "PM visits owed"
+msgstr "زيارات صيانة وقائية مستحقة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "PORTFOLIO CONTROL"
+msgstr "إدارة المحفظة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "PROCUREMENT"
+msgstr "المشتريات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Package"
+msgstr "التحزيم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Package the technical information and required evidence."
+msgstr "جهّز المعلومات الفنية والأدلة المطلوبة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_parts
+msgid "Parts & Stores"
+msgstr "قطع الغيار والمخازن"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Parts with a minimum set"
+msgstr "قطع لها حد أدنى محدد"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Past the required date"
+msgstr "بعد التاريخ المطلوب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Past their agreed date"
+msgstr "بعد تاريخها المتفق عليه"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Paused"
+msgstr "موقوف مؤقتاً"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Payments"
+msgstr "الدفعات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+msgid "Period"
+msgstr "الفترة"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__permit
+msgid "Permit / Authority"
+msgstr "تصريح / جهة رسمية"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Permits I supervise"
+msgstr "التصاريح التي أشرف عليها"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_permits
+msgid "Permits to Work"
+msgstr "تصاريح العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Plan"
+msgstr "تخطيط"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Plan calendar and meter-driven maintenance before assets fail."
+msgstr "خطط الصيانة الدورية والمبنية على العدادات قبل تعطل الأصول."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Planned maintenance"
+msgstr "الصيانة المخططة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Planned maintenance falling due"
+msgstr "الصيانة المخططة المستحقة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Position"
+msgstr "الموضع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Pre-start safety briefings with the attendance record that proves they happened."
+msgstr "جلسات سلامة قبل البدء، مع سجل حضور يثبت انعقادها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Prepare"
+msgstr "إعداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Prepare progress claims, certify measured work and track retention and amounts due."
+msgstr "جهّز مطالبات الدفعات واعتمد الأعمال المقاسة وتابع الاحتجاز والمبالغ المستحقة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Preparing the management picture…"
+msgstr "جارٍ إعداد صورة الإدارة…"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_toolbox_talk_search
+msgid "Presenter"
+msgstr "المقدّم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Preventive"
+msgstr "وقائي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_pm_plans
+msgid "Preventive Maintenance"
+msgstr "الصيانة الوقائية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Price a scope with several subcontractors against identical lines, then award straight into a subcontract."
+msgstr "سعّر نطاقاً مع عدة مقاولي باطن على بنود متطابقة، ثم أرسِ مباشرة إلى مقاولة باطن."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Priced"
+msgstr "مُسعّر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Prioritise defects, clarify responsibility and protect close-out quality."
+msgstr "رتّب أولوية العيوب وحدد المسؤولية واحمِ جودة الإغلاق."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Products with recorded waste"
+msgstr "أصناف عليها هدر مسجل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_programme
+msgid "Programme & Planning"
+msgstr "البرنامج والتخطيط"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "Programme exceptions"
+msgstr "استثناءات البرنامج"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_progress_billing
+msgid "Progress Billing"
+msgstr "مستخلصات الأعمال"
+
+#. module: construction_ui
+#: model:ir.model,name:construction_ui.model_project_project
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__project_id
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_event_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_toolbox_talk_search
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_projects
+msgid "Project Portfolio"
+msgstr "محفظة المشاريع"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Project Profile"
+msgstr "بيانات المشروع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Project dashboard"
+msgstr "لوحة المشاريع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Project overview"
+msgstr "نظرة عامة على المشروع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Projects, field operations, commercial control and facilities—together in one place."
+msgstr "المشاريع وعمليات الموقع والرقابة التجارية وإدارة المرافق، كلها في مكان واحد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Publish"
+msgstr "نشر"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Publish as Current"
+msgstr "نشر كمراجعة حالية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "QUALITY CONTROL"
+msgstr "رقابة الجودة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Quality"
+msgstr "الجودة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Quality & Inspections"
+msgstr "الجودة والمعاينات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_quality_hub
+msgid "Quality & QA"
+msgstr "الجودة وضمان الجودة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Quality & Snags"
+msgstr "الجودة والملاحظات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__quality_item_count
+msgid "Quality Item Count"
+msgstr "عدد سجلات الجودة"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:construction_ui.menu_quality_overview
+msgid "Quality Overview"
+msgstr "نظرة عامة على الجودة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Questions attached to the wall they are about, surviving every re-issue of the model."
+msgstr "أسئلة مرتبطة بالجدار الذي تخصه، وتبقى بعد كل إعادة إصدار للنموذج."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Quick Navigation"
+msgstr "تنقل سريع"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__quotation
+msgid "Quotation"
+msgstr "عرض سعر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "READY VIEWS"
+msgstr "عروض جاهزة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "RECENT ACTIVITY"
+msgstr "النشاط الأخير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "RELIABILITY LEARNING"
+msgstr "التعلم من الأعطال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "RELIABILITY PLANNING"
+msgstr "تخطيط الاعتمادية"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "RFIs in my court"
+msgstr "طلبات المعلومات في عهدتي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Raise"
+msgstr "إنشاء"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+msgid "Raised By"
+msgstr "أنشأ بواسطة"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_defect__workorder_id
+msgid "Raised automatically when the defect is assigned, so the person who has to fix it sees it in the queue they actually work from."
+msgstr "يُرفع تلقائياً عند إسناد الملاحظة، ليراه من عليه إصلاحها في القائمة التي يعمل منها فعلاً."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+msgid "Raised by Me"
+msgstr "المرفوعة مني"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Raised or reopened"
+msgstr "مرفوع أو أُعيد فتحه"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__rating_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__rating_ids
+msgid "Ratings"
+msgstr "التقييمات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Re-issue"
+msgstr "إعادة الإصدار"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Read the elements out of the IFC file."
+msgstr "اقرأ العناصر من ملف IFC."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Ready to inspect"
+msgstr "جاهز للمعاينة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Ready to invoice"
+msgstr "جاهز للفوترة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Ready to review"
+msgstr "جاهز للمراجعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Ready to review and close"
+msgstr "جاهز للمراجعة والإغلاق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Receive"
+msgstr "الاستلام"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Recently active"
+msgstr "نشط مؤخراً"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Reconcile"
+msgstr "التسوية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record"
+msgstr "التسجيل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record attendance, discussion and the actions agreed."
+msgstr "سجّل الحضور والنقاش والإجراءات المتفق عليها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record quantities, checks, photos, signatures and daily evidence."
+msgstr "سجّل الكميات والفحوصات والصور والتوقيعات والأدلة اليومية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record resolution, time, cause and follow-up actions."
+msgstr "سجّل المعالجة والوقت والسبب وإجراءات المتابعة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record the decision and update commercial control."
+msgstr "سجّل القرار وحدّث الرقابة التجارية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record the final decision and approved information."
+msgstr "سجّل القرار النهائي والمعلومات المعتمدة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Record what happened, find why, and close the actions that stop it happening again."
+msgstr "سجّل ما حدث، وحدد السبب، وأغلق الإجراءات التي تمنع تكراره."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Recoverable work"
+msgstr "عمل قابل للاسترداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Rectify"
+msgstr "تصحيح"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Redrawn, but still carrying records"
+msgstr "أُعيد رسمه وما زال يحمل سجلات"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__reference
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Register"
+msgstr "تسجيل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Register the event, cause and affected project scope."
+msgstr "سجّل الحدث والسبب ونطاق المشروع المتأثر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__rejected
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__partner_id
+msgid "Related Party"
+msgstr "الطرف المعني"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Release"
+msgstr "إصدار"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Reliable buildings start with visible work."
+msgstr "المباني الموثوقة تبدأ بعمل واضح."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Reorder"
+msgstr "إعادة الطلب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Reorder before the next failure"
+msgstr "أعد الطلب قبل العطل التالي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Repairs are your cost"
+msgstr "الإصلاحات على حسابك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Repairs may be recoverable"
+msgstr "قد تكون الإصلاحات قابلة للاسترداد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Report"
+msgstr "الإبلاغ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Reportable"
+msgstr "واجب الإبلاغ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Request"
+msgstr "طلب"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Request Sign-off"
+msgstr "طلب الاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_rfis
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Requests for Information"
+msgstr "طلبات المعلومات"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Resolve"
+msgstr "معالجة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Resolve retention, back-charges and final obligations."
+msgstr "سوِّ الاحتجاز والخصومات والالتزامات النهائية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Respond"
+msgstr "رد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_user_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Return"
+msgstr "إرجاع"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Return this document to draft or create a revision before editing it."
+msgstr "أعد هذا المستند إلى المسودة أو أنشئ إصداراً جديداً قبل تعديله."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Return with Comments"
+msgstr "إعادة مع ملاحظات"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__construction_drawing_revision__approval_state__rejected
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+msgid "Returned"
+msgstr "مُعاد للمراجعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Returned for rework"
+msgstr "أُعيد لإعادة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Reuse"
+msgstr "إعادة الاستخدام"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Review"
+msgstr "مراجعة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_form_majal_signoff
+msgid "Review / Sign-off"
+msgstr "مراجعة / اعتماد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__approval_note
+msgid "Review / Sign-off Note"
+msgstr "ملاحظات المراجعة / الاعتماد"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Review Notes"
+msgstr "ملاحظات المراجعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Review performance, risk and lifecycle decisions."
+msgstr "راجع الأداء والمخاطر وقرارات دورة الحياة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Review the result and close or raise follow-up work."
+msgstr "راجع النتيجة وأغلقها أو أنشئ أعمال متابعة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Review valuation, retention and the amount due."
+msgstr "راجع التقييم والاحتجاز والمبلغ المستحق."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Reviewer comments, conditions or reasons for return..."
+msgstr "ملاحظات المراجع أو الشروط أو أسباب الإعادة..."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Reviewer decision and conditions..."
+msgstr "قرار المراجع وشروطه..."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Revise"
+msgstr "مراجعة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+msgid "Revise & Resubmit"
+msgstr "تعديل وإعادة تقديم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Revise & resubmit"
+msgstr "التعديل وإعادة التقديم"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Revision"
+msgstr "المراجعة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: model:ir.ui.menu,name:construction_ui.menu_majal_drawing_revisions
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Revisions & Sign-off"
+msgstr "المراجعات والاعتماد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__rfi_ids
+msgid "Rfi"
+msgstr "طلب معلومات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Route exceptions into defects, RFIs or technical approvals."
+msgstr "حوّل الاستثناءات إلى عيوب أو طلبات معلومات أو اعتمادات فنية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Run structured field checks, capture evidence and keep approvals moving."
+msgstr "نفّذ فحوصات ميدانية منظمة وسجّل الأدلة وحافظ على تدفق الاعتمادات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Run the building from one place"
+msgstr "شغّل المبنى من مكان واحد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Run the planned check and capture objective field evidence."
+msgstr "نفّذ الفحص المخطط وسجّل الأدلة الميدانية الموضوعية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Running out of allowance"
+msgstr "المهلة توشك على النفاد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SAFETY LEARNING"
+msgstr "التعلّم من السلامة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "SELF-SERVICE"
+msgstr "تحليل ذاتي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SITE BRIEFING"
+msgstr "إحاطة الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SITE COORDINATION"
+msgstr "تنسيق الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SITE INVENTORY"
+msgstr "مخزون الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SLA at risk"
+msgstr "اتفاقية مستوى الخدمة في خطر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SLA breached"
+msgstr "إخلال باتفاقية مستوى الخدمة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "SMART WORKFLOW"
+msgstr "سير عمل ذكي"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SPACE & LOCATION"
+msgstr "المساحات والمواقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SPARES CONTROL"
+msgstr "ضبط قطع الغيار"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "STANDARD WORK"
+msgstr "العمل القياسي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "SUPPLY CHAIN CONTROL"
+msgstr "رقابة سلسلة التوريد"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__sales_order
+msgid "Sales Order"
+msgstr "أمر بيع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Save filtered assets, overdue work, maintenance analysis and team views in one place."
+msgstr "احفظ الأصول المفلترة والأعمال المتأخرة وتحليلات الصيانة وشاشات الفريق في مكان واحد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Save filtered records, charts and analysis so your most important views are always one click away."
+msgstr "احفظ السجلات المفلترة والرسوم البيانية والتحليلات ليبقى أهم ما تتابعه على بعد نقرة واحدة."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Scope, requirements and document notes..."
+msgstr "النطاق والمتطلبات وملاحظات المستند..."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.js:0
+msgid "See unapproved change, certification, billing, commitment, and forecast-margin exposure before month end."
+msgstr "راجع التغييرات غير المعتمدة والتصديق والفوترة والالتزامات وانكشاف الهامش المتوقع قبل نهاية الشهر."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Select the project, location, form and responsible field team."
+msgstr "اختر المشروع والموقع والنموذج وفريق الموقع المسؤول."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Set the project team, dates and commercial baseline."
+msgstr "حدّد فريق المشروع والتواريخ وخط الأساس التجاري."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Settle"
+msgstr "تسوية"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Shortlisted"
+msgstr "في القائمة المختصرة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Sign Off"
+msgstr "اعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Sign off and publish the approved information set."
+msgstr "اعتمد وانشر حزمة المعلومات المعتمدة."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+msgid "Sign-off"
+msgstr "الاعتماد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__approver_id
+msgid "Sign-off By"
+msgstr "يعتمد بواسطة"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__construction_drawing_revision__approval_state__approved
+msgid "Signed Off"
+msgstr "معتمد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Signed off"
+msgstr "معتمد"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__site_form_count
+msgid "Site Form Count"
+msgstr "عدد نماذج الموقع"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__form_inspection_ids
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Site Forms"
+msgstr "نماذج الموقع"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Site Forms & Inspections"
+msgstr "نماذج الموقع وعمليات التفتيش"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_site_work
+msgid "Site Work Control"
+msgstr "إدارة أعمال الموقع"
+
+#. module: construction_ui
+#: model:ir.ui.menu,name:construction_ui.menu_site_work_overview
+msgid "Site Work Overview"
+msgstr "نظرة عامة على أعمال الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Site works and landscape"
+msgstr "أعمال الموقع والتنسيق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Slip here slips the project"
+msgstr "التأخر هنا يؤخر المشروع"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.majal_login_layout
+msgid "Smart project and facility operations"
+msgstr "عمليات ذكية للمشاريع والمرافق"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Snags & Defects"
+msgstr "الملاحظات والعيوب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Spares on the shelf"
+msgstr "قطع الغيار على الرف"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Spares sit in a store attached to a building."
+msgstr "تُخزَّن قطع الغيار في مستودع تابع لمبنى."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Standardise problems, causes and remedies to improve maintenance learning."
+msgstr "وحّد المشكلات والأسباب والمعالجات لتحسين التعلم من أعمال الصيانة."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Start Review"
+msgstr "بدء المراجعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Start from the operational question, then drill into the underlying record."
+msgstr "ابدأ بالسؤال التشغيلي ثم انتقل إلى تفاصيل السجل المرتبط."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/dashboard_hub/dashboard_hub.xml:0
+msgid "Start with the company-wide position, then move directly into the operation that needs attention."
+msgstr "ابدأ بصورة الشركة كاملة، ثم انتقل مباشرة إلى العملية التي تحتاج إلى التدخل."
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__state
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_approval_request_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_boq_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_event_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_state
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "الأنشطة المعتمدة على الحالة\nالمتأخرة: تاريخ الاستحقاق مر\nاليوم: تاريخ النشاط هو اليوم\nالمخطط: الأنشطة المستقبلية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Still being priced"
+msgstr "ما زال قيد التسعير"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Still in the site store"
+msgstr "ما زال في مستودع الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Stopped on site"
+msgstr "متوقف في الموقع"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Structural"
+msgstr "إنشائي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Structure sections, scope items, quantities and rates."
+msgstr "نظّم الأقسام وبنود النطاق والكميات والأسعار."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Structure the drawing and information registers by project."
+msgstr "نظّم سجلات الرسومات والمعلومات حسب المشروع."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+msgid "Subcontract"
+msgstr "عقد الباطن"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__subcontract_count
+msgid "Subcontract Count"
+msgstr "عدد مقاولات الباطن"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__subcontract_payment_count
+msgid "Subcontract Payment Count"
+msgstr "عدد دفعات مقاولي الباطن"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_payment_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+msgid "Subcontractor"
+msgstr "المقاول الباطن"
+
+#. module: construction_ui
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_subcontracts
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Subcontracts"
+msgstr "عقود الباطن"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+msgid "Submission Trail"
+msgstr "سجل التقديم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Submit"
+msgstr "إرسال"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__submittal_ids
+msgid "Submittal"
+msgstr "تقديم فني"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_submittals
+msgid "Submittals"
+msgstr "التقديمات الفنية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__submitted
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Submitted"
+msgstr "مُرسل"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__submitted_by_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__submitted_by_id
+msgid "Submitted By"
+msgstr "مقدّم من"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__submitted_date
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__submitted_date
+msgid "Submitted Date"
+msgstr "تاريخ التقديم"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Submitted drawing revisions cannot be deleted."
+msgstr "لا يمكن حذف إصدارات الرسومات بعد تقديمها."
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__construction_drawing_revision__approval_state__submitted
+msgid "Submitted for Sign-off"
+msgstr "مُرسل للاعتماد"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Submitted for review"
+msgstr "قُدّم للمراجعة"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Submitted project documents cannot be deleted."
+msgstr "لا يمكن حذف مستندات المشروع بعد تقديمها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Submitted to the client"
+msgstr "قُدّم للعميل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Submitted to the consultant"
+msgstr "قُدّم للاستشاري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Submitted, no response yet"
+msgstr "قُدّم ولا رد بعد"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_search
+msgid "Superseded"
+msgstr "ملغى بأحدث"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Suspended"
+msgstr "موقوف"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "TECHNICAL APPROVALS"
+msgstr "الاعتمادات الفنية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Take the scope from the BOQ so budget travels with it."
+msgstr "خذ النطاق من جدول الكميات ليسافر معه التمويل."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Task Label"
+msgstr "مسمى المهام"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Technical Submittals"
+msgstr "التقديمات الفنية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Tender & mobilization"
+msgstr "المناقصة والتجهيز"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_tenders
+msgid "Tender Packages"
+msgstr "حزم العطاءات"
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__document_type__tender
+msgid "Tender Paper"
+msgstr "مستند عطاء"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "The minimum on the asset's spare list finally bites."
+msgstr "الحد الأدنى في قائمة قطع غيار الأصل بدأ يُلزم أخيراً."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "The person who submitted a document cannot approve it."
+msgstr "لا يجوز لمن قدّم المستند أن يعتمده."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "The person who submitted a drawing cannot sign it off."
+msgstr "لا يجوز لمن قدّم الرسم أن يعتمده."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "This Majal workspace is not available for the current user."
+msgstr "مساحة عمل مجال هذه غير متاحة للمستخدم الحالي."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_toolbox_talk_search
+msgid "This Month"
+msgstr "هذا الشهر"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "This Property workspace needs the Real Estate User access role. Ask your Majal administrator to enable it for your account."
+msgstr "تحتاج مساحة العمل العقارية هذه إلى دور مستخدم العقارات. اطلب من مسؤول مجال تفعيله لحسابك."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_progress_claim_search
+msgid "This Year"
+msgstr "هذه السنة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/home/construction_home.js:0
+msgid "This workspace is not available yet. Check that its module is installed."
+msgstr "مساحة العمل هذه غير متاحة بعد. تأكد من تثبيت الوحدة الخاصة بها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.js:0
+msgid "This workspace is not available. Check that its module is installed."
+msgstr "مساحة العمل هذه غير متاحة. تأكد من تثبيت الوحدة الخاصة بها."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Time-based schedules"
+msgstr "جداول زمنية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "To triage"
+msgstr "للفرز"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "Today's focus"
+msgstr "أولويات اليوم"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+#: model:ir.actions.client,name:construction_ui.action_workspace_toolbox_talks
+msgid "Toolbox Talks"
+msgstr "محاضرات السلامة"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_list
+msgid "Total"
+msgstr "الإجمالي"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Total records"
+msgstr "إجمالي السجلات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Track questions, ball-in-court ownership, responses and closure across the project team."
+msgstr "تابع الأسئلة ومسؤول الإجراء والردود والإغلاق عبر فريق المشروع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Track usage and readings that drive condition-based maintenance decisions."
+msgstr "تابع الاستخدام والقراءات التي تدعم قرارات الصيانة المبنية على الحالة."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Tracked"
+msgstr "متتبَّع"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_subcontract_search
+msgid "Trade"
+msgstr "التخصص"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Triage"
+msgstr "فرز"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Triage, assign and complete corrective and preventive maintenance work."
+msgstr "افرز وأسند وأكمل أعمال الصيانة التصحيحية والوقائية."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Turn the winning price into a subcontract commitment."
+msgstr "حوّل السعر الفائز إلى التزام مقاولة باطن."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_change_order_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+msgid "Type"
+msgstr "النوع"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_exception_decoration
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل."
+
+#. module: construction_ui
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__under_review
+msgid "Under Review"
+msgstr "قيد المراجعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Under review"
+msgstr "قيد المراجعة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Under warranty"
+msgstr "تحت الضمان"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Understand the equipment portfolio, criticality, ownership and maintenance context."
+msgstr "افهم محفظة المعدات وأهميتها وملكيتها وسياق صيانتها."
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_tender_bid_search
+msgid "Unpriced Lines"
+msgstr "بنود غير مُسعّرة"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Updated"
+msgstr "تم التحديث"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Updated in 7 days"
+msgstr "تم التحديث خلال 7 أيام"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Upload revisions and record their issue purpose."
+msgstr "ارفع المراجعات وسجّل غرض الإصدار."
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/project_workspace.py:0
+msgid "Upload the drawing PDF before requesting sign-off."
+msgstr "ارفع ملف الرسم PDF قبل طلب الاعتماد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Usage-based schedules"
+msgstr "جداول حسب الاستخدام"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Use the approved baseline for change and payment."
+msgstr "استخدم خط الأساس المعتمد للتغييرات والدفعات."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Used more than the bill priced"
+msgstr "استُخدم أكثر مما سعّره الجدول"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "VISUAL OPERATIONS"
+msgstr "العمليات المرئية"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Validate the baseline against project scope."
+msgstr "تحقق من خط الأساس مقابل نطاق المشروع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Value certified against cost incurred, so margin erosion surfaces while there is still time to act."
+msgstr "القيمة المعتمدة مقابل التكلفة المتكبدة، ليظهر تآكل الهامش وما زال في الوقت متسع للتصرف."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Verify"
+msgstr "تحقق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "View all"
+msgstr "عرض الكل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "WORK DELIVERY"
+msgstr "تنفيذ العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+#: code:addons/construction_ui/static/src/home/construction_home.xml:0
+msgid "WORKSPACES"
+msgstr "مساحات العمل"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Waiting for my approval"
+msgstr "بانتظار اعتمادي"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_submittal_search
+msgid "Waiting on Me"
+msgstr "بانتظاري"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Waiting on your sign-off"
+msgstr "بانتظار اعتمادك"
+
+#. module: construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+msgid "Waste & Exceptions"
+msgstr "الهدر والاستثناءات"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Wasted"
+msgstr "المهدور"
+
+#. module: construction_ui
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__website_message_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني"
+
+#. module: construction_ui
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__website_message_ids
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "What each contract covers, what it promised, and whether the work under it still costs less than the fee."
+msgstr "ما يغطيه كل عقد، وما وعد به، وهل ما زال العمل تحته يكلف أقل من الأتعاب."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "What each store holds, what work orders have consumed, and what to buy before the next failure."
+msgstr "ما يحويه كل مستودع، وما استهلكته أوامر العمل، وما ينبغي شراؤه قبل العطل التالي."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "What was priced, what went into the works, what was lost, and what is still in the store."
+msgstr "ما سُعّر، وما دخل في الأعمال، وما فُقد، وما لا يزال في المستودع."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Window closed, not closed out"
+msgstr "النافذة أُغلقت ولم يُقفل البند"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Winning and starting up"
+msgstr "الفوز والانطلاق"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "With the consultant"
+msgstr "لدى الاستشاري"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/defect_workorder.py:0
+#: model:ir.model.fields,field_description:construction_ui.field_construction_defect__workorder_id
+msgid "Work Order"
+msgstr "أمر عمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Work absorbed exceeds the fee"
+msgstr "العمل المستوعب يتجاوز الأتعاب"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Work authorised right now"
+msgstr "عمل مصرّح به الآن"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Work order dashboard"
+msgstr "لوحة أوامر العمل"
+
+#. module: construction_ui
+#. odoo-python
+#: code:addons/construction_ui/models/my_day.py:0
+msgid "Work orders assigned to me"
+msgstr "أوامر العمل المسندة إليّ"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Work orders match themselves to the contract."
+msgstr "تطابق أوامر العمل نفسها مع العقد."
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Workspace metrics"
+msgstr "مؤشرات مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.xml:0
+msgid "Workspace navigation"
+msgstr "التنقل في مساحة العمل"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/module_directory/module_directory.xml:0
+msgid "YOUR MAJAL WORKSPACE"
+msgstr "مساحة عمل مجال الخاصة بك"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/facility_home/facility_home.xml:0
+msgid "Your personal Majal workspace"
+msgstr "مساحة عملك الشخصية في مجال"
+
+#. module: construction_ui
+#. odoo-javascript
+#: code:addons/construction_ui/static/src/my_day/my_day.xml:0
+msgid "late"
+msgstr "متأخر"

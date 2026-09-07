@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_workforce_root"
+              name="Workforce"
+              parent="construction_base.menu_construction_root"
+              sequence="55"
+              groups="construction_base.group_construction_pm"/>
+    <menuitem id="menu_majal_allocations"
+              name="Allocations"
+              parent="menu_majal_workforce_root"
+              action="action_majal_allocations"
+              sequence="10"/>
+    <menuitem id="menu_majal_allocate"
+              name="Allocate People"
+              parent="menu_majal_workforce_root"
+              action="action_majal_allocate_wizard"
+              sequence="20"/>
+    <menuitem id="menu_majal_allocation_roles"
+              name="Roles"
+              parent="menu_majal_workforce_root"
+              action="action_majal_allocation_roles"
+              sequence="90"
+              groups="majal_administration.group_user_administrator"/>
+
+    <!-- Facilities gets the same three, since a site team is allocated the
+         same way as a project team. -->
+    <menuitem id="menu_majal_workforce_facility"
+              name="Workforce"
+              parent="facility_asset.menu_facility_root"
+              sequence="55"
+              groups="majal_administration.group_facilities_supervisor"/>
+    <menuitem id="menu_majal_allocations_facility"
+              name="Allocations"
+              parent="menu_majal_workforce_facility"
+              action="action_majal_allocations"
+              sequence="10"/>
+    <menuitem id="menu_majal_allocate_facility"
+              name="Allocate People"
+              parent="menu_majal_workforce_facility"
+              action="action_majal_allocate_wizard"
+              sequence="20"/>
+</odoo>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Applies when a password is created or changed. Existing accounts are
+         deliberately not locked out during installation. -->
+    <function model="ir.config_parameter" name="set_param"
+              eval="('auth_password_policy.minlength', '12')"/>
+</odoo>

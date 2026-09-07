@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_majal_administration" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.majal.administration</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="110"/>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='general_settings']" position="inside">
+                <block title="Majal Administration" name="majal_administration">
+                    <setting string="Users &amp; access"
+                             help="Create client users and assign approved business roles without exposing raw technical permissions."
+                             groups="majal_administration.group_user_administrator">
+                        <button name="action_open_majal_users" type="object"
+                                string="Manage Client Users" class="btn-primary"/>
+                    </setting>
+                    <setting string="Backup &amp; recovery"
+                             help="Maintain up to seven verified database-and-document recovery points."
+                             groups="majal_administration.group_backup_operator">
+                        <div class="content-group">
+                            <button name="action_majal_backup_now" type="object"
+                                    string="Backup Now" class="btn-primary me-2"/>
+                            <button name="action_open_majal_backups" type="object"
+                                    string="Open Recovery Points" class="btn-secondary"/>
+                            <div class="row mt16">
+                                <label for="majal_backup_min_free_mb" class="col-lg-4 o_light_label"/>
+                                <field name="majal_backup_min_free_mb"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

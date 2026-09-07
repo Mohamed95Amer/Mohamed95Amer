@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Meetings belong to a project, so they are reached from the project's
+         Meetings button. The root stays defined but inactive, because its two
+         children are referenced by their own actions. -->
+    <menuitem id="menu_meeting_root" name="Meetings" active="False"
+              parent="construction_base.menu_construction_root" sequence="46"/>
+    <menuitem id="menu_meetings" name="Meetings &amp; Minutes"
+              parent="menu_meeting_root" action="action_meeting" sequence="10"/>
+    <menuitem id="menu_meeting_actions" name="Action Items"
+              parent="menu_meeting_root" action="action_meeting_action" sequence="20"/>
+</odoo>

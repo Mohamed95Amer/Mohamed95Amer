@@ -1,0 +1,581 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "% Cert."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_percent_complete
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_percent_complete
+msgid "% Certified"
+msgstr "% المعتمد"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "<strong>Baseline:</strong>"
+msgstr ""
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "<strong>Movement against tendered margin</strong>"
+msgstr ""
+
+#. module: construction_report
+#: model_terms:ir.actions.act_window,help:construction_report.action_section_cvr
+msgid ""
+"A project-level CVR says the job is losing money; this says which\n"
+"               part of it."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model,name:construction_report.model_construction_boq_line
+msgid "BOQ Line"
+msgstr "بند جدول الكميات"
+
+#. module: construction_report
+#: model:ir.model,name:construction_report.model_construction_boq_section
+msgid "BOQ Section"
+msgstr "قسم جدول الكميات"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_contract_value
+msgid "BOQ sell total, including approved variations."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_boq_ids
+msgid "Bills of Quantities"
+msgstr "جداول الكميات"
+
+#. modules: construction_material, construction_report, construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__budget_cost
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_list
+msgid "Budget"
+msgstr "الدخل\n"
+
+#. modules: construction_report, construction_tender
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_budget_cost
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_budget_cost
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__budget_cost
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__budget_cost
+msgid "Budget Cost"
+msgstr "التكلفة التقديرية"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Budget cost"
+msgstr "تكلفة الموازنة"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_uncommitted_budget
+msgid ""
+"Budget cost not yet tied to a subcontract. Negative means the commitments "
+"already exceed the budget."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.actions.act_window,name:construction_report.action_section_cvr
+#: model:ir.ui.menu,name:construction_report.menu_section_cvr
+msgid "CVR by Section"
+msgstr "مطابقة التكلفة بالقيمة حسب القسم"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_certified_value
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Certified"
+msgstr "المعتمد"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_certified_value
+msgid "Certified to Date"
+msgstr "المعتمد حتى تاريخه"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Certified to date"
+msgstr "المعتمد حتى الآن"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_percent_complete
+msgid "Certified value as a share of the contract value."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_earned_margin
+msgid ""
+"Certified value less cost to date — the margin actually realised so far."
+msgstr ""
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_committed_cost
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Committed"
+msgstr "الملتزم به"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_committed_cost
+msgid "Committed Cost"
+msgstr "التكلفة الملتزم بها"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Committed cost (awarded subcontracts)"
+msgstr ""
+
+#. modules: construction_dashboard, construction_report, facility_contract,
+#. facility_inventory
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model,name:facility_inventory.model_contract_contract
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_maintenance_request_form_contract
+msgid "Contract"
+msgstr "العقد"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_contract_value
+msgid "Contract Value"
+msgstr "قيمة العقد"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Contract value (incl. variations)"
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_forecast_margin
+msgid ""
+"Contract value less the expected final cost, where the expected cost is what"
+" has been committed plus the budget for work not yet let — so a package "
+"awarded above its own allowance erodes the forecast immediately, not only "
+"once total commitments pass the total budget."
+msgstr ""
+
+#. modules: construction_report, facility_contract
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Cost"
+msgstr "التكلفة"
+
+#. module: construction_report
+#. odoo-python
+#: code:addons/construction_report/models/project_cvr.py:0
+#: model:ir.actions.act_window,name:construction_report.action_project_cvr
+#: model:ir.actions.report,name:construction_report.action_report_cvr
+#: model:ir.ui.menu,name:construction_report.menu_construction_cvr
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_form
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+msgid "Cost Value Reconciliation"
+msgstr "مطابقة التكلفة بالقيمة"
+
+#. module: construction_report
+#: model_terms:ir.actions.act_window,help:construction_report.action_project_cvr
+msgid ""
+"Cost Value Reconciliation compares the value certified to the\n"
+"               client with the cost incurred to earn it, so margin erosion shows\n"
+"               up while there is still time to act."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_cost_to_date
+msgid "Cost to Date"
+msgstr "التكلفة حتى الآن"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+msgid "Cost to date"
+msgstr "التكلفة حتى الآن"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Cost to date (certified to subcontractors)"
+msgstr ""
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_form
+msgid "Cost — what it takes to earn it"
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_certified_value
+msgid ""
+"Cumulative work done certified on the latest interim payment certificate."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_earned_margin
+msgid "Earned Margin"
+msgstr "الهامش المكتسب"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_earned_margin_percent
+msgid "Earned Margin %"
+msgstr "هامش مكتسب %"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+msgid "Earned margin"
+msgstr "الهامش المكتسب"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Earned margin to date"
+msgstr "الهامش المكتسب حتى الآن"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_budget_cost
+msgid "Estimated cost of the whole works, from the BOQ cost breakdown."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_forecast_margin
+msgid "Forecast Final Margin"
+msgstr "الهامش النهائي المتوقع"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_forecast_margin
+msgid "Forecast Margin"
+msgstr "الهامش المتوقع"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_forecast_margin_percent
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_forecast_margin_percent
+msgid "Forecast Margin %"
+msgstr "هامش متوقع %"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Forecast final margin"
+msgstr "الهامش النهائي المتوقع"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_margin_variance
+msgid ""
+"Forecast final margin against the margin the job was priced at. Negative "
+"means the job is eroding."
+msgstr ""
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Forecast margin"
+msgstr "الهامش المتوقع"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_construction_boq_section__cvr_margin_variance
+msgid ""
+"Forecast margin against the margin this section was priced at. Negative "
+"means this part of the job is eroding."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_cost_to_date
+msgid "Gross value certified to subcontractors so far."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_boq_id
+msgid "Latest non-draft Bill of Quantities used as the CVR baseline."
+msgstr ""
+
+#. modules: construction_report, facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__margin
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_form
+msgid "Margin"
+msgstr "الهامش"
+
+#. modules: construction_report, facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__margin_percent
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Margin %"
+msgstr "الهامش %"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_margin_variance
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_margin_variance
+msgid "Margin Movement"
+msgstr "حركة الهامش"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Movement"
+msgstr "الحركة"
+
+#. module: construction_report
+#: model_terms:ir.actions.act_window,help:construction_report.action_project_cvr
+msgid "No construction projects yet"
+msgstr ""
+
+#. module: construction_report
+#: model_terms:ir.actions.act_window,help:construction_report.action_section_cvr
+msgid "No priced sections yet"
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_claim_ids
+msgid "Payment Certificates"
+msgstr "شهادات الدفع"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Percentage certified"
+msgstr "نسبة الاعتماد"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_boq_id
+msgid "Priced BOQ"
+msgstr "جدول كميات مسعّر"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Section CVR"
+msgstr "مطابقة التكلفة بالقيمة للأقسام"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_contract_value
+msgid "Section Value"
+msgstr "قيمة القسم"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_line__subcontract_line_ids
+msgid "Subcontract Lines"
+msgstr "بند عقد المقاول الباطنs"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_construction_boq_section__cvr_committed_cost
+msgid "Subcontract value against bill items in this section."
+msgstr ""
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_subcontract_ids
+msgid "Subcontracts"
+msgstr "عقود المقاولين الباطنين"
+
+#. module: construction_report
+#: model:ir.model.fields,field_description:construction_report.field_project_project__cvr_uncommitted_budget
+msgid "Uncommitted Budget"
+msgstr "موازنة غير ملتزم بها"
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Uncommitted budget"
+msgstr "موازنة غير ملتزم بها"
+
+#. module: construction_report
+#. odoo-python
+#: code:addons/construction_report/models/project_cvr.py:0
+msgid "Unsupported operator %s on %s"
+msgstr "معامل غير مدعوم %s على %s"
+
+#. modules: construction_material, construction_report, facility_inventory
+#. odoo-javascript
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__value
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__value
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_list
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Value"
+msgstr "القيمة"
+
+#. module: construction_report
+#: model:ir.model.fields,help:construction_report.field_project_project__cvr_committed_cost
+msgid ""
+"Value of awarded (confirmed) subcontracts — cost already tied up in "
+"commitments, whether or not the work has been done."
+msgstr ""
+
+#. module: construction_report
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_form
+msgid "Value — what the client owes"
+msgstr ""
+
+#. module: construction_report
+#. odoo-javascript
+#. odoo-python
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+#: model:ir.actions.client,name:construction_report.action_exposure
+#: model:ir.ui.menu,name:construction_report.menu_exposure
+#: code:addons/construction_report/models/exposure.py:0
+msgid "Commercial Exposure"
+msgstr "الموقف التجاري"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Commercial exposure"
+msgstr "الموقف التجاري"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Contract value"
+msgstr "قيمة العقد"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Approved variations"
+msgstr "أوامر التغيير المعتمدة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "of contract"
+msgstr "من قيمة العقد"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Retention held"
+msgstr "المحتجزات لدى العميل"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "cash sitting with the client"
+msgstr "مبالغ محتجزة لدى العميل"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Certified, not invoiced"
+msgstr "معتمد ولم يُفوتر"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "earned and not yet billed"
+msgstr "مستحق ولم تصدر به فاتورة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Waiting for a signature"
+msgstr "بانتظار التوقيع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Waiting for signature"
+msgstr "بانتظار التوقيع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "See all"
+msgstr "عرض الكل"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "By project"
+msgstr "حسب المشروع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Ordered by how far variations have moved the contract"
+msgstr "مرتبة حسب أثر أوامر التغيير على قيمة العقد"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Adding it up…"
+msgstr "نجمع الأرقام…"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "live projects"
+msgstr "مشاريع قائمة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Step"
+msgstr "الخطوة"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Days"
+msgstr "أيام"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Variations"
+msgstr "أوامر التغيير"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.js:0
+msgid "Uninvoiced"
+msgstr "غير مفوتر"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "A further"
+msgstr "وهناك أيضاً"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Document"
+msgstr "المستند"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "Retention"
+msgstr "المحتجزات"
+
+#. module: construction_report
+#. odoo-javascript
+#: code:addons/construction_report/static/src/exposure/exposure.xml:0
+msgid "of variations is submitted and not yet approved."
+msgstr "من الأوامر التغييرية مُقدَّم ولم يُعتمد بعد."

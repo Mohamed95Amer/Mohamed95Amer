@@ -1,0 +1,1519 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* construction_progress_billing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-07 21:11+0000\n"
+"PO-Revision-Date: 2026-08-07 21:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid " (net of %s)"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid ""
+"%\n"
+"                                        complete"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid ""
+"%\n"
+"                                        of work certified"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__pct_complete
+msgid "% Complete"
+msgstr "% الإنجاز"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "%(amt)s advance recovery"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "%(amt)s retention"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid ""
+"%(doc)s would release %(want)s but only %(have)s is held on %(project)s. "
+"Retention withheld to date is %(held)s, of which %(gone)s has already been "
+"released."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid ""
+"%(project)s already has a live advance (%(other)s). Recovery is a share of "
+"each certificate, so a second one would double the deduction."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid ", expiring"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid ""
+"<br/>\n"
+"                                <strong>Client:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>العميل:</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid ""
+"<br/>\n"
+"                                <strong>Date:</strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid ""
+"<br/>\n"
+"                                <strong>Reference:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>المرجع:</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid ""
+"<em>\n"
+"                                Claimed in advance of the contractual\n"
+"                                milestone.\n"
+"                            </em>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+msgid "<span class=\"o_stat_text\">Certificates</span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "<span class=\"o_stat_text\">Invoice</span>"
+msgstr "<span class=\"o_stat_text\">فاتورة</span>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_project_form_retention
+msgid "<span class=\"o_stat_text\">Retention Held</span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+msgid "<span class=\"oe_inline\"> % complete before recovery starts</span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+msgid "<span class=\"oe_inline\"> % of each certificate</span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "<span class=\"oe_inline\"> % of what is held</span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid ""
+"<strong>\n"
+"                                    This guarantee has expired. Any amount\n"
+"                                    still outstanding is unsecured.\n"
+"                                </strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "<strong>Advance amount</strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid "<strong>Balance held</strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "<strong>Date:</strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "<strong>Net amount due this certificate</strong>"
+msgstr "<strong>صافي المبلغ المستحق لهذا المستخلص</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "<strong>Outstanding</strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "<strong>Period to:</strong>"
+msgstr "<strong>الفترة حتى:</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid "<strong>Project:</strong>"
+msgstr "<strong>المشروع:</strong>"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid "<strong>Released against:</strong>"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "A retention release must be for a positive amount."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_res_company__construction_retention_account_id
+#: model:ir.model.fields,help:construction_progress_billing.field_res_config_settings__construction_retention_account_id
+msgid ""
+"Account where retention withheld on progress claims is booked until release."
+" Auto-created on first use if left empty."
+msgstr ""
+"الحساب الذي تُسجل فيه مبالغ الاحتجاز من مطالبات الدفعات حتى الإفراج عنها، "
+"ويُنشأ تلقائياً عند أول استخدام إذا تُرك فارغاً."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_needaction
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_needaction
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_type_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_type_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__advance_id
+msgid "Advance"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__amount
+msgid "Advance Amount"
+msgstr "مبلغ الدفعة المقدمة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__date_advance
+msgid "Advance Date"
+msgstr "تاريخ الدفعة المقدمة"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+#: model:ir.model,name:construction_progress_billing.model_construction_advance_payment
+msgid "Advance Payment"
+msgstr "الدفعة المقدمة"
+
+#. module: construction_progress_billing
+#: model:ir.actions.report,name:construction_progress_billing.action_report_advance_payment
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "Advance Payment Certificate"
+msgstr "شهادة الدفعة المقدمة"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+msgid "Advance Payment Guarantee"
+msgstr "ضمان الدفعة المقدمة"
+
+#. module: construction_progress_billing
+#: model:ir.actions.act_window,name:construction_progress_billing.action_advance_payment
+#: model:ir.ui.menu,name:construction_progress_billing.menu_advance_payment
+msgid "Advance Payments"
+msgstr "الدفعات المقدمة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__advance_recovery_cumulative
+msgid "Advance Recovered (Cumulative)"
+msgstr "الدفعة المقدمة المستردة (تراكمي)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__advance_recovery_this
+msgid "Advance Recovery This Period"
+msgstr "استرداد الدفعة المقدمة لهذه الفترة"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "Advance payment guarantee"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid "Advance payment — %(ref)s (recovered at %(pct)s%% of certified work)"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_list
+msgid "Advanced"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__amount_released_before
+msgid "Already Released"
+msgstr "تم الإفراج عنه سابقاً"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__amount_cumulative
+msgid "Amount Cumulative"
+msgstr "المبلغ التراكمي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_net_cumulative
+msgid "Amount Net Cumulative"
+msgstr "صافي المبلغ التراكمي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__amount_this
+msgid "Amount This Period"
+msgstr "مبلغ الفترة الحالية"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__amount_release
+msgid "Amount to Release"
+msgstr "المبلغ المطلوب الإفراج عنه"
+
+#. module: construction_progress_billing
+#: model_terms:ir.actions.act_window,help:construction_progress_billing.action_advance_payment
+msgid ""
+"An advance is paid up front against a bank guarantee and\n"
+"               recovered as a slice of every payment certificate until it is\n"
+"               square."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid "An advance must be for a positive amount."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid ""
+"An invoiced release cannot be cancelled — credit the invoice instead, so the"
+" ledger and the certificate agree."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__approval_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__approval_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__approval_state
+msgid "Approval"
+msgstr "للاعتماد"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__approval_blocked
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__approval_blocked
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__approval_blocked
+msgid "Approval Blocked"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__approval_request_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__approval_request_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__approval_request_ids
+msgid "Approval Requests"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__approval_summary
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__approval_summary
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__approval_summary
+msgid "Approval Summary"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid "Approve the advance before invoicing."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Approve the release before invoicing."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_advance_payment__state__approved
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__state__approved
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_attachment_count
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_attachment_count
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__amount_available
+msgid "Available to Release"
+msgstr "المتاح للإفراج"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__ball_in_court_id
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__boq_id
+msgid "Boq"
+msgstr "جدول الكميات"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__boq_line_id
+msgid "Boq Line"
+msgstr "بند جدول الكميات"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_advance_payment__state__cancelled
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__state__cancelled
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid "Certificates — %s"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__certified
+msgid "Certified"
+msgstr "معتمد "
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid ""
+"Certified by<br/><br/><br/>\n"
+"                                <span style=\"border-bottom: 1px solid #000; display: block;\"> </span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "Certify"
+msgstr "اعتماد"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Certify the claim before invoicing."
+msgstr "اعتمد المطالبة قبل إنشاء الفاتورة."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__claim_id
+msgid "Claim"
+msgstr "المطالبة"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_search
+msgid "Claimed Early"
+msgstr "مطالب به مبكراً"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Claimed before %(label)s on %(date)s."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__is_early
+msgid "Claimed before the milestone it names has been reached."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid ""
+"Client / Engineer<br/><br/><br/>\n"
+"                                <span style=\"border-bottom: 1px solid #000; display: block;\"> </span>"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_res_company
+msgid "Companies"
+msgstr "الشركات"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__company_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__company_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_res_config_settings
+msgid "Config Settings"
+msgstr "تهيئة الإعدادات "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_contract
+msgid "Contract Amount"
+msgstr "قيمة العقد"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_contract
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Contract Qty"
+msgstr "كمية العقد"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__recovery_start_percent
+msgid ""
+"Contracts often let the contractor keep the advance until the job is "
+"properly under way. Recovery is taken only on work certified beyond this "
+"share of the contract."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Create Invoice"
+msgstr "إنشاء فاتورة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__create_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__create_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__create_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__create_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__create_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__create_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_cumulative
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "Cumulative"
+msgstr "التراكمي"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Cumulative Amount"
+msgstr "المبلغ التراكمي"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Cumulative Qty"
+msgstr "الكمية التراكمية"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_project_project__retention_withheld
+msgid "Cumulative retention withheld by certified payment certificates."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__currency_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__currency_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__currency_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__date_required
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__date_required
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__date_required
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__date_required
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__amount_release
+msgid ""
+"Defaults to the percentage of what is still held. Override for a contract "
+"that releases an agreed figure."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__name
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Description"
+msgstr "الوصف"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__display_name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__display_name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__display_name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__display_name
+msgid "Display Name"
+msgstr "اسم العرض "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_advance_payment__state__draft
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__draft
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__early_warning
+msgid "Early Warning"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.actions.act_window,help:construction_progress_billing.action_retention_release
+msgid ""
+"Every payment certificate withholds retention. This is where it\n"
+"               comes back — normally half at taking-over and half at the end of\n"
+"               the defects liability period."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_follower_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_follower_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_partner_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_partner_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء) "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__activity_type_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_type_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__guarantee_expiry
+msgid "Guarantee Expires"
+msgstr "تاريخ انتهاء الضمان"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__guarantee_lapsed
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_search
+msgid "Guarantee Lapsed"
+msgstr "الضمان منتهي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__guarantee_reference
+msgid "Guarantee Ref."
+msgstr "مرجع الضمان"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__guarantee_warning
+msgid "Guarantee Warning"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__has_message
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__has_message
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__sequence_no
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "IPC No."
+msgstr "رقم المستخلص"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__activity_exception_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_exception_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__message_needaction
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_needaction
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__message_has_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__message_has_sms_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_has_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_has_sms_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__message_has_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Interim Payment Certificate"
+msgstr "مستخلص مرحلي"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid ""
+"Interim Payment Certificate\n"
+"                            No."
+msgstr ""
+"مستخلص مرحلي\n"
+"                            No."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__move_payment_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__move_payment_state
+msgid "Invoice Payment"
+msgstr "دفعة الفاتورة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_advance_payment__state__invoiced
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__invoiced
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__state__invoiced
+msgid "Invoiced"
+msgstr "مفوتر"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__is_early
+msgid "Is Early"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_is_follower
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_is_follower
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__is_overdue
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__is_overdue
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__guarantee_bank
+msgid "Issuing Bank"
+msgstr "البنك المُصدر"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__write_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__write_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__write_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__write_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__write_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__write_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Less previously certified (net)"
+msgstr "ناقص صافي المعتمد سابقاً"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid "Less previously released"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Less retention"
+msgstr "ناقص الاحتجاز"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__line_ids
+msgid "Line"
+msgstr "البند "
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_search
+msgid "Live"
+msgstr "مباشر "
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Mark Paid"
+msgstr "تعيين كمدفوع"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "Measured Work"
+msgstr "الأعمال المقاسة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_has_error
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_has_error
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_search
+msgid "Milestone"
+msgstr "معلم رئيسي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__move_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__move_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__move_id
+msgid "Move"
+msgstr "حركة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_due
+msgid "Net Amount Due"
+msgstr "صافي المبلغ المستحق"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_summary
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_summary
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_type_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_type_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: construction_progress_billing
+#: model_terms:ir.actions.act_window,help:construction_progress_billing.action_advance_payment
+msgid "No advance on any project"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "No income account found — configure the chart of accounts."
+msgstr "لم يتم العثور على حساب إيرادات — اضبط دليل الحسابات."
+
+#. module: construction_progress_billing
+#: model_terms:ir.actions.act_window,help:construction_progress_billing.action_retention_release
+msgid "No retention released yet"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__message_needaction_counter
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_needaction_counter
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__message_has_error_counter
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_has_error_counter
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__release_type__dlp_expiry
+msgid "On DLP Expiry"
+msgstr "عند انتهاء فترة الصيانة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__release_type__taking_over
+msgid "On Taking-Over"
+msgstr "عند التسلم الابتدائي"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid "Only a draft advance can be submitted."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Only a draft release can be submitted."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid "Only a submitted advance can be approved."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Only a submitted release can be approved."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Only submitted claims can be certified."
+msgstr "يمكن اعتماد المطالبات المُرسلة فقط."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__release_type__other
+msgid "Other / By Agreement"
+msgstr "أخرى / بالاتفاق"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_list
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_search
+msgid "Outstanding"
+msgstr "المستحق"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_advance_payment__state__paid
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__paid
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__state__paid
+msgid "Paid"
+msgstr "مدفوع"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__ball_in_court_id
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__ball_in_court_id
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_progress_billing
+#: model:ir.actions.report,name:construction_progress_billing.action_report_progress_claim
+msgid "Payment Certificate"
+msgstr "شهادة دفع"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__recovery_percent
+msgid ""
+"Percentage of the work certified on each certificate that is withheld to "
+"repay the advance."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__date_from
+msgid "Period From"
+msgstr "الفترة من"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__date_to
+msgid "Period To"
+msgstr "الفترة إلى"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__previous_claim_id
+msgid "Previous Claim"
+msgstr "المطالبة السابقة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_previous
+msgid "Previous Qty"
+msgstr "الكمية السابقة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_work_done_previous
+msgid "Previously Certified"
+msgstr "المعتمد سابقاً"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_construction_progress_claim
+msgid "Progress Claim / IPC"
+msgstr "مطالبة دفعة / مستخلص"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_construction_progress_claim_line
+msgid "Progress Claim Line"
+msgstr "بند مطالبة دفعة"
+
+#. module: construction_progress_billing
+#: model:ir.actions.act_window,name:construction_progress_billing.action_progress_claim
+#: model:ir.ui.menu,name:construction_progress_billing.menu_progress_claim
+msgid "Progress Claims (IPC)"
+msgstr "مطالبات الدفعات (المستخلصات)"
+
+#. module: construction_progress_billing
+#: model:ir.model,name:construction_progress_billing.model_project_project
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__project_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__project_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__project_id
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_search
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_search
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Rate"
+msgstr "المعدل"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__rating_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__rating_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__rating_ids
+msgid "Ratings"
+msgstr "التقييمات "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__amount_recovered
+msgid "Recovered to Date"
+msgstr "المسترد حتى تاريخه"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "Recovered to date"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+msgid "Recovery"
+msgstr "الاسترداد"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__recovery_complete
+msgid "Recovery Complete"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__recovery_percent
+msgid "Recovery Rate (%)"
+msgstr "نسبة الاسترداد (%)"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "Recovery begins after"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "Recovery rate"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__reference
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__reference
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__reference
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__percent
+msgid "Release (%)"
+msgstr "نسبة الإفراج (%)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__date_release
+msgid "Release Date"
+msgstr "تاريخ الإفراج"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__release_type
+msgid "Release Type"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Release of retention — %(ref)s (%(kind)s)"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_list
+msgid "Released"
+msgstr "مُفرج عنه"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__amount_released_before
+msgid "Released by earlier certificates on this project."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid ""
+"Released by this certificate\n"
+"                                        ("
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "Reload from BOQ"
+msgstr "إعادة تحميل من جدول الكميات"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Request Approval"
+msgstr "طلب الاعتماد"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__activity_user_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_user_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_cumulative
+msgid "Retention (Cumulative)"
+msgstr "الاحتجاز (تراكمي)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_cap_percent
+msgid "Retention Cap (% contract)"
+msgstr "حد الاحتجاز (% من العقد)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_project_project__retention_balance
+msgid "Retention Outstanding"
+msgstr "الاحتجاز المستحق"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_percent
+msgid "Retention Percent"
+msgstr "نسبة الاحتجاز"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Retention Position"
+msgstr "موقف الاحتجاز"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_res_company__construction_retention_account_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_res_config_settings__construction_retention_account_id
+msgid "Retention Receivable Account"
+msgstr "حساب الاحتجاز المستحق"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+#: model:ir.model.fields,field_description:construction_progress_billing.field_project_project__retention_release_ids
+msgid "Retention Release"
+msgstr "الإفراج عن الاحتجاز"
+
+#. module: construction_progress_billing
+#: model:ir.actions.report,name:construction_progress_billing.action_report_retention_release
+#: model:ir.model,name:construction_progress_billing.model_construction_retention_release
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid "Retention Release Certificate"
+msgstr "شهادة الإفراج عن الاحتجاز"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_project_project__retention_release_count
+msgid "Retention Release Count"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_project_project__retention_released
+msgid "Retention Released"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.actions.act_window,name:construction_progress_billing.action_retention_release
+#: model:ir.ui.menu,name:construction_progress_billing.menu_retention_release
+msgid "Retention Releases"
+msgstr "الإفراج عن الاحتجازات"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__retention_this
+msgid "Retention This Period"
+msgstr "احتجاز الفترة الحالية"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__amount_withheld
+#: model:ir.model.fields,field_description:construction_progress_billing.field_project_project__retention_withheld
+msgid "Retention Withheld"
+msgstr "الاحتجاز المحتجز"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_retention_release
+msgid "Retention withheld to date"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/project_retention.py:0
+msgid "Retention — %s"
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__section_id
+msgid "Section"
+msgstr "القسم"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Set the project's Client before invoicing."
+msgstr "حدد عميل المشروع قبل إنشاء الفاتورة."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__percent
+msgid ""
+"Share of the retention still held to release on this certificate. The amount"
+" is computed from it, and can be overridden where a contract releases an "
+"agreed sum instead."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__recovery_start_percent
+msgid "Start Recovery After (% complete)"
+msgstr "بدء الاسترداد بعد (% الإنجاز)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_search
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__activity_state
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_state
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الأنشطة المعتمدة على الحالة\n"
+"المتأخرة: تاريخ الاستحقاق مر\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"المخطط: الأنشطة المستقبلية."
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__amount_outstanding
+msgid "Still Outstanding"
+msgstr "المتبقي المستحق"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_project_project__retention_balance
+msgid ""
+"Still held by the client. This is the number to chase at taking-over and "
+"again at the end of the defects liability period."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_advance_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "Submit"
+msgstr "إرسال"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_advance_payment__state__submitted
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__submitted
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_retention_release__state__submitted
+msgid "Submitted"
+msgstr "مُرسل"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "Submitted early — %s"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid ""
+"The advance payment guarantee expired on %(date)s. Anything still "
+"outstanding is unsecured."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__guarantee_lapsed
+msgid ""
+"The guarantee has expired while money is still outstanding — the advance is "
+"unsecured."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__advance_id
+msgid "The live advance being recovered here."
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid ""
+"The recovery rate must be between 0 and 100 percent. At zero the advance is "
+"never repaid."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__qty_this_period
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+msgid "This Period"
+msgstr "هذه الفترة"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/advance_payment.py:0
+msgid ""
+"This advance has already been recovered against certificates. Cancelling it "
+"would leave those deductions with nothing to repay."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_retention_release_form
+msgid "This was rejected. Open the approval to see why."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__amount_withheld
+msgid "Total retention withheld by certificates on this project."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__approval_blocked
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__approval_blocked
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__approval_blocked
+msgid ""
+"True while an approval is outstanding, so a form can stop offering the "
+"button that needs it."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__activity_exception_decoration
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_exception_decoration
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__unit_rate
+msgid "Unit Rate (Sell)"
+msgstr "سعر الوحدة (بيع)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_advance_payment__website_message_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__website_message_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_retention_release__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_advance_payment__website_message_ids
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__website_message_ids
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني "
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_retention_release__release_type
+msgid "Which contractual milestone this release is claimed against."
+msgstr ""
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_work_done_cumulative
+msgid "Work Done (Cumulative)"
+msgstr "الأعمال المنفذة (تراكمي)"
+
+#. module: construction_progress_billing
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_this_period
+msgid "Work This Period"
+msgstr "أعمال الفترة الحالية"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "Work done to date"
+msgstr "الأعمال المنفذة حتى تاريخه"
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/progress_claim.py:0
+msgid "Work executed to %(date)s — %(ref)s%(note)s"
+msgstr "الأعمال المنفذة حتى %(date)s — %(ref)s%(note)s"
+
+#. module: construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_advance_payment
+msgid "issued by"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "taking-over"
+msgstr ""
+
+#. module: construction_progress_billing
+#. odoo-python
+#: code:addons/construction_progress_billing/models/retention_release.py:0
+msgid "the end of the DLP"
+msgstr ""

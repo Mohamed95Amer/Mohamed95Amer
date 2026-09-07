@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="construction_pin.PlanViewer">
+        <div class="o_plan_viewer d-flex flex-column h-100">
+            <input type="file" accept="application/pdf" class="d-none"
+                   t-ref="fileInput" t-on-change="onFileSelected"/>
+
+            <div class="o_plan_toolbar">
+                <div class="o_plan_toolbar_left">
+                    <span class="o_plan_project" t-esc="state.contextName"/>
+                    <select class="form-select form-select-sm o_plan_rev_select"
+                            t-on-change="onSelectSheet">
+                        <t t-foreach="state.sheets" t-as="rev" t-key="rev.id">
+                            <option t-att-value="rev.id"
+                                    t-att-selected="rev.id === state.sheetId"
+                                    t-esc="rev.label"/>
+                        </t>
+                    </select>
+                </div>
+
+                <div class="o_plan_legend" t-if="state.pins.length">
+                    <t t-foreach="state.pinTypes" t-as="type" t-key="type.id">
+                        <button class="o_legend_chip"
+                                t-att-class="state.filters[type.id] ? '' : 'o_chip_off'"
+                                t-att-title="state.filters[type.id] ? 'Click to hide' : 'Click to show'"
+                                t-on-click="() => this.toggleFilter(type.id)">
+                            <i t-att-class="'fa ' + type.icon"/>
+                            <t t-esc="type.label"/>
+                            <span class="o_chip_count" t-esc="pinCount(type.id)"/>
+                        </button>
+                    </t>
+                </div>
+
+                <div class="o_plan_toolbar_right">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Zoom">
+                        <button class="btn btn-light" title="Zoom out"
+                                t-on-click="() => this.zoom(-0.2)">
+                            <i class="fa fa-search-minus"/>
+                        </button>
+                        <button class="btn btn-light" title="Fit to width"
+                                t-on-click="fitWidth">
+                            <i class="fa fa-arrows-h"/>
+                        </button>
+                        <button class="btn btn-light" title="Zoom in"
+                                t-on-click="() => this.zoom(0.2)">
+                            <i class="fa fa-search-plus"/>
+                        </button>
+                    </div>
+                    <button class="btn btn-sm btn-light" t-if="state.hasSheet"
+                            title="Replace the sheet PDF"
+                            t-att-disabled="state.uploading"
+                            t-on-click="triggerUpload">
+                        <i t-att-class="state.uploading ? 'fa fa-spinner fa-spin' : 'fa fa-upload'"/>
+                        Replace PDF
+                    </button>
+                    <button class="btn btn-sm o_btn_addpin"
+                            t-att-class="state.addMode ? 'active' : ''"
+                            t-att-disabled="!state.sheetId"
+                            t-on-click="toggleAddMode">
+                        <i class="fa fa-map-pin me-1"/>
+                        <t t-if="state.addMode">Cancel</t>
+                        <t t-else="">Add pin</t>
+                    </button>
+                </div>
+            </div>
+
+            <div class="o_plan_hint" t-if="state.addMode">
+                <i class="fa fa-hand-pointer-o me-2"/>
+                Click anywhere on the sheet to place the pin — press
+                <kbd>Esc</kbd> to cancel.
+            </div>
+
+            <div class="o_plan_scroll flex-grow-1 overflow-auto" t-ref="scroll">
+                <t t-if="state.loading">
+                    <div class="o_plan_empty">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                        <p>Loading sheet…</p>
+                    </div>
+                </t>
+                <t t-elif="state.renderError">
+                    <div class="o_plan_empty o_plan_error">
+                        <i class="fa fa-exclamation-triangle fa-3x"/>
+                        <p class="fw-bold" t-esc="state.renderError"/>
+                        <button class="btn btn-primary" t-on-click="retryRender">
+                            <i class="fa fa-refresh me-1"/> Try again
+                        </button>
+                    </div>
+                </t>
+                <t t-elif="!state.sheetId">
+                    <div class="o_plan_empty">
+                        <i class="fa fa-map-o fa-3x"/>
+                        <p>Open a sheet to view it.</p>
+                        <p class="text-muted">
+                            Pick a drawing or floor plan, then Open Plan Viewer.
+                        </p>
+                    </div>
+                </t>
+                <t t-elif="!state.hasSheet">
+                    <div class="o_plan_empty">
+                        <i class="fa fa-cloud-upload fa-3x"/>
+                        <p class="fw-bold">No PDF sheet uploaded yet</p>
+                        <p class="text-muted">
+                            Upload the drawing sheet to start pinning tasks, RFIs and notes on the plan.
+                        </p>
+                        <button class="btn btn-primary"
+                                t-att-disabled="state.uploading"
+                                t-on-click="triggerUpload">
+                            <i t-att-class="state.uploading ? 'fa fa-spinner fa-spin me-1' : 'fa fa-upload me-1'"/>
+                            Upload sheet PDF
+                        </button>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="o_plan_stage">
+                        <div class="o_plan_sheet"
+                             t-att-class="state.addMode ? 'o_add_mode' : ''"
+                             t-on-click="onSheetClick">
+                            <canvas t-ref="canvas"/>
+                            <t t-foreach="visiblePins" t-as="pin" t-key="pin.id">
+                                <div t-att-class="pinClass(pin)"
+                                     t-att-style="pinStyle(pin)"
+                                     t-on-click="(ev) => this.onPinClick(pin, ev)">
+                                    <span class="o_pin_dot">
+                                        <i t-att-class="pinIcon(pin)"/>
+                                    </span>
+                                    <t t-if="pin.has_photo">
+                                        <span class="o_pin_has_photo"
+                                              title="This pin has a photo">
+                                            <i class="fa fa-camera"/>
+                                        </span>
+                                    </t>
+                                    <span class="o_pin_tip">
+                                        <strong t-esc="pin.name"/>
+                                        <t t-if="pin.status"> · <t t-esc="pin.status"/></t>
+                                        <!-- The picture, not a link to it. A
+                                             pin with a photo is nearly always
+                                             being hovered *because* of the
+                                             photo, and /web/image serves it
+                                             through the record's own access
+                                             rules. -->
+                                        <img t-if="pin.has_photo"
+                                             class="o_pin_tip_photo"
+                                             t-att-src="photoUrl(pin)"
+                                             loading="lazy"
+                                             alt="Photo attached to this pin"/>
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="construction_pin.PinPromptDialog">
+        <Dialog title.translate="New pin" size="'md'">
+            <div class="o_pin_type_picker mb-3">
+                <t t-foreach="pinTypes" t-as="type" t-key="type.id">
+                    <button class="o_pin_type_btn"
+                            t-att-class="state.pinType === type.id ? 'selected' : ''"
+                            t-on-click="() => this.selectType(type.id)">
+                        <i t-att-class="'fa fa-lg ' + type.icon"/>
+                        <span t-esc="type.label"/>
+                    </button>
+                </t>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Title</label>
+                <input type="text" class="form-control" t-model="state.name"
+                       placeholder="e.g. Cracked tile at column C3"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Description (optional)</label>
+                <textarea class="form-control" t-model="state.description" rows="3"/>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Photo (optional)</label>
+                <!-- capture="environment" asks a phone for the rear camera
+                     directly rather than the photo library. On site the
+                     picture is nearly always being taken now, of the thing
+                     the pin is being dropped on; on a desktop the attribute
+                     is ignored and this stays an ordinary file picker. -->
+                <input type="file" class="form-control" accept="image/*"
+                       capture="environment" t-on-change="onPhotoSelected"/>
+                <div t-if="state.photoError" class="text-danger small mt-1"
+                     t-esc="state.photoError"/>
+                <div t-if="state.photoPreview" class="o_pin_photo_preview mt-2">
+                    <img t-att-src="state.photoPreview" alt="Selected photo"/>
+                    <button class="btn btn-sm btn-link text-danger"
+                            t-on-click="clearPhoto">Remove</button>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary"
+                        t-att-disabled="!state.name.trim()"
+                        t-on-click="onConfirm">Create pin</button>
+                <button class="btn btn-secondary" t-on-click="() => this.props.close()">
+                    Cancel
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

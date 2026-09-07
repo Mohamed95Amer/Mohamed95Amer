@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_facility_floorplans"
+              name="Floor Plans"
+              parent="facility_asset.menu_facility_root"
+              action="action_facility_floorplan"
+              sequence="35"/>
+</odoo>

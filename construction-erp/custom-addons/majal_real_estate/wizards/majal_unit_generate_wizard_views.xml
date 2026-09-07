@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_unit_generate_wizard_form" model="ir.ui.view">
+        <field name="name">majal.unit.generate.wizard.form</field>
+        <field name="model">majal.unit.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Units">
+                <group>
+                    <field name="development_id" invisible="1"/>
+                    <field name="unit_type_id"/>
+                    <field name="building_id"/>
+                    <field name="floor_ids" widget="many2many_tags"/>
+                </group>
+                <group string="Unit Code Pattern">
+                    <field name="code_prefix"/>
+                    <field name="code_suffix"/>
+                </group>
+                <p class="text-muted">
+                    One unit is created per selected floor, named
+                    &lt;prefix&gt;&lt;floor number&gt;&lt;suffix&gt; -- e.g. A, floor
+                    12, suffix 01 becomes A1201.
+                </p>
+                <footer>
+                    <button name="action_generate" type="object"
+                            string="Generate" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_ahu_belt" model="product.product">
+        <field name="name">AHU drive belt SPZ-1180</field>
+        <field name="type">consu</field>
+        <field name="is_storable" eval="True"/>
+        <field name="standard_price">45</field>
+    </record>
+
+    <record id="product_ahu_filter" model="product.product">
+        <field name="name">Panel filter G4 595x595</field>
+        <field name="type">consu</field>
+        <field name="is_storable" eval="True"/>
+        <field name="standard_price">28</field>
+    </record>
+
+    <!-- The spare list on the asset finally has stock behind it. -->
+    <record id="spare_ahu_belt" model="facility.spare.line">
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+        <field name="product_id" ref="product_ahu_belt"/>
+        <field name="min_qty">2</field>
+    </record>
+    <record id="spare_ahu_filter" model="facility.spare.line">
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+        <field name="product_id" ref="product_ahu_filter"/>
+        <field name="min_qty">8</field>
+    </record>
+
+    <function model="facility.location" name="ensure_store"
+              eval="[[ref('facility_asset.loc_l3_plantroom')]]"/>
+    <function model="facility.inventory.demo" name="_load_demo_stock"
+              eval="[[]]"/>
+</odoo>

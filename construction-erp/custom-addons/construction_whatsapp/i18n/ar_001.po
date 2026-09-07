@@ -1,0 +1,561 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_message.py:0
+msgid "(no text)"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_list
+msgid "About"
+msgstr "حول "
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__access_token
+msgid "Access Token"
+msgstr "رمز الوصول "
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__account_id
+msgid "Account"
+msgstr "الحساب "
+
+#. modules: construction_whatsapp, facility_sla
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__active
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__active
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_account__webhook_verify_token
+msgid ""
+"Any string you choose. Meta echoes it back when verifying the webhook, which"
+" is how the callback proves it came from your own configuration."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__api_version
+msgid "Api Version"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__model_id
+msgid "Applies To"
+msgstr "ينطبق على"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__attempts
+msgid "Attempts"
+msgstr "المحاولات"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_template__category__authentication
+msgid "Authentication"
+msgstr "المصادقة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__body
+msgid "Body"
+msgstr "المتن"
+
+#. modules: construction_material, construction_tender, construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. modules: construction_material, construction_tender, construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_material.selection__construction_material_issue__state__cancelled
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__cancelled
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__cancelled
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__category
+msgid "Category"
+msgstr "الفئة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__body_params
+msgid ""
+"Comma-separated field paths filling {{1}}, {{2}}... in order. Relations are "
+"followed with dots, e.g. reference, project_id.name, date_required"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model_terms:ir.actions.act_window,help:construction_whatsapp.action_whatsapp_account
+msgid "Connect a WhatsApp number"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_account__state__connected
+msgid "Connected"
+msgstr "متصل "
+
+#. module: construction_whatsapp
+#: model:ir.model,name:construction_whatsapp.model_construction_defect
+msgid "Construction Defect / Punch Item"
+msgstr "عيب إنشائي / ملاحظة استلام"
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_account.py:0
+msgid "Could not reach WhatsApp: %s"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_account_form
+msgid "Credentials"
+msgstr "بيانات الاعتماد"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__delivered
+msgid "Delivered"
+msgstr "تم التسليم"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__direction
+msgid "Direction"
+msgstr "الاتجاه"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__res_id
+msgid "Document ID"
+msgstr "معرف المستند"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__res_model
+msgid "Document Model"
+msgstr "نموذج المستند"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__error
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_account__state__error
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+msgid "Error"
+msgstr "خطأ"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__failed
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_search
+msgid "Failed"
+msgstr "فشل"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__direction__in
+msgid "Incoming"
+msgstr "واردة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__lang_code
+msgid "Language"
+msgstr "اللغة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__lang_code
+msgid "Language tag of the approved template, e.g. en or en_US."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__last_error
+msgid "Last Error"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_template__category__marketing
+msgid "Marketing"
+msgstr "التسويق"
+
+#. module: construction_whatsapp
+#: model:ir.model,name:construction_whatsapp.model_construction_meeting_action
+msgid "Meeting Action Item"
+msgstr "بند إجراء من الاجتماع"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+msgid "Message"
+msgstr "الرسالة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__message_count
+msgid "Message Count"
+msgstr "عدد الرسائل"
+
+#. module: construction_whatsapp
+#: model_terms:ir.actions.act_window,help:construction_whatsapp.action_whatsapp_message
+msgid ""
+"Messages are queued by the events that cause them — an RFI\n"
+"                landing in someone's court, a defect assigned, an SLA about to\n"
+"                breach — and sent every five minutes."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_account_form
+msgid "Meta Configuration"
+msgstr "إعدادات Meta"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__category
+msgid ""
+"Meta bills by category. Operational alerts are utility, which is the "
+"cheapest; a reply within 24 hours is free."
+msgstr ""
+
+#. modules: construction_bim, construction_whatsapp
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__model_id
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__model
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+msgid "Model"
+msgstr "الطراز"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__model_id
+msgid "Model the parameters are read from."
+msgstr ""
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_account.py:0
+msgid "No access token on WhatsApp account %s."
+msgstr ""
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_template.py:0
+msgid "No record to preview against."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_account__state__draft
+msgid "Not Verified"
+msgstr "غير مُتحقق"
+
+#. module: construction_whatsapp
+#: model_terms:ir.actions.act_window,help:construction_whatsapp.action_whatsapp_message
+msgid "Nothing sent yet"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__direction__out
+msgid "Outgoing"
+msgstr "صادرة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__body_params
+msgid "Parameters"
+msgstr "المعايير"
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_template.py:0
+msgid "Path %(path)s passes through several records."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_account__access_token
+msgid ""
+"Permanent access token from the Meta app. Kept to system administrators "
+"because it can send messages at the company's expense."
+msgstr ""
+
+#. modules: construction_hse, construction_whatsapp
+#: model:ir.actions.report,name:construction_hse.action_report_permit
+#: model:ir.model,name:construction_whatsapp.model_construction_permit
+#: model_terms:ir.ui.view,arch_db:construction_hse.report_permit_document
+msgid "Permit to Work"
+msgstr "تصريح عمل"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__phone
+msgid "Phone"
+msgstr "رقم الهاتف"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__phone_number_id
+msgid "Phone Number ID"
+msgstr "معرّف رقم الهاتف"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_account_form
+msgid ""
+"Point Meta's webhook at\n"
+"                        <code>https://your-odoo-domain/whatsapp/webhook</code>\n"
+"                        and use the verify token above."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__preview
+msgid "Preview"
+msgstr "معاينة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__queued
+msgid "Queued"
+msgstr "في الانتظار"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__read
+msgid "Read"
+msgstr "تم القراءة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__received
+msgid "Received"
+msgstr "مستلمة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__partner_id
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_search
+msgid "Recipient"
+msgstr "المستلم"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__record_name
+msgid "Record Name"
+msgstr "اسم السجل "
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_search
+msgid "Replies"
+msgstr "الردود"
+
+#. module: construction_whatsapp
+#: model:ir.model,name:construction_whatsapp.model_construction_rfi
+msgid "Request for Information"
+msgstr "طلب معلومات"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_template_form
+msgid "Resolves to"
+msgstr "يُنتج"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+msgid "Retry"
+msgstr "إعادة المحاولة"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__sent
+msgid "Sent"
+msgstr "تم الإرسال"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__sent_on
+msgid "Sent On"
+msgstr "تم الإرسال في "
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_account.py:0
+msgid "Set an access token first."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__template_id
+msgid "Template"
+msgstr "قالب "
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_template.py:0
+msgid ""
+"Template %(template)s asks for %(path)s, but %(model)s has no field "
+"%(field)s."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__template_name
+msgid "Template Name"
+msgstr "اسم القالب"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_account_form
+msgid "Test Connection"
+msgstr "اختبار الاتصال"
+
+#. module: construction_whatsapp
+#: model:ir.model.constraint,message:construction_whatsapp.constraint_whatsapp_account_phone_number_id_uniq
+msgid "That phone number ID is already configured for this company."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.constraint,message:construction_whatsapp.constraint_whatsapp_template_template_lang_uniq
+msgid "That template and language pair already exists."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__template_name
+msgid "The exact template name registered with Meta. Case sensitive."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_account__phone_number_id
+msgid ""
+"The numeric ID Meta assigns to the sending number — not the phone number "
+"itself."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_template__category__utility
+msgid "Utility"
+msgstr "خدمي"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_search
+msgid "Waiting to send"
+msgstr "بانتظار الإرسال"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__webhook_verify_token
+msgid "Webhook Verify Token"
+msgstr "رمز التحقق للـ Webhook"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__preview
+msgid "What the parameters resolve to on the most recent record."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,help:construction_whatsapp.field_whatsapp_template__name
+msgid "What this template is for, in your words."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.ui.menu,name:construction_whatsapp.menu_whatsapp_messages
+msgid "WhatsApp"
+msgstr "واتساب"
+
+#. module: construction_whatsapp
+#: model:ir.actions.act_window,name:construction_whatsapp.action_whatsapp_account
+#: model:ir.ui.menu,name:construction_whatsapp.menu_whatsapp_config
+msgid "WhatsApp Accounts"
+msgstr "حسابات واتساب"
+
+#. module: construction_whatsapp
+#: model:ir.model,name:construction_whatsapp.model_whatsapp_account
+msgid "WhatsApp Business Account"
+msgstr "حساب واتساب للأعمال"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__business_account_id
+msgid "WhatsApp Business Account ID"
+msgstr "معرّف حساب واتساب للأعمال"
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__wa_message_id
+msgid "WhatsApp ID"
+msgstr "معرّف واتساب"
+
+#. module: construction_whatsapp
+#: model:ir.model,name:construction_whatsapp.model_whatsapp_message
+msgid "WhatsApp Message"
+msgstr "رسالة واتساب"
+
+#. module: construction_whatsapp
+#: model:ir.model,name:construction_whatsapp.model_whatsapp_template
+msgid "WhatsApp Message Template"
+msgstr "قالب رسالة واتساب"
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_account.py:0
+#: model:ir.actions.act_window,name:construction_whatsapp.action_whatsapp_message
+msgid "WhatsApp Messages"
+msgstr "رسائل واتساب"
+
+#. module: construction_whatsapp
+#: model:ir.actions.act_window,name:construction_whatsapp.action_whatsapp_template
+#: model:ir.ui.menu,name:construction_whatsapp.menu_whatsapp_template_config
+msgid "WhatsApp Templates"
+msgstr "قوالب واتساب"
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_account.py:0
+msgid "WhatsApp refused the message (%(code)s): %(body)s"
+msgstr ""
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_message.py:0
+msgid "WhatsApp reply from %(name)s (%(phone)s): %(text)s"
+msgstr ""
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_message.py:0
+msgid "WhatsApp sent to %(name)s (%(phone)s): %(body)s"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.actions.server,name:construction_whatsapp.cron_whatsapp_chase_actions_ir_actions_server
+msgid "WhatsApp: chase stuck meeting actions"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.actions.server,name:construction_whatsapp.cron_whatsapp_dispatch_ir_actions_server
+msgid "WhatsApp: send queued messages"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_construction_meeting_action__whatsapp_chased
+msgid "Whatsapp Chased"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model:ir.model.fields,field_description:construction_whatsapp.field_construction_permit__whatsapp_expiry_warned
+msgid "Whatsapp Expiry Warned"
+msgstr ""
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_list
+msgid "When"
+msgstr "الزمان"
+
+#. module: construction_whatsapp
+#: model_terms:ir.actions.act_window,help:construction_whatsapp.action_whatsapp_account
+msgid ""
+"You need a Meta Business account, a verified business and a phone\n"
+"                number dedicated to the API. Messages you send are billed by Meta\n"
+"                per template; replies within 24 hours are free."
+msgstr ""
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_account_form
+msgid "e.g. Majal site number"
+msgstr ""
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_message.py:0
+msgid "recipient"
+msgstr "المستلم"
+
+#. module: construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_template_form
+msgid "reference, project_id.name, date_required"
+msgstr ""
+
+#. module: construction_whatsapp
+#. odoo-python
+#: code:addons/construction_whatsapp/models/whatsapp_message.py:0
+msgid "unknown"
+msgstr "مجهول "

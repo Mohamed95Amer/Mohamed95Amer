@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ========================== Decision =========================== -->
+    <record id="view_approval_decision_form" model="ir.ui.view">
+        <field name="name">construction.approval.decision.form</field>
+        <field name="model">construction.approval.decision</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="step_count" readonly="1"
+                           string="Documents"/>
+                    <field name="total_amount" readonly="1"
+                           invisible="total_amount == 0"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="decision" widget="radio"
+                           options="{'horizontal': True}"/>
+                    <field name="reason"
+                           required="decision == 'rejected'"
+                           placeholder="Why. A rejection without one comes straight back unchanged."/>
+                </group>
+                <field name="step_ids" readonly="1" nolabel="1">
+                    <list create="0" delete="0">
+                        <field name="record_reference"/>
+                        <field name="name"/>
+                        <field name="amount"/>
+                        <field name="currency_id" column_invisible="1"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_approval_decision" model="ir.actions.act_window">
+        <field name="name">Decide</field>
+        <field name="res_model">construction.approval.decision</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_construction_approval_step"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+
+    <!-- ============================ Inbox ============================ -->
+    <record id="view_approval_step_list" model="ir.ui.view">
+        <field name="name">construction.approval.step.list</field>
+        <field name="model">construction.approval.step</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" default_order="requested_on asc"
+                  decoration-danger="waiting_days &gt; 7"
+                  decoration-muted="state != 'pending'">
+                <field name="record_reference" string="Document"/>
+                <field name="res_model" string="Type" optional="show"/>
+                <field name="project_id" optional="show"/>
+                <field name="name" string="Step"/>
+                <field name="amount" sum="Total" optional="show"/>
+                <field name="requested_by_id" string="Raised by" optional="show"/>
+                <field name="waiting_days" string="Days waiting"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="currency_id" column_invisible="1"/>
+                <button name="action_open_document" type="object"
+                        icon="fa-external-link" title="Open the document"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_approval_step_form" model="ir.ui.view">
+        <field name="name">construction.approval.step.form</field>
+        <field name="model">construction.approval.step</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="%(action_approval_decision)d" type="action"
+                            string="Decide" class="btn-primary"
+                            invisible="state != 'pending'"
+                            context="{'active_model': 'construction.approval.step',
+                                      'active_ids': [id]}"/>
+                    <button name="action_open_document" type="object"
+                            string="Open the document"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="record_reference"/></h1>
+                        <h3><field name="name"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="requested_by_id"/>
+                            <field name="requested_on"/>
+                            <field name="waiting_days"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="user_ids" widget="many2many_tags"
+                                   invisible="not user_ids"/>
+                            <field name="group_id"/>
+                            <field name="decided_by_id" invisible="not decided_by_id"/>
+                            <field name="delegated_from_id"
+                                   invisible="not delegated_from_id"/>
+                            <field name="decided_on" invisible="not decided_on"/>
+                        </group>
+                    </group>
+                    <group string="Reason">
+                        <field name="reason" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_approval_step_search" model="ir.ui.view">
+        <field name="name">construction.approval.step.search</field>
+        <field name="model">construction.approval.step</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="record_reference"/>
+                <field name="project_id"/>
+                <field name="requested_by_id"/>
+                <filter name="pending" string="Waiting"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter name="stale" string="Waiting Over a Week"
+                        domain="[('state', '=', 'pending'),
+                                 ('waiting_days', '&gt;', 7)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_model" string="Document Type"
+                            context="{'group_by': 'res_model'}"/>
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="State"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- groups_id is what makes this openable at all. A server action with no
+         groups falls back to requiring *write* on its own model
+         (ir.actions.server.run in base), and only the manager group has write
+         on construction.approval.step. So every ordinary approver — the site
+         engineer, the field user, the PM — clicked "Waiting for Me" and got an
+         access error naming a group they are not in, while the list it would
+         have shown is read-only and holds nothing but their own decisions.
+         Naming the group here replaces that fallback with the check we mean. -->
+    <record id="action_approval_inbox" model="ir.actions.server">
+        <field name="name">Waiting for Me</field>
+        <field name="model_id" ref="model_construction_approval_step"/>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('construction_base.group_construction_user'))]"/>
+        <field name="code">action = model._inbox_action()</field>
+    </record>
+
+    <record id="action_approval_step_all" model="ir.actions.act_window">
+        <field name="name">All Approval Steps</field>
+        <field name="res_model">construction.approval.step</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1}</field>
+    </record>
+
+    <!-- =========================== Requests ========================== -->
+    <record id="view_approval_request_form" model="ir.ui.view">
+        <field name="name">construction.approval.request.form</field>
+        <field name="model">construction.approval.request</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_open_record" type="object"
+                            string="Open the document" class="btn-primary"/>
+                    <button name="action_cancel" type="object" string="Withdraw"
+                            invisible="state != 'pending'"
+                            help="The document has changed and the answer would
+                                  be stale."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="res_model" string="Document Type"/>
+                            <field name="project_id"/>
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="rule_id"/>
+                            <field name="requested_by_id"/>
+                            <field name="requested_on"/>
+                            <field name="decided_on" invisible="not decided_on"/>
+                        </group>
+                    </group>
+                    <field name="step_ids" readonly="1">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                            <field name="user_ids" widget="many2many_tags"
+                                   optional="show"/>
+                            <field name="group_id"/>
+                            <field name="decided_by_id"/>
+                            <field name="delegated_from_id" optional="hide"/>
+                            <field name="decided_on"/>
+                            <field name="reason" optional="show"/>
+                            <field name="state" widget="badge"
+                                   decoration-warning="state == 'pending'"
+                                   decoration-success="state == 'approved'"
+                                   decoration-danger="state == 'rejected'"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_approval_request_list" model="ir.ui.view">
+        <field name="name">construction.approval.request.list</field>
+        <field name="model">construction.approval.request</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="name"/>
+                <field name="res_model" string="Type"/>
+                <field name="project_id"/>
+                <field name="amount" sum="Total"/>
+                <field name="requested_by_id"/>
+                <field name="requested_on"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_approval_request" model="ir.actions.act_window">
+        <field name="name">Approval Requests</field>
+        <field name="res_model">construction.approval.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============================ Rules ============================ -->
+    <record id="view_approval_rule_form" model="ir.ui.view">
+        <field name="name">construction.approval.rule.form</field>
+        <field name="model">construction.approval.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" text="Archived"
+                            bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"
+                                   placeholder="e.g. Variations 50k–250k"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id"
+                                   options="{'no_create': True}"/>
+                            <field name="document_kind"/>
+                            <field name="project_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="amount_from"/>
+                            <field name="amount_to"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="require_other_user"/>
+                        </group>
+                    </group>
+                    <field name="step_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="group_id"/>
+                            <field name="user_id"/>
+                            <field name="user_ids" widget="many2many_tags"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_approval_rule_list" model="ir.ui.view">
+        <field name="name">construction.approval.rule.list</field>
+        <field name="model">construction.approval.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="document_kind" optional="show"/>
+                <field name="project_id" optional="hide"/>
+                <field name="amount_from"/>
+                <field name="amount_to"/>
+                <field name="require_other_user" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_approval_rule" model="ir.actions.act_window">
+        <field name="name">Approval Rules</field>
+        <field name="res_model">construction.approval.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Decide who signs what</p>
+            <p>
+                A rule matches a kind of document and a band of value to a
+                chain of approvers — variations under fifty thousand to the
+                project manager, above it to the commercial manager, above a
+                quarter of a million to the board. Changing the threshold is
+                data entry, not a release.
+            </p>
+        </field>
+    </record>
+
+    <!-- ========================= Delegation ========================== -->
+    <record id="view_approval_delegation_form" model="ir.ui.view">
+        <field name="name">construction.approval.delegation.form</field>
+        <field name="model">construction.approval.delegation</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="delegate_id"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="reason"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_approval_delegation_list" model="ir.ui.view">
+        <field name="name">construction.approval.delegation.list</field>
+        <field name="model">construction.approval.delegation</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="user_id"/>
+                <field name="delegate_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="reason"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_approval_delegation" model="ir.actions.act_window">
+        <field name="name">Approval Delegation</field>
+        <field name="res_model">construction.approval.delegation</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Cover an approver who is away</p>
+            <p>
+                Name who is covering and for how long. Every signature made
+                under a delegation records whose authority was used — which is
+                what sharing a login destroys.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================ Menus ============================ -->
+    <menuitem id="menu_approvals_root" name="Approvals"
+              parent="construction_base.menu_construction_root" sequence="8"/>
+    <menuitem id="menu_approval_inbox" name="Waiting for Me"
+              parent="menu_approvals_root" action="action_approval_inbox"
+              sequence="10"/>
+    <menuitem id="menu_approval_requests" name="All Requests"
+              parent="menu_approvals_root" action="action_approval_request"
+              sequence="20"/>
+    <menuitem id="menu_approval_steps" name="All Steps"
+              parent="menu_approvals_root" action="action_approval_step_all"
+              sequence="30" groups="construction_base.group_construction_manager"/>
+    <menuitem id="menu_approval_rules" name="Rules"
+              parent="construction_base.menu_construction_config"
+              action="action_approval_rule" sequence="5"
+              groups="construction_base.group_construction_manager"/>
+    <menuitem id="menu_approval_delegation" name="Delegation"
+              parent="construction_base.menu_construction_config"
+              action="action_approval_delegation" sequence="6"/>
+</odoo>

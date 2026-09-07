@@ -1,0 +1,199 @@
+// Majal Arabic / RTL refinements. Odoo supplies the base RTL bundle; these
+// rules cover the custom dashboards and preserve readable numbers and codes.
+//
+// Everything here is already expressed the way it should appear in Arabic —
+// text-align: right means right, margin-left means the left of an RTL screen.
+// rtlcss builds the Arabic bundle by mirroring every directional declaration
+// it finds, so without the guard below it would mirror these too and hand
+// back the left-to-right layout they exist to replace. Twenty-three
+// declarations in this file would flip.
+//
+// So the file is fenced off. Anything added here must likewise be written in
+// its final Arabic form, not in terms to be mirrored.
+// Written as it should appear in Arabic. The bang keeps this comment
+// through SCSS compilation so rtlcss actually receives it.
+/*!rtl:begin:ignore*/
+body.o_rtl {
+    body,
+    .o_web_client {
+        font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+
+    .o_web_client {
+        .btn .fa:not(:only-child) {
+            margin-right: 0;
+            margin-left: 4px;
+        }
+
+        .o_form_view,
+        .o_list_view,
+        .o_kanban_renderer,
+        .dropdown-menu,
+        .modal-content {
+            text-align: right;
+        }
+
+        .o_notebook > .nav-tabs,
+        .nav-tabs {
+            direction: rtl;
+        }
+
+        .o_list_table {
+            th,
+            td {
+                text-align: right;
+            }
+
+            .o_list_number,
+            .o_field_monetary,
+            .o_field_float,
+            .o_field_integer {
+                direction: ltr;
+                text-align: left;
+                unicode-bidi: isolate;
+            }
+        }
+
+        .o_field_char[name*="code"],
+        .o_field_char[name*="reference"],
+        .o_field_char[name*="number"],
+        .o_field_widget[name*="code"],
+        .o_field_widget[name*="reference"],
+        .o_field_widget[name*="number"] {
+            direction: ltr;
+            text-align: right;
+            unicode-bidi: isolate;
+        }
+    }
+
+    .o_construction_home,
+    .o_facility_home,
+    .o_majal_workspace {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .o_construction_hero_meta,
+    .o_facility_hero_meta {
+        margin-right: 34px;
+        margin-left: 0;
+    }
+
+    .o_construction_app,
+    .o_suite_app,
+    .o_construction_focus_item,
+    .o_suite_focus_item,
+    .o_majal_recent_item,
+    .o_majal_related_list > button {
+        text-align: right;
+
+        > .fa-chevron-right,
+        > .fa-arrow-right,
+        > .fa:last-child {
+            margin-right: auto;
+            margin-left: 0;
+            transform: rotate(180deg);
+        }
+    }
+
+    .o_construction_focus_item,
+    .o_suite_focus_item {
+        align-items: center;
+        flex-direction: row;
+        gap: 10px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-block: 9px;
+
+        > span:not(.o_construction_focus_icon):not(.o_suite_focus_icon) {
+            width: 100%;
+        }
+
+        small,
+        em {
+            overflow-wrap: anywhere;
+            line-height: 1.35;
+            text-overflow: clip;
+            white-space: normal;
+        }
+
+        small {
+            min-height: 0;
+        }
+
+        strong {
+            margin-top: 0;
+        }
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .o_construction_focus_items,
+    .o_suite_focus_items {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .o_construction_saved_view_tip .btn,
+    .o_suite_saved_view_tip .btn {
+        margin-right: auto;
+        margin-left: 0;
+    }
+
+    .o_construction_section_intro p,
+    .o_suite_section_intro p {
+        text-align: left;
+    }
+
+    .o_majal_flow li:not(:last-child)::after {
+        right: 14px;
+        left: auto;
+    }
+
+    .o_majal_related_list {
+        justify-content: flex-start;
+    }
+
+    .o_majal_breadcrumb .fa-chevron-right,
+    .o_majal_back .fa-arrow-left,
+    .o_majal_related_list .fa-arrow-right,
+    .o_majal_recent_item .fa-chevron-right {
+        transform: rotate(180deg);
+    }
+
+    .o_majal_metric strong,
+    .o_construction_kpi strong,
+    .o_suite_kpi strong,
+    .o_majal_recent_date,
+    .o_construction_date,
+    .o_suite_date {
+        unicode-bidi: plaintext;
+    }
+}
+
+@media (max-width: 991.98px) {
+    html[dir="rtl"] {
+        .o_construction_hero_meta,
+        .o_facility_hero_meta {
+            margin-right: 24px;
+            margin-left: 0;
+        }
+    }
+}
+
+@media (max-width: 575.98px) {
+    html[dir="rtl"] {
+        .o_construction_section_intro p,
+        .o_suite_section_intro p {
+            text-align: right;
+        }
+
+        .o_construction_saved_view_tip .btn,
+        .o_suite_saved_view_tip .btn {
+            margin-right: 53px;
+            margin-left: 0;
+        }
+    }
+}
+/*!rtl:end:ignore*/

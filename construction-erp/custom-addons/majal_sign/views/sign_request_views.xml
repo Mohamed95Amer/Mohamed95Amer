@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_majal_sign_request_search" model="ir.ui.view">
+        <field name="name">majal.sign.request.search</field>
+        <field name="model">majal.sign.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="document_id"/>
+                <field name="signer_id"/>
+                <filter name="pending" string="Waiting for Me"
+                        domain="[('signer_id', '=', uid), ('state', '=', 'pending')]"/>
+                <filter name="signed" string="Signed" domain="[('state', '=', 'signed')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_document" string="Document" context="{'group_by': 'document_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_majal_sign_request_list" model="ir.ui.view">
+        <field name="name">majal.sign.request.list</field>
+        <field name="model">majal.sign.request</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'pending'"
+                  decoration-success="state == 'signed'"
+                  decoration-danger="state == 'declined'">
+                <field name="document_id"/>
+                <field name="version_id"/>
+                <field name="signer_id" widget="many2one_avatar_user"/>
+                <field name="requested_by_id"/>
+                <field name="signed_on"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'pending'"
+                       decoration-success="state == 'signed'"
+                       decoration-danger="state == 'declined'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_majal_sign_request_form" model="ir.ui.view">
+        <field name="name">majal.sign.request.form</field>
+        <field name="model">majal.sign.request</field>
+        <field name="arch" type="xml">
+            <form string="Majal eSign Request">
+                <header>
+                    <button name="action_sign" string="Sign Document"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'pending'"/>
+                    <button name="action_decline" string="Decline"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'pending'"/>
+                    <button name="action_cancel" string="Cancel Request"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'pending'" groups="majal_sign.group_sign_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,signed,declined,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Signature request</h1>
+                        <p class="text-muted">Confirm the exact approved revision before signing.</p>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="document_id" readonly="state != 'pending'"/>
+                            <field name="version_id" readonly="1"/>
+                            <field name="signer_id" readonly="state != 'pending'"/>
+                        </group>
+                        <group>
+                            <field name="requested_by_id"/>
+                            <field name="signed_by_id"/>
+                            <field name="signed_on"/>
+                            <field name="signed_checksum"/>
+                        </group>
+                    </group>
+                    <group string="Signer note">
+                        <field name="note" placeholder="Optional note, or explain why you are declining..."/>
+                    </group>
+                    <group string="Your signature" class="o_majal_sign_signature">
+                        <field name="signature" widget="signature" nolabel="1"
+                               readonly="state != 'pending'"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_majal_sign_requests" model="ir.actions.act_window">
+        <field name="name">Signature Requests</field>
+        <field name="res_model">majal.sign.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_majal_sign_request_search"/>
+    </record>
+
+    <record id="action_majal_sign_my_requests" model="ir.actions.act_window">
+        <field name="name">Waiting for My Signature</field>
+        <field name="res_model">majal.sign.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('signer_id', '=', uid), ('state', '=', 'pending')]</field>
+        <field name="search_view_id" ref="view_majal_sign_request_search"/>
+    </record>
+
+    <record id="view_majal_document_form_sign" model="ir.ui.view">
+        <field name="name">majal.document.form.sign</field>
+        <field name="model">majal.document</field>
+        <field name="inherit_id" ref="majal_documents.view_majal_document_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-pencil-square-o" type="object"
+                        name="action_view_sign_requests" invisible="not sign_request_count">
+                    <field name="sign_request_count" widget="statinfo" string="Signatures"/>
+                </button>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_request_signature" string="Request Signature"
+                        type="object" class="btn-secondary"
+                        invisible="state not in ('approved', 'issued')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

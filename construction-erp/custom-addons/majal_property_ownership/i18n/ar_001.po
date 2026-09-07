@@ -1,0 +1,994 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* majal_property_ownership
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "%s already has payments against it. Adjust the individual charges instead of re-cutting the allocation."
+msgstr "%s عليه دفعات بالفعل. عدّل الرسوم الفردية بدلاً من إعادة توزيع الحصص."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "%s covers no units."
+msgstr "%s لا يغطي أي وحدات."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "%s has already been paid out; it cannot be cancelled."
+msgstr "%s صُرف بالفعل، ولا يمكن إلغاؤه."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "%s has no cost lines, so there is nothing to share out."
+msgstr "%s ليس به بنود تكلفة، فلا يوجد ما يُوزَّع."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "%s has nothing on it."
+msgstr "%s ليس عليه شيء."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "%s owns no units in this scope."
+msgstr "%s لا يملك وحدات ضمن هذا النطاق."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "A paid statement cannot be reopened."
+msgstr "لا يمكن إعادة فتح كشف مدفوع."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "A service charge cannot be negative."
+msgstr "لا يمكن أن تكون رسوم الخدمة بالسالب."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_needaction
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_needaction
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Allocation"
+msgstr "التوزيع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__basis_value
+msgid "Allocation Basis"
+msgstr "أساس التوزيع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__allocation_method
+msgid "Allocation Method"
+msgstr "طريقة التوزيع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__amount
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__amount
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__amount
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__amount_charged
+msgid "Amount Charged"
+msgstr "المبلغ المحمّل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__amount_collected
+msgid "Amount Collected"
+msgstr "المبلغ المحصّل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__amount_deductions
+msgid "Amount Deductions"
+msgstr "مبلغ الاستقطاعات"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__amount_income
+msgid "Amount Income"
+msgstr "مبلغ الإيراد"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__amount_paid
+msgid "Amount Paid"
+msgstr "المبلغ المدفوع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__amount_residual
+msgid "Amount Residual"
+msgstr "المبلغ المتبقي"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__amount_total
+msgid "Amount Total"
+msgstr "المبلغ الإجمالي"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "Approve the budget before charging owners."
+msgstr "اعتمد الموازنة قبل تحميل الملاك بالرسوم."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget__state__approved
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__allocation_method
+msgid "Area is the usual basis: a larger flat uses more of the building. Equal suits car parks and storage."
+msgstr "المساحة هي الأساس المعتاد: الشقة الأكبر تستهلك جزءاً أكبر من المبنى. أما التوزيع المتساوي فيناسب المواقف والمستودعات."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__basis_value
+msgid "Area or unit count this share was calculated from."
+msgstr "المساحة أو عدد الوحدات التي حُسبت منها هذه الحصة."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_attachment_count
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_attachment_count
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_list
+msgid "Basis"
+msgstr "الأساس"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__budget_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__budget_id
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_list
+msgid "Budget"
+msgstr "الموازنة"
+
+#. module: majal_property_ownership
+#: model_terms:ir.actions.act_window,help:majal_property_ownership.action_budget
+msgid "Budget a year of running costs"
+msgstr "ضع موازنة سنة من تكاليف التشغيل"
+
+#. module: majal_property_ownership
+#: model:ir.ui.menu,name:majal_property_ownership.menu_budgets
+msgid "Budgets"
+msgstr "الموازنات"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__building_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__building_id
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+msgid "Building"
+msgstr "المبنى"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget__allocation_method__area
+msgid "By Unit Area"
+msgstr "حسب مساحة الوحدة"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement__state__cancelled
+msgid "Cancelled"
+msgstr "ملغى"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__category
+msgid "Category"
+msgstr "الفئة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__charge_count
+msgid "Charge Count"
+msgstr "عدد الرسوم"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Charge Owners"
+msgstr "تحميل الملاك"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_list
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_list
+msgid "Charged"
+msgstr "محمّل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__charge_ids
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Charges"
+msgstr "الرسوم"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__cleaning
+msgid "Cleaning"
+msgstr "النظافة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget__state__closed
+msgid "Closed"
+msgstr "مغلق"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_list
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_list
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_list
+msgid "Collected"
+msgstr "محصّل"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_list
+msgid "Collected %"
+msgstr "٪ المحصّل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__collection_rate
+msgid "Collection Rate"
+msgstr "معدل التحصيل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__company_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__company_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "Confirm %s before recording a payout."
+msgstr "أكّد %s قبل تسجيل الصرف."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement__state__confirmed
+msgid "Confirmed"
+msgstr "مؤكد"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__name
+msgid "Cost"
+msgstr "التكلفة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__line_ids
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Cost Lines"
+msgstr "بنود التكلفة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__create_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__create_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__create_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__create_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__create_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__create_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__create_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__create_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__currency_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__currency_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__currency_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__currency_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__date
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__date_from
+msgid "Date From"
+msgstr "من تاريخ"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__date_to
+msgid "Date To"
+msgstr "إلى تاريخ"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_list
+msgid "Deducted"
+msgstr "مستقطع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__development_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__development_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__development_id
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+msgid "Development"
+msgstr "المشروع العقاري"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__display_name
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__display_name
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__display_name
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__display_name
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement__state__draft
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget__state__draft
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_search
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__due_date
+msgid "Due Date"
+msgstr "تاريخ الاستحقاق"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__partner_id
+msgid "Empty where the unit has not been handed over yet; the developer carries the charge until it has."
+msgstr "يبقى فارغاً ما لم تُسلَّم الوحدة بعد؛ ويتحمل المطور الرسوم حتى ذلك الحين."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget__allocation_method__equal
+msgid "Equally Per Unit"
+msgstr "بالتساوي لكل وحدة"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Every development"
+msgstr "كل المشاريع العقارية"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_follower_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_follower_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_partner_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_partner_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (الشركاء)"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة Font Awesome مثل fa-tasks"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Gather the Period"
+msgstr "تجميع الفترة"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_search
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__has_message
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__has_message
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "أيقونة للدلالة على نشاط استثنائي."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__message_needaction
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__message_needaction
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "عند التحديد، تتطلب الرسائل الجديدة انتباهك."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__message_has_error
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__message_has_sms_error
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__message_has_error
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__message_has_sms_error
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__message_has_error
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "عند التحديد، توجد رسائل بها خطأ في التسليم."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__insurance
+msgid "Insurance"
+msgstr "التأمين"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_is_follower
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_is_follower
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__is_income
+msgid "Is Income"
+msgstr "إيراد"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__kind
+msgid "Kind"
+msgstr "النوع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__write_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__write_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__write_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__write_uid
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__write_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__write_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__write_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__write_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__building_id
+msgid "Leave empty to cover the whole development."
+msgstr "اتركه فارغاً لتغطية المشروع العقاري بالكامل."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__development_id
+msgid "Limit the statement to one development; empty covers every unit this owner holds."
+msgstr "اقصر الكشف على مشروع عقاري واحد؛ والفراغ يغطي كل وحدة يملكها هذا المالك."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__line_ids
+msgid "Lines"
+msgstr "البنود"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__maintenance
+msgid "Maintenance"
+msgstr "الصيانة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement_line__kind__maintenance
+msgid "Maintenance & Repairs"
+msgstr "الصيانة والإصلاحات"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement_line__kind__commission
+msgid "Management Commission"
+msgstr "عمولة الإدارة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__management
+msgid "Management Fee"
+msgstr "رسوم الإدارة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__commission_rate
+msgid "Management Fee (%)"
+msgstr "رسوم الإدارة (٪)"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "Management fee at %(rate)s%%"
+msgstr "رسوم إدارة بنسبة %(rate)s%%"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_list
+msgid "Mark as fully paid"
+msgstr "وضع علامة مدفوع بالكامل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_has_error
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_has_error
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسالة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطي"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__name
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__amount_net
+msgid "Net Payable"
+msgstr "صافي المستحق"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+msgid "No Owner Yet"
+msgstr "لا يوجد مالك بعد"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "No unit in %s has an area, so the budget cannot be shared by area. Use equal allocation instead."
+msgstr "لا توجد وحدة في %s لها مساحة، فلا يمكن توزيع الموازنة بالمساحة. استخدم التوزيع المتساوي بدلاً من ذلك."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__notes
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__notes
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__notes
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__notes
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_needaction_counter
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_has_error_counter
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__message_needaction_counter
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__message_needaction_counter
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب إجراءً"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__message_has_error_counter
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__message_has_error_counter
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل ذات خطأ التسليم"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "Only a draft budget can be approved."
+msgstr "لا يمكن اعتماد سوى موازنة في حالة مسودة."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "Only a draft statement can be confirmed."
+msgstr "لا يمكن تأكيد سوى كشف في حالة مسودة."
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "Only a draft statement can be rebuilt."
+msgstr "لا يمكن إعادة بناء سوى كشف في حالة مسودة."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement_line__kind__other_cost
+msgid "Other Deduction"
+msgstr "استقطاع آخر"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement_line__kind__other_income
+msgid "Other Income"
+msgstr "إيراد آخر"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_list
+msgid "Outstanding"
+msgstr "مستحق"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+msgid "Overdue"
+msgstr "متأخر"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__partner_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__partner_id
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_search
+msgid "Owner"
+msgstr "المالك"
+
+#. module: majal_property_ownership
+#: model:ir.model,name:majal_property_ownership.model_majal_owner_statement
+msgid "Owner Statement"
+msgstr "كشف المالك"
+
+#. module: majal_property_ownership
+#: model:ir.model,name:majal_property_ownership.model_majal_owner_statement_line
+msgid "Owner Statement Line"
+msgstr "بند كشف المالك"
+
+#. module: majal_property_ownership
+#: model:ir.actions.act_window,name:majal_property_ownership.action_statement
+#: model:ir.ui.menu,name:majal_property_ownership.menu_statements
+msgid "Owner Statements"
+msgstr "كشوف الملاك"
+
+#. module: majal_property_ownership
+#: model:res.groups,name:majal_property_ownership.group_majal_owners_association
+msgid "Owners Association"
+msgstr "اتحاد الملاك"
+
+#. module: majal_property_ownership
+#: model:ir.ui.menu,name:majal_property_ownership.menu_ownership
+msgid "Ownership"
+msgstr "الملكية"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement__state__paid
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge__state__paid
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_search
+msgid "Paid"
+msgstr "مدفوع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge__state__partial
+msgid "Partially Paid"
+msgstr "مدفوع جزئياً"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_list
+msgid "Payable"
+msgstr "مستحق الدفع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__payment_date
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__payment_date
+msgid "Payment Date"
+msgstr "تاريخ الدفع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__payment_reference
+msgid "Payment Reference"
+msgstr "مرجع الدفع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge__state__pending
+msgid "Pending"
+msgstr "معلق"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Period"
+msgstr "الفترة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__rating_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__rating_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__rating_ids
+msgid "Ratings"
+msgstr "التقييمات"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Record Payout"
+msgstr "تسجيل الصرف"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__name
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement_line__kind__rent
+msgid "Rent Collected"
+msgstr "الإيجار المحصّل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__reserve
+msgid "Reserve Fund"
+msgstr "صندوق الاحتياطي"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__message_has_sms_error
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسالة النصية"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Scope"
+msgstr "النطاق"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__security
+msgid "Security"
+msgstr "الأمن"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget_line__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: majal_property_ownership
+#: model:ir.model,name:majal_property_ownership.model_majal_service_charge
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_owner_statement_line__kind__service_charge
+msgid "Service Charge"
+msgstr "رسوم الخدمة"
+
+#. module: majal_property_ownership
+#: model:ir.model,name:majal_property_ownership.model_majal_service_charge_budget
+msgid "Service Charge Budget"
+msgstr "موازنة رسوم الخدمة"
+
+#. module: majal_property_ownership
+#: model:ir.model,name:majal_property_ownership.model_majal_service_charge_budget_line
+msgid "Service Charge Budget Line"
+msgstr "بند موازنة رسوم الخدمة"
+
+#. module: majal_property_ownership
+#: model:ir.actions.act_window,name:majal_property_ownership.action_budget
+msgid "Service Charge Budgets"
+msgstr "موازنات رسوم الخدمة"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+#: model:ir.actions.act_window,name:majal_property_ownership.action_charge
+#: model:ir.ui.menu,name:majal_property_ownership.menu_service_charges
+msgid "Service Charges"
+msgstr "رسوم الخدمة"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_owner_statement.py:0
+msgid "Service charge %s"
+msgstr "رسوم خدمة %s"
+
+#. module: majal_property_ownership
+#: model_terms:ir.actions.act_window,help:majal_property_ownership.action_budget
+msgid "Set out what the development costs to run, then share it\n                across its units by area or equally. The charges always add\n                up to the budget exactly, because owners compare notes."
+msgstr "حدد تكلفة تشغيل المشروع العقاري، ثم وزّعها على وحداته بالمساحة أو بالتساوي. وتساوي الرسوم مجموع الموازنة تماماً في كل مرة، لأن الملاك يقارنون أرقامهم."
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Settlement"
+msgstr "التسوية"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__state
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__state
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__statement_id
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Statement"
+msgstr "الكشف"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "الحالة بناءً على الأنشطة\nمتأخر: تجاوز تاريخ الاستحقاق\nاليوم: تاريخ النشاط هو اليوم\nمخطط: أنشطة مستقبلية."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__commission_rate
+msgid "Taken on rent collected in the period."
+msgstr "تُحتسب على الإيجار المحصّل خلال الفترة."
+
+#. module: majal_property_ownership
+#: model:ir.model.constraint,message:majal_property_ownership.constraint_majal_service_charge_budget_year_scope_uniq
+msgid "That development already has a budget for this year."
+msgstr "لهذا المشروع العقاري موازنة لهذه السنة بالفعل."
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "This rebuilds the statement from scratch. Continue?"
+msgstr "سيعيد هذا بناء الكشف من الصفر. هل تريد المتابعة؟"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "This replaces any charges already raised from this budget. Continue?"
+msgstr "سيحل هذا محل أي رسوم صدرت من هذه الموازنة. هل تريد المتابعة؟"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_search
+msgid "To Pay Out"
+msgstr "للصرف"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_statement_form
+msgid "Total"
+msgstr "الإجمالي"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط الاستثنائي على السجل."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement_line__unit_id
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__unit_id
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+msgid "Unpaid"
+msgstr "غير مدفوع"
+
+#. module: majal_property_ownership
+#. odoo-python
+#: code:addons/majal_property_ownership/models/majal_service_charge.py:0
+msgid "Unsupported search on Overdue."
+msgstr "بحث غير مدعوم على المتأخر."
+
+#. module: majal_property_ownership
+#: model:ir.model.fields.selection,name:majal_property_ownership.selection__majal_service_charge_budget_line__category__utilities
+msgid "Utilities"
+msgstr "المرافق العامة"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_owner_statement__website_message_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__website_message_ids
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_owner_statement__website_message_ids
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge__website_message_ids
+#: model:ir.model.fields,help:majal_property_ownership.field_majal_service_charge_budget__website_message_ids
+msgid "Website communication history"
+msgstr "سجل مراسلات الموقع"
+
+#. module: majal_property_ownership
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_budget_form
+msgid "Whole development"
+msgstr "المشروع العقاري بالكامل"
+
+#. module: majal_property_ownership
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge__year
+#: model:ir.model.fields,field_description:majal_property_ownership.field_majal_service_charge_budget__year
+#: model_terms:ir.ui.view,arch_db:majal_property_ownership.view_charge_search
+msgid "Year"
+msgstr "السنة"

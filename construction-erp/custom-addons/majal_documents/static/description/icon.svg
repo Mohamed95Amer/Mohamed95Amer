@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Majal Documents">
+  <defs>
+    <linearGradient id="bg" x1="16" y1="12" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173240"/>
+      <stop offset="1" stop-color="#346D75"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="38" y1="28" x2="91" y2="99" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF1F2"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#bg)"/>
+  <path d="M38 26h36l18 18v54a6 6 0 0 1-6 6H38a6 6 0 0 1-6-6V32a6 6 0 0 1 6-6Z" fill="url(#paper)"/>
+  <path d="M74 26v18h18" fill="#C59B52"/>
+  <path d="M45 58h34M45 70h34M45 82h22" stroke="#346D75" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="82" cy="88" r="17" fill="#C59B52"/>
+  <path d="m74 88 5 5 10-12" fill="none" stroke="#173240" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

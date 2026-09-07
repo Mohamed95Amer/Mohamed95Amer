@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A permit is worth nothing and matters enormously, which is exactly the
+         case a value-band engine has to handle. It matches on kind alone: hot
+         work and confined space need the safety manager, everything else the
+         project manager. -->
+    <record id="approval_rule_permit_hot_work" model="construction.approval.rule">
+        <field name="name">Hot work permit</field>
+        <field name="model_id" ref="construction_hse.model_construction_permit"/>
+        <field name="document_kind">hot_work</field>
+        <field name="sequence">10</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Safety manager',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+
+    <record id="approval_rule_permit_confined" model="construction.approval.rule">
+        <field name="name">Confined space permit</field>
+        <field name="model_id" ref="construction_hse.model_construction_permit"/>
+        <field name="document_kind">confined_space</field>
+        <field name="sequence">10</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Safety manager',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+
+    <record id="approval_rule_permit_general" model="construction.approval.rule">
+        <field name="name">Permit to work</field>
+        <field name="model_id" ref="construction_hse.model_construction_permit"/>
+        <field name="sequence">90</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Project manager',
+                'group_id': ref('construction_base.group_construction_pm'),
+            }),
+        ]"/>
+    </record>
+</odoo>

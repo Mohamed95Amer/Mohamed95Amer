@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clash_test_form" model="ir.ui.view">
+        <field name="name">construction.bim.clash.test.form</field>
+        <field name="model">construction.bim.clash.test</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_viewer" type="object"
+                            string="Run in Viewer" class="btn-primary"
+                            help="The test runs in the browser, where the
+                                  geometry is."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_clashes" type="object"
+                                icon="fa-bolt" class="oe_stat_button">
+                            <field name="clash_count" string="Clashes"
+                                   widget="statinfo"/>
+                        </button>
+                        <button name="action_view_clashes" type="object"
+                                icon="fa-exclamation-triangle"
+                                class="oe_stat_button">
+                            <field name="open_count" string="Open"
+                                   widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="state != 'draft'">
+                        The test runs in the browser: open it in the viewer,
+                        which loads both models and reports what overlaps.
+                        Results come back here.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"
+                                   placeholder="e.g. Structure vs MEP — Level 03"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="model_a_id"/>
+                            <field name="model_b_id"/>
+                        </group>
+                        <group>
+                            <field name="tolerance"/>
+                            <field name="last_run" readonly="1"/>
+                            <field name="resolved_count" readonly="1"/>
+                            <field name="last_run_skipped" readonly="1"
+                                   invisible="last_run_skipped == 0"/>
+                        </group>
+                    </group>
+                    <field name="clash_ids" readonly="1">
+                        <list default_order="overlap desc">
+                            <field name="name_a"/>
+                            <field name="name_b"/>
+                            <field name="overlap"/>
+                            <field name="assigned_user_id"/>
+                            <field name="status" widget="badge"
+                                   decoration-danger="status in ['new', 'active']"
+                                   decoration-info="status == 'reviewed'"
+                                   decoration-success="status in ['approved', 'resolved']"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_clash_test_list" model="ir.ui.view">
+        <field name="name">construction.bim.clash.test.list</field>
+        <field name="model">construction.bim.clash.test</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="model_a_id"/>
+                <field name="model_b_id"/>
+                <field name="tolerance" optional="hide"/>
+                <field name="clash_count"/>
+                <field name="open_count"
+                       decoration-danger="open_count &gt; 0"/>
+                <field name="last_run"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clash_list" model="ir.ui.view">
+        <field name="name">construction.bim.clash.list</field>
+        <field name="model">construction.bim.clash</field>
+        <field name="arch" type="xml">
+            <list create="0" default_order="overlap desc"
+                  decoration-muted="status == 'resolved'">
+                <field name="test_id" optional="hide"/>
+                <field name="name_a"/>
+                <field name="name_b"/>
+                <field name="overlap" sum="Total"/>
+                <field name="assigned_user_id" widget="many2one_avatar_user"/>
+                <field name="rfi_id" optional="hide"/>
+                <field name="resolved_by_run" optional="hide"/>
+                <field name="status" widget="badge"
+                       decoration-danger="status in ['new', 'active']"
+                       decoration-info="status == 'reviewed'"
+                       decoration-success="status in ['approved', 'resolved']"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_clash_form" model="ir.ui.view">
+        <field name="name">construction.bim.clash.form</field>
+        <field name="model">construction.bim.clash</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_raise_rfi" type="object"
+                            string="Raise RFI" class="btn-primary"
+                            invisible="rfi_id"
+                            help="Turn this into the question somebody has to
+                                  answer, pinned where the clash is."/>
+                    <button name="action_review" type="object" string="Reviewed"
+                            invisible="status in ['reviewed', 'approved']"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            invisible="status == 'approved'"
+                            help="Seen, and not a problem. Survives every
+                                  future run of the test."/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="status in ['new', 'active']"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not resolved_by_run">
+                        Closed automatically: the last run of this test no
+                        longer found these two overlapping.
+                    </div>
+                    <group>
+                        <group string="A">
+                            <field name="name_a"/>
+                            <field name="element_a_id"/>
+                            <field name="global_id_a"/>
+                        </group>
+                        <group string="B">
+                            <field name="name_b"/>
+                            <field name="element_b_id"/>
+                            <field name="global_id_b"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="test_id"/>
+                            <field name="project_id"/>
+                            <field name="assigned_user_id"/>
+                            <field name="rfi_id" readonly="1"
+                                   invisible="not rfi_id"/>
+                        </group>
+                        <group string="Where">
+                            <field name="overlap"/>
+                            <field name="pos_x"/>
+                            <field name="pos_y"/>
+                            <field name="pos_z"/>
+                        </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_clash_search" model="ir.ui.view">
+        <field name="name">construction.bim.clash.search</field>
+        <field name="model">construction.bim.clash</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="test_id"/>
+                <field name="assigned_user_id"/>
+                <filter name="outstanding" string="Outstanding"
+                        domain="[('status', 'in', ['new', 'active'])]"/>
+                <filter name="mine" string="Assigned to Me"
+                        domain="[('assigned_user_id', '=', uid)]"/>
+                <filter name="approved" string="Approved"
+                        domain="[('status', '=', 'approved')]"
+                        help="Seen and accepted — not a problem."/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_status" string="Status"
+                            context="{'group_by': 'status'}"/>
+                    <filter name="group_test" string="Test"
+                            context="{'group_by': 'test_id'}"/>
+                    <filter name="group_assigned" string="Assigned To"
+                            context="{'group_by': 'assigned_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_clash_test" model="ir.actions.act_window">
+        <field name="name">Clash Tests</field>
+        <field name="res_model">construction.bim.clash.test</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Set up a clash test</p>
+            <p>
+                Pick two models — structure against MEP is the usual one — and
+                run the test from the viewer. What it finds is elements whose
+                bounding boxes overlap beyond the tolerance, which is a broad
+                phase rather than a triangle-precise test: some of what it
+                reports will be fine, and approving one keeps it quiet on every
+                future run.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_clash" model="ir.actions.act_window">
+        <field name="name">Clashes</field>
+        <field name="res_model">construction.bim.clash</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_outstanding': 1}</field>
+    </record>
+</odoo>

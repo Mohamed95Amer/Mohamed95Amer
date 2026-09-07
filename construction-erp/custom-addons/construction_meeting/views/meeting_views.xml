@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_meeting_form" model="ir.ui.view">
+        <field name="name">construction.meeting.form</field>
+        <field name="model">construction.meeting</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_issue" type="object" string="Issue Minutes"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_next_meeting" type="object"
+                            string="Next Meeting" invisible="state == 'draft'"
+                            help="Open the next meeting in this series, carrying open actions forward."/>
+                    <button name="action_close" type="object" string="Close"
+                            invisible="state != 'issued'"/>
+                    <button name="action_reset" type="object" string="Reset to Draft"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_open_actions" type="object"
+                                class="oe_stat_button" icon="fa-list-ul"
+                                invisible="not open_action_count">
+                            <field name="open_action_count" widget="statinfo"
+                                   string="Open Actions"/>
+                        </button>
+                        <button name="action_view_overdue_actions" type="object"
+                                class="oe_stat_button text-danger"
+                                icon="fa-exclamation-triangle"
+                                invisible="not overdue_action_count">
+                            <field name="overdue_action_count" widget="statinfo"
+                                   string="Overdue"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Weekly progress meeting no. 14"/></h1>
+                        <h3 class="text-muted"><field name="reference" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="meeting_type"/>
+                            <field name="series" placeholder="e.g. Weekly Progress"/>
+                            <field name="previous_meeting_id" invisible="not previous_meeting_id"/>
+                        </group>
+                        <group>
+                            <field name="meeting_date"/>
+                            <field name="location"/>
+                            <field name="chaired_by_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Actions" name="actions">
+                            <field name="action_ids">
+                                <list editable="bottom"
+                                      decoration-muted="state == 'closed'"
+                                      decoration-danger="is_overdue"
+                                      decoration-bf="carried_count &gt; 2">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="owner_id"/>
+                                    <field name="owner_partner_id" optional="show"/>
+                                    <field name="deadline"/>
+                                    <field name="carried_count" string="Carried"/>
+                                    <field name="state"/>
+                                    <field name="closed_date" optional="hide"/>
+                                    <field name="is_overdue" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                Open actions are carried into the next meeting of
+                                the series. A high carry count is the item nobody
+                                is doing.
+                            </div>
+                        </page>
+                        <page string="Attendance" name="attendance">
+                            <field name="attendee_ids">
+                                <list editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="name"/>
+                                    <field name="organisation"/>
+                                    <field name="present" widget="boolean_toggle"/>
+                                    <field name="apologies" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Discussion" name="minutes">
+                            <field name="minutes" placeholder="Points discussed..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_meeting_list" model="ir.ui.view">
+        <field name="name">construction.meeting.list</field>
+        <field name="model">construction.meeting</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'"
+                  decoration-danger="overdue_action_count &gt; 0">
+                <field name="reference"/>
+                <field name="meeting_date"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="meeting_type"/>
+                <field name="series" optional="show"/>
+                <field name="attendee_count" string="Attendees"/>
+                <field name="open_action_count" string="Open actions"/>
+                <field name="overdue_action_count" string="Overdue"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'issued'"
+                       decoration-muted="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_meeting_search" model="ir.ui.view">
+        <field name="name">construction.meeting.search</field>
+        <field name="model">construction.meeting</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="series"/>
+                <filter name="open_actions" string="Has Open Actions"
+                        domain="[('open_action_count', '&gt;', 0)]"/>
+                <filter name="overdue" string="Has Overdue Actions"
+                        domain="[('overdue_action_count', '&gt;', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_series" string="Series"
+                            context="{'group_by': 'series'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_meeting_action_list" model="ir.ui.view">
+        <field name="name">construction.meeting.action.list</field>
+        <field name="model">construction.meeting.action</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'" decoration-danger="is_overdue"
+                  decoration-bf="carried_count &gt; 2">
+                <field name="meeting_id"/>
+                <field name="project_id"/>
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="owner_partner_id" optional="show"/>
+                <field name="deadline"/>
+                <field name="carried_count" string="Carried"/>
+                <field name="state"/>
+                <field name="is_overdue" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_meeting_action_search" model="ir.ui.view">
+        <field name="name">construction.meeting.action.search</field>
+        <field name="model">construction.meeting.action</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="owner_id"/>
+                <filter name="open" string="Open"
+                        domain="[('state', '!=', 'closed')]"/>
+                <filter name="overdue" string="Overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter name="chronic" string="Carried 3+ Times"
+                        domain="[('carried_count', '&gt;=', 3)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_owner" string="Owner"
+                            context="{'group_by': 'owner_id'}"/>
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_meeting" model="ir.actions.act_window">
+        <field name="name">Meetings &amp; Minutes</field>
+        <field name="res_model">construction.meeting</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_meeting_action" model="ir.actions.act_window">
+        <field name="name">Action Items</field>
+        <field name="res_model">construction.meeting.action</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+</odoo>

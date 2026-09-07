@@ -1,0 +1,69 @@
+You are continuing development of the MajalOps construction, facilities and
+property-management platform.
+
+Repository (Windows PC):
+  C:\Users\hossi\Documents\Odoo\construction-erp
+
+Property worktree, if you need it:
+  C:\Users\hossi\Documents\Odoo\_property_visual
+
+READ THIS FIRST, COMPLETELY:
+  construction-erp\handoff\ux-pass-2026-08-13\START_HERE.md
+
+That brief is the task. It came from Mohamed testing the running system and
+writing up 23 change requests plus one website copy rewrite. The codebase has
+already been read for you: the brief carries exact file paths and line numbers,
+records which requests describe UI that does not actually exist, and flags the
+traps that break module loading if hit blind. Do not re-derive it, and do not
+take the raw request list at face value without reading the brief's correction
+table first.
+
+Also read, for background:
+  construction-erp\handoff\README.md
+  construction-erp\handoff\next-tool-2026-07-31\START_HERE.md
+
+BEFORE CHANGING ANYTHING
+1. Run `git status --short` and `git log --oneline -10`.
+2. Identify the active branch and worktree, and say what they are.
+3. Do not reset, clean, stash-drop, force-push or discard existing work.
+4. Do not modify unrelated dirty files.
+5. Branch off `codex/odoo19-ui-enhancement` onto a new `codex/` branch.
+
+The brief was validated against branch `codex/odoo19-ui-enhancement` at commit
+081d756. Two things were NOT visible from that checkout and are therefore not
+covered: any property-management modules, and an `infrastructure/` directory.
+Check whether they exist in your worktree and say so before starting.
+
+SCOPE AND ORDER
+Work the phases in order. Phase 1 is a bug plus navigation and naming, Phase 2
+is model and data work, Phase 3 is the larger features. One commit per phase,
+with `scripts/run-tests.sh` green — 627 tests, 0 failed, 0 errors — before
+starting the next.
+
+HOUSE RULES
+- The brand is Majal, not Odoo. Preserve Majal terminology, colours, icons,
+  Arabic/English support, RTL behaviour and responsive layouts.
+- Follow existing module architecture and security rules; reuse existing Majal
+  components and styling patterns.
+- Do not replace working modules with speculative rewrites.
+- Add or update tests for every functional change. For the bug in section 1.1,
+  prove the regression test fails against the unfixed code — a test that passes
+  before the fix is not a test.
+- Validate XML, Python, JavaScript and assets. Check English and Arabic, desktop
+  and mobile.
+- Do not expose secrets or credentials.
+- Document any database upgrade or deployment step you introduce.
+
+BEFORE CODING, REPORT
+1. A map of the relevant modules and files.
+2. Current implementation status.
+3. Safe enhancement options.
+4. Files you intend to modify.
+5. Tests you will run.
+
+AFTER CODING, REPORT
+1. Files changed.
+2. Features implemented.
+3. Tests and validation results, with the actual pass/fail counts.
+4. Any migration or deployment requirements.
+5. Any remaining risks or decisions left open.

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_ui.MyDay">
+        <div class="o_my_day">
+            <header class="o_my_day_head">
+                <div>
+                    <h1>
+                        <t t-esc="greeting"/>,
+                        <t t-esc="state.data and state.data.user"/>
+                    </h1>
+                    <p t-esc="summary"/>
+                </div>
+                <span class="o_my_day_date" t-esc="state.data and state.data.date"/>
+            </header>
+
+            <div t-if="state.loading" class="o_my_day_loading">
+                <i class="fa fa-circle-o-notch fa-spin"/> Gathering your day…
+            </div>
+
+            <t t-elif="state.data.sections.length">
+                <div class="o_my_day_rows">
+                    <button t-foreach="state.data.sections" t-as="section"
+                            t-key="section.key"
+                            t-attf-class="o_my_day_row {{ section.urgent ? 'o_my_day_late' : '' }}"
+                            t-on-click="() => this.open(section)">
+                        <i t-attf-class="fa {{ section.icon }}"/>
+                        <span class="o_my_day_label" t-esc="section.label"/>
+                        <span t-if="section.urgent" class="o_my_day_urgent">
+                            <t t-esc="section.urgent"/> late
+                        </span>
+                        <span class="o_my_day_count" t-esc="section.count"/>
+                        <i class="fa fa-angle-right o_my_day_go"/>
+                    </button>
+                </div>
+            </t>
+
+            <div t-else="" class="o_my_day_clear">
+                <i class="fa fa-check-circle"/>
+                <h2>Nothing is waiting on you</h2>
+                <p>
+                    No approvals, no defects assigned, no inspections due. Anything raised for you today will appear here.
+                </p>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Credential-free and intentionally non-networked. -->
+    <record id="majal_real_estate.demo_development_marina_heights" model="majal.development">
+        <field name="street">Dubai Marina Promenade</field>
+        <field name="country_id" ref="base.ae"/>
+        <field name="latitude">25.0809</field>
+        <field name="longitude">55.1403</field>
+    </record>
+
+    <record id="demo_listing_channel_controlled_export" model="majal.property.listing.channel">
+        <field name="name">Controlled Portal Export</field>
+        <field name="code">controlled-export</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="mode">export</field>
+        <field name="notes">Demo-safe channel. It prepares a canonical listing snapshot and makes no external request.</field>
+    </record>
+
+    <record id="demo_property_reminder_policy" model="majal.property.notification.settings">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="active">1</field>
+        <field name="email_enabled">0</field>
+        <field name="installment_days">7</field>
+        <field name="lease_days">60</field>
+        <field name="reservation_days">3</field>
+        <field name="document_days">30</field>
+    </record>
+</odoo>

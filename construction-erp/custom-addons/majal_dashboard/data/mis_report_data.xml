@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- A trading summary for MIS Builder, keyed on account *types*
+             rather than account codes.
+
+             This is the decision that makes the template shippable. A MIS
+             report written against codes — 4000 for revenue, 5000 for cost —
+             is right on exactly one chart of accounts and silently wrong on
+             every other, reporting zero or, worse, a plausible number drawn
+             from whatever happens to live at that code. Account types are
+             part of Odoo's own data model and mean the same thing on every
+             chart, so this works on a Saudi chart, an Egyptian one, or the
+             generic one, without being edited.
+
+             The domain selects accounts, not journal items, so the field is
+             account_type and not account_id.account_type. Written the other
+             way it installs perfectly and then raises "Invalid field
+             account.account.account_id" the first time somebody opens the
+             report — which is why this template is exercised by a test that
+             computes it rather than one that merely loads it.
+
+             noupdate="1" because it is a starting point. A finance team will
+             add their own KPIs to it, and a module upgrade must not throw
+             their work away.
+
+             Income accounts are credit-normal, so revenue is negated to read
+             as a positive figure. Getting that backwards is how a trading
+             summary ends up showing a loss on a profitable year. -->
+
+        <record id="mis_report_trading" model="mis.report">
+            <field name="name">Majal — Trading Summary</field>
+            <field name="description">Revenue, direct cost and margin, from
+                the ledger. Works on any chart of accounts because it selects
+                by account type rather than by code.</field>
+        </record>
+
+        <record id="mis_kpi_revenue" model="mis.report.kpi">
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="sequence">10</field>
+            <field name="name">revenue</field>
+            <field name="description">Revenue</field>
+            <field name="expression">-balp[('account_type', 'in', ('income', 'income_other'))]</field>
+            <field name="type">num</field>
+            <field name="compare_method">pct</field>
+        </record>
+
+        <record id="mis_kpi_direct_cost" model="mis.report.kpi">
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="sequence">20</field>
+            <field name="name">direct_cost</field>
+            <field name="description">Direct cost</field>
+            <field name="expression">balp[('account_type', '=', 'expense_direct_cost')]</field>
+            <field name="type">num</field>
+            <field name="compare_method">pct</field>
+        </record>
+
+        <record id="mis_kpi_gross_margin" model="mis.report.kpi">
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="sequence">30</field>
+            <field name="name">gross_margin</field>
+            <field name="description">Gross margin</field>
+            <field name="expression">revenue - direct_cost</field>
+            <field name="type">num</field>
+            <field name="compare_method">pct</field>
+        </record>
+
+        <record id="mis_kpi_gross_margin_pct" model="mis.report.kpi">
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="sequence">40</field>
+            <field name="name">gross_margin_pct</field>
+            <field name="description">Gross margin %</field>
+            <!-- Guarded, because a period with no revenue is normal on a job
+                 that has not started certifying and a division by zero would
+                 take the whole report down with it. -->
+            <field name="expression">gross_margin / revenue if revenue else AccountingNone</field>
+            <field name="type">pct</field>
+        </record>
+
+        <record id="mis_kpi_overheads" model="mis.report.kpi">
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="sequence">50</field>
+            <field name="name">overheads</field>
+            <field name="description">Overheads</field>
+            <field name="expression">balp[('account_type', 'in', ('expense', 'expense_depreciation'))]</field>
+            <field name="type">num</field>
+            <field name="compare_method">pct</field>
+        </record>
+
+        <record id="mis_kpi_operating_result" model="mis.report.kpi">
+            <field name="report_id" ref="mis_report_trading"/>
+            <field name="sequence">60</field>
+            <field name="name">operating_result</field>
+            <field name="description">Operating result</field>
+            <field name="expression">gross_margin - overheads</field>
+            <field name="type">num</field>
+            <field name="compare_method">pct</field>
+        </record>
+    </data>
+</odoo>

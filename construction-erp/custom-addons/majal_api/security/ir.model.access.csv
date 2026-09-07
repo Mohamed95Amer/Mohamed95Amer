@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_majal_api_client_admin,majal.api.client administrator,model_majal_api_client,majal_administration.group_user_administrator,1,1,1,1
+access_majal_api_client_owner,majal.api.client owner,model_majal_api_client,majal_administration.group_platform_owner,1,1,1,1
+access_majal_api_key_wizard_admin,majal.api.key.wizard administrator,model_majal_api_key_wizard,majal_administration.group_user_administrator,1,1,1,1
+access_majal_api_key_wizard_owner,majal.api.key.wizard owner,model_majal_api_key_wizard,majal_administration.group_platform_owner,1,1,1,1

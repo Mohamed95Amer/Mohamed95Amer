@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_majal_administration" model="ir.module.category">
+        <field name="name">Majal Administration</field>
+        <field name="sequence">7</field>
+    </record>
+
+    <record id="group_facilities_user" model="res.groups">
+        <field name="name">Facilities Field User</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_facilities_supervisor" model="res.groups">
+        <field name="name">Facilities Supervisor</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('group_facilities_user'))]"/>
+    </record>
+    <record id="group_facilities_manager" model="res.groups">
+        <field name="name">Facilities Manager</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids"
+               eval="[(4, ref('group_facilities_supervisor')), (4, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <record id="group_user_administrator" model="res.groups">
+        <field name="name">Client User Administrator</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('construction_ui.group_dashboard_designer'))
+        ]"/>
+        <field name="comment">Can invite, deactivate and assign approved Majal roles without technical-system access.</field>
+    </record>
+    <!-- A monitoring agent needs one thing: to ask whether the platform is fit
+         to take work. It should not need, and must not be given, the rights of
+         a Recovery Point Operator or a Platform Owner to ask that question —
+         those credentials sit in a monitoring configuration file, get copied
+         into alerting stacks, and are the least well guarded in the estate.
+         So the deep probe has a group of its own, granting nothing else, and
+         the senior roles reach it by implication rather than the other way
+         round. -->
+    <record id="group_platform_monitor" model="res.groups">
+        <field name="name">Platform Monitor</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">May read the deep platform health probe. Grants no other access; intended for an unattended monitoring account.</field>
+    </record>
+    <record id="group_backup_operator" model="res.groups">
+        <field name="name">Recovery Point Operator</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids"
+               eval="[(4, ref('group_user_administrator')), (4, ref('group_platform_monitor'))]"/>
+    </record>
+    <record id="group_platform_owner" model="res.groups">
+        <field name="name">Platform Owner</field>
+        <field name="category_id" ref="module_category_majal_administration"/>
+        <field name="implied_ids"
+               eval="[(4, ref('base.group_system')), (4, ref('group_backup_operator'))]"/>
+        <field name="comment">The protected top-level Majal role. Keep at least two named owners in production.</field>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Standard HR Officer implies Maintenance Administrator. In Majal these
+         are independent commercial capabilities; HR access must never grant
+         control of facility assets or work-order configuration. -->
+    <record id="hr.group_hr_user" model="res.groups">
+        <field name="implied_ids"
+               eval="[(3, ref('maintenance.group_equipment_manager'))]"/>
+    </record>
+
+    <!-- The standard Facilities application is now available to Majal facilities
+         users. Record rules and ACLs still separate field and manager capabilities. -->
+    <record id="facility_asset.menu_facility_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_facilities_user')])]"/>
+    </record>
+</odoo>

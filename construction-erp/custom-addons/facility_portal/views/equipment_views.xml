@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The flag has to be reachable, or "opt in" means "never available". -->
+    <record id="view_equipment_form_portal" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.portal</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="after">
+                <field name="portal_selectable"/>
+            </field>
+        </field>
+    </record>
+</odoo>

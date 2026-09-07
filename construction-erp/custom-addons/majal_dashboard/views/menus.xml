@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Under Odoo's own Dashboards app, beside "My Dashboard".
+
+         Ordered the way attention flows rather than alphabetically:
+         Executive first, then the money, then delivery, then the specialisms.
+         My Dashboard is board's own and keeps its place at the end, which is
+         where a user's private pinned views belong. -->
+
+    <menuitem id="menu_board_executive" name="Executive"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_executive" sequence="5"
+              groups="construction_base.group_construction_manager"/>
+
+    <!-- Both of these read the general ledger: the MIS report behind them
+         queries account.move.line directly, without sudo, which is right —
+         a dashboard must not become a way around accounting's own rights.
+         So the gate has to be an accounting group. Gated on the commercial
+         and manager groups instead, the menu was offered to the Platform
+         Owner, the company admin, the ops manager and the PM, and refused
+         all four with an access error naming account.move.line.
+
+         `groups` is an OR, so "commercial AND accounting" cannot be written
+         here. Requiring the accounting group alone is the conservative half:
+         nobody gains sight of the ledger, and nobody is shown a board they
+         cannot open. Whether a quantity surveyor should read the ledger is a
+         policy question for the owner, and the answer is an ACL grant, not a
+         menu edit. -->
+    <menuitem id="menu_board_financial" name="Financial"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_financial" sequence="10"
+              groups="account.group_account_readonly,account.group_account_user,account.group_account_manager"/>
+
+    <!-- The statutory side of the money is MIS Builder's, not this
+         module's. It is reachable from here rather than duplicated: a second
+         P&L that disagrees with the first is worse than one that takes an
+         extra click. -->
+    <menuitem id="menu_board_mis" name="Financial Reports"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="mis_builder.mis_report_instance_view_action"
+              sequence="12"
+              groups="account.group_account_readonly,account.group_account_user,account.group_account_manager"/>
+
+    <menuitem id="menu_board_operations" name="Operations"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_operations" sequence="15"
+              groups="maintenance.group_equipment_manager,construction_base.group_construction_manager"/>
+
+    <menuitem id="menu_board_project" name="Project"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_project" sequence="20"
+              groups="construction_base.group_construction_manager,construction_base.group_construction_pm"/>
+
+    <menuitem id="menu_board_procurement" name="Procurement"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_procurement" sequence="25"
+              groups="construction_base.group_construction_commercial,construction_base.group_construction_manager"/>
+
+    <menuitem id="menu_board_workforce" name="Workforce"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_workforce" sequence="30"
+              groups="construction_base.group_construction_pm,majal_administration.group_facilities_supervisor"/>
+
+    <menuitem id="menu_board_hse" name="HSE"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_hse" sequence="35"
+              groups="construction_base.group_construction_user"/>
+
+    <menuitem id="menu_board_equipment" name="Equipment"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="action_board_equipment" sequence="40"
+              groups="maintenance.group_equipment_manager,construction_base.group_construction_manager"/>
+
+    <!-- OCA's spreadsheet editor arrives as its own top-level app carrying
+         its own icon, and the product is Majal rather than a shelf of other
+         people's apps. Rebranded like every other third-party app, using
+         construction_ui's icon set.
+
+         Branded rather than added to the branding test's allow-list: the
+         rule is that no app shows a stock icon, and widening the exception
+         would retire the check that caught this one. It lives here and not
+         in construction_ui because this is the module that decided to vendor
+         the editor, and construction_ui does not depend on it. -->
+    <record id="spreadsheet_oca.spreadsheet_spreadsheet_menu" model="ir.ui.menu">
+        <field name="web_icon">construction_ui,static/description/apps/general.svg</field>
+    </record>
+</odoo>

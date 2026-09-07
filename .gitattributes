@@ -1,0 +1,6 @@
+*.sh text eol=lf
+*.bash text eol=lf
+*.pdf binary
+
+infrastructure/scripts/majalops-deploy text eol=lf
+infrastructure/scripts/majalops-ssh-command text eol=lf

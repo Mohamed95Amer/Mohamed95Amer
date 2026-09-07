@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- People to sign things.
+
+         An approval chain needs somebody at each rung, and a demo database
+         with a single administrator cannot show one: the engine refuses to
+         let the person who raised a document also clear it, which is the
+         whole point of it. So the demo carries three approvers, one per rung
+         of the chains the other modules define, and the rest of the demo data
+         walks its documents past them rather than round them.
+
+         They are also what makes the approval inbox worth opening in a demo:
+         log in as any of them — the password is the login with `.majal` on
+         the end, which clears the twelve-character policy majal_security
+         sets — and there is
+         a variation waiting for a signature. Demo data only; a real
+         installation creates its approvers the ordinary way.
+    -->
+    <record id="user_demo_qs" model="res.users">
+        <field name="name">Nadia Karim</field>
+        <field name="login">nadia.qs</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">nadia.qs@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_commercial'),
+        ])]"/>
+    </record>
+
+    <record id="user_demo_pm" model="res.users">
+        <field name="name">Omar Farouk</field>
+        <field name="login">omar.pm</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">omar.pm@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_pm'),
+        ])]"/>
+    </record>
+
+    <record id="user_demo_director" model="res.users">
+        <field name="name">Hala Mansour</field>
+        <field name="login">hala.director</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">hala.director@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_manager'),
+        ])]"/>
+    </record>
+
+    <!-- The three above are approvers. These two are the people the system
+         is actually for: an engineer who raises documents but signs nothing
+         commercial, and a foreman whose whole day is My Day. Without them
+         there is no way to see what the product looks like from below the
+         approval chain, which is where most of its users sit. -->
+    <record id="user_demo_engineer" model="res.users">
+        <field name="name">Yusuf Rahman</field>
+        <field name="login">yusuf.engineer</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">yusuf.engineer@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_site_engineer'),
+        ])]"/>
+    </record>
+
+    <record id="user_demo_field" model="res.users">
+        <field name="name">Samir Haddad</field>
+        <field name="login">samir.site</field>
+        <field name="password">MajalDemo!2026</field>
+        <field name="email">samir.site@example.com</field>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_user'),
+            ref('construction_base.group_construction_user'),
+        ])]"/>
+    </record>
+</odoo>

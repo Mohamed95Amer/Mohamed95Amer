@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_list" model="ir.ui.view">
+        <field name="name">majal.service.charge.budget.list</field>
+        <field name="model">majal.service.charge.budget</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'"
+                  decoration-success="state == 'approved'">
+                <field name="year"/>
+                <field name="development_id"/>
+                <field name="building_id" optional="show"/>
+                <field name="allocation_method"/>
+                <field name="amount_total" sum="Budget"/>
+                <field name="amount_charged" sum="Charged" optional="show"/>
+                <field name="amount_collected" sum="Collected" optional="show"/>
+                <field name="collection_rate" widget="progressbar" string="Collected %"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_form" model="ir.ui.view">
+        <field name="name">majal.service.charge.budget.form</field>
+        <field name="model">majal.service.charge.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_generate_charges" type="object"
+                            string="Charge Owners" class="btn-primary"
+                            invisible="state != 'approved'"
+                            confirm="This replaces any charges already raised from this budget. Continue?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_charges" type="object"
+                                class="oe_stat_button" icon="fa-list"
+                                invisible="charge_count == 0">
+                            <field name="charge_count" widget="statinfo" string="Charges"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Scope">
+                            <field name="development_id"/>
+                            <field name="building_id"
+                                   placeholder="Whole development"/>
+                            <field name="year"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Allocation">
+                            <field name="allocation_method"/>
+                            <field name="amount_total"/>
+                            <field name="amount_charged"/>
+                            <field name="amount_collected"/>
+                            <field name="collection_rate" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Cost Lines" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="category"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget" model="ir.actions.act_window">
+        <field name="name">Service Charge Budgets</field>
+        <field name="res_model">majal.service.charge.budget</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Budget a year of running costs</p>
+            <p>
+                Set out what the development costs to run, then share it
+                across its units by area or equally. The charges always add
+                up to the budget exactly, because owners compare notes.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_charge_list" model="ir.ui.view">
+        <field name="name">majal.service.charge.list</field>
+        <field name="model">majal.service.charge</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue" decoration-success="state == 'paid'"
+                  editable="bottom">
+                <field name="year"/>
+                <field name="unit_id" readonly="1"/>
+                <field name="partner_id"/>
+                <field name="building_id" optional="show" readonly="1"/>
+                <field name="basis_value" optional="hide" string="Basis"/>
+                <field name="amount" sum="Charged"/>
+                <field name="amount_paid" sum="Collected"/>
+                <field name="amount_residual" sum="Outstanding"/>
+                <field name="due_date"/>
+                <field name="payment_date" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'paid'"
+                       decoration-warning="state == 'partial'"/>
+                <button name="action_mark_paid" type="object" icon="fa-check"
+                        title="Mark as fully paid" invisible="state == 'paid'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_charge_search" model="ir.ui.view">
+        <field name="name">majal.service.charge.search</field>
+        <field name="model">majal.service.charge</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="unit_id"/>
+                <field name="partner_id"/>
+                <field name="development_id"/>
+                <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter string="Unpaid" name="unpaid" domain="[('state', '!=', 'paid')]"/>
+                <filter string="No Owner Yet" name="no_owner"
+                        domain="[('partner_id', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Owner" name="group_owner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Development" name="group_development"
+                            context="{'group_by': 'development_id'}"/>
+                    <filter string="Building" name="group_building"
+                            context="{'group_by': 'building_id'}"/>
+                    <filter string="Year" name="group_year" context="{'group_by': 'year'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_charge" model="ir.actions.act_window">
+        <field name="name">Service Charges</field>
+        <field name="res_model">majal.service.charge</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_charge_search"/>
+        <field name="context">{'search_default_unpaid': 1}</field>
+    </record>
+</odoo>

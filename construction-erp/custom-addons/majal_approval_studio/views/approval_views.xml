@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_approval_rule_kanban" model="ir.ui.view">
+        <field name="name">majal.approval.rule.kanban</field>
+        <field name="model">construction.approval.rule</field>
+        <field name="arch" type="xml">
+            <kanban class="o_majal_approval_rules">
+                <field name="name"/>
+                <field name="active"/>
+                <field name="scope_label"/>
+                <field name="step_count"/>
+                <field name="amount_from"/>
+                <field name="amount_to"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <article class="o_majal_approval_rule_card">
+                            <!-- A div, not <header>. Odoo 18's kanban
+                                 compiler treats <header> inside t-name="card"
+                                 as a reserved element and never registers the
+                                 <field> nodes inside it, so the compiled card
+                                 asked archInfo.fieldNodes for an id that was
+                                 not there: "Cannot destructure property 'name'
+                                 of archInfo.fieldNodes[fieldId]". The whole
+                                 screen was Odoo's generic client error dialog
+                                 with nothing behind it. Every field here
+                                 renders fine outside the header; bisecting the
+                                 card one element at a time is what found it,
+                                 after three plausible guesses were wrong. -->
+                            <div class="o_majal_approval_rule_head">
+                                <strong><field name="name"/></strong>
+                                <field name="active" widget="boolean_toggle"/>
+                            </div>
+                            <div class="o_majal_approval_scope">
+                                <field name="scope_label"/>
+                            </div>
+                            <div class="o_majal_approval_rule_meta">
+                                <span><field name="step_count"/> steps</span>
+                                <span>
+                                    <field name="amount_from"/>
+                                    <t t-if="record.amount_to.raw_value"> – <field name="amount_to"/></t>
+                                </span>
+                            </div>
+                        </article>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_approval_studio_rules" model="ir.actions.act_window">
+        <field name="name">Majal Approval Studio</field>
+        <field name="res_model">construction.approval.rule</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_approval_rule_kanban"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Design a safe approval flow</p>
+            <p>Set the document, value band and people who must sign. The same workflow can then be reused by projects, procurement, finance and facilities.</p>
+        </field>
+    </record>
+
+    <record id="view_approval_rule_list_studio" model="ir.ui.view">
+        <field name="name">majal.approval.rule.list</field>
+        <field name="model">construction.approval.rule</field>
+        <field name="inherit_id" ref="construction_base.view_approval_rule_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='model_id']" position="after">
+                <field name="scope_label" optional="show"/>
+                <field name="step_count" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_approval_request_list_studio" model="ir.ui.view">
+        <field name="name">majal.approval.request.list</field>
+        <field name="model">construction.approval.request</field>
+        <field name="inherit_id" ref="construction_base.view_approval_request_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="pending_step_count" optional="show"/>
+                <field name="progress_percent" widget="progressbar" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

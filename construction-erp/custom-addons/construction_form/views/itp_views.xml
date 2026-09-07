@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_itp_form" model="ir.ui.view">
+        <field name="name">construction.itp.form</field>
+        <field name="model">construction.itp</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_supersede" type="object"
+                            string="Supersede" invisible="state != 'approved'"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Reset to Draft" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_records" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sign-offs</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-hand-paper-o"
+                                disabled="1" invisible="not hold_point_count">
+                            <field name="hold_point_count" widget="statinfo"
+                                   string="Hold Points"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h3><field name="name" placeholder="Plan title"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="discipline"/>
+                            <field name="activity"/>
+                        </group>
+                        <group>
+                            <field name="revision"/>
+                            <field name="specification_ref"/>
+                            <field name="ball_in_court_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Inspection Points" name="points">
+                            <field name="point_ids">
+                                <list editable="bottom"
+                                      decoration-danger="point_type == 'hold'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="stage"/>
+                                    <field name="point_type" widget="badge"
+                                           decoration-danger="point_type == 'hold'"
+                                           decoration-warning="point_type == 'witness'"/>
+                                    <field name="responsible_party"/>
+                                    <field name="reference_standard"
+                                           optional="show"/>
+                                    <field name="acceptance_criteria"
+                                           optional="hide"/>
+                                    <field name="template_id" optional="hide"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                A hold point stops the work until it is
+                                released. A witness point invites somebody —
+                                if they do not attend, the work proceeds.
+                            </div>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_itp_list" model="ir.ui.view">
+        <field name="name">construction.itp.list</field>
+        <field name="model">construction.itp</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'superseded'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="discipline"/>
+                <field name="revision"/>
+                <field name="point_count" string="Points"/>
+                <field name="hold_point_count" string="Hold"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-muted="state == 'superseded'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_itp_search" model="ir.ui.view">
+        <field name="name">construction.itp.search</field>
+        <field name="model">construction.itp</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_discipline" string="Discipline"
+                        context="{'group_by': 'discipline'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_itp_record_form" model="ir.ui.view">
+        <field name="name">construction.itp.record.form</field>
+        <field name="model">construction.itp.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_release" type="object" string="Release"
+                            class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state != 'pending'"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="state == 'pending'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger d-flex align-items-center"
+                         role="alert" invisible="not is_blocking">
+                        <i class="fa fa-hand-paper-o me-2"/>
+                        <span>This is an open hold point. The work it governs
+                              must not proceed until it is released.</span>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="point_id" readonly="state != 'pending'"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="location"/>
+                            <field name="date_required"/>
+                            <field name="point_type" readonly="1"/>
+                            <field name="responsible_party" readonly="1"/>
+                            <field name="is_blocking" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="inspection_id"
+                                   domain="[('project_id', '=', project_id)]"/>
+                            <field name="date_signed" readonly="1"/>
+                            <field name="signed_by_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Waiver"
+                           invisible="point_type != 'hold' or inspection_id">
+                        <field name="waiver_reason" nolabel="1"
+                               placeholder="Where a hold point is released without an inspection, who authorised proceeding and why…"/>
+                    </group>
+                    <field name="notes" placeholder="Notes…"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_itp_record_list" model="ir.ui.view">
+        <field name="name">construction.itp.record.list</field>
+        <field name="model">construction.itp.record</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_blocking"
+                  decoration-success="state == 'released'">
+                <field name="point_id"/>
+                <field name="location"/>
+                <field name="project_id"/>
+                <field name="point_type" widget="badge"
+                       decoration-danger="point_type == 'hold'"/>
+                <field name="responsible_party" optional="show"/>
+                <field name="date_required"/>
+                <field name="date_signed" optional="show"/>
+                <field name="signed_by_id" optional="hide"/>
+                <field name="is_blocking" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'released'"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_itp_record_search" model="ir.ui.view">
+        <field name="name">construction.itp.record.search</field>
+        <field name="model">construction.itp.record</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="location"/>
+                <field name="project_id"/>
+                <field name="point_id"/>
+                <filter name="filter_blocking" string="Open Hold Points"
+                        domain="[('is_blocking', '=', True)]"/>
+                <filter name="filter_pending" string="Pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <separator/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_itp" string="Plan"
+                        context="{'group_by': 'itp_id'}"/>
+                <filter name="group_type" string="Point Type"
+                        context="{'group_by': 'point_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_itp" model="ir.actions.act_window">
+        <field name="name">Inspection &amp; Test Plans</field>
+        <field name="res_model">construction.itp</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_itp_search"/>
+    </record>
+
+    <record id="action_itp_record" model="ir.actions.act_window">
+        <field name="name">ITP Sign-Offs</field>
+        <field name="res_model">construction.itp.record</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_itp_record_search"/>
+    </record>
+
+    <menuitem id="menu_itp"
+              name="Inspection &amp; Test Plans"
+              parent="construction_daily_log.menu_construction_site"
+              action="action_itp"
+              sequence="20"/>
+
+    <menuitem id="menu_itp_record"
+              name="ITP Sign-Offs"
+              parent="construction_daily_log.menu_construction_site"
+              action="action_itp_record"
+              sequence="21"/>
+</odoo>

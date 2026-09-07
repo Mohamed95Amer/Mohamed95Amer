@@ -1,0 +1,1521 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid ""
+"<br/>\n"
+"                                <strong>Activity:</strong>"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid ""
+"<br/>\n"
+"                                <strong>Issued to:</strong>"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid ""
+"<br/>\n"
+"                                <strong>Storekeeper:</strong>"
+msgstr ""
+
+#. modules: construction_material, construction_meeting
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_meeting.report_minutes_document
+msgid "<strong>Date:</strong>"
+msgstr "<strong>التاريخ:</strong>"
+
+#. modules: construction_material, construction_meeting, construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_meeting.report_minutes_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+msgid "<strong>Project:</strong>"
+msgstr "<strong>المشروع:</strong>"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "<strong>Total: </strong>"
+msgstr ""
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/material_issue.py:0
+msgid ""
+"A confirmed issue has already moved stock. Reverse it with a stock "
+"adjustment rather than cancelling the record."
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_material_issue
+msgid ""
+"A material issue takes stock out of the site store and into the\n"
+"               works, against a BOQ item so consumption can be measured against\n"
+"               what was priced."
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_needaction
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_needaction
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_needaction
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_needaction
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_needaction
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_needaction
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_needaction
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_ids
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__task_id
+msgid "Activity"
+msgstr "النشاط"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_state
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_state
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_state
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_state
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_state
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_type_icon
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_type_icon
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_type_icon
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_type_icon
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_type_icon
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/material_issue.py:0
+msgid "Add the materials being issued."
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_attachment_count
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_attachment_count
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_attachment_count
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_attachment_count
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_attachment_count
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_attachment_count
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_attachment_count
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. modules: construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__boq_line_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__boq_line_id
+msgid "BOQ Item"
+msgstr "بند جدول كميات"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "BOQ item"
+msgstr "بند جدول الكميات"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__ball_in_court_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__ball_in_court_id
+msgid "Ball in Court"
+msgstr "مسؤول الإجراء التالي"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue_line__boq_line_id
+msgid ""
+"Bill item this material was consumed against, so consumption can be measured"
+" against the quantity that was priced."
+msgstr ""
+
+#. modules: construction_material, construction_report, construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__budget_cost
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.report_leveling_document
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_list
+msgid "Budget"
+msgstr "الدخل\n"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__budget_value
+msgid "Budget Value"
+msgstr "قيمة الموازنة"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Budgeted"
+msgstr "مُقدَّر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__qty_budget
+msgid "Budgeted Qty"
+msgstr "الكمية المقدّرة"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_project_project__material_budget_value
+msgid "Budgeted material cost from the BOQ lines that name a product."
+msgstr ""
+
+#. modules: construction_material, construction_tender, construction_whatsapp
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. modules: construction_material, construction_tender, construction_whatsapp
+#: model:ir.model.fields.selection,name:construction_material.selection__construction_material_issue__state__cancelled
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__cancelled
+#: model:ir.model.fields.selection,name:construction_whatsapp.selection__whatsapp_message__state__cancelled
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__company_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__company_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__company_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__company_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__company_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__company_id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__company_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__company_id
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__company_id
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+msgid "Confirm Issue"
+msgstr "تأكيد الصرف"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+msgid "Confirm this issue? The quantities will leave the site store."
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_stock_picking__construction_project_id
+msgid "Construction Project"
+msgstr "مشروع إنشائي"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_stock_scrap__project_id
+msgid "Construction project the wasted material belonged to."
+msgstr "الإنشاءات project the wasted material belonged to."
+
+#. modules: construction_material, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__qty_consumed
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__qty_consumed
+#: model:ir.model.fields.selection,name:facility_inventory.selection__facility_request_part__state__consumed
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+#: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_list
+#: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_search
+msgid "Consumed"
+msgstr "المستهلك"
+
+#. modules: construction_material, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__consumed_value
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_consumed_value
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__consumed_value
+msgid "Consumed Value"
+msgstr "قيمة المستهلك"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_construction_material_summary__qty_variance
+msgid ""
+"Consumed plus wasted, less the budgeted quantity. Positive means the job has"
+" used more material than it priced."
+msgstr ""
+
+#. modules: construction_material, facility_inventory
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_list
+msgid "Consumed value"
+msgstr "قيمة المستهلك"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory, facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__create_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__create_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__create_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident_action__create_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__create_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__create_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__create_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__create_uid
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__create_uid
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__create_uid
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__create_uid
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__create_uid
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__create_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__create_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__create_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__create_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__create_uid
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__create_uid
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__create_uid
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__create_uid
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__create_uid
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory, facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__create_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__create_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__create_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident_action__create_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__create_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__create_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__create_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__create_date
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__create_date
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__create_date
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__create_date
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__create_date
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__create_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__create_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__create_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__create_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__create_date
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__create_date
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__create_date
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__create_date
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__create_date
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. modules: construction_material, construction_tender, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__currency_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__currency_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__currency_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__currency_id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_location__currency_id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__currency_id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__damage
+msgid "Damaged in Handling"
+msgstr "تلف أثناء المناولة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__date_required
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__date_required
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__date_required
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__date_required
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__date_required
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__date_required
+msgid "Date Required"
+msgstr "التاريخ المطلوب"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__date_required
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__date_required
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__date_required
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__date_required
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__date_required
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__date_required
+msgid "Date by which a response/action is required."
+msgstr "التاريخ المطلوب إتمام الرد أو الإجراء قبله."
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_purchase_order__construction_project_id
+msgid "Deliver to Project"
+msgstr "التوريد إلى المشروع"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory, facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__display_name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__display_name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__display_name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident_action__display_name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__display_name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__display_name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__display_name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__display_name
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__display_name
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__display_name
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__display_name
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__display_name
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__display_name
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__display_name
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__display_name
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__display_name
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__display_name
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__display_name
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__display_name
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__display_name
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__display_name
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__display_name
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__display_name
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__display_name
+msgid "Display Name"
+msgstr "اسم العرض "
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+msgid "Docket notes..."
+msgstr ""
+
+#. modules: construction_hse, construction_material, construction_meeting,
+#. construction_tender
+#: model:ir.model.fields.selection,name:construction_hse.selection__construction_permit__state__draft
+#: model:ir.model.fields.selection,name:construction_material.selection__construction_material_issue__state__draft
+#: model:ir.model.fields.selection,name:construction_meeting.selection__construction_meeting__state__draft
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender__state__draft
+#: model:ir.model.fields.selection,name:construction_tender.selection__construction_tender_bid__state__draft
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_search
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/material_issue.py:0
+msgid "Every line needs a quantity greater than zero: %s"
+msgstr "كل line needs a quantity greater than zero: %s"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__expired
+msgid "Expired / Set"
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_follower_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_follower_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_follower_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_follower_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_follower_ids
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_follower_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_follower_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_partner_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_partner_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_partner_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_partner_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_partner_ids
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_partner_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_partner_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء) "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_type_icon
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__activity_type_icon
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__activity_type_icon
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__activity_type_icon
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__activity_type_icon
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_search
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_incident_search
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_permit_search
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_search
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_search
+#: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_action_search
+#: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_search
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_search
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_message_search
+#: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_search
+msgid "Group By"
+msgstr "تجميع حسب"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__has_message
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__has_message
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__has_message
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__has_message
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__has_message
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__has_message
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__has_message
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة "
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_search
+msgid "Has Waste"
+msgstr "به هدر"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory, facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident_action__id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__id
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__id
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__id
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__id
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__id
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_exception_icon
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__activity_exception_icon
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__activity_exception_icon
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__activity_exception_icon
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__activity_exception_icon
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_needaction
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__message_needaction
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__message_needaction
+#: model:ir.model.fields,help:construction_hse.field_construction_toolbox_talk__message_needaction
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__message_needaction
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__message_needaction
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__message_needaction
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_has_error
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_has_sms_error
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__message_has_error
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__message_has_sms_error
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__message_has_error
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__message_has_sms_error
+#: model:ir.model.fields,help:construction_hse.field_construction_toolbox_talk__message_has_error
+#: model:ir.model.fields,help:construction_hse.field_construction_toolbox_talk__message_has_sms_error
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__message_has_error
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__message_has_sms_error
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__message_has_error
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__message_has_sms_error
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__message_has_error
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__message_has_sms_error
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__message_has_error
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_is_follower
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_is_follower
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_is_follower
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_is_follower
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_is_follower
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_is_follower
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_is_follower
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__is_overdue
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__is_overdue
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__is_overdue
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__is_overdue
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__is_overdue
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__is_overdue
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__is_overdue
+msgid "Is Overdue"
+msgstr "متأخر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__issue_id
+msgid "Issue"
+msgstr "الصرف"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__issue_date
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_search
+msgid "Issue Date"
+msgstr "تاريخ الإصدار"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__construction_material_issue__state__done
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_search
+msgid "Issued"
+msgstr "تم إصدارها "
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__issued_to_id
+msgid "Issued To"
+msgstr "مصروف إلى"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "Issued by: ______________________"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Issues behind this line"
+msgstr ""
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/material_summary.py:0
+msgid "Issues of %s"
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory, facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__write_uid
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__write_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__write_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident_action__write_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__write_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__write_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__write_uid
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__write_uid
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__write_uid
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__write_uid
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__write_uid
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__write_uid
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__write_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__write_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__write_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__write_uid
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__write_uid
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__write_uid
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__write_uid
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__write_uid
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__write_uid
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory, facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__write_date
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__write_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__write_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident_action__write_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__write_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__write_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_attendee__write_date
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__write_date
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__write_date
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__write_date
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__write_date
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__write_date
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__write_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__write_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__write_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__write_date
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__write_date
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__write_date
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__write_date
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__write_date
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__write_date
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. modules: construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__line_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__line_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__line_ids
+msgid "Line"
+msgstr "البند "
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__theft
+msgid "Loss / Unaccounted"
+msgstr "فقد / غير محصور"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "Material"
+msgstr "المادة "
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_budget_value
+msgid "Material Budget"
+msgstr "موازنة المواد"
+
+#. module: construction_material
+#: model:ir.actions.act_window,name:construction_material.action_project_material
+#: model:ir.ui.menu,name:construction_material.menu_material_control
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+msgid "Material Control"
+msgstr "مراقبة المواد"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_stock_move__construction_issue_id
+msgid "Material Issue"
+msgstr "صرف مواد"
+
+#. module: construction_material
+#: model:ir.actions.report,name:construction_material.action_report_material_issue
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "Material Issue Docket"
+msgstr "سند صرف مواد"
+
+#. module: construction_material
+#: model:ir.actions.act_window,name:construction_material.action_material_issue
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_issue_ids
+#: model:ir.ui.menu,name:construction_material.menu_material_issues
+msgid "Material Issues"
+msgstr "أوامر صرف المواد"
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/project_material.py:0
+#: model:ir.actions.act_window,name:construction_material.action_material_summary
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_summary_ids
+#: model:ir.ui.menu,name:construction_material.menu_material_position
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Material Position"
+msgstr "موقف المواد"
+
+#. module: construction_material
+#: model:ir.ui.menu,name:construction_material.menu_material_root
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+msgid "Materials"
+msgstr "المواد"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_has_error
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_has_error
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_has_error
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_has_error
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_has_error
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_has_error
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_has_error
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_ids
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_ids
+#: model_terms:ir.ui.view,arch_db:construction_whatsapp.view_whatsapp_account_form
+msgid "Messages"
+msgstr "الرسائل"
+
+#. modules: construction_material, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__move_ids
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__move_id
+msgid "Move"
+msgstr "حركة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_sla
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__name
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__name
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__name
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__name
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__name
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_attendee__name
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__name
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__name
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__name
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__name
+#: model_terms:ir.ui.view,arch_db:construction_meeting.report_minutes_document
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_site_deliveries
+msgid ""
+"Name a construction project on a purchase order and its receipt\n"
+"               lands in that project's site store."
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_summary
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_summary
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_summary
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_summary
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_summary
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_type_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_type_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_type_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_type_id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_type_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_site_deliveries
+msgid "No site deliveries yet"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_construction_scrap
+msgid "No site waste recorded"
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__note
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__note
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__note
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_element_form
+msgid "Note"
+msgstr "الملاحظات"
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_material_summary
+msgid "Nothing to reconcile yet"
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_needaction_counter
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__message_needaction_counter
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__message_needaction_counter
+#: model:ir.model.fields,help:construction_hse.field_construction_toolbox_talk__message_needaction_counter
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__message_needaction_counter
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__message_needaction_counter
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__message_needaction_counter
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__message_has_error_counter
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__message_has_error_counter
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__message_has_error_counter
+#: model:ir.model.fields,help:construction_hse.field_construction_toolbox_talk__message_has_error_counter
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__message_has_error_counter
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__message_has_error_counter
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__message_has_error_counter
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__offcut
+msgid "Offcut / Cutting Waste"
+msgstr "قطع متبقية / هدر تقطيع"
+
+#. modules: construction_material, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__on_hand_value
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_location__on_hand_value
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__on_hand_value
+msgid "On Hand Value"
+msgstr "قيمة المتوفر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__qty_on_hand
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__qty_on_hand
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "On Site"
+msgstr "بالموقع"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_on_hand_value
+msgid "On Site Value"
+msgstr "قيمة ما بالموقع"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+msgid "On site"
+msgstr "بالموقع"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "On site value"
+msgstr "قيمة ما بالموقع"
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_material_summary
+msgid ""
+"Once a BOQ names products and materials are issued from the site\n"
+"               store, this compares what was priced against what was actually\n"
+"               consumed and lost."
+msgstr ""
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/material_issue.py:0
+msgid "Only a draft issue can be confirmed."
+msgstr ""
+
+#. modules: construction_bim, construction_material, construction_meeting
+#: model:ir.model.fields.selection,name:construction_bim.selection__construction_bim_model__discipline__other
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__other
+#: model:ir.model.fields.selection,name:construction_meeting.selection__construction_meeting__meeting_type__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__qty_variance
+msgid "Over / Under Budget"
+msgstr "أعلى / أقل من الموازنة"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_search
+msgid "Over Budget"
+msgstr "تجاوز الموازنة"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+msgid "Over budget"
+msgstr "تجاوز الموازنة"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__over_order
+msgid "Over-ordered / Surplus"
+msgstr "طلب زائد / فائض"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__ball_in_court_id
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__ball_in_court_id
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__ball_in_court_id
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__ball_in_court_id
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__ball_in_court_id
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__ball_in_court_id
+msgid "Party currently responsible for the next action."
+msgstr "الطرف المسؤول حالياً عن الإجراء التالي."
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__product_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__product_id
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_search
+msgid "Product"
+msgstr "المنتج"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_over_budget_count
+msgid "Products Over Budget"
+msgstr "أصناف تجاوزت الموازنة"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__task_id
+msgid "Programme activity the materials were consumed on."
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_report, construction_tender
+#: model:ir.model,name:construction_report.model_project_project
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_element__project_id
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__project_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__project_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__project_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__project_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__project_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__project_id
+#: model:ir.model.fields,field_description:construction_material.field_stock_scrap__project_id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__project_id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__project_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__project_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__project_id
+#: model_terms:ir.ui.view,arch_db:construction_bim.view_bim_model_search
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_incident_search
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_permit_search
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_search
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_search
+#: model_terms:ir.ui.view,arch_db:construction_material.view_scrap_search_construction
+#: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_action_search
+#: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_search
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_search
+msgid "Project"
+msgstr "المشروع"
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_construction_material_summary
+msgid "Project Material Position"
+msgstr "موقف مواد المشروع"
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_purchase_order
+msgid "Purchase Order"
+msgstr "أمر شراء"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "Qty"
+msgstr "الكمية"
+
+#. modules: construction_material, construction_tender, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__quantity
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__quantity
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__quantity
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__quantity
+msgid "Quantity"
+msgstr "الكمية"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue_line__qty_on_hand
+msgid "Quantity of this product currently in the site store."
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__rating_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__rating_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__rating_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__rating_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__rating_ids
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__rating_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__rating_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__rating_ids
+msgid "Ratings"
+msgstr "التقييمات "
+
+#. module: construction_material
+#: model:product.template,name:construction_material.product_concrete_product_template
+msgid "Ready-mix concrete C30/37"
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_purchase_order__construction_project_id
+#: model:ir.model.fields,help:construction_material.field_stock_picking__construction_project_id
+msgid "Receipts for this order land in the project's site store."
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+msgid "Received by: ______________________"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_material_issue
+msgid "Record your first issue"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.actions.act_window,help:construction_material.action_construction_scrap
+msgid ""
+"Recording waste against a project and a reason turns a single\n"
+"               loss figure into something a site can act on."
+msgstr ""
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, facility_portal
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__reference
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__reference
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__reference
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__reference
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__reference
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__reference
+#: model_terms:ir.ui.view,arch_db:facility_portal.portal_my_requests
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: construction_material
+#: model:product.template,name:construction_material.product_rebar_product_template
+msgid "Reinforcement steel B500B"
+msgstr ""
+
+#. modules: construction_hse, construction_material, construction_meeting,
+#. construction_tender
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_permit_form
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_meeting.view_meeting_form
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__activity_user_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__activity_user_id
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__activity_user_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__activity_user_id
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__activity_user_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__rework
+msgid "Rework / Defective Work"
+msgstr "إعادة عمل / عمل معيب"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_stock_scrap
+msgid "Scrap"
+msgstr "مخلفات التصنيع "
+
+#. modules: construction_hse, construction_material, construction_meeting,
+#. construction_tender, construction_whatsapp, facility_inventory,
+#. facility_sla
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit_precaution__sequence
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__sequence
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__sequence
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__sequence
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__sequence
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__sequence
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__sequence
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: construction_material
+#: model:ir.actions.act_window,name:construction_material.action_site_deliveries
+#: model:ir.ui.menu,name:construction_material.menu_site_deliveries
+msgid "Site Deliveries"
+msgstr "توريدات الموقع"
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_construction_material_issue
+msgid "Site Material Issue"
+msgstr "صرف مواد بالموقع"
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_construction_material_issue_line
+msgid "Site Material Issue Line"
+msgstr "بند صرف مواد بالموقع"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_project_project__site_location_id
+msgid "Site Store"
+msgstr "مخزن الموقع"
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__spillage
+msgid "Spillage / Mixing Loss"
+msgstr "انسكاب / فقد خلط"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender, construction_whatsapp,
+#. facility_inventory
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__state
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__state
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__state
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__state
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__state
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting_action__state
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__state
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__state
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__state
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_message__state
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__state
+msgid "State"
+msgstr "الحالة"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_state
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__activity_state
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__activity_state
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__activity_state
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__activity_state
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الأنشطة المعتمدة على الحالة\n"
+"المتأخرة: تاريخ الاستحقاق مر\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"المخطط: الأنشطة المستقبلية."
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_search
+msgid "Still On Site"
+msgstr "ما زال بالموقع"
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_stock_move
+msgid "Stock Move"
+msgstr "حركة المخزون"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+msgid "Stock Moves"
+msgstr "حركات المخزون "
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/project_material.py:0
+msgid "Stock at %s"
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_project_project__site_location_id
+msgid ""
+"Stock location holding materials delivered to this site. Created on demand."
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__requested_by_id
+msgid "Storekeeper"
+msgstr "أمين المخزن"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__issued_to_id
+msgid "Subcontractor or crew receiving the materials."
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__total_value
+msgid "Total Value"
+msgstr "القيمة الكلية"
+
+#. module: construction_material
+#: model:ir.model,name:construction_material.model_stock_picking
+msgid "Transfer"
+msgstr "تحويل "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__activity_exception_decoration
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__activity_exception_decoration
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__activity_exception_decoration
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__activity_exception_decoration
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__activity_exception_decoration
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
+
+#. modules: construction_material, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__unit_cost
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__unit_cost
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_parts_summary__unit_cost
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__unit_cost
+msgid "Unit Cost"
+msgstr "تكلفة الوحدة"
+
+#. modules: construction_material, construction_tender, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__uom_id
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__uom_id
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_line__uom_id
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:facility_inventory.view_parts_summary_list
+msgid "UoM"
+msgstr "وحدة القياس"
+
+#. modules: construction_material, construction_report, facility_inventory
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue_line__value
+#: model:ir.model.fields,field_description:facility_inventory.field_facility_request_part__value
+#: model_terms:ir.ui.view,arch_db:construction_material.report_issue_document
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_list
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Value"
+msgstr "القيمة"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Var %"
+msgstr "الفرق %"
+
+#. modules: construction_material, construction_tender
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid_line__variance
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_bid_form
+msgid "Variance"
+msgstr "الفرق"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__variance_percent
+msgid "Variance %"
+msgstr "الفرق %"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+msgid "Waste"
+msgstr "الهدر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__waste_percent
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_waste_percent
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+#: model_terms:ir.ui.view,arch_db:construction_material.view_project_material_list
+msgid "Waste %"
+msgstr "الهدر %"
+
+#. module: construction_material
+#: model:ir.actions.act_window,name:construction_material.action_construction_scrap
+#: model:ir.ui.menu,name:construction_material.menu_material_waste
+msgid "Waste & Scrap"
+msgstr "الهدر والتالف"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_stock_scrap__waste_note
+msgid "Waste Note"
+msgstr "ملاحظة الهدر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_stock_scrap__waste_reason
+#: model_terms:ir.ui.view,arch_db:construction_material.view_scrap_search_construction
+msgid "Waste Reason"
+msgstr "سبب الهدر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__waste_value
+#: model:ir.model.fields,field_description:construction_material.field_project_project__material_waste_value
+msgid "Waste Value"
+msgstr "قيمة الهدر"
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Waste behind this line"
+msgstr ""
+
+#. module: construction_material
+#. odoo-python
+#: code:addons/construction_material/models/material_summary.py:0
+msgid "Waste of %s"
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Waste value"
+msgstr "قيمة الهدر"
+
+#. module: construction_material
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_summary__qty_wasted
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_summary_list
+msgid "Wasted"
+msgstr "المهدور"
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_construction_material_summary__waste_percent
+msgid "Wasted as a share of everything issued from the store."
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_project_project__material_waste_percent
+msgid ""
+"Wasted quantity as a share of everything issued out of the store — the "
+"number that says whether the site is losing material."
+msgstr ""
+
+#. module: construction_material
+#: model:ir.model.fields.selection,name:construction_material.selection__stock_scrap__waste_reason__weather
+msgid "Weather Damage"
+msgstr "الطقس Damage"
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,field_description:construction_bim.field_construction_bim_model__website_message_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_incident__website_message_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_permit__website_message_ids
+#: model:ir.model.fields,field_description:construction_hse.field_construction_toolbox_talk__website_message_ids
+#: model:ir.model.fields,field_description:construction_material.field_construction_material_issue__website_message_ids
+#: model:ir.model.fields,field_description:construction_meeting.field_construction_meeting__website_message_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender__website_message_ids
+#: model:ir.model.fields,field_description:construction_tender.field_construction_tender_bid__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني "
+
+#. modules: construction_bim, construction_hse, construction_material,
+#. construction_meeting, construction_tender
+#: model:ir.model.fields,help:construction_bim.field_construction_bim_model__website_message_ids
+#: model:ir.model.fields,help:construction_hse.field_construction_incident__website_message_ids
+#: model:ir.model.fields,help:construction_hse.field_construction_permit__website_message_ids
+#: model:ir.model.fields,help:construction_hse.field_construction_toolbox_talk__website_message_ids
+#: model:ir.model.fields,help:construction_material.field_construction_material_issue__website_message_ids
+#: model:ir.model.fields,help:construction_meeting.field_construction_meeting__website_message_ids
+#: model:ir.model.fields,help:construction_tender.field_construction_tender__website_message_ids
+#: model:ir.model.fields,help:construction_tender.field_construction_tender_bid__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني "
+
+#. module: construction_material
+#: model:ir.model.fields,help:construction_material.field_stock_scrap__waste_reason
+msgid ""
+"Why the material was lost. Offcuts are a design and ordering question; "
+"damage and spillage are a site-handling one."
+msgstr ""
+
+#. module: construction_material
+#: model_terms:ir.ui.view,arch_db:construction_material.view_material_issue_form
+msgid "e.g. Blockwork to level 5"
+msgstr ""

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_hse_officer" model="res.groups">
+        <field name="name">HSE Officer</field>
+        <field name="category_id" ref="construction_base.module_category_construction"/>
+        <field name="implied_ids" eval="[(4, ref('construction_base.group_construction_user'))]"/>
+        <field name="comment">Can approve permits to work and close incident
+            investigations.</field>
+    </record>
+</odoo>

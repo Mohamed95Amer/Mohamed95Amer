@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_ui.MajalWorkspaceHub">
+        <main t-attf-class="o_majal_workspace o_tone_{{ config.tone }}">
+            <nav class="o_majal_workspace_nav" aria-label="Workspace navigation">
+                <button class="o_majal_back" t-on-click="goHome">
+                    <i class="fa fa-arrow-left"/>
+                    <span t-esc="suiteTitle"/>
+                </button>
+                <div class="o_majal_breadcrumb">
+                    <span>Majal</span><i class="fa fa-angle-right"/>
+                    <span t-esc="suiteArea"/>
+                    <i class="fa fa-angle-right"/><strong t-esc="config.title"/>
+                </div>
+                <span class="o_majal_live"><i/> Live workspace</span>
+            </nav>
+
+            <section class="o_majal_workspace_hero">
+                <div class="o_majal_workspace_identity">
+                    <span class="o_majal_workspace_icon">
+                        <i t-attf-class="fa {{ config.icon }}"/>
+                    </span>
+                    <div>
+                        <span class="o_majal_eyebrow" t-esc="config.eyebrow"/>
+                        <h1 t-esc="config.title"/>
+                        <p t-esc="config.description"/>
+                    </div>
+                </div>
+                <div class="o_majal_workspace_actions">
+                    <button class="btn o_majal_primary" t-on-click="openMain">
+                        Open records <i class="fa fa-arrow-right"/>
+                    </button>
+                    <button t-if="config.allowCreate" class="btn o_majal_secondary"
+                            t-on-click="createRecord">
+                        <i class="fa fa-plus"/> Create new
+                    </button>
+                </div>
+            </section>
+
+            <section class="o_majal_metrics" aria-label="Workspace metrics">
+                <button t-foreach="state.metrics" t-as="metric" t-key="metric.label"
+                        type="button"
+                        class="o_majal_metric o_majal_metric_action"
+                        t-att-class="{'o_tone_alert': metric.tone === 'alert'}"
+                        t-att-title="metric.label + ' — ' + metric.hint"
+                        t-on-click="() => this.openMetric(metric)">
+                    <span><i t-attf-class="fa {{ metric.icon }}"/></span>
+                    <div>
+                        <strong t-att-class="{'o_skeleton': state.loading}"
+                                t-esc="metric.value"/>
+                        <small t-esc="metric.label"/>
+                        <em t-esc="metric.hint"/>
+                    </div>
+                    <i class="fa fa-arrow-right o_majal_metric_go" aria-hidden="true"/>
+                </button>
+                <article t-if="state.loading" t-foreach="[1,2,3,4]" t-as="item"
+                         t-key="item" class="o_majal_metric o_loading">
+                    <span class="o_skeleton"/><div><strong class="o_skeleton">0</strong>
+                    <small class="o_skeleton">Loading workspace</small></div>
+                </article>
+            </section>
+
+            <section class="o_majal_detail_grid">
+                <article class="o_majal_panel o_majal_activity">
+                    <header>
+                        <div>
+                            <span class="o_majal_eyebrow">RECENT ACTIVITY</span>
+                            <h2>Latest workspace updates</h2>
+                        </div>
+                        <button class="btn btn-link" t-on-click="openMain">
+                            View all <i class="fa fa-arrow-right"/>
+                        </button>
+                    </header>
+                    <div t-if="state.recent.length" class="o_majal_recent_list">
+                        <button t-foreach="state.recent" t-as="record" t-key="record.id"
+                                class="o_majal_recent_item"
+                                t-on-click="() => this.openRecord(record.id)">
+                            <span class="o_majal_recent_icon">
+                                <i t-attf-class="fa {{ config.icon }}"/>
+                            </span>
+                            <span>
+                                <strong t-esc="record.display_name"/>
+                                <small>Updated <t t-esc="formatDate(record.write_date)"/></small>
+                            </span>
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                    </div>
+                    <div t-else="" class="o_majal_empty">
+                        <i class="fa fa-inbox"/>
+                        <strong>No activity yet</strong>
+                        <p>Create the first record to start this Majal workspace.</p>
+                    </div>
+                </article>
+
+                <article class="o_majal_panel o_majal_flow">
+                    <header>
+                        <span class="o_majal_eyebrow">SMART WORKFLOW</span>
+                        <h2>How work moves</h2>
+                    </header>
+                    <ol>
+                        <li t-foreach="config.workflow" t-as="step" t-key="step[0]">
+                            <span t-esc="step_index + 1"/>
+                            <div><strong t-esc="step[0]"/><p t-esc="step[1]"/></div>
+                        </li>
+                    </ol>
+                </article>
+            </section>
+
+            <section class="o_majal_related">
+                <div>
+                    <span class="o_majal_eyebrow">CONNECTED WORKSPACES</span>
+                    <h2>Continue without losing context</h2>
+                </div>
+                <div class="o_majal_related_list">
+                    <button t-foreach="relatedWorkspaces" t-as="related" t-key="related.key"
+                            t-on-click="() => this.openWorkspace(related.key)">
+                        <span t-attf-class="o_majal_related_icon o_tone_{{ related.tone }}">
+                            <i t-attf-class="fa {{ related.icon }}"/>
+                        </span>
+                        <span><strong t-esc="related.title"/><small t-esc="related.eyebrow"/></span>
+                        <i class="fa fa-arrow-right"/>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </t>
+</templates>

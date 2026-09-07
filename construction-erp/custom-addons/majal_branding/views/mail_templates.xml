@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="majal_mail_notification_layout"
+              inherit_id="mail.mail_notification_layout"
+              name="Majal Notification Footer"
+              priority="110">
+        <xpath expr="//div[@t-if='show_footer'][a[contains(@href, 'odoo.com')]]" position="replace">
+            <div t-if="show_footer" style="color:#64727a; font-size:11px;">
+                Sent through <strong style="color:#173240;">Majal</strong>
+                <span id="mail_unfollow">
+                    | <a href="/mail/unfollow" style="text-decoration:none; color:#346d75;">Unfollow</a>
+                </span>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="majal_mail_notification_light"
+              inherit_id="mail.mail_notification_light"
+              name="Majal Light Notification Footer"
+              priority="110">
+        <xpath expr="//tr[td/a[contains(@href, 'odoo.com')]]" position="replace">
+            <tr>
+                <td align="center" style="min-width:590px; color:#64727a; font-size:11px;">
+                    Sent through <strong style="color:#173240;">Majal</strong>
+                    <span id="mail_unfollow">
+                        | <a href="/mail/unfollow" style="text-decoration:none; color:#346d75;">Unfollow</a>
+                    </span>
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

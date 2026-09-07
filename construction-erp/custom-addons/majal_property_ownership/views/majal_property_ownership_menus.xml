@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ownership"
+              name="Ownership"
+              parent="majal_real_estate.menu_majal_real_estate_root"
+              sequence="55"/>
+
+    <menuitem id="menu_service_charges"
+              name="Service Charges"
+              parent="menu_ownership"
+              action="action_charge"
+              sequence="10"/>
+
+    <menuitem id="menu_budgets"
+              name="Budgets"
+              parent="menu_ownership"
+              action="action_budget"
+              sequence="20"/>
+
+    <menuitem id="menu_statements"
+              name="Owner Statements"
+              parent="menu_ownership"
+              action="action_statement"
+              sequence="30"/>
+</odoo>

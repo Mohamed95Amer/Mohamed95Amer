@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_maintenance_request_manager,maintenance.request manager,maintenance.model_maintenance_request,maintenance.group_equipment_manager,1,1,1,1
+access_fac_location_user,facility.location user,model_facility_location,maintenance.group_equipment_manager,1,1,1,1
+access_fac_location_all,facility.location read,model_facility_location,base.group_user,1,0,0,0
+access_fac_meter_user,facility.asset.meter user,model_facility_asset_meter,maintenance.group_equipment_manager,1,1,1,1
+access_fac_meter_all,facility.asset.meter read,model_facility_asset_meter,base.group_user,1,0,0,0
+access_fac_reading_user,meter.reading user,model_facility_asset_meter_reading,base.group_user,1,1,1,0
+access_fac_reading_manager,meter.reading manager,model_facility_asset_meter_reading,maintenance.group_equipment_manager,1,1,1,1
+access_fac_failure_user,failure.code user,model_facility_failure_code,maintenance.group_equipment_manager,1,1,1,1
+access_fac_failure_all,failure.code read,model_facility_failure_code,base.group_user,1,0,0,0
+access_fac_spare_user,facility.spare.line user,model_facility_spare_line,maintenance.group_equipment_manager,1,1,1,1
+access_fac_spare_all,facility.spare.line read,model_facility_spare_line,base.group_user,1,0,0,0
+access_asset_scan_user,facility.asset.scan user,model_facility_asset_scan,base.group_user,1,0,1,0
+access_asset_scan_manager,facility.asset.scan manager,model_facility_asset_scan,maintenance.group_equipment_manager,1,0,1,0

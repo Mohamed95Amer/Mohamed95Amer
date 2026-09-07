@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_property" model="ir.ui.view">
+        <field name="name">project.project.form.property</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="construction_base.view_project_form_construction"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='construction']/group" position="inside">
+                <!-- groups=, not just invisible=. An invisible field is still
+                     read: the client fetches development_ids and this list
+                     sub-view, which needs ACL on majal.development. A
+                     construction-only user has none, so opening any project
+                     form raised "not allowed to access majal.development"
+                     before it drew anything. The Cost-Value Reconciliation
+                     and Safety Statistics screens both open a project form
+                     and both died for five of the seven demo personas.
+                     groups= removes the block from the arch, so it is never
+                     requested. -->
+                <group string="Property"
+                       groups="majal_real_estate.group_majal_real_estate_user"
+                       invisible="development_count == 0">
+                    <field name="development_count" invisible="1"/>
+                    <field name="development_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="expected_handover_date"/>
+                            <field name="unit_count"/>
+                        </list>
+                    </field>
+                    <field name="property_unit_count" string="Saleable Units"/>
+                    <button name="action_view_property_units" type="object"
+                            string="View units" class="btn-link"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

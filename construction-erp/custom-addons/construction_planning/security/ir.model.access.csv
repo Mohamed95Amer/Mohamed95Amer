@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_task_link_user,construction.task.link user,model_construction_task_link,construction_base.group_construction_user,1,0,0,0
+access_task_link_engineer,construction.task.link engineer,model_construction_task_link,construction_base.group_construction_site_engineer,1,1,1,1

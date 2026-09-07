@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pm_plan_form" model="ir.ui.view">
+        <field name="name">facility.pm.plan.form</field>
+        <field name="model">facility.pm.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_now" type="object"
+                            string="Generate Work Order Now" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_requests" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <field name="request_count" widget="statinfo"
+                                   string="Work Orders"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Plan name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="equipment_id"/>
+                            <field name="maintenance_team_id"/>
+                            <field name="job_plan_id"/>
+                            <field name="trigger_type" widget="radio"/>
+                        </group>
+                        <group string="Calendar"
+                               invisible="trigger_type != 'calendar'">
+                            <label for="interval_number" string="Every"/>
+                            <div class="o_row">
+                                <field name="interval_number" class="oe_inline"/>
+                                <field name="interval_type" class="oe_inline"/>
+                            </div>
+                            <field name="next_date"/>
+                        </group>
+                        <group string="Meter"
+                               invisible="trigger_type != 'meter'">
+                            <field name="meter_id"/>
+                            <field name="meter_interval"/>
+                            <field name="last_triggered_value"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pm_plan_list" model="ir.ui.view">
+        <field name="name">facility.pm.plan.list</field>
+        <field name="model">facility.pm.plan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="equipment_id"/>
+                <field name="trigger_type"/>
+                <field name="next_date"/>
+                <field name="request_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- next_date and interval_type were calendar-shaped data trapped in a
+         list: "what is due next month" is the question a facilities manager
+         asks every week and the register could not answer it without
+         sorting by hand. Meter-triggered plans carry no next_date and so
+         do not appear here, which is correct — they are due at a reading,
+         not on a day. -->
+    <record id="view_pm_plan_calendar" model="ir.ui.view">
+        <field name="name">facility.pm.plan.calendar</field>
+        <field name="model">facility.pm.plan</field>
+        <field name="arch" type="xml">
+            <calendar string="Planned Maintenance" date_start="next_date"
+                      color="equipment_id" mode="month" quick_create="0">
+                <field name="equipment_id" filters="1"/>
+                <field name="maintenance_team_id" filters="1"/>
+                <field name="job_plan_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_pm_plan_search" model="ir.ui.view">
+        <field name="name">facility.pm.plan.search</field>
+        <field name="model">facility.pm.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="equipment_id"/>
+                <field name="job_plan_id"/>
+                <filter name="filter_due" string="Due"
+                        domain="[('trigger_type', '=', 'calendar'),
+                                 ('next_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_calendar" string="Calendar Triggered"
+                        domain="[('trigger_type', '=', 'calendar')]"/>
+                <filter name="filter_meter" string="Meter Triggered"
+                        domain="[('trigger_type', '=', 'meter')]"/>
+                <separator/>
+                <filter name="group_equipment" string="Asset"
+                        context="{'group_by': 'equipment_id'}"/>
+                <filter name="group_team" string="Team"
+                        context="{'group_by': 'maintenance_team_id'}"/>
+                <filter name="group_trigger" string="Trigger"
+                        context="{'group_by': 'trigger_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pm_plan" model="ir.actions.act_window">
+        <field name="name">PM Plans</field>
+        <field name="res_model">facility.pm.plan</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_pm_plan_search"/>
+    </record>
+</odoo>

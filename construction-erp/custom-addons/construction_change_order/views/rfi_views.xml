@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rfi_form_change_event" model="ir.ui.view">
+        <field name="name">construction.rfi.form.change.event</field>
+        <field name="model">construction.rfi</field>
+        <field name="inherit_id" ref="construction_rfi.view_rfi_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_reopen']" position="after">
+                <button name="action_raise_change_event" type="object"
+                        string="Raise Change Order" icon="fa-exchange"
+                        invisible="not cost_impact or state == 'draft'"/>
+            </xpath>
+            <!-- The RFI form had no button box at all: once "Raise Change
+                 Event" had been clicked, the event it created was reachable
+                 only by searching the Change Orders register by hand. -->
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_change_events" type="object"
+                            class="oe_stat_button" icon="fa-exchange"
+                            invisible="not change_event_count">
+                        <field name="change_event_count" widget="statinfo"
+                               string="Change Orders"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

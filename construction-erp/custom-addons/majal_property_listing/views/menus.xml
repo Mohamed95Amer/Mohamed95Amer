@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_majal_property_listings"
+              name="Listings"
+              parent="majal_real_estate.menu_majal_real_estate_sales"
+              action="action_majal_property_listing"
+              sequence="2"
+              groups="majal_property_listing.group_majal_property_listing_user"/>
+</odoo>
