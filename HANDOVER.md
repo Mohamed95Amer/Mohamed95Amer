@@ -9,25 +9,19 @@ All work described here is on that branch. `main` does not have it.
 
 ---
 
-## 1. Start here — the one thing that is not done
+## 1. Current production state
 
-**The app has never been deployed and has never made a real network call.**
+**Live:** https://goldhub-three.vercel.app — Vercel project `mohamed95amers-projects/goldhub`.
 
-The environment this was built in has no outbound network. Everything below was verified against
-the real database and by running the real code, but two things could not be exercised and must be
-checked first:
+The previously unverified production paths have now been exercised end to end:
 
-1. **The gold price provider has never been called.** `api.gold-api.com` was unreachable. The
-   response parser is tested 9/9 against the shapes it might receive, and a shape it cannot read
-   throws so the service falls back rather than storing garbage — but the first real call happens
-   on deploy. **Check `/api/gold-price/latest` reports `"source": "goldapicom"`, not `"mock"` or
-   `"seed"`.** If it reads `mock`, the upstream call failed and the fallback engaged; the response
-   `attempts` array in `/api/cron/refresh-gold-price` will say why.
-2. **`available_quantity()` has not been exercised over PostgREST.** The SQL is tested (see §4) but
-   the `supabase.rpc(...)` round trip from `products/[id]/page.tsx` has not run. It falls back to
-   `products.quantity` if the RPC returns anything unexpected, so it degrades rather than crashes —
-   which also means a silent failure looks like working software. Verify the count on a product
-   page drops after reserving.
+1. `/api/gold-price/latest` returns real `goldapicom` quotes. After explicitly opting Supabase
+   server reads out of the Next.js Data Cache, a preview soak stayed fresh for more than two minutes
+   and advanced across seven samples beyond the 60-second stale boundary.
+2. `available_quantity()` completed a real PostgREST RPC round trip. A reservation changed a
+   product page from 25 available to 24 after reload.
+3. All 12 demo photographs were visually matched to their listing titles, copied into the public
+   `product-images` Supabase bucket under their vendor IDs, and the database now stores bucket paths.
 
 ### Deploying
 
@@ -99,8 +93,14 @@ Supabase project: `xgbzvdrdpinwkdbgpxdh` (eu-central-1). It also contains leftov
 "Demo Gold Shop" vendor from an earlier app; harmless, but it is not a pristine project.
 
 Vercel Functions are pinned to Frankfurt (`fra1`) in `vercel.json`, colocated with Supabase's
-`eu-central-1` data plane. Keep them close to the database; Washington (`iad1`) produced
-inconsistent post-restore Data API reads during the September 2026 production verification.
+`eu-central-1` data plane. Keep them close to the database for lower latency.
+
+All server-side Supabase clients explicitly use `cache: "no-store"` and are created per request.
+Next.js 14 otherwise puts the client's internal PostgREST GET requests into its Data Cache. During
+production verification that made each function keep returning the first successful gold tick it
+saw; the quote looked live after deploy, then silently aged past the 60-second safety threshold.
+Do not remove the custom fetch from `src/lib/supabase/server.ts`: it protects live prices, stock and
+reservation history from the same stale-read failure.
 
 ---
 
@@ -160,8 +160,7 @@ deliberately — a bare composite return is handled inconsistently by PostgREST/
 always matches the title.
 
 `products.images` accepts either form: a storage path, or an absolute URL (which is passed through
-untouched). All 12 demo listings currently hold absolute URLs — see §3b for why that is a temporary
-state rather than the intended one.
+untouched). All 12 demo listings now use Supabase Storage paths.
 
 Vendors attach photos through `ProductImageUploader`, which uploads straight to the bucket under
 `<vendor_id>/` — the path prefix the bucket write policy checks. A listing with no photo falls back
@@ -178,8 +177,8 @@ empty shell.
 |---|---|
 | Listings | 12 approved, all 12 with photos, covering 9 of the 10 categories |
 | Vendors | 5 approved across Dubai, Abu Dhabi and Sharjah |
-| Price ticks | 20, spanning ~2 hours |
-| Reservations | 3 — pending, paid, expired (so account/vendor/admin order views populate) |
+| Price ticks | 2,800+ usable ticks across 2 recorded calendar days as of 10 Sep 2026 |
+| Reservations | 4 — two pending-status rows, one paid, one expired |
 | Audit log | 5 entries |
 
 Demo logins exist for each role (`admin@getgold.app`, `vendor1..4@example.ae`,
@@ -187,22 +186,21 @@ Demo logins exist for each role (`admin@getgold.app`, `vendor1..4@example.ae`,
 accounts as `goldhub-demo-N`; the `@getgold.app` accounts predate this work and
 their passwords are not known here.
 
-**Two caveats on the demo data:**
+The original 20 seeded ticks remain labelled `source: 'manual'`; production ticks are labelled
+`goldapicom`. The history/calculator page exposes the source per recorded day so a manually entered
+reference cannot be mistaken for a provider-fetched quote.
 
-1. **Photos are hosted on a third-party CDN, not in your bucket.** They were
-   generated rather than photographed, and `products.images` holds absolute
-   CloudFront URLs. They render fine, but if those links expire the listings
-   fall back to the SVG drawings. There was no storage-upload tool available and
-   the network policy blocked fetching the files to copy them across. Re-upload
-   through the vendor form to move them into `product-images`.
-2. **Nobody has visually confirmed the photos match their listings.** They were
-   generated blind — the same egress policy blocks viewing them. Check before
-   showing this to anyone who matters.
+### Customer insights
 
-The price ticks are labelled `source: 'manual'`, not a provider id, because they
-were entered at the real market rate rather than fetched. On deploy the
-refresh-on-read path writes a real `goldapicom` tick over them within 10s — that
-flip is the signal live pricing works.
+- `/live-price` is now the public Gold insights page: daily recorded history, coverage/range cards,
+  an interactive date/weight/purity calculator and current value comparisons by karat.
+- `/account` separates completed purchases, active locks and closed history. For paid reservations
+  it totals captured spend, fine-gold equivalent, today's comparable value and the difference.
+- Reservation details show the same comparison alongside the immutable server price breakdown.
+- All comparisons update only the gold component while holding captured making, stone, premium and
+  fee amounts constant. Copy explicitly says this is not a resale value, appraisal or financial advice.
+- A pending status is only called active while `expires_at` is still in the future; the UI labels a
+  lapsed lock as expired even if the daily cleanup cron has not updated the database row yet.
 
 ## 4. What is verified, and how
 
@@ -217,8 +215,10 @@ flip is the signal live pricing works.
 | Lint | Clean | `npx next lint` — an eslint config was added; there was none, so lint used to drop you into an interactive prompt |
 | Secrets | None committed | scanned for JWTs/service-role keys; `.env.local` is gitignored |
 | Stock accounting | Correct against demo data | bangle shows 2 available of 3, one held by a pending reservation |
-| Live gold fetch | **NOT VERIFIED** | no network egress in the build environment |
-| `available_quantity` RPC round trip | **NOT VERIFIED** | Supabase MCP dropped before it could run |
+| Live gold fetch | **Verified** | real `goldapicom`; 7-sample, >2-minute Vercel soak stayed fresh |
+| `available_quantity` RPC round trip | **Verified** | real reservation changed rendered availability 25 → 24 |
+| Demo photos | **Verified and migrated** | 12/12 title match; 12/12 load from Supabase Storage |
+| Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.
@@ -227,13 +227,11 @@ a transaction it rolls back.
 
 ## 5. Suggested next steps
 
-1. **Deploy and verify the two unverified items above.** Nothing else should be trusted until the
-   price source reads `goldapicom`.
-2. **Get real photographs in.** Highest visual impact by a wide margin.
-3. **Decide the delivery-fee question** (§3).
-4. Product detail page is finished; the remaining plain surfaces are the vendor and admin areas —
+1. **Decide the delivery-fee question** (§3).
+2. Replace generated demo artwork with each vendor's real product photography before public launch.
+3. Product detail page is finished; the remaining plain surfaces are the vendor and admin areas —
    functional, but styled to a lower standard than the customer-facing pages.
-5. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
+4. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
    vendor is the seller of record; money changes hands off-platform. That is by design for the MVP.
 
 ## 6. Conventions

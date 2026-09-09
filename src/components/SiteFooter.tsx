@@ -19,7 +19,7 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-2.5 text-sm text-white/60">
             <li><Link className="transition hover:text-white" href="/marketplace">Browse all</Link></li>
             <li><Link className="transition hover:text-white" href="/vendors">Verified vendors</Link></li>
-            <li><Link className="transition hover:text-white" href="/live-price">Live gold price</Link></li>
+            <li><Link className="transition hover:text-white" href="/live-price">Gold insights & history</Link></li>
           </ul>
         </div>
         <div>
