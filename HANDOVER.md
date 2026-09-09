@@ -98,6 +98,10 @@ them, the "updates every 10s" promise silently becomes false.
 Supabase project: `xgbzvdrdpinwkdbgpxdh` (eu-central-1). It also contains leftover auth users and a
 "Demo Gold Shop" vendor from an earlier app; harmless, but it is not a pristine project.
 
+Vercel Functions are pinned to Frankfurt (`fra1`) in `vercel.json`, colocated with Supabase's
+`eu-central-1` data plane. Keep them close to the database; Washington (`iad1`) produced
+inconsistent post-restore Data API reads during the September 2026 production verification.
+
 ---
 
 ## 3. Architecture worth knowing before you change things
