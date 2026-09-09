@@ -69,13 +69,15 @@ work is **not** in, and that I had no access to. So pushing to `Mohamed95Amer/Mo
 
 ## 2. Environment
 
-Four are required; everything else has a working default.
+Four logical credentials are required; the service role can use either name below. Everything
+else has a working default.
 
 | Variable | Purpose |
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Browser client |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only. Never expose. |
+| `SUPABASE_SERVICE_ROLE_KEY_CURRENT` | Preferred server-only rotation slot in Vercel. Never expose. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only fallback for existing local environments. Never expose. |
 | `CRON_SECRET` | Guards `/api/cron/*` |
 
 Notable optional ones:

@@ -24,7 +24,11 @@ export const env = {
   supabaseAnonKey: () => required("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
 
   // Server-only — must never be exposed to the browser
-  supabaseServiceRoleKey: () => required("SUPABASE_SERVICE_ROLE_KEY"),
+  // A separate rotation slot avoids stale secret versions in deployment
+  // providers. Existing local setups can keep using the original name.
+  supabaseServiceRoleKey: () =>
+    process.env.SUPABASE_SERVICE_ROLE_KEY_CURRENT?.trim() ||
+    required("SUPABASE_SERVICE_ROLE_KEY"),
   cronSecret: () => required("CRON_SECRET"),
 
   // Gold price providers
