@@ -6,11 +6,14 @@ import { env } from "@/lib/env";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const NO_STORE_HEADERS = {
-  "Cache-Control": "no-store, max-age=0",
-  "CDN-Cache-Control": "no-store",
-  "Vercel-CDN-Cache-Control": "no-store",
-} as const;
+function noStoreHeaders(source: string) {
+  return {
+    "Cache-Control": "no-store, max-age=0",
+    "CDN-Cache-Control": "no-store",
+    "Vercel-CDN-Cache-Control": "no-store",
+    "X-GoldHub-Quote-Source": source,
+  };
+}
 
 /**
  * Public endpoint. Returns the latest usable gold price tick plus a derived
@@ -39,7 +42,7 @@ export async function GET() {
     if (!tick) {
       return NextResponse.json(
         { tick: null, isFresh: false, staleAfterSeconds, refreshIntervalSeconds },
-        { status: 200, headers: NO_STORE_HEADERS },
+        { status: 200, headers: noStoreHeaders("unavailable") },
       );
     }
 
@@ -58,10 +61,10 @@ export async function GET() {
         staleAfterSeconds,
         refreshIntervalSeconds,
       },
-      { status: 200, headers: NO_STORE_HEADERS },
+      { status: 200, headers: noStoreHeaders(tick.source) },
     );
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown error";
-    return NextResponse.json({ error: message }, { status: 500, headers: NO_STORE_HEADERS });
+    return NextResponse.json({ error: message }, { status: 500, headers: noStoreHeaders("error") });
   }
 }
