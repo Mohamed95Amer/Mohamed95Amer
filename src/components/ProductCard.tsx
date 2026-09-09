@@ -57,33 +57,37 @@ export function ProductCard({
   return (
     <Link
       href={`/products/${p.id}`}
-      className="card group flex flex-col overflow-hidden p-0 transition hover:border-gold-300 hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400"
+      className="group flex flex-col overflow-hidden rounded-[1.4rem] border border-jade-900/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-jade-300 hover:shadow-lift focus-visible:outline focus-visible:outline-2 focus-visible:outline-jade-500"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-bone-soft">
+      <div className="relative aspect-[5/4] w-full overflow-hidden bg-jade-50">
         <ProductImage
           category={p.category}
           karat={p.karat}
           name={p.name}
           images={p.images}
-          className="transition duration-300 group-hover:scale-[1.03]"
+          className="transition duration-500 group-hover:scale-[1.04]"
         />
-        <span className="absolute left-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-bone backdrop-blur">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-jade-950/35 to-transparent" />
+        <span className="absolute left-3 top-3 rounded-full border border-white/30 bg-white/90 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-jade-950 shadow-sm backdrop-blur">
           {p.karat}K
         </span>
         {soldOut && (
-          <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-semibold text-bone backdrop-blur">
+          <span className="absolute right-3 top-3 rounded-full bg-jade-950/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
             Sold out
           </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1 p-4">
-        <div className="text-[11px] uppercase tracking-wider text-ink-muted">{p.category}</div>
-        <h3 className="font-serif text-lg leading-snug">{p.name}</h3>
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
+          <span>{p.category}</span>
+          <span className="tabular-nums">{Number(p.weight_grams)}g</span>
+        </div>
+        <h3 className="mt-2 font-serif text-xl font-semibold leading-snug text-jade-950">{p.name}</h3>
 
-        <div className="mt-2 flex items-baseline gap-2">
+        <div className="mt-4 flex items-baseline gap-2">
           {price !== null ? (
-            <span className="text-xl font-semibold tabular-nums">{formatAed(price)}</span>
+            <span className="text-2xl font-bold tabular-nums tracking-tight text-jade-900">{formatAed(price)}</span>
           ) : (
             <span className="text-sm text-ink-muted">{loading ? "Loading price…" : "Price unavailable"}</span>
           )}
@@ -92,18 +96,24 @@ export function ProductCard({
           )}
         </div>
 
-        <div className="text-xs tabular-nums text-ink-muted">
-          {Number(p.weight_grams)}g
-          {stock !== null && !soldOut && <> · {stock} available</>}
-        </div>
+        {stock !== null && !soldOut && (
+          <div className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-signal-ok">
+            <span className="h-1.5 w-1.5 rounded-full bg-signal-ok" />
+            {stock} available
+          </div>
+        )}
 
         {p.vendor && (
-          <div className="mt-auto pt-3 text-xs text-ink-muted">
-            {p.vendor.business_name}
+          <div className="mt-auto flex items-center justify-between gap-4 border-t border-jade-900/10 pt-4 text-xs text-ink-muted">
+            <div>
+              <div className="font-semibold text-ink">{p.vendor.business_name}</div>
+              <div className="mt-0.5 text-[11px]">{p.vendor.emirate}</div>
+            </div>
             {p.vendor.verification_status === "approved" && (
-              <span className="ml-1.5 font-semibold text-signal-ok">· Verified</span>
+              <span className="rounded-full bg-jade-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-jade-700">
+                ✓ Verified
+              </span>
             )}
-            <div className="text-[11px]">{p.vendor.emirate}</div>
           </div>
         )}
       </div>

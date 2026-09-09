@@ -69,29 +69,29 @@ export default async function ProductPage({ params }: { params: { id: string } }
   if (product.certificate_number) specs.push(["Certificate", product.certificate_number]);
 
   return (
-    <div className="container-pro py-8">
-      <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-ink-muted">
-        <Link href="/" className="hover:text-ink">Home</Link>
+    <div className="container-pro py-8 sm:py-12">
+      <nav className="mb-7 flex flex-wrap items-center gap-1.5 text-xs font-medium text-ink-muted">
+        <Link href="/" className="hover:text-jade-700">Home</Link>
         <span aria-hidden="true">/</span>
-        <Link href="/marketplace" className="hover:text-ink">Marketplace</Link>
+        <Link href="/marketplace" className="hover:text-jade-700">Marketplace</Link>
         <span aria-hidden="true">/</span>
-        <Link href={`/marketplace?category=${product.category}`} className="capitalize hover:text-ink">
+        <Link href={`/marketplace?category=${product.category}`} className="capitalize hover:text-jade-700">
           {product.category}
         </Link>
         <span aria-hidden="true">/</span>
         <span className="text-ink">{product.name}</span>
       </nav>
 
-      <div className="grid gap-10 lg:grid-cols-5">
+      <div className="grid gap-10 lg:grid-cols-5 lg:gap-14">
         <div className="lg:col-span-3">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-bone-deep bg-bone-soft">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-jade-900/10 bg-jade-50 shadow-card">
             <ProductImage
               category={product.category}
               karat={product.karat}
               name={product.name}
               images={product.images}
             />
-            <span className="absolute left-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-bone backdrop-blur">
+            <span className="absolute left-4 top-4 rounded-full border border-white/25 bg-white/90 px-3 py-1.5 text-[10px] font-bold tracking-[0.14em] text-jade-950 shadow-sm backdrop-blur">
               {product.karat}K
             </span>
             {soldOut && (
@@ -101,18 +101,19 @@ export default async function ProductPage({ params }: { params: { id: string } }
             )}
           </div>
 
-          <h1 className="mt-6 font-serif text-3xl leading-tight">{product.name}</h1>
+          <p className="eyebrow mt-8 text-jade-600">{product.category} · {product.weight_grams}g</p>
+          <h1 className="mt-2 font-serif text-4xl font-semibold leading-tight tracking-tight text-jade-950">{product.name}</h1>
           {product.description && (
-            <p className="mt-3 max-w-prose leading-relaxed text-ink">{product.description}</p>
+            <p className="mt-4 max-w-prose leading-relaxed text-ink-muted">{product.description}</p>
           )}
 
-          <h2 className="mt-8 font-serif text-xl">Specification</h2>
-          <dl className="mt-3 overflow-hidden rounded-lg border border-bone-deep">
+          <h2 className="mt-10 font-serif text-2xl font-semibold text-jade-950">Specifications</h2>
+          <dl className="mt-4 overflow-hidden rounded-2xl border border-jade-900/10 bg-white">
             {specs.map(([k, v], i) => (
               <div
                 key={k}
                 className={`flex justify-between gap-4 px-4 py-2.5 text-sm ${
-                  i % 2 ? "bg-bone-soft" : "bg-transparent"
+                  i % 2 ? "bg-jade-50/70" : "bg-transparent"
                 }`}
               >
                 <dt className="text-ink-muted">{k}</dt>
@@ -122,17 +123,17 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </dl>
         </div>
 
-        <aside className="space-y-4 lg:col-span-2">
-          <div className="card p-6">
+        <aside className="space-y-4 lg:sticky lg:top-40 lg:col-span-2 lg:self-start">
+          <div className="card p-6 sm:p-7">
             {vendor && (
-              <div className="mb-5 flex items-start justify-between gap-3 border-b border-bone-deep pb-4">
+              <div className="mb-6 flex items-start justify-between gap-3 border-b border-jade-900/10 pb-5">
                 <Link href={`/vendors/${vendor.id}`} className="group text-sm">
-                  <div className="font-medium text-ink group-hover:underline">{vendor.business_name}</div>
+                  <div className="font-semibold text-jade-950 group-hover:text-jade-600">{vendor.business_name}</div>
                   <div className="text-xs text-ink-muted">{vendor.emirate}</div>
                 </Link>
                 {vendor.verification_status === "approved" && (
                   <span className="pill shrink-0 border-signal-ok/30 bg-signal-ok/10 text-signal-ok">
-                    Verified
+                    ✓ Verified
                   </span>
                 )}
               </div>
@@ -167,9 +168,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
             </div>
           </div>
 
-          <div className="card p-5 text-sm text-ink-muted">
+          <div className="rounded-2xl bg-jade-950 p-5 text-sm leading-relaxed text-white/65 shadow-card">
             <p>
-              <span className="font-medium text-ink">The price is recomputed server-side</span> the
+              <span className="font-semibold text-gold-200">The price is recomputed server-side</span> the
               moment you reserve, so what you pay matches the market at that instant — not what was
               on screen. GoldHub is a marketplace; the vendor remains the seller of record.
             </p>

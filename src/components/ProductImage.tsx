@@ -80,8 +80,8 @@ export function ProductImage({
           <stop offset="100%" stopColor={t.dark} />
         </linearGradient>
         <linearGradient id={`${gid}-bg`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#FBF9F4" />
-          <stop offset="100%" stopColor="#EDE7DA" />
+          <stop offset="0%" stopColor="#FCFAF5" />
+          <stop offset="100%" stopColor="#D8EEE5" />
         </linearGradient>
       </defs>
       <rect width="400" height="300" fill={`url(#${gid}-bg)`} />
@@ -121,7 +121,7 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
       return (
         <g>
           <ellipse cx="200" cy="192" rx="60" ry="62" fill={fill} />
-          <ellipse cx="200" cy="196" rx="41" ry="43" fill="#FBF9F4" />
+          <ellipse cx="200" cy="196" rx="41" ry="43" fill="#FCFAF5" />
           {/* prongs holding the stone */}
           <path d="M182 140 l-6 -18 M218 140 l6 -18" stroke={stroke} strokeWidth="4" strokeLinecap="round" />
           {/* faceted stone */}
@@ -136,7 +136,7 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
       return (
         <g>
           <circle cx="200" cy="150" r="86" fill={fill} />
-          <circle cx="200" cy="150" r="62" fill="#FBF9F4" />
+          <circle cx="200" cy="150" r="62" fill="#FCFAF5" />
           <circle cx="200" cy="150" r="74" {...s} strokeWidth="1.5" opacity="0.55" />
         </g>
       );
@@ -145,7 +145,7 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
       return (
         <g>
           <ellipse cx="200" cy="150" rx="92" ry="66" fill={fill} />
-          <ellipse cx="200" cy="150" rx="68" ry="44" fill="#FBF9F4" />
+          <ellipse cx="200" cy="150" rx="68" ry="44" fill="#FCFAF5" />
           {[0, 1, 2, 3, 4, 5].map((i) => {
             const a = (i / 6) * Math.PI * 2;
             return (
@@ -205,7 +205,7 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
               <path d={`M${cx} 111 c 26 30, 26 52, 0 74 c -26 -22, -26 -44, 0 -74 z`}
                 fill={fill} stroke={stroke} strokeWidth="2" strokeLinejoin="round" />
               <path d={`M${cx} 132 c 11 14, 11 24, 0 36 c -11 -12, -11 -22, 0 -36 z`}
-                fill="#FBF9F4" opacity="0.3" />
+                fill="#FCFAF5" opacity="0.3" />
             </g>
           ))}
         </g>
@@ -215,7 +215,7 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
       return (
         <g>
           <path d="M116 108 h168 l26 96 h-220 z" fill={fill} stroke={stroke} strokeWidth="2" />
-          <path d="M116 108 h168 l10 20 h-188 z" fill="#FBF9F4" opacity="0.35" />
+          <path d="M116 108 h168 l10 20 h-188 z" fill="#FCFAF5" opacity="0.35" />
           <g stroke={stroke} strokeWidth="2" opacity="0.55">
             <path d="M136 150 h128" />
             <path d="M130 172 h140" />
@@ -228,7 +228,7 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
         <g>
           <circle cx="200" cy="150" r="84" fill={fill} stroke={stroke} strokeWidth="2" />
           <circle cx="200" cy="150" r="66" fill="none" stroke={stroke} strokeWidth="2" opacity="0.6" />
-          <circle cx="200" cy="150" r="46" fill="#FBF9F4" opacity="0.25" />
+          <circle cx="200" cy="150" r="46" fill="#FCFAF5" opacity="0.25" />
           {Array.from({ length: 36 }, (_, i) => {
             const a = (i / 36) * Math.PI * 2;
             return (

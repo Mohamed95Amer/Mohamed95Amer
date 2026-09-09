@@ -121,10 +121,12 @@ export function GoldPriceProvider({
     };
   }, []);
 
-  const ageSeconds = tick
-    ? Math.max(0, Math.floor((now - new Date(tick.fetched_at).getTime()) / 1000))
+  const fetchedAtMs = tick ? new Date(tick.fetched_at).getTime() : Number.NaN;
+  const hasValidFetchedAt = Number.isFinite(fetchedAtMs);
+  const ageSeconds = tick && hasValidFetchedAt
+    ? Math.max(0, Math.floor((now - fetchedAtMs) / 1000))
     : 0;
-  const isFresh = !!tick && tick.status !== "failed" && ageSeconds <= staleAfterSeconds;
+  const isFresh = !!tick && hasValidFetchedAt && tick.status !== "failed" && ageSeconds <= staleAfterSeconds;
 
   return (
     <GoldPriceContext.Provider

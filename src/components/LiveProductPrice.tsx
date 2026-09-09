@@ -2,6 +2,7 @@
 
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { computePrice, formatAed } from "@/lib/pricing/calc";
+import { quoteRecency } from "@/lib/time";
 
 interface Props {
   karat: number;
@@ -45,7 +46,7 @@ export function LiveProductPrice(props: Props) {
   return (
     <div>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <div className="font-serif text-3xl text-ink">{formatAed(breakdown.unitPriceAed)}</div>
+        <div className="font-serif text-4xl font-semibold tracking-tight text-jade-950">{formatAed(breakdown.unitPriceAed)}</div>
         {isFresh ? (
           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-signal-ok">
             <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
@@ -59,7 +60,7 @@ export function LiveProductPrice(props: Props) {
         )}
       </div>
       {props.showBreakdown && (
-        <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm text-ink-muted">
+        <dl className="mt-5 grid grid-cols-2 gap-y-2 border-t border-jade-900/10 pt-5 text-sm text-ink-muted">
           <dt>Gold value ({props.karat}K, {props.weightGrams}g)</dt>
           <dd className="text-right text-ink">{formatAed(breakdown.goldValueAed)}</dd>
           <dt>Making charge</dt>
@@ -94,7 +95,7 @@ export function LiveProductPrice(props: Props) {
         <p className="mt-2 text-xs text-ink-muted">
           Follows the live 24K rate of {formatAed(Number(tick.price_per_gram_24k_aed))}/g, rechecked
           every {refreshIntervalSeconds}s ·{" "}
-          {isFresh ? `updated ${ageSeconds}s ago` : "refreshing now"}
+          {isFresh ? `updated ${quoteRecency(ageSeconds)}` : "refreshing now"}
         </p>
       )}
     </div>
