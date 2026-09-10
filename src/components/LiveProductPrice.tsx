@@ -1,7 +1,7 @@
 "use client";
 
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
-import { computePrice, formatAed } from "@/lib/pricing/calc";
+import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
 import { quoteRecency } from "@/lib/time";
 
 interface Props {
@@ -42,6 +42,8 @@ export function LiveProductPrice(props: Props) {
     platformFee: props.platformFee ?? 0,
     deliveryFee: props.deliveryFee ?? 0,
   });
+  const liveRate24k = Number(tick.price_per_gram_24k_aed);
+  const productGoldRate = goldRateForKarat(liveRate24k, props.karat);
 
   return (
     <div>
@@ -60,40 +62,57 @@ export function LiveProductPrice(props: Props) {
         )}
       </div>
       {props.showBreakdown && (
-        <dl className="mt-5 grid grid-cols-2 gap-y-2 border-t border-jade-900/10 pt-5 text-sm text-ink-muted">
-          <dt>Gold value ({props.karat}K, {props.weightGrams}g)</dt>
-          <dd className="text-right text-ink">{formatAed(breakdown.goldValueAed)}</dd>
-          <dt>Making charge</dt>
-          <dd className="text-right text-ink">{formatAed(breakdown.makingCharge)}</dd>
-          {breakdown.stoneValue > 0 && (
-            <>
-              <dt>Stone value</dt>
-              <dd className="text-right text-ink">{formatAed(breakdown.stoneValue)}</dd>
-            </>
-          )}
-          {breakdown.vendorPremium > 0 && (
-            <>
-              <dt>Vendor premium</dt>
-              <dd className="text-right text-ink">{formatAed(breakdown.vendorPremium)}</dd>
-            </>
-          )}
-          {breakdown.platformFee > 0 && (
-            <>
-              <dt>Platform fee</dt>
-              <dd className="text-right text-ink">{formatAed(breakdown.platformFee)}</dd>
-            </>
-          )}
-          {breakdown.deliveryFee > 0 && (
-            <>
-              <dt>Delivery</dt>
-              <dd className="text-right text-ink">{formatAed(breakdown.deliveryFee)}</dd>
-            </>
-          )}
-        </dl>
+        <div className="mt-5 border-t border-jade-900/10 pt-5">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-xl bg-jade-50 p-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">Live 24K market rate</p>
+              <p className="mt-1 font-semibold tabular-nums text-jade-950">{formatAed(liveRate24k)}/g</p>
+            </div>
+            <div className="rounded-xl bg-gold-100/60 p-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">{props.karat}K metal rate</p>
+              <p className="mt-1 font-semibold tabular-nums text-jade-950">{formatAed(productGoldRate)}/g</p>
+            </div>
+          </div>
+
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <h2 className="font-serif text-lg font-semibold text-jade-950">Price breakdown</h2>
+            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">Per item</span>
+          </div>
+          <dl className="mt-3 grid grid-cols-2 gap-y-2.5 text-sm text-ink-muted">
+            <dt>Gold ({props.karat}K × {props.weightGrams}g)</dt>
+            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.goldValueAed)}</dd>
+            <dt>Making charge</dt>
+            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.makingCharge)}</dd>
+            {breakdown.stoneValue > 0 && (
+              <>
+                <dt>Stone value</dt>
+                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.stoneValue)}</dd>
+              </>
+            )}
+            {breakdown.vendorPremium > 0 && (
+              <>
+                <dt>Vendor premium</dt>
+                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorPremium)}</dd>
+              </>
+            )}
+            <dt>GoldHub service fee</dt>
+            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.platformFee)}</dd>
+            <dt>Delivery fee</dt>
+            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.deliveryFee)}</dd>
+            <dt className="mt-1 border-t border-jade-900/10 pt-3 font-semibold text-jade-950">Total</dt>
+            <dd className="mt-1 border-t border-jade-900/10 pt-3 text-right font-bold tabular-nums text-jade-950">
+              {formatAed(breakdown.unitPriceAed)}
+            </dd>
+          </dl>
+          <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
+            The {props.karat}K rate is the metal-only value per gram. Making, stones, vendor premium,
+            service, and delivery are listed separately above.
+          </p>
+        </div>
       )}
       {props.showFooter !== false && (
         <p className="mt-2 text-xs text-ink-muted">
-          Follows the live 24K rate of {formatAed(Number(tick.price_per_gram_24k_aed))}/g, rechecked
+          Follows the live 24K rate of {formatAed(liveRate24k)}/g, rechecked
           every {refreshIntervalSeconds}s ·{" "}
           {isFresh ? `updated ${quoteRecency(ageSeconds)}` : "refreshing now"}
         </p>

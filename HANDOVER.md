@@ -118,10 +118,26 @@ server-side in `src/lib/pricing/server.ts` at the moment of reservation and writ
 `order_price_snapshots` along with the exact gold tick used. Do not let a client-supplied price
 reach a write path.
 
+Customer-facing prices are now transparent at both browsing levels:
+
+- every product card shows the metal-only AED/g rate adjusted to that listing's karat plus its
+  making charge;
+- every product detail shows the live 24K reference, the product-karat rate, gold weight/value,
+  making, optional stone/premium, GoldHub service fee, delivery fee and per-item total;
+- service and delivery rows remain visible even when configured as AED 0.00, so an unset fee
+  cannot be mistaken for a missing part of the calculation;
+- the homepage and marketplace both read the same `platform_settings` fee values.
+
 > **Known product question, not a bug:** `delivery_fee` and `platform_fee` are added to the
 > *per-unit* price and then multiplied by quantity, so ordering 3 items bills delivery 3×. Both
 > default to 0 so nothing is wrong today. The owner was asked and has not decided. Delivery is
 > almost certainly meant to be per-order.
+
+> **Payments are still not integrated.** Before implementation, choose the commercial model:
+> the lowest-custody option is for each vendor to remain merchant of record and receive customer
+> payments in its own PSP account, while GoldHub invoices its commission separately. Native
+> marketplace splitting can automate vendor/GoldHub/courier allocation, but the UAE PSP contract
+> must state who owns chargebacks, refunds, negative balances and settlement liability.
 
 ### Live gold price
 

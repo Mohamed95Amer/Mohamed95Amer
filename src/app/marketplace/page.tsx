@@ -24,12 +24,14 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (searchParams.karat) query = query.eq("karat", Number(searchParams.karat));
   if (searchParams.q) query = query.ilike("name", `%${searchParams.q}%`);
 
-  const { data } = await query;
-  const { data: fees } = await supabase
-    .from("platform_settings")
-    .select("platform_fee_aed, delivery_fee_aed")
-    .eq("id", true)
-    .maybeSingle();
+  const [{ data }, { data: fees }] = await Promise.all([
+    query,
+    supabase
+      .from("platform_settings")
+      .select("platform_fee_aed, delivery_fee_aed")
+      .eq("id", true)
+      .maybeSingle(),
+  ]);
   const platformFee = Number(fees?.platform_fee_aed ?? 0);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
   return (

@@ -17,6 +17,11 @@ export function karatPurityFactor(karat: number): number {
   return f;
 }
 
+/** The metal-only AED/g reference for a product's karat. */
+export function goldRateForKarat(pricePerGram24kAed: number, karat: number): number {
+  return round2(pricePerGram24kAed * karatPurityFactor(karat));
+}
+
 export interface PriceInputs {
   pricePerGram24kAed: number;
   karat: number;

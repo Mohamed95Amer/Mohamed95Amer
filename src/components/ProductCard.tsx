@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ProductImage } from "./ProductImage";
 import { useLiveGoldPrice } from "./GoldPriceProvider";
-import { computePrice, formatAed } from "@/lib/pricing/calc";
+import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
 
 export interface ProductCardData {
   id: string;
@@ -40,7 +40,10 @@ export function ProductCard({
   const stock = p.available ?? null;
   const soldOut = stock !== null && stock <= 0;
 
-  const price =
+  const liveRate24k = tick?.price_per_gram_24k_aed === null
+    ? null
+    : Number(tick?.price_per_gram_24k_aed);
+  const breakdown =
     tick && tick.price_per_gram_24k_aed !== null
       ? computePrice({
           pricePerGram24kAed: Number(tick.price_per_gram_24k_aed),
@@ -51,8 +54,12 @@ export function ProductCard({
           vendorPremium: Number(p.vendor_premium),
           platformFee,
           deliveryFee,
-        }).unitPriceAed
+        })
       : null;
+  const price = breakdown?.unitPriceAed ?? null;
+  const productGoldRate = liveRate24k === null || !Number.isFinite(liveRate24k)
+    ? null
+    : goldRateForKarat(liveRate24k, p.karat);
 
   return (
     <Link
@@ -95,6 +102,19 @@ export function ProductCard({
             <span className="text-[11px] font-medium text-signal-warn">updating…</span>
           )}
         </div>
+
+        {breakdown && productGoldRate !== null && (
+          <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-xl bg-jade-50 px-3 py-2.5 text-[11px]">
+            <span className="text-ink-muted">{p.karat}K metal rate</span>
+            <span className="text-right font-semibold tabular-nums text-jade-950">
+              {formatAed(productGoldRate)}/g
+            </span>
+            <span className="text-ink-muted">Making charge</span>
+            <span className="text-right font-semibold tabular-nums text-jade-950">
+              {formatAed(breakdown.makingCharge)}
+            </span>
+          </div>
+        )}
 
         {stock !== null && !soldOut && (
           <div className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-signal-ok">

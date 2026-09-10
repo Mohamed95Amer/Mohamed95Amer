@@ -21,7 +21,7 @@ const categories = [
 
 export default async function HomePage() {
   const supabase = getServiceSupabase();
-  const [{ data: products }, { data: vendors }] = await Promise.all([
+  const [{ data: products }, { data: vendors }, { data: fees }] = await Promise.all([
     supabase
       .from("products")
       .select(
@@ -35,7 +35,14 @@ export default async function HomePage() {
       .select("id, business_name, emirate")
       .eq("verification_status", "approved")
       .limit(6),
+    supabase
+      .from("platform_settings")
+      .select("platform_fee_aed, delivery_fee_aed")
+      .eq("id", true)
+      .maybeSingle(),
   ]);
+  const platformFee = Number(fees?.platform_fee_aed ?? 0);
+  const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
 
   return (
     <>
@@ -187,6 +194,8 @@ export default async function HomePage() {
                 <ProductCard
                   key={product.id}
                   p={{ ...product, available: product.quantity, vendor }}
+                  platformFee={platformFee}
+                  deliveryFee={deliveryFee}
                 />
               );
             })}
