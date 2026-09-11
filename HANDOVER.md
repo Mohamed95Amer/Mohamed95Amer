@@ -13,12 +13,12 @@ All work described here is on that branch. `main` does not have it.
 
 **Live:** https://goldhub-three.vercel.app — Vercel project `mohamed95amers-projects/goldhub`.
 
-**Deployment status (11 Sep 2026):** the comprehensive design/accessibility/SEO pass described
-below is complete on the branch and passes lint, typecheck and the production build, but is not yet
-on the live URL. The local Vercel session requires the account owner to complete device sign-in.
-Migration `20260911130835_restrict_public_signup_roles.sql` is also ready but not yet applied to
-production for the same management-authentication reason. Do not claim either change is live until
-both have been applied and the production URL has been smoke-tested.
+**Deployment status (11 Sep 2026):** commit `83e7efc` is deployed to the existing production
+project and aliased to the live URL. The comprehensive design/accessibility/SEO pass passed lint,
+typecheck, the local and Vercel production builds, and a live public-route smoke test. Migration
+`20260911130835_restrict_public_signup_roles.sql` is ready but not yet applied to production because
+the Supabase management session is not authenticated. Do not claim that signup-role protection is
+live until that migration has been applied.
 
 The previously unverified production paths have now been exercised end to end:
 
@@ -336,7 +336,7 @@ reference cannot be mistaken for a provider-fetched quote.
 | Demo photos | **Verified and migrated** | 12/12 title match; 12/12 load from Supabase Storage |
 | Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
 | Verified reviews | **Verified** | paid-order context derived in Postgres; unpaid order rejected; direct anon/auth table access denied |
-| Design/accessibility/SEO pass | **Branch verified; not deployed** | `npm run typecheck`, `npm run lint`, `npm run build`, `git diff --check` clean |
+| Design/accessibility/SEO pass | **Deployed and smoke-tested** | `npm run typecheck`, `npm run lint`, local + Vercel `npm run build`, 17/17 public URLs returned 200; live UI inspected |
 | Public-signup role restriction | **Migration ready; not applied** | `20260911130835_restrict_public_signup_roles.sql`; requires production Supabase management auth |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
@@ -349,8 +349,8 @@ a transaction it rolls back.
 1. **Decide the delivery-fee question** (§3).
 2. Replace generated demo artwork with each vendor's real product photography before public launch.
 3. Configure and test the `support@goldhub.ae` and `vendors@goldhub.ae` mailboxes used on Contact.
-4. Apply `20260911130835_restrict_public_signup_roles.sql`, deploy the branch to the existing Vercel
-   `goldhub` project, then smoke-test signup, password recovery, reserve quantity and mobile layout.
+4. Apply `20260911130835_restrict_public_signup_roles.sql`, then smoke-test customer and vendor
+   signup plus password recovery. The code deployment itself is complete.
 5. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
    vendor is the seller of record; money changes hands off-platform. That is by design for the MVP.
 
