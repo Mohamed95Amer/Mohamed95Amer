@@ -13,12 +13,21 @@ All work described here is on that branch. `main` does not have it.
 
 **Live:** https://goldhub-three.vercel.app — legacy Vercel project `mohamed95amers-projects/goldhub`.
 
-**Deployment status (11 Sep 2026):** commit `83e7efc` is deployed to the existing production
-project and aliased to the live URL. The comprehensive design/accessibility/SEO pass passed lint,
-typecheck, the local and Vercel production builds, and a live public-route smoke test. Migration
-`20260911130835_restrict_public_signup_roles.sql` is applied to production and recorded in migration
-history. Post-apply checks confirm the vendor-only gate, customer fallback, empty function
-`search_path`, and revoked `anon`/`authenticated` execution grants.
+**Deployment status (11 Sep 2026):** commit `8d5c1ff` is deployed to the existing production
+project and aliased to the live URL. The marketplace is publicly branded **Get Gold**, with the
+tagline “See the price. Get the gold.” The local and Vercel 41-page production builds, typecheck,
+lint, public-route smoke checks and live visual pass are clean. `NEXT_PUBLIC_SITE_URL` now points to
+the real `goldhub-three.vercel.app` deployment; it previously generated canonical and social links
+to an unrelated Persian site at `goldhub.vercel.app`.
+
+Migrations `20260911135750_add_delivery_company_role.sql`,
+`20260911135755_delivery_company_profiles.sql` and
+`20260911181153_harden_get_gold_security.sql` are applied to production and recorded in migration
+history. Live checks confirm RLS on delivery companies, read-only browser access to the owner's
+record, no direct browser write access, contact-field-only profile updates, and no self-promotion
+through `profiles.role`. The legacy security-definer view and mutable function search-path advisor
+findings were also cleared. The only remaining security-advisor warning is the project-level leaked
+password protection setting, which must be enabled in Supabase Auth if the selected plan supports it.
 
 The previously unverified production paths have now been exercised end to end:
 
@@ -241,12 +250,27 @@ deliberately — a bare composite return is handled inconsistently by PostgREST/
 `auth.users.raw_user_meta_data` is user-controlled input. The original signup trigger cast its
 `role` value directly to `user_role`, which meant a crafted direct signup could request `admin` or
 `super_admin`. Migration `20260911130835_restrict_public_signup_roles.sql` replaces the trigger
-function so only `vendor` is accepted and every other public value becomes `customer`; admin
-promotion remains a trusted database operation. It also removes Data API execution grants from
-the trigger-only function. This is applied and verified on the live Supabase project. The
-rollback-safe regression in `supabase/tests/20260911_signup_role_security_test.sql` fires the real
-trigger for both a forged `super_admin` signup and a legitimate `vendor` signup; both assertions
-pass and the follow-up residue check returns zero auth/profile probe rows.
+function so only the non-privileged onboarding roles `vendor` and `delivery_company` are accepted;
+every other public value becomes `customer`, while admin promotion remains a trusted database
+operation. It also removes Data API execution grants from the trigger-only function. This is applied
+and verified on the live Supabase project. The rollback-safe regression in
+`supabase/tests/20260911_signup_role_security_test.sql` fires the real trigger for a forged
+`super_admin` signup and legitimate vendor and delivery-company signups; all three assertions pass
+and the follow-up residue check returns zero auth/profile probe rows.
+
+### Account and business profiles
+
+- `/profile` is the shared personal identity and security page for customers, vendors, delivery
+  companies, admins and the platform owner. It edits only full name and phone; email is the Auth
+  identity and role is never client-editable.
+- Customers reach purchase history and market-linked savings insights at `/account`.
+- Vendors keep their separate verified business record and reach inventory, orders, documents and
+  reviews at `/vendor`.
+- Delivery companies submit trade-licence, contact and emirate-coverage data at
+  `/delivery/register`; `/delivery` shows the verified company profile and makes clear that order
+  allocation is not implemented yet.
+- Admins review delivery-company applications at `/admin/delivery-companies`, alongside the existing
+  vendor and listing reviews. Approval does not expose orders or customer data by itself.
 
 ### Design, accessibility and discovery pass
 
@@ -261,7 +285,7 @@ pass and the follow-up residue check returns zero auth/profile probe rows.
   the authoritative total and calls `claim_reservation()`.
 - Customer reservations now show a four-stage fulfilment timeline and payment-link safety guidance.
   Authentication adds password recovery, safe callback redirects, password visibility and a clear
-  customer/vendor path.
+  customer/vendor/delivery-company path.
 - Public metadata now includes canonical URLs, Open Graph imagery, a manifest, robots rules, dynamic
   product/vendor sitemap entries and Product/JewelryStore structured data. Branded loading, error and
   not-found states replace framework defaults.
@@ -338,9 +362,9 @@ reference cannot be mistaken for a provider-fetched quote.
 | Demo photos | **Verified and migrated** | 12/12 title match; 12/12 load from Supabase Storage |
 | Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
 | Verified reviews | **Verified** | paid-order context derived in Postgres; unpaid order rejected; direct anon/auth table access denied |
-| Design/accessibility/SEO pass | **Deployed and smoke-tested** | `npm run typecheck`, `npm run lint`, local + Vercel `npm run build`, 17/17 public URLs returned 200; live UI inspected |
+| Design/accessibility/SEO pass | **Deployed and smoke-tested** | `npm run typecheck`, `npm run lint`, local + Vercel `npm run build` (41 pages), public URLs returned 200; homepage and delivery signup inspected live |
 | Public-signup role restriction | **Applied; 3/3 passed on real trigger** | forged admin → customer, vendor → vendor, delivery company → delivery company; transaction rolled back with zero residue |
-| Four-role profile system | **Applied and build-verified** | personal profile plus customer history, vendor business, delivery-company business and admin/owner operations; direct self-promotion through `profiles.role` is denied |
+| Four-role profile system | **Applied, deployed and live-smoke-tested** | personal profile plus customer history, vendor business, delivery-company business and admin/owner operations; protected routes redirect correctly and direct self-promotion through `profiles.role` is denied |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.
