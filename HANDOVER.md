@@ -16,9 +16,9 @@ All work described here is on that branch. `main` does not have it.
 **Deployment status (11 Sep 2026):** commit `83e7efc` is deployed to the existing production
 project and aliased to the live URL. The comprehensive design/accessibility/SEO pass passed lint,
 typecheck, the local and Vercel production builds, and a live public-route smoke test. Migration
-`20260911130835_restrict_public_signup_roles.sql` is ready but not yet applied to production because
-the Supabase management session is not authenticated. Do not claim that signup-role protection is
-live until that migration has been applied.
+`20260911130835_restrict_public_signup_roles.sql` is applied to production and recorded in migration
+history. Post-apply checks confirm the vendor-only gate, customer fallback, empty function
+`search_path`, and revoked `anon`/`authenticated` execution grants.
 
 The previously unverified production paths have now been exercised end to end:
 
@@ -243,8 +243,10 @@ deliberately — a bare composite return is handled inconsistently by PostgREST/
 `super_admin`. Migration `20260911130835_restrict_public_signup_roles.sql` replaces the trigger
 function so only `vendor` is accepted and every other public value becomes `customer`; admin
 promotion remains a trusted database operation. It also removes Data API execution grants from
-the trigger-only function. **This migration is committed code but is not production protection
-until it is applied to the live Supabase project.**
+the trigger-only function. This is applied and verified on the live Supabase project. The
+rollback-safe regression in `supabase/tests/20260911_signup_role_security_test.sql` fires the real
+trigger for both a forged `super_admin` signup and a legitimate `vendor` signup; both assertions
+pass and the follow-up residue check returns zero auth/profile probe rows.
 
 ### Design, accessibility and discovery pass
 
@@ -337,7 +339,7 @@ reference cannot be mistaken for a provider-fetched quote.
 | Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
 | Verified reviews | **Verified** | paid-order context derived in Postgres; unpaid order rejected; direct anon/auth table access denied |
 | Design/accessibility/SEO pass | **Deployed and smoke-tested** | `npm run typecheck`, `npm run lint`, local + Vercel `npm run build`, 17/17 public URLs returned 200; live UI inspected |
-| Public-signup role restriction | **Migration ready; not applied** | `20260911130835_restrict_public_signup_roles.sql`; requires production Supabase management auth |
+| Public-signup role restriction | **Applied; 2/2 passed on real trigger** | migration history matches `20260911130835`; forged admin → customer, vendor → vendor; anon/authenticated execution denied; transaction rolled back with zero residue |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.
@@ -349,8 +351,8 @@ a transaction it rolls back.
 1. **Decide the delivery-fee question** (§3).
 2. Replace generated demo artwork with each vendor's real product photography before public launch.
 3. Configure and test the `support@goldhub.ae` and `vendors@goldhub.ae` mailboxes used on Contact.
-4. Apply `20260911130835_restrict_public_signup_roles.sql`, then smoke-test customer and vendor
-   signup plus password recovery. The code deployment itself is complete.
+4. Smoke-test customer and vendor email-confirmation plus password recovery using inboxes you
+   control. The code deployment and signup-role migration are complete.
 5. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
    vendor is the seller of record; money changes hands off-platform. That is by design for the MVP.
 
