@@ -5,6 +5,14 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { LiveProductPrice } from "@/components/LiveProductPrice";
 import { ReserveButton } from "@/components/ReserveButton";
 import { ProductImage } from "@/components/ProductImage";
+import { ReviewList } from "@/components/ReviewList";
+import { StoreBadges, StoreRating } from "@/components/StoreReputation";
+import {
+  normalizeReputation,
+  PUBLIC_REVIEW_SELECT,
+  type PublicReview,
+  type VendorReputationRow,
+} from "@/lib/reputation";
 
 export const dynamic = "force-dynamic";
 
@@ -45,7 +53,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   const vendor = product.vendors as unknown as Vendor;
 
-  const [{ data: settings }, { data: availability }] = await Promise.all([
+  const [{ data: settings }, { data: availability }, { data: reputationRow }, { data: reviews }] = await Promise.all([
     supabase
       .from("platform_settings")
       .select("platform_fee_bps, delivery_fee_aed")
@@ -54,7 +62,22 @@ export default async function ProductPage({ params }: { params: { id: string } }
     // Stock net of unexpired holds. product.quantity alone would advertise
     // units that other customers are already holding.
     supabase.rpc("available_quantity", { p_product_id: product.id }),
+    supabase
+      .from("vendor_reputation_summary")
+      .select("*")
+      .eq("vendor_id", product.vendor_id)
+      .maybeSingle(),
+    supabase
+      .from("reviews")
+      .select(PUBLIC_REVIEW_SELECT)
+      .eq("product_id", product.id)
+      .eq("moderation_status", "published")
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
+  const reputation = reputationRow
+    ? normalizeReputation(reputationRow as VendorReputationRow)
+    : null;
 
   const available =
     typeof availability === "number" ? availability : Number(product.quantity ?? 0);
@@ -126,16 +149,20 @@ export default async function ProductPage({ params }: { params: { id: string } }
         <aside className="space-y-4 lg:sticky lg:top-40 lg:col-span-2 lg:self-start">
           <div className="card p-6 sm:p-7">
             {vendor && (
-              <div className="mb-6 flex items-start justify-between gap-3 border-b border-jade-900/10 pb-5">
-                <Link href={`/vendors/${vendor.id}`} className="group text-sm">
-                  <div className="font-semibold text-jade-950 group-hover:text-jade-600">{vendor.business_name}</div>
-                  <div className="text-xs text-ink-muted">{vendor.emirate}</div>
-                </Link>
-                {vendor.verification_status === "approved" && (
-                  <span className="pill shrink-0 border-signal-ok/30 bg-signal-ok/10 text-signal-ok">
-                    ✓ Verified
-                  </span>
-                )}
+              <div className="mb-6 border-b border-jade-900/10 pb-5">
+                <div className="flex items-start justify-between gap-3">
+                  <Link href={`/vendors/${vendor.id}`} className="group text-sm">
+                    <div className="font-semibold text-jade-950 group-hover:text-jade-600">{vendor.business_name}</div>
+                    <div className="text-xs text-ink-muted">{vendor.emirate}</div>
+                  </Link>
+                  {vendor.verification_status === "approved" && (
+                    <span className="pill shrink-0 border-signal-ok/30 bg-signal-ok/10 text-signal-ok">
+                      ✓ Verified
+                    </span>
+                  )}
+                </div>
+                <div className="mt-3"><StoreRating reputation={reputation} compact /></div>
+                <div className="mt-2"><StoreBadges reputation={reputation} compact /></div>
               </div>
             )}
 
@@ -180,6 +207,26 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </div>
         </aside>
       </div>
+
+      <section id="reviews" className="mt-14 border-t border-jade-900/10 pt-10 sm:mt-20">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="eyebrow text-jade-600">Verified experiences</p>
+            <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">Reviews for this product</h2>
+          </div>
+          {vendor && (
+            <Link href={`/vendors/${vendor.id}#reviews`} className="text-sm font-semibold text-jade-700 hover:text-jade-500">
+              See all store reviews →
+            </Link>
+          )}
+        </div>
+        <div className="mt-6">
+          <ReviewList
+            reviews={(reviews ?? []) as PublicReview[]}
+            emptyMessage="Only customers with a completed purchase can leave feedback."
+          />
+        </div>
+      </section>
     </div>
   );
 }

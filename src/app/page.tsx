@@ -2,7 +2,9 @@ import Link from "next/link";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductImage } from "@/components/ProductImage";
+import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { getServiceSupabase } from "@/lib/supabase/server";
+import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 
 export const dynamic = "force-dynamic";
 
@@ -20,11 +22,11 @@ const categories = [
 
 export default async function HomePage() {
   const supabase = getServiceSupabase();
-  const [{ data: products }, { data: vendors }, { data: fees }, { data: categoryProducts }] = await Promise.all([
+  const [{ data: products }, { data: vendors }, { data: fees }, { data: categoryProducts }, { data: reputationRows }] = await Promise.all([
     supabase
       .from("products")
       .select(
-        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
+        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(id, business_name, emirate, verification_status)",
       )
       .eq("product_status", "approved")
       .order("created_at", { ascending: false })
@@ -45,9 +47,11 @@ export default async function HomePage() {
       .eq("product_status", "approved")
       .order("created_at", { ascending: false })
       .limit(60),
+    supabase.from("vendor_reputation_summary").select("*"),
   ]);
   const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
+  const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
 
   return (
     <>
@@ -209,11 +213,14 @@ export default async function HomePage() {
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {(products ?? []).map((product) => {
               const vendor = product.vendors as unknown as
-                { business_name: string; emirate: string; verification_status: string } | null;
+                { id: string; business_name: string; emirate: string; verification_status: string } | null;
+              const vendorWithReputation = vendor
+                ? { ...vendor, reputation: reputations.get(vendor.id) ?? null }
+                : null;
               return (
                 <ProductCard
                   key={product.id}
-                  p={{ ...product, available: product.quantity, vendor }}
+                  p={{ ...product, available: product.quantity, vendor: vendorWithReputation }}
                   platformFeeBps={platformFeeBps}
                   deliveryFee={deliveryFee}
                 />
@@ -257,6 +264,8 @@ export default async function HomePage() {
                   ✓
                 </span>
               </div>
+              <div className="mt-3"><StoreRating reputation={reputations.get(vendor.id)} compact /></div>
+              <div className="mt-2"><StoreBadges reputation={reputations.get(vendor.id)} compact limit={2} /></div>
             </Link>
           ))}
         </div>

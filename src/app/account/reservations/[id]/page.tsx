@@ -14,6 +14,7 @@ import {
   type PriceSnapshotForInsight,
 } from "@/lib/gold-insights";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
+import { ReviewForm } from "@/components/ReviewForm";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,12 @@ export default async function ReservationDetailPage({ params }: { params: { id: 
   ]);
   if (!r) return notFound();
   if (r.customer_user_id !== user.id) return notFound();
+
+  const { data: existingReview } = await admin
+    .from("reviews")
+    .select("overall_rating, product_rating, communication_rating, fulfilment_rating, packaging_rating, delivery_rating, title, comment, editable_until")
+    .eq("reservation_id", r.id)
+    .maybeSingle();
 
   const product = r.product as unknown as { name: string; karat: number; weight_grams: number } | null;
   const snapArr = r.snapshot as unknown as Array<Record<string, number | string>> | null;
@@ -114,6 +121,20 @@ export default async function ReservationDetailPage({ params }: { params: { id: 
             tick fetched {formatDubaiDate(snap.gold_price_fetched_at as string, true)}
           </p>
         </div>
+      )}
+      {r.status === "paid" && (
+        <section id="review" className="card mt-6 p-6 sm:p-8">
+          <p className="eyebrow text-jade-600">Verified purchase</p>
+          <h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">
+            {existingReview ? "Your review" : "Rate your store experience"}
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
+            Your store rating covers the product and seller. Delivery is scored separately so a courier issue does not unfairly reduce the jeweller&apos;s rating.
+          </p>
+          <div className="mt-6">
+            <ReviewForm reservationId={r.id} existing={existingReview} />
+          </div>
+        </section>
       )}
       <p className="mt-6 text-xs leading-relaxed text-ink-muted">The current comparison updates only the gold component and holds the captured making, certificate or assay, stone, premium and fee amounts constant. It is not an appraisal, resale offer or financial advice.</p>
     </div>

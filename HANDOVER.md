@@ -201,6 +201,34 @@ win. **Do not replace this with a plain insert.** It returns `SETOF public.reser
 deliberately — a bare composite return is handled inconsistently by PostgREST/`supabase-js`
 `.single()`.
 
+### Verified store reviews and reputation
+
+- Only a customer with a `paid` reservation can review, and each reservation can create one review.
+  `set_verified_review_context()` derives the customer, vendor and product from that reservation
+  inside Postgres; the browser cannot choose them. Unpaid-order rejection and context derivation
+  were both exercised against the live database in a rolled-back transaction.
+- Buyers rate the store experience, product, communication, fulfilment and packaging, with an
+  optional delivery rating. Delivery is shown separately and excluded from the store average so a
+  courier problem does not silently damage the jeweller's score. Buyers have 14 days to edit.
+- Vendors may post one public reply and update it. Customers cannot delete or overwrite the reply.
+  Review/report writes are server-only, rate-limited and audit-logged. Direct Data API grants are
+  deliberately revoked from `anon` and `authenticated`; RLS remains enabled as a second boundary.
+- Customers can report spam, misleading content, abuse or personal information. Reports do not
+  affect badges merely because they were filed: an admin must mark one `actioned`. Admins can hide
+  the review or vendor reply, dismiss a report, or action it from `/admin/reviews`.
+- `vendor_reputation_summary` calculates a Bayesian adjusted rating using a 4.2 prior with weight
+  10, plus 90-day response and fulfilment signals. This stops a new shop with one five-star review
+  outranking an established shop with many verified reviews.
+- Badges are earned, not hand-assigned: **Top Rated** requires 20+ reviews, adjusted rating ≥4.7,
+  fulfilment ≥95%, cancellations ≤2% and no actioned incidents in 90 days; **Fast Responder**
+  requires 5+ responses, ≥90% response rate and ≤2-hour average; **Reliable Fulfilment** requires
+  20+ resolved orders, ≥95% fulfilment and ≤2% cancellations; **New Verified** is available during
+  the first 180 days while the shop has fewer than 20 reviews.
+- Public product cards, product detail, vendor directory and vendor profiles all show the rating
+  and eligible badges. Product/vendor pages show verified-purchase comments; `/vendor/reviews`
+  shows the seller's performance breakdown and reply tools. The account order page is the buyer's
+  review entry point.
+
 ### Product imagery
 
 `products.images` is a jsonb array of **storage paths** (`<vendor_id>/file.jpg`) in the public
@@ -228,6 +256,7 @@ empty shell.
 | Vendors | 5 approved across Dubai, Abu Dhabi and Sharjah |
 | Price ticks | 2,800+ usable ticks across 2 recorded calendar days as of 10 Sep 2026 |
 | Reservations | 4 — two pending-status rows, one paid, one expired |
+| Reviews | 1 verified demo review on the paid 1g gold-bar order; 0 reports |
 | Audit log | 5 entries |
 
 Demo logins exist for each role (`admin@getgold.app`, `vendor1..4@example.ae`,
@@ -268,6 +297,7 @@ reference cannot be mistaken for a provider-fetched quote.
 | `available_quantity` RPC round trip | **Verified** | real reservation changed rendered availability 25 → 24 |
 | Demo photos | **Verified and migrated** | 12/12 title match; 12/12 load from Supabase Storage |
 | Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
+| Verified reviews | **Verified** | paid-order context derived in Postgres; unpaid order rejected; direct anon/auth table access denied |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.

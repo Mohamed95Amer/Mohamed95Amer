@@ -46,7 +46,7 @@ export default async function VendorDashboardPage() {
         </span>
       </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
+      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/vendor/products" className="card p-6 hover:border-gold-300">
           <div className="text-xs uppercase tracking-wide text-ink-muted">Products</div>
           <div className="mt-2 font-serif text-3xl">{productCount ?? 0}</div>
@@ -61,6 +61,11 @@ export default async function VendorDashboardPage() {
           <div className="text-xs uppercase tracking-wide text-ink-muted">Documents</div>
           <div className="mt-2 font-serif text-3xl">Upload</div>
           <div className="mt-2 text-sm text-ink-muted">Trade license, IDs, photos →</div>
+        </Link>
+        <Link href="/vendor/reviews" className="card p-6 hover:border-gold-300">
+          <div className="text-xs uppercase tracking-wide text-ink-muted">Reputation</div>
+          <div className="mt-2 font-serif text-3xl">Reviews</div>
+          <div className="mt-2 text-sm text-ink-muted">Read and respond →</div>
         </Link>
       </div>
 

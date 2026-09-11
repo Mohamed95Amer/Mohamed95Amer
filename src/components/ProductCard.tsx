@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { ProductImage } from "./ProductImage";
 import { GoldHubValueScore } from "./GoldHubValueScore";
+import { StoreBadges, StoreRating } from "./StoreReputation";
 import { useLiveGoldPrice } from "./GoldPriceProvider";
 import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
 import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
+import type { VendorReputation } from "@/lib/reputation";
 
 export interface ProductCardData {
   id: string;
@@ -21,7 +23,13 @@ export interface ProductCardData {
   vendor_premium: number | string;
   images?: unknown;
   available?: number | null;
-  vendor?: { business_name: string; emirate: string; verification_status?: string } | null;
+  vendor?: {
+    id?: string;
+    business_name: string;
+    emirate: string;
+    verification_status?: string;
+    reputation?: VendorReputation | null;
+  } | null;
 }
 
 /**
@@ -168,16 +176,20 @@ export function ProductCard({
         )}
 
         {p.vendor && (
-          <div className="mt-auto flex items-center justify-between gap-4 border-t border-jade-900/10 pt-4 text-xs text-ink-muted">
-            <div>
-              <div className="font-semibold text-ink">{p.vendor.business_name}</div>
-              <div className="mt-0.5 text-[11px]">{p.vendor.emirate}</div>
+          <div className="mt-auto border-t border-jade-900/10 pt-4 text-xs text-ink-muted">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="font-semibold text-ink">{p.vendor.business_name}</div>
+                <div className="mt-0.5 text-[11px]">{p.vendor.emirate}</div>
+              </div>
+              {p.vendor.verification_status === "approved" && (
+                <span className="rounded-full bg-jade-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-jade-700">
+                  ✓ Verified
+                </span>
+              )}
             </div>
-            {p.vendor.verification_status === "approved" && (
-              <span className="rounded-full bg-jade-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-jade-700">
-                ✓ Verified
-              </span>
-            )}
+            <div className="mt-2"><StoreRating reputation={p.vendor.reputation} compact /></div>
+            <div className="mt-2"><StoreBadges reputation={p.vendor.reputation} compact limit={2} /></div>
           </div>
         )}
       </div>

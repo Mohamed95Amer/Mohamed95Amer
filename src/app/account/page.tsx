@@ -215,7 +215,9 @@ function HistoryCard({ entry, currentRate }: { entry: AccountEntry; currentRate:
               {active ? "Price lock expires " + formatDubaiDate(reservation.expires_at, true) : purchased ? "Captured at " + formatAed(Number(snapshot?.gold_price_per_gram_24k_aed)) + "/g 24K" : lapsedLock ? "Price lock ended " + formatDubaiDate(reservation.expires_at, true) : "Reservation " + reservationStatusLabel(reservation.status).toLowerCase()}
               {currentRate > 0 && !closed ? " · live reference " + formatAed(currentRate) + "/g" : ""}
             </p>
-            <Link href={"/account/reservations/" + reservation.id} className="text-sm font-semibold text-jade-700 hover:text-jade-500">View details →</Link>
+            <Link href={"/account/reservations/" + reservation.id + (purchased ? "#review" : "")} className="text-sm font-semibold text-jade-700 hover:text-jade-500">
+              {purchased ? "Review purchase →" : "View details →"}
+            </Link>
           </div>
         </div>
       </div>

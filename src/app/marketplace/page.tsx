@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ProductCard } from "@/components/ProductCard";
+import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
+      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(id, business_name, emirate, verification_status)",
     )
     .eq("product_status", "approved")
     .order("created_at", { ascending: false })
@@ -24,16 +25,18 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (searchParams.karat) query = query.eq("karat", Number(searchParams.karat));
   if (searchParams.q) query = query.ilike("name", `%${searchParams.q}%`);
 
-  const [{ data }, { data: fees }] = await Promise.all([
+  const [{ data }, { data: fees }, { data: reputationRows }] = await Promise.all([
     query,
     supabase
       .from("platform_settings")
       .select("platform_fee_bps, delivery_fee_aed")
       .eq("id", true)
       .maybeSingle(),
+    supabase.from("vendor_reputation_summary").select("*"),
   ]);
   const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
+  const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   return (
     <div className="pb-16">
       <section className="relative overflow-hidden bg-jade-900 text-white">
@@ -94,11 +97,12 @@ export default async function MarketplacePage({ searchParams }: SP) {
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {(data ?? []).map((p) => {
             const v = p.vendors as unknown as
-              { business_name: string; emirate: string; verification_status: string } | null;
+              { id: string; business_name: string; emirate: string; verification_status: string } | null;
+            const vendor = v ? { ...v, reputation: reputations.get(v.id) ?? null } : null;
             return (
               <ProductCard
                 key={p.id}
-                p={{ ...p, available: p.quantity, vendor: v }}
+                p={{ ...p, available: p.quantity, vendor }}
                 platformFeeBps={platformFeeBps}
                 deliveryFee={deliveryFee}
               />

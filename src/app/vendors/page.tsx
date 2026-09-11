@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { ProductImage } from "@/components/ProductImage";
+import { StoreBadges, StoreRating } from "@/components/StoreReputation";
+import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 
 export const dynamic = "force-dynamic";
 
-type Listing = { id: string; category: string; karat: number; name: string };
+type Listing = { id: string; category: string; karat: number; name: string; images: unknown };
 
 export default async function VendorsListPage() {
   const supabase = getServiceSupabase();
 
-  const [{ data: vendors }, { data: listings }] = await Promise.all([
+  const [{ data: vendors }, { data: listings }, { data: reputationRows }] = await Promise.all([
     supabase
       .from("vendors")
       .select("id, business_name, emirate, store_address")
@@ -19,14 +21,16 @@ export default async function VendorsListPage() {
     // query would mean N round trips to render a single page.
     supabase
       .from("products")
-      .select("id, vendor_id, name, category, karat")
+      .select("id, vendor_id, name, category, karat, images")
       .eq("product_status", "approved"),
+    supabase.from("vendor_reputation_summary").select("*"),
   ]);
+  const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
 
   const byVendor = new Map<string, Listing[]>();
   for (const p of listings ?? []) {
     const list = byVendor.get(p.vendor_id) ?? [];
-    list.push({ id: p.id, category: p.category, karat: p.karat, name: p.name });
+    list.push({ id: p.id, category: p.category, karat: p.karat, name: p.name, images: p.images });
     byVendor.set(p.vendor_id, list);
   }
 
@@ -51,7 +55,7 @@ export default async function VendorsListPage() {
                 <div className="grid grid-cols-3 gap-px bg-bone-deep">
                   {items.slice(0, 3).map((p) => (
                     <div key={p.id} className="aspect-square overflow-hidden bg-bone-soft">
-                      <ProductImage category={p.category} karat={p.karat} name={p.name} />
+                      <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} />
                     </div>
                   ))}
                 </div>
@@ -66,6 +70,8 @@ export default async function VendorsListPage() {
                 </div>
                 <div className="mt-1 text-xs text-ink-muted">{v.emirate}</div>
                 <div className="mt-2 line-clamp-2 text-xs text-ink-muted">{v.store_address}</div>
+                <div className="mt-3"><StoreRating reputation={reputations.get(v.id)} compact /></div>
+                <div className="mt-2"><StoreBadges reputation={reputations.get(v.id)} compact limit={2} /></div>
                 <div className="mt-auto pt-3 text-xs font-medium text-ink">
                   {items.length === 0
                     ? "No listings yet"

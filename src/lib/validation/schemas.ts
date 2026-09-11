@@ -87,3 +87,39 @@ export const platformSettingsSchema = z.object({
   reservation_lock_minutes: z.number().int().min(1).max(60),
   stale_price_seconds: z.number().int().min(15).max(600),
 });
+
+const rating = z.number().int().min(1).max(5);
+
+export const reviewUpsertSchema = z.object({
+  reservationId: z.string().uuid(),
+  overallRating: rating,
+  productRating: rating,
+  communicationRating: rating,
+  fulfilmentRating: rating,
+  packagingRating: rating,
+  deliveryRating: rating.nullable(),
+  title: z.string().trim().min(2).max(120).optional().nullable(),
+  comment: z.string().trim().min(10).max(2000).optional().nullable(),
+});
+
+export const reviewReportSchema = z.object({
+  reason: z.enum(["spam", "fake_or_misleading", "abusive", "personal_information", "other"]),
+  details: z.string().trim().max(1000).optional().nullable(),
+});
+
+export const vendorReviewReplySchema = z.object({
+  reply: z.string().trim().min(2).max(1000),
+});
+
+export const adminReviewModerationSchema = z.object({
+  action: z.enum([
+    "publish_review",
+    "hide_review",
+    "publish_reply",
+    "hide_reply",
+    "dismiss_report",
+    "action_report",
+  ]),
+  reportId: z.string().uuid().optional().nullable(),
+  note: z.string().trim().max(500).optional().nullable(),
+});

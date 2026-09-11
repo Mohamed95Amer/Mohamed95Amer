@@ -6,6 +6,7 @@ export function AdminNav() {
     ["/admin/vendors", "Vendors"],
     ["/admin/products", "Products"],
     ["/admin/orders", "Orders"],
+    ["/admin/reviews", "Reviews"],
     ["/admin/gold-price", "Gold price"],
     ["/admin/audit", "Audit logs"],
     ["/admin/settings", "Settings"],
