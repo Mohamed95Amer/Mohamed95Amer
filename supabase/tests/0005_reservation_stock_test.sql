@@ -213,6 +213,24 @@ begin
   assert v_refused, 'check 10: one identity check authorized two orders';
   raise notice 'check 10 ok: consumed identity result cannot be reused';
 
+  -- 11. No new order can bypass the identity gate with a null check ID.
+  v_refused := false;
+  begin
+    perform public.claim_reservation(
+      p_customer_user_id => v_customer,
+      p_product_id => v_product,
+      p_quantity => 1,
+      p_expires_at => now() + interval '10 minutes',
+      p_identity_verification_id => null
+    );
+  exception when others then
+    v_refused := true;
+    assert sqlerrm like '%identity_verification_required%',
+      format('check 11: null identity refused for the wrong reason: %s', sqlerrm);
+  end;
+  assert v_refused, 'check 11: order bypassed mandatory identity verification';
+  raise notice 'check 11 ok: missing identity verification rejected';
+
   raise notice 'ALL CHECKS PASSED';
 end $$;
 

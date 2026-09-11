@@ -13,7 +13,7 @@ All work described here is on that branch. `main` does not have it.
 
 **Live:** https://goldhub-three.vercel.app — legacy Vercel project `mohamed95amers-projects/goldhub`.
 
-**Deployment status (11 Sep 2026):** the latest branch commit is manually deployed to the existing
+**Deployment status (11 Sep 2026):** application commit `1a624c5` is manually deployed to the existing
 production project and aliased to the live URL. The marketplace is publicly branded **Get Gold**, with the
 tagline “See the price. Get the gold.” The local and Vercel 41-page production builds, typecheck,
 lint, public-route smoke checks and live visual pass are clean. `NEXT_PUBLIC_SITE_URL` now points to
@@ -33,10 +33,10 @@ Migration `20260911183317_reservation_fulfilment_details.sql` is also applied an
 an order-specific delivery/collection snapshot, structured UAE address details and a precise
 location pin while keeping those values inside the same row-locking stock claim.
 
-The next migration, `20260911184948_mandatory_order_identity_verification.sql`, makes a fresh hosted
-identity result mandatory and single-use for every new order. **Do not apply it to another
-environment until the matching application code and Sumsub environment variables are ready**;
-the function deliberately fails closed when no approved check is supplied.
+Migration `20260911184948_mandatory_order_identity_verification.sql` is also applied to production and
+recorded in migration history. It makes a fresh hosted identity result mandatory and single-use for every
+new order. The matching application code is deployed and deliberately fails closed until the Sumsub
+credentials and both provider level names are configured; no order can bypass the missing provider.
 
 The previously unverified production paths have now been exercised end to end:
 
@@ -399,7 +399,7 @@ reference cannot be mistaken for a provider-fetched quote.
 | Area | Status | Evidence |
 |---|---|---|
 | Schema, RLS, storage buckets, realtime | Applied | migrations `0001`–`0005`, `launch_commission_rate`, `pricing_charges_and_promotions` against the live project |
-| Oversell + fulfilment + identity claim | **10/10 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql`; includes atomic address/pin persistence and single-use identity consumption |
+| Oversell + fulfilment + identity claim | **11/11 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql`; includes atomic address/pin persistence, single-use identity consumption and missing-ID bypass rejection |
 | Price parser | **9/9 passed** | ad-hoc harness; covers real shape, per-gram scaling, string values, alternate keys, garbage, absurd values, null |
 | Pricing math | Automated + checked by hand | normal, 20%-off, active/expired 100%-off and certificate-only cases; fee uses discounted merchandise and excludes delivery |
 | Typecheck / build | Clean | `npx tsc --noEmit`, `npm run build` |
