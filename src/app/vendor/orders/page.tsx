@@ -3,6 +3,8 @@ import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { formatAed } from "@/lib/pricing/calc";
 import { VendorOrderActions } from "./VendorOrderActions";
+import { VendorNav } from "@/components/VendorNav";
+import { formatDubaiDateTime, statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +30,9 @@ export default async function VendorOrdersPage() {
     <div className="container-pro py-10">
       <h1 className="font-serif text-3xl">Orders</h1>
       <p className="text-sm text-ink-muted">Confirm or reject reservations before payment is requested.</p>
-      <div className="card mt-6 overflow-hidden">
-        <table className="w-full text-sm">
+      <VendorNav />
+      <div className="card mt-6 overflow-x-auto">
+        <table className="min-w-[940px] w-full text-sm">
           <thead className="bg-bone-soft text-ink-muted">
             <tr>
               <th className="px-4 py-2 text-left">Customer</th>
@@ -53,8 +56,8 @@ export default async function VendorOrdersPage() {
                   <td className="px-4 py-2">{product?.name} · {product?.karat}K · {product?.weight_grams}g</td>
                   <td className="px-4 py-2 text-right">{o.quantity}</td>
                   <td className="px-4 py-2 text-right">{formatAed(total)}</td>
-                  <td className="px-4 py-2"><span className="pill border-bone-deep bg-bone-soft">{o.status}</span></td>
-                  <td className="px-4 py-2 text-ink-muted">{new Date(o.expires_at).toLocaleString()}</td>
+                  <td className="px-4 py-2"><span className="pill border-bone-deep bg-bone-soft">{statusLabel(o.status)}</span></td>
+                  <td className="px-4 py-2 text-ink-muted">{formatDubaiDateTime(o.expires_at)}</td>
                   <td className="px-4 py-2 text-right">
                     {o.status === "pending_vendor_confirmation" && (
                       <VendorOrderActions reservationId={o.id} />

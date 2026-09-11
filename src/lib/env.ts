@@ -22,6 +22,7 @@ export const env = {
   // Public — safe to expose to the browser
   supabaseUrl: () => required("NEXT_PUBLIC_SUPABASE_URL"),
   supabaseAnonKey: () => required("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+  siteUrl: () => (process.env.NEXT_PUBLIC_SITE_URL ?? "https://goldhub-three.vercel.app").replace(/\/$/, ""),
 
   // Server-only — must never be exposed to the browser
   // A separate rotation slot avoids stale secret versions in deployment

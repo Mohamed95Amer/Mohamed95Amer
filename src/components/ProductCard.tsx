@@ -44,10 +44,12 @@ export function ProductCard({
   p,
   platformFeeBps = 50,
   deliveryFee = 0,
+  priority = false,
 }: {
   p: ProductCardData;
   platformFeeBps?: number;
   deliveryFee?: number;
+  priority?: boolean;
 }) {
   const { tick, isFresh, loading } = useLiveGoldPrice();
   const stock = p.available ?? null;
@@ -91,6 +93,8 @@ export function ProductCard({
           karat={p.karat}
           name={p.name}
           images={p.images}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          priority={priority}
           className="transition duration-500 group-hover:scale-[1.04]"
         />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-jade-950/35 to-transparent" />

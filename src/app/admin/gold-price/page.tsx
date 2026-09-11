@@ -1,6 +1,7 @@
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ManualRefreshButton } from "./ManualRefreshButton";
+import { formatDubaiDateTime, statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -24,8 +25,8 @@ export default async function AdminGoldPricePage() {
         <ManualRefreshButton />
       </div>
 
-      <div className="card overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="card overflow-x-auto">
+        <table className="min-w-[880px] w-full text-sm">
           <thead className="bg-bone-soft text-ink-muted">
             <tr>
               <th className="px-4 py-2 text-left">When</th>
@@ -40,7 +41,7 @@ export default async function AdminGoldPricePage() {
           <tbody>
             {(ticks ?? []).map((t) => (
               <tr key={t.id} className="border-t border-bone-deep">
-                <td className="px-4 py-2 text-ink-muted">{new Date(t.fetched_at).toLocaleString()}</td>
+                <td className="px-4 py-2 text-ink-muted">{formatDubaiDateTime(t.fetched_at)}</td>
                 <td className="px-4 py-2">{t.source}</td>
                 <td className="px-4 py-2 text-right">{t.xau_usd ?? "—"}</td>
                 <td className="px-4 py-2 text-right">{t.usd_aed}</td>
@@ -50,7 +51,7 @@ export default async function AdminGoldPricePage() {
                     t.status === "ok" ? "border-signal-ok/30 bg-signal-ok/10 text-signal-ok" :
                     t.status === "degraded" ? "border-signal-warn/30 bg-signal-warn/10 text-signal-warn" :
                     "border-signal-err/30 bg-signal-err/10 text-signal-err"
-                  }`}>{t.status}</span>
+                  }`}>{statusLabel(t.status)}</span>
                 </td>
                 <td className="px-4 py-2 text-ink-muted max-w-xs truncate">{t.error_message ?? "—"}</td>
               </tr>

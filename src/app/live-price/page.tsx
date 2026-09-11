@@ -5,8 +5,14 @@ import { getLatestTick } from "@/lib/gold-price/service";
 import { formatDubaiDate, formatSignedPercent } from "@/lib/gold-insights";
 import { formatAed } from "@/lib/pricing/calc";
 import { getServiceSupabase } from "@/lib/supabase/server";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Gold price insights",
+  description: "Explore GoldHub's recorded 24K UAE gold reference, daily movement and historical value scenarios.",
+  alternates: { canonical: "/live-price" },
+};
 
 interface DailyHistoryRow {
   recorded_on: string;

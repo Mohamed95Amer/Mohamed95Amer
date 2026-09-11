@@ -91,7 +91,7 @@ export function ProductImageUploader({
 
   return (
     <div>
-      <label className="label">Photos</label>
+      <label htmlFor="product-photos" className="label">Photos</label>
       <p className="mb-2 text-xs text-ink-muted">
         The first photo is the one shoppers see in the marketplace. Up to {MAX_FILES}, 5 MB each.
         Listings without a photo fall back to a drawing of the category.
@@ -106,6 +106,8 @@ export function ProductImageUploader({
                 <img
                   src={publicStorageUrl(path) ?? ""}
                   alt={`Product photo ${i + 1}`}
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
               </div>
@@ -128,6 +130,8 @@ export function ProductImageUploader({
       )}
 
       <input
+        id="product-photos"
+        name="product_photos"
         ref={inputRef}
         type="file"
         accept={ACCEPTED.join(",")}
@@ -137,7 +141,7 @@ export function ProductImageUploader({
         className="block w-full text-sm text-ink-muted file:mr-3 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-medium file:text-bone hover:file:bg-ink-soft disabled:opacity-50"
       />
       {busy && <p className="mt-2 text-xs text-ink-muted">Uploading…</p>}
-      {err && <p className="mt-2 text-xs text-signal-err">{err}</p>}
+      {err && <p role="alert" className="mt-2 text-xs text-signal-err">{err}</p>}
     </div>
   );
 }

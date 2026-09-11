@@ -3,6 +3,7 @@ import { GoldPriceBadge } from "./GoldPriceBadge";
 import { SignOutButton } from "./SignOutButton";
 import { BrandMark } from "./BrandMark";
 import { getCurrentProfile } from "@/lib/auth/server";
+import { MobileNav } from "./MobileNav";
 
 /**
  * Site header.
@@ -48,7 +49,7 @@ export async function SiteHeader() {
           <Link href="/trust" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Trust</Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden items-center gap-3 lg:flex">
           {profile ? (
             <>
               {isAdmin && (
@@ -73,16 +74,13 @@ export async function SiteHeader() {
             </>
           )}
         </div>
+        <MobileNav
+          signedIn={Boolean(profile)}
+          displayName={firstName(profile?.full_name)}
+          isVendor={isVendor}
+          isAdmin={isAdmin}
+        />
       </div>
-
-      {/* The primary nav is hidden on small screens above; keep it reachable. */}
-      <nav className="container-pro flex gap-5 overflow-x-auto border-t border-jade-900/5 py-2.5 text-xs font-semibold text-ink-muted lg:hidden">
-        <Link href="/marketplace" className="whitespace-nowrap hover:text-jade-700">Marketplace</Link>
-        <Link href="/vendors" className="whitespace-nowrap hover:text-jade-700">Vendors</Link>
-        <Link href="/live-price" className="whitespace-nowrap hover:text-jade-700">Gold insights</Link>
-        <Link href="/how-it-works" className="whitespace-nowrap hover:text-jade-700">How it works</Link>
-        <Link href="/trust" className="whitespace-nowrap hover:text-jade-700">Trust</Link>
-      </nav>
     </header>
   );
 }

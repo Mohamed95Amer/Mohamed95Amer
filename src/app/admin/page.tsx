@@ -1,6 +1,7 @@
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import Link from "next/link";
+import { formatDubaiDateTime, shortId, statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export default async function AdminOverviewPage() {
     admin.from("vendors").select("id", { count: "exact", head: true }).eq("verification_status", "pending"),
     admin.from("products").select("id", { count: "exact", head: true }).eq("product_status", "pending_approval"),
     admin.from("reservations").select("id", { count: "exact", head: true }).eq("status", "pending_vendor_confirmation"),
-    admin.from("gold_price_ticks").select("id", { count: "exact", head: true }).neq("status", "ok"),
+    admin.from("gold_price_ticks").select("id", { count: "exact", head: true }).neq("status", "ok").gte("fetched_at", new Date(Date.now() - 86_400_000).toISOString()),
     admin.from("audit_logs").select("id, action, entity_type, entity_id, created_at, actor_role").order("created_at", { ascending: false }).limit(10),
   ]);
 
@@ -34,9 +35,9 @@ export default async function AdminOverviewPage() {
         <h2 className="font-serif text-xl">Recent audit events</h2>
         <ul className="mt-4 divide-y divide-bone-deep text-sm">
           {(recentAudit.data ?? []).map((e) => (
-            <li key={e.id} className="py-2 flex items-center justify-between">
-              <span><span className="text-ink-muted">{e.actor_role ?? "system"} ·</span> {e.action} <span className="text-ink-muted">on</span> {e.entity_type}/{e.entity_id ?? ""}</span>
-              <span className="text-xs text-ink-muted">{new Date(e.created_at).toLocaleString()}</span>
+            <li key={e.id} className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <span><span className="text-ink-muted">{statusLabel(e.actor_role ?? "system")} ·</span> {e.action.replaceAll("_", " ")} <span className="text-ink-muted">on</span> {e.entity_type}/{shortId(e.entity_id)}</span>
+              <span className="shrink-0 text-xs text-ink-muted">{formatDubaiDateTime(e.created_at)}</span>
             </li>
           ))}
           {(recentAudit.data ?? []).length === 0 && <li className="py-3 text-ink-muted">No events yet.</li>}

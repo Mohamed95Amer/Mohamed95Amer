@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { KARAT_PURITY, formatAed } from "@/lib/pricing/calc";
-import { calculateGoldScenario, formatDubaiDate, formatSignedPercent } from "@/lib/gold-insights";
+import { calculateGoldScenario, formatRecordedDate, formatSignedPercent } from "@/lib/gold-insights";
 
 export interface GoldHistoryPoint {
   recordedOn: string;
@@ -59,12 +59,12 @@ export function GoldHistoryExperience({
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <label className="sm:col-span-2">
+            <label className="sm:col-span-2" htmlFor="history-date">
               <span className="label">Recorded date</span>
-              <select className="input" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)}>
+              <select id="history-date" name="history_date" className="input" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)}>
                 {history.map((point) => (
                   <option key={point.recordedOn} value={point.recordedOn}>
-                    {formatDubaiDate(point.fetchedAt)} · {formatAed(point.rate)}/g · {point.sources}
+                    {formatRecordedDate(point.recordedOn)} · {formatAed(point.rate)}/g · {point.sources}
                   </option>
                 ))}
               </select>
@@ -74,10 +74,12 @@ export function GoldHistoryExperience({
                 </span>
               )}
             </label>
-            <label>
+            <label htmlFor="history-weight">
               <span className="label">Gold weight</span>
               <div className="relative">
                 <input
+                  id="history-weight"
+                  name="gold_weight"
                   className="input pr-10 tabular-nums"
                   type="number"
                   min="0.1"
@@ -89,9 +91,9 @@ export function GoldHistoryExperience({
                 <span className="pointer-events-none absolute right-3 top-4 text-xs text-ink-muted">g</span>
               </div>
             </label>
-            <label>
+            <label htmlFor="history-karat">
               <span className="label">Purity</span>
-              <select className="input" value={karat} onChange={(event) => setKarat(Number(event.target.value))}>
+              <select id="history-karat" name="karat" className="input" value={karat} onChange={(event) => setKarat(Number(event.target.value))}>
                 {[24, 22, 21, 18].map((value) => <option key={value} value={value}>{value}K</option>)}
               </select>
             </label>
@@ -103,7 +105,7 @@ export function GoldHistoryExperience({
           <p className="eyebrow relative text-gold-200">Illustrative result</p>
           <div className="relative mt-6 grid gap-5 sm:grid-cols-2">
             <div>
-              <p className="text-xs text-white/50">Gold value on {selected ? formatDubaiDate(selected.fetchedAt) : "selected date"}</p>
+              <p className="text-xs text-white/50">Gold value on {selected ? formatRecordedDate(selected.recordedOn) : "selected date"}</p>
               <p className="mt-1 font-serif text-2xl tabular-nums">{formatAed(scenario.historicalValueAed)}</p>
             </div>
             <div>
@@ -210,14 +212,14 @@ function MarketTrendChart({ history }: { history: GoldHistoryPoint[] }) {
           {coordinates.map(([cx, cy], index) => (
             <g key={history[index].recordedOn}>
               <circle cx={cx} cy={cy} r="6" fill="#FCFAF5" stroke="#D69B2D" strokeWidth="4" />
-              <title>{formatDubaiDate(history[index].fetchedAt)} · {formatAed(history[index].rate)}/g · {history[index].tickCount} quotes · {history[index].sources}</title>
+              <title>{formatRecordedDate(history[index].recordedOn)} · {formatAed(history[index].rate)}/g · {history[index].tickCount} quotes · {history[index].sources}</title>
             </g>
           ))}
         </svg>
       </div>
       <div className="mt-3 flex justify-between text-[11px] text-ink-muted">
-        <span>{formatDubaiDate(history[0].fetchedAt)}</span>
-        <span>{formatDubaiDate(history.at(-1)?.fetchedAt ?? history[0].fetchedAt)}</span>
+        <span>{formatRecordedDate(history[0].recordedOn)}</span>
+        <span>{formatRecordedDate(history.at(-1)?.recordedOn ?? history[0].recordedOn)}</span>
       </div>
     </div>
   );

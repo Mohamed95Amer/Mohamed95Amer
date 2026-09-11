@@ -3,8 +3,14 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { ProductImage } from "@/components/ProductImage";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Verified gold stores",
+  description: "Browse verified UAE jewellery and bullion vendors with approved live inventory and verified-purchase ratings.",
+  alternates: { canonical: "/vendors" },
+};
 
 type Listing = { id: string; category: string; karat: number; name: string; images: unknown };
 
@@ -33,6 +39,7 @@ export default async function VendorsListPage() {
     list.push({ id: p.id, category: p.category, karat: p.karat, name: p.name, images: p.images });
     byVendor.set(p.vendor_id, list);
   }
+  const visibleVendors = (vendors ?? []).filter((vendor) => (byVendor.get(vendor.id)?.length ?? 0) > 0);
 
   return (
     <div className="container-pro py-10">
@@ -43,7 +50,7 @@ export default async function VendorsListPage() {
       </p>
 
       <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {(vendors ?? []).map((v) => {
+        {visibleVendors.map((v) => {
           const items = byVendor.get(v.id) ?? [];
           return (
             <Link
@@ -54,8 +61,8 @@ export default async function VendorsListPage() {
               {items.length > 0 && (
                 <div className="grid grid-cols-3 gap-px bg-bone-deep">
                   {items.slice(0, 3).map((p) => (
-                    <div key={p.id} className="aspect-square overflow-hidden bg-bone-soft">
-                      <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} />
+                    <div key={p.id} className="relative aspect-square overflow-hidden bg-bone-soft">
+                      <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} sizes="(max-width: 768px) 33vw, 11vw" />
                     </div>
                   ))}
                 </div>
@@ -73,16 +80,14 @@ export default async function VendorsListPage() {
                 <div className="mt-3"><StoreRating reputation={reputations.get(v.id)} compact /></div>
                 <div className="mt-2"><StoreBadges reputation={reputations.get(v.id)} compact limit={2} /></div>
                 <div className="mt-auto pt-3 text-xs font-medium text-ink">
-                  {items.length === 0
-                    ? "No listings yet"
-                    : `${items.length} ${items.length === 1 ? "listing" : "listings"}`}
+                  {items.length} {items.length === 1 ? "listing" : "listings"}
                 </div>
               </div>
             </Link>
           );
         })}
 
-        {(vendors ?? []).length === 0 && (
+        {visibleVendors.length === 0 && (
           <p className="text-sm text-ink-muted">No verified vendors yet.</p>
         )}
       </div>

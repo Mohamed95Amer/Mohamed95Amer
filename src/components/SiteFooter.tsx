@@ -4,7 +4,7 @@ import { BrandMark } from "./BrandMark";
 export function SiteFooter() {
   return (
     <footer className="bg-jade-950 text-white">
-      <div className="container-pro grid gap-8 py-12 md:grid-cols-4">
+      <div className="container-pro grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <div className="flex items-center gap-2.5">
             <BrandMark inverse />
@@ -37,10 +37,20 @@ export function SiteFooter() {
             <li><Link className="transition hover:text-white" href="/vendor">Vendor dashboard</Link></li>
           </ul>
         </div>
+        <div>
+          <h4 className="eyebrow text-gold-200">Policies</h4>
+          <ul className="mt-4 space-y-2.5 text-sm text-white/60">
+            <li><Link className="transition hover:text-white" href="/terms">Terms</Link></li>
+            <li><Link className="transition hover:text-white" href="/privacy">Privacy</Link></li>
+            <li><Link className="transition hover:text-white" href="/delivery-and-collection">Delivery & collection</Link></li>
+            <li><Link className="transition hover:text-white" href="/cancellations-and-refunds">Cancellations & refunds</Link></li>
+          </ul>
+        </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="container-pro py-4 text-xs text-white/45">
-          © {new Date().getFullYear()} GoldHub. GoldHub is a marketplace; products are sold by listed vendors.
+        <div className="container-pro flex flex-col gap-2 py-4 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+          <span>© {new Date().getFullYear()} GoldHub. Products are sold by listed vendors.</span>
+          <span>Gold prices can move. Marketplace comparisons are not financial advice.</span>
         </div>
       </div>
     </footer>

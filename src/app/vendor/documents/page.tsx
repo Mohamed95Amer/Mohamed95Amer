@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { VendorDocumentsClient } from "./VendorDocumentsClient";
+import { VendorNav } from "@/components/VendorNav";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function VendorDocumentsPage() {
       <p className="text-sm text-ink-muted mt-1">
         Documents are stored privately. Only you and our compliance team can access them, via signed URLs.
       </p>
+      <VendorNav />
       <div className="card mt-6 p-6">
         <VendorDocumentsClient vendorId={vendor.id} initialDocs={docs ?? []} />
       </div>

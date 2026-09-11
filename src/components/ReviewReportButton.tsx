@@ -44,8 +44,8 @@ export function ReviewReportButton({ reviewId }: { reviewId: string }) {
         </button>
       ) : (
         <div className="w-full max-w-sm rounded-xl bg-jade-50 p-3 text-left">
-          <label className="text-[10px] font-bold uppercase tracking-wide text-ink-muted">Reason</label>
-          <select className="input mt-1 text-xs" value={reason} onChange={(event) => setReason(event.target.value)}>
+          <label htmlFor={`report-reason-${reviewId}`} className="text-xs font-bold uppercase tracking-wide text-ink-muted">Reason</label>
+          <select id={`report-reason-${reviewId}`} name="reason" className="input mt-1" value={reason} onChange={(event) => setReason(event.target.value)}>
             <option value="spam">Spam</option>
             <option value="fake_or_misleading">Fake or misleading</option>
             <option value="abusive">Abusive language</option>
@@ -53,7 +53,10 @@ export function ReviewReportButton({ reviewId }: { reviewId: string }) {
             <option value="other">Other</option>
           </select>
           <textarea
-            className="input mt-2 min-h-20 text-xs"
+            id={`report-details-${reviewId}`}
+            name="details"
+            aria-label="Optional report details"
+            className="input mt-2 min-h-20"
             maxLength={1000}
             placeholder="Optional details"
             value={details}

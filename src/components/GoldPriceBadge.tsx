@@ -25,7 +25,7 @@ export function GoldPriceBadge({
 
   if (loading && !tick) {
     return (
-      <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${
+      <div aria-live="polite" className={`inline-flex min-w-[11rem] items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${
         tone === "dark" ? "border-white/15 bg-white/10 text-white/70" : "border-jade-900/10 bg-jade-50 text-ink-muted"
       }`}>
         <span className={`h-2 w-2 animate-pulse rounded-full ${tone === "dark" ? "bg-white/50" : "bg-jade-200"}`} />
@@ -56,6 +56,7 @@ export function GoldPriceBadge({
 
   return (
     <div
+      aria-live="polite"
       className={`inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border px-3 py-1.5 text-xs ${shell}`}
       title={
         stale

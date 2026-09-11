@@ -10,6 +10,7 @@ import {
 } from "@/lib/reputation";
 import { ReputationOverview } from "@/components/StoreReputation";
 import { VendorReviewReplyForm } from "@/components/VendorReviewReplyForm";
+import { VendorNav } from "@/components/VendorNav";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,7 @@ export default async function VendorReviewsPage() {
         Reviews come only from completed purchases. You can publish one response to each review;
         reviews cannot be removed by the store.
       </p>
+      <VendorNav />
 
       {reputation && <div className="mt-7"><ReputationOverview reputation={reputation} /></div>}
 

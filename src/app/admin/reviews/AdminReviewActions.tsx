@@ -35,7 +35,8 @@ export function AdminReviewActions({ reviewId, reportId }: { reviewId: string; r
 
   return (
     <div className="mt-3">
-      <input className="input text-xs" maxLength={500} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Optional moderation note" />
+      <label htmlFor={`moderation-note-${reviewId}`} className="sr-only">Optional moderation note</label>
+      <input id={`moderation-note-${reviewId}`} name="moderation_note" className="input" maxLength={500} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Optional moderation note" />
       <div className="mt-2 flex flex-wrap gap-2">
         {reportId ? (
           <>
@@ -51,7 +52,7 @@ export function AdminReviewActions({ reviewId, reportId }: { reviewId: string; r
           </>
         )}
       </div>
-      {error && <p className="mt-2 text-xs text-signal-err">{error}</p>}
+      {error && <p role="alert" className="mt-2 text-xs text-signal-err">{error}</p>}
     </div>
   );
 }

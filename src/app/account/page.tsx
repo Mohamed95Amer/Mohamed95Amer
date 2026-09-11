@@ -168,12 +168,13 @@ function HistoryCard({ entry, currentRate }: { entry: AccountEntry; currentRate:
   return (
     <article className={["card overflow-hidden", closed ? "opacity-75" : ""].join(" ")}>
       <div className="grid sm:grid-cols-[9rem_1fr]">
-        <div className="aspect-[4/3] bg-jade-50 sm:aspect-auto sm:min-h-44">
+        <div className="relative aspect-[4/3] bg-jade-50 sm:aspect-auto sm:min-h-44">
           <ProductImage
             category={product?.category}
             karat={product?.karat}
             name={product?.name ?? "Gold product"}
             images={product?.images}
+            sizes="(max-width: 640px) 100vw, 144px"
           />
         </div>
         <div className="p-5 sm:p-6">

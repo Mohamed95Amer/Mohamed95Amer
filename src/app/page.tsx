@@ -43,7 +43,7 @@ export default async function HomePage() {
       .maybeSingle(),
     supabase
       .from("products")
-      .select("id, name, category, karat, images")
+      .select("id, name, category, karat, images, vendor_id")
       .eq("product_status", "approved")
       .order("created_at", { ascending: false })
       .limit(60),
@@ -52,6 +52,8 @@ export default async function HomePage() {
   const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
+  const activeVendorIds = new Set((categoryProducts ?? []).map((product) => product.vendor_id));
+  const activeVendors = (vendors ?? []).filter((vendor) => activeVendorIds.has(vendor.id));
 
   return (
     <>
@@ -89,15 +91,15 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-10 grid max-w-2xl gap-4 border-t border-white/10 pt-6 sm:grid-cols-3">
+            <div className="mt-8 grid max-w-2xl grid-cols-3 gap-3 border-t border-white/10 pt-5 sm:mt-10 sm:gap-4 sm:pt-6">
               {[
                 ["Licensed", "UAE gold shops"],
                 ["Live", "market-linked prices"],
                 ["Locked", "for 10 minutes"],
               ].map(([value, label]) => (
                 <div key={value}>
-                  <div className="font-serif text-xl text-gold-200">{value}</div>
-                  <div className="mt-0.5 text-xs text-white/50">{label}</div>
+                  <div className="font-serif text-lg text-gold-200 sm:text-xl">{value}</div>
+                  <div className="mt-0.5 text-[10px] leading-snug text-white/50 sm:text-xs">{label}</div>
                 </div>
               ))}
             </div>
@@ -175,6 +177,7 @@ export default async function HomePage() {
                   karat={representative.karat}
                   name={representative.name}
                   images={representative.images}
+                  sizes="(max-width: 640px) 50vw, 33vw"
                   className="transition duration-700 group-hover:scale-[1.06]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-jade-950 via-jade-950/10 to-transparent" />
@@ -249,7 +252,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {(vendors ?? []).map((vendor) => (
+          {activeVendors.map((vendor) => (
             <Link
               key={vendor.id}
               href={`/vendors/${vendor.id}`}

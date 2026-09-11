@@ -4,9 +4,10 @@ import type { Metadata } from "next";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { LiveProductPrice } from "@/components/LiveProductPrice";
 import { ReserveButton } from "@/components/ReserveButton";
-import { ProductImage } from "@/components/ProductImage";
+import { firstProductPhoto, ProductImage } from "@/components/ProductImage";
 import { ReviewList } from "@/components/ReviewList";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
+import { ProductActions } from "@/components/ProductActions";
 import {
   normalizeReputation,
   PUBLIC_REVIEW_SELECT,
@@ -37,12 +38,19 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   if (!product || product.product_status !== "approved") return { title: "Not found — GoldHub" };
   const vendor = product.vendors as unknown as Vendor;
   return {
-    title: `${product.name} — ${product.karat}K, ${product.weight_grams}g | GoldHub`,
+    title: `${product.name} — ${product.karat}K, ${product.weight_grams}g`,
     description:
       product.description ??
       `${product.karat}K ${product.category}, ${product.weight_grams}g${
         vendor ? `, from ${vendor.business_name}` : ""
       }. Priced live against the UAE gold market.`,
+    alternates: { canonical: `/products/${product.id}` },
+    openGraph: {
+      type: "website",
+      title: `${product.name} — ${product.karat}K, ${product.weight_grams}g`,
+      description: product.description ?? `Live-priced ${product.karat}K ${product.category} from a verified UAE gold store.`,
+      images: firstProductPhoto(product.images) ? [{ url: firstProductPhoto(product.images)! }] : undefined,
+    },
   };
 }
 
@@ -93,6 +101,18 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   return (
     <div className="container-pro py-8 sm:py-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.name,
+        description: product.description ?? `${product.karat}K ${product.category}`,
+        image: firstProductPhoto(product.images) ?? undefined,
+        category: product.category,
+        material: `${product.karat}K gold`,
+        weight: { "@type": "QuantitativeValue", value: Number(product.weight_grams), unitCode: "GRM" },
+        brand: vendor ? { "@type": "Brand", name: vendor.business_name } : undefined,
+        ...(reputation?.averageRating && reputation.reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reputation.averageRating, reviewCount: reputation.reviewCount, bestRating: 5 } } : {}),
+      }) }} />
       <nav className="mb-7 flex flex-wrap items-center gap-1.5 text-xs font-medium text-ink-muted">
         <Link href="/" className="hover:text-jade-700">Home</Link>
         <span aria-hidden="true">/</span>
@@ -113,6 +133,8 @@ export default async function ProductPage({ params }: { params: { id: string } }
               karat={product.karat}
               name={product.name}
               images={product.images}
+              sizes="(max-width: 1024px) 100vw, 60vw"
+              priority
             />
             <span className="absolute left-4 top-4 rounded-full border border-white/25 bg-white/90 px-3 py-1.5 text-[10px] font-bold tracking-[0.14em] text-jade-950 shadow-sm backdrop-blur">
               {product.karat}K
@@ -129,6 +151,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           {product.description && (
             <p className="mt-4 max-w-prose leading-relaxed text-ink-muted">{product.description}</p>
           )}
+          <ProductActions name={product.name} />
 
           <h2 className="mt-10 font-serif text-2xl font-semibold text-jade-950">Specifications</h2>
           <dl className="mt-4 overflow-hidden rounded-2xl border border-jade-900/10 bg-white">
@@ -194,7 +217,23 @@ export default async function ProductPage({ params }: { params: { id: string } }
             </p>
 
             <div className="mt-5">
-              <ReserveButton productId={product.id} soldOut={soldOut} />
+              <ReserveButton
+                productId={product.id}
+                soldOut={soldOut}
+                available={available}
+                pricing={{
+                  karat: product.karat,
+                  weightGrams: Number(product.weight_grams),
+                  makingCharge: Number(product.making_charge),
+                  makingChargeDiscountPercent: Number(product.making_charge_discount_percent),
+                  makingChargeOfferEndsAt: product.making_charge_offer_ends_at,
+                  certificateFee: Number(product.certificate_fee),
+                  stoneValue: Number(product.stone_value),
+                  vendorPremium: Number(product.vendor_premium),
+                  platformFeeBps: Number(settings?.platform_fee_bps ?? 50),
+                  deliveryFee: Number(settings?.delivery_fee_aed ?? 0),
+                }}
+              />
             </div>
           </div>
 

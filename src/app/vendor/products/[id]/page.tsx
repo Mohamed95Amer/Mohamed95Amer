@@ -2,6 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { ProductForm } from "@/components/ProductForm";
+import { VendorNav } from "@/components/VendorNav";
+import { statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +27,8 @@ export default async function EditProductPage({ params }: { params: { id: string
   return (
     <div className="container-pro py-10 max-w-3xl">
       <h1 className="font-serif text-3xl">Edit product</h1>
-      <p className="text-sm text-ink-muted mt-1">Status: <span className="font-medium">{product.product_status}</span></p>
+      <p className="text-sm text-ink-muted mt-1">Status: <span className="font-medium">{statusLabel(product.product_status)}</span></p>
+      <VendorNav />
       <div className="card mt-6 p-6">
         <ProductForm initial={product} vendorId={vendor.id} />
       </div>

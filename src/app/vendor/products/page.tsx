@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
+import { VendorNav } from "@/components/VendorNav";
+import { statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -27,8 +29,9 @@ export default async function VendorProductsPage() {
         <h1 className="font-serif text-3xl">My products</h1>
         <Link href="/vendor/products/new" className="btn-primary">+ Add product</Link>
       </div>
-      <div className="card mt-6 overflow-hidden">
-        <table className="w-full text-sm">
+      <VendorNav />
+      <div className="card mt-6 overflow-x-auto">
+        <table className="min-w-[820px] w-full text-sm">
           <thead className="bg-bone-soft text-ink-muted">
             <tr>
               <th className="px-4 py-2 text-left">Name</th>
@@ -49,7 +52,7 @@ export default async function VendorProductsPage() {
                 <td className="px-4 py-2 text-right">{p.weight_grams}</td>
                 <td className="px-4 py-2 text-right">{p.quantity}</td>
                 <td className="px-4 py-2">
-                  <span className="pill border-bone-deep bg-bone-soft">{p.product_status}</span>
+                  <span className="pill border-bone-deep bg-bone-soft">{statusLabel(p.product_status)}</span>
                 </td>
                 <td className="px-4 py-2 text-right">
                   <Link href={`/vendor/products/${p.id}`} className="underline">Edit</Link>

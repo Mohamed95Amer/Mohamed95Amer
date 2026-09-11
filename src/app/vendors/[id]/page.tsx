@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { ProductImage } from "@/components/ProductImage";
+import type { Metadata } from "next";
 import { ReviewList } from "@/components/ReviewList";
 import { ReputationOverview, StoreBadges, StoreRating } from "@/components/StoreReputation";
 import {
@@ -13,13 +14,25 @@ import {
 
 export const dynamic = "force-dynamic";
 
+async function loadVendor(id: string) {
+  const supabase = getServiceSupabase();
+  const { data } = await supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, verification_status").eq("id", id).single();
+  return data;
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const vendor = await loadVendor(params.id);
+  if (!vendor || vendor.verification_status !== "approved") return { title: "Store not found" };
+  return {
+    title: vendor.business_name,
+    description: `Browse approved gold and jewellery listings from ${vendor.business_name} in ${vendor.emirate}.`,
+    alternates: { canonical: `/vendors/${vendor.id}` },
+  };
+}
+
 export default async function VendorPage({ params }: { params: { id: string } }) {
   const supabase = getServiceSupabase();
-  const { data: vendor } = await supabase
-    .from("vendors")
-    .select("id, business_name, emirate, store_address, google_maps_link, verification_status")
-    .eq("id", params.id)
-    .single();
+  const vendor = await loadVendor(params.id);
   if (!vendor || vendor.verification_status !== "approved") return notFound();
 
   const [{ data: products }, { data: reputationRow }, { data: reviews }] = await Promise.all([
@@ -42,6 +55,13 @@ export default async function VendorPage({ params }: { params: { id: string } })
 
   return (
     <div className="container-pro py-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "JewelryStore",
+        name: vendor.business_name,
+        address: { "@type": "PostalAddress", addressLocality: vendor.emirate, streetAddress: vendor.store_address, addressCountry: "AE" },
+        ...(reputation?.averageRating && reputation.reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reputation.averageRating, reviewCount: reputation.reviewCount, bestRating: 5 } } : {}),
+      }) }} />
       <div className="card p-6">
         <div className="flex flex-wrap gap-2">
           <span className="pill border-signal-ok/30 bg-signal-ok/10 text-signal-ok">✓ Verified UAE store</span>
@@ -63,8 +83,8 @@ export default async function VendorPage({ params }: { params: { id: string } })
       <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {(products ?? []).map((p) => (
           <Link key={p.id} href={`/products/${p.id}`} className="card group overflow-hidden p-0 transition hover:border-gold-300">
-            <div className="aspect-[4/3] overflow-hidden bg-jade-50">
-              <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} className="transition duration-500 group-hover:scale-[1.03]" />
+            <div className="relative aspect-[4/3] overflow-hidden bg-jade-50">
+              <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} sizes="(max-width: 768px) 100vw, 33vw" className="transition duration-500 group-hover:scale-[1.03]" />
             </div>
             <div className="p-5">
               <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>

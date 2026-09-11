@@ -8,6 +8,7 @@
  */
 
 import { publicStorageUrl } from "@/lib/storage";
+import Image from "next/image";
 
 export type ProductCategory =
   | "ring"
@@ -47,18 +48,32 @@ export function ProductImage({
   name,
   images,
   className = "",
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+  priority = false,
 }: {
   category: string | null | undefined;
   karat: number | null | undefined;
   name: string;
   images?: unknown;
   className?: string;
+  sizes?: string;
+  priority?: boolean;
 }) {
-  const photo = firstPhoto(images);
+  const photo = firstProductPhoto(images);
   if (photo) {
-    // Real vendor upload wins over the drawn fallback.
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={photo} alt={name} className={`h-full w-full object-cover ${className}`} />;
+    // Real vendor upload wins over the drawn fallback. Next/Image creates
+    // responsive AVIF/WebP variants and lazily loads below-fold photography.
+    return (
+      <Image
+        src={photo}
+        alt={name}
+        fill
+        sizes={sizes}
+        priority={priority}
+        quality={78}
+        className={`object-cover ${className}`}
+      />
+    );
   }
 
   const kind = normalize(category);
@@ -95,7 +110,7 @@ export function ProductImage({
  * Accepts a bare string or an object with a `path`/`url` field, since the
  * column is jsonb and has held both shapes.
  */
-function firstPhoto(images: unknown): string | null {
+export function firstProductPhoto(images: unknown): string | null {
   if (!Array.isArray(images)) return null;
   for (const entry of images) {
     let raw: string | null = null;

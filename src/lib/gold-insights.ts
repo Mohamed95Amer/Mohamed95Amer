@@ -129,6 +129,16 @@ export function formatDubaiDate(value: string, includeTime = false): string {
   }).format(new Date(value));
 }
 
+/** Format a database DATE without shifting it through the viewer's timezone. */
+export function formatRecordedDate(recordedOn: string): string {
+  return new Intl.DateTimeFormat("en-AE", {
+    timeZone: "UTC",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(`${recordedOn}T12:00:00Z`));
+}
+
 function round3(value: number): number {
   return Math.round(value * 1000) / 1000;
 }

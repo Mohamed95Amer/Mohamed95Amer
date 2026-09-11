@@ -126,7 +126,9 @@ export function GoldPriceProvider({
   const ageSeconds = tick && hasValidFetchedAt
     ? Math.max(0, Math.floor((now - fetchedAtMs) / 1000))
     : 0;
-  const isFresh = !!tick && hasValidFetchedAt && tick.status !== "failed" && ageSeconds <= staleAfterSeconds;
+  // A degraded quote can remain visible as the last known reference, but it is
+  // never described as live or used to enable reservation.
+  const isFresh = !!tick && hasValidFetchedAt && tick.status === "ok" && ageSeconds <= staleAfterSeconds;
 
   return (
     <GoldPriceContext.Provider

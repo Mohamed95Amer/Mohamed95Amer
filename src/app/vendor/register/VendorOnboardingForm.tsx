@@ -70,49 +70,49 @@ export function VendorOnboardingForm({ initial }: { initial: InitialVendor | nul
   return (
     <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
       <div className="md:col-span-2">
-        <label className="label">Business name</label>
-        <input className="input" required value={form.business_name} onChange={(e) => set("business_name", e.target.value)} />
+        <label className="label" htmlFor="vendor-business-name">Business name</label>
+        <input id="vendor-business-name" name="business_name" className="input" required autoComplete="organization" value={form.business_name} onChange={(e) => set("business_name", e.target.value)} />
       </div>
       <div>
-        <label className="label">Trade license number</label>
-        <input className="input" required value={form.trade_license_number} onChange={(e) => set("trade_license_number", e.target.value)} />
+        <label className="label" htmlFor="vendor-license">Trade licence number</label>
+        <input id="vendor-license" name="trade_license_number" className="input" required value={form.trade_license_number} onChange={(e) => set("trade_license_number", e.target.value)} />
       </div>
       <div>
-        <label className="label">License expiry</label>
-        <input className="input" type="date" required value={form.license_expiry_date} onChange={(e) => set("license_expiry_date", e.target.value)} />
+        <label className="label" htmlFor="vendor-license-expiry">Licence expiry</label>
+        <input id="vendor-license-expiry" name="license_expiry_date" className="input" type="date" required value={form.license_expiry_date} onChange={(e) => set("license_expiry_date", e.target.value)} />
       </div>
       <div>
-        <label className="label">Owner name</label>
-        <input className="input" required value={form.owner_name} onChange={(e) => set("owner_name", e.target.value)} />
+        <label className="label" htmlFor="vendor-owner">Owner name</label>
+        <input id="vendor-owner" name="owner_name" className="input" required autoComplete="name" value={form.owner_name} onChange={(e) => set("owner_name", e.target.value)} />
       </div>
       <div>
-        <label className="label">Email</label>
-        <input className="input" type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} />
+        <label className="label" htmlFor="vendor-email">Business email</label>
+        <input id="vendor-email" name="email" className="input" type="email" required autoComplete="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
       </div>
       <div>
-        <label className="label">Phone</label>
-        <input className="input" required value={form.phone} onChange={(e) => set("phone", e.target.value)} />
+        <label className="label" htmlFor="vendor-phone">Business phone</label>
+        <input id="vendor-phone" name="phone" className="input" type="tel" required autoComplete="tel" inputMode="tel" placeholder="+971 50 123 4567" value={form.phone} onChange={(e) => set("phone", e.target.value)} />
       </div>
       <div>
-        <label className="label">Emirate</label>
-        <select className="input" value={form.emirate} onChange={(e) => set("emirate", e.target.value)}>
+        <label className="label" htmlFor="vendor-emirate">Emirate</label>
+        <select id="vendor-emirate" name="emirate" className="input" value={form.emirate} onChange={(e) => set("emirate", e.target.value)}>
           {EMIRATES.map((e) => <option key={e} value={e}>{e}</option>)}
         </select>
       </div>
       <div className="md:col-span-2">
-        <label className="label">Store address</label>
-        <textarea className="input min-h-[80px]" required value={form.store_address} onChange={(e) => set("store_address", e.target.value)} />
+        <label className="label" htmlFor="vendor-address">Store address</label>
+        <textarea id="vendor-address" name="store_address" className="input min-h-[80px]" required autoComplete="street-address" value={form.store_address} onChange={(e) => set("store_address", e.target.value)} />
       </div>
       <div>
-        <label className="label">Google Maps link (optional)</label>
-        <input className="input" value={form.google_maps_link} onChange={(e) => set("google_maps_link", e.target.value)} />
+        <label className="label" htmlFor="vendor-map">Google Maps link (optional)</label>
+        <input id="vendor-map" name="google_maps_link" className="input" type="url" inputMode="url" value={form.google_maps_link} onChange={(e) => set("google_maps_link", e.target.value)} />
       </div>
       <div>
-        <label className="label">VAT / TRN (optional)</label>
-        <input className="input" value={form.vat_trn_number} onChange={(e) => set("vat_trn_number", e.target.value)} />
+        <label className="label" htmlFor="vendor-trn">VAT / TRN (optional)</label>
+        <input id="vendor-trn" name="vat_trn_number" className="input" value={form.vat_trn_number} onChange={(e) => set("vat_trn_number", e.target.value)} />
       </div>
-      {err && <p className="md:col-span-2 text-sm text-signal-err">{err}</p>}
-      {ok && <p className="md:col-span-2 text-sm text-signal-ok">Application submitted.</p>}
+      {err && <p role="alert" className="md:col-span-2 text-sm text-signal-err">{err}</p>}
+      {ok && <p role="status" className="md:col-span-2 text-sm text-signal-ok">Application submitted.</p>}
       <div className="md:col-span-2">
         <button className="btn-primary" disabled={busy}>{busy ? "Submitting…" : "Submit application"}</button>
       </div>

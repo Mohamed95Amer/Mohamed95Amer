@@ -35,8 +35,8 @@ export function AdminVendorActions({
   return (
     <div className="space-y-3">
       <div>
-        <label className="label">Admin note (optional)</label>
-        <textarea className="input min-h-[80px]" value={note} onChange={(e) => setNote(e.target.value)} />
+        <label className="label" htmlFor="vendor-admin-note">Admin note (optional)</label>
+        <textarea id="vendor-admin-note" name="admin_note" className="input min-h-[80px]" value={note} onChange={(e) => setNote(e.target.value)} />
       </div>
       <div className="flex flex-wrap gap-2">
         <button className="btn-primary" disabled={busy !== null} onClick={() => act("approve")}>
@@ -50,7 +50,7 @@ export function AdminVendorActions({
         </button>
         <span className="self-center text-xs text-ink-muted">Current: {currentStatus}</span>
       </div>
-      {err && <p className="text-sm text-signal-err">{err}</p>}
+      {err && <p role="alert" className="text-sm text-signal-err">{err}</p>}
     </div>
   );
 }

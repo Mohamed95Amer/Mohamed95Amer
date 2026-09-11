@@ -13,6 +13,13 @@ All work described here is on that branch. `main` does not have it.
 
 **Live:** https://goldhub-three.vercel.app — Vercel project `mohamed95amers-projects/goldhub`.
 
+**Deployment status (11 Sep 2026):** the comprehensive design/accessibility/SEO pass described
+below is complete on the branch and passes lint, typecheck and the production build, but is not yet
+on the live URL. The local Vercel session requires the account owner to complete device sign-in.
+Migration `20260911130835_restrict_public_signup_roles.sql` is also ready but not yet applied to
+production for the same management-authentication reason. Do not claim either change is live until
+both have been applied and the production URL has been smoke-tested.
+
 The previously unverified production paths have now been exercised end to end:
 
 1. `/api/gold-price/latest` returns real `goldapicom` quotes. After explicitly opting Supabase
@@ -229,6 +236,37 @@ deliberately — a bare composite return is handled inconsistently by PostgREST/
   shows the seller's performance breakdown and reply tools. The account order page is the buyer's
   review entry point.
 
+### Signup authorization boundary
+
+`auth.users.raw_user_meta_data` is user-controlled input. The original signup trigger cast its
+`role` value directly to `user_role`, which meant a crafted direct signup could request `admin` or
+`super_admin`. Migration `20260911130835_restrict_public_signup_roles.sql` replaces the trigger
+function so only `vendor` is accepted and every other public value becomes `customer`; admin
+promotion remains a trusted database operation. It also removes Data API execution grants from
+the trigger-only function. **This migration is committed code but is not production protection
+until it is applied to the live Supabase project.**
+
+### Design, accessibility and discovery pass
+
+- Responsive navigation is now a real labelled mobile menu with active states; forms use explicit
+  labels, names, autocomplete hints and 44px touch targets; skip navigation, focus states and live
+  status announcements cover the critical flows.
+- Product imagery uses Next Image with AVIF/WebP negotiation, responsive source sizes and deliberate
+  priority only for above-the-fold images. Marketplace sorting now includes total price, Value Score
+  and store rating, with visible applied filters.
+- Product pages include a quantity selector, live multi-item total, mobile sticky reserve action,
+  share action, product structured data and complete fee transparency. The server still recomputes
+  the authoritative total and calls `claim_reservation()`.
+- Customer reservations now show a four-stage fulfilment timeline and payment-link safety guidance.
+  Authentication adds password recovery, safe callback redirects, password visibility and a clear
+  customer/vendor path.
+- Public metadata now includes canonical URLs, Open Graph imagery, a manifest, robots rules, dynamic
+  product/vendor sitemap entries and Product/JewelryStore structured data. Branded loading, error and
+  not-found states replace framework defaults.
+- Contact, trust and how-it-works copy no longer promises future operations as if live. New terms,
+  privacy, delivery/collection and cancellation/refund pages explain that the vendor is seller of
+  record and GoldHub does not currently take custody of customer funds.
+
 ### Product imagery
 
 `products.images` is a jsonb array of **storage paths** (`<vendor_id>/file.jpg`) in the public
@@ -298,6 +336,8 @@ reference cannot be mistaken for a provider-fetched quote.
 | Demo photos | **Verified and migrated** | 12/12 title match; 12/12 load from Supabase Storage |
 | Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
 | Verified reviews | **Verified** | paid-order context derived in Postgres; unpaid order rejected; direct anon/auth table access denied |
+| Design/accessibility/SEO pass | **Branch verified; not deployed** | `npm run typecheck`, `npm run lint`, `npm run build`, `git diff --check` clean |
+| Public-signup role restriction | **Migration ready; not applied** | `20260911130835_restrict_public_signup_roles.sql`; requires production Supabase management auth |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.
@@ -308,9 +348,10 @@ a transaction it rolls back.
 
 1. **Decide the delivery-fee question** (§3).
 2. Replace generated demo artwork with each vendor's real product photography before public launch.
-3. Product detail page is finished; the remaining plain surfaces are the vendor and admin areas —
-   functional, but styled to a lower standard than the customer-facing pages.
-4. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
+3. Configure and test the `support@goldhub.ae` and `vendors@goldhub.ae` mailboxes used on Contact.
+4. Apply `20260911130835_restrict_public_signup_roles.sql`, deploy the branch to the existing Vercel
+   `goldhub` project, then smoke-test signup, password recovery, reserve quantity and mobile layout.
+5. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
    vendor is the seller of record; money changes hands off-platform. That is by design for the MVP.
 
 ## 6. Conventions
