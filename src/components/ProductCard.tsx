@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { ProductImage } from "./ProductImage";
+import { GoldHubValueScore } from "./GoldHubValueScore";
 import { useLiveGoldPrice } from "./GoldPriceProvider";
 import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
+import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
 
 export interface ProductCardData {
   id: string;
@@ -66,6 +68,9 @@ export function ProductCard({
   const productGoldRate = liveRate24k === null || !Number.isFinite(liveRate24k)
     ? null
     : goldRateForKarat(liveRate24k, p.karat);
+  const valueScore = breakdown
+    ? computeGoldHubValueScore(breakdown, Number(p.weight_grams))
+    : null;
 
   return (
     <Link
@@ -116,8 +121,10 @@ export function ProductCard({
           )}
         </div>
 
+        {valueScore && <GoldHubValueScore value={valueScore} compact />}
+
         {breakdown && productGoldRate !== null && (
-          <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 rounded-xl bg-jade-50 px-3 py-2.5 text-[11px]">
+          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 rounded-xl bg-jade-50 px-3 py-2.5 text-[11px]">
             <span className="text-ink-muted">{p.karat}K metal rate</span>
             <span className="text-right font-semibold tabular-nums text-jade-950">
               {formatAed(productGoldRate)}/g

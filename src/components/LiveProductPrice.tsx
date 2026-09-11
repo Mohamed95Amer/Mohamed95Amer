@@ -1,7 +1,9 @@
 "use client";
 
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
+import { GoldHubValueScore } from "@/components/GoldHubValueScore";
 import { computePrice, formatAed, formatBasisPoints, goldRateForKarat } from "@/lib/pricing/calc";
+import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
 import { quoteRecency } from "@/lib/time";
 
 interface Props {
@@ -50,6 +52,7 @@ export function LiveProductPrice(props: Props) {
   });
   const liveRate24k = Number(tick.price_per_gram_24k_aed);
   const productGoldRate = goldRateForKarat(liveRate24k, props.karat);
+  const valueScore = computeGoldHubValueScore(breakdown, props.weightGrams);
 
   return (
     <div>
@@ -67,6 +70,7 @@ export function LiveProductPrice(props: Props) {
           <span className="text-xs font-medium text-signal-warn">Price updating…</span>
         )}
       </div>
+      {valueScore && <GoldHubValueScore value={valueScore} />}
       {props.showBreakdown && (
         <div className="mt-5 border-t border-jade-900/10 pt-5">
           <div className="grid grid-cols-2 gap-2">

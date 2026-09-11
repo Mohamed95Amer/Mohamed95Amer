@@ -135,6 +135,15 @@ Customer-facing prices are now transparent at both browsing levels:
   cannot be mistaken for a missing part of the calculation;
 - the homepage and marketplace both read the same `platform_settings` fee values.
 
+Every live-priced product also has a **GoldHub Value Score** from 0–100. The score starts at 100
+and subtracts the percentage added above the product's live gold value by its effective making,
+certificate/assay, vendor premium and the GoldHub service fee. Delivery and separately priced
+stones (including the service-fee portion attributable to stones) are excluded so logistics or a
+non-gold asset cannot distort a gold-to-gold comparison. Cards show the score and premium percent;
+the product page also shows the premium in AED, gold-inclusive AED/g and the complete methodology.
+The score is a price-transparency comparison, not a claim about craftsmanship, resale value or
+investment performance (`src/lib/pricing/value-score.ts`).
+
 The launch commission is **50 basis points (0.5%)** of the merchandise subtotal. Delivery is
 excluded. `platform_settings.platform_fee_bps` is authoritative; the old fixed-AED
 `platform_fee_aed` column remains only for backwards compatibility. Each reservation snapshot
