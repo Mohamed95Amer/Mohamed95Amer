@@ -12,6 +12,9 @@ export interface OfficialPriceResult {
     karat: number;
     weight_grams: number;
     making_charge: number;
+    making_charge_discount_percent: number;
+    making_charge_offer_ends_at: string | null;
+    certificate_fee: number;
     stone_value: number;
     vendor_premium: number;
     quantity: number;
@@ -42,7 +45,7 @@ export async function computeOfficialPriceForProduct(
   const { data: product, error: prodErr } = await supabase
     .from("products")
     .select(
-      "id, vendor_id, name, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, product_status",
+      "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, product_status",
     )
     .eq("id", productId)
     .single();
@@ -80,6 +83,9 @@ export async function computeOfficialPriceForProduct(
     karat: product.karat,
     weightGrams: Number(product.weight_grams),
     makingCharge: Number(product.making_charge),
+    makingChargeDiscountPercent: Number(product.making_charge_discount_percent),
+    makingChargeOfferEndsAt: product.making_charge_offer_ends_at,
+    certificateFee: Number(product.certificate_fee),
     stoneValue: Number(product.stone_value),
     vendorPremium: Number(product.vendor_premium),
     platformFeeBps: Number(settings.platform_fee_bps),

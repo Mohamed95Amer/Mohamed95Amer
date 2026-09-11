@@ -8,6 +8,9 @@ interface Props {
   karat: number;
   weightGrams: number;
   makingCharge: number;
+  makingChargeDiscountPercent: number;
+  makingChargeOfferEndsAt: string | null;
+  certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
   platformFeeBps?: number;
@@ -37,6 +40,9 @@ export function LiveProductPrice(props: Props) {
     karat: props.karat,
     weightGrams: props.weightGrams,
     makingCharge: props.makingCharge,
+    makingChargeDiscountPercent: props.makingChargeDiscountPercent,
+    makingChargeOfferEndsAt: props.makingChargeOfferEndsAt,
+    certificateFee: props.certificateFee,
     stoneValue: props.stoneValue,
     vendorPremium: props.vendorPremium,
     platformFeeBps: props.platformFeeBps ?? 50,
@@ -81,8 +87,50 @@ export function LiveProductPrice(props: Props) {
           <dl className="mt-3 grid grid-cols-2 gap-y-2.5 text-sm text-ink-muted">
             <dt>Gold ({props.karat}K × {props.weightGrams}g)</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.goldValueAed)}</dd>
-            <dt>Making charge</dt>
-            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.makingCharge)}</dd>
+            <dt className="flex flex-wrap items-center gap-1.5">
+              Making charge
+              {breakdown.makingChargeDiscountPercent > 0 && (
+                <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gold-600">
+                  {breakdown.makingChargeDiscountPercent}% off
+                </span>
+              )}
+            </dt>
+            <dd className="text-right tabular-nums text-ink">
+              {breakdown.makingChargeOriginal === 0 ? (
+                <span className="font-semibold text-signal-ok">No charge</span>
+              ) : breakdown.makingChargeDiscountPercent > 0 ? (
+                <>
+                  <span className="mr-2 text-ink-muted line-through">{formatAed(breakdown.makingChargeOriginal)}</span>
+                  <span className="font-semibold text-jade-950">
+                    {breakdown.makingCharge === 0 ? "FREE" : formatAed(breakdown.makingCharge)}
+                  </span>
+                </>
+              ) : (
+                formatAed(breakdown.makingCharge)
+              )}
+            </dd>
+            {breakdown.makingChargeDiscountPercent > 0 && (
+              <>
+                <dt className="text-signal-ok">You save on making</dt>
+                <dd className="text-right font-semibold tabular-nums text-signal-ok">
+                  −{formatAed(breakdown.makingChargeDiscountAed)}
+                </dd>
+              </>
+            )}
+            {breakdown.makingChargeOfferEndsAt && (
+              <>
+                <dt>Limited-time offer ends</dt>
+                <dd className="text-right font-medium text-ink">
+                  {formatOfferEnd(breakdown.makingChargeOfferEndsAt)}
+                </dd>
+              </>
+            )}
+            {breakdown.certificateFee > 0 && (
+              <>
+                <dt>Certificate / assay fee</dt>
+                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.certificateFee)}</dd>
+              </>
+            )}
             {breakdown.stoneValue > 0 && (
               <>
                 <dt>Stone value</dt>
@@ -105,8 +153,8 @@ export function LiveProductPrice(props: Props) {
             </dd>
           </dl>
           <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
-            The {props.karat}K rate is the metal-only value per gram. Making, stones, vendor premium,
-            service, and delivery are listed separately above.
+            The {props.karat}K rate is the metal-only value per gram. Making, certificate or assay,
+            stones, vendor premium, service, and delivery are listed separately above when applicable.
           </p>
         </div>
       )}
@@ -119,4 +167,15 @@ export function LiveProductPrice(props: Props) {
       )}
     </div>
   );
+}
+
+function formatOfferEnd(value: string): string {
+  return new Intl.DateTimeFormat("en-AE", {
+    timeZone: "Asia/Dubai",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
 }

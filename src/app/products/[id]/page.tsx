@@ -9,7 +9,7 @@ import { ProductImage } from "@/components/ProductImage";
 export const dynamic = "force-dynamic";
 
 const SELECT =
-  "id, name, description, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors(id, business_name, emirate, verification_status)";
+  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors(id, business_name, emirate, verification_status)";
 
 type Vendor = {
   id: string;
@@ -143,6 +143,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
               karat={product.karat}
               weightGrams={Number(product.weight_grams)}
               makingCharge={Number(product.making_charge)}
+              makingChargeDiscountPercent={Number(product.making_charge_discount_percent)}
+              makingChargeOfferEndsAt={product.making_charge_offer_ends_at}
+              certificateFee={Number(product.certificate_fee)}
               stoneValue={Number(product.stone_value)}
               vendorPremium={Number(product.vendor_premium)}
               platformFeeBps={Number(settings?.platform_fee_bps ?? 50)}

@@ -108,8 +108,10 @@ reservation history from the same stale-read failure.
 
 ### Pricing — the money path
 
-`merchandise = price_per_gram_24k_aed × karat_purity × weight + making_charge + stone_value
-+ vendor_premium`
+`effective_making = making_charge × (1 − active_discount_percent ÷ 100)`
+
+`merchandise = price_per_gram_24k_aed × karat_purity × weight + effective_making
++ certificate_fee + stone_value + vendor_premium`
 
 `service_fee = merchandise × platform_fee_bps ÷ 10,000`
 
@@ -125,9 +127,10 @@ reach a write path.
 Customer-facing prices are now transparent at both browsing levels:
 
 - every product card shows the metal-only AED/g rate adjusted to that listing's karat plus its
-  making charge;
+  effective making charge, any making promotion, and certificate/assay fee when applicable;
 - every product detail shows the live 24K reference, the product-karat rate, gold weight/value,
-  making, optional stone/premium, GoldHub service fee, delivery fee and per-item total;
+  original and discounted making, optional certificate/assay, stone/premium, GoldHub service fee,
+  delivery fee and per-item total;
 - service and delivery rows remain visible even when configured as AED 0.00, so an unset fee
   cannot be mistaken for a missing part of the calculation;
 - the homepage and marketplace both read the same `platform_settings` fee values.
@@ -136,6 +139,18 @@ The launch commission is **50 basis points (0.5%)** of the merchandise subtotal.
 excluded. `platform_settings.platform_fee_bps` is authoritative; the old fixed-AED
 `platform_fee_aed` column remains only for backwards compatibility. Each reservation snapshot
 stores both the calculated AED fee and the exact basis-point rate used.
+
+`products.making_charge` is the undiscounted amount. A promotion uses
+`making_charge_discount_percent` (0–100) and optional `making_charge_offer_ends_at`; expiration is
+checked again server-side at reservation time. `certificate_fee` is separate because bullion bars
+can have no making charge but still carry an assay/certificate cost. Snapshots store the original
+making charge, applied discount, effective making charge and certificate fee so history remains
+auditable. The demo bangle has 20% off making, the chain has free making through 11 Oct 2026, and
+the two bars now show certificate/assay fees instead of making charges.
+
+Homepage category navigation uses a real approved listing photo and live listing count for each
+non-empty category. Do not replace it with the old large generic fallback drawings; the real-photo
+tiles are both more trustworthy and more visually specific.
 
 > **Known product question, not a bug:** `delivery_fee` is added to the *per-unit* price and then
 > multiplied by quantity, so ordering 3 items bills delivery 3×. It defaults to 0 so nothing is
@@ -231,10 +246,10 @@ reference cannot be mistaken for a provider-fetched quote.
 
 | Area | Status | Evidence |
 |---|---|---|
-| Schema, RLS, storage buckets, realtime | Applied | migrations `0001`–`0005` against the live project |
+| Schema, RLS, storage buckets, realtime | Applied | migrations `0001`–`0005`, `launch_commission_rate`, `pricing_charges_and_promotions` against the live project |
 | Oversell protection | **7/7 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql` |
 | Price parser | **9/9 passed** | ad-hoc harness; covers real shape, per-gram scaling, string values, alternate keys, garbage, absurd values, null |
-| Pricing math | Automated + checked by hand | AED 5,200 merchandise × 0.5% = AED 26 fee; + AED 25 delivery = AED 5,251 |
+| Pricing math | Automated + checked by hand | normal, 20%-off, active/expired 100%-off and certificate-only cases; fee uses discounted merchandise and excludes delivery |
 | Typecheck / build | Clean | `npx tsc --noEmit`, `npm run build` |
 | Internal links | No dead routes | all 29 routes cross-checked against every `href` |
 | Lint | Clean | `npx next lint` — an eslint config was added; there was none, so lint used to drop you into an interactive prompt |

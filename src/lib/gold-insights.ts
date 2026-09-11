@@ -12,6 +12,7 @@ export interface PriceSnapshotForInsight {
   karat_purity_factor: number | string;
   weight_grams: number | string;
   making_charge: number | string;
+  certificate_fee: number | string;
   stone_value: number | string;
   vendor_premium: number | string;
   platform_fee: number | string;
@@ -48,6 +49,7 @@ export function calculateReservationValue(
   const currentGoldValueAed = current24kRateAed * fineGoldGrams;
   const nonGoldPerUnit =
     Number(snapshot.making_charge) +
+    Number(snapshot.certificate_fee) +
     Number(snapshot.stone_value) +
     Number(snapshot.vendor_premium) +
     Number(snapshot.platform_fee) +

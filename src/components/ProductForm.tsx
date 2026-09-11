@@ -12,6 +12,9 @@ interface ProductInitial {
   karat?: number;
   weight_grams?: number;
   making_charge?: number;
+  making_charge_discount_percent?: number;
+  making_charge_offer_ends_at?: string | null;
+  certificate_fee?: number;
   stone_value?: number;
   vendor_premium?: number;
   quantity?: number;
@@ -32,6 +35,9 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
     karat: initial?.karat ?? 22,
     weight_grams: initial?.weight_grams ?? 0,
     making_charge: initial?.making_charge ?? 0,
+    making_charge_discount_percent: initial?.making_charge_discount_percent ?? 0,
+    making_charge_offer_ends_at: toLocalDateTimeInput(initial?.making_charge_offer_ends_at),
+    certificate_fee: initial?.certificate_fee ?? 0,
     stone_value: initial?.stone_value ?? 0,
     vendor_premium: initial?.vendor_premium ?? 0,
     quantity: initial?.quantity ?? 1,
@@ -54,6 +60,11 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
         karat: Number(form.karat),
         weight_grams: Number(form.weight_grams),
         making_charge: Number(form.making_charge),
+        making_charge_discount_percent: Number(form.making_charge_discount_percent),
+        making_charge_offer_ends_at: form.making_charge_offer_ends_at
+          ? new Date(form.making_charge_offer_ends_at).toISOString()
+          : null,
+        certificate_fee: Number(form.certificate_fee),
         stone_value: Number(form.stone_value),
         vendor_premium: Number(form.vendor_premium),
         quantity: Number(form.quantity),
@@ -108,6 +119,20 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
         <input className="input" type="number" min="0" step="0.01" value={form.making_charge} onChange={(e) => set("making_charge", Number(e.target.value))} />
       </div>
       <div>
+        <label className="label">Making discount (%)</label>
+        <input className="input" type="number" min="0" max="100" step="1" value={form.making_charge_discount_percent} onChange={(e) => set("making_charge_discount_percent", Number(e.target.value))} />
+        <p className="mt-1 text-xs text-ink-muted">Use 100% for a free-making offer. Gold value is never discounted.</p>
+      </div>
+      <div>
+        <label className="label">Making offer ends (optional)</label>
+        <input className="input" type="datetime-local" value={form.making_charge_offer_ends_at} onChange={(e) => set("making_charge_offer_ends_at", e.target.value)} />
+      </div>
+      <div>
+        <label className="label">Certificate / assay fee (AED)</label>
+        <input className="input" type="number" min="0" step="0.01" value={form.certificate_fee} onChange={(e) => set("certificate_fee", Number(e.target.value))} />
+        <p className="mt-1 text-xs text-ink-muted">For certified bullion or third-party grading. Keep making at AED 0 when it does not apply.</p>
+      </div>
+      <div>
         <label className="label">Stone value (AED)</label>
         <input className="input" type="number" min="0" step="0.01" value={form.stone_value} onChange={(e) => set("stone_value", Number(e.target.value))} />
       </div>
@@ -143,4 +168,12 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
       </div>
     </form>
   );
+}
+
+function toLocalDateTimeInput(value: string | null | undefined): string {
+  if (!value) return "";
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "";
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
 }

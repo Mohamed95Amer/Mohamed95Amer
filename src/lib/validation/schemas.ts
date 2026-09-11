@@ -36,6 +36,9 @@ export const productUpsertSchema = z.object({
   karat: z.union([z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
   weight_grams: z.number().positive().max(10000),
   making_charge: z.number().min(0).max(1_000_000),
+  making_charge_discount_percent: z.number().int().min(0).max(100),
+  making_charge_offer_ends_at: z.string().datetime({ offset: true }).nullable(),
+  certificate_fee: z.number().min(0).max(1_000_000),
   stone_value: z.number().min(0).max(10_000_000),
   vendor_premium: z.number().min(0).max(1_000_000),
   quantity: z.number().int().min(0).max(100000),
@@ -43,6 +46,21 @@ export const productUpsertSchema = z.object({
   certificate_number: z.string().max(120).optional().nullable(),
   hallmark_info: z.string().max(200).optional().nullable(),
   submit_for_approval: z.boolean().optional().default(false),
+}).superRefine((product, ctx) => {
+  if (product.making_charge_discount_percent > 0 && product.making_charge <= 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["making_charge_discount_percent"],
+      message: "A making-charge discount requires a making charge above zero",
+    });
+  }
+  if (product.making_charge_offer_ends_at && product.making_charge_discount_percent === 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["making_charge_offer_ends_at"],
+      message: "Set a making-charge discount before scheduling an end time",
+    });
+  }
 });
 
 export const vendorResponseSchema = z.object({

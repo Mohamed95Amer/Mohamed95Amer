@@ -14,7 +14,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
+      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
     )
     .eq("product_status", "approved")
     .order("created_at", { ascending: false })

@@ -12,6 +12,9 @@ export interface ProductCardData {
   karat: number;
   weight_grams: number | string;
   making_charge: number | string;
+  making_charge_discount_percent: number | string;
+  making_charge_offer_ends_at: string | null;
+  certificate_fee: number | string;
   stone_value: number | string;
   vendor_premium: number | string;
   images?: unknown;
@@ -50,6 +53,9 @@ export function ProductCard({
           karat: p.karat,
           weightGrams: Number(p.weight_grams),
           makingCharge: Number(p.making_charge),
+          makingChargeDiscountPercent: Number(p.making_charge_discount_percent),
+          makingChargeOfferEndsAt: p.making_charge_offer_ends_at,
+          certificateFee: Number(p.certificate_fee),
           stoneValue: Number(p.stone_value),
           vendorPremium: Number(p.vendor_premium),
           platformFeeBps,
@@ -78,6 +84,13 @@ export function ProductCard({
         <span className="absolute left-3 top-3 rounded-full border border-white/30 bg-white/90 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-jade-950 shadow-sm backdrop-blur">
           {p.karat}K
         </span>
+        {breakdown && breakdown.makingChargeDiscountPercent > 0 && !soldOut && (
+          <span className="absolute right-3 top-3 rounded-full bg-gold-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-jade-950 shadow-sm">
+            {breakdown.makingChargeDiscountPercent === 100
+              ? "Free making"
+              : `${breakdown.makingChargeDiscountPercent}% off making`}
+          </span>
+        )}
         {soldOut && (
           <span className="absolute right-3 top-3 rounded-full bg-jade-950/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
             Sold out
@@ -110,9 +123,33 @@ export function ProductCard({
               {formatAed(productGoldRate)}/g
             </span>
             <span className="text-ink-muted">Making charge</span>
-            <span className="text-right font-semibold tabular-nums text-jade-950">
-              {formatAed(breakdown.makingCharge)}
-            </span>
+            {breakdown.makingChargeOriginal === 0 ? (
+              <span className="text-right font-semibold text-signal-ok">No charge</span>
+            ) : breakdown.makingChargeDiscountPercent > 0 ? (
+              <span className="text-right font-semibold tabular-nums text-jade-950">
+                <span className="mr-1.5 font-normal text-ink-muted line-through">
+                  {formatAed(breakdown.makingChargeOriginal)}
+                </span>
+                {breakdown.makingCharge === 0 ? "FREE" : formatAed(breakdown.makingCharge)}
+              </span>
+            ) : (
+              <span className="text-right font-semibold tabular-nums text-jade-950">
+                {formatAed(breakdown.makingCharge)}
+              </span>
+            )}
+            {breakdown.certificateFee > 0 && (
+              <>
+                <span className="text-ink-muted">Certificate / assay</span>
+                <span className="text-right font-semibold tabular-nums text-jade-950">
+                  {formatAed(breakdown.certificateFee)}
+                </span>
+              </>
+            )}
+            {breakdown.makingChargeOfferEndsAt && (
+              <span className="col-span-2 mt-1 border-t border-jade-900/10 pt-1.5 text-right font-semibold text-gold-600">
+                Limited offer · ends {formatShortOfferEnd(breakdown.makingChargeOfferEndsAt)}
+              </span>
+            )}
           </div>
         )}
 
@@ -139,4 +176,12 @@ export function ProductCard({
       </div>
     </Link>
   );
+}
+
+function formatShortOfferEnd(value: string): string {
+  return new Intl.DateTimeFormat("en-AE", {
+    timeZone: "Asia/Dubai",
+    day: "numeric",
+    month: "short",
+  }).format(new Date(value));
 }

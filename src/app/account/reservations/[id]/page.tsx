@@ -84,7 +84,20 @@ export default async function ReservationDetailPage({ params }: { params: { id: 
             <dt className="text-ink-muted">Gold value</dt>
             <dd className="text-right">{formatAed(Number(snap.gold_value_aed))}</dd>
             <dt className="text-ink-muted">Making</dt>
-            <dd className="text-right">{formatAed(Number(snap.making_charge))}</dd>
+            <dd className="text-right">
+              {Number(snap.making_charge_discount_percent ?? 0) > 0 && (
+                <span className="mr-2 text-ink-muted line-through">
+                  {formatAed(Number(snap.original_making_charge ?? snap.making_charge))}
+                </span>
+              )}
+              {formatAed(Number(snap.making_charge))}
+            </dd>
+            {Number(snap.certificate_fee ?? 0) > 0 && (
+              <>
+                <dt className="text-ink-muted">Certificate / assay</dt>
+                <dd className="text-right">{formatAed(Number(snap.certificate_fee))}</dd>
+              </>
+            )}
             <dt className="text-ink-muted">Stone</dt>
             <dd className="text-right">{formatAed(Number(snap.stone_value))}</dd>
             <dt className="text-ink-muted">Vendor premium</dt>
@@ -102,7 +115,7 @@ export default async function ReservationDetailPage({ params }: { params: { id: 
           </p>
         </div>
       )}
-      <p className="mt-6 text-xs leading-relaxed text-ink-muted">The current comparison updates only the gold component and holds the captured making, stone, premium and fee amounts constant. It is not an appraisal, resale offer or financial advice.</p>
+      <p className="mt-6 text-xs leading-relaxed text-ink-muted">The current comparison updates only the gold component and holds the captured making, certificate or assay, stone, premium and fee amounts constant. It is not an appraisal, resale offer or financial advice.</p>
     </div>
   );
 }

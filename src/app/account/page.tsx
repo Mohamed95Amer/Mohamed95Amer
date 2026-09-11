@@ -57,7 +57,7 @@ export default async function AccountPage() {
   const { data: rawReservations } = await admin
     .from("reservations")
     .select(
-      "id, status, quantity, expires_at, created_at, product:products(name, category, karat, weight_grams, images), snapshot:order_price_snapshots(gold_price_per_gram_24k_aed, karat_purity_factor, weight_grams, making_charge, stone_value, vendor_premium, platform_fee, delivery_fee, quantity, gold_value_aed, total_price_aed, gold_price_fetched_at)",
+      "id, status, quantity, expires_at, created_at, product:products(name, category, karat, weight_grams, images), snapshot:order_price_snapshots(gold_price_per_gram_24k_aed, karat_purity_factor, weight_grams, making_charge, certificate_fee, stone_value, vendor_premium, platform_fee, delivery_fee, quantity, gold_value_aed, total_price_aed, gold_price_fetched_at)",
     )
     .eq("customer_user_id", user.id)
     .order("created_at", { ascending: false });
@@ -150,7 +150,7 @@ export default async function AccountPage() {
         </section>
 
         <p className="mt-8 max-w-3xl text-xs leading-relaxed text-ink-muted">
-          Market-linked estimates hold making charges, stone value, vendor premium and fees at the captured amount, then update only the gold component. They are not appraisals, resale offers, guaranteed returns or financial advice.
+          Market-linked estimates hold making, certificate or assay, stone, vendor premium and fees at the captured amount, then update only the gold component. They are not appraisals, resale offers, guaranteed returns or financial advice.
         </p>
       </div>
     </>

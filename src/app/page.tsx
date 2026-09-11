@@ -7,25 +7,24 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 const categories = [
-  "ring",
-  "necklace",
-  "bracelet",
-  "bangle",
-  "chain",
-  "pendant",
-  "earring",
-  "bar",
-  "coin",
-  "other",
+  { slug: "ring", label: "Rings", detail: "Bands & solitaires" },
+  { slug: "necklace", label: "Necklaces", detail: "Statement & bridal" },
+  { slug: "bracelet", label: "Bracelets", detail: "Classic & gemstone" },
+  { slug: "bangle", label: "Bangles", detail: "Everyday & occasion" },
+  { slug: "chain", label: "Chains", detail: "Essential gold chains" },
+  { slug: "pendant", label: "Pendants", detail: "Detailed focal pieces" },
+  { slug: "earring", label: "Earrings", detail: "Studs & drops" },
+  { slug: "bar", label: "Gold bars", detail: "Certified bullion" },
+  { slug: "coin", label: "Gold coins", detail: "Minted investment gold" },
 ];
 
 export default async function HomePage() {
   const supabase = getServiceSupabase();
-  const [{ data: products }, { data: vendors }, { data: fees }] = await Promise.all([
+  const [{ data: products }, { data: vendors }, { data: fees }, { data: categoryProducts }] = await Promise.all([
     supabase
       .from("products")
       .select(
-        "id, name, category, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
+        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(business_name, emirate, verification_status)",
       )
       .eq("product_status", "approved")
       .order("created_at", { ascending: false })
@@ -40,6 +39,12 @@ export default async function HomePage() {
       .select("platform_fee_bps, delivery_fee_aed")
       .eq("id", true)
       .maybeSingle(),
+    supabase
+      .from("products")
+      .select("id, name, category, karat, images")
+      .eq("product_status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(60),
   ]);
   const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
@@ -148,27 +153,42 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-          {categories.map((category) => (
-            <Link
-              key={category}
-              href={`/marketplace?category=${category}`}
-              className="group overflow-hidden rounded-2xl border border-jade-900/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-jade-300 hover:shadow-card"
-            >
-              <div className="aspect-[4/3] overflow-hidden bg-jade-50">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {categories.map((category) => {
+            const matches = (categoryProducts ?? []).filter((product) => product.category === category.slug);
+            const representative = matches[0];
+            if (!representative) return null;
+
+            return (
+              <Link
+                key={category.slug}
+                href={`/marketplace?category=${category.slug}`}
+                aria-label={`Browse ${category.label}`}
+                className="group relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-jade-900/10 bg-jade-950 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-gold-300 hover:shadow-lift"
+              >
                 <ProductImage
-                  category={category}
-                  karat={22}
-                  name={category}
-                  className="transition duration-500 group-hover:scale-[1.05]"
+                  category={representative.category}
+                  karat={representative.karat}
+                  name={representative.name}
+                  images={representative.images}
+                  className="transition duration-700 group-hover:scale-[1.06]"
                 />
-              </div>
-              <div className="flex items-center justify-between px-3.5 py-3 text-sm font-semibold capitalize text-jade-950">
-                {category}
-                <span className="text-jade-400 transition group-hover:translate-x-0.5" aria-hidden="true">→</span>
-              </div>
-            </Link>
-          ))}
+                <div className="absolute inset-0 bg-gradient-to-t from-jade-950 via-jade-950/10 to-transparent" />
+                <span className="absolute right-3 top-3 rounded-full border border-white/25 bg-jade-950/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
+                  {matches.length} {matches.length === 1 ? "listing" : "listings"}
+                </span>
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white sm:p-5">
+                  <div>
+                    <h3 className="font-serif text-xl font-semibold sm:text-2xl">{category.label}</h3>
+                    <p className="mt-0.5 text-[11px] text-white/65 sm:text-xs">{category.detail}</p>
+                  </div>
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/25 bg-white/10 text-sm transition group-hover:translate-x-0.5 group-hover:bg-gold-300 group-hover:text-jade-950" aria-hidden="true">
+                    →
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
