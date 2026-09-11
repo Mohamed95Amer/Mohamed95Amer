@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface Settings {
-  platform_fee_aed: number;
+  platform_fee_bps: number;
   delivery_fee_aed: number;
   reservation_lock_minutes: number;
   stale_price_seconds: number;
@@ -13,7 +13,7 @@ interface Settings {
 export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
   const router = useRouter();
   const [form, setForm] = useState<Settings>({
-    platform_fee_aed: initial?.platform_fee_aed ?? 0,
+    platform_fee_bps: initial?.platform_fee_bps ?? 50,
     delivery_fee_aed: initial?.delivery_fee_aed ?? 0,
     reservation_lock_minutes: initial?.reservation_lock_minutes ?? 10,
     stale_price_seconds: initial?.stale_price_seconds ?? 60,
@@ -29,7 +29,7 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        platform_fee_aed: Number(form.platform_fee_aed),
+        platform_fee_bps: Number(form.platform_fee_bps),
         delivery_fee_aed: Number(form.delivery_fee_aed),
         reservation_lock_minutes: Number(form.reservation_lock_minutes),
         stale_price_seconds: Number(form.stale_price_seconds),
@@ -48,9 +48,12 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
   return (
     <form className="grid gap-4" onSubmit={save}>
       <div>
-        <label className="label">Platform fee (AED)</label>
-        <input className="input" type="number" min="0" step="0.01" value={form.platform_fee_aed}
-          onChange={(e) => set("platform_fee_aed", Number(e.target.value))} />
+        <label className="label">GoldHub commission (%)</label>
+        <input className="input" type="number" min="0" max="10" step="0.05" value={form.platform_fee_bps / 100}
+          onChange={(e) => set("platform_fee_bps", Math.round(Number(e.target.value) * 100))} />
+        <p className="mt-1 text-xs text-ink-muted">
+          Launch rate: 0.5% of gold, making, stones and vendor premium. Delivery is excluded.
+        </p>
       </div>
       <div>
         <label className="label">Delivery fee (AED)</label>

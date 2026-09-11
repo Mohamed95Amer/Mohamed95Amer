@@ -29,11 +29,11 @@ export interface ProductCardData {
  */
 export function ProductCard({
   p,
-  platformFee = 0,
+  platformFeeBps = 50,
   deliveryFee = 0,
 }: {
   p: ProductCardData;
-  platformFee?: number;
+  platformFeeBps?: number;
   deliveryFee?: number;
 }) {
   const { tick, isFresh, loading } = useLiveGoldPrice();
@@ -52,7 +52,7 @@ export function ProductCard({
           makingCharge: Number(p.making_charge),
           stoneValue: Number(p.stone_value),
           vendorPremium: Number(p.vendor_premium),
-          platformFee,
+          platformFeeBps,
           deliveryFee,
         })
       : null;

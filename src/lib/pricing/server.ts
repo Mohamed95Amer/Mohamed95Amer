@@ -22,7 +22,7 @@ export interface OfficialPriceResult {
     fetched_at: string;
     status: "ok" | "degraded" | "failed";
   };
-  settings: { platform_fee_aed: number; delivery_fee_aed: number; stale_price_seconds: number };
+  settings: { platform_fee_bps: number; delivery_fee_aed: number; stale_price_seconds: number };
   breakdown: PriceBreakdown;
   totalPriceAed: number;
   isFresh: boolean;
@@ -56,7 +56,7 @@ export async function computeOfficialPriceForProduct(
 
   const { data: settings, error: setErr } = await supabase
     .from("platform_settings")
-    .select("platform_fee_aed, delivery_fee_aed, stale_price_seconds")
+    .select("platform_fee_bps, delivery_fee_aed, stale_price_seconds")
     .eq("id", true)
     .single();
   if (setErr || !settings) throw new Error("Platform settings missing");
@@ -82,7 +82,7 @@ export async function computeOfficialPriceForProduct(
     makingCharge: Number(product.making_charge),
     stoneValue: Number(product.stone_value),
     vendorPremium: Number(product.vendor_premium),
-    platformFee: Number(settings.platform_fee_aed),
+    platformFeeBps: Number(settings.platform_fee_bps),
     deliveryFee: Number(settings.delivery_fee_aed),
   });
 

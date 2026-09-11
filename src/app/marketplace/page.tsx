@@ -28,11 +28,11 @@ export default async function MarketplacePage({ searchParams }: SP) {
     query,
     supabase
       .from("platform_settings")
-      .select("platform_fee_aed, delivery_fee_aed")
+      .select("platform_fee_bps, delivery_fee_aed")
       .eq("id", true)
       .maybeSingle(),
   ]);
-  const platformFee = Number(fees?.platform_fee_aed ?? 0);
+  const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
   return (
     <div className="pb-16">
@@ -99,7 +99,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
               <ProductCard
                 key={p.id}
                 p={{ ...p, available: p.quantity, vendor: v }}
-                platformFee={platformFee}
+                platformFeeBps={platformFeeBps}
                 deliveryFee={deliveryFee}
               />
             );

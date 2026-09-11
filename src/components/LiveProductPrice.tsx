@@ -1,7 +1,7 @@
 "use client";
 
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
-import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
+import { computePrice, formatAed, formatBasisPoints, goldRateForKarat } from "@/lib/pricing/calc";
 import { quoteRecency } from "@/lib/time";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   makingCharge: number;
   stoneValue: number;
   vendorPremium: number;
-  platformFee?: number;
+  platformFeeBps?: number;
   deliveryFee?: number;
   showBreakdown?: boolean;
   showFooter?: boolean;
@@ -39,7 +39,7 @@ export function LiveProductPrice(props: Props) {
     makingCharge: props.makingCharge,
     stoneValue: props.stoneValue,
     vendorPremium: props.vendorPremium,
-    platformFee: props.platformFee ?? 0,
+    platformFeeBps: props.platformFeeBps ?? 50,
     deliveryFee: props.deliveryFee ?? 0,
   });
   const liveRate24k = Number(tick.price_per_gram_24k_aed);
@@ -95,7 +95,7 @@ export function LiveProductPrice(props: Props) {
                 <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorPremium)}</dd>
               </>
             )}
-            <dt>GoldHub service fee</dt>
+            <dt>GoldHub service fee ({formatBasisPoints(breakdown.platformFeeBps)})</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.platformFee)}</dd>
             <dt>Delivery fee</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.deliveryFee)}</dd>

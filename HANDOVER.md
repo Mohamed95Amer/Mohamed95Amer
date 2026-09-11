@@ -108,8 +108,12 @@ reservation history from the same stale-read failure.
 
 ### Pricing — the money path
 
-`price_per_gram_24k_aed × karat_purity × weight + making_charge + stone_value + vendor_premium
-+ platform_fee + delivery_fee`
+`merchandise = price_per_gram_24k_aed × karat_purity × weight + making_charge + stone_value
++ vendor_premium`
+
+`service_fee = merchandise × platform_fee_bps ÷ 10,000`
+
+`unit_total = merchandise + service_fee + delivery_fee`
 
 Purity: 24K = 1.0, 22K = 0.916, 21K = 0.875, 18K = 0.75 (`src/lib/pricing/calc.ts`).
 
@@ -128,10 +132,15 @@ Customer-facing prices are now transparent at both browsing levels:
   cannot be mistaken for a missing part of the calculation;
 - the homepage and marketplace both read the same `platform_settings` fee values.
 
-> **Known product question, not a bug:** `delivery_fee` and `platform_fee` are added to the
-> *per-unit* price and then multiplied by quantity, so ordering 3 items bills delivery 3×. Both
-> default to 0 so nothing is wrong today. The owner was asked and has not decided. Delivery is
-> almost certainly meant to be per-order.
+The launch commission is **50 basis points (0.5%)** of the merchandise subtotal. Delivery is
+excluded. `platform_settings.platform_fee_bps` is authoritative; the old fixed-AED
+`platform_fee_aed` column remains only for backwards compatibility. Each reservation snapshot
+stores both the calculated AED fee and the exact basis-point rate used.
+
+> **Known product question, not a bug:** `delivery_fee` is added to the *per-unit* price and then
+> multiplied by quantity, so ordering 3 items bills delivery 3×. It defaults to 0 so nothing is
+> wrong today. The owner was asked and has not decided. Delivery is almost certainly meant to be
+> per-order.
 
 > **Payments are still not integrated.** Before implementation, choose the commercial model:
 > the lowest-custody option is for each vendor to remain merchant of record and receive customer
@@ -225,7 +234,7 @@ reference cannot be mistaken for a provider-fetched quote.
 | Schema, RLS, storage buckets, realtime | Applied | migrations `0001`–`0005` against the live project |
 | Oversell protection | **7/7 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql` |
 | Price parser | **9/9 passed** | ad-hoc harness; covers real shape, per-gram scaling, string values, alternate keys, garbage, absurd values, null |
-| Pricing math | Checked by hand | 277.49 × 0.916 × 12.5 + 250 + 50 = AED 3,477.26 |
+| Pricing math | Automated + checked by hand | AED 5,200 merchandise × 0.5% = AED 26 fee; + AED 25 delivery = AED 5,251 |
 | Typecheck / build | Clean | `npx tsc --noEmit`, `npm run build` |
 | Internal links | No dead routes | all 29 routes cross-checked against every `href` |
 | Lint | Clean | `npx next lint` — an eslint config was added; there was none, so lint used to drop you into an interactive prompt |

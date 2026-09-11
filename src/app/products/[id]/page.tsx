@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
   const [{ data: settings }, { data: availability }] = await Promise.all([
     supabase
       .from("platform_settings")
-      .select("platform_fee_aed, delivery_fee_aed")
+      .select("platform_fee_bps, delivery_fee_aed")
       .eq("id", true)
       .single(),
     // Stock net of unexpired holds. product.quantity alone would advertise
@@ -145,7 +145,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
               makingCharge={Number(product.making_charge)}
               stoneValue={Number(product.stone_value)}
               vendorPremium={Number(product.vendor_premium)}
-              platformFee={Number(settings?.platform_fee_aed ?? 0)}
+              platformFeeBps={Number(settings?.platform_fee_bps ?? 50)}
               deliveryFee={Number(settings?.delivery_fee_aed ?? 0)}
               showBreakdown
             />

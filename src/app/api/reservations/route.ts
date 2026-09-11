@@ -119,6 +119,7 @@ export async function POST(request: Request) {
     stone_value: priced.breakdown.stoneValue,
     vendor_premium: priced.breakdown.vendorPremium,
     platform_fee: priced.breakdown.platformFee,
+    platform_fee_bps: priced.breakdown.platformFeeBps,
     delivery_fee: priced.breakdown.deliveryFee,
     quantity: parsed.data.quantity,
     gold_value_aed: priced.breakdown.goldValueAed,

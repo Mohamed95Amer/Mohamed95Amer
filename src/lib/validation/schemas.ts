@@ -64,7 +64,7 @@ export const adminProductDecisionSchema = z.object({
 });
 
 export const platformSettingsSchema = z.object({
-  platform_fee_aed: z.number().min(0).max(100000),
+  platform_fee_bps: z.number().int().min(0).max(1000),
   delivery_fee_aed: z.number().min(0).max(100000),
   reservation_lock_minutes: z.number().int().min(1).max(60),
   stale_price_seconds: z.number().int().min(15).max(600),

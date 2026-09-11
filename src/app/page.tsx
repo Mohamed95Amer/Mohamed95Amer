@@ -37,11 +37,11 @@ export default async function HomePage() {
       .limit(6),
     supabase
       .from("platform_settings")
-      .select("platform_fee_aed, delivery_fee_aed")
+      .select("platform_fee_bps, delivery_fee_aed")
       .eq("id", true)
       .maybeSingle(),
   ]);
-  const platformFee = Number(fees?.platform_fee_aed ?? 0);
+  const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
   const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
 
   return (
@@ -194,7 +194,7 @@ export default async function HomePage() {
                 <ProductCard
                   key={product.id}
                   p={{ ...product, available: product.quantity, vendor }}
-                  platformFee={platformFee}
+                  platformFeeBps={platformFeeBps}
                   deliveryFee={deliveryFee}
                 />
               );
