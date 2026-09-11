@@ -55,7 +55,7 @@ export function GoldHistoryExperience({
           <p className="eyebrow text-jade-600">What-if calculator</p>
           <h2 className="mt-2 font-serif text-2xl font-semibold text-jade-950">What would that gold be worth now?</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-            Pick a GoldHub-recorded date, weight and purity. We compare the reference gold value then with the live rate now.
+            Pick a Get Gold-recorded date, weight and purity. We compare the reference gold value then with the live rate now.
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">

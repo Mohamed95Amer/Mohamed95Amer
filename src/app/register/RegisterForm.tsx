@@ -5,14 +5,22 @@ import { useRouter } from "next/navigation";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import Link from "next/link";
 
-export function RegisterForm({ initialRole = "customer" }: { initialRole?: "customer" | "vendor" }) {
+type RegistrationRole = "customer" | "vendor" | "delivery_company";
+
+const destination: Record<RegistrationRole, string> = {
+  customer: "/account",
+  vendor: "/vendor/register",
+  delivery_company: "/delivery/register",
+};
+
+export function RegisterForm({ initialRole = "customer" }: { initialRole?: RegistrationRole }) {
   const supabase = getBrowserSupabase();
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"customer" | "vendor">(initialRole);
+  const [role, setRole] = useState<RegistrationRole>(initialRole);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -27,7 +35,7 @@ export function RegisterForm({ initialRole = "customer" }: { initialRole?: "cust
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(role === "vendor" ? "/vendor/register" : "/account")}`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination[role])}`,
         data: { full_name: fullName, phone, role },
       },
     });
@@ -40,7 +48,7 @@ export function RegisterForm({ initialRole = "customer" }: { initialRole?: "cust
       setMsg("Check your email to confirm your account.");
       return;
     }
-    router.push(role === "vendor" ? "/vendor/register" : "/account");
+    router.push(destination[role]);
     router.refresh();
   }
 
@@ -68,9 +76,10 @@ export function RegisterForm({ initialRole = "customer" }: { initialRole?: "cust
       </div>
       <div>
         <label className="label" htmlFor="register-role">Account type</label>
-        <select id="register-role" name="role" className="input" value={role} onChange={(e) => setRole(e.target.value as "customer" | "vendor")}>
+        <select id="register-role" name="role" className="input" value={role} onChange={(e) => setRole(e.target.value as RegistrationRole)}>
           <option value="customer">Customer (browse & reserve)</option>
           <option value="vendor">Vendor (list gold shop)</option>
+          <option value="delivery_company">Delivery company (fulfil orders)</option>
         </select>
       </div>
       <label className="flex items-start gap-3 text-sm leading-relaxed text-ink-muted">
@@ -79,7 +88,7 @@ export function RegisterForm({ initialRole = "customer" }: { initialRole?: "cust
       </label>
       {err && <p role="alert" className="text-sm text-signal-err">{err}</p>}
       {msg && <p role="status" className="text-sm text-signal-ok">{msg}</p>}
-      <button type="submit" className="btn-primary w-full" disabled={busy}>{busy ? "Creating account…" : role === "vendor" ? "Create vendor account" : "Create customer account"}</button>
+      <button type="submit" className="btn-primary w-full" disabled={busy}>{busy ? "Creating account…" : role === "vendor" ? "Create vendor account" : role === "delivery_company" ? "Create delivery company account" : "Create customer account"}</button>
     </form>
   );
 }

@@ -8,9 +8,10 @@ export const dynamic = "force-dynamic";
 export default async function AdminOverviewPage() {
   const admin = getServiceSupabase();
   const [
-    pendingVendors, pendingProducts, pendingOrders, failedTicks, recentAudit,
+    pendingVendors, pendingDeliveryCompanies, pendingProducts, pendingOrders, failedTicks, recentAudit,
   ] = await Promise.all([
     admin.from("vendors").select("id", { count: "exact", head: true }).eq("verification_status", "pending"),
+    admin.from("delivery_companies").select("id", { count: "exact", head: true }).eq("verification_status", "pending"),
     admin.from("products").select("id", { count: "exact", head: true }).eq("product_status", "pending_approval"),
     admin.from("reservations").select("id", { count: "exact", head: true }).eq("status", "pending_vendor_confirmation"),
     admin.from("gold_price_ticks").select("id", { count: "exact", head: true }).neq("status", "ok").gte("fetched_at", new Date(Date.now() - 86_400_000).toISOString()),
@@ -24,8 +25,9 @@ export default async function AdminOverviewPage() {
         <div className="mt-3"><GoldPriceBadge /></div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Stat href="/admin/vendors?filter=pending" label="Pending vendors" count={pendingVendors.count ?? 0} />
+        <Stat href="/admin/delivery-companies?filter=pending" label="Pending delivery" count={pendingDeliveryCompanies.count ?? 0} />
         <Stat href="/admin/products?filter=pending_approval" label="Pending products" count={pendingProducts.count ?? 0} />
         <Stat href="/admin/orders?filter=pending_vendor_confirmation" label="Pending orders" count={pendingOrders.count ?? 0} />
         <Stat href="/admin/gold-price" label="Non-ok ticks (24h)" count={failedTicks.count ?? 0} />

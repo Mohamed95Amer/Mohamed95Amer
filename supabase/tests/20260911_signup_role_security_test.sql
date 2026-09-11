@@ -6,7 +6,7 @@ begin;
 insert into auth.users (id, email, raw_user_meta_data)
 values (
   '99999999-9999-4999-8999-999999999901',
-  'goldhub-admin-probe@example.invalid',
+  'get-gold-admin-probe@example.invalid',
   jsonb_build_object('role', 'super_admin')
 );
 
@@ -27,7 +27,7 @@ $$;
 insert into auth.users (id, email, raw_user_meta_data)
 values (
   '99999999-9999-4999-8999-999999999902',
-  'goldhub-vendor-probe@example.invalid',
+  'get-gold-vendor-probe@example.invalid',
   jsonb_build_object('role', 'vendor')
 );
 
@@ -41,6 +41,27 @@ begin
 
   if actual_role <> 'vendor'::public.user_role then
     raise exception 'vendor signup did not retain vendor role';
+  end if;
+end;
+$$;
+
+insert into auth.users (id, email, raw_user_meta_data)
+values (
+  '99999999-9999-4999-8999-999999999903',
+  'get-gold-delivery-probe@example.invalid',
+  jsonb_build_object('role', 'delivery_company')
+);
+
+do $$
+declare
+  actual_role public.user_role;
+begin
+  select role into strict actual_role
+  from public.profiles
+  where id = '99999999-9999-4999-8999-999999999903';
+
+  if actual_role <> 'delivery_company'::public.user_role then
+    raise exception 'delivery-company signup did not retain delivery_company role';
   end if;
 end;
 $$;

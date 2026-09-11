@@ -15,9 +15,10 @@ import { MobileNav } from "./MobileNav";
  */
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
-  const role = profile?.role as "customer" | "vendor" | "admin" | "super_admin" | undefined;
+  const role = profile?.role as "customer" | "vendor" | "delivery_company" | "admin" | "super_admin" | undefined;
   const isAdmin = role === "admin" || role === "super_admin";
-  const isVendor = role === "vendor" || isAdmin;
+  const isVendor = role === "vendor";
+  const isDeliveryCompany = role === "delivery_company";
 
   return (
     <header className="sticky top-0 z-30 border-b border-jade-900/10 bg-white/90 shadow-sm backdrop-blur-xl">
@@ -33,11 +34,11 @@ export async function SiteHeader() {
       </div>
 
       <div className="container-pro flex items-center justify-between gap-4 py-3.5">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="GoldHub home">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Get Gold home">
           <BrandMark />
           <span>
-            <span className="block font-serif text-xl font-semibold leading-none tracking-tight text-jade-950">GoldHub</span>
-            <span className="mt-0.5 hidden text-[9px] font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">Gold, clearly priced</span>
+            <span className="block font-serif text-xl font-semibold leading-none tracking-tight text-jade-950">Get Gold</span>
+            <span className="mt-0.5 hidden text-[9px] font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">See the price. Get the gold.</span>
           </span>
         </Link>
 
@@ -62,8 +63,9 @@ export async function SiteHeader() {
                   Vendor
                 </Link>
               )}
-              <Link href="/account" className="btn-ghost px-4 py-2 text-xs">
-                {firstName(profile.full_name) ?? "Account"}
+              {isDeliveryCompany && <Link href="/delivery" className="hidden text-xs text-ink-muted hover:text-ink sm:block">Delivery</Link>}
+              <Link href="/profile" className="btn-ghost px-4 py-2 text-xs">
+                {firstName(profile.full_name) ?? "Profile"}
               </Link>
               <SignOutButton />
             </>
@@ -79,6 +81,8 @@ export async function SiteHeader() {
           displayName={firstName(profile?.full_name)}
           isVendor={isVendor}
           isAdmin={isAdmin}
+          isDeliveryCompany={isDeliveryCompany}
+          isCustomer={role === "customer"}
         />
       </div>
     </header>

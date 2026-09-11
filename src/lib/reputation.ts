@@ -197,7 +197,7 @@ export function storeBadges(reputation: VendorReputation): StoreBadge[] {
       key: "new_verified",
       label: "New Verified Store",
       symbol: "◆",
-      description: "Recently joined GoldHub and passed business verification.",
+      description: "Recently joined Get Gold and passed business verification.",
       tone: "neutral",
     });
   }

@@ -63,6 +63,31 @@ export const productUpsertSchema = z.object({
   }
 });
 
+export const deliveryCompanyOnboardingSchema = z.object({
+  company_name: z.string().trim().min(2).max(200),
+  trade_license_number: z.string().trim().min(3).max(60),
+  license_expiry_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "YYYY-MM-DD required"),
+  contact_name: z.string().trim().min(2).max(120),
+  email: z.string().email(),
+  phone: z.string().trim().min(7).max(20),
+  emirates_served: z.array(z.enum([
+    "Abu Dhabi",
+    "Dubai",
+    "Sharjah",
+    "Ajman",
+    "Umm Al Quwain",
+    "Ras Al Khaimah",
+    "Fujairah",
+  ])).min(1).max(7),
+  service_notes: z.string().trim().max(1000).optional().nullable(),
+  website: z.string().url().optional().nullable(),
+});
+
+export const profileUpdateSchema = z.object({
+  full_name: z.string().trim().min(2).max(120),
+  phone: z.string().trim().min(7).max(20),
+});
+
 export const vendorResponseSchema = z.object({
   reservationId: z.string().uuid(),
   decision: z.enum(["confirm", "reject"]),
@@ -86,6 +111,12 @@ export const platformSettingsSchema = z.object({
   delivery_fee_aed: z.number().min(0).max(100000),
   reservation_lock_minutes: z.number().int().min(1).max(60),
   stale_price_seconds: z.number().int().min(15).max(600),
+});
+
+export const adminDeliveryCompanyDecisionSchema = z.object({
+  deliveryCompanyId: z.string().uuid(),
+  decision: z.enum(["approve", "reject", "suspend"]),
+  note: z.string().max(500).optional().nullable(),
 });
 
 const rating = z.number().int().min(1).max(5);

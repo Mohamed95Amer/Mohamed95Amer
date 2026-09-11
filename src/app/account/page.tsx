@@ -87,7 +87,7 @@ export default async function AccountPage() {
         <div className="container-pro py-10 sm:py-14">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="eyebrow text-gold-200">Your GoldHub</p>
+              <p className="eyebrow text-gold-200">Your Get Gold</p>
               <h1 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">
                 Welcome back, {profile?.full_name?.trim().split(/\s+/)[0] || "gold buyer"}.
               </h1>
@@ -97,6 +97,7 @@ export default async function AccountPage() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <GoldPriceBadge compact tone="dark" />
+              <Link href="/profile" className="btn-ghost border-white/20 bg-white/10 text-white hover:bg-white/15">Edit profile</Link>
               <SignOutButton />
             </div>
           </div>
@@ -119,7 +120,7 @@ export default async function AccountPage() {
         {purchases.length === 0 && (
           <section className="mt-6 rounded-2xl border border-jade-900/10 bg-jade-50 px-5 py-5">
             <h2 className="font-serif text-xl font-semibold text-jade-950">Your purchase insights will appear here</h2>
-            <p className="mt-1 text-sm text-ink-muted">Once an order reaches Purchased, GoldHub will track its captured gold rate against the live market while keeping the original server snapshot intact.</p>
+            <p className="mt-1 text-sm text-ink-muted">Once an order reaches Purchased, Get Gold will track its captured gold rate against the live market while keeping the original server snapshot intact.</p>
           </section>
         )}
 

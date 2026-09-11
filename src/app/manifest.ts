@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "GoldHub UAE",
-    short_name: "GoldHub",
+    name: "Get Gold UAE",
+    short_name: "Get Gold",
     description: "Live-priced gold and jewellery from verified UAE shops.",
     start_url: "/",
     display: "standalone",

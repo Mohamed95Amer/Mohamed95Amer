@@ -147,7 +147,7 @@ export function LiveProductPrice(props: Props) {
                 <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorPremium)}</dd>
               </>
             )}
-            <dt>GoldHub service fee ({formatBasisPoints(breakdown.platformFeeBps)})</dt>
+            <dt>Get Gold service fee ({formatBasisPoints(breakdown.platformFeeBps)})</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.platformFee)}</dd>
             <dt>Delivery fee</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.deliveryFee)}</dd>

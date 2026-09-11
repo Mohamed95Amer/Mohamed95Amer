@@ -7,18 +7,18 @@ import { env } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: {
-    default: "GoldHub — Buy gold from verified UAE jewellers",
-    template: "%s | GoldHub",
+    default: "Get Gold — Buy gold from verified UAE jewellers",
+    template: "%s | Get Gold",
   },
   description:
-    "GoldHub is a UAE marketplace for verified gold and jewellery shops. Live, transparent pricing — vendors remain the seller of record.",
+    "Get Gold is a UAE marketplace for verified gold and jewellery shops. See the live price, understand every charge and get the gold from the listed vendor.",
   metadataBase: new URL(env.siteUrl()),
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_AE",
-    siteName: "GoldHub",
-    title: "GoldHub — Buy gold from verified UAE jewellers",
+    siteName: "Get Gold",
+    title: "Get Gold — Buy gold from verified UAE jewellers",
     description: "Compare transparently priced gold and jewellery from verified UAE shops.",
     url: "/",
   },

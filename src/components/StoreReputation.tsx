@@ -86,7 +86,7 @@ export function ReputationOverview({ reputation }: { reputation: VendorReputatio
           <p className="eyebrow text-jade-600">Verified buyer rating</p>
           {reputation.averageRating === null ? (
             <>
-              <p className="mt-3 font-serif text-3xl font-semibold text-jade-950">New on GoldHub</p>
+              <p className="mt-3 font-serif text-3xl font-semibold text-jade-950">New on Get Gold</p>
               <p className="mt-2 text-sm leading-relaxed text-ink-muted">No completed buyer has rated this store yet.</p>
             </>
           ) : (

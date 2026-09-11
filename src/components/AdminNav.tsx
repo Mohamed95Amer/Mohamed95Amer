@@ -8,12 +8,14 @@ export function AdminNav() {
   const items = [
     ["/admin", "Overview"],
     ["/admin/vendors", "Vendors"],
+    ["/admin/delivery-companies", "Delivery companies"],
     ["/admin/products", "Products"],
     ["/admin/orders", "Orders"],
     ["/admin/reviews", "Reviews"],
     ["/admin/gold-price", "Gold price"],
     ["/admin/audit", "Audit logs"],
     ["/admin/settings", "Settings"],
+    ["/profile", "My profile"],
   ] as const;
   return (
     <nav className="card flex gap-1 overflow-x-auto p-1.5" aria-label="Administration">

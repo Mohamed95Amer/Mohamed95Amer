@@ -10,6 +10,8 @@ interface MobileNavProps {
   displayName?: string | null;
   isVendor: boolean;
   isAdmin: boolean;
+  isDeliveryCompany: boolean;
+  isCustomer: boolean;
 }
 
 const publicLinks = [
@@ -20,7 +22,7 @@ const publicLinks = [
   ["/trust", "Trust & verification"],
 ] as const;
 
-export function MobileNav({ signedIn, displayName, isVendor, isAdmin }: MobileNavProps) {
+export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDeliveryCompany, isCustomer }: MobileNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -28,8 +30,10 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin }: MobileNa
 
   const accountLinks: Array<readonly [string, string]> = signedIn
     ? [
-        ["/account", displayName ? `${displayName}'s account` : "My account"],
+        ["/profile", displayName ? `${displayName}'s profile` : "My profile"],
+        ...(isCustomer ? [["/account", "Purchase history"]] as const : []),
         ...(isVendor ? [["/vendor", "Vendor dashboard"]] as const : []),
+        ...(isDeliveryCompany ? [["/delivery", "Delivery dashboard"]] as const : []),
         ...(isAdmin ? [["/admin", "Admin dashboard"]] as const : []),
       ]
     : [

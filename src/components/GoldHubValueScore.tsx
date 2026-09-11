@@ -16,11 +16,11 @@ export function GoldHubValueScore({ value, compact = false }: Props) {
     return (
       <div
         className="mt-3 rounded-xl border border-gold-300/40 bg-gold-50/70 px-3 py-2.5"
-        aria-label={`GoldHub Value Score ${value.score} out of 100. ${value.label}.`}
+        aria-label={`Get Gold Value Score ${value.score} out of 100. ${value.label}.`}
       >
         <div className="flex items-center justify-between gap-3">
           <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-gold-600">
-            GoldHub Value
+            Get Gold Value
           </span>
           <span className="text-sm font-bold tabular-nums text-jade-950">
             {value.score}<span className="text-[10px] font-semibold text-ink-muted">/100</span>
@@ -52,7 +52,7 @@ export function GoldHubValueScore({ value, compact = false }: Props) {
         </div>
         <div className="min-w-0">
           <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-gold-600">
-            GoldHub Value Score
+            Get Gold Value Score
           </p>
           <p className={`mt-1 font-serif text-xl font-semibold ${accent.text}`}>{value.label}</p>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
@@ -78,7 +78,7 @@ export function GoldHubValueScore({ value, compact = false }: Props) {
         </summary>
         <p className="mt-2 leading-relaxed">
           The score starts at 100 and subtracts the percentage added by effective making,
-          certificate or assay, vendor premium and the GoldHub fee. Delivery and separately
+          certificate or assay, vendor premium and the Get Gold fee. Delivery and separately
           priced stones are shown in the breakdown but excluded for a fair gold-to-gold comparison.
           It compares price transparency, not craftsmanship, resale value or investment performance.
         </p>

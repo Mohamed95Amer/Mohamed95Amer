@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Gold price insights",
-  description: "Explore GoldHub's recorded 24K UAE gold reference, daily movement and historical value scenarios.",
+  description: "Explore Get Gold's recorded 24K UAE gold reference, daily movement and historical value scenarios.",
   alternates: { canonical: "/live-price" },
 };
 
@@ -66,7 +66,7 @@ export default async function LivePricePage() {
               See what gold did.<br /><span className="text-gold-200">Explore what it means for you.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/65">
-              Follow GoldHub’s recorded UAE reference rate, compare purity values, and test a historical purchase against today’s live market.
+              Follow Get Gold’s recorded UAE reference rate, compare purity values, and test a historical purchase against today’s live market.
             </p>
             <div className="mt-7"><GoldPriceBadge tone="dark" /></div>
           </div>
@@ -88,7 +88,7 @@ export default async function LivePricePage() {
 
         <div className="mt-6 rounded-2xl border border-jade-900/10 bg-jade-50 px-5 py-4 text-sm leading-relaxed text-ink-muted">
           <strong className="font-semibold text-jade-900">Fresh-price protection:</strong>{" "}
-          GoldHub rechecks every {refreshSeconds} seconds. If the latest quote reaches {staleSeconds} seconds old, reservations pause until a fresh rate arrives. History below contains only usable quotes recorded by GoldHub; gaps mean the service was not recording, not that the market was unchanged.
+          Get Gold rechecks every {refreshSeconds} seconds. If the latest quote reaches {staleSeconds} seconds old, reservations pause until a fresh rate arrives. History below contains only usable quotes recorded by Get Gold; gaps mean the service was not recording, not that the market was unchanged.
         </div>
 
         <div className="mt-8">

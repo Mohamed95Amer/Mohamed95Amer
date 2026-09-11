@@ -48,7 +48,7 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
   return (
     <form className="grid gap-4" onSubmit={save}>
       <div>
-        <label className="label" htmlFor="setting-commission">GoldHub commission (%)</label>
+        <label className="label" htmlFor="setting-commission">Get Gold commission (%)</label>
         <input id="setting-commission" name="platform_fee_percent" className="input" type="number" inputMode="decimal" min="0" max="10" step="0.05" value={form.platform_fee_bps / 100}
           onChange={(e) => set("platform_fee_bps", Math.round(Number(e.target.value) * 100))} />
         <p className="mt-1 text-xs text-ink-muted">

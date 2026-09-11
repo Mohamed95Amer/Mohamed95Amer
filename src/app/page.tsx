@@ -243,7 +243,7 @@ export default async function HomePage() {
             People behind every listing.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-muted">
-            GoldHub is not the seller. We verify UAE businesses and make pricing transparent;
+            Get Gold is not the seller. We verify UAE businesses and make pricing transparent;
             the jeweller keeps the relationship, inventory, and fulfilment.
           </p>
           <Link href="/vendors" className="btn-ghost mt-6">
@@ -306,7 +306,7 @@ export default async function HomePage() {
             Bring your shop into the live market.
           </h2>
           <p className="relative mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/65">
-            Keep control of your stock and customer relationship while GoldHub makes discovery,
+            Keep control of your stock and customer relationship while Get Gold makes discovery,
             verification, and transparent pricing easier.
           </p>
           <Link

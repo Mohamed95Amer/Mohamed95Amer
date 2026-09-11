@@ -34,7 +34,7 @@ export function PolicyPage({ eyebrow, title, intro, sections }: { eyebrow: strin
             </section>
           ))}
         </div>
-        <p className="mt-6 text-sm text-ink-muted">Questions? <Link href="/contact" className="font-semibold text-jade-700 underline underline-offset-4">Contact GoldHub support</Link>.</p>
+        <p className="mt-6 text-sm text-ink-muted">Questions? <Link href="/contact" className="font-semibold text-jade-700 underline underline-offset-4">Contact Get Gold support</Link>.</p>
       </div>
     </>
   );

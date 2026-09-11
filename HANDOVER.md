@@ -1,8 +1,8 @@
-# GoldHub — handover
+# Get Gold — handover
 
-UAE gold marketplace. Next.js 14 (App Router) + Supabase + Tailwind, deployed on Vercel.
+UAE gold marketplace, renamed from GoldHub. Next.js 14 (App Router) + Supabase + Tailwind, deployed on Vercel.
 Customers browse listings priced live against the gold market and reserve at a locked price;
-vendors list stock; admins approve vendors and listings.
+vendors list stock; delivery companies maintain verified partner profiles; admins approve businesses and listings.
 
 **Branch: `claude/goldhub-marketplace-mvp-pYHzs`** (repo `Mohamed95Amer/Mohamed95Amer`).
 All work described here is on that branch. `main` does not have it.
@@ -11,7 +11,7 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
-**Live:** https://goldhub-three.vercel.app — Vercel project `mohamed95amers-projects/goldhub`.
+**Live:** https://goldhub-three.vercel.app — legacy Vercel project `mohamed95amers-projects/goldhub`.
 
 **Deployment status (11 Sep 2026):** commit `83e7efc` is deployed to the existing production
 project and aliased to the live URL. The comprehensive design/accessibility/SEO pass passed lint,
@@ -52,16 +52,16 @@ Build output:   construction-erp/website
 Production branch: codex/odoo19-ui-enhancement
 ```
 
-It runs no build and serves a static directory. The GoldHub branches do not contain
+It runs no build and serves a static directory. The Get Gold branch does not contain
 `construction-erp/website`, so the deploy fails on a missing output directory. That project serves
 `majalops.com` from the `codex/odoo19-ui-enhancement` branch, so **do not disconnect its Git
 integration** — that would break a live site. The fix applied was Settings → Branch control →
 Preview branch → **None**, which stops preview builds on every branch while production keeps
 deploying.
 
-GoldHub itself deploys to Vercel and has no Cloudflare dependency.
+Get Gold itself deploys to Vercel and has no Cloudflare dependency.
 
-**Repo/deploy mismatch to be aware of.** The Vercel projects (`goldhub`, `goldhub.ae` under team
+**Repo/deploy mismatch to be aware of.** The legacy-named Vercel projects (`goldhub`, `goldhub.ae` under team
 `mohamed95amers-projects`) are git-linked to `Mohamed95Amer/goldhub` — a *different* repo that this
 work is **not** in, and that I had no access to. So pushing to `Mohamed95Amer/Mohamed95Amer` does
 **not** trigger a deploy. Either deploy manually as above, or relink the Vercel project to this repo.
@@ -136,15 +136,15 @@ Customer-facing prices are now transparent at both browsing levels:
 - every product card shows the metal-only AED/g rate adjusted to that listing's karat plus its
   effective making charge, any making promotion, and certificate/assay fee when applicable;
 - every product detail shows the live 24K reference, the product-karat rate, gold weight/value,
-  original and discounted making, optional certificate/assay, stone/premium, GoldHub service fee,
+  original and discounted making, optional certificate/assay, stone/premium, Get Gold service fee,
   delivery fee and per-item total;
 - service and delivery rows remain visible even when configured as AED 0.00, so an unset fee
   cannot be mistaken for a missing part of the calculation;
 - the homepage and marketplace both read the same `platform_settings` fee values.
 
-Every live-priced product also has a **GoldHub Value Score** from 0–100. The score starts at 100
+Every live-priced product also has a **Get Gold Value Score** from 0–100. The score starts at 100
 and subtracts the percentage added above the product's live gold value by its effective making,
-certificate/assay, vendor premium and the GoldHub service fee. Delivery and separately priced
+certificate/assay, vendor premium and the Get Gold service fee. Delivery and separately priced
 stones (including the service-fee portion attributable to stones) are excluded so logistics or a
 non-gold asset cannot distort a gold-to-gold comparison. Cards show the score and premium percent;
 the product page also shows the premium in AED, gold-inclusive AED/g and the complete methodology.
@@ -175,8 +175,8 @@ tiles are both more trustworthy and more visually specific.
 
 > **Payments are still not integrated.** Before implementation, choose the commercial model:
 > the lowest-custody option is for each vendor to remain merchant of record and receive customer
-> payments in its own PSP account, while GoldHub invoices its commission separately. Native
-> marketplace splitting can automate vendor/GoldHub/courier allocation, but the UAE PSP contract
+> payments in its own PSP account, while Get Gold invoices its commission separately. Native
+> marketplace splitting can automate vendor/Get Gold/courier allocation, but the UAE PSP contract
 > must state who owns chargebacks, refunds, negative balances and settlement liability.
 
 ### Live gold price
@@ -267,7 +267,7 @@ pass and the follow-up residue check returns zero auth/profile probe rows.
   not-found states replace framework defaults.
 - Contact, trust and how-it-works copy no longer promises future operations as if live. New terms,
   privacy, delivery/collection and cancellation/refund pages explain that the vendor is seller of
-  record and GoldHub does not currently take custody of customer funds.
+  record and Get Gold does not currently take custody of customer funds.
 
 ### Product imagery
 
@@ -339,7 +339,8 @@ reference cannot be mistaken for a provider-fetched quote.
 | Gold insights | **Verified** | daily view applied, calculator exercised with multiple weights/purities |
 | Verified reviews | **Verified** | paid-order context derived in Postgres; unpaid order rejected; direct anon/auth table access denied |
 | Design/accessibility/SEO pass | **Deployed and smoke-tested** | `npm run typecheck`, `npm run lint`, local + Vercel `npm run build`, 17/17 public URLs returned 200; live UI inspected |
-| Public-signup role restriction | **Applied; 2/2 passed on real trigger** | migration history matches `20260911130835`; forged admin → customer, vendor → vendor; anon/authenticated execution denied; transaction rolled back with zero residue |
+| Public-signup role restriction | **Applied; 3/3 passed on real trigger** | forged admin → customer, vendor → vendor, delivery company → delivery company; transaction rolled back with zero residue |
+| Four-role profile system | **Applied and build-verified** | personal profile plus customer history, vendor business, delivery-company business and admin/owner operations; direct self-promotion through `profiles.role` is denied |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.
@@ -350,7 +351,7 @@ a transaction it rolls back.
 
 1. **Decide the delivery-fee question** (§3).
 2. Replace generated demo artwork with each vendor's real product photography before public launch.
-3. Configure and test the `support@goldhub.ae` and `vendors@goldhub.ae` mailboxes used on Contact.
+3. Configure and test the `support@getgold.app`, `vendors@getgold.app` and `delivery@getgold.app` mailboxes used on Contact before launch.
 4. Smoke-test customer and vendor email-confirmation plus password recovery using inboxes you
    control. The code deployment and signup-role migration are complete.
 5. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the

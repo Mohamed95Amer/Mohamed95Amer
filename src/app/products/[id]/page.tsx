@@ -35,7 +35,7 @@ async function loadProduct(id: string) {
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const product = await loadProduct(params.id);
-  if (!product || product.product_status !== "approved") return { title: "Not found — GoldHub" };
+  if (!product || product.product_status !== "approved") return { title: "Not found — Get Gold" };
   const vendor = product.vendors as unknown as Vendor;
   return {
     title: `${product.name} — ${product.karat}K, ${product.weight_grams}g`,
@@ -241,7 +241,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <p>
               <span className="font-semibold text-gold-200">The price is recomputed server-side</span> the
               moment you reserve, so what you pay matches the market at that instant — not what was
-              on screen. GoldHub is a marketplace; the vendor remains the seller of record.
+              on screen. Get Gold is a marketplace; the vendor remains the seller of record.
             </p>
           </div>
         </aside>

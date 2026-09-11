@@ -89,7 +89,7 @@ export default async function ReservationDetailPage({ params }: { params: { id: 
 
       {stage >= 1 && stage < 3 && (
         <div className="mt-6 rounded-2xl border border-gold-400/25 bg-gold-50 p-5 text-sm leading-relaxed text-ink-muted">
-          <strong className="text-jade-950">Before paying:</strong> match the vendor name, item, quantity and locked total shown here. GoldHub will never ask for your OTP, banking password or card details by email.
+          <strong className="text-jade-950">Before paying:</strong> match the vendor name, item, quantity and locked total shown here. Get Gold will never ask for your OTP, banking password or card details by email.
         </div>
       )}
 

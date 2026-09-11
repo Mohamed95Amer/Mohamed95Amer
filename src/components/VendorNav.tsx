@@ -9,6 +9,7 @@ const items = [
   ["/vendor/orders", "Orders"],
   ["/vendor/reviews", "Reviews"],
   ["/vendor/documents", "Documents"],
+  ["/profile", "My profile"],
 ] as const;
 
 export function VendorNav() {

@@ -7,7 +7,7 @@ export function ProductActions({ name }: { name: string }) {
 
   async function share() {
     if (navigator.share) {
-      await navigator.share({ title: `${name} | GoldHub`, text: `See ${name} on GoldHub`, url: window.location.href }).catch(() => undefined);
+      await navigator.share({ title: `${name} | Get Gold`, text: `See ${name} on Get Gold`, url: window.location.href }).catch(() => undefined);
       return;
     }
     await navigator.clipboard.writeText(window.location.href);

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { env } from "@/lib/env";
 
 export const metadata: Metadata = {
-  title: "How GoldHub works",
+  title: "How Get Gold works",
   description: "From verified listing and live gold price to a locked reservation with a UAE gold shop.",
   alternates: { canonical: "/how-it-works" },
 };
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function HowItWorksPage() {
   const steps = [
     ["Find", "Compare verified stock", "Browse approved jewellery and bullion. Each total follows the same live 24K reference, while making and certificate costs stay clearly separated."],
-    ["Check", "Understand the value", "See the product-karat rate, gold weight, GoldHub Value Score, store rating and every charge before taking action."],
+    ["Check", "Understand the value", "See the product-karat rate, gold weight, Get Gold Value Score, store rating and every charge before taking action."],
     ["Lock", "Reserve the current price", `The server recalculates the order using a quote rechecked every ${env.refreshIntervalSeconds()} seconds. If it reaches ${env.stalePriceSeconds()} seconds old, reservations pause until a fresh quote arrives.`],
     ["Confirm", "The store checks availability", "The selected vendor receives the reservation and confirms that the exact item is ready. Your price lock lasts 10 minutes."],
     ["Complete", "Pay the seller and receive your gold", "The vendor, as seller of record, arranges its payment link, collection or delivery and provides the applicable invoice and product documents."],
@@ -23,7 +23,7 @@ export default function HowItWorksPage() {
         <div className="container-pro py-14 text-center sm:py-20">
           <p className="eyebrow text-gold-200">Five clear steps</p>
           <h1 className="mx-auto mt-3 max-w-3xl font-serif text-4xl font-semibold tracking-tight sm:text-6xl">From live gold price to confirmed purchase.</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">GoldHub provides discovery, verification and price transparency. The listed jeweller owns the inventory and remains the seller.</p>
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">Get Gold provides discovery, verification and price transparency. The listed jeweller owns the inventory and remains the seller.</p>
         </div>
       </section>
 
@@ -47,7 +47,7 @@ export default function HowItWorksPage() {
           <ul className="mt-4 grid gap-3 text-sm text-ink-muted sm:grid-cols-3">
             <li>Match the store name and reservation details.</li>
             <li>Never share an OTP or banking password.</li>
-            <li>Contact GoldHub if the amount or sender looks different.</li>
+            <li>Contact Get Gold if the amount or sender looks different.</li>
           </ul>
         </section>
 

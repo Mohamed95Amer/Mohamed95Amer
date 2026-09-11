@@ -8,7 +8,7 @@ export function SiteFooter() {
         <div>
           <div className="flex items-center gap-2.5">
             <BrandMark inverse />
-            <span className="font-serif text-xl font-semibold">GoldHub</span>
+            <span className="font-serif text-xl font-semibold">Get Gold</span>
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
             A marketplace of verified UAE jewellers. Vendors own the inventory and remain the seller of record.
@@ -31,10 +31,12 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h4 className="eyebrow text-gold-200">For vendors</h4>
+          <h4 className="eyebrow text-gold-200">Partners</h4>
           <ul className="mt-4 space-y-2.5 text-sm text-white/60">
             <li><Link className="transition hover:text-white" href="/vendor/register">List your shop</Link></li>
             <li><Link className="transition hover:text-white" href="/vendor">Vendor dashboard</Link></li>
+            <li><Link className="transition hover:text-white" href="/delivery/register">Join as delivery company</Link></li>
+            <li><Link className="transition hover:text-white" href="/delivery">Delivery dashboard</Link></li>
           </ul>
         </div>
         <div>
@@ -49,7 +51,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-white/10">
         <div className="container-pro flex flex-col gap-2 py-4 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
-          <span>© {new Date().getFullYear()} GoldHub. Products are sold by listed vendors.</span>
+          <span>© {new Date().getFullYear()} Get Gold. Products are sold by listed vendors.</span>
           <span>Gold prices can move. Marketplace comparisons are not financial advice.</span>
         </div>
       </div>
