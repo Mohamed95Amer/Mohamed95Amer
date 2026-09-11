@@ -2,6 +2,7 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { formatAed } from "@/lib/pricing/calc";
 import { formatDubaiDateTime, statusLabel } from "@/lib/presentation";
 import Link from "next/link";
+import { fulfilmentLabel } from "@/lib/fulfilment";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +11,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   let q = admin
     .from("reservations")
     .select(
-      "id, status, quantity, expires_at, created_at, vendor:vendors(business_name), customer:profiles(full_name), snapshot:order_price_snapshots(total_price_aed)",
+      "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, vendor:vendors(business_name), customer:profiles(full_name), snapshot:order_price_snapshots(total_price_aed)",
     )
     .order("created_at", { ascending: false })
     .limit(200);
@@ -27,6 +28,8 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
             <th className="px-4 py-2 text-left">Vendor</th>
             <th className="px-4 py-2 text-right">Qty</th>
             <th className="px-4 py-2 text-right">Total</th>
+            <th className="px-4 py-2 text-left">Fulfilment</th>
+            <th className="px-4 py-2 text-left">Identity</th>
             <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Expires</th>
           </tr>
@@ -43,13 +46,15 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                 <td className="px-4 py-2">{v?.business_name ?? "—"}</td>
                 <td className="px-4 py-2 text-right">{o.quantity}</td>
                 <td className="px-4 py-2 text-right">{formatAed(total)}</td>
+                <td className="px-4 py-2">{fulfilmentLabel(o.fulfilment_method)}</td>
+                <td className="px-4 py-2 font-medium">{o.identity_verification_id ? "✓ Verified" : "Legacy"}</td>
                 <td className="px-4 py-2"><span className="pill border-bone-deep bg-bone-soft">{statusLabel(o.status)}</span></td>
                 <td className="px-4 py-2 text-ink-muted">{formatDubaiDateTime(o.expires_at)}</td>
               </tr>
             );
           })}
           {(data ?? []).length === 0 && (
-            <tr><td colSpan={6} className="px-4 py-6 text-center text-ink-muted">No orders.</td></tr>
+            <tr><td colSpan={8} className="px-4 py-6 text-center text-ink-muted">No orders.</td></tr>
           )}
         </tbody>
       </table>

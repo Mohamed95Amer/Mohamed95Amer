@@ -14,6 +14,8 @@ import {
   type PublicReview,
   type VendorReputationRow,
 } from "@/lib/reputation";
+import { getCurrentProfile } from "@/lib/auth/server";
+import { sumsubIsConfigured } from "@/lib/identity/sumsub";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +63,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   const vendor = product.vendors as unknown as Vendor;
 
-  const [{ data: settings }, { data: availability }, { data: reputationRow }, { data: reviews }] = await Promise.all([
+  const [{ data: settings }, { data: availability }, { data: reputationRow }, { data: reviews }, profile] = await Promise.all([
     supabase
       .from("platform_settings")
       .select("platform_fee_bps, delivery_fee_aed")
@@ -82,6 +84,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
       .eq("moderation_status", "published")
       .order("created_at", { ascending: false })
       .limit(5),
+    getCurrentProfile(),
   ]);
   const reputation = reputationRow
     ? normalizeReputation(reputationRow as VendorReputationRow)
@@ -221,6 +224,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
                 productId={product.id}
                 soldOut={soldOut}
                 available={available}
+                defaultRecipientName={profile?.full_name ?? ""}
+                defaultRecipientPhone={profile?.phone ?? ""}
+                identityVerificationAvailable={sumsubIsConfigured()}
                 pricing={{
                   karat: product.karat,
                   weightGrams: Number(product.weight_grams),

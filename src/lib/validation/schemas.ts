@@ -1,8 +1,76 @@
 import { z } from "zod";
+import { UAE_EMIRATES } from "@/lib/fulfilment";
+
+const optionalTrimmed = (maximum: number) => z.string().trim().max(maximum).optional().nullable();
+const optionalHttpsUrl = z.preprocess(
+  (value) => value === "" ? null : value,
+  z.string().trim().url().max(1000).refine((value) => {
+    try {
+      return new URL(value).protocol === "https:";
+    } catch {
+      return false;
+    }
+  }, "Use a secure https:// map link").optional().nullable(),
+);
 
 export const createReservationSchema = z.object({
   productId: z.string().uuid(),
   quantity: z.number().int().min(1).max(50),
+  identityVerificationId: z.string().uuid(),
+  fulfilmentMethod: z.enum(["delivery", "collection"]),
+  recipientName: optionalTrimmed(120),
+  recipientPhone: optionalTrimmed(20),
+  deliveryEmirate: z.preprocess(
+    (value) => value === "" ? null : value,
+    z.enum(UAE_EMIRATES).optional().nullable(),
+  ),
+  deliveryArea: optionalTrimmed(120),
+  deliveryAddressLine1: optionalTrimmed(240),
+  deliveryAddressLine2: optionalTrimmed(240),
+  deliveryLandmark: optionalTrimmed(240),
+  deliveryLatitude: z.number().min(-90).max(90).optional().nullable(),
+  deliveryLongitude: z.number().min(-180).max(180).optional().nullable(),
+  deliveryMapLink: optionalHttpsUrl,
+  customerNote: optionalTrimmed(500),
+}).superRefine((reservation, ctx) => {
+  if (reservation.fulfilmentMethod !== "delivery") return;
+
+  const requiredText: Array<[keyof typeof reservation, string]> = [
+    ["recipientName", "Enter the recipient name"],
+    ["recipientPhone", "Enter the recipient phone number"],
+    ["deliveryEmirate", "Choose an emirate"],
+    ["deliveryArea", "Enter the area or neighbourhood"],
+    ["deliveryAddressLine1", "Enter the street and building or villa"],
+  ];
+  for (const [path, message] of requiredText) {
+    if (!String(reservation[path] ?? "").trim()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [path], message });
+    }
+  }
+  if (reservation.recipientName && reservation.recipientName.trim().length < 2) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["recipientName"], message: "Enter the full recipient name" });
+  }
+  if (reservation.recipientPhone && reservation.recipientPhone.trim().length < 7) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["recipientPhone"], message: "Enter a valid mobile number" });
+  }
+
+  const hasCoordinates = reservation.deliveryLatitude != null && reservation.deliveryLongitude != null;
+  if (!hasCoordinates && !reservation.deliveryMapLink?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["deliveryMapLink"],
+      message: "Add a location pin using your device or a Maps link",
+    });
+  }
+});
+
+export const identityVerificationStartSchema = z.object({
+  productId: z.string().uuid(),
+  verificationRoute: z.enum(["uae_resident", "visitor"]),
+});
+
+export const identityVerificationTokenSchema = z.object({
+  verificationId: z.string().uuid(),
 });
 
 export const vendorOnboardingSchema = z.object({

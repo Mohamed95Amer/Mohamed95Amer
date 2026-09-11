@@ -15,6 +15,7 @@ import {
 } from "@/lib/gold-insights";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ReviewForm } from "@/components/ReviewForm";
+import { FulfilmentDetails } from "@/components/FulfilmentDetails";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -65,10 +66,15 @@ export default async function ReservationDetailPage({ params }: { params: { id: 
         <GoldPriceBadge compact />
       </div>
 
-      <div className="card mt-7 grid gap-4 p-6 text-sm sm:grid-cols-3">
+      <div className="card mt-7 grid gap-4 p-6 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div><span className="label">Status</span><span className="pill mt-2 border-jade-900/10 bg-jade-50">{lapsedLock ? "Price lock expired" : reservationStatusLabel(r.status)}</span></div>
         <div><span className="label">Item</span><p className="mt-2 text-jade-950">{product?.karat}K · {product?.weight_grams}g · quantity {r.quantity}</p></div>
         <div><span className="label">Price lock</span><p className="mt-2 text-jade-950">{lapsedLock ? "Ended" : "Until"} {formatDubaiDate(r.expires_at, true)}</p></div>
+        <div><span className="label">Order identity</span><p className="mt-2 font-medium text-jade-950">{r.identity_verification_id ? "✓ Verified for this order" : "Legacy order"}</p></div>
+      </div>
+
+      <div className="mt-6">
+        <FulfilmentDetails details={r} />
       </div>
 
       <section className="card mt-6 p-6 sm:p-7">

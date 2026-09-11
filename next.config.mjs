@@ -8,6 +8,19 @@ const nextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Permissions-Policy",
+            value: 'camera=(self "https://api.sumsub.com" "https://api.uae.sumsub.com"), microphone=(self "https://api.sumsub.com" "https://api.uae.sumsub.com")',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

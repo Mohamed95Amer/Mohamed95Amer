@@ -13,8 +13,8 @@ All work described here is on that branch. `main` does not have it.
 
 **Live:** https://goldhub-three.vercel.app — legacy Vercel project `mohamed95amers-projects/goldhub`.
 
-**Deployment status (11 Sep 2026):** commit `8d5c1ff` is deployed to the existing production
-project and aliased to the live URL. The marketplace is publicly branded **Get Gold**, with the
+**Deployment status (11 Sep 2026):** the latest branch commit is manually deployed to the existing
+production project and aliased to the live URL. The marketplace is publicly branded **Get Gold**, with the
 tagline “See the price. Get the gold.” The local and Vercel 41-page production builds, typecheck,
 lint, public-route smoke checks and live visual pass are clean. `NEXT_PUBLIC_SITE_URL` now points to
 the real `goldhub-three.vercel.app` deployment; it previously generated canonical and social links
@@ -28,6 +28,15 @@ record, no direct browser write access, contact-field-only profile updates, and 
 through `profiles.role`. The legacy security-definer view and mutable function search-path advisor
 findings were also cleared. The only remaining security-advisor warning is the project-level leaked
 password protection setting, which must be enabled in Supabase Auth if the selected plan supports it.
+
+Migration `20260911183317_reservation_fulfilment_details.sql` is also applied and recorded. It adds
+an order-specific delivery/collection snapshot, structured UAE address details and a precise
+location pin while keeping those values inside the same row-locking stock claim.
+
+The next migration, `20260911184948_mandatory_order_identity_verification.sql`, makes a fresh hosted
+identity result mandatory and single-use for every new order. **Do not apply it to another
+environment until the matching application code and Sumsub environment variables are ready**;
+the function deliberately fails closed when no approved check is supplied.
 
 The previously unverified production paths have now been exercised end to end:
 
@@ -165,7 +174,9 @@ excluded. `platform_settings.platform_fee_bps` is authoritative; the old fixed-A
 `platform_fee_aed` column remains only for backwards compatibility. Each reservation snapshot
 stores both the calculated AED fee and the exact basis-point rate used.
 
-`products.making_charge` is the undiscounted amount. A promotion uses
+`products.making_charge` is the undiscounted amount **for that individual listing, not the store**.
+Vendors can—and usually will—set different making charges for different products in the same store.
+The vendor form and inventory table make this scope explicit. A promotion uses
 `making_charge_discount_percent` (0–100) and optional `making_charge_offer_ends_at`; expiration is
 checked again server-side at reservation time. `certificate_fee` is separate because bullion bars
 can have no making charge but still carry an assay/certificate cost. Snapshots store the original
@@ -181,6 +192,9 @@ tiles are both more trustworthy and more visually specific.
 > multiplied by quantity, so ordering 3 items bills delivery 3×. It defaults to 0 so nothing is
 > wrong today. The owner was asked and has not decided. Delivery is almost certainly meant to be
 > per-order.
+
+Store collection sets the snapshotted delivery fee to zero. Delivery orders continue to use the
+existing per-unit fee behavior until the owner decides the per-order question above.
 
 > **Payments are still not integrated.** Before implementation, choose the commercial model:
 > the lowest-custody option is for each vendor to remain merchant of record and receive customer
@@ -216,6 +230,37 @@ on the product row before counting holds, so two customers racing for the last u
 win. **Do not replace this with a plain insert.** It returns `SETOF public.reservations`
 deliberately — a bare composite return is handled inconsistently by PostgREST/`supabase-js`
 `.single()`.
+
+Migration `20260911183317` extends that same function with optional fulfilment arguments; it does
+not introduce a second insert path. Delivery orders require recipient name/phone, emirate, area,
+street/building and either a latitude/longitude pair or an HTTPS Maps pin. Existing and new store-
+collection orders use the same atomic claim with no delivery address. Address data is an immutable
+order snapshot visible through the reservation's existing customer/vendor/admin authorization
+boundary; delivery-company order assignment and access remain intentionally unimplemented.
+
+### Mandatory per-order buyer identity
+
+- Every new order has its own `order_identity_verifications` row. The row contains only Get Gold
+  user/product IDs, resident-or-visitor route, provider reference, pass/fail state, expiry and
+  consumption timestamps. It contains no Emirates ID image, passport, boarding pass, document
+  number, selfie, video or biometric template.
+- The **UAE resident** provider level must require UAE ID card front and back plus a Selfie step
+  configured as Advanced Liveness; Sumsub runs Face Match automatically after liveness.
+- The **visitor** provider level must require a passport, Advanced Liveness/Face Match and a
+  mandatory questionnaire file-upload step named Boarding pass. AllDocs can validate/extract it;
+  a plain mandatory upload still prevents the level from passing when omitted.
+- The customer chooses the route before checkout. `POST /api/identity-verifications/start` creates
+  a unique applicant external ID and returns a 10-minute WebSDK token. A signed Sumsub webhook is
+  the only path that can approve the local result; browser completion messages never approve it.
+- `claim_reservation()` locks the identity row, verifies that it is approved, unexpired, belongs
+  to the current user and product, and consumes it in the same transaction as the stock claim.
+  This is intentionally one check per order—not reusable account KYC.
+- Configure `SUMSUB_APP_TOKEN`, `SUMSUB_SECRET_KEY`, `SUMSUB_WEBHOOK_SECRET`,
+  `SUMSUB_RESIDENT_LEVEL_NAME`, `SUMSUB_VISITOR_LEVEL_NAME` and, where contracted, the UAE regional
+  `SUMSUB_API_URL`. Set the webhook URL to `/api/webhooks/sumsub` with `HMAC_SHA256_HEX`.
+- Checkout fails closed while provider configuration is missing. Do not add a demo pass button or
+  accept the WebSDK's client event as proof. Test both routes in Sumsub Sandbox, then switch all
+  five credentials/level names together for production.
 
 ### Verified store reviews and reputation
 
@@ -283,6 +328,11 @@ and the follow-up residue check returns zero auth/profile probe rows.
 - Product pages include a quantity selector, live multi-item total, mobile sticky reserve action,
   share action, product structured data and complete fee transparency. The server still recomputes
   the authoritative total and calls `claim_reservation()`.
+- The reserve area is now a one-page checkout: customers choose delivery or store collection,
+  enter a structured UAE address, add a precise pin from device geolocation or a Maps link, and
+  place the order while locking the current quote. Profile name/phone prefill when signed in.
+- Customer reservation details preserve the selected fulfilment snapshot. Vendor orders show the
+  recipient, address, pin and customer note before confirmation; admin orders show the method.
 - Customer reservations now show a four-stage fulfilment timeline and payment-link safety guidance.
   Authentication adds password recovery, safe callback redirects, password visibility and a clear
   customer/vendor/delivery-company path.
@@ -349,7 +399,7 @@ reference cannot be mistaken for a provider-fetched quote.
 | Area | Status | Evidence |
 |---|---|---|
 | Schema, RLS, storage buckets, realtime | Applied | migrations `0001`–`0005`, `launch_commission_rate`, `pricing_charges_and_promotions` against the live project |
-| Oversell protection | **7/7 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql` |
+| Oversell + fulfilment + identity claim | **10/10 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql`; includes atomic address/pin persistence and single-use identity consumption |
 | Price parser | **9/9 passed** | ad-hoc harness; covers real shape, per-gram scaling, string values, alternate keys, garbage, absurd values, null |
 | Pricing math | Automated + checked by hand | normal, 20%-off, active/expired 100%-off and certificate-only cases; fee uses discounted merchandise and excludes delivery |
 | Typecheck / build | Clean | `npx tsc --noEmit`, `npm run build` |
@@ -374,11 +424,17 @@ a transaction it rolls back.
 ## 5. Suggested next steps
 
 1. **Decide the delivery-fee question** (§3).
-2. Replace generated demo artwork with each vendor's real product photography before public launch.
-3. Configure and test the `support@getgold.app`, `vendors@getgold.app` and `delivery@getgold.app` mailboxes used on Contact before launch.
-4. Smoke-test customer and vendor email-confirmation plus password recovery using inboxes you
+2. Contract and configure the hosted identity provider levels and retention terms, add the five
+   production secrets/level names, register the signed webhook, and complete both Sandbox routes.
+3. Obtain UAE privacy/legal review for mandatory biometric processing, consent language, retention,
+   cross-border or UAE-local processing, and handling of minors before accepting real orders.
+4. Design the delivery assignment state machine before exposing customer addresses to approved
+   delivery companies (assignment, acceptance, pickup, proof of delivery and cancellation).
+5. Replace generated demo artwork with each vendor's real product photography before public launch.
+6. Configure and test the `support@getgold.app`, `vendors@getgold.app` and `delivery@getgold.app` mailboxes used on Contact before launch.
+7. Smoke-test customer and vendor email-confirmation plus password recovery using inboxes you
    control. The code deployment and signup-role migration are complete.
-5. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
+8. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
    vendor is the seller of record; money changes hands off-platform. That is by design for the MVP.
 
 ## 6. Conventions

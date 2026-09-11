@@ -18,6 +18,8 @@ interface ReservationRow {
   status: string;
   quantity: number;
   expires_at: string;
+  identity_verification_id: string;
+  fulfilment_method: string;
   created_at: string;
   updated_at: string;
 }
@@ -48,7 +50,11 @@ export async function POST(request: Request) {
 
   let priced;
   try {
-    priced = await computeOfficialPriceForProduct(parsed.data.productId, parsed.data.quantity);
+    priced = await computeOfficialPriceForProduct(
+      parsed.data.productId,
+      parsed.data.quantity,
+      parsed.data.fulfilmentMethod,
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : "pricing_failed";
     return NextResponse.json({ error: message }, { status: 400 });
@@ -86,6 +92,19 @@ export async function POST(request: Request) {
       p_product_id: priced.product.id,
       p_quantity: parsed.data.quantity,
       p_expires_at: expiresAt,
+      p_identity_verification_id: parsed.data.identityVerificationId,
+      p_fulfilment_method: parsed.data.fulfilmentMethod,
+      p_recipient_name: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.recipientName : null,
+      p_recipient_phone: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.recipientPhone : null,
+      p_delivery_emirate: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryEmirate : null,
+      p_delivery_area: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryArea : null,
+      p_delivery_address_line_1: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryAddressLine1 : null,
+      p_delivery_address_line_2: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryAddressLine2 : null,
+      p_delivery_landmark: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryLandmark : null,
+      p_delivery_latitude: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryLatitude : null,
+      p_delivery_longitude: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryLongitude : null,
+      p_delivery_map_link: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.deliveryMapLink : null,
+      p_customer_note: parsed.data.customerNote,
     })
     .single();
   const reservation = claimed as ReservationRow | null;
@@ -104,6 +123,27 @@ export async function POST(request: Request) {
     }
     if (raw.includes("invalid_quantity")) {
       return NextResponse.json({ error: "invalid_quantity" }, { status: 400 });
+    }
+    if (raw.includes("delivery_details_required") || raw.includes("invalid_delivery_coordinates")) {
+      return NextResponse.json(
+        { error: "invalid_delivery_details", message: "Check the delivery address and location pin." },
+        { status: 400 },
+      );
+    }
+    if (raw.includes("identity_verification")) {
+      const expired = raw.includes("expired");
+      const alreadyUsed = raw.includes("already_used");
+      return NextResponse.json(
+        {
+          error: expired ? "identity_verification_expired" : "identity_verification_required",
+          message: alreadyUsed
+            ? "This identity check has already been used. Complete a new check for this order."
+            : expired
+            ? "The identity check expired. Complete a new check for this order."
+            : "Complete the mandatory identity check before placing this order.",
+        },
+        { status: 409 },
+      );
     }
     return NextResponse.json({ error: raw }, { status: 500 });
   }
@@ -135,6 +175,14 @@ export async function POST(request: Request) {
   if (snapErr) {
     // Roll back the reservation — there must be no reservation without a snapshot.
     await admin.from("reservations").delete().eq("id", reservation.id);
+    // The claim consumed the single-use identity result in the same DB
+    // transaction. If the follow-up price snapshot fails, release it as part of
+    // this API-level rollback so the customer can safely retry.
+    await admin
+      .from("order_identity_verifications")
+      .update({ status: "approved", consumed_at: null, reservation_id: null })
+      .eq("id", parsed.data.identityVerificationId)
+      .eq("user_id", auth.user.id);
     return NextResponse.json({ error: snapErr.message }, { status: 500 });
   }
 
@@ -144,7 +192,12 @@ export async function POST(request: Request) {
     action: "reservation.created",
     entity_type: "reservation",
     entity_id: reservation.id,
-    new_value: { total: priced.totalPriceAed, tick_id: priced.tick.id, expires_at: expiresAt },
+    new_value: {
+      total: priced.totalPriceAed,
+      tick_id: priced.tick.id,
+      expires_at: expiresAt,
+      fulfilment_method: parsed.data.fulfilmentMethod,
+    },
     ip_address: ipFromRequest(request),
   });
 

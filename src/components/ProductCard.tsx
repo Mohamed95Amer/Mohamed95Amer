@@ -141,7 +141,7 @@ export function ProductCard({
             <span className="text-right font-semibold tabular-nums text-jade-950">
               {formatAed(productGoldRate)}/g
             </span>
-            <span className="text-ink-muted">Making charge</span>
+            <span className="text-ink-muted">This item&apos;s making</span>
             {breakdown.makingChargeOriginal === 0 ? (
               <span className="text-right font-semibold text-signal-ok">No charge</span>
             ) : breakdown.makingChargeDiscountPercent > 0 ? (

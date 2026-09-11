@@ -115,8 +115,9 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
         <input id="product-quantity" name="quantity" className="input" type="number" inputMode="numeric" min="0" step="1" required value={form.quantity} onChange={(e) => set("quantity", Number(e.target.value))} />
       </div>
       <div>
-        <label className="label" htmlFor="product-making">Making charge (AED)</label>
+        <label className="label" htmlFor="product-making">Making charge for this item (AED)</label>
         <input id="product-making" name="making_charge" className="input" type="number" inputMode="decimal" min="0" step="0.01" value={form.making_charge} onChange={(e) => set("making_charge", Number(e.target.value))} />
+        <p className="mt-1 text-xs text-ink-muted">Set this listing&apos;s own charge. Other products in your store can use a different amount; use AED 0 when making does not apply.</p>
       </div>
       <div>
         <label className="label" htmlFor="product-making-discount">Making discount (%)</label>

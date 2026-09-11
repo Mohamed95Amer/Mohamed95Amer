@@ -62,6 +62,15 @@ export const env = {
   deliveryFeeAed: () => optionalNumber("DELIVERY_FEE_AED", 0),
   reservationLockMinutes: () => optionalNumber("RESERVATION_LOCK_MINUTES", 10),
 
+  // Hosted per-order identity verification. Keep document images and biometric
+  // processing at the provider; Get Gold stores only the signed result.
+  sumsubAppToken: () => process.env.SUMSUB_APP_TOKEN?.trim() ?? "",
+  sumsubSecretKey: () => process.env.SUMSUB_SECRET_KEY?.trim() ?? "",
+  sumsubWebhookSecret: () => process.env.SUMSUB_WEBHOOK_SECRET?.trim() ?? "",
+  sumsubResidentLevelName: () => process.env.SUMSUB_RESIDENT_LEVEL_NAME?.trim() ?? "",
+  sumsubVisitorLevelName: () => process.env.SUMSUB_VISITOR_LEVEL_NAME?.trim() ?? "",
+  sumsubApiUrl: () => (process.env.SUMSUB_API_URL?.trim() || "https://api.sumsub.com").replace(/\/$/, ""),
+
   // Rate limiting
   reservationsPerMin: () => optionalNumber("RATE_LIMIT_RESERVATIONS_PER_MIN", 5),
 } as const;

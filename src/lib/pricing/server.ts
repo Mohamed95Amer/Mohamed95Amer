@@ -3,6 +3,7 @@ import { env } from "@/lib/env";
 import { getLatestTick, isFresh } from "@/lib/gold-price/service";
 import { refreshInBand } from "@/lib/gold-price/refresh-on-read";
 import { computePrice, type PriceBreakdown } from "./calc";
+import type { FulfilmentMethod } from "@/lib/fulfilment";
 
 export interface OfficialPriceResult {
   product: {
@@ -39,6 +40,7 @@ export interface OfficialPriceResult {
 export async function computeOfficialPriceForProduct(
   productId: string,
   quantity: number,
+  fulfilmentMethod: FulfilmentMethod,
 ): Promise<OfficialPriceResult> {
   const supabase = getServiceSupabase();
 
@@ -89,7 +91,7 @@ export async function computeOfficialPriceForProduct(
     stoneValue: Number(product.stone_value),
     vendorPremium: Number(product.vendor_premium),
     platformFeeBps: Number(settings.platform_fee_bps),
-    deliveryFee: Number(settings.delivery_fee_aed),
+    deliveryFee: fulfilmentMethod === "delivery" ? Number(settings.delivery_fee_aed) : 0,
   });
 
   const totalPriceAed = Math.round(breakdown.unitPriceAed * quantity * 100) / 100;

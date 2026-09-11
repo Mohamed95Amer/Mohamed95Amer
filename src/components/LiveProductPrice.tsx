@@ -92,7 +92,7 @@ export function LiveProductPrice(props: Props) {
             <dt>Gold ({props.karat}K × {props.weightGrams}g)</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.goldValueAed)}</dd>
             <dt className="flex flex-wrap items-center gap-1.5">
-              Making charge
+              Making charge for this item
               {breakdown.makingChargeDiscountPercent > 0 && (
                 <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gold-600">
                   {breakdown.makingChargeDiscountPercent}% off
