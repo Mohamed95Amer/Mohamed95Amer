@@ -18,7 +18,7 @@ export function StoreRating({
   return (
     <span
       className={`inline-flex items-center gap-1.5 ${compact ? "text-[11px]" : "text-sm"}`}
-      aria-label={`${reputation.averageRating.toFixed(1)} out of 5 from ${reputation.reviewCount} verified reviews`}
+      aria-label={`${reputation.averageRating.toFixed(1)} out of 5 from ${reputation.reviewCount} verified ${reputation.reviewCount === 1 ? "review" : "reviews"}`}
     >
       <span className="text-gold-500" aria-hidden="true">★</span>
       <strong className="tabular-nums text-jade-950">{reputation.averageRating.toFixed(1)}</strong>
@@ -123,7 +123,7 @@ export function ReputationOverview({ reputation }: { reputation: VendorReputatio
         <PerformanceMetric
           label="Fulfilment rate"
           value={reputation.fulfilmentRatePercent === null ? "—" : `${reputation.fulfilmentRatePercent}%`}
-          detail={`${reputation.resolvedOrderCount} resolved orders in 90 days`}
+          detail={`${reputation.resolvedOrderCount} resolved ${reputation.resolvedOrderCount === 1 ? "order" : "orders"} in 90 days`}
         />
         <PerformanceMetric
           label="Adjusted rating"
