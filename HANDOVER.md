@@ -21,7 +21,7 @@ the real `goldhub-three.vercel.app` deployment; it previously generated canonica
 to an unrelated Persian site at `goldhub.vercel.app`.
 
 **Pending verified release (13 Sep 2026):** branch commit `973b6d5` contains the Didit integration,
-and the working tree upgrades the framework from vulnerable Next.js `14.2.15` to the patched
+and commit `2cc3a2e` upgrades the framework from vulnerable Next.js `14.2.15` to the patched
 `15.5.24` maintenance line. A clean `npm ci`, full dependency audit, typecheck, ESLint run and
 41-page production build all pass; the dependency audit reports zero known vulnerabilities. The
 signed Didit webhook probe also passes both accepted-signature paths and rejects stale and forged
