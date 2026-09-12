@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { getLatestTick } from "@/lib/gold-price/service";
 import { computePrice } from "@/lib/pricing/calc";
 import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
+import { listingFreshCutoff } from "@/lib/products/integrity";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -22,12 +23,22 @@ interface SP {
 export default async function MarketplacePage({ searchParams }: SP) {
   const filters = await searchParams;
   const supabase = getServiceSupabase();
+  const { data: settings } = await supabase
+    .from("platform_settings")
+    .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days")
+    .eq("id", true)
+    .maybeSingle();
+  const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, created_at, vendors(id, business_name, emirate, verification_status)",
+      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, created_at, vendors!inner(id, business_name, emirate, verification_status)",
     )
     .eq("product_status", "approved")
+    .eq("vendors.verification_status", "approved")
+    .eq("data_quality_status", "valid")
+    .gt("quantity", 0)
+    .gte("inventory_confirmed_at", freshAfter)
     .order("created_at", { ascending: false })
     .limit(60);
 
@@ -35,18 +46,13 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (filters.karat) query = query.eq("karat", Number(filters.karat));
   if (filters.q) query = query.ilike("name", `%${filters.q}%`);
 
-  const [{ data }, { data: fees }, { data: reputationRows }, latestTick] = await Promise.all([
+  const [{ data }, { data: reputationRows }, latestTick] = await Promise.all([
     query,
-    supabase
-      .from("platform_settings")
-      .select("platform_fee_bps, delivery_fee_aed")
-      .eq("id", true)
-      .maybeSingle(),
     supabase.from("vendor_reputation_summary").select("*"),
     getLatestTick(),
   ]);
-  const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
-  const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
+  const platformFeeBps = Number(settings?.platform_fee_bps ?? 50);
+  const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const liveRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
   const sorted = [...(data ?? [])].sort((a, b) => {
@@ -157,6 +163,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
             <div className="card col-span-full px-6 py-14 text-center">
               <p className="font-serif text-2xl text-jade-950">No matching gold yet.</p>
               <p className="mt-2 text-sm text-ink-muted">Try a broader category or clear your search.</p>
+              <Link href="/requests/new" className="btn-primary mt-5">Ask verified stores</Link>
             </div>
           )}
         </div>

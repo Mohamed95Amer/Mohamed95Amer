@@ -42,6 +42,16 @@ export default async function AdminProductDetail({ params }: { params: Promise<{
       </div>
       <div className="card p-6">
         <h3 className="font-serif text-xl">Decision</h3>
+        {Array.isArray(p.data_quality_issues) && p.data_quality_issues.length > 0 && (
+          <div className="mt-3 rounded-xl border border-signal-err/20 bg-signal-err/5 p-4 text-sm text-signal-err">
+            <p className="font-semibold">Approval is blocked until these issues are fixed:</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {p.data_quality_issues.map((issue: { code?: string; message?: string }, index: number) => (
+                <li key={`${issue.code ?? "issue"}-${index}`}>{issue.message ?? issue.code ?? "Invalid listing data"}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <AdminProductActions productId={p.id} currentStatus={p.product_status} />
       </div>
     </div>

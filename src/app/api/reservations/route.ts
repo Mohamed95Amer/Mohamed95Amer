@@ -5,6 +5,7 @@ import { createReservationSchema } from "@/lib/validation/schemas";
 import { rateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 import { env } from "@/lib/env";
+import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,6 +37,10 @@ export async function POST(request: Request) {
 
   const rl = rateLimit(`res:${auth.user.id}`, env.reservationsPerMin(), 60_000);
   if (!rl.ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+
+  const admin = getServiceSupabase();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", auth.user.id).maybeSingle();
+  if (profile?.role !== "customer") return NextResponse.json({ error: "customer_account_required" }, { status: 403 });
 
   let payload: unknown;
   try {
@@ -73,14 +78,15 @@ export async function POST(request: Request) {
   }
 
   // Persist with service role so RLS doesn't fight us on related rows.
-  const admin = getServiceSupabase();
-
   const { data: settings } = await admin
     .from("platform_settings")
-    .select("reservation_lock_minutes")
+    .select("reservation_lock_minutes, online_payments_enabled")
     .eq("id", true)
     .single();
   const lockMinutes = settings?.reservation_lock_minutes ?? env.reservationLockMinutes();
+  if (parsed.data.paymentMethod === "pay_online" && (!settings?.online_payments_enabled || !onlinePaymentCheckoutIsOperational())) {
+    return NextResponse.json({ error: "online_payment_unavailable", message: "Online checkout is not active yet. Choose pay at store to continue." }, { status: 409 });
+  }
   const expiresAt = new Date(Date.now() + lockMinutes * 60_000).toISOString();
 
   // Claim through the DB function rather than a bare insert: it locks the
@@ -186,6 +192,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: snapErr.message }, { status: 500 });
   }
 
+  const paymentStatus = parsed.data.paymentMethod === "pay_online" ? "awaiting_store_confirmation" : "not_required";
+  const { error: paymentPreferenceError } = await admin.from("reservations").update({
+    payment_method: parsed.data.paymentMethod,
+    payment_status: paymentStatus,
+  }).eq("id", reservation.id);
+  if (paymentPreferenceError) {
+    await admin.from("reservations").delete().eq("id", reservation.id);
+    await admin.from("order_identity_verifications").update({ status: "approved", consumed_at: null, reservation_id: null }).eq("id", parsed.data.identityVerificationId).eq("user_id", auth.user.id);
+    return NextResponse.json({ error: paymentPreferenceError.message }, { status: 500 });
+  }
+
   await logAudit({
     actor_user_id: auth.user.id,
     actor_role: "customer",
@@ -197,12 +214,13 @@ export async function POST(request: Request) {
       tick_id: priced.tick.id,
       expires_at: expiresAt,
       fulfilment_method: parsed.data.fulfilmentMethod,
+      payment_method: parsed.data.paymentMethod,
     },
     ip_address: ipFromRequest(request),
   });
 
   return NextResponse.json({
-    reservation,
+    reservation: { ...reservation, payment_method: parsed.data.paymentMethod, payment_status: paymentStatus },
     snapshot: {
       total_price_aed: priced.totalPriceAed,
       unit_price_aed: priced.breakdown.unitPriceAed,

@@ -10,6 +10,8 @@ export function AdminNav() {
     ["/admin/vendors", "Vendors"],
     ["/admin/delivery-companies", "Delivery companies"],
     ["/admin/products", "Products"],
+    ["/admin/catalogue-support", "Catalogue support"],
+    ["/admin/liquidity", "Marketplace health"],
     ["/admin/orders", "Orders"],
     ["/admin/reviews", "Reviews"],
     ["/admin/gold-price", "Gold price"],

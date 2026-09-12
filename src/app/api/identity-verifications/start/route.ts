@@ -4,6 +4,7 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { identityVerificationStartSchema } from "@/lib/validation/schemas";
 import { createDiditVerificationSession, diditIsConfigured } from "@/lib/identity/didit";
 import { rateLimit } from "@/lib/security/rate-limit";
+import { listingFreshCutoff } from "@/lib/products/integrity";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -31,11 +32,18 @@ export async function POST(request: Request) {
   }
 
   const admin = getServiceSupabase();
+  const { data: profile } = await admin.from("profiles").select("role").eq("id", auth.user.id).maybeSingle();
+  if (profile?.role !== "customer") return NextResponse.json({ error: "customer_account_required" }, { status: 403 });
+  const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
   const { data: product } = await admin
     .from("products")
-    .select("id")
+    .select("id, vendors!inner(verification_status)")
     .eq("id", parsed.data.productId)
     .eq("product_status", "approved")
+    .eq("vendors.verification_status", "approved")
+    .eq("data_quality_status", "valid")
+    .gt("quantity", 0)
+    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)))
     .maybeSingle();
   if (!product) return NextResponse.json({ error: "product_unavailable" }, { status: 400 });
 

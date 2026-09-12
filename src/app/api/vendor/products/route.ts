@@ -3,6 +3,7 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { productUpsertSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit";
 import { ipFromRequest } from "@/lib/security/rate-limit";
+import { productIntegrityIssues } from "@/lib/products/integrity";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,12 +36,16 @@ async function upsert(request: Request) {
     return NextResponse.json({ error: "invalid_input", details: parsed.error.flatten() }, { status: 400 });
   }
   const { id, submit_for_approval, ...rest } = parsed.data;
+  const integrityIssues = productIntegrityIssues(rest);
 
   // Vendors cannot submit for approval unless their account is approved.
   let status: "draft" | "pending_approval" = "draft";
   if (submit_for_approval) {
     if (vendor.verification_status !== "approved") {
       return NextResponse.json({ error: "vendor_not_approved" }, { status: 403 });
+    }
+    if (integrityIssues.length > 0) {
+      return NextResponse.json({ error: "listing_integrity_failed", issues: integrityIssues }, { status: 400 });
     }
     status = "pending_approval";
   }
@@ -60,9 +65,19 @@ async function upsert(request: Request) {
       existing.product_status === "approved" || existing.product_status === "suspended"
         ? existing.product_status
         : status;
+    if (newStatus === "approved" && integrityIssues.length > 0) {
+      return NextResponse.json({ error: "listing_integrity_failed", issues: integrityIssues }, { status: 400 });
+    }
     const { error } = await admin
       .from("products")
-      .update({ ...rest, product_status: newStatus })
+      .update({
+        ...rest,
+        product_status: newStatus,
+        inventory_confirmed_at: new Date().toISOString(),
+        data_quality_status: integrityIssues.length === 0 ? "valid" : "blocked",
+        data_quality_issues: integrityIssues,
+        last_quality_checked_at: new Date().toISOString(),
+      })
       .eq("id", id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     await logAudit({
@@ -79,7 +94,15 @@ async function upsert(request: Request) {
 
   const { data, error } = await admin
     .from("products")
-    .insert({ ...rest, vendor_id: vendor.id, product_status: status })
+    .insert({
+      ...rest,
+      vendor_id: vendor.id,
+      product_status: status,
+      inventory_confirmed_at: new Date().toISOString(),
+      data_quality_status: integrityIssues.length === 0 ? "valid" : "blocked",
+      data_quality_issues: integrityIssues,
+      last_quality_checked_at: new Date().toISOString(),
+    })
     .select("id, product_status")
     .single();
   if (error || !data) return NextResponse.json({ error: error?.message ?? "insert_failed" }, { status: 500 });

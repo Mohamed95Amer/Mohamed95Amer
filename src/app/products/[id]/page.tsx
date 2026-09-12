@@ -16,11 +16,14 @@ import {
 } from "@/lib/reputation";
 import { getCurrentProfile } from "@/lib/auth/server";
 import { diditIsConfigured } from "@/lib/identity/didit";
+import { StoreVisitForm } from "@/components/StoreVisitForm";
+import { listingFreshCutoff } from "@/lib/products/integrity";
+import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
 
 export const dynamic = "force-dynamic";
 
 const SELECT =
-  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors(id, business_name, emirate, verification_status)";
+  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors!inner(id, business_name, emirate, verification_status)";
 
 type Vendor = {
   id: string;
@@ -31,14 +34,28 @@ type Vendor = {
 
 async function loadProduct(id: string) {
   const supabase = getServiceSupabase();
-  const { data } = await supabase.from("products").select(SELECT).eq("id", id).single();
-  return data;
+  const { data: settings } = await supabase
+    .from("platform_settings")
+    .select("platform_fee_bps, delivery_fee_aed, online_payments_enabled, listing_fresh_days")
+    .eq("id", true)
+    .maybeSingle();
+  const { data: product } = await supabase
+    .from("products")
+    .select(SELECT)
+    .eq("id", id)
+    .eq("product_status", "approved")
+    .eq("vendors.verification_status", "approved")
+    .eq("data_quality_status", "valid")
+    .gt("quantity", 0)
+    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)))
+    .maybeSingle();
+  return { product, settings };
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const product = await loadProduct(id);
-  if (!product || product.product_status !== "approved") return { title: "Not found — Get Gold" };
+  const { product } = await loadProduct(id);
+  if (!product) return { title: "Not found — Get Gold" };
   const vendor = product.vendors as unknown as Vendor;
   return {
     title: `${product.name} — ${product.karat}K, ${product.weight_grams}g`,
@@ -60,17 +77,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = getServiceSupabase();
-  const product = await loadProduct(id);
-  if (!product || product.product_status !== "approved") return notFound();
+  const { product, settings } = await loadProduct(id);
+  if (!product) return notFound();
 
   const vendor = product.vendors as unknown as Vendor;
 
-  const [{ data: settings }, { data: availability }, { data: reputationRow }, { data: reviews }, profile] = await Promise.all([
-    supabase
-      .from("platform_settings")
-      .select("platform_fee_bps, delivery_fee_aed")
-      .eq("id", true)
-      .single(),
+  const [{ data: availability }, { data: reputationRow }, { data: reviews }, profile] = await Promise.all([
     // Stock net of unexpired holds. product.quantity alone would advertise
     // units that other customers are already holding.
     supabase.rpc("available_quantity", { p_product_id: product.id }),
@@ -229,6 +241,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 defaultRecipientName={profile?.full_name ?? ""}
                 defaultRecipientPhone={profile?.phone ?? ""}
                 identityVerificationAvailable={diditIsConfigured()}
+                onlinePaymentsEnabled={Boolean(settings?.online_payments_enabled) && onlinePaymentCheckoutIsOperational()}
                 pricing={{
                   karat: product.karat,
                   weightGrams: Number(product.weight_grams),
@@ -243,6 +256,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 }}
               />
             </div>
+            {!soldOut && <div className="mt-4 border-t border-jade-900/10 pt-4"><StoreVisitForm productId={product.id} defaultPhone={profile?.phone ?? ""} /></div>}
           </div>
 
           <div className="rounded-2xl bg-jade-950 p-5 text-sm leading-relaxed text-white/65 shadow-card">

@@ -8,6 +8,9 @@ interface Settings {
   delivery_fee_aed: number;
   reservation_lock_minutes: number;
   stale_price_seconds: number;
+  listing_fresh_days: number;
+  online_payments_enabled: boolean;
+  online_payment_provider: string | null;
 }
 
 export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
@@ -17,6 +20,9 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
     delivery_fee_aed: initial?.delivery_fee_aed ?? 0,
     reservation_lock_minutes: initial?.reservation_lock_minutes ?? 10,
     stale_price_seconds: initial?.stale_price_seconds ?? 60,
+    listing_fresh_days: initial?.listing_fresh_days ?? 45,
+    online_payments_enabled: false,
+    online_payment_provider: null,
   });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -33,6 +39,9 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
         delivery_fee_aed: Number(form.delivery_fee_aed),
         reservation_lock_minutes: Number(form.reservation_lock_minutes),
         stale_price_seconds: Number(form.stale_price_seconds),
+        listing_fresh_days: Number(form.listing_fresh_days),
+        online_payments_enabled: Boolean(form.online_payments_enabled),
+        online_payment_provider: form.online_payment_provider || null,
       }),
     });
     setBusy(false);
@@ -70,6 +79,19 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
         <input id="setting-stale" name="stale_price_seconds" className="input" type="number" inputMode="numeric" min="15" max="600" step="1" value={form.stale_price_seconds}
           onChange={(e) => set("stale_price_seconds", Number(e.target.value))} />
         <p className="text-xs text-ink-muted mt-1">If the latest tick is older than this, reservation is disabled marketplace-wide.</p>
+      </div>
+      <div>
+        <label className="label" htmlFor="setting-listing-freshness">Hide listings after (days without stock confirmation)</label>
+        <input id="setting-listing-freshness" className="input" type="number" min="7" max="180" step="1" value={form.listing_fresh_days} onChange={(e) => set("listing_fresh_days", Number(e.target.value))} />
+      </div>
+      <div className="rounded-xl border border-jade-900/10 bg-jade-50 p-4">
+        <label className="flex items-start gap-3 text-sm font-semibold text-jade-950">
+          <input type="checkbox" className="mt-1" checked={false} disabled />
+          Online checkout — provider connection required
+        </label>
+        <p className="mt-1 text-xs text-ink-muted">The choice remains visible to customers as coming soon. Activation stays locked until a contracted provider, signed webhooks, refunds and marketplace settlement are deployed and tested.</p>
+        <label className="label mt-3" htmlFor="setting-payment-provider">Provider name</label>
+        <input id="setting-payment-provider" className="input" maxLength={80} placeholder="Not connected" value="" disabled />
       </div>
       {err && <p role="alert" className="text-sm text-signal-err">{err}</p>}
       {ok && <p role="status" className="text-sm text-signal-ok">Saved.</p>}

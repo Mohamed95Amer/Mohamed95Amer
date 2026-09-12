@@ -46,11 +46,13 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
   });
   const [images, setImages] = useState<string[]>(initial?.images ?? []);
   const [err, setErr] = useState<string | null>(null);
+  const [issues, setIssues] = useState<string[]>([]);
   const [busy, setBusy] = useState<"draft" | "submit" | null>(null);
 
   async function save(submit: boolean) {
     setBusy(submit ? "submit" : "draft");
     setErr(null);
+    setIssues([]);
     const res = await fetch("/api/vendor/products", {
       method: initial?.id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -77,7 +79,11 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
     setBusy(null);
     if (!res.ok) {
       const j = await res.json().catch(() => ({}));
-      setErr(typeof j.error === "string" ? j.error : "Could not save");
+      const messages = Array.isArray(j.issues)
+        ? j.issues.map((issue: { message?: unknown }) => String(issue.message ?? "Check the listing details"))
+        : [];
+      setIssues(messages);
+      setErr(j.error === "listing_integrity_failed" ? "Fix these catalogue checks before submission:" : typeof j.error === "string" ? j.error : "Could not save");
       return;
     }
     router.push("/vendor/products");
@@ -158,7 +164,12 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
         <label className="label" htmlFor="product-description">Description</label>
         <textarea id="product-description" name="description" className="input min-h-[100px]" value={form.description} onChange={(e) => set("description", e.target.value)} />
       </div>
-      {err && <p role="alert" className="md:col-span-2 text-sm text-signal-err">{err}</p>}
+      {err && (
+        <div role="alert" className="md:col-span-2 rounded-xl border border-signal-err/20 bg-signal-err/5 p-4 text-sm text-signal-err">
+          <p className="font-semibold">{err}</p>
+          {issues.length > 0 && <ul className="mt-2 list-disc space-y-1 pl-5">{issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>}
+        </div>
+      )}
       <div className="md:col-span-2 flex gap-3">
         <button type="submit" className="btn-ghost" disabled={busy !== null}>
           {busy === "draft" ? "Saving…" : "Save draft"}

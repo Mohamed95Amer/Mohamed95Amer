@@ -16,6 +16,7 @@ interface MobileNavProps {
 
 const publicLinks = [
   ["/marketplace", "Marketplace"],
+  ["/requests/new", "Request a piece"],
   ["/vendors", "Verified stores"],
   ["/live-price", "Gold insights"],
   ["/how-it-works", "How it works"],
@@ -31,7 +32,7 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDelivery
   const accountLinks: Array<readonly [string, string]> = signedIn
     ? [
         ["/profile", displayName ? `${displayName}'s profile` : "My profile"],
-        ...(isCustomer ? [["/account", "Purchase history"]] as const : []),
+        ...(isCustomer ? [["/account", "Purchase history"], ["/account/requests", "My gold requests"], ["/account/visits", "My store visits"]] as const : []),
         ...(isVendor ? [["/vendor", "Vendor dashboard"]] as const : []),
         ...(isDeliveryCompany ? [["/delivery", "Delivery dashboard"]] as const : []),
         ...(isAdmin ? [["/admin", "Admin dashboard"]] as const : []),

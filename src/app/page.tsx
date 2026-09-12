@@ -5,6 +5,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
+import { listingFreshCutoff } from "@/lib/products/integrity";
 
 export const dynamic = "force-dynamic";
 
@@ -22,35 +23,44 @@ const categories = [
 
 export default async function HomePage() {
   const supabase = getServiceSupabase();
-  const [{ data: products }, { data: vendors }, { data: fees }, { data: categoryProducts }, { data: reputationRows }] = await Promise.all([
+  const { data: settings } = await supabase
+    .from("platform_settings")
+    .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days")
+    .eq("id", true)
+    .maybeSingle();
+  const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
+  const [{ data: products }, { data: vendors }, { data: categoryProducts }, { data: reputationRows }] = await Promise.all([
     supabase
       .from("products")
       .select(
-        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors(id, business_name, emirate, verification_status)",
+        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status)",
       )
       .eq("product_status", "approved")
+      .eq("vendors.verification_status", "approved")
+      .eq("data_quality_status", "valid")
+      .gt("quantity", 0)
+      .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false })
       .limit(6),
     supabase
       .from("vendors")
       .select("id, business_name, emirate")
       .eq("verification_status", "approved")
-      .limit(6),
-    supabase
-      .from("platform_settings")
-      .select("platform_fee_bps, delivery_fee_aed")
-      .eq("id", true)
-      .maybeSingle(),
+      .limit(30),
     supabase
       .from("products")
-      .select("id, name, category, karat, images, vendor_id")
+      .select("id, name, category, karat, images, vendor_id, vendors!inner(verification_status)")
       .eq("product_status", "approved")
+      .eq("vendors.verification_status", "approved")
+      .eq("data_quality_status", "valid")
+      .gt("quantity", 0)
+      .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false })
       .limit(60),
     supabase.from("vendor_reputation_summary").select("*"),
   ]);
-  const platformFeeBps = Number(fees?.platform_fee_bps ?? 50);
-  const deliveryFee = Number(fees?.delivery_fee_aed ?? 0);
+  const platformFeeBps = Number(settings?.platform_fee_bps ?? 50);
+  const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const activeVendorIds = new Set((categoryProducts ?? []).map((product) => product.vendor_id));
   const activeVendors = (vendors ?? []).filter((vendor) => activeVendorIds.has(vendor.id));
@@ -89,6 +99,7 @@ export default async function HomePage() {
               >
                 See how pricing works
               </Link>
+              <Link href="/requests/new" className="inline-flex items-center justify-center rounded-full px-3 py-3 text-sm font-semibold text-gold-200 transition hover:text-white">Can’t find it? Request a piece →</Link>
             </div>
 
             <div className="mt-8 grid max-w-2xl grid-cols-3 gap-3 border-t border-white/10 pt-5 sm:mt-10 sm:gap-4 sm:pt-6">

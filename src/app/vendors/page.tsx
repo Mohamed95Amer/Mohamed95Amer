@@ -4,6 +4,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 import type { Metadata } from "next";
+import { listingFreshCutoff } from "@/lib/products/integrity";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -16,6 +17,8 @@ type Listing = { id: string; category: string; karat: number; name: string; imag
 
 export default async function VendorsListPage() {
   const supabase = getServiceSupabase();
+  const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
+  const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
   const [{ data: vendors }, { data: listings }, { data: reputationRows }] = await Promise.all([
     supabase
@@ -28,7 +31,10 @@ export default async function VendorsListPage() {
     supabase
       .from("products")
       .select("id, vendor_id, name, category, karat, images")
-      .eq("product_status", "approved"),
+      .eq("product_status", "approved")
+      .eq("data_quality_status", "valid")
+      .gt("quantity", 0)
+      .gte("inventory_confirmed_at", freshAfter),
     supabase.from("vendor_reputation_summary").select("*"),
   ]);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);

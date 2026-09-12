@@ -4,6 +4,7 @@ import { getLatestTick, isFresh } from "@/lib/gold-price/service";
 import { refreshInBand } from "@/lib/gold-price/refresh-on-read";
 import { computePrice, type PriceBreakdown } from "./calc";
 import type { FulfilmentMethod } from "@/lib/fulfilment";
+import { listingFreshCutoff } from "@/lib/products/integrity";
 
 export interface OfficialPriceResult {
   product: {
@@ -26,7 +27,7 @@ export interface OfficialPriceResult {
     fetched_at: string;
     status: "ok" | "degraded" | "failed";
   };
-  settings: { platform_fee_bps: number; delivery_fee_aed: number; stale_price_seconds: number };
+  settings: { platform_fee_bps: number; delivery_fee_aed: number; stale_price_seconds: number; listing_fresh_days: number };
   breakdown: PriceBreakdown;
   totalPriceAed: number;
   isFresh: boolean;
@@ -44,27 +45,29 @@ export async function computeOfficialPriceForProduct(
 ): Promise<OfficialPriceResult> {
   const supabase = getServiceSupabase();
 
-  const { data: product, error: prodErr } = await supabase
-    .from("products")
-    .select(
-      "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, product_status",
-    )
-    .eq("id", productId)
-    .single();
-  if (prodErr || !product) throw new Error("Product not found");
-  if (product.product_status !== "approved") {
-    throw new Error("Product is not available for purchase");
-  }
-  if (quantity < 1 || quantity > product.quantity) {
-    throw new Error("Requested quantity exceeds available stock");
-  }
-
   const { data: settings, error: setErr } = await supabase
     .from("platform_settings")
-    .select("platform_fee_bps, delivery_fee_aed, stale_price_seconds")
+    .select("platform_fee_bps, delivery_fee_aed, stale_price_seconds, listing_fresh_days")
     .eq("id", true)
     .single();
   if (setErr || !settings) throw new Error("Platform settings missing");
+
+  const { data: product, error: prodErr } = await supabase
+    .from("products")
+    .select(
+      "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, product_status, vendors!inner(verification_status)",
+    )
+    .eq("id", productId)
+    .eq("product_status", "approved")
+    .eq("vendors.verification_status", "approved")
+    .eq("data_quality_status", "valid")
+    .gt("quantity", 0)
+    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)))
+    .maybeSingle();
+  if (prodErr || !product) throw new Error("Product not found");
+  if (quantity < 1 || quantity > product.quantity) {
+    throw new Error("Requested quantity exceeds available stock");
+  }
 
   const staleSeconds = settings.stale_price_seconds ?? env.stalePriceSeconds();
 

@@ -28,6 +28,19 @@ signed Didit webhook probe also passes both accepted-signature paths and rejects
 requests. This release is not on the live URL yet: Vercel authentication has expired, and the Didit
 credentials plus migration `20260912102501_allow_didit_identity_provider.sql` are still pending.
 
+**Marketplace-liquidity release (13 Sep 2026):** the branch now also contains migration
+`20260912224153_marketplace_liquidity_requests.sql`. It adds a strict listing-integrity gate,
+45-day configurable inventory confirmations, hides stale/invalid/empty listings from every public
+discovery and reservation path, buyer requests with private reference images and itemized vendor
+offers, no-hold store-visit leads, a managed 10–20-product catalogue-onboarding workflow, vendor and
+admin liquidity reporting, and a provider-ready payment preference. The customer can see online
+checkout as a future option, but both the UI and API fail closed until a real PSP adapter exists;
+direct payment to the seller is the only executable payment path. Typecheck, ESLint and the full
+Next.js 15 production build pass. The new pgTAP coverage is in
+`supabase/tests/marketplace_liquidity_test.sql`, but Docker is not running locally, so the migration
+and its SQL tests have not made a PostgREST/Postgres round trip. Apply and verify the migration
+before deploying the application release.
+
 Migrations `20260911135750_add_delivery_company_role.sql`,
 `20260911135755_delivery_company_profiles.sql` and
 `20260911181153_harden_get_gold_security.sql` are applied to production and recorded in migration
@@ -205,11 +218,34 @@ tiles are both more trustworthy and more visually specific.
 Store collection sets the snapshotted delivery fee to zero. Delivery orders continue to use the
 existing per-unit fee behavior until the owner decides the per-order question above.
 
-> **Payments are still not integrated.** Before implementation, choose the commercial model:
-> the lowest-custody option is for each vendor to remain merchant of record and receive customer
-> payments in its own PSP account, while Get Gold invoices its commission separately. Native
-> marketplace splitting can automate vendor/Get Gold/courier allocation, but the UAE PSP contract
-> must state who owns chargebacks, refunds, negative balances and settlement liability.
+> **Payments are still not integrated.** The checkout now records `pay_at_store` or `pay_online`,
+> but `pay_online` is visibly disabled and rejected server-side even if someone changes the database
+> feature flag. This is deliberate: a flag cannot substitute for a PSP adapter, signed webhooks,
+> refunds and verified settlement. The lowest-custody model remains vendor-as-merchant-of-record,
+> with native marketplace splitting by the regulated PSP to vendor/Get Gold/courier accounts. The
+> UAE PSP contract must state who owns chargebacks, refunds, negative balances and settlement
+> liability before `src/lib/payments/readiness.ts` can be made operational.
+
+### Marketplace liquidity and catalogue integrity
+
+- A customer can create a **Get Gold Request** with category, karat, budget, emirate, deadline and
+  an optional private reference image. Only the server service role can access the private bucket;
+  approved vendors receive one-hour signed URLs and can see only their own offer, not competitors’
+  offer data. Accepting an offer is atomic and marks competing submitted offers declined. It is not
+  yet an order or price lock.
+- Product pages offer a **store visit request** for customers who want inspection. It creates no
+  stock hold and no gold-price lock. Vendors confirm, decline or complete these leads from Orders.
+- Vendors can request free managed onboarding for 10–20 products. Admins track that workflow in
+  Catalogue support; the intent is to remove manual listing work from early supply acquisition.
+- `product_integrity_issues()` is implemented in TypeScript and Postgres. Purity contradictions,
+  category/title mismatch, missing descriptions/photos, invalid stock/weight, fake making-charge
+  discounts and unsupported bullion/certificate fees block submission and approval. Drafts may
+  remain incomplete, but they cannot progress to a sellable state.
+- Vendors confirm approved inventory individually or in bulk. Listings with zero quantity, blocked
+  quality metadata or an old `inventory_confirmed_at` are absent from the homepage, marketplace,
+  store pages, sitemap, identity-verification start and authoritative reservation pricing.
+- `/vendor` and `/admin/liquidity` report fresh listings, reservations, request offers and store-visit
+  leads for the last 30 days using `vendor_liquidity_summary`.
 
 ### Live gold price
 

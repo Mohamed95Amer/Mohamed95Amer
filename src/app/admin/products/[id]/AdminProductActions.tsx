@@ -26,7 +26,10 @@ export function AdminProductActions({
     setBusy(null);
     if (!res.ok) {
       const j = await res.json().catch(() => ({}));
-      setErr(typeof j.error === "string" ? j.error : "Failed");
+      const detail = Array.isArray(j.issues)
+        ? j.issues.map((issue: { message?: unknown }) => String(issue.message ?? "Check listing data")).join(" ")
+        : "";
+      setErr(j.error === "listing_integrity_failed" ? `Approval blocked: ${detail}` : typeof j.error === "string" ? j.error : "Failed");
       return;
     }
     router.refresh();

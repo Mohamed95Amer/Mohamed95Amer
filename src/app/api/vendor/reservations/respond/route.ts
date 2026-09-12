@@ -27,7 +27,7 @@ export async function POST(request: Request) {
 
   const { data: reservation } = await admin
     .from("reservations")
-    .select("id, vendor_id, status, expires_at")
+    .select("id, vendor_id, status, expires_at, payment_method")
     .eq("id", parsed.data.reservationId)
     .single();
   if (!reservation || reservation.vendor_id !== vendor.id) {
@@ -41,8 +41,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "expired" }, { status: 409 });
   }
 
-  const nextStatus =
-    parsed.data.decision === "confirm" ? "payment_link_pending" : "rejected_by_vendor";
+  const nextStatus = parsed.data.decision === "confirm"
+    ? reservation.payment_method === "pay_online" ? "payment_link_pending" : "payment_pending"
+    : "rejected_by_vendor";
 
   const { error } = await admin
     .from("reservations")
@@ -50,6 +51,9 @@ export async function POST(request: Request) {
       status: nextStatus,
       vendor_response_note: parsed.data.note ?? null,
       vendor_responded_at: new Date().toISOString(),
+      payment_status: parsed.data.decision === "confirm" && reservation.payment_method === "pay_online"
+        ? "awaiting_checkout"
+        : "not_required",
     })
     .eq("id", reservation.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

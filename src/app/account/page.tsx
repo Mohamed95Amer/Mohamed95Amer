@@ -105,6 +105,11 @@ export default async function AccountPage() {
       </section>
 
       <div className="container-pro py-10 sm:py-14">
+        <nav className="mb-8 flex flex-wrap gap-2" aria-label="Customer account">
+          <Link href="/requests/new" className="btn-primary px-4 py-2 text-xs">Request a piece</Link>
+          <Link href="/account/requests" className="btn-ghost px-4 py-2 text-xs">My gold requests</Link>
+          <Link href="/account/visits" className="btn-ghost px-4 py-2 text-xs">My store visits</Link>
+        </nav>
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <AccountStat label="Completed purchases" value={String(purchases.length)} detail={fineGoldGrams.toFixed(3) + "g fine-gold equivalent"} />
           <AccountStat label="Total paid" value={formatAed(paidSpend)} detail="Completed purchases only" />

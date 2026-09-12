@@ -78,6 +78,8 @@ export default async function ReservationDetailPage({ params }: { params: Promis
         <FulfilmentDetails details={r} />
       </div>
 
+      <div className="card mt-6 p-5 text-sm"><span className="label">Payment choice</span><p className="mt-2 font-medium text-jade-950">{r.payment_method === "pay_online" ? "Online checkout requested" : "Pay the seller directly"}</p><p className="mt-1 text-xs text-ink-muted">{r.payment_method === "pay_online" ? `Payment status: ${reservationStatusLabel(r.payment_status)}` : "Get Gold does not hold the payment for this order."}</p></div>
+
       <section className="card mt-6 p-6 sm:p-7">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div><p className="eyebrow text-jade-600">Order journey</p><h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">What happens next</h2></div>

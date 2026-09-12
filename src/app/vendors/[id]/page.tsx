@@ -11,6 +11,7 @@ import {
   type PublicReview,
   type VendorReputationRow,
 } from "@/lib/reputation";
+import { listingFreshCutoff } from "@/lib/products/integrity";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,8 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
   const supabase = getServiceSupabase();
   const vendor = await loadVendor(id);
   if (!vendor || vendor.verification_status !== "approved") return notFound();
+  const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
+  const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
   const [{ data: products }, { data: reputationRow }, { data: reviews }] = await Promise.all([
     supabase
@@ -43,6 +46,9 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
       .select("id, name, category, karat, weight_grams, images")
       .eq("vendor_id", id)
       .eq("product_status", "approved")
+      .eq("data_quality_status", "valid")
+      .gt("quantity", 0)
+      .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false }),
     supabase.from("vendor_reputation_summary").select("*").eq("vendor_id", id).maybeSingle(),
     supabase

@@ -44,6 +44,7 @@ export async function SiteHeader() {
 
         <nav className="hidden items-center gap-1 rounded-full border border-jade-900/10 bg-jade-50/70 p-1 text-sm text-ink-muted lg:flex">
           <Link href="/marketplace" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Marketplace</Link>
+          <Link href="/requests/new" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Request a piece</Link>
           <Link href="/vendors" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Vendors</Link>
           <Link href="/live-price" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Gold insights</Link>
           <Link href="/how-it-works" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">How it works</Link>

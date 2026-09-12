@@ -8,6 +8,7 @@ import { UAE_EMIRATES, type FulfilmentMethod } from "@/lib/fulfilment";
 import { IdentityVerificationDialog } from "@/components/IdentityVerificationDialog";
 
 type IdentityRoute = "uae_resident" | "visitor";
+type PaymentMethod = "pay_at_store" | "pay_online";
 
 interface VerificationSession {
   id: string;
@@ -49,6 +50,7 @@ export function ReserveButton({
   defaultRecipientName = "",
   defaultRecipientPhone = "",
   identityVerificationAvailable = false,
+  onlinePaymentsEnabled = false,
 }: {
   productId: string;
   soldOut?: boolean;
@@ -57,6 +59,7 @@ export function ReserveButton({
   defaultRecipientName?: string;
   defaultRecipientPhone?: string;
   identityVerificationAvailable?: boolean;
+  onlinePaymentsEnabled?: boolean;
 }) {
   const router = useRouter();
   const { isFresh, tick } = useLiveGoldPrice();
@@ -66,6 +69,7 @@ export function ReserveButton({
   const [pinMessage, setPinMessage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [fulfilmentMethod, setFulfilmentMethod] = useState<FulfilmentMethod>("delivery");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(onlinePaymentsEnabled ? "pay_online" : "pay_at_store");
   const [identityRoute, setIdentityRoute] = useState<IdentityRoute>("uae_resident");
   const [verification, setVerification] = useState<VerificationSession | null>(null);
   const [verificationOpen, setVerificationOpen] = useState(false);
@@ -177,6 +181,7 @@ export function ReserveButton({
           productId,
           quantity,
           identityVerificationId,
+          paymentMethod,
           fulfilmentMethod,
           ...details,
         }),
@@ -332,6 +337,31 @@ export function ReserveButton({
       )}
 
       {!soldOut && (
+        <fieldset>
+          <legend className="label">How would you like to pay?</legend>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            {(["pay_online", "pay_at_store"] as const).map((method) => {
+              const unavailable = method === "pay_online" && !onlinePaymentsEnabled;
+              const selected = paymentMethod === method;
+              return (
+                <button
+                  key={method}
+                  type="button"
+                  disabled={unavailable}
+                  aria-pressed={selected}
+                  onClick={() => setPaymentMethod(method)}
+                  className={`min-h-16 rounded-xl border px-3 py-2 text-left text-sm transition ${selected ? "border-jade-700 bg-jade-50 text-jade-950 ring-1 ring-jade-700" : "border-jade-900/10 bg-white text-ink-muted hover:border-jade-300"} disabled:cursor-not-allowed disabled:opacity-55`}
+                >
+                  <span className="block font-semibold">{method === "pay_online" ? "Pay online" : "Pay the store"}</span>
+                  <span className="mt-0.5 block text-[11px] font-normal">{method === "pay_online" ? unavailable ? "Activates after our payment partner is connected" : "Secure checkout after stock confirmation" : "Pay directly at collection or as arranged"}</span>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+      )}
+
+      {!soldOut && (
         <fieldset className="rounded-2xl border border-gold-400/25 bg-gold-50 p-4">
           <legend className="px-1 text-sm font-semibold text-jade-950">Mandatory identity check</legend>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">Choose the document route that applies to the person placing this order.</p>
@@ -397,7 +427,9 @@ export function ReserveButton({
       </button>
       {error && <p id="reservation-error" role="alert" className="text-sm text-signal-err">{error}</p>}
       <p id="reservation-help" className="text-xs leading-relaxed text-ink-muted">
-        No payment now. Your live price is locked for 10 minutes while the store confirms the item.
+        {paymentMethod === "pay_online"
+          ? "No charge yet. Secure online checkout opens only after the store confirms stock."
+          : "No payment now. Your live price is locked while the store confirms the item; you pay the seller directly."}
       </p>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-jade-900/10 bg-white/95 px-4 py-3 shadow-[0_-12px_35px_rgba(7,47,40,0.12)] backdrop-blur sm:hidden">

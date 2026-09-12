@@ -17,6 +17,7 @@ export const createReservationSchema = z.object({
   productId: z.string().uuid(),
   quantity: z.number().int().min(1).max(50),
   identityVerificationId: z.string().uuid(),
+  paymentMethod: z.enum(["pay_at_store", "pay_online"]),
   fulfilmentMethod: z.enum(["delivery", "collection"]),
   recipientName: optionalTrimmed(120),
   recipientPhone: optionalTrimmed(20),
@@ -175,6 +176,69 @@ export const platformSettingsSchema = z.object({
   delivery_fee_aed: z.number().min(0).max(100000),
   reservation_lock_minutes: z.number().int().min(1).max(60),
   stale_price_seconds: z.number().int().min(15).max(600),
+  listing_fresh_days: z.number().int().min(7).max(180),
+  online_payments_enabled: z.boolean(),
+  online_payment_provider: z.string().trim().max(80).optional().nullable(),
+});
+
+export const buyerRequestCreateSchema = z.object({
+  category: z.enum(["ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other"]),
+  karat: z.union([z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
+  budgetMinAed: z.number().min(0).max(10_000_000),
+  budgetMaxAed: z.number().positive().max(10_000_000),
+  emirate: z.enum(UAE_EMIRATES),
+  neededBy: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
+  description: z.string().trim().min(20).max(2000),
+  referenceImagePath: z.string().trim().max(500).optional().nullable(),
+}).superRefine((request, ctx) => {
+  if (request.budgetMaxAed < request.budgetMinAed) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["budgetMaxAed"], message: "Maximum budget must be at least the minimum" });
+  }
+  if (request.neededBy && new Date(`${request.neededBy}T23:59:59Z`).getTime() < Date.now()) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["neededBy"], message: "Choose a future date" });
+  }
+});
+
+export const buyerRequestOfferSchema = z.object({
+  requestId: z.string().uuid(),
+  totalPriceAed: z.number().positive().max(10_000_000),
+  makingChargeAed: z.number().min(0).max(1_000_000),
+  certificateFeeAed: z.number().min(0).max(1_000_000),
+  estimatedDays: z.number().int().min(1).max(180),
+  supportsDelivery: z.boolean(),
+  note: z.string().trim().min(10).max(1000),
+});
+
+export const buyerRequestAcceptOfferSchema = z.object({ offerId: z.string().uuid() });
+
+export const storeVisitRequestSchema = z.object({
+  productId: z.string().uuid(),
+  preferredAt: z.string().datetime({ offset: true }),
+  phone: z.string().trim().min(7).max(20),
+  note: z.string().trim().max(500).optional().nullable(),
+}).refine((value) => new Date(value.preferredAt).getTime() > Date.now() + 30 * 60_000, {
+  path: ["preferredAt"],
+  message: "Choose a time at least 30 minutes from now",
+});
+
+export const storeVisitResponseSchema = z.object({
+  visitId: z.string().uuid(),
+  decision: z.enum(["confirm", "decline", "complete"]),
+});
+
+export const catalogueSupportRequestSchema = z.object({
+  targetListingCount: z.number().int().min(10).max(20),
+  notes: z.string().trim().max(1000).optional().nullable(),
+});
+
+export const catalogueSupportUpdateSchema = z.object({
+  requestId: z.string().uuid(),
+  status: z.enum(["requested", "scheduled", "in_progress", "completed", "cancelled"]),
+  adminNote: z.string().trim().max(1000).optional().nullable(),
+});
+
+export const inventoryConfirmationSchema = z.object({
+  productId: z.string().uuid().optional().nullable(),
 });
 
 export const adminDeliveryCompanyDecisionSchema = z.object({
