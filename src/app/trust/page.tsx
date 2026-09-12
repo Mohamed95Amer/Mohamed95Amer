@@ -14,6 +14,7 @@ const checks = [
   ["04", "Fresh-price protection", "The official price is recomputed on the server. Reservations pause automatically when the market reference is too old."],
   ["05", "Stock protection", "A database lock prevents two customers from reserving the final unit at the same time."],
   ["06", "Verified reviews", "Only completed purchasers can review. Store replies and reports are moderated separately from courier performance."],
+  ["07", "Known buyer", "Every order consumes a fresh Didit identity result linked to that customer and product; Get Gold never accepts a browser-only success signal."],
 ];
 
 export default function TrustPage() {

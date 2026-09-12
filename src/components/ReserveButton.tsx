@@ -11,7 +11,7 @@ type IdentityRoute = "uae_resident" | "visitor";
 
 interface VerificationSession {
   id: string;
-  accessToken: string;
+  verificationUrl: string;
 }
 
 interface ReservePricing {
@@ -157,26 +157,13 @@ export function ReserveButton({
         setError(json?.message ?? json?.error ?? "Could not start identity verification");
         return;
       }
-      setVerification({ id: json.verificationId, accessToken: json.accessToken });
+      setVerification({ id: json.verificationId, verificationUrl: json.verificationUrl });
       setVerificationOpen(true);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Network error");
     } finally {
       setBusy(false);
     }
-  }
-
-  async function refreshIdentityToken(): Promise<string> {
-    if (!verification) throw new Error("Verification session is missing");
-    const response = await fetch("/api/identity-verifications/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ verificationId: verification.id }),
-    });
-    const payload = await response.json();
-    if (!response.ok || !payload.accessToken) throw new Error("Could not refresh identity verification");
-    setVerification((current) => current ? { ...current, accessToken: payload.accessToken } : current);
-    return payload.accessToken;
   }
 
   async function placeReservation(identityVerificationId: string) {
@@ -427,7 +414,7 @@ export function ReserveButton({
         <IdentityVerificationDialog
           open={verificationOpen}
           verificationId={verification.id}
-          accessToken={verification.accessToken}
+          verificationUrl={verification.verificationUrl}
           route={identityRoute}
           onClose={() => setVerificationOpen(false)}
           onApproved={() => {
@@ -439,7 +426,6 @@ export function ReserveButton({
             setVerificationOpen(false);
             setError("Start a new identity check when you are ready.");
           }}
-          refreshAccessToken={refreshIdentityToken}
         />
       )}
     </form>

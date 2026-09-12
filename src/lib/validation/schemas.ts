@@ -69,10 +69,6 @@ export const identityVerificationStartSchema = z.object({
   verificationRoute: z.enum(["uae_resident", "visitor"]),
 });
 
-export const identityVerificationTokenSchema = z.object({
-  verificationId: z.string().uuid(),
-});
-
 export const vendorOnboardingSchema = z.object({
   business_name: z.string().min(2).max(200),
   trade_license_number: z.string().min(3).max(60),

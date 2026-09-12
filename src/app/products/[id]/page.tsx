@@ -15,7 +15,7 @@ import {
   type VendorReputationRow,
 } from "@/lib/reputation";
 import { getCurrentProfile } from "@/lib/auth/server";
-import { sumsubIsConfigured } from "@/lib/identity/sumsub";
+import { diditIsConfigured } from "@/lib/identity/didit";
 
 export const dynamic = "force-dynamic";
 
@@ -226,7 +226,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
                 available={available}
                 defaultRecipientName={profile?.full_name ?? ""}
                 defaultRecipientPhone={profile?.phone ?? ""}
-                identityVerificationAvailable={sumsubIsConfigured()}
+                identityVerificationAvailable={diditIsConfigured()}
                 pricing={{
                   karat: product.karat,
                   weightGrams: Number(product.weight_grams),

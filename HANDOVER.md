@@ -35,8 +35,9 @@ location pin while keeping those values inside the same row-locking stock claim.
 
 Migration `20260911184948_mandatory_order_identity_verification.sql` is also applied to production and
 recorded in migration history. It makes a fresh hosted identity result mandatory and single-use for every
-new order. The matching application code is deployed and deliberately fails closed until the Sumsub
-credentials and both provider level names are configured; no order can bypass the missing provider.
+new order. The branch now uses Didit instead of Sumsub and deliberately fails closed until the Didit API
+key and both published workflow IDs are configured; no order can bypass the missing provider. Migration
+`20260912102501_allow_didit_identity_provider.sql` must be applied with that application release.
 
 The previously unverified production paths have now been exercised end to end:
 
@@ -244,23 +245,29 @@ boundary; delivery-company order assignment and access remain intentionally unim
   user/product IDs, resident-or-visitor route, provider reference, pass/fail state, expiry and
   consumption timestamps. It contains no Emirates ID image, passport, boarding pass, document
   number, selfie, video or biometric template.
-- The **UAE resident** provider level must require UAE ID card front and back plus a Selfie step
-  configured as Advanced Liveness; Sumsub runs Face Match automatically after liveness.
-- The **visitor** provider level must require a passport, Advanced Liveness/Face Match and a
-  mandatory questionnaire file-upload step named Boarding pass. AllDocs can validate/extract it;
-  a plain mandatory upload still prevents the level from passing when omitted.
+- The **UAE resident** Didit workflow must require an ID Verification step restricted to UAE ID
+  cards (front and back), followed by Passive Liveness and Face Match 1:1.
+- The **visitor** Didit workflow must require a passport, Passive Liveness/Face Match and a
+  mandatory questionnaire file-upload step named Boarding pass. Questionnaire checks are paid in
+  live mode but sandbox applications bypass credit checks, so this stays free during validation.
 - The customer chooses the route before checkout. `POST /api/identity-verifications/start` creates
-  a unique applicant external ID and returns a 10-minute WebSDK token. A signed Sumsub webhook is
-  the only path that can approve the local result; browser completion messages never approve it.
+  a unique vendor-data reference and returns Didit's hosted verification URL. The UI embeds it and
+  also provides a new-tab fallback for mobile camera access.
+- A full-payload HMAC-SHA256 Didit webhook updates the local result. The authenticated decision API
+  is polled as reconciliation if a webhook is delayed. The browser can never approve itself.
 - `claim_reservation()` locks the identity row, verifies that it is approved, unexpired, belongs
   to the current user and product, and consumes it in the same transaction as the stock claim.
   This is intentionally one check per order—not reusable account KYC.
-- Configure `SUMSUB_APP_TOKEN`, `SUMSUB_SECRET_KEY`, `SUMSUB_WEBHOOK_SECRET`,
-  `SUMSUB_RESIDENT_LEVEL_NAME`, `SUMSUB_VISITOR_LEVEL_NAME` and, where contracted, the UAE regional
-  `SUMSUB_API_URL`. Set the webhook URL to `/api/webhooks/sumsub` with `HMAC_SHA256_HEX`.
+- Configure `DIDIT_API_KEY`, `DIDIT_WEBHOOK_SECRET`, `DIDIT_RESIDENT_WORKFLOW_ID` and
+  `DIDIT_VISITOR_WORKFLOW_ID`; `DIDIT_API_URL` defaults to `https://verification.didit.me`.
+  Create a v3 webhook destination at `/api/webhooks/didit` subscribed to `status.updated` and
+  `data.updated`, then keep the returned destination secret server-only.
 - Checkout fails closed while provider configuration is missing. Do not add a demo pass button or
-  accept the WebSDK's client event as proof. Test both routes in Sumsub Sandbox, then switch all
-  five credentials/level names together for production.
+  accept the hosted page's client state as proof. Test approved, declined, in-review and expired
+  outcomes for both routes in Didit Sandbox before enabling live sessions.
+- Didit's published price at handover includes 500 core KYC checks per month for free. Questionnaire
+  file uploads are separately billed in live mode; validate the boarding-pass route in Sandbox and
+  decide whether to pay for the upload or inspect the travel document at handover before launch.
 
 ### Verified store reviews and reputation
 
@@ -424,8 +431,8 @@ a transaction it rolls back.
 ## 5. Suggested next steps
 
 1. **Decide the delivery-fee question** (§3).
-2. Contract and configure the hosted identity provider levels and retention terms, add the five
-   production secrets/level names, register the signed webhook, and complete both Sandbox routes.
+2. Create the Didit sandbox application, publish both workflows, add the API key/workflow IDs and
+   webhook secret to Vercel, register the signed webhook, and complete both Sandbox routes.
 3. Obtain UAE privacy/legal review for mandatory biometric processing, consent language, retention,
    cross-border or UAE-local processing, and handling of minors before accepting real orders.
 4. Design the delivery assignment state machine before exposing customer addresses to approved

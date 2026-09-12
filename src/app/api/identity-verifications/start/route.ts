@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { identityVerificationStartSchema } from "@/lib/validation/schemas";
-import { createSumsubSdkToken, sumsubIsConfigured } from "@/lib/identity/sumsub";
+import { createDiditVerificationSession, diditIsConfigured } from "@/lib/identity/didit";
 import { rateLimit } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const parsed = identityVerificationStartSchema.safeParse(payload);
   if (!parsed.success) return NextResponse.json({ error: "invalid_input" }, { status: 400 });
 
-  if (!sumsubIsConfigured()) {
+  if (!diditIsConfigured()) {
     return NextResponse.json(
       {
         error: "identity_provider_not_configured",
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     user_id: auth.user.id,
     product_id: product.id,
     verification_route: parsed.data.verificationRoute,
-    provider: "sumsub",
+    provider: "didit",
     provider_external_user_id: externalUserId,
     status: "pending",
     expires_at: expiresAt,
@@ -55,11 +55,21 @@ export async function POST(request: Request) {
   if (insertError) return NextResponse.json({ error: "verification_start_failed" }, { status: 500 });
 
   try {
-    const accessToken = await createSumsubSdkToken({
-      externalUserId,
+    const session = await createDiditVerificationSession({
+      verificationId,
+      productId: product.id,
       route: parsed.data.verificationRoute,
     });
-    return NextResponse.json({ verificationId, accessToken, expiresAt });
+    const { error: sessionUpdateError } = await admin
+      .from("order_identity_verifications")
+      .update({ provider_applicant_id: session.sessionId })
+      .eq("id", verificationId);
+    if (sessionUpdateError) throw sessionUpdateError;
+    return NextResponse.json({
+      verificationId,
+      verificationUrl: session.verificationUrl,
+      expiresAt,
+    });
   } catch {
     await admin
       .from("order_identity_verifications")

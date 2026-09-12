@@ -12,7 +12,7 @@ export default function HowItWorksPage() {
   const steps = [
     ["Find", "Compare verified stock", "Browse approved jewellery and bullion. Each total follows the same live 24K reference, while making and certificate costs stay clearly separated."],
     ["Check", "Understand the value", "See the product-karat rate, gold weight, Get Gold Value Score, store rating and every charge before taking action."],
-    ["Verify", "Confirm who is ordering", "For every order, residents complete an Emirates ID front-and-back check with a live face match. Visitors complete a passport, boarding-pass and live face match check in the hosted secure window."],
+    ["Verify", "Confirm who is ordering", "For every order, residents complete an Emirates ID front-and-back check with liveness and face matching. Visitors complete a passport, boarding-pass and face check in Didit’s hosted secure window."],
     ["Lock", "Reserve the current price", `The server recalculates the order using a quote rechecked every ${env.refreshIntervalSeconds()} seconds. If it reaches ${env.stalePriceSeconds()} seconds old, reservations pause until a fresh quote arrives.`],
     ["Confirm", "The store checks availability", "The selected vendor receives the reservation and confirms that the exact item is ready. Your price lock lasts 10 minutes."],
     ["Complete", "Pay the seller and receive your gold", "The vendor, as seller of record, arranges its payment link, collection or delivery and provides the applicable invoice and product documents."],

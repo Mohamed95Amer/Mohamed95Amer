@@ -1,28 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import SumsubWebSdk from "@sumsub/websdk-react";
 
 type VerificationStatus = "pending" | "in_review" | "approved" | "rejected" | "error" | "expired" | "consumed";
 
 export function IdentityVerificationDialog({
   open,
   verificationId,
-  accessToken,
+  verificationUrl,
   route,
   onClose,
   onApproved,
   onStartOver,
-  refreshAccessToken,
 }: {
   open: boolean;
   verificationId: string;
-  accessToken: string;
+  verificationUrl: string;
   route: "uae_resident" | "visitor";
   onClose: () => void;
   onApproved: () => void;
   onStartOver: () => void;
-  refreshAccessToken: () => Promise<string>;
 }) {
   const [status, setStatus] = useState<VerificationStatus>("pending");
   const [message, setMessage] = useState<string | null>(null);
@@ -62,20 +59,29 @@ export function IdentityVerificationDialog({
 
         <div className="p-4 sm:p-7">
           {!final && (
-            <SumsubWebSdk
-              accessToken={accessToken}
-              expirationHandler={refreshAccessToken}
-              config={{ lang: "en", theme: "light" }}
-              options={{ adaptIframeHeight: true, addViewportTag: false, enableScrollIntoView: true }}
-              onMessage={(type) => {
-                if (type === "idCheck.onApplicantVerificationCompleted" || type === "idCheck.onLivenessCompleted") {
-                  void checkStatus();
-                }
-              }}
-              onError={() => setMessage("The secure identity window reported a problem. Please retry or reopen it.")}
-              force
-              className="min-h-[520px] overflow-hidden rounded-xl"
-            />
+            <div>
+              <iframe
+                src={verificationUrl}
+                title="Didit secure identity verification"
+                allow="camera; microphone"
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="min-h-[620px] w-full rounded-xl border border-jade-900/10 bg-bone-soft"
+                onLoad={() => setMessage(null)}
+                onError={() => setMessage("The secure Didit window could not load. Open it in a new tab or start again.")}
+              />
+              <p className="mt-3 text-center text-xs text-ink-muted">
+                Camera not opening here?{" "}
+                <a
+                  href={verificationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-jade-700 underline underline-offset-2"
+                >
+                  Open the secure Didit check in a new tab
+                </a>
+                , then return here.
+              </p>
+            </div>
           )}
 
           {status === "in_review" && <p className="mt-4 rounded-xl bg-gold-50 p-4 text-sm text-ink-muted">Your documents were submitted. Waiting for the secure provider&apos;s signed result…</p>}
@@ -96,7 +102,7 @@ export function IdentityVerificationDialog({
           )}
           {message && <p role="alert" className="mt-4 text-sm text-signal-err">{message}</p>}
           <p className="mt-5 border-t border-jade-900/10 pt-4 text-xs leading-relaxed text-ink-muted">
-            Document images, boarding-pass images, selfies and biometric templates are collected and processed in the provider&apos;s hosted window. Get Gold stores only the signed result and its link to this order.
+            Document images, boarding-pass images, selfies and biometric templates are collected and processed in Didit&apos;s hosted window. Get Gold stores only Didit&apos;s verified result and its link to this order.
           </p>
         </div>
       </div>
