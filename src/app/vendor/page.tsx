@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireUser, getCurrentProfile } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
+import { VendorNav } from "@/components/VendorNav";
+import { statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -42,11 +44,12 @@ export default async function VendorDashboardPage() {
               : "border-signal-warn/30 bg-signal-warn/10 text-signal-warn"
           }`}
         >
-          {vendor.verification_status}
+          {statusLabel(vendor.verification_status)}
         </span>
       </div>
+      <VendorNav />
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
+      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/vendor/products" className="card p-6 hover:border-gold-300">
           <div className="text-xs uppercase tracking-wide text-ink-muted">Products</div>
           <div className="mt-2 font-serif text-3xl">{productCount ?? 0}</div>
@@ -62,12 +65,17 @@ export default async function VendorDashboardPage() {
           <div className="mt-2 font-serif text-3xl">Upload</div>
           <div className="mt-2 text-sm text-ink-muted">Trade license, IDs, photos →</div>
         </Link>
+        <Link href="/vendor/reviews" className="card p-6 hover:border-gold-300">
+          <div className="text-xs uppercase tracking-wide text-ink-muted">Reputation</div>
+          <div className="mt-2 font-serif text-3xl">Reviews</div>
+          <div className="mt-2 text-sm text-ink-muted">Read and respond →</div>
+        </Link>
       </div>
 
       {vendor.verification_status !== "approved" && (
         <div className="card mt-8 p-6 bg-signal-warn/10 border-signal-warn/30">
           <p className="font-medium text-signal-warn">
-            Your account is {vendor.verification_status}. You can prepare drafts, but you cannot publish products until admin approval.
+            Your account is {statusLabel(vendor.verification_status).toLowerCase()}. You can prepare drafts, but you cannot publish products until admin approval.
           </p>
         </div>
       )}

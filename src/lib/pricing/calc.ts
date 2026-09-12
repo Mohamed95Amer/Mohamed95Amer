@@ -17,23 +17,39 @@ export function karatPurityFactor(karat: number): number {
   return f;
 }
 
+/** The metal-only AED/g reference for a product's karat. */
+export function goldRateForKarat(pricePerGram24kAed: number, karat: number): number {
+  return round2(pricePerGram24kAed * karatPurityFactor(karat));
+}
+
 export interface PriceInputs {
   pricePerGram24kAed: number;
   karat: number;
   weightGrams: number;
   makingCharge: number;
+  makingChargeDiscountPercent: number;
+  makingChargeOfferEndsAt: string | null;
+  certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
-  platformFee: number;
+  platformFeeBps: number;
   deliveryFee: number;
+  pricedAt?: number;
 }
 
 export interface PriceBreakdown {
   goldValueAed: number;       // pricePerGram24K * purity * weight
-  makingCharge: number;
+  makingCharge: number;       // effective charge after any active promotion
+  makingChargeOriginal: number;
+  makingChargeDiscountAed: number;
+  makingChargeDiscountPercent: number;
+  makingChargeOfferEndsAt: string | null;
+  certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
+  merchandiseSubtotalAed: number;
   platformFee: number;
+  platformFeeBps: number;
   deliveryFee: number;
   unitPriceAed: number;       // sum of the above, per unit
   purityFactor: number;
@@ -41,24 +57,65 @@ export interface PriceBreakdown {
 
 export function computePrice(inputs: PriceInputs): PriceBreakdown {
   const purity = karatPurityFactor(inputs.karat);
-  const gold = inputs.pricePerGram24kAed * purity * inputs.weightGrams;
-  const unit =
-    gold +
-    inputs.makingCharge +
-    inputs.stoneValue +
-    inputs.vendorPremium +
-    inputs.platformFee +
-    inputs.deliveryFee;
+  if (!Number.isInteger(inputs.platformFeeBps) || inputs.platformFeeBps < 0 || inputs.platformFeeBps > 1000) {
+    throw new Error("Platform fee must be between 0 and 1,000 basis points");
+  }
+  if (
+    !Number.isInteger(inputs.makingChargeDiscountPercent) ||
+    inputs.makingChargeDiscountPercent < 0 ||
+    inputs.makingChargeDiscountPercent > 100
+  ) {
+    throw new Error("Making charge discount must be between 0 and 100 percent");
+  }
+
+  const goldValueAed = round2(inputs.pricePerGram24kAed * purity * inputs.weightGrams);
+  const makingChargeOriginal = round2(inputs.makingCharge);
+  const offerActive = makingChargeOfferIsActive(
+    inputs.makingChargeDiscountPercent,
+    inputs.makingChargeOfferEndsAt,
+    inputs.pricedAt,
+  );
+  const makingChargeDiscountPercent = offerActive ? inputs.makingChargeDiscountPercent : 0;
+  const makingChargeDiscountAed = round2(makingChargeOriginal * makingChargeDiscountPercent / 100);
+  const makingCharge = round2(makingChargeOriginal - makingChargeDiscountAed);
+  const certificateFee = round2(inputs.certificateFee);
+  const stoneValue = round2(inputs.stoneValue);
+  const vendorPremium = round2(inputs.vendorPremium);
+  const deliveryFee = round2(inputs.deliveryFee);
+  const merchandiseSubtotalAed = round2(
+    goldValueAed + makingCharge + certificateFee + stoneValue + vendorPremium,
+  );
+  const platformFee = round2(merchandiseSubtotalAed * inputs.platformFeeBps / 10_000);
+  const unitPriceAed = round2(merchandiseSubtotalAed + platformFee + deliveryFee);
+
   return {
-    goldValueAed: round2(gold),
-    makingCharge: round2(inputs.makingCharge),
-    stoneValue: round2(inputs.stoneValue),
-    vendorPremium: round2(inputs.vendorPremium),
-    platformFee: round2(inputs.platformFee),
-    deliveryFee: round2(inputs.deliveryFee),
-    unitPriceAed: round2(unit),
+    goldValueAed,
+    makingCharge,
+    makingChargeOriginal,
+    makingChargeDiscountAed,
+    makingChargeDiscountPercent,
+    makingChargeOfferEndsAt: offerActive ? inputs.makingChargeOfferEndsAt : null,
+    certificateFee,
+    stoneValue,
+    vendorPremium,
+    merchandiseSubtotalAed,
+    platformFee,
+    platformFeeBps: inputs.platformFeeBps,
+    deliveryFee,
+    unitPriceAed,
     purityFactor: purity,
   };
+}
+
+export function makingChargeOfferIsActive(
+  discountPercent: number,
+  endsAt: string | null,
+  pricedAt = Date.now(),
+): boolean {
+  if (discountPercent <= 0) return false;
+  if (!endsAt) return true;
+  const end = Date.parse(endsAt);
+  return Number.isFinite(end) && end > pricedAt;
 }
 
 export function round2(n: number): number {
@@ -72,4 +129,11 @@ export function formatAed(n: number | null | undefined): string {
     currency: "AED",
     maximumFractionDigits: 2,
   }).format(n);
+}
+
+export function formatBasisPoints(bps: number): string {
+  return new Intl.NumberFormat("en-AE", {
+    style: "percent",
+    maximumFractionDigits: 2,
+  }).format(bps / 10_000);
 }

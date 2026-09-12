@@ -29,6 +29,9 @@ export default async function AdminProductDetail({ params }: { params: { id: str
         )}
         <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm">
           <dt className="text-ink-muted">Making</dt><dd>{p.making_charge}</dd>
+          <dt className="text-ink-muted">Making discount</dt><dd>{p.making_charge_discount_percent}%</dd>
+          <dt className="text-ink-muted">Offer ends</dt><dd>{p.making_charge_offer_ends_at ? new Date(p.making_charge_offer_ends_at).toLocaleString("en-AE", { timeZone: "Asia/Dubai" }) : "—"}</dd>
+          <dt className="text-ink-muted">Certificate / assay fee</dt><dd>{p.certificate_fee}</dd>
           <dt className="text-ink-muted">Stone</dt><dd>{p.stone_value}</dd>
           <dt className="text-ink-muted">Vendor premium</dt><dd>{p.vendor_premium}</dd>
           <dt className="text-ink-muted">Certificate</dt><dd>{p.certificate_number ?? "—"}</dd>

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { VendorOnboardingForm } from "./VendorOnboardingForm";
@@ -7,15 +8,15 @@ export const dynamic = "force-dynamic";
 export default async function VendorRegisterPage() {
   const user = await requireUser();
   const admin = getServiceSupabase();
-  const { data: existing } = await admin
-    .from("vendors")
-    .select("*")
-    .eq("owner_user_id", user.id)
-    .maybeSingle();
+  const [{ data: profile }, { data: existing }] = await Promise.all([
+    admin.from("profiles").select("role").eq("id", user.id).maybeSingle(),
+    admin.from("vendors").select("*").eq("owner_user_id", user.id).maybeSingle(),
+  ]);
+  if (!profile || !["customer", "vendor"].includes(profile.role)) redirect("/profile");
 
   return (
     <div className="container-pro py-10 max-w-3xl">
-      <h1 className="font-serif text-3xl">List your gold shop on GoldHub</h1>
+      <h1 className="font-serif text-3xl">List your gold shop on Get Gold</h1>
       <p className="text-sm text-ink-muted mt-1">
         Submit your trade license and store details. Our compliance team reviews each application before you can publish products.
       </p>

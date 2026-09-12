@@ -46,7 +46,11 @@ export async function POST(request: Request) {
 
   const { error } = await admin
     .from("reservations")
-    .update({ status: nextStatus, vendor_response_note: parsed.data.note ?? null })
+    .update({
+      status: nextStatus,
+      vendor_response_note: parsed.data.note ?? null,
+      vendor_responded_at: new Date().toISOString(),
+    })
     .eq("id", reservation.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

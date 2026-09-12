@@ -22,14 +22,25 @@ export const env = {
   // Public — safe to expose to the browser
   supabaseUrl: () => required("NEXT_PUBLIC_SUPABASE_URL"),
   supabaseAnonKey: () => required("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+  siteUrl: () => (process.env.NEXT_PUBLIC_SITE_URL ?? "https://goldhub-three.vercel.app").replace(/\/$/, ""),
 
   // Server-only — must never be exposed to the browser
-  supabaseServiceRoleKey: () => required("SUPABASE_SERVICE_ROLE_KEY"),
+  // A separate rotation slot avoids stale secret versions in deployment
+  // providers. Existing local setups can keep using the original name.
+  supabaseServiceRoleKey: () =>
+    process.env.SUPABASE_SERVICE_ROLE_KEY_CURRENT?.trim() ||
+    required("SUPABASE_SERVICE_ROLE_KEY"),
   cronSecret: () => required("CRON_SECRET"),
 
   // Gold price providers
-  primaryProvider: () => process.env.GOLD_PRICE_PRIMARY_PROVIDER ?? "mock",
-  backupProvider: () => process.env.GOLD_PRICE_BACKUP_PROVIDER ?? "mock",
+  // Defaults to the keyless provider so a fresh deploy shows real prices
+  // without any credentials. Set to goldapi/metalpriceapi/metalsdev for a paid feed.
+  primaryProvider: () => process.env.GOLD_PRICE_PRIMARY_PROVIDER ?? "goldapicom",
+  // Empty by default and deliberately NOT "mock". If the real source fails we
+  // would rather serve the last known real quote (marked stale, with
+  // reservations locked) than an invented number. Never point this at mock in
+  // production — a fabricated price on a gold marketplace is worse than none.
+  backupProvider: () => process.env.GOLD_PRICE_BACKUP_PROVIDER ?? "",
   goldApiKey: () => process.env.GOLDAPI_API_KEY ?? "",
   metalPriceApiKey: () => process.env.METALPRICEAPI_API_KEY ?? "",
   metalsDevApiKey: () => process.env.METALSDEV_API_KEY ?? "",
@@ -37,13 +48,27 @@ export const env = {
     const n = Number(process.env.USD_AED_RATE);
     return Number.isFinite(n) && n > 0 ? n : 3.6725;
   },
+  // Two different thresholds, deliberately:
+  //  - stalePriceSeconds gates *reservations*. A quote older than this is not
+  //    trustworthy enough to sell against, so the reserve button locks.
+  //  - refreshIntervalSeconds decides how often we go back upstream. It is the
+  //    cadence customers actually see the number move at.
+  // Conflating them would mean the displayed price only changed once a minute.
   stalePriceSeconds: () => optionalNumber("GOLD_PRICE_STALE_AFTER_SECONDS", 60),
-  refreshIntervalSeconds: () => optionalNumber("GOLD_PRICE_REFRESH_INTERVAL_SECONDS", 20),
+  refreshIntervalSeconds: () => optionalNumber("GOLD_PRICE_REFRESH_INTERVAL_SECONDS", 10),
 
   // Platform pricing defaults
   platformFeeAed: () => optionalNumber("PLATFORM_FEE_AED", 0),
   deliveryFeeAed: () => optionalNumber("DELIVERY_FEE_AED", 0),
   reservationLockMinutes: () => optionalNumber("RESERVATION_LOCK_MINUTES", 10),
+
+  // Hosted per-order identity verification. Keep document images and biometric
+  // processing at Didit; Get Gold stores only the provider's decision.
+  diditApiKey: () => process.env.DIDIT_API_KEY?.trim() ?? "",
+  diditWebhookSecret: () => process.env.DIDIT_WEBHOOK_SECRET?.trim() ?? "",
+  diditResidentWorkflowId: () => process.env.DIDIT_RESIDENT_WORKFLOW_ID?.trim() ?? "",
+  diditVisitorWorkflowId: () => process.env.DIDIT_VISITOR_WORKFLOW_ID?.trim() ?? "",
+  diditApiUrl: () => (process.env.DIDIT_API_URL?.trim() || "https://verification.didit.me").replace(/\/$/, ""),
 
   // Rate limiting
   reservationsPerMin: () => optionalNumber("RATE_LIMIT_RESERVATIONS_PER_MIN", 5),

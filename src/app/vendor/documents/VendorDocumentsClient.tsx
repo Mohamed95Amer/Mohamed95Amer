@@ -84,14 +84,15 @@ export function VendorDocumentsClient({ vendorId, initialDocs }: { vendorId: str
   return (
     <div className="space-y-6">
       <div>
-        <label className="label">Document type</label>
-        <select className="input" value={docType} onChange={(e) => setDocType(e.target.value as (typeof DOC_TYPES)[number][0])}>
+        <label className="label" htmlFor="document-type">Document type</label>
+        <select id="document-type" name="document_type" className="input" value={docType} onChange={(e) => setDocType(e.target.value as (typeof DOC_TYPES)[number][0])}>
           {DOC_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
         </select>
         <div className="mt-3">
-          <input type="file" disabled={busy} onChange={onUpload} className="text-sm" />
+          <label htmlFor="document-file" className="label">Choose document</label>
+          <input id="document-file" name="document_file" type="file" disabled={busy} onChange={onUpload} className="mt-2 block w-full text-sm" />
         </div>
-        {err && <p className="mt-2 text-sm text-signal-err">{err}</p>}
+        {err && <p role="alert" className="mt-2 text-sm text-signal-err">{err}</p>}
       </div>
 
       <div>

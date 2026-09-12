@@ -1,12 +1,13 @@
 {
+  "regions": ["fra1"],
   "crons": [
     {
       "path": "/api/cron/refresh-gold-price",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     },
     {
       "path": "/api/cron/expire-reservations",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
