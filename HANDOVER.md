@@ -1,6 +1,6 @@
 # Get Gold — handover
 
-UAE gold marketplace, renamed from GoldHub. Next.js 14 (App Router) + Supabase + Tailwind, deployed on Vercel.
+UAE gold marketplace, renamed from GoldHub. Next.js 15 (App Router) + Supabase + Tailwind, deployed on Vercel.
 Customers browse listings priced live against the gold market and reserve at a locked price;
 vendors list stock; delivery companies maintain verified partner profiles; admins approve businesses and listings.
 
@@ -19,6 +19,14 @@ tagline “See the price. Get the gold.” The local and Vercel 41-page producti
 lint, public-route smoke checks and live visual pass are clean. `NEXT_PUBLIC_SITE_URL` now points to
 the real `goldhub-three.vercel.app` deployment; it previously generated canonical and social links
 to an unrelated Persian site at `goldhub.vercel.app`.
+
+**Pending verified release (13 Sep 2026):** branch commit `973b6d5` contains the Didit integration,
+and the working tree upgrades the framework from vulnerable Next.js `14.2.15` to the patched
+`15.5.24` maintenance line. A clean `npm ci`, full dependency audit, typecheck, ESLint run and
+41-page production build all pass; the dependency audit reports zero known vulnerabilities. The
+signed Didit webhook probe also passes both accepted-signature paths and rejects stale and forged
+requests. This release is not on the live URL yet: Vercel authentication has expired, and the Didit
+credentials plus migration `20260912102501_allow_didit_identity_provider.sql` are still pending.
 
 Migrations `20260911135750_add_delivery_company_role.sql`,
 `20260911135755_delivery_company_profiles.sql` and
@@ -409,9 +417,11 @@ reference cannot be mistaken for a provider-fetched quote.
 | Oversell + fulfilment + identity claim | **11/11 passed** against real rows | `supabase/tests/0005_reservation_stock_test.sql`; includes atomic address/pin persistence, single-use identity consumption and missing-ID bypass rejection |
 | Price parser | **9/9 passed** | ad-hoc harness; covers real shape, per-gram scaling, string values, alternate keys, garbage, absurd values, null |
 | Pricing math | Automated + checked by hand | normal, 20%-off, active/expired 100%-off and certificate-only cases; fee uses discounted merchandise and excludes delivery |
-| Typecheck / build | Clean | `npx tsc --noEmit`, `npm run build` |
+| Typecheck / build | Clean on Next.js 15.5.24 | `npm run typecheck`, `npm run build` (41 pages/routes) |
 | Internal links | No dead routes | all 29 routes cross-checked against every `href` |
-| Lint | Clean | `npx next lint` — an eslint config was added; there was none, so lint used to drop you into an interactive prompt |
+| Lint | Clean | `npm run lint` (`eslint .`) |
+| Dependency security | **0 known vulnerabilities** | fresh `npm ci`, then full `npm audit`; Next.js moved from vulnerable 14.2.15 to patched 15.5.24 |
+| Didit webhook boundary | **4/4 passed locally** | valid V2 HMAC → 204, valid raw HMAC → 204, stale timestamp → 401, forged signature → 401 |
 | Secrets | None committed | scanned for JWTs/service-role keys; `.env.local` is gitignored |
 | Stock accounting | Correct against demo data | bangle shows 2 available of 3, one held by a pending reservation |
 | Live gold fetch | **Verified** | real `goldapicom`; 7-sample, >2-minute Vercel soak stayed fresh |

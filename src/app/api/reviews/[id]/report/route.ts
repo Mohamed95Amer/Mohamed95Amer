@@ -7,8 +7,9 @@ import { logAudit } from "@/lib/audit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const userClient = getServerSupabase();
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -21,7 +22,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const admin = getServiceSupabase();
   const [{ data: review }, { data: profile }] = await Promise.all([
-    admin.from("reviews").select("id, customer_user_id, moderation_status").eq("id", params.id).maybeSingle(),
+    admin.from("reviews").select("id, customer_user_id, moderation_status").eq("id", id).maybeSingle(),
     admin.from("profiles").select("role").eq("id", auth.user.id).maybeSingle(),
   ]);
   if (!review || review.moderation_status !== "published") {

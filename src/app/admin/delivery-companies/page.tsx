@@ -4,17 +4,18 @@ import { formatDubaiDateTime, statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminDeliveryCompaniesPage({ searchParams }: { searchParams: { filter?: string } }) {
+export default async function AdminDeliveryCompaniesPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
+  const filters = await searchParams;
   const admin = getServiceSupabase();
   let query = admin.from("delivery_companies").select("id, company_name, emirates_served, verification_status, created_at").order("created_at", { ascending: false });
-  if (searchParams.filter) query = query.eq("verification_status", searchParams.filter);
+  if (filters.filter) query = query.eq("verification_status", filters.filter);
   const { data } = await query;
 
   return (
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div><h2 className="font-serif text-2xl font-semibold text-jade-950">Delivery company verification</h2><p className="mt-1 text-sm text-ink-muted">Review licensed logistics partners before any future order assignment.</p></div>
-        <div className="flex flex-wrap gap-2">{[["", "All"], ["pending", "Pending"], ["approved", "Approved"], ["rejected", "Rejected"], ["suspended", "Suspended"]].map(([value, label]) => <Link key={value} href={value ? `/admin/delivery-companies?filter=${value}` : "/admin/delivery-companies"} className={`pill min-h-9 px-3 ${searchParams.filter === value || (!searchParams.filter && !value) ? "border-jade-700 bg-jade-700 text-white" : "border-jade-900/10 bg-white text-ink-muted"}`}>{label}</Link>)}</div>
+        <div className="flex flex-wrap gap-2">{[["", "All"], ["pending", "Pending"], ["approved", "Approved"], ["rejected", "Rejected"], ["suspended", "Suspended"]].map(([value, label]) => <Link key={value} href={value ? `/admin/delivery-companies?filter=${value}` : "/admin/delivery-companies"} className={`pill min-h-9 px-3 ${filters.filter === value || (!filters.filter && !value) ? "border-jade-700 bg-jade-700 text-white" : "border-jade-900/10 bg-white text-ink-muted"}`}>{label}</Link>)}</div>
       </div>
       <div className="card mt-5 overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">

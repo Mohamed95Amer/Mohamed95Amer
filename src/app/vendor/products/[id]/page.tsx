@@ -7,7 +7,8 @@ import { statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await requireUser();
   const admin = getServiceSupabase();
   const { data: vendor } = await admin
@@ -20,7 +21,7 @@ export default async function EditProductPage({ params }: { params: { id: string
   const { data: product } = await admin
     .from("products")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
   if (!product || product.vendor_id !== vendor.id) return notFound();
 

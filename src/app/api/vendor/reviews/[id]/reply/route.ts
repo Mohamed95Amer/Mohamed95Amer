@@ -7,8 +7,9 @@ import { logAudit } from "@/lib/audit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const userClient = getServerSupabase();
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -26,7 +27,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
   const { data: review } = await admin
     .from("reviews")
     .select("id, vendor_id, vendor_reply, moderation_status")
-    .eq("id", params.id)
+    .eq("id", id)
     .maybeSingle();
   if (!review || review.vendor_id !== vendor.id) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });

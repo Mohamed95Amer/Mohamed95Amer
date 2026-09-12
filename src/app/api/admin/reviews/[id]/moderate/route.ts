@@ -7,8 +7,9 @@ import { logAudit } from "@/lib/audit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
-  const userClient = getServerSupabase();
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -32,14 +33,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
       moderation_note: parsed.data.note ?? null,
       moderated_by: auth.user.id,
       moderated_at: now,
-    }).eq("id", params.id));
+    }).eq("id", id));
   } else if (action === "publish_reply" || action === "hide_reply") {
     ({ error } = await admin.from("reviews").update({
       vendor_reply_status: action === "publish_reply" ? "published" : "hidden",
       moderation_note: parsed.data.note ?? null,
       moderated_by: auth.user.id,
       moderated_at: now,
-    }).eq("id", params.id));
+    }).eq("id", id));
   } else {
     if (!parsed.data.reportId) return NextResponse.json({ error: "report_id_required" }, { status: 400 });
     ({ error } = await admin.from("review_reports").update({
@@ -47,7 +48,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       resolution_note: parsed.data.note ?? null,
       resolved_by: auth.user.id,
       resolved_at: now,
-    }).eq("id", parsed.data.reportId).eq("review_id", params.id));
+    }).eq("id", parsed.data.reportId).eq("review_id", id));
 
     if (!error && action === "action_report") {
       ({ error } = await admin.from("reviews").update({
@@ -55,7 +56,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         moderation_note: parsed.data.note ?? "Hidden after an upheld report",
         moderated_by: auth.user.id,
         moderated_at: now,
-      }).eq("id", params.id));
+      }).eq("id", id));
     }
   }
 
@@ -66,7 +67,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     actor_role: profile.role,
     action: `review.${action}`,
     entity_type: "review",
-    entity_id: params.id,
+    entity_id: id,
     new_value: { report_id: parsed.data.reportId ?? null, note: parsed.data.note ?? null },
     ip_address: ipFromRequest(request),
   });

@@ -4,17 +4,18 @@ import { formatDubaiDateTime, statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminProductsPage({ searchParams }: { searchParams: { filter?: string } }) {
+export default async function AdminProductsPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
+  const filters = await searchParams;
   const admin = getServiceSupabase();
   let q = admin
     .from("products")
     .select("id, name, category, karat, weight_grams, product_status, updated_at, vendor:vendors(business_name)")
     .order("updated_at", { ascending: false });
-  if (searchParams.filter) q = q.eq("product_status", searchParams.filter);
+  if (filters.filter) q = q.eq("product_status", filters.filter);
   const { data } = await q;
   return (
     <div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="font-serif text-2xl font-semibold text-jade-950">Listing approvals</h2><p className="mt-1 text-sm text-ink-muted">Check product evidence, pricing inputs and publication state.</p></div><div className="flex flex-wrap gap-2">{[["", "All"], ["pending_approval", "Pending"], ["approved", "Approved"], ["draft", "Draft"], ["rejected", "Rejected"], ["suspended", "Suspended"]].map(([value, label]) => <Link key={value} href={value ? `/admin/products?filter=${value}` : "/admin/products"} className={`pill min-h-9 px-3 ${searchParams.filter === value || (!searchParams.filter && !value) ? "border-jade-700 bg-jade-700 text-white" : "border-jade-900/10 bg-white text-ink-muted"}`}>{label}</Link>)}</div></div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="font-serif text-2xl font-semibold text-jade-950">Listing approvals</h2><p className="mt-1 text-sm text-ink-muted">Check product evidence, pricing inputs and publication state.</p></div><div className="flex flex-wrap gap-2">{[["", "All"], ["pending_approval", "Pending"], ["approved", "Approved"], ["draft", "Draft"], ["rejected", "Rejected"], ["suspended", "Suspended"]].map(([value, label]) => <Link key={value} href={value ? `/admin/products?filter=${value}` : "/admin/products"} className={`pill min-h-9 px-3 ${filters.filter === value || (!filters.filter && !value) ? "border-jade-700 bg-jade-700 text-white" : "border-jade-900/10 bg-white text-ink-muted"}`}>{label}</Link>)}</div></div>
       <div className="card mt-5 overflow-x-auto">
       <table className="min-w-[760px] w-full text-sm">
         <thead className="bg-bone-soft text-ink-muted">

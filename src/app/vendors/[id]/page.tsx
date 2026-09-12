@@ -20,8 +20,9 @@ async function loadVendor(id: string) {
   return data;
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const vendor = await loadVendor(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const vendor = await loadVendor(id);
   if (!vendor || vendor.verification_status !== "approved") return { title: "Store not found" };
   return {
     title: vendor.business_name,
@@ -30,23 +31,24 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function VendorPage({ params }: { params: { id: string } }) {
+export default async function VendorPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = getServiceSupabase();
-  const vendor = await loadVendor(params.id);
+  const vendor = await loadVendor(id);
   if (!vendor || vendor.verification_status !== "approved") return notFound();
 
   const [{ data: products }, { data: reputationRow }, { data: reviews }] = await Promise.all([
     supabase
       .from("products")
       .select("id, name, category, karat, weight_grams, images")
-      .eq("vendor_id", params.id)
+      .eq("vendor_id", id)
       .eq("product_status", "approved")
       .order("created_at", { ascending: false }),
-    supabase.from("vendor_reputation_summary").select("*").eq("vendor_id", params.id).maybeSingle(),
+    supabase.from("vendor_reputation_summary").select("*").eq("vendor_id", id).maybeSingle(),
     supabase
       .from("reviews")
       .select(PUBLIC_REVIEW_SELECT)
-      .eq("vendor_id", params.id)
+      .eq("vendor_id", id)
       .eq("moderation_status", "published")
       .order("created_at", { ascending: false })
       .limit(50),

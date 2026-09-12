@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const requested = url.searchParams.get("next") ?? "/account";
   const next = requested.startsWith("/") && !requested.startsWith("//") ? requested : "/account";
   if (code) {
-    const supabase = getServerSupabase();
+    const supabase = await getServerSupabase();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) return NextResponse.redirect(new URL(next, url.origin));
   }

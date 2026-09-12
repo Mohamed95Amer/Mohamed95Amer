@@ -4,12 +4,13 @@ import { AdminProductActions } from "./AdminProductActions";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminProductDetail({ params }: { params: { id: string } }) {
+export default async function AdminProductDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const admin = getServiceSupabase();
   const { data: p } = await admin
     .from("products")
     .select("*, vendor:vendors(id, business_name, verification_status)")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
   if (!p) return notFound();
   const v = p.vendor as unknown as { id: string; business_name: string; verification_status: string } | null;

@@ -4,7 +4,8 @@ import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = { title: "Sign in", description: "Sign in to your Get Gold account.", robots: { index: false, follow: false } };
 
-export default function LoginPage({ searchParams }: { searchParams: { next?: string; error?: string } }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
+  const query = await searchParams;
   return (
     <div className="container-pro grid min-h-[70vh] items-center gap-10 py-12 lg:grid-cols-[1fr_0.8fr] lg:py-16">
       <section className="hidden max-w-xl lg:block">
@@ -18,7 +19,7 @@ export default function LoginPage({ searchParams }: { searchParams: { next?: str
         <p className="eyebrow text-jade-600 lg:hidden">Welcome back</p>
         <h1 className="mt-2 font-serif text-4xl font-semibold text-jade-950">Sign in</h1>
         <p className="mt-2 text-sm text-ink-muted">Access your Get Gold account securely.</p>
-        <div className="card mt-6 p-6 sm:p-7"><LoginForm next={searchParams.next} error={searchParams.error} /></div>
+        <div className="card mt-6 p-6 sm:p-7"><LoginForm next={query.next} error={query.error} /></div>
         <p className="mt-4 text-sm text-ink-muted">Don&apos;t have an account? <Link href="/register" className="font-semibold text-jade-700 underline underline-offset-4">Create one</Link></p>
       </section>
     </div>

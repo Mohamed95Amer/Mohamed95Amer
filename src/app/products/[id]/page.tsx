@@ -35,8 +35,9 @@ async function loadProduct(id: string) {
   return data;
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = await loadProduct(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const product = await loadProduct(id);
   if (!product || product.product_status !== "approved") return { title: "Not found — Get Gold" };
   const vendor = product.vendors as unknown as Vendor;
   return {
@@ -56,9 +57,10 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = getServiceSupabase();
-  const product = await loadProduct(params.id);
+  const product = await loadProduct(id);
   if (!product || product.product_status !== "approved") return notFound();
 
   const vendor = product.vendors as unknown as Vendor;

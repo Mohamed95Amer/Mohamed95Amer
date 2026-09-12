@@ -5,9 +5,10 @@ import { AdminDocViewerClient } from "@/components/AdminDocViewerClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminVendorDetail({ params }: { params: { id: string } }) {
+export default async function AdminVendorDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const admin = getServiceSupabase();
-  const { data: vendor } = await admin.from("vendors").select("*").eq("id", params.id).single();
+  const { data: vendor } = await admin.from("vendors").select("*").eq("id", id).single();
   if (!vendor) return notFound();
 
   const { data: docs } = await admin

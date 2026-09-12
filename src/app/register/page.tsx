@@ -4,8 +4,9 @@ import { RegisterForm } from "./RegisterForm";
 
 export const metadata: Metadata = { title: "Create account", description: "Create a Get Gold customer, vendor or delivery company account.", robots: { index: false, follow: false } };
 
-export default function RegisterPage({ searchParams }: { searchParams: { role?: string } }) {
-  const role = searchParams.role === "vendor" ? "vendor" : searchParams.role === "delivery_company" ? "delivery_company" : "customer";
+export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ role?: string }> }) {
+  const query = await searchParams;
+  const role = query.role === "vendor" ? "vendor" : query.role === "delivery_company" ? "delivery_company" : "customer";
   const copy = role === "vendor"
     ? { title: "Bring your gold shop into the live market.", body: "Create your account, then submit the business evidence needed for manual verification." }
     : role === "delivery_company"

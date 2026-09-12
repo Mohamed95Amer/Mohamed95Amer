@@ -17,8 +17,8 @@ const noStoreFetch: typeof fetch = (input, init) =>
  * Per-request server client that respects the user's session via cookies.
  * Use this for any operation that should be authorized as the current user.
  */
-export function getServerSupabase(): AnyClient {
-  const cookieStore = cookies();
+export async function getServerSupabase(): Promise<AnyClient> {
+  const cookieStore = await cookies();
   return createServerClient(env.supabaseUrl(), env.supabaseAnonKey(), {
     global: { fetch: noStoreFetch },
     cookies: {

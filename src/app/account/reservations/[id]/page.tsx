@@ -20,14 +20,15 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function ReservationDetailPage({ params }: { params: { id: string } }) {
+export default async function ReservationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await requireUser();
   const admin = getServiceSupabase();
   const [{ data: r }, latestTick] = await Promise.all([
     admin
       .from("reservations")
       .select("*, product:products(name, karat, weight_grams), vendor:vendors(business_name, emirate, email, phone), snapshot:order_price_snapshots(*)")
-      .eq("id", params.id)
+      .eq("id", id)
       .single(),
     getLatestTick(),
   ]);

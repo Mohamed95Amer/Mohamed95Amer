@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 const querySchema = z.string().uuid();
 
 export async function GET(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 

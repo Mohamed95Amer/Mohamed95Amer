@@ -16,7 +16,7 @@ export async function PATCH(request: Request) {
 }
 
 async function saveReview(request: Request, updating: boolean) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 

@@ -5,9 +5,10 @@ import { AdminDeliveryCompanyActions } from "./AdminDeliveryCompanyActions";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminDeliveryCompanyDetail({ params }: { params: { id: string } }) {
+export default async function AdminDeliveryCompanyDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const admin = getServiceSupabase();
-  const { data: company } = await admin.from("delivery_companies").select("*").eq("id", params.id).maybeSingle();
+  const { data: company } = await admin.from("delivery_companies").select("*").eq("id", id).maybeSingle();
   if (!company) return notFound();
 
   return (

@@ -16,10 +16,11 @@ export const metadata: Metadata = {
 };
 
 interface SP {
-  searchParams: { category?: string; karat?: string; q?: string; sort?: string };
+  searchParams: Promise<{ category?: string; karat?: string; q?: string; sort?: string }>;
 }
 
 export default async function MarketplacePage({ searchParams }: SP) {
+  const filters = await searchParams;
   const supabase = getServiceSupabase();
   let query = supabase
     .from("products")
@@ -30,9 +31,9 @@ export default async function MarketplacePage({ searchParams }: SP) {
     .order("created_at", { ascending: false })
     .limit(60);
 
-  if (searchParams.category) query = query.eq("category", searchParams.category);
-  if (searchParams.karat) query = query.eq("karat", Number(searchParams.karat));
-  if (searchParams.q) query = query.ilike("name", `%${searchParams.q}%`);
+  if (filters.category) query = query.eq("category", filters.category);
+  if (filters.karat) query = query.eq("karat", Number(filters.karat));
+  if (filters.q) query = query.ilike("name", `%${filters.q}%`);
 
   const [{ data }, { data: fees }, { data: reputationRows }, latestTick] = await Promise.all([
     query,
@@ -49,12 +50,12 @@ export default async function MarketplacePage({ searchParams }: SP) {
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const liveRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
   const sorted = [...(data ?? [])].sort((a, b) => {
-    if (searchParams.sort === "rating") return (reputations.get(b.vendor_id)?.adjustedRating ?? -1) - (reputations.get(a.vendor_id)?.adjustedRating ?? -1);
-    if (searchParams.sort === "price_low" || searchParams.sort === "price_high" || searchParams.sort === "value") {
+    if (filters.sort === "rating") return (reputations.get(b.vendor_id)?.adjustedRating ?? -1) - (reputations.get(a.vendor_id)?.adjustedRating ?? -1);
+    if (filters.sort === "price_low" || filters.sort === "price_high" || filters.sort === "value") {
       const aPrice = listingPrice(a, liveRate, platformFeeBps, deliveryFee);
       const bPrice = listingPrice(b, liveRate, platformFeeBps, deliveryFee);
-      if (searchParams.sort === "price_low") return aPrice.total - bPrice.total;
-      if (searchParams.sort === "price_high") return bPrice.total - aPrice.total;
+      if (filters.sort === "price_low") return aPrice.total - bPrice.total;
+      if (filters.sort === "price_high") return bPrice.total - aPrice.total;
       return bPrice.score - aPrice.score;
     }
     return 0;
@@ -81,11 +82,11 @@ export default async function MarketplacePage({ searchParams }: SP) {
         <form className="card grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-[1.3fr_0.85fr_0.75fr_0.95fr_auto] lg:items-end">
           <div>
             <label className="label" htmlFor="marketplace-search">Search listings</label>
-            <input id="marketplace-search" className="input" name="q" type="search" defaultValue={searchParams.q ?? ""} placeholder="Try ‘bangle’ or ‘gold bar’" />
+            <input id="marketplace-search" className="input" name="q" type="search" defaultValue={filters.q ?? ""} placeholder="Try ‘bangle’ or ‘gold bar’" />
           </div>
           <div>
             <label className="label" htmlFor="marketplace-category">Category</label>
-            <select id="marketplace-category" className="input capitalize" name="category" defaultValue={searchParams.category ?? ""}>
+            <select id="marketplace-category" className="input capitalize" name="category" defaultValue={filters.category ?? ""}>
               <option value="">All categories</option>
               {["ring","necklace","bracelet","earring","bangle","chain","pendant","bar","coin","other"].map((c) => (
                 <option key={c} value={c}>{c}</option>
@@ -94,14 +95,14 @@ export default async function MarketplacePage({ searchParams }: SP) {
           </div>
           <div>
             <label className="label" htmlFor="marketplace-karat">Purity</label>
-            <select id="marketplace-karat" className="input" name="karat" defaultValue={searchParams.karat ?? ""}>
+            <select id="marketplace-karat" className="input" name="karat" defaultValue={filters.karat ?? ""}>
               <option value="">All karats</option>
               {[18, 21, 22, 24].map((k) => <option key={k} value={k}>{k}K</option>)}
             </select>
           </div>
           <div>
             <label className="label" htmlFor="marketplace-sort">Sort by</label>
-            <select id="marketplace-sort" className="input" name="sort" defaultValue={searchParams.sort ?? "newest"}>
+            <select id="marketplace-sort" className="input" name="sort" defaultValue={filters.sort ?? "newest"}>
               <option value="newest">Newest</option>
               <option value="value">Best Value Score</option>
               <option value="price_low">Lowest total</option>
@@ -112,13 +113,13 @@ export default async function MarketplacePage({ searchParams }: SP) {
           <button className="btn-primary min-w-28">Apply filters</button>
         </form>
 
-        {(searchParams.category || searchParams.karat || searchParams.q || (searchParams.sort && searchParams.sort !== "newest")) && (
+        {(filters.category || filters.karat || filters.q || (filters.sort && filters.sort !== "newest")) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
             <span className="font-semibold text-ink-muted">Applied:</span>
-            {searchParams.q && <span className="pill border-jade-900/10 bg-white">Search “{searchParams.q}”</span>}
-            {searchParams.category && <span className="pill border-jade-900/10 bg-white capitalize">{searchParams.category}</span>}
-            {searchParams.karat && <span className="pill border-jade-900/10 bg-white">{searchParams.karat}K</span>}
-            {searchParams.sort && searchParams.sort !== "newest" && <span className="pill border-jade-900/10 bg-white">Sorted: {searchParams.sort.replaceAll("_", " ")}</span>}
+            {filters.q && <span className="pill border-jade-900/10 bg-white">Search “{filters.q}”</span>}
+            {filters.category && <span className="pill border-jade-900/10 bg-white capitalize">{filters.category}</span>}
+            {filters.karat && <span className="pill border-jade-900/10 bg-white">{filters.karat}K</span>}
+            {filters.sort && filters.sort !== "newest" && <span className="pill border-jade-900/10 bg-white">Sorted: {filters.sort.replaceAll("_", " ")}</span>}
             <Link href="/marketplace" className="ml-1 font-semibold text-jade-700 underline underline-offset-4">Clear all</Link>
           </div>
         )}
@@ -130,7 +131,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
               {sorted.length} {sorted.length === 1 ? "listing" : "listings"}
             </h2>
           </div>
-          {(searchParams.category || searchParams.karat || searchParams.q) && (
+          {(filters.category || filters.karat || filters.q) && (
             <Link href="/marketplace" className="text-sm font-semibold text-jade-700 hover:text-jade-500">
               Clear filters
             </Link>

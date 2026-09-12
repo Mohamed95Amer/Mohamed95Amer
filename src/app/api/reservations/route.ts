@@ -30,7 +30,7 @@ interface ReservationRow {
  * advisory only — this endpoint is the source of truth.
  */
 export async function POST(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
