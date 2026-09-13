@@ -28,3 +28,13 @@ export function secondsUntilNextRefresh(ageSeconds: number, intervalSeconds: num
   const elapsedInCycle = age % interval;
   return elapsedInCycle === 0 ? interval : interval - elapsedInCycle;
 }
+
+/** Current calendar date in the marketplace's operating timezone. */
+export function dubaiTodayIso(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Dubai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}

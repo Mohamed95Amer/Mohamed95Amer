@@ -19,17 +19,20 @@ import { diditIsConfigured } from "@/lib/identity/didit";
 import { StoreVisitForm } from "@/components/StoreVisitForm";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
+import { TrackPageView } from "@/components/TrackPageView";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
 const SELECT =
-  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors!inner(id, business_name, emirate, verification_status)";
+  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)";
 
 type Vendor = {
   id: string;
   business_name: string;
   emirate: string;
   verification_status: string;
+  license_expiry_date: string;
 } | null;
 
 async function loadProduct(id: string) {
@@ -45,6 +48,7 @@ async function loadProduct(id: string) {
     .eq("id", id)
     .eq("product_status", "approved")
     .eq("vendors.verification_status", "approved")
+    .gte("vendors.license_expiry_date", dubaiTodayIso())
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
     .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)))
@@ -103,6 +107,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const reputation = reputationRow
     ? normalizeReputation(reputationRow as VendorReputationRow)
     : null;
+  const [{ data: favourite }, { data: priceAlert }] = profile
+    ? await Promise.all([
+        supabase.from("product_favourites").select("product_id").eq("user_id", profile.id).eq("product_id", product.id).maybeSingle(),
+        supabase.from("price_alerts").select("target_total_aed, notify_on_making_offer").eq("user_id", profile.id).eq("product_id", product.id).eq("active", true).maybeSingle(),
+      ])
+    : [{ data: null }, { data: null }];
 
   const available =
     typeof availability === "number" ? availability : Number(product.quantity ?? 0);
@@ -118,6 +128,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="container-pro py-8 sm:py-12">
+      <TrackPageView eventName="product_view" productId={product.id} vendorId={product.vendor_id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Product",
@@ -168,7 +179,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           {product.description && (
             <p className="mt-4 max-w-prose leading-relaxed text-ink-muted">{product.description}</p>
           )}
-          <ProductActions name={product.name} />
+          <ProductActions productId={product.id} name={product.name} signedIn={Boolean(profile)} initiallyFavourite={Boolean(favourite)} initialAlert={priceAlert} />
 
           <h2 className="mt-10 font-serif text-2xl font-semibold text-jade-950">Specifications</h2>
           <dl className="mt-4 overflow-hidden rounded-2xl border border-jade-900/10 bg-white">
@@ -203,6 +214,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 </div>
                 <div className="mt-3"><StoreRating reputation={reputation} compact /></div>
                 <div className="mt-2"><StoreBadges reputation={reputation} compact /></div>
+                <p className="mt-2 text-[11px] text-ink-muted">Trade licence current through {new Intl.DateTimeFormat("en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
               </div>
             )}
 

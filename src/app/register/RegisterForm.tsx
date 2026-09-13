@@ -13,7 +13,7 @@ const destination: Record<RegistrationRole, string> = {
   delivery_company: "/delivery/register",
 };
 
-export function RegisterForm({ initialRole = "customer" }: { initialRole?: RegistrationRole }) {
+export function RegisterForm({ initialRole = "customer", referralCode }: { initialRole?: RegistrationRole; referralCode?: string }) {
   const supabase = getBrowserSupabase();
   const router = useRouter();
   const [fullName, setFullName] = useState("");
@@ -36,7 +36,7 @@ export function RegisterForm({ initialRole = "customer" }: { initialRole?: Regis
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination[role])}`,
-        data: { full_name: fullName, phone, role },
+        data: { full_name: fullName, phone, role, referral_code: referralCode },
       },
     });
     setBusy(false);
@@ -58,6 +58,7 @@ export function RegisterForm({ initialRole = "customer" }: { initialRole?: Regis
         <label className="label" htmlFor="register-name">Full name</label>
         <input id="register-name" name="name" className="input" required autoComplete="name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
       </div>
+      {referralCode && role === "customer" && <p className="rounded-xl bg-jade-50 p-3 text-xs text-jade-700">Invitation code {referralCode} will be linked after signup.</p>}
       <div>
         <label className="label" htmlFor="register-phone">UAE phone number</label>
         <input id="register-phone" name="phone" className="input" type="tel" required autoComplete="tel" inputMode="tel" placeholder="+971 50 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />

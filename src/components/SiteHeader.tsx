@@ -4,6 +4,9 @@ import { SignOutButton } from "./SignOutButton";
 import { BrandMark } from "./BrandMark";
 import { getCurrentProfile } from "@/lib/auth/server";
 import { MobileNav } from "./MobileNav";
+import { cookies } from "next/headers";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { getServiceSupabase } from "@/lib/supabase/server";
 
 /**
  * Site header.
@@ -15,19 +18,23 @@ import { MobileNav } from "./MobileNav";
  */
 export async function SiteHeader() {
   const profile = await getCurrentProfile();
+  const language = (await cookies()).get("gg_lang")?.value === "ar" ? "ar" : "en";
+  const t = language === "ar" ? { market: "السوق", request: "اطلب قطعة", vendors: "المتاجر", insights: "أسعار الذهب", how: "كيف يعمل", trust: "الثقة", tagline: "شاهد السعر. احصل على الذهب.", eyebrow: "سوق الذهب في الإمارات" } : { market: "Marketplace", request: "Request a piece", vendors: "Vendors", insights: "Gold insights", how: "How it works", trust: "Trust", tagline: "See the price. Get the gold.", eyebrow: "UAE gold marketplace" };
   const role = profile?.role as "customer" | "vendor" | "delivery_company" | "admin" | "super_admin" | undefined;
   const isAdmin = role === "admin" || role === "super_admin";
   const isVendor = role === "vendor";
   const isDeliveryCompany = role === "delivery_company";
+  const unreadCount = profile ? (await getServiceSupabase().from("notifications").select("id", { count: "exact", head: true }).eq("user_id", profile.id).is("read_at", null)).count ?? 0 : 0;
 
   return (
     <header className="sticky top-0 z-30 border-b border-jade-900/10 bg-white/90 shadow-sm backdrop-blur-xl">
       <div className="bg-jade-950 text-white">
         <div className="container-pro flex min-h-9 items-center justify-between gap-3 py-1.5">
           <p className="eyebrow truncate text-white/65">
-            UAE gold marketplace
+            {t.eyebrow}
           </p>
-          <div className="shrink-0">
+          <div className="flex shrink-0 items-center gap-2">
+            <LanguageSwitcher language={language} />
             <GoldPriceBadge compact tone="dark" />
           </div>
         </div>
@@ -38,17 +45,17 @@ export async function SiteHeader() {
           <BrandMark />
           <span>
             <span className="block font-serif text-xl font-semibold leading-none tracking-tight text-jade-950">Get Gold</span>
-            <span className="mt-0.5 hidden text-[9px] font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">See the price. Get the gold.</span>
+            <span className="mt-0.5 hidden text-[9px] font-semibold uppercase tracking-[0.2em] text-ink-muted sm:block">{t.tagline}</span>
           </span>
         </Link>
 
         <nav className="hidden items-center gap-1 rounded-full border border-jade-900/10 bg-jade-50/70 p-1 text-sm text-ink-muted lg:flex">
-          <Link href="/marketplace" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Marketplace</Link>
-          <Link href="/requests/new" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Request a piece</Link>
-          <Link href="/vendors" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Vendors</Link>
-          <Link href="/live-price" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Gold insights</Link>
-          <Link href="/how-it-works" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">How it works</Link>
-          <Link href="/trust" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">Trust</Link>
+          <Link href="/marketplace" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">{t.market}</Link>
+          <Link href="/requests/new" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">{t.request}</Link>
+          <Link href="/vendors" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">{t.vendors}</Link>
+          <Link href="/live-price" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">{t.insights}</Link>
+          <Link href="/how-it-works" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">{t.how}</Link>
+          <Link href="/trust" className="rounded-full px-3.5 py-1.5 transition hover:bg-white hover:text-jade-900">{t.trust}</Link>
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
@@ -68,6 +75,7 @@ export async function SiteHeader() {
               <Link href="/profile" className="btn-ghost px-4 py-2 text-xs">
                 {firstName(profile.full_name) ?? "Profile"}
               </Link>
+              <Link href="/account/notifications" className="relative grid h-10 w-10 place-items-center rounded-full border border-jade-900/10 text-jade-900" aria-label={`${unreadCount} unread notifications`}>♢{unreadCount > 0 && <span className="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-gold-400 px-1 text-[10px] font-bold text-jade-950">{unreadCount > 9 ? "9+" : unreadCount}</span>}</Link>
               <SignOutButton />
             </>
           ) : (
@@ -84,6 +92,8 @@ export async function SiteHeader() {
           isAdmin={isAdmin}
           isDeliveryCompany={isDeliveryCompany}
           isCustomer={role === "customer"}
+          language={language}
+          unreadCount={unreadCount}
         />
       </div>
     </header>

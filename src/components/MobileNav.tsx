@@ -12,6 +12,8 @@ interface MobileNavProps {
   isAdmin: boolean;
   isDeliveryCompany: boolean;
   isCustomer: boolean;
+  language: "en" | "ar";
+  unreadCount: number;
 }
 
 const publicLinks = [
@@ -23,16 +25,19 @@ const publicLinks = [
   ["/trust", "Trust & verification"],
 ] as const;
 
-export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDeliveryCompany, isCustomer }: MobileNavProps) {
+export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDeliveryCompany, isCustomer, language, unreadCount }: MobileNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
 
+  const localizedPublicLinks = language === "ar" ? [["/marketplace", "السوق"], ["/requests/new", "اطلب قطعة"], ["/vendors", "المتاجر الموثقة"], ["/live-price", "أسعار وتحليلات الذهب"], ["/how-it-works", "كيف يعمل"], ["/trust", "الثقة والتحقق"]] as const : publicLinks;
   const accountLinks: Array<readonly [string, string]> = signedIn
     ? [
         ["/profile", displayName ? `${displayName}'s profile` : "My profile"],
         ...(isCustomer ? [["/account", "Purchase history"], ["/account/requests", "My gold requests"], ["/account/visits", "My store visits"]] as const : []),
+        ["/account/saved", language === "ar" ? "المحفوظات والتنبيهات" : "Saved & alerts"],
+        ["/account/notifications", `${language === "ar" ? "الإشعارات" : "Notifications"}${unreadCount ? ` (${unreadCount})` : ""}`],
         ...(isVendor ? [["/vendor", "Vendor dashboard"]] as const : []),
         ...(isDeliveryCompany ? [["/delivery", "Delivery dashboard"]] as const : []),
         ...(isAdmin ? [["/admin", "Admin dashboard"]] as const : []),
@@ -63,7 +68,7 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDelivery
       {open && (
         <div id="mobile-site-menu" className="absolute inset-x-0 top-full border-t border-jade-900/10 bg-white shadow-lift">
           <nav className="container-pro grid gap-1 py-4" aria-label="Mobile navigation">
-            {publicLinks.map(([href, label]) => (
+            {localizedPublicLinks.map(([href, label]) => (
               <NavLink key={href} href={href} label={label} active={pathname === href || pathname.startsWith(`${href}/`)} />
             ))}
             <div className="my-2 h-px bg-jade-900/10" />

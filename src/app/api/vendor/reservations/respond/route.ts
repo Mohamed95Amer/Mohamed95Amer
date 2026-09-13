@@ -3,6 +3,7 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { vendorResponseSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit";
 import { ipFromRequest } from "@/lib/security/rate-limit";
+import { notifyUser } from "@/lib/notifications/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
 
   const { data: reservation } = await admin
     .from("reservations")
-    .select("id, vendor_id, status, expires_at, payment_method")
+    .select("id, vendor_id, customer_user_id, status, expires_at, payment_method")
     .eq("id", parsed.data.reservationId)
     .single();
   if (!reservation || reservation.vendor_id !== vendor.id) {
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
     new_value: { status: nextStatus, note: parsed.data.note ?? null },
     ip_address: ipFromRequest(request),
   });
+  await notifyUser({ userId: reservation.customer_user_id, kind: "order", title: parsed.data.decision === "confirm" ? "The store confirmed your order" : "The store could not confirm your order", body: parsed.data.decision === "confirm" ? (reservation.payment_method === "pay_online" ? "Your order is ready for the payment step when online checkout becomes available." : "Arrange payment directly with the seller using the details in your order.") : (parsed.data.note || "The price lock has been released. You can browse another listing or create a gold request."), href: `/account/reservations/${reservation.id}`, dedupeKey: `reservation-response:${reservation.id}:${parsed.data.decision}` });
 
   return NextResponse.json({ id: reservation.id, status: nextStatus });
 }

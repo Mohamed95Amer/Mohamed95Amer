@@ -20,6 +20,7 @@ export function SiteFooter() {
             <li><Link className="transition hover:text-white" href="/marketplace">Browse all</Link></li>
             <li><Link className="transition hover:text-white" href="/vendors">Verified vendors</Link></li>
             <li><Link className="transition hover:text-white" href="/live-price">Gold insights & history</Link></li>
+            <li><Link className="transition hover:text-white" href="/compare">Compare listings</Link></li>
           </ul>
         </div>
         <div>

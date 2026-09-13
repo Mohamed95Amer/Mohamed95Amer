@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +17,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
     const { data: products } = await supabase
       .from("products")
-      .select("id, vendor_id, updated_at, vendors!inner(updated_at, verification_status)")
+      .select("id, vendor_id, updated_at, vendors!inner(updated_at, verification_status, license_expiry_date)")
       .eq("product_status", "approved")
       .eq("vendors.verification_status", "approved")
+      .gte("vendors.license_expiry_date", dubaiTodayIso())
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter);

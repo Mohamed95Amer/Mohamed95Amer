@@ -109,6 +109,9 @@ export default async function AccountPage() {
           <Link href="/requests/new" className="btn-primary px-4 py-2 text-xs">Request a piece</Link>
           <Link href="/account/requests" className="btn-ghost px-4 py-2 text-xs">My gold requests</Link>
           <Link href="/account/visits" className="btn-ghost px-4 py-2 text-xs">My store visits</Link>
+          <Link href="/account/saved" className="btn-ghost px-4 py-2 text-xs">Saved & alerts</Link>
+          <Link href="/account/notifications" className="btn-ghost px-4 py-2 text-xs">Notifications</Link>
+          <Link href="/account/referrals" className="btn-ghost px-4 py-2 text-xs">Invite friends</Link>
         </nav>
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <AccountStat label="Completed purchases" value={String(purchases.length)} detail={fineGoldGrams.toFixed(3) + "g fine-gold equivalent"} />

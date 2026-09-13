@@ -3,6 +3,9 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { buyerRequestCreateSchema } from "@/lib/validation/schemas";
 import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
+import { notifyUser } from "@/lib/notifications/server";
+import { trackServerEvent } from "@/lib/analytics/server";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -42,5 +45,10 @@ export async function POST(request: Request) {
   }
 
   await logAudit({ actor_user_id: auth.user.id, actor_role: "customer", action: "buyer_request.created", entity_type: "buyer_request", entity_id: data.id, ip_address: ipFromRequest(request) });
+  const { data: vendors } = await admin.from("vendors").select("owner_user_id").eq("verification_status", "approved").eq("emirate", parsed.data.emirate).gte("license_expiry_date", dubaiTodayIso()).limit(50);
+  await Promise.all([
+    ...(vendors ?? []).map((vendor) => notifyUser({ userId: vendor.owner_user_id, kind: "offer", title: `New ${parsed.data.karat}K ${parsed.data.category} request`, body: `A buyer in ${parsed.data.emirate} is asking verified stores for an offer.`, href: "/vendor/requests", dedupeKey: `buyer-request:${data.id}:${vendor.owner_user_id}` })),
+    trackServerEvent({ eventName: "buyer_request_created", userId: auth.user.id, metadata: { category: parsed.data.category, karat: parsed.data.karat, emirate: parsed.data.emirate } }),
+  ]);
   return NextResponse.json({ id: data.id });
 }

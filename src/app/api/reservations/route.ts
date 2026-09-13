@@ -6,6 +6,8 @@ import { rateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 import { env } from "@/lib/env";
 import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
+import { notifyUser } from "@/lib/notifications/server";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -218,6 +220,12 @@ export async function POST(request: Request) {
     },
     ip_address: ipFromRequest(request),
   });
+  const { data: vendorOwner } = await admin.from("vendors").select("owner_user_id").eq("id", reservation.vendor_id).maybeSingle();
+  await Promise.all([
+    vendorOwner?.owner_user_id ? notifyUser({ userId: vendorOwner.owner_user_id, kind: "order", title: "New order awaiting confirmation", body: "A verified customer locked a live price. Review the item and fulfilment details before the lock expires.", href: "/vendor/orders", dedupeKey: `reservation-created:${reservation.id}:vendor` }) : Promise.resolve(),
+    notifyUser({ userId: auth.user.id, kind: "order", title: "Your price is locked", body: "The store is reviewing availability. Follow this order for confirmation, payment and delivery updates.", href: `/account/reservations/${reservation.id}`, dedupeKey: `reservation-created:${reservation.id}:customer` }),
+    trackServerEvent({ eventName: "reservation_created", userId: auth.user.id, productId: reservation.product_id, vendorId: reservation.vendor_id, reservationId: reservation.id, metadata: { fulfilment: parsed.data.fulfilmentMethod, payment: parsed.data.paymentMethod } }),
+  ]);
 
   return NextResponse.json({
     reservation: { ...reservation, payment_method: parsed.data.paymentMethod, payment_status: paymentStatus },

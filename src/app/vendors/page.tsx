@@ -5,6 +5,7 @@ import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 import type { Metadata } from "next";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default async function VendorsListPage() {
       .from("vendors")
       .select("id, business_name, emirate, store_address")
       .eq("verification_status", "approved")
+      .gte("license_expiry_date", dubaiTodayIso())
       .order("business_name"),
     // One pass for every approved listing, grouped in memory. A per-vendor
     // query would mean N round trips to render a single page.

@@ -12,6 +12,7 @@ export function AdminNav() {
     ["/admin/products", "Products"],
     ["/admin/catalogue-support", "Catalogue support"],
     ["/admin/liquidity", "Marketplace health"],
+    ["/admin/growth", "Growth funnel"],
     ["/admin/orders", "Orders"],
     ["/admin/reviews", "Reviews"],
     ["/admin/gold-price", "Gold price"],

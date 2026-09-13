@@ -8,6 +8,8 @@ import { getLatestTick } from "@/lib/gold-price/service";
 import { computePrice } from "@/lib/pricing/calc";
 import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { TrackPageView } from "@/components/TrackPageView";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 interface SP {
-  searchParams: Promise<{ category?: string; karat?: string; q?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; karat?: string; q?: string; sort?: string; emirate?: string; minWeight?: string; maxWeight?: string; maxTotal?: string; certified?: string }>;
 }
 
 export default async function MarketplacePage({ searchParams }: SP) {
@@ -32,10 +34,11 @@ export default async function MarketplacePage({ searchParams }: SP) {
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, created_at, vendors!inner(id, business_name, emirate, verification_status)",
+      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, created_at, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
     )
     .eq("product_status", "approved")
     .eq("vendors.verification_status", "approved")
+    .gte("vendors.license_expiry_date", dubaiTodayIso())
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
     .gte("inventory_confirmed_at", freshAfter)
@@ -44,7 +47,11 @@ export default async function MarketplacePage({ searchParams }: SP) {
 
   if (filters.category) query = query.eq("category", filters.category);
   if (filters.karat) query = query.eq("karat", Number(filters.karat));
-  if (filters.q) query = query.ilike("name", `%${filters.q}%`);
+  if (filters.q) query = query.textSearch("search_document", filters.q, { type: "websearch", config: "simple" });
+  if (filters.emirate) query = query.eq("vendors.emirate", filters.emirate);
+  if (Number(filters.minWeight) > 0) query = query.gte("weight_grams", Number(filters.minWeight));
+  if (Number(filters.maxWeight) > 0) query = query.lte("weight_grams", Number(filters.maxWeight));
+  if (filters.certified === "yes") query = query.not("certificate_number", "is", null);
 
   const [{ data }, { data: reputationRows }, latestTick] = await Promise.all([
     query,
@@ -55,7 +62,8 @@ export default async function MarketplacePage({ searchParams }: SP) {
   const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const liveRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
-  const sorted = [...(data ?? [])].sort((a, b) => {
+  const pricedFiltered = [...(data ?? [])].filter((product) => !Number(filters.maxTotal) || listingPrice(product, liveRate, platformFeeBps, deliveryFee).total <= Number(filters.maxTotal));
+  const sorted = pricedFiltered.sort((a, b) => {
     if (filters.sort === "rating") return (reputations.get(b.vendor_id)?.adjustedRating ?? -1) - (reputations.get(a.vendor_id)?.adjustedRating ?? -1);
     if (filters.sort === "price_low" || filters.sort === "price_high" || filters.sort === "value") {
       const aPrice = listingPrice(a, liveRate, platformFeeBps, deliveryFee);
@@ -68,6 +76,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   });
   return (
     <div className="pb-16">
+      <TrackPageView eventName={filters.q ? "search" : "marketplace_view"} metadata={filters.q ? { queryLength: filters.q.length, hasCategory: Boolean(filters.category), hasKarat: Boolean(filters.karat) } : {}} />
       <section className="relative overflow-hidden bg-jade-900 text-white">
         <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full border border-gold-200/15" />
         <div className="container-pro relative flex flex-col gap-6 py-12 sm:py-14 md:flex-row md:items-end md:justify-between">
@@ -85,11 +94,16 @@ export default async function MarketplacePage({ searchParams }: SP) {
       </section>
 
       <div className="container-pro -mt-5 relative">
-        <form className="card grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-[1.3fr_0.85fr_0.75fr_0.95fr_auto] lg:items-end">
+        <form className="card grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-4 lg:items-end">
           <div>
             <label className="label" htmlFor="marketplace-search">Search listings</label>
             <input id="marketplace-search" className="input" name="q" type="search" defaultValue={filters.q ?? ""} placeholder="Try ‘bangle’ or ‘gold bar’" />
           </div>
+          <div><label className="label" htmlFor="marketplace-emirate">Store emirate</label><select id="marketplace-emirate" className="input" name="emirate" defaultValue={filters.emirate ?? ""}><option value="">All Emirates</option>{["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
+          <div><label className="label" htmlFor="marketplace-min-weight">Minimum weight (g)</label><input id="marketplace-min-weight" className="input" name="minWeight" type="number" min="0" step="0.1" defaultValue={filters.minWeight ?? ""} placeholder="Any" /></div>
+          <div><label className="label" htmlFor="marketplace-max-weight">Maximum weight (g)</label><input id="marketplace-max-weight" className="input" name="maxWeight" type="number" min="0" step="0.1" defaultValue={filters.maxWeight ?? ""} placeholder="Any" /></div>
+          <div><label className="label" htmlFor="marketplace-max-total">Maximum live total (AED)</label><input id="marketplace-max-total" className="input" name="maxTotal" type="number" min="1" step="1" defaultValue={filters.maxTotal ?? ""} placeholder="Any" /></div>
+          <div><label className="label" htmlFor="marketplace-certified">Certificate / assay</label><select id="marketplace-certified" className="input" name="certified" defaultValue={filters.certified ?? ""}><option value="">Any</option><option value="yes">Certificate reference listed</option></select></div>
           <div>
             <label className="label" htmlFor="marketplace-category">Category</label>
             <select id="marketplace-category" className="input capitalize" name="category" defaultValue={filters.category ?? ""}>
@@ -116,15 +130,20 @@ export default async function MarketplacePage({ searchParams }: SP) {
               <option value="rating">Store rating</option>
             </select>
           </div>
-          <button className="btn-primary min-w-28">Apply filters</button>
+          <button className="btn-primary min-w-28 lg:col-span-4">Apply filters</button>
         </form>
 
-        {(filters.category || filters.karat || filters.q || (filters.sort && filters.sort !== "newest")) && (
+        {(filters.category || filters.karat || filters.q || filters.emirate || filters.minWeight || filters.maxWeight || filters.maxTotal || filters.certified || (filters.sort && filters.sort !== "newest")) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
             <span className="font-semibold text-ink-muted">Applied:</span>
             {filters.q && <span className="pill border-jade-900/10 bg-white">Search “{filters.q}”</span>}
             {filters.category && <span className="pill border-jade-900/10 bg-white capitalize">{filters.category}</span>}
             {filters.karat && <span className="pill border-jade-900/10 bg-white">{filters.karat}K</span>}
+            {filters.emirate && <span className="pill border-jade-900/10 bg-white">{filters.emirate}</span>}
+            {filters.minWeight && <span className="pill border-jade-900/10 bg-white">From {filters.minWeight}g</span>}
+            {filters.maxWeight && <span className="pill border-jade-900/10 bg-white">Up to {filters.maxWeight}g</span>}
+            {filters.maxTotal && <span className="pill border-jade-900/10 bg-white">Up to AED {filters.maxTotal}</span>}
+            {filters.certified && <span className="pill border-jade-900/10 bg-white">Certificate listed</span>}
             {filters.sort && filters.sort !== "newest" && <span className="pill border-jade-900/10 bg-white">Sorted: {filters.sort.replaceAll("_", " ")}</span>}
             <Link href="/marketplace" className="ml-1 font-semibold text-jade-700 underline underline-offset-4">Clear all</Link>
           </div>

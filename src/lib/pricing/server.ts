@@ -5,6 +5,7 @@ import { refreshInBand } from "@/lib/gold-price/refresh-on-read";
 import { computePrice, type PriceBreakdown } from "./calc";
 import type { FulfilmentMethod } from "@/lib/fulfilment";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
 
 export interface OfficialPriceResult {
   product: {
@@ -55,11 +56,12 @@ export async function computeOfficialPriceForProduct(
   const { data: product, error: prodErr } = await supabase
     .from("products")
     .select(
-      "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, product_status, vendors!inner(verification_status)",
+      "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, product_status, vendors!inner(verification_status, license_expiry_date)",
     )
     .eq("id", productId)
     .eq("product_status", "approved")
     .eq("vendors.verification_status", "approved")
+    .gte("vendors.license_expiry_date", dubaiTodayIso())
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
     .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)))

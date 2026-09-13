@@ -3,6 +3,7 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { storeVisitResponseSchema } from "@/lib/validation/schemas";
 import { ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
+import { notifyUser } from "@/lib/notifications/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,9 +18,10 @@ export async function POST(request: Request) {
   const { data: vendor } = await admin.from("vendors").select("id").eq("owner_user_id", auth.user.id).maybeSingle();
   if (!vendor) return NextResponse.json({ error: "vendor_required" }, { status: 403 });
   const nextStatus = parsed.data.decision === "confirm" ? "confirmed" : parsed.data.decision === "complete" ? "completed" : "declined";
-  const { data, error } = await admin.from("store_visit_requests").update({ status: nextStatus }).eq("id", parsed.data.visitId).eq("vendor_id", vendor.id).in("status", parsed.data.decision === "complete" ? ["confirmed"] : ["requested"]).select("id").maybeSingle();
+  const { data, error } = await admin.from("store_visit_requests").update({ status: nextStatus }).eq("id", parsed.data.visitId).eq("vendor_id", vendor.id).in("status", parsed.data.decision === "complete" ? ["confirmed"] : ["requested"]).select("id, customer_user_id").maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "invalid_state" }, { status: 409 });
   await logAudit({ actor_user_id: auth.user.id, actor_role: "vendor", action: `store_visit.${parsed.data.decision}`, entity_type: "store_visit_request", entity_id: data.id, ip_address: ipFromRequest(request) });
+  await notifyUser({ userId: data.customer_user_id, kind: "order", title: `Store visit ${nextStatus}`, body: nextStatus === "confirmed" ? "The store confirmed your requested visit time." : nextStatus === "completed" ? "Your store visit was marked complete." : "The store could not confirm this visit time. Choose another item or contact the store.", href: "/account/visits", dedupeKey: `store-visit:${data.id}:${nextStatus}` });
   return NextResponse.json({ id: data.id, status: nextStatus });
 }

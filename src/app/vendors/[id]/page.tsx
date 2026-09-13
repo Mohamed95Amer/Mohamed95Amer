@@ -12,19 +12,20 @@ import {
   type VendorReputationRow,
 } from "@/lib/reputation";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
 async function loadVendor(id: string) {
   const supabase = getServiceSupabase();
-  const { data } = await supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, verification_status").eq("id", id).single();
+  const { data } = await supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, verification_status, license_expiry_date").eq("id", id).single();
   return data;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const vendor = await loadVendor(id);
-  if (!vendor || vendor.verification_status !== "approved") return { title: "Store not found" };
+  if (!vendor || vendor.verification_status !== "approved" || vendor.license_expiry_date < dubaiTodayIso()) return { title: "Store not found" };
   return {
     title: vendor.business_name,
     description: `Browse approved gold and jewellery listings from ${vendor.business_name} in ${vendor.emirate}.`,
@@ -36,7 +37,7 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
   const { id } = await params;
   const supabase = getServiceSupabase();
   const vendor = await loadVendor(id);
-  if (!vendor || vendor.verification_status !== "approved") return notFound();
+  if (!vendor || vendor.verification_status !== "approved" || vendor.license_expiry_date < dubaiTodayIso()) return notFound();
   const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
@@ -77,6 +78,7 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
         </div>
         <h1 className="mt-3 font-serif text-3xl">{vendor.business_name}</h1>
         <p className="text-sm text-ink-muted">{vendor.emirate} · {vendor.store_address}</p>
+        <p className="mt-1 text-xs text-signal-ok">Trade licence checked · current through {new Intl.DateTimeFormat("en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
         <div className="mt-3"><StoreRating reputation={reputation} /></div>
         {vendor.google_maps_link && (
           <a className="text-sm underline" href={vendor.google_maps_link} target="_blank" rel="noreferrer">

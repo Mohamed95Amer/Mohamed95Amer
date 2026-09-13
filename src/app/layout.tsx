@@ -4,6 +4,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { GoldPriceProvider } from "@/components/GoldPriceProvider";
 import { env } from "@/lib/env";
+import { CompareTray } from "@/components/CompareTray";
+import { PwaRegistration } from "@/components/PwaRegistration";
+import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: {
@@ -25,9 +28,10 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const language = (await cookies()).get("gg_lang")?.value === "ar" ? "ar" : "en";
   return (
-    <html lang="en">
+    <html lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
       <body className="min-h-screen flex flex-col">
         <a
           href="#main-content"
@@ -36,9 +40,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <GoldPriceProvider>
+          <PwaRegistration />
           <SiteHeader />
           <main id="main-content" className="flex-1">{children}</main>
           <SiteFooter />
+          <CompareTray />
         </GoldPriceProvider>
       </body>
     </html>

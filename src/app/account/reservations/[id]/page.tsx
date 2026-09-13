@@ -17,6 +17,7 @@ import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ReviewForm } from "@/components/ReviewForm";
 import { FulfilmentDetails } from "@/components/FulfilmentDetails";
 import Link from "next/link";
+import { statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,9 @@ export default async function ReservationDetailPage({ params }: { params: Promis
     .select("overall_rating, product_rating, communication_rating, fulfilment_rating, packaging_rating, delivery_rating, title, comment, editable_until")
     .eq("reservation_id", r.id)
     .maybeSingle();
+  const { data: deliveryAssignment } = r.fulfilment_method === "delivery"
+    ? await admin.from("delivery_assignments").select("status, tracking_code, public_note, accepted_at, picked_up_at, delivered_at, company:delivery_companies(company_name, phone)").eq("reservation_id", r.id).maybeSingle()
+    : { data: null };
 
   const product = r.product as unknown as { name: string; karat: number; weight_grams: number } | null;
   const vendor = r.vendor as unknown as { business_name: string; emirate: string; email: string; phone: string } | null;
@@ -77,6 +81,8 @@ export default async function ReservationDetailPage({ params }: { params: Promis
       <div className="mt-6">
         <FulfilmentDetails details={r} />
       </div>
+
+      {deliveryAssignment && (() => { const company = Array.isArray(deliveryAssignment.company) ? deliveryAssignment.company[0] : deliveryAssignment.company; return <section className="card mt-6 border-gold-300/30 p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="eyebrow text-jade-600">Delivery tracking</p><h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">{company?.company_name ?? "Assigned delivery partner"}</h2><p className="mt-1 text-xs text-ink-muted">Tracking {deliveryAssignment.tracking_code}{company?.phone ? ` · ${company.phone}` : ""}</p></div><span className="pill border-jade-900/10 bg-jade-50">{statusLabel(deliveryAssignment.status)}</span></div>{deliveryAssignment.public_note && <p className="mt-4 rounded-xl bg-jade-50 p-3 text-sm text-ink-muted">{deliveryAssignment.public_note}</p>}<ol className="mt-5 grid grid-cols-4 gap-2 text-center text-[10px] text-ink-muted">{[["accepted", "Accepted"], ["collected", "Collected"], ["out_for_delivery", "On the way"], ["delivered", "Delivered"]].map(([key, label], index, all) => { const current = all.findIndex(([state]) => state === deliveryAssignment.status); const complete = deliveryAssignment.status === "delivered" || (current >= 0 && index <= current); return <li key={key}><span className={`mx-auto mb-2 block h-2.5 w-2.5 rounded-full ${complete ? "bg-jade-700" : "bg-bone-deep"}`} />{label}</li>; })}</ol></section>; })()}
 
       <div className="card mt-6 p-5 text-sm"><span className="label">Payment choice</span><p className="mt-2 font-medium text-jade-950">{r.payment_method === "pay_online" ? "Online checkout requested" : "Pay the seller directly"}</p><p className="mt-1 text-xs text-ink-muted">{r.payment_method === "pay_online" ? `Payment status: ${reservationStatusLabel(r.payment_status)}` : "Get Gold does not hold the payment for this order."}</p></div>
 

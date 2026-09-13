@@ -4,6 +4,9 @@ import { storeVisitRequestSchema } from "@/lib/validation/schemas";
 import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
+import { notifyUser } from "@/lib/notifications/server";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,7 +23,7 @@ export async function POST(request: Request) {
   const { data: profile } = await admin.from("profiles").select("role").eq("id", auth.user.id).maybeSingle();
   if (profile?.role !== "customer") return NextResponse.json({ error: "customer_account_required" }, { status: 403 });
   const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
-  const { data: product } = await admin.from("products").select("id, vendor_id, product_status, quantity, vendors!inner(verification_status)").eq("id", parsed.data.productId).eq("vendors.verification_status", "approved").eq("data_quality_status", "valid").gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))).maybeSingle();
+  const { data: product } = await admin.from("products").select("id, vendor_id, product_status, quantity, vendors!inner(verification_status, license_expiry_date)").eq("id", parsed.data.productId).eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).eq("data_quality_status", "valid").gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))).maybeSingle();
   if (!product || product.product_status !== "approved" || Number(product.quantity) < 1) return NextResponse.json({ error: "product_unavailable" }, { status: 409 });
   const { data, error } = await admin.from("store_visit_requests").insert({
     customer_user_id: auth.user.id,
@@ -32,5 +35,10 @@ export async function POST(request: Request) {
   }).select("id").single();
   if (error || !data) return NextResponse.json({ error: error?.message ?? "visit_failed" }, { status: 500 });
   await logAudit({ actor_user_id: auth.user.id, actor_role: "customer", action: "store_visit.requested", entity_type: "store_visit_request", entity_id: data.id, ip_address: ipFromRequest(request) });
+  const { data: vendor } = await admin.from("vendors").select("owner_user_id").eq("id", product.vendor_id).maybeSingle();
+  await Promise.all([
+    vendor?.owner_user_id ? notifyUser({ userId: vendor.owner_user_id, kind: "order", title: "New store visit request", body: "A customer selected a time to inspect an item. Confirm or decline it from Orders.", href: "/vendor/orders", dedupeKey: `store-visit:${data.id}:vendor` }) : Promise.resolve(),
+    trackServerEvent({ eventName: "store_visit_requested", userId: auth.user.id, productId: product.id, vendorId: product.vendor_id }),
+  ]);
   return NextResponse.json({ id: data.id });
 }

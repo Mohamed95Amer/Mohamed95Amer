@@ -8,6 +8,9 @@ import { formatDubaiDateTime, statusLabel } from "@/lib/presentation";
 import { FulfilmentDetails } from "@/components/FulfilmentDetails";
 import { Fragment } from "react";
 import { StoreVisitActions } from "@/components/StoreVisitActions";
+import { DeliveryAssignmentControl } from "@/components/DeliveryAssignmentControl";
+import { dubaiTodayIso } from "@/lib/time";
+import { VendorOrderProgress } from "@/components/VendorOrderProgress";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +38,14 @@ export default async function VendorOrdersPage() {
       .eq("vendor_id", vendor.id)
       .order("preferred_at", { ascending: true }),
   ]);
+  const orderIds = (orders ?? []).map((order) => order.id);
+  const [{ data: assignments }, { data: deliveryCompanies }] = await Promise.all([
+    orderIds.length
+      ? admin.from("delivery_assignments").select("id, reservation_id, delivery_company_id, status, tracking_code, company:delivery_companies(company_name)").in("reservation_id", orderIds)
+      : Promise.resolve({ data: [] as any[] }),
+    admin.from("delivery_companies").select("id, company_name, emirates_served").eq("verification_status", "approved").gte("license_expiry_date", dubaiTodayIso()).order("company_name"),
+  ]);
+  const assignmentByReservation = new Map((assignments ?? []).map((assignment) => [assignment.reservation_id, { ...assignment, company: Array.isArray(assignment.company) ? assignment.company[0] : assignment.company }]));
 
   return (
     <div className="container-pro py-10">
@@ -90,7 +101,11 @@ export default async function VendorOrdersPage() {
                   <td colSpan={7} className="px-4 py-3">
                     <p className={`mb-2 text-xs font-semibold ${o.identity_verification_id ? "text-signal-ok" : "text-ink-muted"}`}>{o.identity_verification_id ? "✓ Identity verified for this order" : "Legacy order · no per-order identity record"}</p>
                     <p className="mb-2 text-xs text-ink-muted">Payment: {o.payment_method === "pay_online" ? "online requested" : "paid directly to store"} · {statusLabel(o.payment_status)}</p>
+                    {o.status === "payment_pending" && o.payment_method === "pay_at_store" && <VendorOrderProgress reservationId={o.id} />}
                     <FulfilmentDetails details={o} compact />
+                    {o.fulfilment_method === "delivery" && ["payment_pending", "payment_link_pending", "paid"].includes(o.status) && (
+                      <div className="mt-3 border-t border-jade-900/10 pt-3"><DeliveryAssignmentControl reservationId={o.id} emirate={o.delivery_emirate} companies={deliveryCompanies ?? []} assignment={assignmentByReservation.get(o.id) as any} /></div>
+                    )}
                   </td>
                 </tr>
                 </Fragment>

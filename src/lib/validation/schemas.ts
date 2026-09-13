@@ -181,6 +181,11 @@ export const platformSettingsSchema = z.object({
   online_payment_provider: z.string().trim().max(80).optional().nullable(),
 });
 
+export const vendorOrderProgressSchema = z.object({
+  reservationId: z.string().uuid(),
+  action: z.literal("confirm_payment_received"),
+});
+
 export const buyerRequestCreateSchema = z.object({
   category: z.enum(["ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other"]),
   karat: z.union([z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
@@ -201,6 +206,7 @@ export const buyerRequestCreateSchema = z.object({
 
 export const buyerRequestOfferSchema = z.object({
   requestId: z.string().uuid(),
+  productId: z.string().uuid().optional().nullable(),
   totalPriceAed: z.number().positive().max(10_000_000),
   makingChargeAed: z.number().min(0).max(1_000_000),
   certificateFeeAed: z.number().min(0).max(1_000_000),
@@ -281,4 +287,44 @@ export const adminReviewModerationSchema = z.object({
   ]),
   reportId: z.string().uuid().optional().nullable(),
   note: z.string().trim().max(500).optional().nullable(),
+});
+
+export const notificationPreferencesSchema = z.object({
+  language: z.enum(["en", "ar"]),
+  inAppNotifications: z.boolean(),
+  emailNotifications: z.boolean(),
+  smsNotifications: z.boolean(),
+  whatsappNotifications: z.boolean(),
+  marketingNotifications: z.boolean(),
+});
+
+export const favouriteSchema = z.object({ productId: z.string().uuid() });
+
+export const priceAlertSchema = z.object({
+  productId: z.string().uuid(),
+  targetTotalAed: z.number().positive().max(100_000_000).optional().nullable(),
+  notifyOnMakingOffer: z.boolean().default(true),
+}).refine((value) => value.targetTotalAed != null || value.notifyOnMakingOffer, {
+  message: "Choose a target price or making-charge offer alert",
+});
+
+export const deliveryAssignmentSchema = z.object({
+  reservationId: z.string().uuid(),
+  deliveryCompanyId: z.string().uuid(),
+  publicNote: z.string().trim().max(500).optional().nullable(),
+});
+
+export const deliveryStatusSchema = z.object({
+  assignmentId: z.string().uuid(),
+  status: z.enum(["accepted", "pickup_scheduled", "collected", "out_for_delivery", "delivered", "declined", "delivery_failed"]),
+  publicNote: z.string().trim().max(500).optional().nullable(),
+  proofReference: z.string().trim().max(500).optional().nullable(),
+});
+
+export const marketplaceEventSchema = z.object({
+  eventName: z.enum(["marketplace_view", "search", "product_view", "favourite_added", "compare_added", "alert_created", "identity_started", "referral_shared"]),
+  anonymousSessionId: z.string().uuid().optional().nullable(),
+  productId: z.string().uuid().optional().nullable(),
+  vendorId: z.string().uuid().optional().nullable(),
+  metadata: z.record(z.union([z.string().max(120), z.number(), z.boolean(), z.null()])).optional().default({}),
 });

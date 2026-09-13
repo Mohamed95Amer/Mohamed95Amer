@@ -5,6 +5,8 @@ import { identityVerificationStartSchema } from "@/lib/validation/schemas";
 import { createDiditVerificationSession, diditIsConfigured } from "@/lib/identity/didit";
 import { rateLimit } from "@/lib/security/rate-limit";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,10 +39,11 @@ export async function POST(request: Request) {
   const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
   const { data: product } = await admin
     .from("products")
-    .select("id, vendors!inner(verification_status)")
+    .select("id, vendor_id, vendors!inner(verification_status, license_expiry_date)")
     .eq("id", parsed.data.productId)
     .eq("product_status", "approved")
     .eq("vendors.verification_status", "approved")
+    .gte("vendors.license_expiry_date", dubaiTodayIso())
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
     .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)))
@@ -73,6 +76,7 @@ export async function POST(request: Request) {
       .update({ provider_applicant_id: session.sessionId })
       .eq("id", verificationId);
     if (sessionUpdateError) throw sessionUpdateError;
+    await trackServerEvent({ eventName: "identity_started", userId: auth.user.id, productId: product.id, vendorId: product.vendor_id, metadata: { route: parsed.data.verificationRoute } });
     return NextResponse.json({
       verificationId,
       verificationUrl: session.verificationUrl,

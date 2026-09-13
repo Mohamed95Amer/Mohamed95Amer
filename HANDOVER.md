@@ -41,6 +41,34 @@ Next.js 15 production build pass. The new pgTAP coverage is in
 and its SQL tests have not made a PostgREST/Postgres round trip. Apply and verify the migration
 before deploying the application release.
 
+**Growth and delivery release (13 Sep 2026):** migration
+`20260912235331_growth_delivery_experience.sql` and its application changes add saved listings,
+target-total and making-promotion alerts, four-item live comparison, in-app notifications and
+channel preferences, English/Arabic navigation with RTL layout, referral attribution, indexed
+full-text catalogue search plus weight/emirate/budget/certificate filters, licence-expiry gating,
+a privacy-minimal 30-day conversion dashboard, linked buyer-request offers that can continue into
+the ordinary identity/stock-lock checkout, and an explicit courier assignment state machine. Pay-at-store
+orders can now be marked paid by the seller, activating purchase insights and referral conversion.
+The PWA service worker caches only static framework/icon assets; documents, live-price endpoints
+and all APIs remain network-only. External email/SMS/WhatsApp preferences are stored but those
+channels do not claim delivery until a real provider is connected. Online payment remains visible
+but fails closed until a regulated marketplace PSP is implemented.
+
+Price alerts are processed by `/api/cron/process-price-alerts` behind the existing `CRON_SECRET`
+boundary and also by the daily maintenance cron. Vercel Hobby is intentionally not given another
+high-frequency job; connect a free external scheduler during validation if alerts should run more
+often than daily. Each alert is evaluated at most every five minutes and notification writes are
+deduplicated.
+
+Typecheck, ESLint and four full Next.js production builds pass. The 20-assertion pgTAP regression is
+in `supabase/tests/growth_delivery_experience_test.sql`. It has not run because the Supabase
+management API is unreachable from this machine and Docker Desktop's Linux engine is not running.
+Do not deploy this frontend before applying, in order,
+`20260912224153_marketplace_liquidity_requests.sql` and
+`20260912235331_growth_delivery_experience.sql` (plus the earlier pending Didit migration). A local
+runtime smoke test is also unavailable because `.env.local` contains only Vercel OIDC context, not
+the Supabase runtime variables; the compiled application itself is clean.
+
 Migrations `20260911135750_add_delivery_company_role.sql`,
 `20260911135755_delivery_company_profiles.sql` and
 `20260911181153_harden_get_gold_security.sql` are applied to production and recorded in migration
@@ -481,14 +509,18 @@ a transaction it rolls back.
    webhook secret to Vercel, register the signed webhook, and complete both Sandbox routes.
 3. Obtain UAE privacy/legal review for mandatory biometric processing, consent language, retention,
    cross-border or UAE-local processing, and handling of minors before accepting real orders.
-4. Design the delivery assignment state machine before exposing customer addresses to approved
-   delivery companies (assignment, acceptance, pickup, proof of delivery and cancellation).
+4. Exercise courier assignment with one approved delivery company: assignment, acceptance,
+   pickup, out-for-delivery, proof reference, completion, decline and failed-delivery retry.
 5. Replace generated demo artwork with each vendor's real product photography before public launch.
 6. Configure and test the `support@getgold.app`, `vendors@getgold.app` and `delivery@getgold.app` mailboxes used on Contact before launch.
 7. Smoke-test customer and vendor email-confirmation plus password recovery using inboxes you
    control. The code deployment and signup-role migration are complete.
-8. There is no payment integration. Reservations end at `pending_vendor_confirmation` and the
-   vendor is the seller of record; money changes hands off-platform. That is by design for the MVP.
+8. There is no payment integration. The vendor can confirm a pay-at-store order and later attest
+   that payment was received; the vendor remains seller of record and money moves off-platform.
+   This is deliberate for the MVP and is not equivalent to processor settlement evidence.
+9. Connect transactional email first, then WhatsApp/SMS only after verified provider accounts and
+   message templates exist. The preference UI is ready but external delivery deliberately does not
+   pretend to work.
 
 ## 6. Conventions
 

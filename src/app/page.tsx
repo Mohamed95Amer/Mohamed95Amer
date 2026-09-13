@@ -6,6 +6,7 @@ import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -33,10 +34,11 @@ export default async function HomePage() {
     supabase
       .from("products")
       .select(
-        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status)",
+        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
       )
       .eq("product_status", "approved")
       .eq("vendors.verification_status", "approved")
+      .gte("vendors.license_expiry_date", dubaiTodayIso())
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
@@ -46,12 +48,14 @@ export default async function HomePage() {
       .from("vendors")
       .select("id, business_name, emirate")
       .eq("verification_status", "approved")
+      .gte("license_expiry_date", dubaiTodayIso())
       .limit(30),
     supabase
       .from("products")
-      .select("id, name, category, karat, images, vendor_id, vendors!inner(verification_status)")
+      .select("id, name, category, karat, images, vendor_id, vendors!inner(verification_status, license_expiry_date)")
       .eq("product_status", "approved")
       .eq("vendors.verification_status", "approved")
+      .gte("vendors.license_expiry_date", dubaiTodayIso())
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
