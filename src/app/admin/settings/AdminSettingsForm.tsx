@@ -16,7 +16,7 @@ interface Settings {
 export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
   const router = useRouter();
   const [form, setForm] = useState<Settings>({
-    platform_fee_bps: initial?.platform_fee_bps ?? 50,
+    platform_fee_bps: initial?.platform_fee_bps ?? 100,
     delivery_fee_aed: initial?.delivery_fee_aed ?? 0,
     reservation_lock_minutes: initial?.reservation_lock_minutes ?? 10,
     stale_price_seconds: initial?.stale_price_seconds ?? 60,
@@ -57,15 +57,14 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
   return (
     <form className="grid gap-4" onSubmit={save}>
       <div>
-        <label className="label" htmlFor="setting-commission">Get Gold commission (%)</label>
-        <input id="setting-commission" name="platform_fee_percent" className="input" type="number" inputMode="decimal" min="0" max="10" step="0.05" value={form.platform_fee_bps / 100}
-          onChange={(e) => set("platform_fee_bps", Math.round(Number(e.target.value) * 100))} />
+        <label className="label" htmlFor="setting-commission">Phase 1 fee model</label>
+        <input id="setting-commission" className="input" value="1% customer fee · first 3 orders at 0.5%" readOnly />
         <p className="mt-1 text-xs text-ink-muted">
-          Launch rate: 0.5% of gold, making, stones and vendor premium. Delivery is excluded.
+          The first three active or completed orders reserve a 50%-off fee slot. Rejected, cancelled and expired orders release their slots. Vendor making-charge commission is paused.
         </p>
       </div>
       <div>
-        <label className="label" htmlFor="setting-delivery">Delivery fee (AED)</label>
+        <label className="label" htmlFor="setting-delivery">Delivery fee per order (AED)</label>
         <input id="setting-delivery" name="delivery_fee_aed" className="input" type="number" inputMode="decimal" min="0" step="0.01" value={form.delivery_fee_aed}
           onChange={(e) => set("delivery_fee_aed", Number(e.target.value))} />
       </div>

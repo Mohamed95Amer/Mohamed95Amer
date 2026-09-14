@@ -21,6 +21,7 @@ import { listingFreshCutoff } from "@/lib/products/integrity";
 import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
 import { TrackPageView } from "@/components/TrackPageView";
 import { dubaiTodayIso } from "@/lib/time";
+import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 
 export const dynamic = "force-dynamic";
 
@@ -83,10 +84,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const supabase = getServiceSupabase();
   const { product, settings } = await loadProduct(id);
   if (!product) return notFound();
+  const { data: bankOption } = await supabase.from("vendor_payment_settings").select("bank_transfer_enabled, cash_enabled, card_enabled, delivery_fee_aed").eq("vendor_id", product.vendor_id).maybeSingle();
 
   const vendor = product.vendors as unknown as Vendor;
 
-  const [{ data: availability }, { data: reputationRow }, { data: reviews }, profile] = await Promise.all([
+  const [{ data: availability, error: availabilityError }, { data: reputationRow }, { data: reviews }, profile] = await Promise.all([
     // Stock net of unexpired holds. product.quantity alone would advertise
     // units that other customers are already holding.
     supabase.rpc("available_quantity", { p_product_id: product.id }),
@@ -107,6 +109,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const reputation = reputationRow
     ? normalizeReputation(reputationRow as VendorReputationRow)
     : null;
+  const customerFeeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const [{ data: favourite }, { data: priceAlert }] = profile
     ? await Promise.all([
         supabase.from("product_favourites").select("product_id").eq("user_id", profile.id).eq("product_id", product.id).maybeSingle(),
@@ -114,8 +117,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       ])
     : [{ data: null }, { data: null }];
 
-  const available =
-    typeof availability === "number" ? availability : Number(product.quantity ?? 0);
+  // A failed stock RPC must never masquerade as the original inventory count.
+  const availabilityKnown = !availabilityError && typeof availability === "number"
+    && Number.isInteger(availability) && availability >= 0;
+  const available = availabilityKnown ? availability as number : 0;
   const soldOut = available <= 0;
 
   const specs: Array<[string, string]> = [
@@ -227,13 +232,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               certificateFee={Number(product.certificate_fee)}
               stoneValue={Number(product.stone_value)}
               vendorPremium={Number(product.vendor_premium)}
-              platformFeeBps={Number(settings?.platform_fee_bps ?? 50)}
-              deliveryFee={Number(settings?.delivery_fee_aed ?? 0)}
+              platformFeeBps={customerFeeOffer.effectiveBps}
+              customerFeeDiscountPercent={customerFeeOffer.discountPercent}
+              discountedOrdersRemaining={customerFeeOffer.remainingDiscountedOrders}
+              deliveryFee={Number(bankOption?.delivery_fee_aed ?? settings?.delivery_fee_aed ?? 0)}
               showBreakdown
             />
 
             <p className="mt-4 text-xs text-ink-muted">
-              {soldOut ? (
+              {!availabilityKnown ? (
+                <span className="font-medium text-signal-warn">
+                  Stock check temporarily unavailable. Please reload before reserving.
+                </span>
+              ) : soldOut ? (
                 <span className="font-medium text-signal-warn">
                   Every unit is currently reserved.
                 </span>
@@ -246,13 +257,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             </p>
 
             <div className="mt-5">
-              <ReserveButton
+              {availabilityKnown && <ReserveButton
                 productId={product.id}
                 soldOut={soldOut}
                 available={available}
                 defaultRecipientName={profile?.full_name ?? ""}
                 defaultRecipientPhone={profile?.phone ?? ""}
                 identityVerificationAvailable={diditIsConfigured()}
+                bankTransferEnabled={Boolean(bankOption?.bank_transfer_enabled)}
+                cashEnabled={bankOption?.cash_enabled ?? true}
+                cardEnabled={bankOption?.card_enabled ?? false}
                 onlinePaymentsEnabled={Boolean(settings?.online_payments_enabled) && onlinePaymentCheckoutIsOperational()}
                 pricing={{
                   karat: product.karat,
@@ -263,10 +277,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   certificateFee: Number(product.certificate_fee),
                   stoneValue: Number(product.stone_value),
                   vendorPremium: Number(product.vendor_premium),
-                  platformFeeBps: Number(settings?.platform_fee_bps ?? 50),
-                  deliveryFee: Number(settings?.delivery_fee_aed ?? 0),
+                  platformFeeBps: customerFeeOffer.effectiveBps,
+                  deliveryFee: Number(bankOption?.delivery_fee_aed ?? settings?.delivery_fee_aed ?? 0),
                 }}
-              />
+              />}
             </div>
             {!soldOut && <div className="mt-4 border-t border-jade-900/10 pt-4"><StoreVisitForm productId={product.id} defaultPhone={profile?.phone ?? ""} /></div>}
           </div>

@@ -40,9 +40,13 @@ export function formatDeliveryAddress(details: FulfilmentDetails): string[] {
 }
 
 export function deliveryPinUrl(details: FulfilmentDetails): string | null {
-  const latitude = Number(details.delivery_latitude);
-  const longitude = Number(details.delivery_longitude);
-  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+  // Number(null) and Number("") are 0, not a real customer location.
+  const toCoordinate = (value: number | string | null | undefined) =>
+    value == null || (typeof value === "string" && !value.trim()) ? NaN : Number(value);
+  const latitude = toCoordinate(details.delivery_latitude);
+  const longitude = toCoordinate(details.delivery_longitude);
+  if (Number.isFinite(latitude) && Number.isFinite(longitude)
+    && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180) {
     return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
   }
   const candidate = details.delivery_map_link?.trim();

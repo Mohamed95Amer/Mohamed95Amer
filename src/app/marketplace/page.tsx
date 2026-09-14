@@ -10,6 +10,8 @@ import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { TrackPageView } from "@/components/TrackPageView";
 import { dubaiTodayIso } from "@/lib/time";
+import { getCurrentProfile } from "@/lib/auth/server";
+import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -25,6 +27,8 @@ interface SP {
 export default async function MarketplacePage({ searchParams }: SP) {
   const filters = await searchParams;
   const supabase = getServiceSupabase();
+  const profile = await getCurrentProfile();
+  const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const { data: settings } = await supabase
     .from("platform_settings")
     .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days")
@@ -58,7 +62,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
     supabase.from("vendor_reputation_summary").select("*"),
     getLatestTick(),
   ]);
-  const platformFeeBps = Number(settings?.platform_fee_bps ?? 50);
+  const platformFeeBps = feeOffer.effectiveBps;
   const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const liveRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
@@ -173,6 +177,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
                 key={p.id}
                 p={{ ...p, available: p.quantity, vendor }}
                 platformFeeBps={platformFeeBps}
+                customerFeeDiscountPercent={feeOffer.discountPercent}
                 deliveryFee={deliveryFee}
                 priority={index === 0}
               />

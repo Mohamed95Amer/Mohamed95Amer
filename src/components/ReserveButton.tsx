@@ -3,12 +3,12 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { useRouter } from "next/navigation";
-import { computePrice, formatAed } from "@/lib/pricing/calc";
+import { computePrice, computeOrderTotal, formatAed } from "@/lib/pricing/calc";
 import { UAE_EMIRATES, type FulfilmentMethod } from "@/lib/fulfilment";
 import { IdentityVerificationDialog } from "@/components/IdentityVerificationDialog";
 
 type IdentityRoute = "uae_resident" | "visitor";
-type PaymentMethod = "pay_at_store" | "pay_online";
+type PaymentMethod = "pay_at_store" | "pay_online" | "bank_transfer" | "cash" | "card";
 
 interface VerificationSession {
   id: string;
@@ -51,6 +51,9 @@ export function ReserveButton({
   defaultRecipientPhone = "",
   identityVerificationAvailable = false,
   onlinePaymentsEnabled = false,
+  bankTransferEnabled = false,
+  cashEnabled = true,
+  cardEnabled = false,
 }: {
   productId: string;
   soldOut?: boolean;
@@ -60,16 +63,20 @@ export function ReserveButton({
   defaultRecipientPhone?: string;
   identityVerificationAvailable?: boolean;
   onlinePaymentsEnabled?: boolean;
+  bankTransferEnabled?: boolean;
+  cashEnabled?: boolean;
+  cardEnabled?: boolean;
 }) {
   const router = useRouter();
   const { isFresh, tick } = useLiveGoldPrice();
   const [busy, setBusy] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [pinBusy, setPinBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pinMessage, setPinMessage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [fulfilmentMethod, setFulfilmentMethod] = useState<FulfilmentMethod>("delivery");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(onlinePaymentsEnabled ? "pay_online" : "pay_at_store");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(cashEnabled ? "cash" : cardEnabled ? "card" : bankTransferEnabled ? "bank_transfer" : "pay_online");
   const [identityRoute, setIdentityRoute] = useState<IdentityRoute>("uae_resident");
   const [verification, setVerification] = useState<VerificationSession | null>(null);
   const [verificationOpen, setVerificationOpen] = useState(false);
@@ -96,7 +103,7 @@ export function ReserveButton({
         deliveryFee: fulfilmentMethod === "delivery" ? pricing.deliveryFee : 0,
       })
     : null;
-  const total = breakdown ? breakdown.unitPriceAed * quantity : null;
+  const total = breakdown ? computeOrderTotal(breakdown, quantity) : null;
   const hasCoordinates = details.deliveryLatitude !== null && details.deliveryLongitude !== null;
   const hasPin = hasCoordinates || details.deliveryMapLink.trim().length > 0;
   const mapPreviewUrl = hasCoordinates
@@ -145,6 +152,10 @@ export function ReserveButton({
   }
 
   async function startIdentityVerification() {
+    if (verification) { setVerificationOpen(true); return; }
+    if (fulfilmentMethod === "delivery" && (!details.recipientName.trim() || !details.recipientPhone.trim() || !details.deliveryEmirate || !details.deliveryArea.trim() || !details.deliveryAddressLine1.trim() || !hasPin)) {
+      setError("Complete the delivery address and location pin before starting identity verification."); return;
+    }
     setBusy(true);
     try {
       const res = await fetch("/api/identity-verifications/start", {
@@ -228,8 +239,12 @@ export function ReserveButton({
     ? "Continue identity check"
     : "Verify identity & lock price";
 
+  if (!checkoutOpen) return <button className="btn-primary w-full" type="button" disabled={soldOut} onClick={() => setCheckoutOpen(true)}>{soldOut ? "Sold out" : "Proceed to checkout"}</button>;
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
+      <h2 className="font-serif text-2xl">Checkout</h2>
+      <p className="text-xs text-ink-muted">Review your details before starting the identity check. Opening this checkout does not create a verification attempt.</p>
+      {pricing.platformFeeBps === 50 && <p className="rounded-xl bg-gold-50 px-3 py-2 text-xs font-semibold text-gold-700">50% OFF the standard 1% Get Gold fee for one of your first 3 orders. The discount is secured when you place this order.</p>}
       {!soldOut && available > 0 && (
         <div className="flex items-center justify-between gap-4 rounded-xl bg-jade-50 p-3">
           <label htmlFor="reservation-quantity" className="text-sm font-semibold text-jade-950">
@@ -340,7 +355,7 @@ export function ReserveButton({
         <fieldset>
           <legend className="label">How would you like to pay?</legend>
           <div className="mt-2 grid grid-cols-2 gap-2">
-            {(["pay_online", "pay_at_store"] as const).map((method) => {
+            {(["pay_online", ...(cashEnabled ? ["cash" as const] : []), ...(cardEnabled ? ["card" as const] : []), ...(bankTransferEnabled ? ["bank_transfer" as const] : [])] as const).map((method) => {
               const unavailable = method === "pay_online" && !onlinePaymentsEnabled;
               const selected = paymentMethod === method;
               return (
@@ -352,8 +367,8 @@ export function ReserveButton({
                   onClick={() => setPaymentMethod(method)}
                   className={`min-h-16 rounded-xl border px-3 py-2 text-left text-sm transition ${selected ? "border-jade-700 bg-jade-50 text-jade-950 ring-1 ring-jade-700" : "border-jade-900/10 bg-white text-ink-muted hover:border-jade-300"} disabled:cursor-not-allowed disabled:opacity-55`}
                 >
-                  <span className="block font-semibold">{method === "pay_online" ? "Pay online" : "Pay the store"}</span>
-                  <span className="mt-0.5 block text-[11px] font-normal">{method === "pay_online" ? unavailable ? "Activates after our payment partner is connected" : "Secure checkout after stock confirmation" : "Pay directly at collection or as arranged"}</span>
+                  <span className="block font-semibold">{method === "bank_transfer" ? "Bank transfer available" : method === "pay_online" ? "Pay online" : method === "card" ? "Card to the store" : "Cash to the store"}</span>
+                  <span className="mt-0.5 block text-[11px] font-normal">{method === "bank_transfer" ? "Transfer to the vendor after stock acceptance; submit proof for review" : method === "pay_online" ? unavailable ? "Activates after our payment partner is connected" : "Secure checkout after stock confirmation" : "Pay directly at collection or as arranged"}</span>
                 </button>
               );
             })}
@@ -413,7 +428,7 @@ export function ReserveButton({
             <span className="font-medium text-jade-950">Total for {quantity}</span>
             <span className="font-bold tabular-nums text-jade-950">{formatAed(total)}</span>
           </div>
-          {fulfilmentMethod === "collection" && pricing.deliveryFee > 0 && <p className="mt-1 text-[11px] text-signal-ok">Collection removes the delivery charge.</p>}
+          {breakdown && <p className="mt-1 text-[11px] text-ink-muted">Delivery: {formatAed(breakdown.deliveryFee)} once per order. Store collection has no delivery charge.</p>}
         </div>
       )}
 

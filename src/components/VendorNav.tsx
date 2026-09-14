@@ -7,6 +7,7 @@ const items = [
   ["/vendor", "Overview"],
   ["/vendor/products", "Products"],
   ["/vendor/orders", "Orders"],
+  ["/vendor/payments", "Payments"],
   ["/vendor/requests", "Buyer requests"],
   ["/vendor/catalogue-support", "Catalogue help"],
   ["/vendor/reviews", "Reviews"],

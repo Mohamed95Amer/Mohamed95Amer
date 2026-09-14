@@ -12,10 +12,12 @@ export async function POST(request: Request) {
   const parsed = deliveryAssignmentSchema.safeParse(await request.json().catch(() => null)); if (!parsed.success) return NextResponse.json({ error: "invalid_input" }, { status: 400 }); const admin = getServiceSupabase();
   const [{ data: vendor }, { data: reservation }, { data: company }] = await Promise.all([
     admin.from("vendors").select("id, business_name").eq("owner_user_id", auth.user.id).maybeSingle(),
-    admin.from("reservations").select("id, vendor_id, customer_user_id, fulfilment_method, delivery_emirate, status").eq("id", parsed.data.reservationId).maybeSingle(),
+    admin.from("reservations").select("id, vendor_id, customer_user_id, fulfilment_method, delivery_emirate, status, payment_method, payment_status, expires_at").eq("id", parsed.data.reservationId).maybeSingle(),
     admin.from("delivery_companies").select("id, owner_user_id, company_name, verification_status, license_expiry_date, emirates_served").eq("id", parsed.data.deliveryCompanyId).maybeSingle(),
   ]);
   if (!vendor || !reservation || reservation.vendor_id !== vendor.id) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  if (reservation.payment_method === "bank_transfer" && reservation.payment_status !== "paid") return NextResponse.json({ error: "bank_payment_not_confirmed" }, { status: 409 });
+  if (reservation.status !== "paid" && Date.parse(reservation.expires_at) <= Date.now()) return NextResponse.json({ error: "order_expired" }, { status: 409 });
   if (reservation.fulfilment_method !== "delivery" || !["payment_pending", "payment_link_pending", "paid"].includes(reservation.status)) return NextResponse.json({ error: "order_not_ready_for_delivery" }, { status: 409 });
   if (!company || company.verification_status !== "approved" || company.license_expiry_date < dubaiTodayIso() || !company.emirates_served.includes(reservation.delivery_emirate)) return NextResponse.json({ error: "delivery_company_not_eligible" }, { status: 400 });
   const { data: existing } = await admin.from("delivery_assignments").select("id, status").eq("reservation_id", reservation.id).maybeSingle(); if (existing && !["declined", "cancelled"].includes(existing.status)) return NextResponse.json({ error: "delivery_already_assigned" }, { status: 409 });

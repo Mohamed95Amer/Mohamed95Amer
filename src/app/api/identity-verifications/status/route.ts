@@ -32,7 +32,7 @@ export async function GET(request: Request) {
   if (!verification) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
   if (!["consumed", "rejected", "expired"].includes(verification.status) && Date.parse(verification.expires_at) <= Date.now()) {
-    await admin.from("order_identity_verifications").update({ status: "expired" }).eq("id", parsed.data);
+    await admin.from("order_identity_verifications").update({ status: "expired" }).eq("id", parsed.data).neq("status", "consumed");
     return NextResponse.json({ status: "expired" });
   }
 
@@ -55,12 +55,17 @@ export async function GET(request: Request) {
         result_code: mapped.resultCode,
         verified_at: mapped.status === "approved" ? new Date().toISOString() : null,
       };
-      const { error: updateError } = await admin
+      const { data: updated, error: updateError } = await admin
         .from("order_identity_verifications")
         .update(update)
         .eq("id", parsed.data)
-        .in("status", ["pending", "in_review"]);
-      if (!updateError) return NextResponse.json({ status: mapped.status });
+        .in("status", ["pending", "in_review"])
+        .gt("expires_at", new Date().toISOString())
+        .select("status")
+        .maybeSingle();
+      // A competing webhook/stock claim can make this update affect zero rows.
+      // Never report an approval that was not actually persisted.
+      if (!updateError && updated) return NextResponse.json({ status: updated.status });
     } catch {
       // A temporary provider-read failure must not approve or reject the user.
       // Keep the local pending state so webhook delivery or the next poll can recover.

@@ -11,6 +11,93 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
+**Latest checkpoint, 15 Sep 2026 (supersedes the 14 Sep local checkpoints below; deployed):**
+Phase 1 now uses vendor-direct collection: cash, the Vendor's card terminal, or an
+enabled bank-transfer option. Bank instructions are snapshotted only after stock
+acceptance; customer proof is private and never marks an order paid by itself. The
+Vendor must confirm cleared funds. Vendors choose their own staff or an external
+courier and set one delivery fee per order; collection is free. Marketplace online
+payment remains visibly unavailable until a real PSP is integrated.
+
+Vendor making-charge commission is **paused**. Customers pay a **1% Get Gold fee on
+the merchandise subtotal, excluding delivery**. Each customer receives **50% off for
+the first three qualifying orders**, making the effective rate 0.5%. Discount slots
+are allocated server-side under a per-customer database lock, survive paid/refunded
+orders, and are released by rejected, cancelled or expired unpaid orders. The exact
+effective rate, AED fee, discount and promotion position are snapshotted. Migration
+`20260914200048_customer_introductory_fee_discount.sql` owns this behavior.
+
+Evidence: 35 application regression tests, 14 Auth/PostgREST integration tests,
+four SQL suites / 36 pgTAP tests, schema lint, security advisors, typecheck, ESLint,
+28-page production generation, and 54 HTTP/SSR checks all pass. The integration run
+proves orders 1–3 use 0.5%, order 4 uses 1%, cancellation releases a slot, delivery is
+not multiplied, vendor commission is zero, and available stock changes through the
+real RPC. All nine pending migrations were applied to production project
+`xgbzvdrdpinwkdbgpxdh`; post-migration checks confirmed the 1% standard fee,
+server-only promotion functions and all 12 approved products still valid. Vercel
+deployment `FgDmLca4QCvsrH5JnCGSTDisHsmJ` is aliased to the live URL. A rendered
+browser pass confirmed `goldapicom`, the 0.5% fee, `50% OFF`, three remaining
+orders, once-per-order delivery and a clean browser console. Production Didit
+credentials are still absent, so order submission correctly remains disabled.
+
+**Latest checkpoint, 14 Sep 2026 (supersedes older blocker notes below; not deployed):**
+Docker is repaired without deleting volumes; the isolated `getgold_validation`
+Supabase stack runs Postgres 17. The full migration chain, 36 pgTAP tests, database
+lint and security advisors pass. There are 32 passing regression tests and 10 passing
+Auth/PostgREST integration runner tests, including captured confirmation/recovery
+emails, stock races, expired-payment rejection and courier ownership/proof.
+The user approved delivery **once per order**; new snapshots record `per_order`,
+legacy snapshots retain `per_unit`. Two additional local migrations are
+`20260914095323_delivery_fee_per_order.sql` and
+`20260914095534_catalogue_integrity_volatility.sql` (five pending production migrations total).
+Fresh degraded quotes now fail checkout. Vendor updates use status/expiry CAS.
+Stock RPC failures no longer fall back to original inventory: checkout fails closed.
+Local image-host configuration now permits only the isolated product bucket in development.
+
+The existing Didit sandbox key was securely saved in ignored `.env.local`; temporary
+transfer artifacts were removed. Both actual sandbox workflows pass session creation,
+authenticated environment/reference checks and Approved/Declined/In Review/Expired
+API simulations. No real documents or selfies were uploaded. Hosted capture and signed
+webhook delivery remain untested; webhook secret is not configured. Local Supabase
+credentials are supplied privately by `npm run dev:local`.
+Node's system CA store fixes this host's TLS trust failure without disabling certificate
+verification (`NODE_USE_SYSTEM_CA=1` / `node --use-system-ca`). Vercel `whoami` now
+succeeds as the expected account; older authentication-blocker notes are superseded.
+No production database or Vercel deployment was changed during this validation.
+See `docs/VALIDATION.md` and its repeatable test commands before the next release.
+Final local checks: 54 HTTP/SSR checks passed, including rendered stock 3 → 2
+after a real claim and another user's order being denied. Final production build,
+lint and typecheck passed; npm audit reported zero known vulnerabilities.
+
+**Local validation hardening (14 Sep 2026; not deployed):** 30 credential-free
+application/route regression tests pass via `npm test`; typecheck, lint and the
+production build also pass (27/27 static pages generated). Didit now requires explicit
+`DIDIT_ENVIRONMENT=live|sandbox`; sandbox is restricted to a localhost app AND
+localhost database, never hosted Vercel. Authenticated decision reads and signed
+webhooks reject missing/mismatched environments. A new session's decision is
+validated before its document-capture URL is handed to the customer. API calls
+have 15-second timeouts, no redirects, and a fixed official provider origin.
+Malformed webhook payloads fail safely and database failures return retryable 503s
+instead of false acknowledgements. Polling no longer reports an approval after
+a zero-row conditional update. Reservation creation also checks safe provider setup.
+
+Courier updates now compare the previous status and owner when writing, so a
+conflicting tab cannot silently overwrite a completed transition. Completion
+requires a separate proof-of-delivery reference, with clear guidance not to enter
+ID numbers or OTPs. Missing coordinates no longer produce a false map pin at 0,0.
+Pricing rules, single-provider polling, atomic stock claims, launch 0.5% fee and
+disabled online payments remain unchanged.
+
+Local Supabase configuration and `.github/workflows/getgold-validation.yml` were
+added for repeatable migration/pgTAP validation (CLI 2.117.0; Postgres 17 matches
+the live project's observed 17.6). Stock tests now create rollback-only synthetic
+fixtures instead of selecting real inventory, and legacy assertions have pgTAP
+wrappers. **The database tests and GitHub workflow have not run yet.** Docker
+Desktop currently crashes on its `dockerInference` local socket during startup;
+the earlier working-engine checkpoint is no longer current. No reset or data
+deletion was performed. No live schema/deployment was changed. See
+`docs/VALIDATION.md` for commands and the outstanding end-to-end checks.
+
 **Live:** https://goldhub-three.vercel.app — legacy Vercel project `mohamed95amers-projects/goldhub`.
 
 **Deployment status (11 Sep 2026):** application commit `1a624c5` is manually deployed to the existing
@@ -219,10 +306,12 @@ the product page also shows the premium in AED, gold-inclusive AED/g and the com
 The score is a price-transparency comparison, not a claim about craftsmanship, resale value or
 investment performance (`src/lib/pricing/value-score.ts`).
 
-The launch commission is **50 basis points (0.5%)** of the merchandise subtotal. Delivery is
-excluded. `platform_settings.platform_fee_bps` is authoritative; the old fixed-AED
-`platform_fee_aed` column remains only for backwards compatibility. Each reservation snapshot
-stores both the calculated AED fee and the exact basis-point rate used.
+The Phase 1 customer fee is **100 basis points (1%)** of the merchandise subtotal,
+excluding delivery. Each customer receives a 50% introductory discount for the first
+three qualifying orders, producing an effective rate of 50 basis points (0.5%). The
+server allocates those three slots atomically and snapshots the effective rate and
+discount. Vendor making-charge commission is paused. The old fixed-AED
+`platform_fee_aed` column remains only for backwards compatibility.
 
 `products.making_charge` is the undiscounted amount **for that individual listing, not the store**.
 Vendors can—and usually will—set different making charges for different products in the same store.
@@ -238,13 +327,9 @@ Homepage category navigation uses a real approved listing photo and live listing
 non-empty category. Do not replace it with the old large generic fallback drawings; the real-photo
 tiles are both more trustworthy and more visually specific.
 
-> **Known product question, not a bug:** `delivery_fee` is added to the *per-unit* price and then
-> multiplied by quantity, so ordering 3 items bills delivery 3×. It defaults to 0 so nothing is
-> wrong today. The owner was asked and has not decided. Delivery is almost certainly meant to be
-> per-order.
-
-Store collection sets the snapshotted delivery fee to zero. Delivery orders continue to use the
-existing per-unit fee behavior until the owner decides the per-order question above.
+Delivery is charged once per order. Store collection sets the snapshotted delivery fee
+to zero. Legacy snapshots retain their original `per_unit` basis so historical totals
+are not silently rewritten.
 
 > **Payments are still not integrated.** The checkout now records `pay_at_store` or `pay_online`,
 > but `pay_online` is visibly disabled and rejected server-side even if someone changes the database
@@ -340,6 +425,44 @@ boundary; delivery-company order assignment and access remain intentionally unim
 - Didit's published price at handover includes 500 core KYC checks per month for free. Questionnaire
   file uploads are separately billed in live mode; validate the boarding-pass route in Sandbox and
   decide whether to pay for the upload or inspect the travel document at handover before launch.
+
+### Didit sandbox setup checkpoint
+
+**Didit sandbox configuration (13 Sep 2026):** the Get Gold organization now exists.
+Using the user's signed-in browser, both workflows were published in sandbox application
+`fc5c0550-75e9-4ca6-95c1-0813b92853f1` (organization
+`ae311b5c-e956-47b2-b882-590cac851b03`). The console explicitly confirms that test mode
+uses simulated checks, costs no credits, and does not affect production.
+
+- Resident workflow `9ee4bb30-4f69-47a7-9d8d-3eb353f7629c`, named
+  **Get Gold — UAE Residents — Test**: only UAE national ID cards; standard ID-card
+  subtype (not digital or diplomatic IDs); front and back required; expired IDs rejected;
+  passive liveness and face match enabled. The saved editor confirms one accepted country
+  and includes the back-side capture step.
+- Visitor workflow `6fff2fa4-493f-4aca-bf51-ee50fb351128`, named
+  **Get Gold — Visitors — Test**: passport only for Didit's supported passport countries;
+  other document types, non-document lookups and wallets disabled; expired passports
+  rejected; passive liveness and face match enabled. The linked published questionnaire
+  **Get Gold — Visitor Boarding Pass — Test** has a required single-file field titled
+  `Boarding pass` with question value `boarding_pass`. Questionnaire manual review is
+  enabled and was verified after reopening the saved workflow. A file upload alone does
+  not authenticate a boarding pass; the document needs review before approval.
+- Both flows leave optional checks (AML, NFC, phone, email, etc.) disabled for this technical
+  sandbox setup. This is not a production compliance sign-off.
+- The API Keys page already lists an active **Primary / Sandbox** key. On the user's
+  approval, the existing key was copied into private browser-session memory without
+  printing it, and the clipboard was restored. The attempted loopback-only transfer was
+  blocked by Opera (`ERR_BLOCKED_BY_CLIENT`); no key was saved, no security settings were
+  changed, and the temporary import server and script were removed. The private in-memory
+  copy was cleared after the attempt. No new key, webhook or verification session was created.
+- The Git-ignored, untracked `.env.local` now has both sandbox workflow IDs, the Didit API
+  base URL, a localhost callback and an **empty** `DIDIT_API_KEY=` line for the user to fill
+  directly. Its prior Vercel OIDC context was preserved. No production environment changed.
+  Credential wiring and end-to-end status/webhook tests remain pending. Never put sandbox
+  credentials into the public production checkout or treat simulated approval as real KYC.
+- Docker's Linux engine is now running (29.6.2), removing the earlier local-engine blocker.
+  The three pending migrations and their SQL/runtime tests still have not been run in this
+  setup checkpoint; local Supabase runtime configuration is still missing.
 
 ### Verified store reviews and reputation
 
@@ -504,9 +627,12 @@ a transaction it rolls back.
 
 ## 5. Suggested next steps
 
-1. **Decide the delivery-fee question** (§3).
-2. Create the Didit sandbox application, publish both workflows, add the API key/workflow IDs and
-   webhook secret to Vercel, register the signed webhook, and complete both Sandbox routes.
+1. Delivery is decided: **once per order**. Deploy the tested snapshot migration with the app.
+2. Finish the local Didit sandbox credential setup above, configure an isolated test database
+   and signed test webhook, and complete approved/declined/in-review/expired tests for both
+   routes. The sandbox application and workflows already exist. Keep test credentials out of
+   the public production checkout; live configuration and a production sandbox-rejection guard
+   need separate verification before real orders.
 3. Obtain UAE privacy/legal review for mandatory biometric processing, consent language, retention,
    cross-border or UAE-local processing, and handling of minors before accepting real orders.
 4. Exercise courier assignment with one approved delivery company: assignment, acceptance,

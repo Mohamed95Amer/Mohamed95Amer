@@ -2,7 +2,7 @@
 
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { GoldHubValueScore } from "@/components/GoldHubValueScore";
-import { computePrice, formatAed, formatBasisPoints, goldRateForKarat } from "@/lib/pricing/calc";
+import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
 import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
 import { quoteRecency } from "@/lib/time";
 
@@ -16,6 +16,8 @@ interface Props {
   stoneValue: number;
   vendorPremium: number;
   platformFeeBps?: number;
+  customerFeeDiscountPercent?: number;
+  discountedOrdersRemaining?: number;
   deliveryFee?: number;
   showBreakdown?: boolean;
   showFooter?: boolean;
@@ -47,7 +49,7 @@ export function LiveProductPrice(props: Props) {
     certificateFee: props.certificateFee,
     stoneValue: props.stoneValue,
     vendorPremium: props.vendorPremium,
-    platformFeeBps: props.platformFeeBps ?? 50,
+    platformFeeBps: props.platformFeeBps ?? 100,
     deliveryFee: props.deliveryFee ?? 0,
   });
   const liveRate24k = Number(tick.price_per_gram_24k_aed);
@@ -86,7 +88,7 @@ export function LiveProductPrice(props: Props) {
 
           <div className="mt-5 flex items-center justify-between gap-3">
             <h2 className="font-serif text-lg font-semibold text-jade-950">Price breakdown</h2>
-            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">Per item</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">One-item order</span>
           </div>
           <dl className="mt-3 grid grid-cols-2 gap-y-2.5 text-sm text-ink-muted">
             <dt>Gold ({props.karat}K × {props.weightGrams}g)</dt>
@@ -147,9 +149,9 @@ export function LiveProductPrice(props: Props) {
                 <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorPremium)}</dd>
               </>
             )}
-            <dt>Get Gold service fee ({formatBasisPoints(breakdown.platformFeeBps)})</dt>
-            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.platformFee)}</dd>
-            <dt>Delivery fee</dt>
+            <dt>Get Gold fee {props.customerFeeDiscountPercent ? <span className="ml-1 rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">50% OFF</span> : null}</dt>
+            <dd className="text-right tabular-nums text-ink"><span className="mr-2 text-xs text-ink-muted">{breakdown.platformFeeBps / 100}%</span>{formatAed(breakdown.platformFee)}</dd>
+            <dt>Delivery fee (once per order)</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.deliveryFee)}</dd>
             <dt className="mt-1 border-t border-jade-900/10 pt-3 font-semibold text-jade-950">Total</dt>
             <dd className="mt-1 border-t border-jade-900/10 pt-3 text-right font-bold tabular-nums text-jade-950">
@@ -160,6 +162,7 @@ export function LiveProductPrice(props: Props) {
             The {props.karat}K rate is the metal-only value per gram. Making, certificate or assay,
             stones, vendor premium, service, and delivery are listed separately above when applicable.
           </p>
+          {props.customerFeeDiscountPercent ? <p className="mt-2 text-[11px] font-medium text-jade-700">Introductory offer: 50% off the standard 1% Get Gold fee for your first 3 active or completed orders{props.discountedOrdersRemaining != null ? ` · ${props.discountedOrdersRemaining} discounted ${props.discountedOrdersRemaining === 1 ? "order" : "orders"} remaining before checkout` : ""}.</p> : null}
         </div>
       )}
       {props.showFooter !== false && (

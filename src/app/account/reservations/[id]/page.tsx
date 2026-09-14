@@ -18,6 +18,7 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { FulfilmentDetails } from "@/components/FulfilmentDetails";
 import Link from "next/link";
 import { statusLabel } from "@/lib/presentation";
+import { BankTransferProof } from "@/components/BankTransferProof";
 
 export const dynamic = "force-dynamic";
 
@@ -50,6 +51,7 @@ export default async function ReservationDetailPage({ params }: { params: Promis
   const snapArr = r.snapshot as unknown as Array<Record<string, number | string>> | null;
   const snap = Array.isArray(snapArr) ? snapArr[0] : (snapArr as unknown as Record<string, number | string> | null);
   const currentRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
+  const snapshotQuantity = Number(snap?.quantity ?? r.quantity);
   const insight = snap && currentRate > 0
     ? calculateReservationValue(snap as unknown as PriceSnapshotForInsight, currentRate)
     : null;
@@ -80,7 +82,17 @@ export default async function ReservationDetailPage({ params }: { params: Promis
 
       <div className="mt-6">
         <FulfilmentDetails details={r} />
+        {r.vendor_delivery_snapshot && <p className="mt-3 text-sm text-ink-muted">Delivery arranged and paid for by the store from the delivery fee you pay it: {r.vendor_delivery_snapshot.mode === "external_courier" ? r.vendor_delivery_snapshot.courier_name : "the store’s own staff"}. Contact the store for scheduling.</p>}
+        {["cash", "card"].includes(r.payment_method) && <p className="mt-3 text-sm">Payment: {r.payment_method === "cash" ? "cash" : "card using the vendor’s terminal"} directly to the store at {r.fulfilment_method === "collection" ? "collection" : "delivery"}. After store acceptance, arrange completion within the displayed 24-hour deadline. Contact the store before paying for an expired order.</p>}
       </div>
+      {r.payment_method === "bank_transfer" && <section className="card mt-6 p-6"><h2 className="font-serif text-2xl">Bank transfer to the store</h2>
+        {r.status === "payment_pending" && active ? <>
+          <p className="mt-3 text-sm">The store accepted the stock request. Transfer exactly {formatAed(Number(snap?.total_price_aed))} and submit proof before {formatDubaiDate(r.expires_at, true)}. Use only a transfer that can clear before this deadline; otherwise contact the store first.</p>
+          <dl className="mt-4 space-y-2 text-sm"><div>Bank: {r.bank_details_snapshot?.bank_name}</div><div>Beneficiary: {r.bank_details_snapshot?.beneficiary_name}</div><div className="break-all">IBAN: {r.bank_details_snapshot?.iban}</div><div className="break-all">Order reference: {r.id}</div></dl>
+          <p className="mt-3 text-xs text-ink-muted">These bank details were supplied by the vendor. Get Gold does not receive your money. Fulfilment starts only after the vendor checks its bank and confirms receipt.</p>
+          <BankTransferProof reservationId={r.id} submitted={Boolean(r.transfer_proof_path)} />
+        </> : <p className="mt-3 text-sm">{r.status === "pending_vendor_confirmation" ? "Do not transfer yet. Wait for the store to accept the stock request." : r.payment_status === "paid" ? "The store confirmed receipt of your payment." : "Do not send money for this inactive order. If you already transferred, contact the store to arrange reconciliation or a refund. Do not pay twice."}</p>}
+      </section>}
 
       {deliveryAssignment && (() => { const company = Array.isArray(deliveryAssignment.company) ? deliveryAssignment.company[0] : deliveryAssignment.company; return <section className="card mt-6 border-gold-300/30 p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="eyebrow text-jade-600">Delivery tracking</p><h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">{company?.company_name ?? "Assigned delivery partner"}</h2><p className="mt-1 text-xs text-ink-muted">Tracking {deliveryAssignment.tracking_code}{company?.phone ? ` · ${company.phone}` : ""}</p></div><span className="pill border-jade-900/10 bg-jade-50">{statusLabel(deliveryAssignment.status)}</span></div>{deliveryAssignment.public_note && <p className="mt-4 rounded-xl bg-jade-50 p-3 text-sm text-ink-muted">{deliveryAssignment.public_note}</p>}<ol className="mt-5 grid grid-cols-4 gap-2 text-center text-[10px] text-ink-muted">{[["accepted", "Accepted"], ["collected", "Collected"], ["out_for_delivery", "On the way"], ["delivered", "Delivered"]].map(([key, label], index, all) => { const current = all.findIndex(([state]) => state === deliveryAssignment.status); const complete = deliveryAssignment.status === "delivered" || (current >= 0 && index <= current); return <li key={key}><span className={`mx-auto mb-2 block h-2.5 w-2.5 rounded-full ${complete ? "bg-jade-700" : "bg-bone-deep"}`} />{label}</li>; })}</ol></section>; })()}
 
@@ -125,33 +137,34 @@ export default async function ReservationDetailPage({ params }: { params: Promis
       {snap && (
         <div className="card mt-6 p-6">
           <h2 className="font-serif text-xl">Locked price breakdown</h2>
-          <p className="mt-1 text-xs text-ink-muted">Captured server-side and never rewritten by later market moves.</p>
+          <p className="mt-1 text-xs text-ink-muted">All amounts below cover {snapshotQuantity} {snapshotQuantity === 1 ? "item" : "items"}. Captured server-side and never rewritten by later market moves.</p>
           <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm">
             <dt className="text-ink-muted">Gold value</dt>
-            <dd className="text-right">{formatAed(Number(snap.gold_value_aed))}</dd>
+            <dd className="text-right">{formatAed(Number(snap.gold_value_aed) * snapshotQuantity)}</dd>
             <dt className="text-ink-muted">Making</dt>
             <dd className="text-right">
               {Number(snap.making_charge_discount_percent ?? 0) > 0 && (
                 <span className="mr-2 text-ink-muted line-through">
-                  {formatAed(Number(snap.original_making_charge ?? snap.making_charge))}
+                  {formatAed(Number(snap.original_making_charge ?? snap.making_charge) * snapshotQuantity)}
                 </span>
               )}
-              {formatAed(Number(snap.making_charge))}
+              {formatAed(Number(snap.making_charge) * snapshotQuantity)}
             </dd>
             {Number(snap.certificate_fee ?? 0) > 0 && (
               <>
                 <dt className="text-ink-muted">Certificate / assay</dt>
-                <dd className="text-right">{formatAed(Number(snap.certificate_fee))}</dd>
+                <dd className="text-right">{formatAed(Number(snap.certificate_fee) * snapshotQuantity)}</dd>
               </>
             )}
             <dt className="text-ink-muted">Stone</dt>
-            <dd className="text-right">{formatAed(Number(snap.stone_value))}</dd>
+            <dd className="text-right">{formatAed(Number(snap.stone_value) * snapshotQuantity)}</dd>
             <dt className="text-ink-muted">Vendor premium</dt>
-            <dd className="text-right">{formatAed(Number(snap.vendor_premium))}</dd>
-            <dt className="text-ink-muted">Platform fee</dt>
-            <dd className="text-right">{formatAed(Number(snap.platform_fee))}</dd>
-            <dt className="text-ink-muted">Delivery</dt>
-            <dd className="text-right">{formatAed(Number(snap.delivery_fee))}</dd>
+            <dd className="text-right">{formatAed(Number(snap.vendor_premium) * snapshotQuantity)}</dd>
+            <dt className="text-ink-muted">Get Gold fee {Number(snap.customer_fee_discount_percent ?? 0) > 0 ? "(50% off)" : ""}</dt>
+            <dd className="text-right">{formatAed(Number(snap.platform_fee) * snapshotQuantity)}</dd>
+            {Number(snap.customer_fee_discount_percent ?? 0) > 0 && <><dt className="text-ink-muted">Standard 1% fee</dt><dd className="text-right text-ink-muted line-through">{formatAed(Number(snap.platform_fee) * snapshotQuantity * 2)}</dd></>}
+            <dt className="text-ink-muted">Delivery {snap.delivery_fee_basis === "per_order" ? "(once per order)" : "(original per-item rate)"}</dt>
+            <dd className="text-right">{formatAed(Number(snap.delivery_fee) * (snap.delivery_fee_basis === "per_order" ? 1 : snapshotQuantity))}</dd>
             <dt className="font-medium">Total</dt>
             <dd className="text-right font-medium">{formatAed(Number(snap.total_price_aed))}</dd>
           </dl>

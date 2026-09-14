@@ -17,6 +17,7 @@ interface DiditSessionResponse {
 }
 
 export interface DiditDecision {
+  environment?: string;
   session_id?: string;
   status?: string;
   workflow_id?: string;
@@ -25,10 +26,41 @@ export interface DiditDecision {
 
 export function diditIsConfigured(): boolean {
   return Boolean(
-    env.diditApiKey()
+    diditConfigurationIsSafe()
+    && env.diditApiKey()
     && env.diditResidentWorkflowId()
-    && env.diditVisitorWorkflowId(),
+    && env.diditVisitorWorkflowId()
+    && env.diditResidentWorkflowId() !== env.diditVisitorWorkflowId(),
   );
+}
+
+function isLoopbackUrl(value: string | undefined): boolean {
+  try {
+    const url = new URL(value ?? "");
+    return ["http:", "https:"].includes(url.protocol)
+      && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)
+      && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
+export function diditConfigurationIsSafe(): boolean {
+  // Never send an API key to a configurable third-party URL or redirect.
+  if (env.diditApiUrl() !== "https://verification.didit.me") return false;
+  if (env.diditEnvironment() === "live") return true;
+  // Sandbox is deliberately local-only until a separate hosted test database
+  // is provisioned. A preview frontend connected to production is not isolated.
+  return env.diditEnvironment() === "sandbox"
+    && process.env.VERCEL_ENV !== "production"
+    && process.env.VERCEL !== "1"
+    && isLoopbackUrl(env.siteUrl())
+    && isLoopbackUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+}
+
+export function diditEnvironmentMatches(providerEnvironment: unknown): boolean {
+  return diditConfigurationIsSafe()
+    && providerEnvironment === env.diditEnvironment();
 }
 
 export function diditWorkflowForRoute(route: IdentityVerificationRoute): string {
@@ -46,10 +78,13 @@ export async function createDiditVerificationSession({
   productId: string;
   route: IdentityVerificationRoute;
 }): Promise<{ sessionId: string; verificationUrl: string }> {
+  if (!diditIsConfigured()) throw new Error("Identity provider is not safely configured");
   const vendorData = `getgold-order-${verificationId}`;
   const response = await fetch(`${env.diditApiUrl()}/v3/session/`, {
     method: "POST",
     cache: "no-store",
+    redirect: "error",
+    signal: AbortSignal.timeout(15_000),
     headers: {
       "Content-Type": "application/json",
       "x-api-key": env.diditApiKey(),
@@ -71,16 +106,27 @@ export async function createDiditVerificationSession({
   }
 
   const verificationUrl = new URL(payload.url);
-  if (verificationUrl.protocol !== "https:" || verificationUrl.hostname !== "verify.didit.me") {
+  if (verificationUrl.origin !== "https://verify.didit.me" || verificationUrl.username || verificationUrl.password) {
     throw new Error("Identity provider returned an unexpected verification URL");
+  }
+  // The create response does not document an environment discriminator. Read
+  // the authenticated decision before handing out a capture URL, so a wrongly
+  // configured sandbox key cannot collect a real customer's documents.
+  const decision = await retrieveDiditDecision(payload.session_id);
+  if (decision.session_id !== payload.session_id || decision.vendor_data !== vendorData
+    || decision.workflow_id !== diditWorkflowForRoute(route)) {
+    throw new Error("Identity provider returned an unexpected session");
   }
   return { sessionId: payload.session_id, verificationUrl: verificationUrl.toString() };
 }
 
 export async function retrieveDiditDecision(sessionId: string): Promise<DiditDecision> {
+  if (!diditIsConfigured()) throw new Error("Identity provider is not safely configured");
   const response = await fetch(`${env.diditApiUrl()}/v3/session/${encodeURIComponent(sessionId)}/decision/`, {
     method: "GET",
     cache: "no-store",
+    redirect: "error",
+    signal: AbortSignal.timeout(15_000),
     headers: {
       Accept: "application/json",
       "x-api-key": env.diditApiKey(),
@@ -89,6 +135,9 @@ export async function retrieveDiditDecision(sessionId: string): Promise<DiditDec
   const payload = await response.json().catch(() => null) as DiditDecision | null;
   if (!response.ok || !payload) {
     throw new Error(`Identity provider returned ${response.status}`);
+  }
+  if (!diditEnvironmentMatches(payload.environment)) {
+    throw new Error("Identity provider returned an unexpected environment");
   }
   return payload;
 }
@@ -144,6 +193,7 @@ export function verifyDiditWebhookSignature({
   rawSignature: string;
   timestamp: string;
 }): boolean {
+  if (!env.diditWebhookSecret()) return false;
   const timestampSeconds = Number(timestamp);
   if (!Number.isInteger(timestampSeconds)
     || Math.abs(Math.floor(Date.now() / 1000) - timestampSeconds) > 300) {

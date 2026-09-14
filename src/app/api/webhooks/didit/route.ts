@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { env } from "@/lib/env";
 import {
   diditWorkflowForRoute,
+  diditConfigurationIsSafe,
+  diditEnvironmentMatches,
   mapDiditStatus,
   verifyDiditWebhookSignature,
   type IdentityVerificationRoute,
@@ -11,28 +14,32 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-interface DiditWebhook {
-  webhook_type?: string;
-  session_kind?: string;
-  session_id?: string;
-  vendor_data?: string;
-  workflow_id?: string;
-  status?: string;
-  timestamp?: number;
-}
+const webhookSchema = z.object({
+  webhook_type: z.string().optional(),
+  session_kind: z.string().optional(),
+  session_id: z.string().optional(),
+  vendor_data: z.string().nullable().optional(),
+  workflow_id: z.string().optional(),
+  status: z.string().optional(),
+  timestamp: z.number().int(),
+  environment: z.enum(["sandbox", "live"]),
+}).passthrough();
 
 export async function POST(request: Request) {
-  if (!env.diditWebhookSecret()) {
+  if (!env.diditWebhookSecret() || !diditConfigurationIsSafe()) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
 
   const rawBody = await request.text();
-  let payload: DiditWebhook;
+  let body: unknown;
   try {
-    payload = JSON.parse(rawBody) as DiditWebhook;
+    body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
+  const parsed = webhookSchema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: "invalid_payload" }, { status: 400 });
+  const payload = parsed.data;
 
   const timestamp = request.headers.get("x-timestamp") ?? "";
   if (
@@ -48,6 +55,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_signature" }, { status: 401 });
   }
 
+  if (!diditEnvironmentMatches(payload.environment)) {
+    return NextResponse.json({ error: "unexpected_environment" }, { status: 400 });
+  }
+
   if (
     !["status.updated", "data.updated"].includes(payload.webhook_type ?? "")
     || payload.session_kind === "business"
@@ -57,12 +68,14 @@ export async function POST(request: Request) {
   }
 
   const admin = getServiceSupabase();
-  const { data: verification } = await admin
+  const { data: verification, error: lookupError } = await admin
     .from("order_identity_verifications")
     .select("id, provider_external_user_id, verification_route, status")
     .eq("provider", "didit")
     .eq("provider_applicant_id", payload.session_id)
     .maybeSingle();
+  // Acknowledge only successful reads/writes so Didit can retry outages.
+  if (lookupError) return NextResponse.json({ error: "verification_read_failed" }, { status: 503 });
   if (!verification || verification.status === "consumed") {
     return new NextResponse(null, { status: 204 });
   }
@@ -74,16 +87,17 @@ export async function POST(request: Request) {
     payload.workflow_id !== expectedWorkflow
     || payload.vendor_data !== verification.provider_external_user_id
   ) {
-    await admin
+    const { error } = await admin
       .from("order_identity_verifications")
       .update({ status: "error", result_code: "UNEXPECTED_PROVIDER_SESSION", verified_at: null })
       .eq("id", verification.id)
       .neq("status", "consumed");
+    if (error) return NextResponse.json({ error: "verification_update_failed" }, { status: 503 });
     return new NextResponse(null, { status: 204 });
   }
 
   const mapped = mapDiditStatus(payload.status);
-  await admin
+  const { error } = await admin
     .from("order_identity_verifications")
     .update({
       status: mapped.status,
@@ -91,7 +105,10 @@ export async function POST(request: Request) {
       verified_at: mapped.status === "approved" ? new Date().toISOString() : null,
     })
     .eq("id", verification.id)
-    .neq("status", "consumed");
+    .neq("status", "consumed")
+    .gt("expires_at", new Date().toISOString());
+
+  if (error) return NextResponse.json({ error: "verification_update_failed" }, { status: 503 });
 
   return new NextResponse(null, { status: 204 });
 }

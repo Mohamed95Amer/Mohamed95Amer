@@ -28,7 +28,7 @@ export default async function VendorOrdersPage() {
     admin
       .from("reservations")
       .select(
-        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed)",
+        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, quantity)",
       )
       .eq("vendor_id", vendor.id)
       .order("created_at", { ascending: false }),
@@ -80,8 +80,10 @@ export default async function VendorOrdersPage() {
             {(orders ?? []).map((o) => {
               const product = o.product as unknown as { name: string; karat: number; weight_grams: number } | null;
               const customer = o.customer as unknown as { full_name: string | null } | null;
-              const snap = o.snapshot as unknown as Array<{ total_price_aed: number }> | { total_price_aed: number } | null;
+              const snap = o.snapshot as unknown as Array<{ total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; quantity: number }> | { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; quantity: number } | null;
               const total = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
+              const priceSnapshot = Array.isArray(snap) ? snap[0] : snap;
+              const customerServiceFee = Number(priceSnapshot?.platform_fee ?? 0) * Number(priceSnapshot?.quantity ?? o.quantity);
               return (
                 <Fragment key={o.id}>
                 <tr className="border-t border-bone-deep">
@@ -101,7 +103,9 @@ export default async function VendorOrdersPage() {
                   <td colSpan={7} className="px-4 py-3">
                     <p className={`mb-2 text-xs font-semibold ${o.identity_verification_id ? "text-signal-ok" : "text-ink-muted"}`}>{o.identity_verification_id ? "✓ Identity verified for this order" : "Legacy order · no per-order identity record"}</p>
                     <p className="mb-2 text-xs text-ink-muted">Payment: {o.payment_method === "pay_online" ? "online requested" : "paid directly to store"} · {statusLabel(o.payment_status)}</p>
-                    {o.status === "payment_pending" && o.payment_method === "pay_at_store" && <VendorOrderProgress reservationId={o.id} />}
+                    {customerServiceFee > 0 && <p className="mb-2 text-xs text-gold-700"><strong>{formatAed(customerServiceFee)} Get Gold customer fee included.</strong> You collect it inside the displayed total for later settlement to Get Gold; it is not a commission on your making charge.</p>}
+                    {o.payment_method === "bank_transfer" && <p className="my-2 text-xs">Bank transfer: <a className="underline" href={`/api/reservations/bank-proof?id=${o.id}`}>View submitted proof</a>. Check cleared funds in your bank; a receipt alone is not confirmation.</p>}
+                    {o.status === "payment_pending" && ["pay_at_store", "bank_transfer", "cash", "card"].includes(o.payment_method) && <VendorOrderProgress reservationId={o.id} />}
                     <FulfilmentDetails details={o} compact />
                     {o.fulfilment_method === "delivery" && ["payment_pending", "payment_link_pending", "paid"].includes(o.status) && (
                       <div className="mt-3 border-t border-jade-900/10 pt-3"><DeliveryAssignmentControl reservationId={o.id} emirate={o.delivery_emirate} companies={deliveryCompanies ?? []} assignment={assignmentByReservation.get(o.id) as any} /></div>

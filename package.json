@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "db:start": "npx --yes supabase@2.117.0 start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor",
+    "test:db": "npx --yes supabase@2.117.0 test db --local",
+    "test:integration": "node --test tests/integration/*.test.cjs",
+    "dev:local": "node scripts/local-runtime.cjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

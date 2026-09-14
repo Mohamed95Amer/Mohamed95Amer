@@ -47,15 +47,10 @@ export function calculateReservationValue(
   const fineGoldGrams = purity * weight * quantity;
   const lockedGoldValueAed = Number(snapshot.gold_value_aed) * quantity;
   const currentGoldValueAed = current24kRateAed * fineGoldGrams;
-  const nonGoldPerUnit =
-    Number(snapshot.making_charge) +
-    Number(snapshot.certificate_fee) +
-    Number(snapshot.stone_value) +
-    Number(snapshot.vendor_premium) +
-    Number(snapshot.platform_fee) +
-    Number(snapshot.delivery_fee);
-  const currentComparableTotalAed = currentGoldValueAed + nonGoldPerUnit * quantity;
   const lockedTotal = Number(snapshot.total_price_aed);
+  // Preserve all captured non-gold charges, including legacy per-item delivery.
+  // Only revalue the metal; never reinterpret old orders under today's fee rules.
+  const currentComparableTotalAed = lockedTotal - lockedGoldValueAed + currentGoldValueAed;
 
   return {
     fineGoldGrams: round3(fineGoldGrams),

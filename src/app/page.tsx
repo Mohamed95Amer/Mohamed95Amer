@@ -7,6 +7,8 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
+import { getCurrentProfile } from "@/lib/auth/server";
+import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,8 @@ const categories = [
 
 export default async function HomePage() {
   const supabase = getServiceSupabase();
+  const profile = await getCurrentProfile();
+  const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const { data: settings } = await supabase
     .from("platform_settings")
     .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days")
@@ -63,7 +67,7 @@ export default async function HomePage() {
       .limit(60),
     supabase.from("vendor_reputation_summary").select("*"),
   ]);
-  const platformFeeBps = Number(settings?.platform_fee_bps ?? 50);
+  const platformFeeBps = feeOffer.effectiveBps;
   const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const activeVendorIds = new Set((categoryProducts ?? []).map((product) => product.vendor_id));
@@ -240,6 +244,7 @@ export default async function HomePage() {
                   key={product.id}
                   p={{ ...product, available: product.quantity, vendor: vendorWithReputation }}
                   platformFeeBps={platformFeeBps}
+                  customerFeeDiscountPercent={feeOffer.discountPercent}
                   deliveryFee={deliveryFee}
                 />
               );

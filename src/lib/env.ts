@@ -65,6 +65,8 @@ export const env = {
   // Hosted per-order identity verification. Keep document images and biometric
   // processing at Didit; Get Gold stores only the provider's decision.
   diditApiKey: () => process.env.DIDIT_API_KEY?.trim() ?? "",
+  // Explicit opt-in; missing/invalid mode disables identity verification.
+  diditEnvironment: () => process.env.DIDIT_ENVIRONMENT?.trim() ?? "",
   diditWebhookSecret: () => process.env.DIDIT_WEBHOOK_SECRET?.trim() ?? "",
   diditResidentWorkflowId: () => process.env.DIDIT_RESIDENT_WORKFLOW_ID?.trim() ?? "",
   diditVisitorWorkflowId: () => process.env.DIDIT_VISITOR_WORKFLOW_ID?.trim() ?? "",

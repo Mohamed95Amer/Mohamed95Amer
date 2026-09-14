@@ -2,7 +2,7 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
 import { getLatestTick, isFresh } from "@/lib/gold-price/service";
 import { refreshInBand } from "@/lib/gold-price/refresh-on-read";
-import { computePrice, type PriceBreakdown } from "./calc";
+import { computePrice, computeOrderTotal, type PriceBreakdown } from "./calc";
 import type { FulfilmentMethod } from "@/lib/fulfilment";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
@@ -67,6 +67,7 @@ export async function computeOfficialPriceForProduct(
     .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)))
     .maybeSingle();
   if (prodErr || !product) throw new Error("Product not found");
+  const { data: vendorDelivery } = await supabase.from("vendor_payment_settings").select("delivery_fee_aed").eq("vendor_id", product.vendor_id).maybeSingle();
   if (quantity < 1 || quantity > product.quantity) {
     throw new Error("Requested quantity exceeds available stock");
   }
@@ -83,7 +84,8 @@ export async function computeOfficialPriceForProduct(
   }
   if (!tick) throw new Error("No live gold price available");
 
-  const fresh = isFresh(tick.fetched_at, staleSeconds);
+  // A recent fallback/anomalous quote is still not safe to lock for an order.
+  const fresh = tick.status === "ok" && tick.source !== "mock" && isFresh(tick.fetched_at, staleSeconds);
 
   const breakdown = computePrice({
     pricePerGram24kAed: Number(tick.price_per_gram_24k_aed),
@@ -96,10 +98,10 @@ export async function computeOfficialPriceForProduct(
     stoneValue: Number(product.stone_value),
     vendorPremium: Number(product.vendor_premium),
     platformFeeBps: Number(settings.platform_fee_bps),
-    deliveryFee: fulfilmentMethod === "delivery" ? Number(settings.delivery_fee_aed) : 0,
+    deliveryFee: fulfilmentMethod === "delivery" ? Number(vendorDelivery?.delivery_fee_aed ?? settings.delivery_fee_aed) : 0,
   });
 
-  const totalPriceAed = Math.round(breakdown.unitPriceAed * quantity * 100) / 100;
+  const totalPriceAed = computeOrderTotal(breakdown, quantity);
 
   return {
     product,

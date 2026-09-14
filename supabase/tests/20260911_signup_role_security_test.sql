@@ -2,6 +2,7 @@
 -- Safe on production: every probe row is inside a transaction that rolls back.
 
 begin;
+select plan(3);
 
 insert into auth.users (id, email, raw_user_meta_data)
 values (
@@ -23,6 +24,7 @@ begin
   end if;
 end;
 $$;
+select pass('public signup cannot request a privileged role');
 
 insert into auth.users (id, email, raw_user_meta_data)
 values (
@@ -44,6 +46,7 @@ begin
   end if;
 end;
 $$;
+select pass('vendor signup preserves the unprivileged vendor role');
 
 insert into auth.users (id, email, raw_user_meta_data)
 values (
@@ -65,5 +68,7 @@ begin
   end if;
 end;
 $$;
+select pass('courier signup preserves the unprivileged delivery-company role');
 
+select * from finish();
 rollback;

@@ -46,13 +46,12 @@ a full agreement or ended under clause 11.
 
 ### 3. What Get Gold provides
 
-3.1 Listing of your products on the Get Gold platform at no charge during the Free Period
-(clause 5).
+3.1 Listing of your products on the Get Gold platform at no charge during Phase 1 (clause 5).
 
 3.2 Live gold pricing so your prices update automatically with the market.
 
-3.3 Transparent display of each price component — gold value, making charge, stone value and your
-premium — shown separately to the customer.
+3.3 Transparent display of each price component — gold value, making charge, certificate or assay
+fee, stone value, your premium, Get Gold service fee and delivery — shown separately to the customer.
 
 3.4 Customer reservations passed to you with the item, price and customer contact details.
 
@@ -63,41 +62,49 @@ premium — shown separately to the customer.
 4.1 Accurate product information: weight, karat, making charge, stone value, certificate and
 hallmark details, and available quantity.
 
-4.2 **You honour the reserved price** shown to the customer at the time of reservation, for the
-reservation window (10 minutes at the locked gold rate, then the prevailing rate), provided the
-customer completes within that window.
+4.2 **You honour the reserved price** shown to the customer. The initial stock and price request
+normally remains open for ten (10) minutes. If you accept within that window, the displayed total
+remains fixed until the payment deadline shown to the customer: initially thirty (30) minutes for
+bank transfer and twenty-four (24) hours for cash or card at delivery or collection.
 
 4.3 You keep stock levels current and tell us promptly when an item is no longer available.
 
-4.4 You respond to a reservation within **______ hours** during business hours.
+4.4 You respond to a reservation within the initial ten-minute window while accepting orders. An
+expired request cannot be revived without a new stock and price check.
 
 4.5 You hold a valid UAE trade licence permitting you to sell the goods listed, and all goods are
 authentic, accurately described, and hallmarked where required.
 
-### 5. Commercial terms — fees
+### 5. Commercial terms and customer service fee
 
-5.1 **Free Period.** Listing on Get Gold is **free of any fee or commission for six (6) months** from
-the date of signature. During the Free Period you owe Get Gold nothing.
+5.1 **No Vendor commission during Phase 1.** Get Gold charges you no listing fee, subscription fee
+or commission, including no commission on your making charge or Vendor Premium, for six (6) months
+from signature. No Vendor charge begins automatically when that period ends. Any future Vendor fee
+requires a separate written agreement accepted by both parties.
 
-5.2 **Commission after the Free Period.** After the Free Period, Get Gold intends to charge a
-commission of **ten percent (10%)** calculated **only on the Making Charge and the Vendor Premium**
-of each completed sale originating from the platform.
+5.2 **Customer service fee.** Get Gold may add a separately disclosed service fee paid by the
+customer. The Phase 1 standard rate is one percent (1%) of the merchandise subtotal, excluding the
+delivery fee. Each new customer receives fifty percent (50%) off this service fee on their first
+three qualifying orders, producing an effective rate of one-half of one percent (0.5%). The exact
+percentage and amount must be shown before the order is placed.
 
-5.3 **The commission is never calculated on the gold value or the stone value.** The metal and the
-stones are a pass-through and Get Gold takes no share of them.
+5.3 **Collection and remittance.** Where the customer pays you directly by cash, your card terminal
+or bank transfer, you collect the complete displayed order total. The separately identified Get Gold
+service-fee amount is collected by you on Get Gold's behalf and does not reduce the gold value,
+making charge, certificate or assay fee, stone value, Vendor Premium or delivery amount owed to you.
+You must not relabel, conceal or retain that service-fee amount as your sale proceeds.
 
-5.4 **If the Making Charge and Vendor Premium are zero, the commission is zero.** You never pay
-commission on a sale from which you earned no margin.
+5.4 Get Gold will provide a statement of completed orders and customer service fees collected. You
+will reconcile the statement against your invoices and payment records and remit undisputed amounts
+within **______ days** of the statement. Payment destination and tax-invoice requirements will be
+confirmed in writing after Get Gold is incorporated and before any remittance becomes due.
 
-5.5 **Rates may change.** Get Gold may change the commission rate, introduce listing or other fees,
-or vary the Free Period, **on not less than thirty (30) days' written notice** to you. If you do not
-accept a change, you may end this MOU under clause 11 before it takes effect, at no cost.
+5.5 Cancelled, rejected and expired unpaid orders carry no service fee. A full or partial customer
+refund produces the corresponding service-fee adjustment. A paid order keeps its introductory-order
+position even if it is later refunded; an unpaid cancelled, rejected or expired order does not.
 
-5.6 **No fee is payable, and no invoice will be issued, before Get Gold is incorporated in the UAE
-and has notified you in writing of the applicable rate.**
-
-5.7 Commission is invoiced monthly in arrears against sales you have confirmed as completed, and is
-payable within **______ days** of invoice.
+5.6 **No Get Gold fee is payable or remittable before Get Gold is incorporated in the UAE and has
+notified you in writing that the customer-fee collection and settlement process is active.**
 
 ### 6. Delivery
 
@@ -120,6 +127,16 @@ not a carrier, bailee or insurer.
 6.5 You are responsible for insuring the goods in transit, whether carried by your own staff or by a
 company you appoint.
 
+6.6 The customer may choose store collection, which has no delivery fee, or an available delivery
+method. Payment choices may include cash, your card terminal and bank transfer to your verified
+business bank account. An online marketplace payment option must not be offered until Get Gold has
+confirmed in writing that an approved payment provider and settlement process are operational.
+
+6.7 For bank transfer, the customer waits for your stock acceptance, then sends the exact displayed
+amount and privately submits a transaction reference and receipt. A receipt image alone is not proof
+of payment. You must confirm cleared funds in your bank account before the order proceeds. Late,
+short, duplicate or disputed transfers and related refunds remain your responsibility as seller.
+
 ### 7. Seller of record
 
 7.1 **You are the seller of record on every transaction.** The contract of sale is between you and
@@ -136,8 +153,8 @@ authenticity, quality or delivery.
 ### 8. No circumvention — BINDING
 
 8.1 Where Get Gold introduces a customer to you, **you will not, for twelve (12) months from that
-introduction, deliberately take that customer's transaction outside the platform in order to avoid
-commission that would otherwise be payable.**
+introduction, deliberately omit or misreport that customer's transaction in order to avoid an
+applicable Get Gold customer service fee or agreed platform process.**
 
 8.2 This does not restrict you from serving customers who reach you independently, from your walk-in
 trade, or from your existing customer base.
@@ -154,8 +171,9 @@ by law or a regulator.
 
 ### 10. Intellectual property — BINDING
 
-10.1 Get Gold owns the platform, its software, brand, design and all data it generates, including
-listing pages, pricing displays and any photography Get Gold produces.
+10.1 Get Gold owns the platform, its software, brand, design, listing-page presentation, pricing
+displays and any photography Get Gold produces. Personal data remains subject to applicable privacy
+rights and is not transferred into Get Gold's ownership by this clause.
 
 10.2 You keep ownership of your own trademarks, product designs and any images you supply, and you
 grant Get Gold a non-exclusive, royalty-free licence to use your business name, logo and product
@@ -185,7 +203,8 @@ has been broken.
 
 11.6 **On termination:** Get Gold removes your listings; you honour any reservation a customer has
 already made and you have already confirmed, or refund the customer in full; and you settle any
-commission properly invoiced and outstanding. Clauses 8, 9, 10, 12 and 14 survive.
+customer service fees properly collected on Get Gold's behalf and outstanding. Clauses 8, 9, 10,
+12 and 14 survive.
 
 11.7 Neither party owes the other any compensation, penalty or payment merely for ending this MOU.
 
@@ -229,7 +248,9 @@ Dubai, and the parties submit to the non-exclusive jurisdiction of the Dubai Cou
 | Approx. number of items at launch | |
 | Delivery method elected (clause 6.1) | ☐ Own staff ☐ External company: ____________ |
 | Areas you will deliver to | |
-| Reservation response time (clause 4.4) | ________ hours |
+| Payment methods offered | ☐ Cash ☐ Vendor card terminal ☐ Bank transfer |
+| Bank-transfer beneficiary confirmed | ☐ Yes ☐ Not offered |
+| Service-fee remittance period (clause 5.4) | ________ days |
 
 ---
 

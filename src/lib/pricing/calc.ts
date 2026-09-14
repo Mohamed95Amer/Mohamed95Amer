@@ -51,7 +51,7 @@ export interface PriceBreakdown {
   platformFee: number;
   platformFeeBps: number;
   deliveryFee: number;
-  unitPriceAed: number;       // sum of the above, per unit
+  unitPriceAed: number;       // one-item delivered estimate, not quantity-multipliable
   purityFactor: number;
 }
 
@@ -105,6 +105,20 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
     unitPriceAed,
     purityFactor: purity,
   };
+}
+
+/** Merchandise and service are per item; delivery is charged once per order. */
+export function computeOrderTotal(breakdown: PriceBreakdown, quantity: number): number {
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
+    throw new Error("Quantity must be between 1 and 50");
+  }
+  return round2((breakdown.merchandiseSubtotalAed + breakdown.platformFee) * quantity + breakdown.deliveryFee);
+}
+
+export function applyCustomerServiceFee(breakdown: PriceBreakdown, feeBps: number): PriceBreakdown {
+  if (!Number.isInteger(feeBps) || feeBps < 0 || feeBps > 1000) throw new Error("Invalid customer fee rate");
+  const platformFee = round2(breakdown.merchandiseSubtotalAed * feeBps / 10_000);
+  return { ...breakdown, platformFee, platformFeeBps: feeBps, unitPriceAed: round2(breakdown.merchandiseSubtotalAed + platformFee + breakdown.deliveryFee) };
 }
 
 export function makingChargeOfferIsActive(

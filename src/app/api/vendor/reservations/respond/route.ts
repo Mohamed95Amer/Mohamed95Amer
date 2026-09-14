@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_state" }, { status: 409 });
   }
   if (new Date(reservation.expires_at).getTime() < Date.now()) {
-    await admin.from("reservations").update({ status: "expired" }).eq("id", reservation.id);
+    await admin.from("reservations").update({ status: "expired" }).eq("id", reservation.id).eq("status", "pending_vendor_confirmation");
     return NextResponse.json({ error: "expired" }, { status: 409 });
   }
 
@@ -46,7 +46,11 @@ export async function POST(request: Request) {
     ? reservation.payment_method === "pay_online" ? "payment_link_pending" : "payment_pending"
     : "rejected_by_vendor";
 
-  const { error } = await admin
+  const { data: changed, error } = reservation.payment_method === "bank_transfer" && parsed.data.decision === "confirm"
+    ? await admin.rpc("accept_vendor_bank_transfer", { p_reservation_id: reservation.id, p_vendor_user_id: auth.user.id, p_note: parsed.data.note ?? null })
+    : ["cash", "card"].includes(reservation.payment_method) && parsed.data.decision === "confirm"
+    ? await admin.rpc("accept_vendor_offline_order", { p_reservation_id: reservation.id, p_vendor_user_id: auth.user.id, p_note: parsed.data.note ?? null })
+    : await admin
     .from("reservations")
     .update({
       status: nextStatus,
@@ -56,8 +60,12 @@ export async function POST(request: Request) {
         ? "awaiting_checkout"
         : "not_required",
     })
-    .eq("id", reservation.id);
+    .eq("id", reservation.id)
+    .eq("status", "pending_vendor_confirmation")
+    .gt("expires_at", new Date().toISOString())
+    .select("id").maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!changed) return NextResponse.json({ error: "order_changed_or_expired" }, { status: 409 });
 
   await logAudit({
     actor_user_id: auth.user.id,

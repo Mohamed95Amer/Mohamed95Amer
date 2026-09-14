@@ -1,19 +1,23 @@
 -- ============================================================================
 --  Verifies the stock accounting added in 0005_reservation_stock.sql.
 --
---  Run this AFTER applying that migration. Everything happens inside a
+--  Run with `npm run test:db` AFTER applying all migrations (pgTAP required).
+--  Everything happens inside a
 --  transaction that is rolled back at the end, so no test rows survive and it
 --  is safe to run against a live project.
 --
---  Success looks like a series of NOTICEs ending in "ALL CHECKS PASSED".
+--  Success looks like NOTICEs ending in "ALL CHECKS PASSED" plus a pgTAP pass.
 --  Any failure raises and aborts — psql/the SQL editor will show which check.
 -- ============================================================================
 
 begin;
+select plan(1);
 
 do $$
 declare
   v_customer uuid;
+  v_owner uuid;
+  v_vendor uuid;
   v_product  uuid;
   v_qty      integer;
   v_res      public.reservations;
@@ -24,24 +28,23 @@ declare
   v_check_oversell uuid;
   v_check_delivery uuid;
 begin
-  -- Pick fixtures from whatever the environment already has, so this works
-  -- against seeded and real data alike.
-  select id into v_customer from public.profiles limit 1;
-  if v_customer is null then
-    raise exception 'no rows in public.profiles to test with';
-  end if;
-
-  -- quantity > 0 matters: a zero-stock product would make check 2 claim zero
-  -- units and trip the invalid_quantity guard instead of testing what we want.
-  select id, quantity into v_product, v_qty
-  from public.products
-  where product_status = 'approved'
-    and quantity > 0
-  order by created_at
-  limit 1;
-  if v_product is null then
-    raise exception 'no approved product with stock to test with';
-  end if;
+  -- Hermetic fixtures: never depend on, reserve, or alter a real vendor's stock.
+  v_customer := uuid_generate_v4();
+  v_owner := uuid_generate_v4();
+  v_vendor := uuid_generate_v4();
+  v_product := uuid_generate_v4();
+  v_qty := 3;
+  insert into auth.users (id, email, raw_user_meta_data) values
+    (v_customer, v_customer || '@example.invalid', '{"role":"customer"}'),
+    (v_owner, v_owner || '@example.invalid', '{"role":"vendor"}');
+  insert into public.vendors (id, owner_user_id, business_name, trade_license_number,
+    license_expiry_date, owner_name, email, phone, emirate, store_address, verification_status)
+  values (v_vendor, v_owner, 'Synthetic stock test store', 'TEST-ONLY', current_date + 365,
+    'Synthetic owner', v_owner || '@example.invalid', '+971500000000', 'Dubai', 'Test fixture address', 'approved');
+  insert into public.products (id, vendor_id, name, description, category, karat,
+    weight_grams, quantity, images, hallmark_info, product_status)
+  values (v_product, v_vendor, 'Synthetic 22K Bangle', 'Synthetic fixture for stock-lock regression only.',
+    'bangle', 22, 10, v_qty, '["test-only/bangle.jpg"]', 'Synthetic 22K hallmark', 'approved');
 
   raise notice 'fixture: product % with quantity %', v_product, v_qty;
 
@@ -234,4 +237,6 @@ begin
   raise notice 'ALL CHECKS PASSED';
 end $$;
 
+select pass('all 11 atomic stock, fulfilment and single-use identity checks passed');
+select * from finish();
 rollback;

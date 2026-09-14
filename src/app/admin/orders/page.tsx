@@ -12,7 +12,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   let q = admin
     .from("reservations")
     .select(
-      "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, vendor:vendors(business_name), customer:profiles(full_name), snapshot:order_price_snapshots(total_price_aed)",
+      "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, vendor:vendors(business_name), customer:profiles(full_name), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, quantity)",
     )
     .order("created_at", { ascending: false })
     .limit(200);
@@ -29,6 +29,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
             <th className="px-4 py-2 text-left">Vendor</th>
             <th className="px-4 py-2 text-right">Qty</th>
             <th className="px-4 py-2 text-right">Total</th>
+            <th className="px-4 py-2 text-right">Get Gold fee</th>
             <th className="px-4 py-2 text-left">Fulfilment</th>
             <th className="px-4 py-2 text-left">Payment</th>
             <th className="px-4 py-2 text-left">Identity</th>
@@ -40,14 +41,17 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
           {(data ?? []).map((o) => {
             const c = o.customer as unknown as { full_name: string | null } | null;
             const v = o.vendor as unknown as { business_name: string } | null;
-            const snap = o.snapshot as unknown as Array<{ total_price_aed: number }> | { total_price_aed: number } | null;
+            const snap = o.snapshot as unknown as Array<{ total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; quantity: number }> | { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; quantity: number } | null;
             const total = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
+            const priceSnapshot = Array.isArray(snap) ? snap[0] : snap;
+            const customerServiceFee = Number(priceSnapshot?.platform_fee ?? 0) * Number(priceSnapshot?.quantity ?? o.quantity);
             return (
               <tr key={o.id} className="border-t border-bone-deep">
                 <td className="px-4 py-2">{c?.full_name ?? "—"}</td>
                 <td className="px-4 py-2">{v?.business_name ?? "—"}</td>
                 <td className="px-4 py-2 text-right">{o.quantity}</td>
                 <td className="px-4 py-2 text-right">{formatAed(total)}</td>
+                <td className="px-4 py-2 text-right">{formatAed(customerServiceFee)}<span className="block text-[10px] text-ink-muted">{Number(priceSnapshot?.customer_fee_discount_percent ?? 0) > 0 ? "50% off" : `${Number(priceSnapshot?.platform_fee_bps ?? 0) / 100}%`}</span></td>
                 <td className="px-4 py-2">{fulfilmentLabel(o.fulfilment_method)}</td>
                 <td className="px-4 py-2">{o.payment_method === "pay_online" ? "Online" : "Direct to store"}<span className="block text-[10px] text-ink-muted">{statusLabel(o.payment_status)}</span></td>
                 <td className="px-4 py-2 font-medium">{o.identity_verification_id ? "✓ Verified" : "Legacy"}</td>
@@ -57,7 +61,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
             );
           })}
           {(data ?? []).length === 0 && (
-            <tr><td colSpan={9} className="px-4 py-6 text-center text-ink-muted">No orders.</td></tr>
+            <tr><td colSpan={10} className="px-4 py-6 text-center text-ink-muted">No orders.</td></tr>
           )}
         </tbody>
       </table>

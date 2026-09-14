@@ -8,6 +8,8 @@ import { env } from "@/lib/env";
 import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
 import { notifyUser } from "@/lib/notifications/server";
 import { trackServerEvent } from "@/lib/analytics/server";
+import { diditIsConfigured } from "@/lib/identity/didit";
+import { applyCustomerServiceFee, computeOrderTotal } from "@/lib/pricing/calc";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +29,13 @@ interface ReservationRow {
   updated_at: string;
 }
 
+interface CustomerFeeAllocationRow {
+  effective_bps: number;
+  standard_bps: number;
+  discount_percent: number;
+  promo_order_number: number | null;
+}
+
 /**
  * Create a reservation. The price is computed entirely server-side and
  * snapshotted into order_price_snapshots. The frontend's displayed price is
@@ -36,6 +45,10 @@ export async function POST(request: Request) {
   const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  if (!diditIsConfigured()) {
+    return NextResponse.json({ error: "identity_provider_not_configured" }, { status: 503 });
+  }
 
   const rl = rateLimit(`res:${auth.user.id}`, env.reservationsPerMin(), 60_000);
   if (!rl.ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
@@ -90,6 +103,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "online_payment_unavailable", message: "Online checkout is not active yet. Choose pay at store to continue." }, { status: 409 });
   }
   const expiresAt = new Date(Date.now() + lockMinutes * 60_000).toISOString();
+  const { data: vendorOptions } = await admin.from("vendor_payment_settings").select("cash_enabled, card_enabled, delivery_mode, courier_name").eq("vendor_id", priced.product.vendor_id).maybeSingle();
+  if ((["cash", "pay_at_store"].includes(parsed.data.paymentMethod) && vendorOptions?.cash_enabled === false) || (parsed.data.paymentMethod === "card" && !vendorOptions?.card_enabled)) return NextResponse.json({ error: "payment_method_unavailable" }, { status: 409 });
+  const { data: bank } = parsed.data.paymentMethod === "bank_transfer"
+    ? await admin.from("vendor_payment_settings").select("bank_name, beneficiary_name, iban").eq("vendor_id", priced.product.vendor_id).eq("bank_transfer_enabled", true).maybeSingle()
+    : { data: null };
+  if (parsed.data.paymentMethod === "bank_transfer" && !bank) return NextResponse.json({ error: "bank_transfer_unavailable" }, { status: 409 });
 
   // Claim through the DB function rather than a bare insert: it locks the
   // product row and counts in-flight reservations, so two customers racing for
@@ -156,7 +175,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: raw }, { status: 500 });
   }
 
+  const { data: rawFeeOffer, error: feeOfferError } = await admin.rpc("assign_customer_fee_discount", {
+    p_reservation_id: reservation.id, p_customer_user_id: auth.user.id,
+  }).single();
+  const feeOffer = rawFeeOffer as CustomerFeeAllocationRow | null;
+  if (feeOfferError || !feeOffer) {
+    await admin.from("reservations").delete().eq("id", reservation.id);
+    await admin.from("order_identity_verifications").update({ status: "approved", consumed_at: null, reservation_id: null }).eq("id", parsed.data.identityVerificationId).eq("user_id", auth.user.id);
+    return NextResponse.json({ error: "fee_assignment_failed" }, { status: 500 });
+  }
+  priced.breakdown = applyCustomerServiceFee(priced.breakdown, Number(feeOffer.effective_bps));
+  priced.totalPriceAed = computeOrderTotal(priced.breakdown, parsed.data.quantity);
   const { error: snapErr } = await admin.from("order_price_snapshots").insert({
+    vendor_commission_basis: "paused",
+    vendor_commission_standard_aed: 0,
+    vendor_commission_aed: 0,
+    customer_fee_standard_bps: Number(feeOffer.standard_bps),
+    customer_fee_discount_percent: Number(feeOffer.discount_percent),
+    customer_fee_promo_order_number: feeOffer.promo_order_number,
     reservation_id: reservation.id,
     gold_tick_id: priced.tick.id,
     gold_price_per_gram_24k_aed: priced.tick.price_per_gram_24k_aed,
@@ -173,6 +209,7 @@ export async function POST(request: Request) {
     platform_fee: priced.breakdown.platformFee,
     platform_fee_bps: priced.breakdown.platformFeeBps,
     delivery_fee: priced.breakdown.deliveryFee,
+    delivery_fee_basis: "per_order",
     quantity: parsed.data.quantity,
     gold_value_aed: priced.breakdown.goldValueAed,
     unit_price_aed: priced.breakdown.unitPriceAed,
@@ -198,6 +235,8 @@ export async function POST(request: Request) {
   const { error: paymentPreferenceError } = await admin.from("reservations").update({
     payment_method: parsed.data.paymentMethod,
     payment_status: paymentStatus,
+    bank_details_snapshot: bank,
+    vendor_delivery_snapshot: parsed.data.fulfilmentMethod === "delivery" ? { mode: vendorOptions?.delivery_mode ?? "own_staff", courier_name: vendorOptions?.courier_name ?? "" } : null,
   }).eq("id", reservation.id);
   if (paymentPreferenceError) {
     await admin.from("reservations").delete().eq("id", reservation.id);

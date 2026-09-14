@@ -16,6 +16,7 @@ import {
   type ReservationValueInsight,
 } from "@/lib/gold-insights";
 import { formatAed, round2 } from "@/lib/pricing/calc";
+import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { getServiceSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -52,7 +53,11 @@ interface AccountEntry {
 
 export default async function AccountPage() {
   const user = await requireUser();
-  const [profile, latestTick] = await Promise.all([getCurrentProfile(), getLatestTick()]);
+  const [profile, latestTick, feeOffer] = await Promise.all([
+    getCurrentProfile(),
+    getLatestTick(),
+    getCustomerFeeOffer(user.id),
+  ]);
   const admin = getServiceSupabase();
   const { data: rawReservations } = await admin
     .from("reservations")
@@ -113,6 +118,15 @@ export default async function AccountPage() {
           <Link href="/account/notifications" className="btn-ghost px-4 py-2 text-xs">Notifications</Link>
           <Link href="/account/referrals" className="btn-ghost px-4 py-2 text-xs">Invite friends</Link>
         </nav>
+        {feeOffer.discountPercent > 0 && (
+          <section className="mb-6 flex flex-col gap-3 rounded-2xl border border-gold-500/25 bg-gold-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-bold text-gold-700">50% off your Get Gold fee</p>
+              <p className="mt-1 text-xs text-ink-muted">Pay 0.5% instead of the standard 1% on {feeOffer.remainingDiscountedOrders} more qualifying {feeOffer.remainingDiscountedOrders === 1 ? "order" : "orders"}. Delivery is excluded.</p>
+            </div>
+            <Link href="/marketplace" className="btn-primary shrink-0 px-4 py-2 text-xs">Use this offer</Link>
+          </section>
+        )}
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <AccountStat label="Completed purchases" value={String(purchases.length)} detail={fineGoldGrams.toFixed(3) + "g fine-gold equivalent"} />
           <AccountStat label="Total paid" value={formatAed(paidSpend)} detail="Completed purchases only" />

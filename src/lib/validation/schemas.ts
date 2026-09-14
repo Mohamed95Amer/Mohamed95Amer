@@ -17,7 +17,7 @@ export const createReservationSchema = z.object({
   productId: z.string().uuid(),
   quantity: z.number().int().min(1).max(50),
   identityVerificationId: z.string().uuid(),
-  paymentMethod: z.enum(["pay_at_store", "pay_online"]),
+  paymentMethod: z.enum(["pay_at_store", "pay_online", "bank_transfer", "cash", "card"]),
   fulfilmentMethod: z.enum(["delivery", "collection"]),
   recipientName: optionalTrimmed(120),
   recipientPhone: optionalTrimmed(20),
@@ -319,6 +319,9 @@ export const deliveryStatusSchema = z.object({
   status: z.enum(["accepted", "pickup_scheduled", "collected", "out_for_delivery", "delivered", "declined", "delivery_failed"]),
   publicNote: z.string().trim().max(500).optional().nullable(),
   proofReference: z.string().trim().max(500).optional().nullable(),
+}).refine((value) => value.status !== "delivered" || Boolean(value.proofReference), {
+  path: ["proofReference"],
+  message: "Add a delivery proof reference before marking this order delivered",
 });
 
 export const marketplaceEventSchema = z.object({

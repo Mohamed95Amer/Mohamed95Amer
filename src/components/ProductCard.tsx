@@ -42,14 +42,16 @@ export interface ProductCardData {
  */
 export function ProductCard({
   p,
-  platformFeeBps = 50,
+  platformFeeBps = 100,
   deliveryFee = 0,
   priority = false,
+  customerFeeDiscountPercent = 0,
 }: {
   p: ProductCardData;
   platformFeeBps?: number;
   deliveryFee?: number;
   priority?: boolean;
+  customerFeeDiscountPercent?: number;
 }) {
   const { tick, isFresh, loading } = useLiveGoldPrice();
   const stock = p.available ?? null;
@@ -132,6 +134,7 @@ export function ProductCard({
             <span className="text-[11px] font-medium text-signal-warn">updating…</span>
           )}
         </div>
+        {price !== null && customerFeeDiscountPercent > 0 && <p className="mt-1 text-[11px] font-bold text-gold-700">50% OFF Get Gold fee · first 3 orders</p>}
 
         {valueScore && <GoldHubValueScore value={valueScore} compact />}
 
