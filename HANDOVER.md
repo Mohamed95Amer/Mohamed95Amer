@@ -606,6 +606,12 @@ Demo logins exist for each role (`admin@getgold.app`, `vendor1..4@example.ae`,
 accounts as `goldhub-demo-N`; the `@getgold.app` accounts predate this work and
 their passwords are not known here.
 
+Temporary confirmed production test accounts `test.customer@getgold.app` (customer)
+and `test.admin@getgold.app` (admin, not super-admin) were created on 15 Sep 2026 at
+the owner's request. Their passwords are intentionally not committed. Both logins and
+their database roles were verified through Supabase Auth. Delete these two accounts
+after the owner finishes testing; do not reuse them for real people or vendor data.
+
 The original 20 seeded ticks remain labelled `source: 'manual'`; production ticks are labelled
 `goldapicom`. The history/calculator page exposes the source per recorded day so a manually entered
 reference cannot be mistaken for a provider-fetched quote.
