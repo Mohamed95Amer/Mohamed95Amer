@@ -4,7 +4,13 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { useRouter } from "next/navigation";
 import { computePrice, computeOrderTotal, formatAed } from "@/lib/pricing/calc";
-import { UAE_EMIRATES, type FulfilmentMethod } from "@/lib/fulfilment";
+import {
+  coordinatesFromDeliveryMapLink,
+  deliveryPinUrl,
+  isAcceptedDeliveryMapLink,
+  UAE_EMIRATES,
+  type FulfilmentMethod,
+} from "@/lib/fulfilment";
 import { IdentityVerificationDialog } from "@/components/IdentityVerificationDialog";
 
 type IdentityRoute = "uae_resident" | "visitor";
@@ -113,10 +119,20 @@ export function ReserveButton({
     : null;
   const total = breakdown ? computeOrderTotal(breakdown, quantity) : null;
   const hasCoordinates = details.deliveryLatitude !== null && details.deliveryLongitude !== null;
-  const hasPin = hasCoordinates || details.deliveryMapLink.trim().length > 0;
-  const mapPreviewUrl = hasCoordinates
-    ? openStreetMapPreviewUrl(details.deliveryLatitude!, details.deliveryLongitude!)
-    : null;
+  const hasValidMapLink = isAcceptedDeliveryMapLink(details.deliveryMapLink);
+  const hasInvalidMapLink = details.deliveryMapLink.trim().length > 0 && !hasValidMapLink;
+  const hasPin = hasCoordinates || hasValidMapLink;
+  const savedPinUrl = hasCoordinates
+    ? deliveryPinUrl({
+        fulfilment_method: "delivery",
+        delivery_latitude: details.deliveryLatitude,
+        delivery_longitude: details.deliveryLongitude,
+      })
+    : hasValidMapLink ? details.deliveryMapLink.trim() : null;
+  const requiredDeliveryFields = fulfilmentMethod === "delivery"
+    ? [details.recipientName, details.recipientPhone, details.deliveryEmirate, details.deliveryArea, details.deliveryAddressLine1]
+    : [];
+  const missingDeliveryDetails = requiredDeliveryFields.filter((value) => !value.trim()).length + (hasPin ? 0 : 1);
 
   function update<K extends keyof DeliveryForm>(key: K, value: DeliveryForm[K]) {
     setDetails((current) => ({ ...current, [key]: value }));
@@ -135,6 +151,9 @@ export function ReserveButton({
           ...current,
           deliveryLatitude: roundCoordinate(coords.latitude),
           deliveryLongitude: roundCoordinate(coords.longitude),
+          // Device coordinates are authoritative. Discard a partial URL so
+          // it cannot invalidate an otherwise usable pin at submission time.
+          deliveryMapLink: "",
         }));
         setPinMessage("Precise location pin added.");
         setPinBusy(false);
@@ -148,7 +167,7 @@ export function ReserveButton({
   }
 
   function onMapLinkChange(value: string) {
-    const coordinates = coordinatesFromMapLink(value);
+    const coordinates = coordinatesFromDeliveryMapLink(value);
     setDetails((current) => ({
       ...current,
       deliveryMapLink: value,
@@ -222,6 +241,10 @@ export function ReserveButton({
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    if (fulfilmentMethod === "delivery" && hasInvalidMapLink) {
+      setError("Paste a full Google Maps or Apple Maps https:// link, or clear the map-link field.");
+      return;
+    }
     if (fulfilmentMethod === "delivery" && !hasPin) {
       setError("Add a precise location pin using your device or a Maps link.");
       return;
@@ -242,7 +265,7 @@ export function ReserveButton({
     : !isFresh
     ? "Price updating — please wait"
     : !identityVerificationAvailable
-    ? "Identity verification setup pending"
+    ? "Live ordering not activated"
     : verification
     ? "Continue identity check"
     : "Verify identity & lock price";
@@ -252,6 +275,12 @@ export function ReserveButton({
     <form className="space-y-4" onSubmit={onSubmit}>
       <h2 className="font-serif text-2xl">Checkout</h2>
       <p className="text-xs text-ink-muted">Review your details before starting the identity check. Opening this checkout does not create a verification attempt.</p>
+      {!identityVerificationAvailable && (
+        <div role="status" className="rounded-2xl border border-signal-warn/25 bg-gold-50 p-4 text-sm leading-relaxed text-jade-950">
+          <p className="font-semibold">Public checkout is currently a preview</p>
+          <p className="mt-1 text-xs text-ink-muted">You can review the full order form, but no information can be submitted and no verification attempt can start until live identity verification is activated.</p>
+        </div>
+      )}
       {customerFeeDiscountPercent > 0 && <p className="rounded-xl bg-gold-50 px-3 py-2 text-xs font-semibold text-gold-700">50% OFF the standard 1% Get Gold fee for one of your first 3 orders. The discount is secured when you place this order.</p>}
       {eventPromotionTitle && <p className="rounded-xl border border-gold-300/40 bg-white px-3 py-2 text-xs font-semibold text-jade-800">{eventPromotionTitle}: {eventFeeDiscountPercent > 0 ? `${eventFeeDiscountPercent}% extra off the Get Gold fee` : ""}{eventFeeDiscountPercent > 0 && eventDeliveryDiscountPercent > 0 ? " · " : ""}{eventDeliveryDiscountPercent === 100 ? "free delivery" : eventDeliveryDiscountPercent > 0 ? `${eventDeliveryDiscountPercent}% off delivery` : ""}.</p>}
       {!soldOut && available > 0 && (
@@ -303,24 +332,27 @@ export function ReserveButton({
       {!soldOut && fulfilmentMethod === "delivery" && (
         <fieldset className="space-y-3 rounded-2xl border border-jade-900/10 bg-bone-soft p-4">
           <legend className="px-1 text-sm font-semibold text-jade-950">Delivery details</legend>
+          <p className={`text-xs font-medium ${missingDeliveryDetails === 0 ? "text-signal-ok" : "text-ink-muted"}`}>
+            {missingDeliveryDetails === 0 ? "✓ Delivery details ready" : `${missingDeliveryDetails} required ${missingDeliveryDetails === 1 ? "detail" : "details"} remaining`}
+          </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            <Field label="Recipient name" htmlFor="recipient-name">
+            <Field label="Recipient name" htmlFor="recipient-name" required>
               <input id="recipient-name" className="input" autoComplete="name" required maxLength={120} value={details.recipientName} onChange={(event) => update("recipientName", event.target.value)} />
             </Field>
-            <Field label="Mobile number" htmlFor="recipient-phone">
+            <Field label="Mobile number" htmlFor="recipient-phone" required>
               <input id="recipient-phone" className="input" type="tel" inputMode="tel" autoComplete="tel" required minLength={7} maxLength={20} placeholder="05X XXX XXXX" value={details.recipientPhone} onChange={(event) => update("recipientPhone", event.target.value)} />
             </Field>
-            <Field label="Emirate" htmlFor="delivery-emirate">
+            <Field label="Emirate" htmlFor="delivery-emirate" required>
               <select id="delivery-emirate" className="input" autoComplete="address-level1" required value={details.deliveryEmirate} onChange={(event) => update("deliveryEmirate", event.target.value)}>
                 <option value="">Select emirate</option>
                 {UAE_EMIRATES.map((emirate) => <option key={emirate} value={emirate}>{emirate}</option>)}
               </select>
             </Field>
-            <Field label="Area / neighbourhood" htmlFor="delivery-area">
+            <Field label="Area / neighbourhood" htmlFor="delivery-area" required>
               <input id="delivery-area" className="input" autoComplete="address-level2" required maxLength={120} placeholder="e.g. Dubai Marina" value={details.deliveryArea} onChange={(event) => update("deliveryArea", event.target.value)} />
             </Field>
           </div>
-          <Field label="Street, building or villa" htmlFor="delivery-address-1">
+          <Field label="Street, building or villa" htmlFor="delivery-address-1" required>
             <input id="delivery-address-1" className="input" autoComplete="address-line1" required maxLength={240} placeholder="Street name, building / villa number" value={details.deliveryAddressLine1} onChange={(event) => update("deliveryAddressLine1", event.target.value)} />
           </Field>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -345,14 +377,21 @@ export function ReserveButton({
             </button>
             <div className="my-3 flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-ink-muted"><span className="h-px flex-1 bg-jade-900/10" />or<span className="h-px flex-1 bg-jade-900/10" /></div>
             <label htmlFor="delivery-map-link" className="text-xs font-medium text-jade-950">Paste a Google Maps or Apple Maps pin link</label>
-            <input id="delivery-map-link" className="input mt-1" type="url" inputMode="url" placeholder="https://maps.app.goo.gl/..." maxLength={1000} value={details.deliveryMapLink} onChange={(event) => onMapLinkChange(event.target.value)} />
+            <input id="delivery-map-link" className={`input mt-1 ${hasInvalidMapLink ? "border-signal-err" : ""}`} type="text" inputMode="url" autoCapitalize="none" spellCheck={false} aria-invalid={hasInvalidMapLink} aria-describedby={hasInvalidMapLink ? "delivery-map-link-error" : undefined} placeholder="https://maps.app.goo.gl/..." maxLength={1000} value={details.deliveryMapLink} onChange={(event) => onMapLinkChange(event.target.value)} />
+            {hasInvalidMapLink && <p id="delivery-map-link-error" className="mt-1 text-xs font-medium text-signal-err">Use a full secure Google Maps or Apple Maps link.</p>}
             {pinMessage && <p className="mt-2 text-xs text-ink-muted" aria-live="polite">{pinMessage}</p>}
-            {hasCoordinates && (
-              <div className="mt-3 overflow-hidden rounded-lg border border-jade-900/10">
-                <iframe className="h-36 w-full" title="Delivery location pin preview" loading="lazy" src={mapPreviewUrl!} />
-                <div className="flex items-center justify-between gap-3 bg-jade-50 px-3 py-2 text-[11px] text-ink-muted">
-                  <span className="truncate">{details.deliveryLatitude}, {details.deliveryLongitude}</span>
-                  <button type="button" className="shrink-0 font-semibold text-jade-700" onClick={() => setDetails((current) => ({ ...current, deliveryLatitude: null, deliveryLongitude: null }))}>Remove pin</button>
+            {hasPin && (
+              <div className="mt-3 rounded-lg border border-signal-ok/20 bg-jade-50 p-3">
+                <div className="flex items-center gap-3">
+                  <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-lg shadow-sm">⌖</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-jade-950">{hasCoordinates ? "Exact coordinates saved" : "Maps pin link saved"}</p>
+                    <p className="truncate text-[11px] text-ink-muted">{hasCoordinates ? `${details.deliveryLatitude}, ${details.deliveryLongitude}` : details.deliveryMapLink.trim()}</p>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-3 border-t border-jade-900/10 pt-2 text-[11px]">
+                  {savedPinUrl && <a className="font-semibold text-jade-700 underline" href={savedPinUrl} target="_blank" rel="noreferrer">Open map ↗</a>}
+                  <button type="button" className="ml-auto font-semibold text-signal-err" onClick={() => setDetails((current) => ({ ...current, deliveryLatitude: null, deliveryLongitude: null, deliveryMapLink: "" }))}>Remove pin</button>
                 </div>
               </div>
             )}
@@ -462,7 +501,7 @@ export function ReserveButton({
             <p className="text-[11px] text-ink-muted">{quantity} {quantity === 1 ? "item" : "items"} · {fulfilmentMethod}</p>
             <p className="truncate text-base font-bold tabular-nums text-jade-950">{total === null ? "Calculating…" : formatAed(total)}</p>
           </div>
-          <button type="submit" disabled={disabled} className="min-h-12 rounded-full bg-jade-900 px-5 text-sm font-semibold text-white disabled:bg-ink-muted/40">{busy ? "Working…" : verification ? "Continue check" : "Verify & order"}</button>
+          <button type="submit" disabled={disabled} className="min-h-12 rounded-full bg-jade-900 px-5 text-sm font-semibold text-white disabled:bg-ink-muted/40">{buttonLabel}</button>
         </div>
       </div>
 
@@ -488,10 +527,10 @@ export function ReserveButton({
   );
 }
 
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: ReactNode }) {
+function Field({ label, htmlFor, children, required = false }: { label: string; htmlFor: string; children: ReactNode; required?: boolean }) {
   return (
     <div>
-      <label className="label" htmlFor={htmlFor}>{label}</label>
+      <label className="label" htmlFor={htmlFor}>{label}{required && <span className="ml-1 text-signal-err" aria-hidden="true">*</span>}</label>
       <div className="mt-1">{children}</div>
     </div>
   );
@@ -499,35 +538,4 @@ function Field({ label, htmlFor, children }: { label: string; htmlFor: string; c
 
 function roundCoordinate(value: number): number {
   return Math.round(value * 1_000_000) / 1_000_000;
-}
-
-function coordinatesFromMapLink(value: string): { latitude: number; longitude: number } | null {
-  let candidate = value;
-  try {
-    candidate = decodeURIComponent(value);
-  } catch {
-    // Keep the original value when a partially pasted URL is not decodable yet.
-  }
-  const patterns = [
-    /@(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)/,
-    /[?&](?:q|query|ll)=(-?\d{1,2}(?:\.\d+)?),\s*(-?\d{1,3}(?:\.\d+)?)/,
-    /!3d(-?\d{1,2}(?:\.\d+)?)[^!]*!4d(-?\d{1,3}(?:\.\d+)?)/,
-  ];
-  for (const pattern of patterns) {
-    const match = candidate.match(pattern);
-    if (!match) continue;
-    const latitude = Number(match[1]);
-    const longitude = Number(match[2]);
-    if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180) {
-      return { latitude: roundCoordinate(latitude), longitude: roundCoordinate(longitude) };
-    }
-  }
-  return null;
-}
-
-function openStreetMapPreviewUrl(latitude: number, longitude: number): string {
-  const horizontal = 0.006;
-  const vertical = 0.004;
-  const bbox = [longitude - horizontal, latitude - vertical, longitude + horizontal, latitude + vertical].join(",");
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${encodeURIComponent(`${latitude},${longitude}`)}`;
 }

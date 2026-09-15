@@ -1,16 +1,12 @@
 import { z } from "zod";
-import { UAE_EMIRATES } from "@/lib/fulfilment";
+import { isAcceptedDeliveryMapLink, UAE_EMIRATES } from "@/lib/fulfilment";
 
 const optionalTrimmed = (maximum: number) => z.string().trim().max(maximum).optional().nullable();
-const optionalHttpsUrl = z.preprocess(
+const optionalMapLink = z.preprocess(
   (value) => value === "" ? null : value,
-  z.string().trim().url().max(1000).refine((value) => {
-    try {
-      return new URL(value).protocol === "https:";
-    } catch {
-      return false;
-    }
-  }, "Use a secure https:// map link").optional().nullable(),
+  z.string().trim().url().max(1000)
+    .refine(isAcceptedDeliveryMapLink, "Use a secure Google Maps or Apple Maps link")
+    .optional().nullable(),
 );
 
 export const createReservationSchema = z.object({
@@ -31,7 +27,7 @@ export const createReservationSchema = z.object({
   deliveryLandmark: optionalTrimmed(240),
   deliveryLatitude: z.number().min(-90).max(90).optional().nullable(),
   deliveryLongitude: z.number().min(-180).max(180).optional().nullable(),
-  deliveryMapLink: optionalHttpsUrl,
+  deliveryMapLink: optionalMapLink,
   customerNote: optionalTrimmed(500),
 }).superRefine((reservation, ctx) => {
   if (reservation.fulfilmentMethod !== "delivery") return;

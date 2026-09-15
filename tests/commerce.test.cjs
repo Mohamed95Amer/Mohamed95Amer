@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createLoader } = require('./load-ts.cjs');
 const load = createLoader();
-const { deliveryPinUrl } = load('src/lib/fulfilment.ts');
+const { coordinatesFromDeliveryMapLink, deliveryPinUrl, isAcceptedDeliveryMapLink } = load('src/lib/fulfilment.ts');
 const { applyCustomerServiceFee, applyDeliveryFee, computePrice, computeOrderTotal, goldRateForKarat } = load('src/lib/pricing/calc.ts');
 const { applyEventDeliveryDiscount, applyEventFeeDiscount } = load('src/lib/marketing.ts');
 const { calculateReservationValue } = load('src/lib/gold-insights.ts');
@@ -60,6 +60,23 @@ test('delivery is charged once for a multi-item order; collection is free', () =
   assert.equal(computeOrderTotal(computePrice(base), 1), 623);
   assert.equal(computeOrderTotal(computePrice({ ...base, deliveryFee: 0 }), 3), 1809);
   for (const quantity of [0, -1, 1.5, 51, NaN]) assert.throws(() => computeOrderTotal(computePrice(base), quantity));
+});
+test('delivery pins accept only Google or Apple Maps links and extract visible coordinates', () => {
+  for (const link of [
+    'https://maps.app.goo.gl/abc123',
+    'https://maps.apple.com/?q=25.199,55.281',
+    'https://www.google.com/maps/@25.1993,55.2814,15z',
+    'https://goo.gl/maps/abc123',
+  ]) assert.equal(isAcceptedDeliveryMapLink(link), true);
+  for (const link of [
+    'test',
+    'http://maps.google.com/example',
+    'https://example.com/maps/@25.1,55.2',
+    'https://google.com.example.com/maps',
+  ]) assert.equal(isAcceptedDeliveryMapLink(link), false);
+  assert.deepEqual(coordinatesFromDeliveryMapLink('https://www.google.com/maps/@25.19934567,55.28145678,15z'), { latitude: 25.199346, longitude: 55.281457 });
+  assert.deepEqual(coordinatesFromDeliveryMapLink('https://maps.apple.com/?q=25.2%2C55.3'), { latitude: 25.2, longitude: 55.3 });
+  assert.equal(coordinatesFromDeliveryMapLink('https://maps.app.goo.gl/abc123'), null);
 });
 test('seasonal promotions stack after the customer introductory fee and snapshot-friendly delivery math', () => {
   assert.equal(applyEventFeeDiscount(50, 50), 25);

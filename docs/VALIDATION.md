@@ -115,8 +115,8 @@ function's volatility declaration. Both were deployed on 15 September 2026.
 
 - Complete both hosted Didit sandbox routes with approved, declined, manual-review
   and expired outcomes; test signed callback delivery and polling reconciliation.
-- Complete visual browser journeys; real HTTP/SSR and PostgREST checks do not
-  replace browser interaction and mobile layout checks.
+- Repeat the final mobile order journey after live Didit is activated; the public
+  preview and authenticated admin order-history states have been visually exercised.
 - Exercise email confirmation and password recovery with local mail capture, then
   controlled live inboxes once mailboxes/SMTP are configured.
 - Integrate and verify a real marketplace PSP before enabling online checkout.
@@ -144,6 +144,17 @@ campaign or promoted Vendor was seeded. The production advisor still reports the
 pre-existing leaked-password-protection warning; the new server-only tables appear as
 informational “RLS enabled, no policy” findings by design because they have no client
 grants.
+
+Checkout/admin UX deployment `2TkzzRPb2LdownTiUCXkJ6W9muQR` is live at the same
+production alias. A browser smoke test confirmed that checkout shows the live-identity
+block before address entry, reports six missing delivery details on an empty form,
+rejects arbitrary map text, and no longer embeds the rate-limited OpenStreetMap preview.
+The authenticated admin Orders page now identifies the four existing orders as legacy,
+shows `Not charged` instead of misleading zero revenue, and does not invent a net
+settlement for pre-customer-fee pricing. Unit tests passed 37/37; lint, typecheck, local
+production build and the isolated 14-test marketplace integration passed. A combined
+parallel integration run encountered only a Windows Supabase CLI telemetry-file lock;
+the affected marketplace suite passed immediately when run independently.
 
 ## Docker recovery on 14 September 2026
 

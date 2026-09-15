@@ -651,6 +651,8 @@ reference cannot be mistaken for a provider-fetched quote.
 | Design/accessibility/SEO pass | **Deployed and smoke-tested** | `npm run typecheck`, `npm run lint`, local + Vercel `npm run build` (41 pages), public URLs returned 200; homepage and delivery signup inspected live |
 | Public-signup role restriction | **Applied; 3/3 passed on real trigger** | forged admin → customer, vendor → vendor, delivery company → delivery company; transaction rolled back with zero residue |
 | Four-role profile system | **Applied, deployed and live-smoke-tested** | personal profile plus customer history, vendor business, delivery-company business and admin/owner operations; protected routes redirect correctly and direct self-promotion through `profiles.role` is denied |
+| Checkout guidance + delivery pin validation | **Deployed and live-smoke-tested** | checkout explains the live Didit block before data entry; required-field counter/markers render; arbitrary text is rejected as a pin; Google/Apple links or coordinates are accepted; no rate-limited third-party map iframe |
+| Admin customer-fee history | **Deployed and live-smoke-tested** | current orders show their snapshotted Get Gold fee; pre-launch orders are labelled `Legacy pricing · before customer fee` and are not retroactively re-priced |
 
 The stock test is safe against a live project — it picks fixtures from existing rows and runs inside
 a transaction it rolls back.
@@ -660,11 +662,10 @@ a transaction it rolls back.
 ## 5. Suggested next steps
 
 1. Delivery is decided: **once per order**. Deploy the tested snapshot migration with the app.
-2. Finish the local Didit sandbox credential setup above, configure an isolated test database
-   and signed test webhook, and complete approved/declined/in-review/expired tests for both
-   routes. The sandbox application and workflows already exist. Keep test credentials out of
-   the public production checkout; live configuration and a production sandbox-rejection guard
-   need separate verification before real orders.
+2. Complete the two hosted Didit sandbox capture journeys and signed webhook delivery. The
+   isolated local API simulations already cover approved/declined/in-review/expired outcomes for
+   both routes. Keep sandbox credentials out of the public production checkout; obtain and verify
+   separate live credentials and live resident/visitor workflows before accepting real orders.
 3. Obtain UAE privacy/legal review for mandatory biometric processing, consent language, retention,
    cross-border or UAE-local processing, and handling of minors before accepting real orders.
 4. Exercise courier assignment with one approved delivery company: assignment, acceptance,

@@ -39,6 +39,46 @@ export function formatDeliveryAddress(details: FulfilmentDetails): string[] {
   ].filter((part): part is string => Boolean(part?.trim()));
 }
 
+export function isAcceptedDeliveryMapLink(value: string | null | undefined): boolean {
+  const candidate = value?.trim();
+  if (!candidate) return false;
+  try {
+    const url = new URL(candidate);
+    if (url.protocol !== "https:" || url.username || url.password) return false;
+    const host = url.hostname.toLowerCase();
+    if (host === "maps.app.goo.gl" || host === "maps.apple.com" || host === "maps.google.com") return true;
+    if (host === "goo.gl") return url.pathname.startsWith("/maps");
+    return (host === "google.com" || host.endsWith(".google.com"))
+      && (url.pathname.startsWith("/maps") || url.searchParams.has("q") || url.searchParams.has("query"));
+  } catch {
+    return false;
+  }
+}
+
+export function coordinatesFromDeliveryMapLink(value: string): { latitude: number; longitude: number } | null {
+  let candidate = value;
+  try {
+    candidate = decodeURIComponent(value);
+  } catch {
+    // Keep the original value when a partially pasted URL is not decodable yet.
+  }
+  const patterns = [
+    /@(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)/,
+    /[?&](?:q|query|ll)=(-?\d{1,2}(?:\.\d+)?),\s*(-?\d{1,3}(?:\.\d+)?)/,
+    /!3d(-?\d{1,2}(?:\.\d+)?)[^!]*!4d(-?\d{1,3}(?:\.\d+)?)/,
+  ];
+  for (const pattern of patterns) {
+    const match = candidate.match(pattern);
+    if (!match) continue;
+    const latitude = Number(match[1]);
+    const longitude = Number(match[2]);
+    if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180) {
+      return { latitude: roundCoordinate(latitude), longitude: roundCoordinate(longitude) };
+    }
+  }
+  return null;
+}
+
 export function deliveryPinUrl(details: FulfilmentDetails): string | null {
   // Number(null) and Number("") are 0, not a real customer location.
   const toCoordinate = (value: number | string | null | undefined) =>
@@ -50,10 +90,9 @@ export function deliveryPinUrl(details: FulfilmentDetails): string | null {
     return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
   }
   const candidate = details.delivery_map_link?.trim();
-  if (!candidate) return null;
-  try {
-    return new URL(candidate).protocol === "https:" ? candidate : null;
-  } catch {
-    return null;
-  }
+  return isAcceptedDeliveryMapLink(candidate) ? candidate! : null;
+}
+
+function roundCoordinate(value: number): number {
+  return Math.round(value * 1_000_000) / 1_000_000;
 }
