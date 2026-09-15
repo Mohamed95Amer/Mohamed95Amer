@@ -31,6 +31,10 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
     }));
     return { status: response.status, body: await response.json() };
   }
+  async function formRoute(file, formData, method = 'POST') {
+    const response = await load(`src/app/api/${file}/route.ts`)[method](new Request(`http://localhost:3000/api/${file}`, { method, body: formData }));
+    return { status: response.status, body: await response.json() };
+  }
   async function identity(user, product, status = 'approved') {
     return must(await admin.from('order_identity_verifications').insert({
       user_id: user.id, product_id: product.id, verification_route: 'uae_resident', provider: 'didit',
@@ -42,7 +46,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
   const claimArgs = (user, product, check) => ({ p_customer_user_id: user.id, p_product_id: product.id,
     p_quantity: 1, p_expires_at: new Date(Date.now() + 600000).toISOString(), p_identity_verification_id: check.id });
   try {
-    for (const role of ['customer', 'vendor', 'delivery_company', 'outsider']) {
+    for (const role of ['customer', 'vendor', 'delivery_company', 'outsider', 'admin_test']) {
       const email = `getgold-${role}-${randomUUID()}@example.invalid`;
       const password = `Test-${randomUUID()}!`;
       const user = must(await admin.auth.admin.createUser({ email, password, email_confirm: true,
@@ -51,6 +55,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       const client = anon(); must(await client.auth.signInWithPassword({ email, password }));
       fixtures[role] = { ...user, client };
     }
+    must(await admin.from('profiles').update({ role: 'admin' }).eq('id', fixtures.admin_test.id));
     const vendor = must(await admin.from('vendors').insert({ owner_user_id: fixtures.vendor.id,
       business_name: 'Synthetic integration store', trade_license_number: `TEST-${randomUUID()}`,
       license_expiry_date: '2099-01-01', owner_name: 'Synthetic owner', email: fixtures.vendor.email,
@@ -88,6 +93,47 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(result.status, 200, JSON.stringify(result.body));
       const profile = must(await admin.from('profiles').select('role,full_name').eq('id', fixtures.customer.id).single());
       assert.equal(profile.role, 'customer'); assert.equal(profile.full_name, 'Synthetic buyer');
+    });
+    await t.test('Admin can schedule and cancel premium placement, discounts and text banners', async () => {
+      activeClient = fixtures.customer.client;
+      assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward' })).status, 401);
+      assert.ok((await fixtures.customer.client.from('vendor_promotions').select('*')).error);
+
+      activeClient = fixtures.admin_test.client;
+      const premium = await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward', adminNote: 'Synthetic test reward' });
+      assert.equal(premium.status, 200, JSON.stringify(premium.body));
+      assert.equal(must(await admin.from('vendor_promotions').select('vendor_id,reward_reason').eq('id', premium.body.promotion.id).single()).reward_reason, 'referral_reward');
+      assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward' })).status, 409);
+      assert.equal((await route('admin/vendor-promotions', { id: premium.body.promotion.id }, 'DELETE')).status, 200);
+
+      const campaign = await route('admin/marketplace-promotions', { title: 'Synthetic event', serviceFeeDiscountPercent: 50, deliveryDiscountPercent: 100, durationDays: 2 });
+      assert.equal(campaign.status, 200, JSON.stringify(campaign.body));
+      assert.equal(must(await admin.from('marketplace_promotions').select('delivery_discount_percent').eq('id', campaign.body.promotion.id).single()).delivery_discount_percent, 100);
+      activeClient = fixtures.outsider.client;
+      const promotionalCheck = await identity(fixtures.outsider, products[0]);
+      const promotionalOrder = await route('reservations', { productId: products[0].id, quantity: 1, identityVerificationId: promotionalCheck.id,
+        paymentMethod: 'pay_at_store', fulfilmentMethod: 'delivery', recipientName: 'Promotion tester',
+        recipientPhone: '+971500000001', deliveryEmirate: 'Dubai', deliveryArea: 'Test area',
+        deliveryAddressLine1: 'Test building', deliveryLatitude: 25.2, deliveryLongitude: 55.3 });
+      assert.equal(promotionalOrder.status, 200, JSON.stringify(promotionalOrder.body));
+      const promotionalSnapshot = must(await admin.from('order_price_snapshots').select('*').eq('reservation_id', promotionalOrder.body.reservation.id).single());
+      assert.equal(promotionalSnapshot.platform_fee_bps, 25);
+      assert.equal(promotionalSnapshot.service_fee_event_discount_percent, 50);
+      assert.equal(promotionalSnapshot.delivery_fee_before_event_discount, 20);
+      assert.equal(promotionalSnapshot.delivery_fee, 0);
+      assert.equal(promotionalSnapshot.delivery_event_discount_percent, 100);
+      assert.equal(promotionalSnapshot.marketplace_promotion_title, 'Synthetic event');
+      assert.equal(promotionalSnapshot.total_price_aed, 4691.7);
+      must(await admin.from('reservations').delete().eq('id', promotionalOrder.body.reservation.id));
+      activeClient = fixtures.admin_test.client;
+      assert.equal((await route('admin/marketplace-promotions', { id: campaign.body.promotion.id }, 'DELETE')).status, 200);
+
+      const form = new FormData();
+      for (const [key, value] of Object.entries({ title: 'Synthetic banner', body: 'Integration test only', placement: 'marketplace_top', durationDays: '2', displayOrder: '0' })) form.set(key, value);
+      const banner = await formRoute('admin/banners', form);
+      assert.equal(banner.status, 200, JSON.stringify(banner.body));
+      assert.equal(must(await admin.from('site_banners').select('placement').eq('id', banner.body.banner.id).single()).placement, 'marketplace_top');
+      assert.equal((await route('admin/banners', { id: banner.body.banner.id }, 'DELETE')).status, 200);
     });
     let order, cardOrder;
     await t.test('Fresh degraded quotes cannot authorize checkout', async () => {
@@ -280,6 +326,11 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
     if (companyId) must(await admin.from('delivery_companies').delete().eq('id', companyId));
     if (vendorId) must(await admin.from('vendors').delete().eq('id', vendorId));
     for (const id of ticks) must(await admin.from('gold_price_ticks').delete().eq('id', id));
+    if (fixtures.admin_test) {
+      must(await admin.from('site_banners').delete().eq('created_by_user_id', fixtures.admin_test.id));
+      must(await admin.from('marketplace_promotions').delete().eq('created_by_user_id', fixtures.admin_test.id));
+      must(await admin.from('vendor_promotions').delete().eq('created_by_user_id', fixtures.admin_test.id));
+    }
     for (const id of users) must(await admin.auth.admin.deleteUser(id));
     must(await admin.from('platform_settings').update({ delivery_fee_aed: previousSettings.delivery_fee_aed, platform_fee_bps: previousSettings.platform_fee_bps }).eq('id', true));
   }

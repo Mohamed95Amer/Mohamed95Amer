@@ -6,6 +6,8 @@ import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
 import type { Metadata } from "next";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
+import { getActiveSiteBanners, getActiveVendorPromotionMap } from "@/lib/marketing";
+import { SiteBannerStack } from "@/components/SiteBanner";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -21,7 +23,7 @@ export default async function VendorsListPage() {
   const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
-  const [{ data: vendors }, { data: listings }, { data: reputationRows }] = await Promise.all([
+  const [{ data: vendors }, { data: listings }, { data: reputationRows }, banners] = await Promise.all([
     supabase
       .from("vendors")
       .select("id, business_name, emirate, store_address")
@@ -38,6 +40,7 @@ export default async function VendorsListPage() {
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter),
     supabase.from("vendor_reputation_summary").select("*"),
+    getActiveSiteBanners(["vendors_top"]),
   ]);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
 
@@ -48,6 +51,9 @@ export default async function VendorsListPage() {
     byVendor.set(p.vendor_id, list);
   }
   const visibleVendors = (vendors ?? []).filter((vendor) => (byVendor.get(vendor.id)?.length ?? 0) > 0);
+  const promoted = await getActiveVendorPromotionMap(visibleVendors.map((vendor) => vendor.id));
+  const promotedVendors = visibleVendors.filter((vendor) => promoted.has(vendor.id));
+  const organicVendors = visibleVendors.filter((vendor) => !promoted.has(vendor.id));
 
   return (
     <div className="container-pro py-10">
@@ -57,8 +63,31 @@ export default async function VendorsListPage() {
         vendor remains the seller of record on any order.
       </p>
 
+      <div className="mt-7"><SiteBannerStack banners={banners} /></div>
+
+      {promotedVendors.length > 0 && <section className="mt-8">
+        <p className="eyebrow text-jade-600">Promoted stores</p>
+        <div className="mt-3 grid gap-4">
+          {promotedVendors.map((vendor) => {
+            const items = byVendor.get(vendor.id) ?? [];
+            const placement = promoted.get(vendor.id)!;
+            return <Link key={vendor.id} href={`/vendors/${vendor.id}`} className="group grid overflow-hidden rounded-3xl border border-gold-300/60 bg-gradient-to-r from-gold-50 via-white to-jade-50 shadow-card transition hover:-translate-y-0.5 hover:shadow-lift md:grid-cols-[0.9fr_1.1fr]">
+              <div className="grid min-h-48 grid-cols-3 gap-px bg-gold-200/40">{items.slice(0, 3).map((item) => <div key={item.id} className="relative min-h-44 overflow-hidden bg-bone-soft"><ProductImage category={item.category} karat={item.karat} name={item.name} images={item.images} sizes="(max-width: 768px) 33vw, 20vw" /></div>)}</div>
+              <div className="flex flex-col justify-center p-6 sm:p-8">
+                <div className="flex items-center gap-2"><span className="rounded-full border border-jade-900/15 bg-white/80 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-ink-muted">Ad</span><span className="text-xs font-bold uppercase tracking-[0.14em] text-gold-700">{placement.label}</span></div>
+                <h2 className="mt-3 font-serif text-3xl font-semibold text-jade-950">{vendor.business_name}</h2>
+                <p className="mt-1 text-sm text-ink-muted">{vendor.emirate} · {vendor.store_address}</p>
+                <div className="mt-4"><StoreRating reputation={reputations.get(vendor.id)} /></div>
+                <div className="mt-2"><StoreBadges reputation={reputations.get(vendor.id)} compact limit={2} /></div>
+                <p className="mt-5 text-sm font-semibold text-jade-700">Explore {items.length} {items.length === 1 ? "listing" : "listings"} →</p>
+              </div>
+            </Link>;
+          })}
+        </div>
+      </section>}
+
       <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {visibleVendors.map((v) => {
+        {organicVendors.map((v) => {
           const items = byVendor.get(v.id) ?? [];
           return (
             <Link

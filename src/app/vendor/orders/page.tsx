@@ -28,7 +28,7 @@ export default async function VendorOrdersPage() {
     admin
       .from("reservations")
       .select(
-        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, quantity)",
+        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, quantity)",
       )
       .eq("vendor_id", vendor.id)
       .order("created_at", { ascending: false }),
@@ -80,10 +80,12 @@ export default async function VendorOrdersPage() {
             {(orders ?? []).map((o) => {
               const product = o.product as unknown as { name: string; karat: number; weight_grams: number } | null;
               const customer = o.customer as unknown as { full_name: string | null } | null;
-              const snap = o.snapshot as unknown as Array<{ total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; quantity: number }> | { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; quantity: number } | null;
+              const snap = o.snapshot as unknown as Array<{ total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; quantity: number }> | { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; quantity: number } | null;
               const total = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
               const priceSnapshot = Array.isArray(snap) ? snap[0] : snap;
               const customerServiceFee = Number(priceSnapshot?.platform_fee ?? 0) * Number(priceSnapshot?.quantity ?? o.quantity);
+              const deliverySubsidy = Math.max(0, Number(priceSnapshot?.delivery_fee_before_event_discount ?? priceSnapshot?.delivery_fee ?? 0) - Number(priceSnapshot?.delivery_fee ?? 0));
+              const netSettlement = customerServiceFee - deliverySubsidy;
               return (
                 <Fragment key={o.id}>
                 <tr className="border-t border-bone-deep">
@@ -104,6 +106,8 @@ export default async function VendorOrdersPage() {
                     <p className={`mb-2 text-xs font-semibold ${o.identity_verification_id ? "text-signal-ok" : "text-ink-muted"}`}>{o.identity_verification_id ? "✓ Identity verified for this order" : "Legacy order · no per-order identity record"}</p>
                     <p className="mb-2 text-xs text-ink-muted">Payment: {o.payment_method === "pay_online" ? "online requested" : "paid directly to store"} · {statusLabel(o.payment_status)}</p>
                     {customerServiceFee > 0 && <p className="mb-2 text-xs text-gold-700"><strong>{formatAed(customerServiceFee)} Get Gold customer fee included.</strong> You collect it inside the displayed total for later settlement to Get Gold; it is not a commission on your making charge.</p>}
+                    {Number(priceSnapshot?.service_fee_event_discount_percent ?? 0) > 0 && <p className="mb-2 text-xs text-signal-ok">Applied marketplace offer: {priceSnapshot?.marketplace_promotion_title ?? "seasonal campaign"} · {priceSnapshot?.service_fee_event_discount_percent}% off the Get Gold fee.</p>}
+                    {deliverySubsidy > 0 && <p className="mb-2 text-xs text-signal-ok"><strong>{formatAed(deliverySubsidy)} Get Gold-funded delivery credit.</strong> The customer paid the discounted delivery amount; include this credit when reconciling the order. Net amount due to Get Gold for this order: {formatAed(netSettlement)}.</p>}
                     {o.payment_method === "bank_transfer" && <p className="my-2 text-xs">Bank transfer: <a className="underline" href={`/api/reservations/bank-proof?id=${o.id}`}>View submitted proof</a>. Check cleared funds in your bank; a receipt alone is not confirmation.</p>}
                     {o.status === "payment_pending" && ["pay_at_store", "bank_transfer", "cash", "card"].includes(o.payment_method) && <VendorOrderProgress reservationId={o.id} />}
                     <FulfilmentDetails details={o} compact />

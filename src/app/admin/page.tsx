@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminOverviewPage() {
   const admin = getServiceSupabase();
   const [
-    pendingVendors, pendingDeliveryCompanies, pendingProducts, pendingOrders, failedTicks, openBuyerRequests, catalogueRequests, recentAudit,
+    pendingVendors, pendingDeliveryCompanies, pendingProducts, pendingOrders, failedTicks, openBuyerRequests, catalogueRequests, activePremium, activeBanners, activeCampaigns, recentAudit,
   ] = await Promise.all([
     admin.from("vendors").select("id", { count: "exact", head: true }).eq("verification_status", "pending"),
     admin.from("delivery_companies").select("id", { count: "exact", head: true }).eq("verification_status", "pending"),
@@ -17,6 +17,9 @@ export default async function AdminOverviewPage() {
     admin.from("gold_price_ticks").select("id", { count: "exact", head: true }).neq("status", "ok").gte("fetched_at", new Date(Date.now() - 86_400_000).toISOString()),
     admin.from("buyer_requests").select("id", { count: "exact", head: true }).eq("status", "open").gt("expires_at", new Date().toISOString()),
     admin.from("catalogue_support_requests").select("id", { count: "exact", head: true }).in("status", ["requested", "scheduled", "in_progress"]),
+    admin.from("vendor_promotions").select("id", { count: "exact", head: true }).is("cancelled_at", null).lte("starts_at", new Date().toISOString()).gt("ends_at", new Date().toISOString()),
+    admin.from("site_banners").select("id", { count: "exact", head: true }).is("cancelled_at", null).lte("starts_at", new Date().toISOString()).gt("ends_at", new Date().toISOString()),
+    admin.from("marketplace_promotions").select("id", { count: "exact", head: true }).is("cancelled_at", null).lte("starts_at", new Date().toISOString()).gt("ends_at", new Date().toISOString()),
     admin.from("audit_logs").select("id, action, entity_type, entity_id, created_at, actor_role").order("created_at", { ascending: false }).limit(10),
   ]);
 
@@ -35,6 +38,9 @@ export default async function AdminOverviewPage() {
         <Stat href="/admin/gold-price" label="Non-ok ticks (24h)" count={failedTicks.count ?? 0} />
         <Stat href="/admin/liquidity" label="Open buyer requests" count={openBuyerRequests.count ?? 0} />
         <Stat href="/admin/catalogue-support" label="Catalogue support" count={catalogueRequests.count ?? 0} />
+        <Stat href="/admin/vendors" label="Premium vendors live" count={activePremium.count ?? 0} />
+        <Stat href="/admin/marketing" label="Ad banners live" count={activeBanners.count ?? 0} />
+        <Stat href="/admin/marketing" label="Discount campaigns live" count={activeCampaigns.count ?? 0} />
       </div>
 
       <div className="card p-6">

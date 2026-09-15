@@ -121,6 +121,16 @@ export function applyCustomerServiceFee(breakdown: PriceBreakdown, feeBps: numbe
   return { ...breakdown, platformFee, platformFeeBps: feeBps, unitPriceAed: round2(breakdown.merchandiseSubtotalAed + platformFee + breakdown.deliveryFee) };
 }
 
+export function applyDeliveryFee(breakdown: PriceBreakdown, deliveryFee: number): PriceBreakdown {
+  if (!Number.isFinite(deliveryFee) || deliveryFee < 0) throw new Error("Invalid delivery fee");
+  const nextDeliveryFee = round2(deliveryFee);
+  return {
+    ...breakdown,
+    deliveryFee: nextDeliveryFee,
+    unitPriceAed: round2(breakdown.merchandiseSubtotalAed + breakdown.platformFee + nextDeliveryFee),
+  };
+}
+
 export function makingChargeOfferIsActive(
   discountPercent: number,
   endsAt: string | null,

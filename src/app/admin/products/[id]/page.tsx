@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { AdminProductActions } from "./AdminProductActions";
+import { ProductImage } from "@/components/ProductImage";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,17 @@ export default async function AdminProductDetail({ params }: { params: Promise<{
           <dt className="text-ink-muted">Hallmark</dt><dd>{p.hallmark_info ?? "—"}</dd>
         </dl>
         {p.description && <p className="mt-3 text-ink leading-relaxed">{p.description}</p>}
+        <div className="mt-5">
+          <h3 className="text-sm font-semibold text-jade-950">Vendor-supplied photos</h3>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            {(Array.isArray(p.images) ? p.images : []).map((image: string, index: number) => (
+              <div key={`${image}-${index}`} className="relative aspect-square overflow-hidden rounded-xl border border-jade-900/10 bg-bone-soft">
+                <ProductImage category={p.category} karat={p.karat} name={`${p.name} photo ${index + 1}`} images={[image]} sizes="240px" />
+              </div>
+            ))}
+            {(!Array.isArray(p.images) || p.images.length === 0) && <p className="text-sm text-ink-muted">No photos uploaded; customers see the category illustration.</p>}
+          </div>
+        </div>
       </div>
       <div className="card p-6">
         <h3 className="font-serif text-xl">Decision</h3>

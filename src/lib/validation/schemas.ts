@@ -181,6 +181,48 @@ export const platformSettingsSchema = z.object({
   online_payment_provider: z.string().trim().max(80).optional().nullable(),
 });
 
+export const vendorPromotionCreateSchema = z.object({
+  vendorId: z.string().uuid(),
+  durationDays: z.number().int().min(1).max(365),
+  label: z.string().trim().min(2).max(60).default("Premium vendor"),
+  rewardReason: z.enum(["referral_reward", "launch_reward", "performance_reward", "commercial", "other"]),
+  adminNote: z.string().trim().max(500).optional().nullable(),
+  startsAt: z.string().datetime({ offset: true }).optional().nullable(),
+});
+
+export const adminCancelSchema = z.object({ id: z.string().uuid() });
+
+export const marketplacePromotionCreateSchema = z.object({
+  title: z.string().trim().min(2).max(100),
+  serviceFeeDiscountPercent: z.number().int().min(0).max(100),
+  deliveryDiscountPercent: z.number().int().min(0).max(100),
+  durationDays: z.number().int().min(1).max(90),
+  startsAt: z.string().datetime({ offset: true }).optional().nullable(),
+}).refine((value) => value.serviceFeeDiscountPercent > 0 || value.deliveryDiscountPercent > 0, {
+  message: "Discount the Get Gold fee, delivery, or both",
+});
+
+const marketingHref = z.string().trim().max(500).refine((value) => {
+  if (value.startsWith("/") && !value.startsWith("//")) return true;
+  try { return new URL(value).protocol === "https:"; } catch { return false; }
+}, "Use a site path or secure https:// link");
+
+export const siteBannerCreateSchema = z.object({
+  title: z.string().trim().min(2).max(100),
+  body: z.string().trim().max(280).optional().nullable(),
+  imageAlt: z.string().trim().max(160).optional().nullable(),
+  ctaLabel: z.string().trim().min(2).max(40).optional().nullable(),
+  ctaHref: marketingHref.optional().nullable(),
+  placement: z.enum(["home_top", "home_middle", "marketplace_top", "vendors_top"]),
+  displayOrder: z.number().int().min(0).max(100),
+  durationDays: z.number().int().min(1).max(90),
+  startsAt: z.string().datetime({ offset: true }).optional().nullable(),
+}).superRefine((value, ctx) => {
+  if (Boolean(value.ctaLabel) !== Boolean(value.ctaHref)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ctaHref"], message: "Add both the button text and link" });
+  }
+});
+
 export const vendorOrderProgressSchema = z.object({
   reservationId: z.string().uuid(),
   action: z.literal("confirm_payment_received"),

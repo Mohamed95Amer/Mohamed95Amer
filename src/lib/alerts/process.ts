@@ -4,13 +4,15 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { notifyUser } from "@/lib/notifications/server";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
+import { applyEventDeliveryDiscount, applyEventFeeDiscount, getActiveMarketplacePromotion } from "@/lib/marketing";
 
 export async function processDuePriceAlerts(limit = 100) {
   const admin = getServiceSupabase(); const cutoff = new Date(Date.now() - 5 * 60_000).toISOString();
-  const [{ data: alerts, error }, { data: settings }, tick] = await Promise.all([
+  const [{ data: alerts, error }, { data: settings }, tick, promotion] = await Promise.all([
     admin.from("price_alerts").select("id, user_id, product_id, target_total_aed, notify_on_making_offer, last_evaluated_at").eq("active", true).or(`last_evaluated_at.is.null,last_evaluated_at.lt.${cutoff}`).limit(limit),
     admin.from("platform_settings").select("platform_fee_bps, delivery_fee_aed, listing_fresh_days").eq("id", true).maybeSingle(),
     getLatestTick(),
+    getActiveMarketplacePromotion(),
   ]);
   if (error || !tick || !alerts?.length) return { evaluated: 0, triggered: 0, error: error?.message ?? null };
   const productIds = [...new Set(alerts.map((alert) => alert.product_id))];
@@ -18,7 +20,7 @@ export async function processDuePriceAlerts(limit = 100) {
   const productMap = new Map((products ?? []).map((product) => [product.id, product])); let triggered = 0; const evaluatedAt = new Date().toISOString();
   for (const alert of alerts) {
     const product = productMap.get(alert.product_id); if (!product || product.product_status !== "approved" || product.data_quality_status !== "valid") { await admin.from("price_alerts").update({ active: false, last_evaluated_at: evaluatedAt }).eq("id", alert.id); continue; }
-    const breakdown = computePrice({ pricePerGram24kAed: Number(tick.price_per_gram_24k_aed), karat: Number(product.karat), weightGrams: Number(product.weight_grams), makingCharge: Number(product.making_charge), makingChargeDiscountPercent: Number(product.making_charge_discount_percent), makingChargeOfferEndsAt: product.making_charge_offer_ends_at, certificateFee: Number(product.certificate_fee), stoneValue: Number(product.stone_value), vendorPremium: Number(product.vendor_premium), platformFeeBps: Number(settings?.platform_fee_bps ?? 100), deliveryFee: Number(settings?.delivery_fee_aed ?? 0) });
+    const breakdown = computePrice({ pricePerGram24kAed: Number(tick.price_per_gram_24k_aed), karat: Number(product.karat), weightGrams: Number(product.weight_grams), makingCharge: Number(product.making_charge), makingChargeDiscountPercent: Number(product.making_charge_discount_percent), makingChargeOfferEndsAt: product.making_charge_offer_ends_at, certificateFee: Number(product.certificate_fee), stoneValue: Number(product.stone_value), vendorPremium: Number(product.vendor_premium), platformFeeBps: applyEventFeeDiscount(Number(settings?.platform_fee_bps ?? 100), promotion?.serviceFeeDiscountPercent ?? 0), deliveryFee: applyEventDeliveryDiscount(Number(settings?.delivery_fee_aed ?? 0), promotion?.deliveryDiscountPercent ?? 0) });
     const targetReached = alert.target_total_aed != null && breakdown.unitPriceAed <= Number(alert.target_total_aed); const makingOffer = alert.notify_on_making_offer && breakdown.makingChargeDiscountPercent > 0;
     if (targetReached) { triggered += 1; await notifyUser({ userId: alert.user_id, kind: "price_alert", title: `${product.name} reached your target`, body: `The current indicative total is ${formatAed(breakdown.unitPriceAed)}. Open the listing to confirm availability and lock a fresh server price.`, href: `/products/${product.id}`, dedupeKey: `target:${alert.id}:${Number(alert.target_total_aed).toFixed(2)}` }); }
     if (makingOffer) { triggered += 1; await notifyUser({ userId: alert.user_id, kind: "price_alert", title: `${breakdown.makingChargeDiscountPercent}% off making`, body: `${product.name} now has a making-charge promotion. The live total can continue moving with gold.`, href: `/products/${product.id}`, dedupeKey: `making:${alert.id}:${breakdown.makingChargeDiscountPercent}:${breakdown.makingChargeOfferEndsAt ?? "open"}` }); }

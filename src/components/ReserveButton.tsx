@@ -54,6 +54,10 @@ export function ReserveButton({
   bankTransferEnabled = false,
   cashEnabled = true,
   cardEnabled = false,
+  customerFeeDiscountPercent = 0,
+  eventPromotionTitle = null,
+  eventFeeDiscountPercent = 0,
+  eventDeliveryDiscountPercent = 0,
 }: {
   productId: string;
   soldOut?: boolean;
@@ -66,6 +70,10 @@ export function ReserveButton({
   bankTransferEnabled?: boolean;
   cashEnabled?: boolean;
   cardEnabled?: boolean;
+  customerFeeDiscountPercent?: number;
+  eventPromotionTitle?: string | null;
+  eventFeeDiscountPercent?: number;
+  eventDeliveryDiscountPercent?: number;
 }) {
   const router = useRouter();
   const { isFresh, tick } = useLiveGoldPrice();
@@ -244,7 +252,8 @@ export function ReserveButton({
     <form className="space-y-4" onSubmit={onSubmit}>
       <h2 className="font-serif text-2xl">Checkout</h2>
       <p className="text-xs text-ink-muted">Review your details before starting the identity check. Opening this checkout does not create a verification attempt.</p>
-      {pricing.platformFeeBps === 50 && <p className="rounded-xl bg-gold-50 px-3 py-2 text-xs font-semibold text-gold-700">50% OFF the standard 1% Get Gold fee for one of your first 3 orders. The discount is secured when you place this order.</p>}
+      {customerFeeDiscountPercent > 0 && <p className="rounded-xl bg-gold-50 px-3 py-2 text-xs font-semibold text-gold-700">50% OFF the standard 1% Get Gold fee for one of your first 3 orders. The discount is secured when you place this order.</p>}
+      {eventPromotionTitle && <p className="rounded-xl border border-gold-300/40 bg-white px-3 py-2 text-xs font-semibold text-jade-800">{eventPromotionTitle}: {eventFeeDiscountPercent > 0 ? `${eventFeeDiscountPercent}% extra off the Get Gold fee` : ""}{eventFeeDiscountPercent > 0 && eventDeliveryDiscountPercent > 0 ? " · " : ""}{eventDeliveryDiscountPercent === 100 ? "free delivery" : eventDeliveryDiscountPercent > 0 ? `${eventDeliveryDiscountPercent}% off delivery` : ""}.</p>}
       {!soldOut && available > 0 && (
         <div className="flex items-center justify-between gap-4 rounded-xl bg-jade-50 p-3">
           <label htmlFor="reservation-quantity" className="text-sm font-semibold text-jade-950">

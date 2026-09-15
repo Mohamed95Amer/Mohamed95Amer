@@ -46,12 +46,16 @@ export function ProductCard({
   deliveryFee = 0,
   priority = false,
   customerFeeDiscountPercent = 0,
+  eventFeeDiscountPercent = 0,
+  eventPromotionTitle = null,
 }: {
   p: ProductCardData;
   platformFeeBps?: number;
   deliveryFee?: number;
   priority?: boolean;
   customerFeeDiscountPercent?: number;
+  eventFeeDiscountPercent?: number;
+  eventPromotionTitle?: string | null;
 }) {
   const { tick, isFresh, loading } = useLiveGoldPrice();
   const stock = p.available ?? null;
@@ -135,6 +139,7 @@ export function ProductCard({
           )}
         </div>
         {price !== null && customerFeeDiscountPercent > 0 && <p className="mt-1 text-[11px] font-bold text-gold-700">50% OFF Get Gold fee · first 3 orders</p>}
+        {price !== null && eventFeeDiscountPercent > 0 && <p className="mt-1 text-[11px] font-bold text-jade-700">{eventPromotionTitle ?? "Limited offer"} · extra {eventFeeDiscountPercent}% off Get Gold fee</p>}
 
         {valueScore && <GoldHubValueScore value={valueScore} compact />}
 

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { AdminVendorActions } from "./AdminVendorActions";
 import { AdminDocViewerClient } from "@/components/AdminDocViewerClient";
+import { AdminVendorPromotionControl } from "./AdminVendorPromotionControl";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,9 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
     .select("id, doc_type, original_filename, storage_path, mime_type, size_bytes, uploaded_at")
     .eq("vendor_id", vendor.id)
     .order("uploaded_at", { ascending: false });
+  const { data: promotions } = await admin.from("vendor_promotions")
+    .select("id, label, reward_reason, starts_at, ends_at, cancelled_at, admin_note")
+    .eq("vendor_id", vendor.id).order("created_at", { ascending: false }).limit(25);
 
   return (
     <div className="grid gap-6">
@@ -59,6 +63,12 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
         <div className="mt-4">
           <AdminVendorActions vendorId={vendor.id} currentStatus={vendor.verification_status} />
         </div>
+      </div>
+
+      <div className="card p-6">
+        <h3 className="font-serif text-xl">Premium vendor placement</h3>
+        <p className="mt-1 text-sm text-ink-muted">Reward this store with a time-limited position above organic vendors. Customers always see a small “Ad” disclosure.</p>
+        <div className="mt-5"><AdminVendorPromotionControl vendorId={vendor.id} promotions={promotions ?? []} /></div>
       </div>
     </div>
   );

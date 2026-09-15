@@ -49,7 +49,7 @@ const { localRuntime } = require('./local-runtime.cjs');
     for (const [role, paths] of Object.entries({
       customer: ['/account', '/account/saved', '/account/notifications', '/account/preferences', '/account/referrals', '/account/requests', '/account/visits', '/profile'],
       vendor: ['/vendor/register', '/profile'], delivery_company: ['/delivery/register', '/profile'],
-      admin: ['/admin', '/admin/growth', '/admin/liquidity', '/admin/vendors', '/admin/products', '/admin/orders', '/admin/reviews', '/admin/settings', '/admin/delivery-companies', '/admin/catalogue-support'],
+      admin: ['/admin', '/admin/growth', '/admin/liquidity', '/admin/marketing', '/admin/vendors', '/admin/products', '/admin/orders', '/admin/reviews', '/admin/settings', '/admin/delivery-companies', '/admin/catalogue-support'],
     })) for (const path of paths) await page(path, roles[role].cookie);
     await page('/admin', roles.customer.cookie, 307);
     await page('/admin', roles.vendor.cookie, 307);

@@ -18,6 +18,7 @@ import {
 import { formatAed, round2 } from "@/lib/pricing/calc";
 import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { getServiceSupabase } from "@/lib/supabase/server";
+import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 
 export const dynamic = "force-dynamic";
 
@@ -110,6 +111,7 @@ export default async function AccountPage() {
       </section>
 
       <div className="container-pro py-10 sm:py-14">
+        <div className="mb-6"><ActiveOfferNotice offer={feeOffer} /></div>
         <nav className="mb-8 flex flex-wrap gap-2" aria-label="Customer account">
           <Link href="/requests/new" className="btn-primary px-4 py-2 text-xs">Request a piece</Link>
           <Link href="/account/requests" className="btn-ghost px-4 py-2 text-xs">My gold requests</Link>
@@ -122,7 +124,7 @@ export default async function AccountPage() {
           <section className="mb-6 flex flex-col gap-3 rounded-2xl border border-gold-500/25 bg-gold-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-bold text-gold-700">50% off your Get Gold fee</p>
-              <p className="mt-1 text-xs text-ink-muted">Pay 0.5% instead of the standard 1% on {feeOffer.remainingDiscountedOrders} more qualifying {feeOffer.remainingDiscountedOrders === 1 ? "order" : "orders"}. Delivery is excluded.</p>
+              <p className="mt-1 text-xs text-ink-muted">Your introductory rate is 0.5% instead of the standard 1% on {feeOffer.remainingDiscountedOrders} more qualifying {feeOffer.remainingDiscountedOrders === 1 ? "order" : "orders"}, before any active seasonal fee offer. Delivery is excluded.</p>
             </div>
             <Link href="/marketplace" className="btn-primary shrink-0 px-4 py-2 text-xs">Use this offer</Link>
           </section>

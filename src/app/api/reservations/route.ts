@@ -10,6 +10,7 @@ import { notifyUser } from "@/lib/notifications/server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import { diditIsConfigured } from "@/lib/identity/didit";
 import { applyCustomerServiceFee, computeOrderTotal } from "@/lib/pricing/calc";
+import { applyEventFeeDiscount } from "@/lib/marketing";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -184,7 +185,9 @@ export async function POST(request: Request) {
     await admin.from("order_identity_verifications").update({ status: "approved", consumed_at: null, reservation_id: null }).eq("id", parsed.data.identityVerificationId).eq("user_id", auth.user.id);
     return NextResponse.json({ error: "fee_assignment_failed" }, { status: 500 });
   }
-  priced.breakdown = applyCustomerServiceFee(priced.breakdown, Number(feeOffer.effective_bps));
+  const eventFeeDiscount = priced.marketplacePromotion?.serviceFeeDiscountPercent ?? 0;
+  const finalFeeBps = applyEventFeeDiscount(Number(feeOffer.effective_bps), eventFeeDiscount);
+  priced.breakdown = applyCustomerServiceFee(priced.breakdown, finalFeeBps);
   priced.totalPriceAed = computeOrderTotal(priced.breakdown, parsed.data.quantity);
   const { error: snapErr } = await admin.from("order_price_snapshots").insert({
     vendor_commission_basis: "paused",
@@ -193,6 +196,11 @@ export async function POST(request: Request) {
     customer_fee_standard_bps: Number(feeOffer.standard_bps),
     customer_fee_discount_percent: Number(feeOffer.discount_percent),
     customer_fee_promo_order_number: feeOffer.promo_order_number,
+    marketplace_promotion_id: priced.marketplacePromotion?.id ?? null,
+    marketplace_promotion_title: priced.marketplacePromotion?.title ?? null,
+    service_fee_event_discount_percent: eventFeeDiscount,
+    delivery_event_discount_percent: priced.marketplacePromotion?.deliveryDiscountPercent ?? 0,
+    delivery_fee_before_event_discount: priced.deliveryFeeBeforeEventDiscount,
     reservation_id: reservation.id,
     gold_tick_id: priced.tick.id,
     gold_price_per_gram_24k_aed: priced.tick.price_per_gram_24k_aed,
@@ -256,6 +264,7 @@ export async function POST(request: Request) {
       expires_at: expiresAt,
       fulfilment_method: parsed.data.fulfilmentMethod,
       payment_method: parsed.data.paymentMethod,
+      marketplace_promotion_id: priced.marketplacePromotion?.id ?? null,
     },
     ip_address: ipFromRequest(request),
   });

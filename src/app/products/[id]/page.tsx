@@ -22,6 +22,8 @@ import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
 import { TrackPageView } from "@/components/TrackPageView";
 import { dubaiTodayIso } from "@/lib/time";
 import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
+import { applyEventDeliveryDiscount } from "@/lib/marketing";
+import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 
 export const dynamic = "force-dynamic";
 
@@ -110,6 +112,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     ? normalizeReputation(reputationRow as VendorReputationRow)
     : null;
   const customerFeeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
+  const deliveryFeeBeforeEventDiscount = Number(bankOption?.delivery_fee_aed ?? settings?.delivery_fee_aed ?? 0);
+  const displayedDeliveryFee = applyEventDeliveryDiscount(
+    deliveryFeeBeforeEventDiscount,
+    customerFeeOffer.eventDeliveryDiscountPercent,
+  );
   const [{ data: favourite }, { data: priceAlert }] = profile
     ? await Promise.all([
         supabase.from("product_favourites").select("product_id").eq("user_id", profile.id).eq("product_id", product.id).maybeSingle(),
@@ -204,6 +211,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
         <aside className="space-y-4 lg:sticky lg:top-40 lg:col-span-2 lg:self-start">
           <div className="card p-6 sm:p-7">
+            <div className="mb-5"><ActiveOfferNotice offer={customerFeeOffer} /></div>
             {vendor && (
               <div className="mb-6 border-b border-jade-900/10 pb-5">
                 <div className="flex items-start justify-between gap-3">
@@ -235,7 +243,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               platformFeeBps={customerFeeOffer.effectiveBps}
               customerFeeDiscountPercent={customerFeeOffer.discountPercent}
               discountedOrdersRemaining={customerFeeOffer.remainingDiscountedOrders}
-              deliveryFee={Number(bankOption?.delivery_fee_aed ?? settings?.delivery_fee_aed ?? 0)}
+              eventFeeDiscountPercent={customerFeeOffer.eventDiscountPercent}
+              eventDeliveryDiscountPercent={customerFeeOffer.eventDeliveryDiscountPercent}
+              eventPromotionTitle={customerFeeOffer.eventPromotionTitle}
+              deliveryFeeBeforeEventDiscount={deliveryFeeBeforeEventDiscount}
+              deliveryFee={displayedDeliveryFee}
               showBreakdown
             />
 
@@ -267,6 +279,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 bankTransferEnabled={Boolean(bankOption?.bank_transfer_enabled)}
                 cashEnabled={bankOption?.cash_enabled ?? true}
                 cardEnabled={bankOption?.card_enabled ?? false}
+                customerFeeDiscountPercent={customerFeeOffer.discountPercent}
+                eventPromotionTitle={customerFeeOffer.eventPromotionTitle}
+                eventFeeDiscountPercent={customerFeeOffer.eventDiscountPercent}
+                eventDeliveryDiscountPercent={customerFeeOffer.eventDeliveryDiscountPercent}
                 onlinePaymentsEnabled={Boolean(settings?.online_payments_enabled) && onlinePaymentCheckoutIsOperational()}
                 pricing={{
                   karat: product.karat,
@@ -278,7 +294,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   stoneValue: Number(product.stone_value),
                   vendorPremium: Number(product.vendor_premium),
                   platformFeeBps: customerFeeOffer.effectiveBps,
-                  deliveryFee: Number(bankOption?.delivery_fee_aed ?? settings?.delivery_fee_aed ?? 0),
+                  deliveryFee: displayedDeliveryFee,
                 }}
               />}
             </div>

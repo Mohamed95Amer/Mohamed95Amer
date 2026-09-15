@@ -11,6 +11,32 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
+**Latest checkpoint, 15 Sep 2026 (admin merchandising release; deployed):**
+Admins can grant any approved Vendor a cancellable, time-limited Premium placement
+from the Vendor detail screen. Promoted stores rank above the organic directory but
+always carry a small **Ad** disclosure; Verified and Top Rated remain independent
+trust signals. `/admin/marketing` schedules/cancels image or text banners across the
+home, marketplace and Vendor directory, and schedules global Get Gold fee/delivery
+discounts. Banner artwork is restricted to JPG/PNG/WebP up to 5 MB in the public
+`marketing-assets` bucket. All writes require an authenticated admin or super-admin,
+use the service role server-side and create audit-log records.
+
+Seasonal fee discounts stack after the customer's first-three-order discount. Delivery
+offers still charge once per delivery order and are recorded as a Get Gold-funded
+Vendor credit. The campaign name, exact discount percentages, pre-discount delivery
+fee and final price are snapshotted on every order so later cancellation cannot rewrite
+history. Admin and Vendor order views show the resulting Get Gold fee, delivery credit
+and net settlement. Migration `20260914203449_admin_marketing_controls.sql` is live.
+
+Final evidence: 36 application tests, 15 real Auth/PostgREST integration tests, five
+SQL suites / 54 pgTAP assertions, schema lint, typecheck, ESLint, 28-page production
+generation and 55 HTTP/SSR checks pass. Production readback confirmed three protected
+control tables, all five snapshot columns, RLS, zero anon/authenticated grants and the
+5 MB public marketing bucket. Vercel deployment `CWheFwtRLa3PrbgyueZyTcWPt2Yh` is
+aliased to the live URL; the home, marketplace and Vendor directory return 200 and the
+live quote still reports `goldapicom`. No paid placement, banner or fee campaign was
+activated by default. Production Didit credentials remain absent.
+
 **Latest checkpoint, 15 Sep 2026 (supersedes the 14 Sep local checkpoints below; deployed):**
 Phase 1 now uses vendor-direct collection: cash, the Vendor's card terminal, or an
 enabled bank-transfer option. Bank instructions are snapshotted only after stock

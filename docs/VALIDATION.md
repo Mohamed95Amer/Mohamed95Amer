@@ -70,21 +70,25 @@ Never copy this environment into Vercel production.
 
 ## Verified locally on 15 September 2026
 
-- 35 credential-free regression tests passed.
-- Full migration chain applied to isolated Postgres 17; four SQL suites / 36 pgTAP
+- 36 credential-free regression tests passed.
+- Full migration chain applied to isolated Postgres 17; five SQL suites / 54 pgTAP
   tests passed. Database lint and security advisors reported no issues.
-- 14 integration runner tests passed using real Auth and PostgREST: signup/email
+- 15 integration runner tests passed using real Auth and PostgREST: signup/email
   confirmation/password recovery through Mailpit, role and ownership denial,
   once-per-order delivery, concurrent last-unit claims, stale/degraded-price
   rejection, bank-transfer proof and cleared-funds confirmation, expired vendor
   payment rejection and courier progression/proof. The same real database run proves
   the first three qualifying customer orders use 0.5%, the fourth uses 1%, a cancelled
   unpaid order releases its slot, and vendor making-charge commission remains zero.
+  It also proves a customer cannot use the admin marketing routes, while an admin can
+  create/cancel Premium placement, a fee/delivery campaign and a banner. A real order
+  snapshots the stacked 0.5% introductory + 50%-off event fee as 25 basis points and
+  a 100%-off once-per-order delivery campaign without reducing Vendor settlement.
 - Real Didit sandbox API created resident and visitor sessions and authenticated
   their environment/workflow/reference. Approved, Declined, In Review and Expired
   simulations mapped correctly for both routes. This is provider API compatibility,
   **not** proof of hosted capture, biometrics or delivered webhooks.
-- All 54 HTTP/SSR route checks passed, including a rendered availability change
+- All 55 HTTP/SSR route checks passed, including a rendered availability change
   from 3 to 2 after a real RPC claim and denial of another user's order detail.
 - Lint, typecheck and final production compilation/static generation passed
   (28/28 static pages). Dependency audit reported zero known vulnerabilities.
@@ -130,6 +134,16 @@ standard fee, RLS on the promotion table, service-role-only access to its RPC an
 the 0.5% rate as `50% OFF`, three remaining discounted orders and once-per-order
 delivery with no browser errors. Production identity verification remains disabled
 until live Didit credentials and workflows are configured.
+
+The later admin-merchandising migration `20260914203449_admin_marketing_controls.sql`
+was also applied. Readback confirmed three new RLS-protected tables, five immutable
+order snapshot fields, no anon/authenticated table grants and the public 5 MB
+`marketing-assets` bucket. Deployment `CWheFwtRLa3PrbgyueZyTcWPt2Yh` is live at the
+same alias. Public route checks pass and the gold quote remains `goldapicom`. No live
+campaign or promoted Vendor was seeded. The production advisor still reports the
+pre-existing leaked-password-protection warning; the new server-only tables appear as
+informational “RLS enabled, no policy” findings by design because they have no client
+grants.
 
 ## Docker recovery on 14 September 2026
 

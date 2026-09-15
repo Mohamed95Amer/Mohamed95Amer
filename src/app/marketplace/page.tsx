@@ -12,6 +12,9 @@ import { TrackPageView } from "@/components/TrackPageView";
 import { dubaiTodayIso } from "@/lib/time";
 import { getCurrentProfile } from "@/lib/auth/server";
 import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
+import { applyEventDeliveryDiscount, getActiveSiteBanners } from "@/lib/marketing";
+import { SiteBannerStack } from "@/components/SiteBanner";
+import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -57,13 +60,14 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (Number(filters.maxWeight) > 0) query = query.lte("weight_grams", Number(filters.maxWeight));
   if (filters.certified === "yes") query = query.not("certificate_number", "is", null);
 
-  const [{ data }, { data: reputationRows }, latestTick] = await Promise.all([
+  const [{ data }, { data: reputationRows }, latestTick, banners] = await Promise.all([
     query,
     supabase.from("vendor_reputation_summary").select("*"),
     getLatestTick(),
+    getActiveSiteBanners(["marketplace_top"]),
   ]);
   const platformFeeBps = feeOffer.effectiveBps;
-  const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
+  const deliveryFee = applyEventDeliveryDiscount(Number(settings?.delivery_fee_aed ?? 0), feeOffer.eventDeliveryDiscountPercent);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const liveRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
   const pricedFiltered = [...(data ?? [])].filter((product) => !Number(filters.maxTotal) || listingPrice(product, liveRate, platformFeeBps, deliveryFee).total <= Number(filters.maxTotal));
@@ -98,6 +102,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
       </section>
 
       <div className="container-pro -mt-5 relative">
+        {(banners.length > 0 || feeOffer.eventPromotionTitle) && <div className="mb-5 grid gap-4 pt-10"><SiteBannerStack banners={banners} /><ActiveOfferNotice offer={feeOffer} /></div>}
         <form className="card grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-4 lg:items-end">
           <div>
             <label className="label" htmlFor="marketplace-search">Search listings</label>
@@ -178,6 +183,8 @@ export default async function MarketplacePage({ searchParams }: SP) {
                 p={{ ...p, available: p.quantity, vendor }}
                 platformFeeBps={platformFeeBps}
                 customerFeeDiscountPercent={feeOffer.discountPercent}
+                eventFeeDiscountPercent={feeOffer.eventDiscountPercent}
+                eventPromotionTitle={feeOffer.eventPromotionTitle}
                 deliveryFee={deliveryFee}
                 priority={index === 0}
               />

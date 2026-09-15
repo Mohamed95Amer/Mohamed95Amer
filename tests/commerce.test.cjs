@@ -3,7 +3,8 @@ const assert = require('node:assert/strict');
 const { createLoader } = require('./load-ts.cjs');
 const load = createLoader();
 const { deliveryPinUrl } = load('src/lib/fulfilment.ts');
-const { applyCustomerServiceFee, computePrice, computeOrderTotal, goldRateForKarat } = load('src/lib/pricing/calc.ts');
+const { applyCustomerServiceFee, applyDeliveryFee, computePrice, computeOrderTotal, goldRateForKarat } = load('src/lib/pricing/calc.ts');
+const { applyEventDeliveryDiscount, applyEventFeeDiscount } = load('src/lib/marketing.ts');
 const { calculateReservationValue } = load('src/lib/gold-insights.ts');
 const { onlinePaymentCheckoutIsOperational } = load('src/lib/payments/readiness.ts');
 const { canTransitionDelivery } = load('src/lib/delivery/transitions.ts');
@@ -59,6 +60,16 @@ test('delivery is charged once for a multi-item order; collection is free', () =
   assert.equal(computeOrderTotal(computePrice(base), 1), 623);
   assert.equal(computeOrderTotal(computePrice({ ...base, deliveryFee: 0 }), 3), 1809);
   for (const quantity of [0, -1, 1.5, 51, NaN]) assert.throws(() => computeOrderTotal(computePrice(base), quantity));
+});
+test('seasonal promotions stack after the customer introductory fee and snapshot-friendly delivery math', () => {
+  assert.equal(applyEventFeeDiscount(50, 50), 25);
+  assert.equal(applyEventFeeDiscount(50, 25), 37);
+  assert.equal(applyEventFeeDiscount(100, 100), 0);
+  assert.equal(applyEventDeliveryDiscount(35, 20), 28);
+  const promoted = applyDeliveryFee(computePrice(base), 0);
+  assert.equal(promoted.deliveryFee, 0);
+  assert.equal(promoted.unitPriceAed, 603);
+  assert.equal(computeOrderTotal(promoted, 3), 1809);
 });
 test('gold insights preserve both legacy and per-order delivery without invented savings', () => {
   const snapshot = { gold_price_per_gram_24k_aed: 500, karat_purity_factor: 1, weight_grams: 1, gold_value_aed: 500, quantity: 3 };

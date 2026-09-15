@@ -9,6 +9,9 @@ import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
 import { getCurrentProfile } from "@/lib/auth/server";
 import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
+import { applyEventDeliveryDiscount, getActiveSiteBanners, getActiveVendorPromotionMap } from "@/lib/marketing";
+import { SiteBannerStack } from "@/components/SiteBanner";
+import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +37,7 @@ export default async function HomePage() {
     .eq("id", true)
     .maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
-  const [{ data: products }, { data: vendors }, { data: categoryProducts }, { data: reputationRows }] = await Promise.all([
+  const [{ data: products }, { data: vendors }, { data: categoryProducts }, { data: reputationRows }, banners] = await Promise.all([
     supabase
       .from("products")
       .select(
@@ -66,12 +69,17 @@ export default async function HomePage() {
       .order("created_at", { ascending: false })
       .limit(60),
     supabase.from("vendor_reputation_summary").select("*"),
+    getActiveSiteBanners(["home_top", "home_middle"]),
   ]);
   const platformFeeBps = feeOffer.effectiveBps;
-  const deliveryFee = Number(settings?.delivery_fee_aed ?? 0);
+  const deliveryFee = applyEventDeliveryDiscount(Number(settings?.delivery_fee_aed ?? 0), feeOffer.eventDeliveryDiscountPercent);
   const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   const activeVendorIds = new Set((categoryProducts ?? []).map((product) => product.vendor_id));
   const activeVendors = (vendors ?? []).filter((vendor) => activeVendorIds.has(vendor.id));
+  const promotedVendors = await getActiveVendorPromotionMap(activeVendors.map((vendor) => vendor.id));
+  activeVendors.sort((a, b) => Number(promotedVendors.has(b.id)) - Number(promotedVendors.has(a.id)) || a.business_name.localeCompare(b.business_name));
+  const topBanners = banners.filter((banner) => banner.placement === "home_top");
+  const middleBanners = banners.filter((banner) => banner.placement === "home_middle");
 
   return (
     <>
@@ -165,6 +173,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {(topBanners.length > 0 || feeOffer.eventPromotionTitle) && <section className="container-pro grid gap-4 py-7"><SiteBannerStack banners={topBanners} /><ActiveOfferNotice offer={feeOffer} /></section>}
+
       <section className="container-pro py-16 sm:py-20">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -245,6 +255,8 @@ export default async function HomePage() {
                   p={{ ...product, available: product.quantity, vendor: vendorWithReputation }}
                   platformFeeBps={platformFeeBps}
                   customerFeeDiscountPercent={feeOffer.discountPercent}
+                  eventFeeDiscountPercent={feeOffer.eventDiscountPercent}
+                  eventPromotionTitle={feeOffer.eventPromotionTitle}
                   deliveryFee={deliveryFee}
                 />
               );
@@ -255,6 +267,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {middleBanners.length > 0 && <section className="container-pro py-10"><SiteBannerStack banners={middleBanners} /></section>}
 
       <section className="container-pro grid gap-10 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
         <div>
@@ -287,6 +301,7 @@ export default async function HomePage() {
                   ✓
                 </span>
               </div>
+              {promotedVendors.has(vendor.id) && <span className="mt-2 inline-flex w-fit rounded-full border border-gold-300/50 bg-gold-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-gold-700">Ad · Premium</span>}
               <div className="mt-3"><StoreRating reputation={reputations.get(vendor.id)} compact /></div>
               <div className="mt-2"><StoreBadges reputation={reputations.get(vendor.id)} compact limit={2} /></div>
             </Link>
