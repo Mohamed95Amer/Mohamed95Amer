@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { GoldPriceBadge } from "@/components/GoldPriceBadge";
+import Image from "next/image";
+import { HeritageIcon, UaeRibbon } from "@/components/HeritageArtwork";
 import { ProductCard } from "@/components/ProductCard";
 import { firstProductPhoto, ProductImage } from "@/components/ProductImage";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
@@ -51,7 +52,7 @@ export default async function HomePage() {
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false })
-      .limit(6),
+      .limit(4),
     supabase
       .from("vendors")
       .select("id, business_name, emirate")
@@ -98,278 +99,117 @@ export default async function HomePage() {
     return slides;
   }, []);
 
+  const categoryTiles = categories.flatMap((category) => {
+    const matches = (categoryProducts ?? []).filter((item) => item.category === category.slug);
+    const photo = matches.find((item) => firstProductPhoto(item.images));
+    return photo ? [{ ...category, photo }] : [];
+  });
+  const categoryOrder = ["bangle", "necklace", "ring", "earring", "bracelet", "bar", "coin", "chain", "pendant"];
+  categoryTiles.sort((a, b) => categoryOrder.indexOf(a.slug) - categoryOrder.indexOf(b.slug));
+
   return (
-    <>
-      <section className="relative isolate overflow-hidden bg-jade-950 text-white">
-        <div className="absolute inset-0 -z-10 opacity-70">
-          <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full border border-gold-300/20" />
-          <div className="absolute -right-8 top-12 h-72 w-72 rounded-full border border-gold-300/15" />
-          <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-jade-500/15 blur-3xl" />
-        </div>
-
-        <div className="container-pro grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-24">
-          <div>
-            <p className="eyebrow text-gold-200">Gold, clearly priced</p>
-            <h1 className="mt-5 max-w-3xl font-serif text-4xl font-semibold leading-[1.03] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
-              Bringing the UAE
-              <span className="block text-gold-200">gold market online.</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-white/68 sm:text-lg">
-              Discover jewellery and bullion from verified UAE gold shops. Every listing moves
-              with the live 24K rate, and every reservation locks the price you see.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/marketplace"
-                className="inline-flex items-center justify-center rounded-full bg-gold-300 px-6 py-3 text-sm font-bold text-jade-950 shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-gold-200"
-              >
-                Explore gold
-                <span className="ml-2" aria-hidden="true">→</span>
-              </Link>
-              <Link
-                href="/how-it-works"
-                className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/10"
-              >
-                See how pricing works
-              </Link>
-              <Link href="/requests/new" className="inline-flex items-center justify-center rounded-full px-3 py-3 text-sm font-semibold text-gold-200 transition hover:text-white">Can’t find it? Request a piece →</Link>
+    <div className="heritage-home">
+      <section className="heritage-hero">
+        <div className="heritage-hero-art"><Image src="/images/uae-heritage-hero.webp" alt="" fill priority sizes="(max-width: 767px) 100vw, 75vw" className="object-cover" /></div>
+        <div className="heritage-hero-wash" />
+        <UaeRibbon />
+        <div className="container-pro relative z-10">
+          <div className="heritage-hero-copy">
+            <p className="heritage-kicker">More than jewellery<br />A market brought together</p>
+            <span className="mt-5 block h-px w-10 bg-gold-500" aria-hidden="true" />
+            <h1>Bringing the UAE<br className="hidden sm:block" /> gold market online.</h1>
+            <p className="heritage-hero-description">Trusted jewellers. Live gold prices. A more transparent, beautiful way to buy gold in the UAE.</p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/marketplace" className="btn-primary">Shop now <span className="ml-5" aria-hidden="true">→</span></Link>
+              <Link href="/vendors" className="btn-ghost">Meet the jewellers</Link>
             </div>
-
-            <div className="mt-8 grid max-w-2xl grid-cols-3 gap-3 border-t border-white/10 pt-5 sm:mt-10 sm:gap-4 sm:pt-6">
-              {[
-                ["Licensed", "UAE gold shops"],
-                ["Live", "market-linked prices"],
-                ["Locked", "for 10 minutes"],
-              ].map(([value, label]) => (
-                <div key={value}>
-                  <div className="font-serif text-lg text-gold-200 sm:text-xl">{value}</div>
-                  <div className="mt-0.5 text-[10px] leading-snug text-white/50 sm:text-xs">{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative mx-auto w-full max-w-xl lg:ml-auto">
-            <div className="absolute -inset-4 rounded-[2.25rem] bg-gradient-to-br from-gold-300/20 via-transparent to-jade-300/15 blur-xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-bone-soft p-5 text-ink shadow-glow sm:p-7">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="eyebrow text-jade-600">Live 24K reference</p>
-                  <p className="mt-1 text-xs text-ink-muted">AED per gram</p>
-                </div>
-                <span className="rounded-full bg-jade-900 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-gold-200">
-                  Live market
-                </span>
-              </div>
-
-              <div className="mt-6 rounded-2xl border border-jade-900/10 bg-white p-4 shadow-sm sm:p-5">
-                <GoldPriceBadge />
-                <div className="mt-5 h-px bg-jade-900/10" />
-                <p className="mt-4 text-sm leading-relaxed text-ink-muted">
-                  The official total is recalculated on our server at the instant you reserve.
-                </p>
-              </div>
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {[
-                  ["✓", "Trade licence checked"],
-                  ["✓", "Hallmark details shown"],
-                  ["✓", "No stale-rate checkout"],
-                  ["✓", "Vendor remains seller"],
-                ].map(([icon, label]) => (
-                  <div key={label} className="flex items-center gap-2 text-xs font-medium text-jade-900">
-                    <span className="grid h-5 w-5 place-items-center rounded-full bg-jade-100 text-[10px] text-jade-700">
-                      {icon}
-                    </span>
-                    {label}
-                  </div>
-                ))}
-              </div>
+            <div className="heritage-hero-promises">
+              <div><HeritageIcon kind="shield" /><span>Verified in the UAE<small>Trade licences checked</small></span></div>
+              <div><HeritageIcon kind="truck" /><span>Delivery or collection<small>Arranged with your store</small></span></div>
+              <div><HeritageIcon kind="gem" /><span>Transparent pricing<small>Every charge explained</small></span></div>
             </div>
           </div>
         </div>
       </section>
-
-      <HomeMediaCarousel banners={topBanners} fallbackSlides={showcaseSlides} />
-      {feeOffer.eventPromotionTitle && <section className="container-pro pb-4"><ActiveOfferNotice offer={feeOffer} /></section>}
-
-      <section className="container-pro py-16 sm:py-20">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="eyebrow text-jade-600">Find your piece</p>
-            <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
-              Shop by category
-            </h2>
-          </div>
-          <Link href="/marketplace" className="text-sm font-semibold text-jade-700 hover:text-jade-500">
-            View the full marketplace →
-          </Link>
-        </div>
-
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {categories.map((category) => {
-            const matches = (categoryProducts ?? []).filter((product) => product.category === category.slug);
-            const representative = matches[0];
-            if (!representative) return null;
-
-            return (
-              <Link
-                key={category.slug}
-                href={`/marketplace?category=${category.slug}`}
-                aria-label={`Browse ${category.label}`}
-                className="group relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-jade-900/10 bg-jade-950 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-gold-300 hover:shadow-lift"
-              >
-                <ProductImage
-                  category={representative.category}
-                  karat={representative.karat}
-                  name={representative.name}
-                  images={representative.images}
-                  sizes="(max-width: 640px) 50vw, 33vw"
-                  className="transition duration-700 group-hover:scale-[1.06]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-jade-950 via-jade-950/10 to-transparent" />
-                <span className="absolute right-3 top-3 rounded-full border border-white/25 bg-jade-950/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
-                  {matches.length} {matches.length === 1 ? "listing" : "listings"}
-                </span>
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white sm:p-5">
-                  <div>
-                    <h3 className="font-serif text-xl font-semibold sm:text-2xl">{category.label}</h3>
-                    <p className="mt-0.5 text-[11px] text-white/65 sm:text-xs">{category.detail}</p>
-                  </div>
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/25 bg-white/10 text-sm transition group-hover:translate-x-0.5 group-hover:bg-gold-300 group-hover:text-jade-950" aria-hidden="true">
-                    →
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="border-y border-jade-900/5 bg-jade-50/70">
-        <div className="container-pro py-16 sm:py-20">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow text-jade-600">Market favourites</p>
-              <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
-                Featured listings
-              </h2>
-            </div>
-            <Link href="/marketplace" className="hidden text-sm font-semibold text-jade-700 hover:text-jade-500 sm:block">
-              Browse all →
-            </Link>
-          </div>
-
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {(products ?? []).map((product) => {
-              const vendor = product.vendors as unknown as
-                { id: string; business_name: string; emirate: string; verification_status: string } | null;
-              const vendorWithReputation = vendor
-                ? { ...vendor, reputation: reputations.get(vendor.id) ?? null }
-                : null;
-              return (
-                <ProductCard
-                  key={product.id}
-                  p={{ ...product, available: product.quantity, vendor: vendorWithReputation }}
-                  platformFeeBps={platformFeeBps}
-                  customerFeeDiscountPercent={feeOffer.discountPercent}
-                  eventFeeDiscountPercent={feeOffer.eventDiscountPercent}
-                  eventPromotionTitle={feeOffer.eventPromotionTitle}
-                  deliveryFee={deliveryFee}
-                />
-              );
-            })}
-            {(products ?? []).length === 0 && (
-              <p className="text-ink-muted">No approved listings yet.</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {middleBanners.length > 0 && <section className="container-pro py-10"><SiteBannerStack banners={middleBanners} /></section>}
-
-      <section className="container-pro grid gap-10 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-        <div>
-          <p className="eyebrow text-jade-600">Shop with confidence</p>
-          <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
-            People behind every listing.
-          </h2>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-ink-muted">
-            Get Gold is not the seller. We verify UAE businesses and make pricing transparent;
-            the jeweller keeps the relationship, inventory, and fulfilment.
-          </p>
-          <Link href="/vendors" className="btn-ghost mt-6">
-            Meet verified vendors
-          </Link>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
-          {activeVendors.map((vendor) => (
-            <Link
-              key={vendor.id}
-              href={`/vendors/${vendor.id}`}
-              className="group rounded-2xl border border-jade-900/10 bg-white p-5 shadow-sm transition hover:border-jade-300 hover:shadow-card"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="font-serif text-lg font-semibold text-jade-950">{vendor.business_name}</div>
-                  <div className="mt-1 text-xs text-ink-muted">{vendor.emirate}</div>
-                </div>
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-jade-100 text-sm text-jade-700 transition group-hover:bg-jade-700 group-hover:text-white">
-                  ✓
-                </span>
-              </div>
-              {promotedVendors.has(vendor.id) && <span className="mt-2 inline-flex w-fit rounded-full border border-gold-300/50 bg-gold-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-gold-700">Ad · Premium</span>}
-              <div className="mt-3"><StoreRating reputation={reputations.get(vendor.id)} compact /></div>
-              <div className="mt-2"><StoreBadges reputation={reputations.get(vendor.id)} compact limit={2} /></div>
-            </Link>
+      <section className="heritage-trust-strip" aria-label="The Get Gold experience">
+        <div className="container-pro grid grid-cols-2 gap-y-6 md:grid-cols-4">
+          {([
+            ["store", "Verified jewellers", "UAE businesses, reviewed"],
+            ["gem", "Live gold prices", "One shared market reference"],
+            ["receipt", "Clear breakdowns", "Gold, making, fees & VAT"],
+            ["truck", "Your choice", "Delivery or store collection"],
+          ] as const).map(([icon, title, detail]) => (
+            <div key={title} className="heritage-trust-item"><HeritageIcon kind={icon} /><div><p>{title}</p><span>{detail}</span></div></div>
           ))}
         </div>
       </section>
 
-      <section className="bg-bone">
-        <div className="container-pro py-16 sm:py-20">
-          <div className="text-center">
-            <p className="eyebrow text-jade-600">Simple by design</p>
-            <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
-              From live price to confirmed order
-            </h2>
-          </div>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {[
-              ["01", "Browse", "Compare verified listings while every product follows the same live 24K reference."],
-              ["02", "Reserve", "We recompute the total server-side and hold that exact price for 10 minutes."],
-              ["03", "Confirm", "The vendor confirms stock, then arranges collection or delivery directly with you."],
-            ].map(([number, title, description]) => (
-              <div key={number} className="rounded-2xl border border-jade-900/10 bg-white p-6">
-                <span className="font-serif text-3xl text-gold-500">{number}</span>
-                <h3 className="mt-6 font-serif text-2xl font-semibold text-jade-950">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">{description}</p>
-              </div>
-            ))}
-          </div>
+      {/* Keep the rotating photo/video placement immediately before category discovery. */}
+      <HomeMediaCarousel banners={topBanners} fallbackSlides={showcaseSlides} />
+      <div className="container-pro"><ActiveOfferNotice offer={feeOffer} /></div>
+
+      <section className="container-pro heritage-section">
+        <div className="heritage-section-heading"><h2>Find your piece</h2><Link href="/marketplace">Shop all categories <span aria-hidden="true">→</span></Link></div>
+        <div className="heritage-categories">
+          {categoryTiles.slice(0, 6).map((category) => (
+            <Link key={category.slug} href={`/marketplace?category=${category.slug}`} className="heritage-category group">
+              <div className="relative aspect-[1.12] overflow-hidden bg-bone"><ProductImage category={category.slug} karat={category.photo.karat} name={category.label} images={category.photo.images} sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 16vw" className="transition duration-500 group-hover:scale-105" /></div>
+              <div className="flex items-center justify-between gap-2 px-3 py-3.5"><span>{category.label}</span><span aria-hidden="true">→</span></div>
+            </Link>
+          ))}
         </div>
+        {categoryTiles.length === 0 && <p className="py-6 text-sm text-ink-muted">New collections are on their way. <Link href="/requests/new" className="underline">Request your piece</Link>.</p>}
       </section>
 
-      <section className="container-pro py-16 sm:py-20">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-jade-900 to-jade-700 px-6 py-12 text-center text-white shadow-lift sm:px-12">
-          <div className="absolute -right-12 -top-20 h-64 w-64 rounded-full border border-gold-200/20" />
-          <p className="eyebrow relative text-gold-200">For UAE gold businesses</p>
-          <h2 className="relative mt-3 font-serif text-3xl font-semibold sm:text-4xl">
-            Bring your shop into the live market.
-          </h2>
-          <p className="relative mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/65">
-            Keep control of your stock and customer relationship while Get Gold makes discovery,
-            verification, and transparent pricing easier.
-          </p>
-          <Link
-            href="/vendor/register"
-            className="relative mt-7 inline-flex rounded-full bg-gold-300 px-6 py-3 text-sm font-bold text-jade-950 transition hover:bg-gold-200"
-          >
-            List your gold shop
-          </Link>
+      <section className="container-pro heritage-section">
+        <div className="heritage-section-heading"><h2>Featured jewellers</h2><Link href="/vendors">View all stores <span aria-hidden="true">→</span></Link></div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {activeVendors.slice(0, 3).map((vendor) => {
+            const collection = (categoryProducts ?? []).filter((item) => item.vendor_id === vendor.id && firstProductPhoto(item.images)).slice(0, 2);
+            return <Link key={vendor.id} href={`/vendors/${vendor.id}`} className="heritage-store group">
+              <div className="relative grid h-44 grid-flow-col auto-cols-fr overflow-hidden bg-bone">
+                {collection.map((item) => <div key={item.id} className="relative h-full overflow-hidden"><ProductImage category={item.category} karat={item.karat} name={item.name} images={item.images} sizes="(max-width: 767px) 45vw, 20vw" className="transition duration-500 group-hover:scale-105" /></div>)}
+                <span className="absolute bottom-2 left-3 rounded bg-white/90 px-2 py-1 text-[10px] text-ink">From the store&apos;s collection</span>
+                {promotedVendors.has(vendor.id) && <span className="absolute right-2 top-2 rounded bg-white px-2 py-1 text-[10px] text-ink">Ad · Premium</span>}
+              </div>
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3"><h3 className="font-medium">{vendor.business_name}</h3><span aria-hidden="true">→</span></div>
+                <p className="mt-1.5 text-xs text-jade-700">✓ Verified in the UAE <span className="text-ink-muted">· {vendor.emirate}</span></p>
+                <div className="mt-2"><StoreRating reputation={reputations.get(vendor.id)} compact /></div>
+                <div className="mt-2"><StoreBadges reputation={reputations.get(vendor.id)} compact limit={2} /></div>
+              </div>
+            </Link>;
+          })}
+        </div>
+        {activeVendors.length === 0 && <p className="py-6 text-sm text-ink-muted">Our next jewellers are preparing their collections.</p>}
+      </section>
+
+      {middleBanners.length > 0 && <section className="container-pro py-6"><SiteBannerStack banners={middleBanners} /></section>}
+
+      <section className="container-pro heritage-section pb-12 sm:pb-16">
+        <div className="heritage-section-heading"><h2>Our top picks</h2><Link href="/marketplace">Shop all products <span aria-hidden="true">→</span></Link></div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {(products ?? []).map((product) => {
+            const vendor = product.vendors as unknown as { id: string; business_name: string; emirate: string; verification_status: string } | null;
+            return <ProductCard key={product.id} variant="heritage" p={{ ...product, vendor: vendor ? { ...vendor, reputation: reputations.get(vendor.id) ?? null } : null }}
+              platformFeeBps={platformFeeBps} customerFeeDiscountPercent={feeOffer.discountPercent}
+              eventFeeDiscountPercent={feeOffer.eventDiscountPercent} eventPromotionTitle={feeOffer.eventPromotionTitle} deliveryFee={deliveryFee} />;
+          })}
+        </div>
+        {(products ?? []).length === 0 && <p className="py-6 text-sm text-ink-muted">No available listings just yet. <Link href="/requests/new" className="underline">Request a piece</Link>.</p>}
+      </section>
+
+      <section className="heritage-story">
+        <div className="container-pro flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
+          <div><p className="heritage-kicker">A richer tomorrow</p><h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">Gold for a brighter UAE.</h2></div>
+          <p className="max-w-xs text-sm leading-relaxed text-ink-soft">People, culture and opportunity — connected through gold.</p>
+          <Link href="/how-it-works" className="btn-primary w-fit">Explore our story <span className="ml-5" aria-hidden="true">→</span></Link>
         </div>
       </section>
-    </>
+      <section className="container-pro flex flex-col gap-4 py-7 text-sm sm:flex-row sm:items-center sm:justify-between">
+        <Link href="/requests/new" className="font-medium text-jade-700 hover:underline">Looking for something special? Request a piece →</Link>
+        <Link href="/vendor/register" className="text-ink-muted hover:text-jade-700">For UAE jewellers · Bring your store online →</Link>
+      </section>
+    </div>
   );
 }

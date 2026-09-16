@@ -6,13 +6,13 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          DEFAULT: "#102923",
-          soft: "#20453D",
-          muted: "#61756F",
+          DEFAULT: "#202722",
+          soft: "#404B43",
+          muted: "#687169",
         },
         bone: {
           DEFAULT: "#F4EFE4",
-          soft: "#FCFAF5",
+          soft: "#FCFAF7",
           deep: "#DDD5C7",
         },
         jade: {
@@ -24,7 +24,7 @@ const config: Config = {
           500: "#277F64",
           600: "#17654F",
           700: "#104E3F",
-          800: "#0B3C32",
+          800: "#104D36",
           900: "#072F28",
           950: "#041F1B",
         },

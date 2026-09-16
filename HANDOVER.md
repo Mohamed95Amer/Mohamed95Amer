@@ -11,6 +11,28 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
+**Latest checkpoint — selected UAE Heritage design (16 Sep 2026; deployed):**
+Deployment `FsQVskY1jZCknoisncP4KzU5gn2A` is Ready and aliased to https://getgold.ae
+and www. The owner's selected ivory/emerald/gold reference is implemented with an
+editorial jewellery hero, UAE ribbon, six photo categories, three featured stores,
+four transparent-price product cards and a closing story banner. Shared navigation,
+footer, buttons and cards carry the theme through the marketplace. The rotating
+photo/video placement stays immediately before Find your piece and now has an
+explicit pause/resume control. No fabricated statistics, chain-store affiliations,
+insurance promises or pretend cart were copied from the concept.
+
+Existing catalogue gates, Ad placements, pricing, VAT, checkout and identity logic
+remain intact. Store imagery comes from each store's actual catalogue and is labelled
+accordingly; the hero is decorative generated brand artwork. Details and the full
+artwork prompt are in `docs/UAE-HERITAGE-DESIGN.md`.
+
+Verification: 41/41 app tests; typecheck, lint, local and Vercel builds passed (28/28
+generated pages). Production reviewed at 1440px desktop and 390px mobile, including
+mobile navigation, marketplace/product links, checkout opening and carousel pause.
+No horizontal overflow, failed images or browser errors were observed. Live gold
+still reports `goldapicom`. No order or identity session was created in these checks;
+the personal live identity-to-order test remains an owner task.
+
 **Latest checkpoint — homepage media carousel and UAE VAT (16 Sep 2026; deployed):**
 Deployment `83tkL3MdNiDkxcbqdFQTK3aPCzSs` is live at https://getgold.ae. The homepage
 headline is now **“Bringing the UAE gold market online.”** A rotating photo/video
