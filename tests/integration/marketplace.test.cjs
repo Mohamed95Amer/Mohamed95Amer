@@ -94,6 +94,50 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       const profile = must(await admin.from('profiles').select('role,full_name').eq('id', fixtures.customer.id).single());
       assert.equal(profile.role, 'customer'); assert.equal(profile.full_name, 'Synthetic buyer');
     });
+    await t.test('Raw vendor and product records are private, including approved rows', async () => {
+      for (const client of [anon(), fixtures.customer.client, fixtures.outsider.client]) {
+        assert.deepEqual(must(await client.from('vendors').select('id,bank_account_details,admin_notes').eq('id', vendorId)), []);
+        assert.deepEqual(must(await client.from('products').select('id,admin_notes').eq('id', products[0].id)), []);
+      }
+      assert.equal(must(await fixtures.vendor.client.from('vendors').select('id').eq('id', vendorId).single()).id, vendorId);
+      assert.equal(must(await fixtures.admin_test.client.from('products').select('id').eq('id', products[0].id).single()).id, products[0].id);
+      assert.equal(must(await anon().from('gold_price_ticks').select('id').eq('id', tick.id).single()).id, tick.id);
+    });
+    await t.test('Direct clients cannot self-approve vendors or products or edit internal fields', async () => {
+      const attackVendorId = randomUUID(), attackProductId = randomUUID();
+      try {
+        const vendorAttack = await fixtures.outsider.client.from('vendors').insert({ ...vendor,
+          id: attackVendorId, owner_user_id: fixtures.outsider.id, verification_status: 'approved' });
+        assert.ok(vendorAttack.error, 'direct vendor creation must be denied');
+        const productAttack = await fixtures.vendor.client.from('products').insert({
+          id: attackProductId, vendor_id: vendorId, name: 'Synthetic 22K Bangle', category: 'bangle',
+          karat: 22, weight_grams: 10, images: ['test-only/bangle.jpg'], hallmark_info: 'Synthetic 22K hallmark',
+          product_status: 'approved' });
+        assert.ok(productAttack.error, 'direct approved listing creation must be denied');
+        assert.ok((await fixtures.vendor.client.from('products').update({ admin_notes: 'tampered' }).eq('id', products[0].id)).error);
+        assert.ok((await fixtures.vendor.client.from('vendors').update({ verification_status: 'approved', admin_notes: 'tampered' }).eq('id', vendorId)).error);
+      } finally {
+        must(await admin.from('products').delete().eq('id', attackProductId));
+        must(await admin.from('vendors').delete().eq('id', attackVendorId));
+      }
+    });
+    await t.test('Vendor browser uploads still work and cannot cross store boundaries', async () => {
+      const image = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jD1cAAAAASUVORK5CYII=', 'base64');
+      for (const bucket of ['product-images', 'vendor-docs']) {
+        const path = `${vendorId}/security-test/${randomUUID()}.png`;
+        const deniedPath = `${vendorId}/security-test/${randomUUID()}.png`;
+        try {
+          must(await fixtures.vendor.client.storage.from(bucket).upload(path, image, { contentType: 'image/png' }));
+          assert.ok((await fixtures.outsider.client.storage.from(bucket).upload(deniedPath, image, { contentType: 'image/png' })).error);
+          if (bucket === 'vendor-docs') {
+            must(await fixtures.vendor.client.storage.from(bucket).download(path));
+            assert.ok((await fixtures.outsider.client.storage.from(bucket).download(path)).error);
+          }
+        } finally {
+          must(await admin.storage.from(bucket).remove([path, deniedPath]));
+        }
+      }
+    });
     await t.test('Admin can schedule and cancel premium placement, discounts and text banners', async () => {
       activeClient = fixtures.customer.client;
       assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward' })).status, 401);
@@ -173,6 +217,15 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(snapshot.vendor_commission_aed, 0);
       assert.equal(must(await admin.from('order_identity_verifications').select('status').eq('id', check.id).single()).status, 'consumed');
       assert.ok((await admin.rpc('claim_reservation', claimArgs(fixtures.customer, products[0], check))).error);
+    });
+    await t.test('Direct customer and vendor clients cannot tamper with locked order state', async () => {
+      assert.ok(order, 'reservation test must pass');
+      const before = must(await admin.from('reservations').select('status,payment_status,quantity,identity_verification_id').eq('id', order.id).single());
+      for (const client of [anon(), fixtures.customer.client, fixtures.vendor.client, fixtures.outsider.client]) {
+        assert.ok((await client.from('reservations').update({ status: 'paid', payment_status: 'paid', quantity: 999 }).eq('id', order.id)).error);
+        assert.ok((await client.from('order_price_snapshots').update({ total_price_aed: 0 }).eq('reservation_id', order.id)).error);
+      }
+      assert.deepEqual(must(await admin.from('reservations').select('status,payment_status,quantity,identity_verification_id').eq('id', order.id).single()), before);
     });
     await t.test('Two real concurrent stock claims cannot both reserve the last unit', async () => {
       const checks = await Promise.all([identity(fixtures.customer, products[1]), identity(fixtures.outsider, products[1])]);

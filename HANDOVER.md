@@ -11,6 +11,81 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
+**Latest checkpoint — Didit connected, boarding pass removed (15 Sep 2026; deployed):**
+Deployment `GJ4855ftytBCcR1rsGF3BU6xm1P9` is live at https://getgold.ae.
+The owner removed the visitor boarding-pass requirement. Both Live and Sandbox visitor
+workflows now use passport + passive liveness + face match, with Questionnaire disabled.
+Checkout, hosted-dialog instructions, How it works, Terms and Privacy reflect this.
+Both routes use core features with the organization's shared 500-per-feature monthly
+free allowances. No credits were purchased and no live identity check was run.
+
+Live Didit application `3c39eccb-daf5-4444-be53-43c53a758303`:
+
+- Resident workflow `c98faf55-0e9e-4b98-b172-d33dd9853883` (UAE standard ID front/back).
+- Visitor workflow `8acca505-fe47-48b7-87dd-5a931dbc63c9` (passport only).
+- Owner-approved ACTIVE v3 webhook **Get Gold production verification updates** sends
+  `status.updated` and `data.updated` to `https://getgold.ae/api/webhooks/didit`.
+- Five Didit variables (existing Live API key, signing secret, live environment and
+  both workflow IDs) were saved as Vercel Secret variables for Production only.
+  Secrets were transferred privately and not printed, committed or copied to local env.
+
+Didit's console test sender omits `environment`, unlike its documented real callbacks.
+The handler now acknowledges probes only after HMAC/timestamp verification and matching
+`X-Didit-Test-Webhook: true` plus signed `metadata.test_webhook: true`. This returns 204
+before any database access, even for Approved samples. Real callbacks still require
+the expected environment, session/workflow binding and expiry/consumption protections.
+Two provider-sent synthetic samples (Not Started and Unicode Approved) returned 204.
+Identity regression tests pass 16/16, lint/build pass, and production SSR reports
+`identityVerificationAvailable: true` without boarding-pass text. Actual Live API session
+creation, ID/selfie capture and real decision-to-order completion still need the owner
+to test personally. See `docs/PHASE1-OWNER-CHECKLIST.md` for the remaining steps.
+Node CLI deployment on this PC required `--use-system-ca`; certificate verification
+remained enabled.
+
+**Earlier checkpoint — Phase 1 hardening / custom domain (15 Sep 2026; deployed):**
+Production deployment `Gbqo2rYX9Sx6uVt9NReEWw794uT8` is live at **https://getgold.ae**.
+Both apex and `www` return HTTPS 200 with certificate validation. No more Tasjeel DNS
+changes are needed. `NEXT_PUBLIC_SITE_URL` is now `https://getgold.ae` in Vercel's shared
+Production/Preview configuration. Supabase Auth Site URL is also `https://getgold.ae`;
+18 exact callback/reset URLs cover customer, vendor and delivery-company signup plus
+password recovery on the apex, `www` and legacy `goldhub-three.vercel.app`. All were
+verified after dashboard reload. Live canonical/social metadata and all 28 sitemap
+URLs use the new domain. Public listing/store pages still work and the gold endpoint
+reports fresh `goldapicom`, with separate 10-second refresh and 60-second stale limits.
+
+Migration `20260915131642_restrict_direct_marketplace_access.sql` is applied and recorded
+locally and in production. It closes legacy direct-client write grants that bypassed
+the validated Next.js routes, and removes public access to raw vendor/product records
+containing private columns. Owner/admin SELECT remains for Storage ownership checks.
+A narrow, private SECURITY DEFINER caller-role helper fixes recursive profiles RLS:
+before this fix, actual vendor Storage uploads failed with stack-depth overflow.
+Do not revoke vendor SELECT wholesale or reintroduce the recursive role lookup.
+Public pages use explicit server projections; gold Realtime and atomic stock RPCs remain.
+Successful-auth redirects now reject backslashes/control characters as well as external
+and protocol-relative URLs, covering the `/\\external-host` normalization edge case.
+
+Current evidence: **39 app tests, 19 real local Auth/PostgREST/Storage integration tests,
+54 pgTAP assertions and 55 local HTTP/SSR checks passed**. The HTTP run proves rendered
+stock changes 3 → 2 after a real local RPC claim. Lint, typecheck and both local/Vercel
+production builds passed (28/28 static pages). Live SQL checks verify denied direct
+writes and anonymous private-row reads without mutating production user/order data.
+The remaining security advisor warning is leaked-password protection, which the
+dashboard confirms is Pro-plan-only; no upgrade was made. The 20 no-policy INFO findings
+are intentional service-only tables with browser privileges revoked.
+
+Production checkout remains fail-closed: Vercel has no `DIDIT_*` credentials. Never copy
+the local Sandbox key into Production. Actual sandbox API simulations cover Approved,
+Declined, In Review and Expired for both routes, but not hosted capture or delivered
+signed webhooks. Supabase still uses its limited built-in test email service, not custom
+SMTP. The Contact page's legacy `@getgold.app` mailboxes remain unverified; do not claim
+they work or silently replace them with unprovisioned addresses.
+
+See `docs/PHASE1-OWNER-CHECKLIST.md` for the exact external inputs and acceptance tests
+remaining. Live identity credentials, owner/provider-assisted hosted testing, operational
+email, business/privacy approval and real vendor operations remain launch gates. Phase 1
+uses vendor-direct cash, card terminal or enabled bank transfer; marketplace online card
+payments stay off until a PSP is contracted and tested.
+
 **Latest checkpoint, 15 Sep 2026 (admin merchandising release; deployed):**
 Admins can grant any approved Vendor a cancellable, time-limited Premium placement
 from the Vendor detail screen. Promoted stores rank above the organic directory but
@@ -430,9 +505,9 @@ boundary; delivery-company order assignment and access remain intentionally unim
   number, selfie, video or biometric template.
 - The **UAE resident** Didit workflow must require an ID Verification step restricted to UAE ID
   cards (front and back), followed by Passive Liveness and Face Match 1:1.
-- The **visitor** Didit workflow must require a passport, Passive Liveness/Face Match and a
-  mandatory questionnaire file-upload step named Boarding pass. Questionnaire checks are paid in
-  live mode but sandbox applications bypass credit checks, so this stays free during validation.
+- The **visitor** Didit workflow requires a passport plus Passive Liveness/Face Match.
+  On 15 September 2026 the owner removed the boarding-pass requirement. The paid Questionnaire
+  step is disabled in both Live and Sandbox visitor workflows; do not re-enable it.
 - The customer chooses the route before checkout. `POST /api/identity-verifications/start` creates
   a unique vendor-data reference and returns Didit's hosted verification URL. The UI embeds it and
   also provides a new-tab fallback for mobile camera access.
@@ -448,9 +523,9 @@ boundary; delivery-company order assignment and access remain intentionally unim
 - Checkout fails closed while provider configuration is missing. Do not add a demo pass button or
   accept the hosted page's client state as proof. Test approved, declined, in-review and expired
   outcomes for both routes in Didit Sandbox before enabling live sessions.
-- Didit's published price at handover includes 500 core KYC checks per month for free. Questionnaire
-  file uploads are separately billed in live mode; validate the boarding-pass route in Sandbox and
-  decide whether to pay for the upload or inspect the travel document at handover before launch.
+- Didit's free allowance is 500 checks per month for each core feature, shared across all
+  workflows in the organization. Both routes use ID verification, passive liveness and face
+  match; neither includes the separately billed Questionnaire step. No live checks were run.
 
 ### Didit sandbox setup checkpoint
 
@@ -468,11 +543,9 @@ uses simulated checks, costs no credits, and does not affect production.
 - Visitor workflow `6fff2fa4-493f-4aca-bf51-ee50fb351128`, named
   **Get Gold — Visitors — Test**: passport only for Didit's supported passport countries;
   other document types, non-document lookups and wallets disabled; expired passports
-  rejected; passive liveness and face match enabled. The linked published questionnaire
-  **Get Gold — Visitor Boarding Pass — Test** has a required single-file field titled
-  `Boarding pass` with question value `boarding_pass`. Questionnaire manual review is
-  enabled and was verified after reopening the saved workflow. A file upload alone does
-  not authenticate a boarding pass; the document needs review before approval.
+  rejected; passive liveness and face match enabled. The Questionnaire step was disabled on
+  15 September at the owner's request. The old boarding-pass questionnaire remains as an
+  unused saved form; visitors no longer upload it or require its manual review.
 - Both flows leave optional checks (AML, NFC, phone, email, etc.) disabled for this technical
   sandbox setup. This is not a production compliance sign-off.
 - The API Keys page already lists an active **Primary / Sandbox** key. On the user's

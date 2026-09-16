@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
+import { safeInternalRedirect } from "@/lib/auth/redirect";
 import Link from "next/link";
 
 export function LoginForm({ next, error: initialError }: { next?: string; error?: string }) {
@@ -24,8 +25,7 @@ export function LoginForm({ next, error: initialError }: { next?: string; error?
       setError(error.message);
       return;
     }
-    const destination = next?.startsWith("/") && !next.startsWith("//") ? next : "/account";
-    router.push(destination);
+    router.push(safeInternalRedirect(next));
     router.refresh();
   }
 

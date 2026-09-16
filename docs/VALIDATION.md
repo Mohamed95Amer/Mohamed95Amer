@@ -70,10 +70,11 @@ Never copy this environment into Vercel production.
 
 ## Verified locally on 15 September 2026
 
-- 36 credential-free regression tests passed.
+- 39 credential-free regression tests passed, including successful-auth redirect
+  handling for backslash, protocol-relative and control-character attack inputs.
 - Full migration chain applied to isolated Postgres 17; five SQL suites / 54 pgTAP
   tests passed. Database lint and security advisors reported no issues.
-- 15 integration runner tests passed using real Auth and PostgREST: signup/email
+- 19 integration runner tests passed using real Auth, PostgREST and Storage: signup/email
   confirmation/password recovery through Mailpit, role and ownership denial,
   once-per-order delivery, concurrent last-unit claims, stale/degraded-price
   rejection, bank-transfer proof and cleared-funds confirmation, expired vendor
@@ -84,6 +85,11 @@ Never copy this environment into Vercel production.
   create/cancel Premium placement, a fee/delivery campaign and a banner. A real order
   snapshots the stacked 0.5% introductory + 50%-off event fee as 25 basis points and
   a 100%-off once-per-order delivery campaign without reducing Vendor settlement.
+  The hardening regressions also prove private vendor/product rows are hidden from
+  outsiders, direct self-approval and order/snapshot changes are denied, legitimate
+  vendor image/document uploads work, and cross-vendor uploads/downloads are denied.
+  The role-helper migration fixes a real recursive profiles-RLS stack overflow which
+  the original service-role-only upload checks missed.
 - Real Didit sandbox API created resident and visitor sessions and authenticated
   their environment/workflow/reference. Approved, Declined, In Review and Expired
   simulations mapped correctly for both routes. This is provider API compatibility,
@@ -124,6 +130,17 @@ function's volatility declaration. Both were deployed on 15 September 2026.
 
 ## Production deployment on 15 September 2026
 
+Latest deployment `Gbqo2rYX9Sx6uVt9NReEWw794uT8` is live at `https://getgold.ae`.
+Migration `20260915131642_restrict_direct_marketplace_access.sql` is applied in hosted
+and local migration history. HTTPS checks pass for apex and www, canonical/social
+metadata and all sitemap URLs use the apex, and public catalogue/auth pages return
+200. `/api/gold-price/latest` reports fresh `goldapicom` with 10s refresh / 60s stale.
+Supabase Site URL and 18 exact signup/recovery return URLs were saved and reloaded.
+Custom SMTP is absent; live email delivery remains untested. No live identity checks,
+real payment collection or production order mutations were used for this release.
+
+The following are historical deployment checkpoints:
+
 All nine pending migrations were applied to Supabase project
 `xgbzvdrdpinwkdbgpxdh`. The post-migration readback confirmed a 100-basis-point
 standard fee, RLS on the promotion table, service-role-only access to its RPC and
@@ -162,3 +179,28 @@ The previous `dockerInference` socket startup crash is resolved. Only stale runt
 socket directories were renamed to timestamped backups after stopping Docker;
 the engine restarted successfully. No factory reset or Docker-volume deletion was
 performed. The isolated `getgold_validation` stack is now running.
+
+## Didit Live connection and visitor simplification — 15 September 2026
+
+- Removed Questionnaire from the Live and Sandbox visitor workflows at the owner's
+  request. Reopened both saved workflows and confirmed the step is off, passport,
+  liveness and face match remain on, and the displayed cost range is $0.00–$0.30.
+- Updated checkout, identity dialog, How it works, Terms and Privacy. Live HTTP checks
+  return 200 and contain passport wording without boarding-pass requirements.
+- Created the owner-approved active v3 webhook for `status.updated` and `data.updated`
+  at `https://getgold.ae/api/webhooks/didit`. Saved the existing live key, destination
+  secret, mode and distinct workflow IDs as five Vercel Production-only Secret values.
+- The initial Didit console sample returned 400 because it omits `environment`.
+  Real payloads still require environment matching. A narrow test-only branch now
+  accepts only fresh HMAC-verified samples with both the test header and signed test
+  metadata, returning 204 before database access. Approved test samples cannot
+  authorize identities or orders; mismatched markers, forged and stale samples fail.
+- Identity tests: 16/16. Lint and Vercel build/type checks pass. Final deployment
+  `GJ4855ftytBCcR1rsGF3BU6xm1P9` is aliased to getgold.ae. A public product's SSR
+  reports `identityVerificationAvailable: true`.
+- Didit's actual test sender delivered two signed samples (Not Started and Unicode
+  Approved) successfully to production, each HTTP 204. This proves transport and
+  signature verification, not real identity approval or a reservation.
+- No live identity session was initiated, no real identity documents were captured,
+  no credits were purchased and no new production order was created. A customer must
+  still exercise real hosted capture and the resulting order flow personally.

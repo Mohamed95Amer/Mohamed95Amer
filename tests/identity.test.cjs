@@ -127,11 +127,11 @@ test('wrong-mode API key cannot hand out a hosted document capture URL', async (
   await assert.rejects(didit.createDiditVerificationSession({ verificationId: 'check', productId: 'item', route: 'visitor' }), /unexpected environment/);
 });
 
-function webhookRequest(payload, signatureOverride) {
+function webhookRequest(payload, signatureOverride, extraHeaders = {}) {
   const body = JSON.stringify(payload);
   const digest = createHmac('sha256', process.env.DIDIT_WEBHOOK_SECRET).update(body).digest('hex');
   return new Request('http://localhost/api/webhooks/didit', { method: 'POST', body, headers: {
-    'x-timestamp': String(payload?.timestamp ?? ''), 'x-signature': signatureOverride ?? digest,
+    'x-timestamp': String(payload?.timestamp ?? ''), 'x-signature': signatureOverride ?? digest, ...extraHeaders,
   } });
 }
 function webhookBase() {
@@ -144,6 +144,22 @@ test('webhook rejects invalid JSON shapes, mismatched environment and forged sig
   }
   assert.equal((await POST(webhookRequest({ ...webhookBase(), environment: 'live' }))).status, 400);
   assert.equal((await POST(webhookRequest(webhookBase(), '0'.repeat(64)))).status, 401);
+});
+test('console probes verify signed delivery without reading or updating identity records', async () => {
+  process.env.DIDIT_ENVIRONMENT = 'live';
+  const { POST } = createLoader({ '@/lib/supabase/server': { getServiceSupabase: () => { throw new Error('A probe must never access the database'); } } })('src/app/api/webhooks/didit/route.ts');
+  const headers = { 'x-didit-test-webhook': 'true' };
+  const payload = { ...webhookBase(), environment: undefined, metadata: { test_webhook: true } };
+  for (const status of ['Not Started', 'Approved']) {
+    assert.equal((await POST(webhookRequest({ ...payload, status }, undefined, headers))).status, 204);
+  }
+  assert.equal((await POST(webhookRequest(payload, '0'.repeat(64), headers))).status, 401);
+  assert.equal((await POST(webhookRequest({ ...payload, timestamp: payload.timestamp - 301 }, undefined, headers))).status, 401);
+  // Neither an unsigned header nor a body marker on its own is enough. Both
+  // mismatched forms remain non-mutating even with valid live order bindings.
+  assert.equal((await POST(webhookRequest({ ...payload, metadata: undefined }, undefined, headers))).status, 400);
+  assert.equal((await POST(webhookRequest({ ...payload, environment: 'live' }))).status, 400);
+  assert.equal((await POST(webhookRequest({ ...payload, metadata: undefined }))).status, 400);
 });
 test('webhook retries database failures instead of falsely acknowledging delivery', async () => {
   const database = { from: () => ({ select() { return this; }, eq() { return this; }, maybeSingle: async () => ({ data: null, error: { message: 'offline' } }) }) };

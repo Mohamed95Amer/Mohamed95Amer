@@ -22,8 +22,12 @@ const webhookSchema = z.object({
   workflow_id: z.string().optional(),
   status: z.string().optional(),
   timestamp: z.number().int(),
-  environment: z.enum(["sandbox", "live"]),
+  // Didit's console test sender omits this field. Real callbacks still must
+  // match the configured environment below before any database access.
+  environment: z.enum(["sandbox", "live"]).optional(),
 }).passthrough();
+
+const testWebhookMetadataSchema = z.object({ test_webhook: z.literal(true) });
 
 export async function POST(request: Request) {
   if (!env.diditWebhookSecret() || !diditConfigurationIsSafe()) {
@@ -53,6 +57,18 @@ export async function POST(request: Request) {
     })
   ) {
     return NextResponse.json({ error: "invalid_signature" }, { status: 401 });
+  }
+
+  // A console probe proves signed delivery only; even an Approved sample must
+  // never read or update an order's identity record. Require the signed body
+  // marker and the provider's test header together after checking the HMAC.
+  const hasTestHeader = request.headers.get("x-didit-test-webhook") === "true";
+  const hasTestMetadata = testWebhookMetadataSchema.safeParse(payload.metadata).success;
+  if (hasTestHeader || hasTestMetadata) {
+    if (!hasTestHeader || !hasTestMetadata) {
+      return NextResponse.json({ error: "invalid_test_webhook" }, { status: 400 });
+    }
+    return new NextResponse(null, { status: 204 });
   }
 
   if (!diditEnvironmentMatches(payload.environment)) {

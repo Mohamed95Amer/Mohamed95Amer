@@ -444,7 +444,7 @@ export function ReserveButton({
                   className={`rounded-xl border p-3 text-left transition ${selected ? "border-gold-500 bg-white text-jade-950 ring-1 ring-gold-500" : "border-jade-900/10 bg-white/60 text-ink-muted hover:border-gold-300"}`}
                 >
                   <span className="block text-sm font-semibold">{route === "uae_resident" ? "UAE resident" : "Visitor"}</span>
-                  <span className="mt-1 block text-[11px] leading-relaxed">{route === "uae_resident" ? "Emirates ID, front + back" : "Passport + boarding pass"}</span>
+                  <span className="mt-1 block text-[11px] leading-relaxed">{route === "uae_resident" ? "Emirates ID, front + back" : "Passport"}</span>
                   <span className="mt-1 block text-[11px] font-semibold text-jade-700">+ live face match</span>
                 </button>
               );

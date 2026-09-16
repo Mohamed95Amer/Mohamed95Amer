@@ -51,7 +51,7 @@ export function IdentityVerificationDialog({
             <p className="mt-1 text-xs leading-relaxed text-ink-muted">
               {route === "uae_resident"
                 ? "Have the front and back of your Emirates ID ready, then complete the live face scan."
-                : "Have your passport and boarding pass ready, then complete the live face scan."}
+                : "Have your passport ready, then complete the live face scan."}
             </p>
           </div>
           <button type="button" onClick={onClose} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-jade-900/10 text-xl text-ink-muted hover:bg-jade-50" aria-label="Close identity verification">×</button>
@@ -102,7 +102,7 @@ export function IdentityVerificationDialog({
           )}
           {message && <p role="alert" className="mt-4 text-sm text-signal-err">{message}</p>}
           <p className="mt-5 border-t border-jade-900/10 pt-4 text-xs leading-relaxed text-ink-muted">
-            Document images, boarding-pass images, selfies and biometric templates are collected and processed in Didit&apos;s hosted window. Get Gold stores only Didit&apos;s verified result and its link to this order.
+            Identity document images, selfies and biometric templates are collected and processed in Didit&apos;s hosted window. Get Gold stores only Didit&apos;s verified result and its link to this order.
           </p>
         </div>
       </div>
