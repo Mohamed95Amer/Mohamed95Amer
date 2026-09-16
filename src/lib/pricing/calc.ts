@@ -34,6 +34,7 @@ export interface PriceInputs {
   vendorPremium: number;
   platformFeeBps: number;
   deliveryFee: number;
+  vatRateBps?: number;
   pricedAt?: number;
 }
 
@@ -51,14 +52,27 @@ export interface PriceBreakdown {
   platformFee: number;
   platformFeeBps: number;
   deliveryFee: number;
+  vatRateBps: number;
+  vatTaxableAmountAed: number;
+  vatAed: number;
   unitPriceAed: number;       // one-item delivered estimate, not quantity-multipliable
   purityFactor: number;
+}
+
+export interface OrderPricing {
+  subtotalBeforeVatAed: number;
+  vatAed: number;
+  totalAed: number;
 }
 
 export function computePrice(inputs: PriceInputs): PriceBreakdown {
   const purity = karatPurityFactor(inputs.karat);
   if (!Number.isInteger(inputs.platformFeeBps) || inputs.platformFeeBps < 0 || inputs.platformFeeBps > 1000) {
     throw new Error("Platform fee must be between 0 and 1,000 basis points");
+  }
+  const vatRateBps = inputs.vatRateBps ?? 500;
+  if (!Number.isInteger(vatRateBps) || ![0, 500].includes(vatRateBps)) {
+    throw new Error("VAT rate must be either 0% or 5%");
   }
   if (
     !Number.isInteger(inputs.makingChargeDiscountPercent) ||
@@ -86,7 +100,9 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
     goldValueAed + makingCharge + certificateFee + stoneValue + vendorPremium,
   );
   const platformFee = round2(merchandiseSubtotalAed * inputs.platformFeeBps / 10_000);
-  const unitPriceAed = round2(merchandiseSubtotalAed + platformFee + deliveryFee);
+  const vatTaxableAmountAed = round2(merchandiseSubtotalAed + platformFee + deliveryFee);
+  const vatAed = round2(vatTaxableAmountAed * vatRateBps / 10_000);
+  const unitPriceAed = round2(vatTaxableAmountAed + vatAed);
 
   return {
     goldValueAed,
@@ -102,6 +118,9 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
     platformFee,
     platformFeeBps: inputs.platformFeeBps,
     deliveryFee,
+    vatRateBps,
+    vatTaxableAmountAed,
+    vatAed,
     unitPriceAed,
     purityFactor: purity,
   };
@@ -109,25 +128,43 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
 
 /** Merchandise and service are per item; delivery is charged once per order. */
 export function computeOrderTotal(breakdown: PriceBreakdown, quantity: number): number {
+  return computeOrderPricing(breakdown, quantity).totalAed;
+}
+
+/** VAT is rounded once on the complete order, after the once-per-order delivery charge. */
+export function computeOrderPricing(breakdown: PriceBreakdown, quantity: number): OrderPricing {
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
     throw new Error("Quantity must be between 1 and 50");
   }
-  return round2((breakdown.merchandiseSubtotalAed + breakdown.platformFee) * quantity + breakdown.deliveryFee);
+  const subtotalBeforeVatAed = round2(
+    (breakdown.merchandiseSubtotalAed + breakdown.platformFee) * quantity + breakdown.deliveryFee,
+  );
+  const vatAed = round2(subtotalBeforeVatAed * breakdown.vatRateBps / 10_000);
+  return { subtotalBeforeVatAed, vatAed, totalAed: round2(subtotalBeforeVatAed + vatAed) };
 }
 
 export function applyCustomerServiceFee(breakdown: PriceBreakdown, feeBps: number): PriceBreakdown {
   if (!Number.isInteger(feeBps) || feeBps < 0 || feeBps > 1000) throw new Error("Invalid customer fee rate");
   const platformFee = round2(breakdown.merchandiseSubtotalAed * feeBps / 10_000);
-  return { ...breakdown, platformFee, platformFeeBps: feeBps, unitPriceAed: round2(breakdown.merchandiseSubtotalAed + platformFee + breakdown.deliveryFee) };
+  return rebuildTotals({ ...breakdown, platformFee, platformFeeBps: feeBps });
 }
 
 export function applyDeliveryFee(breakdown: PriceBreakdown, deliveryFee: number): PriceBreakdown {
   if (!Number.isFinite(deliveryFee) || deliveryFee < 0) throw new Error("Invalid delivery fee");
   const nextDeliveryFee = round2(deliveryFee);
+  return rebuildTotals({ ...breakdown, deliveryFee: nextDeliveryFee });
+}
+
+function rebuildTotals(breakdown: PriceBreakdown): PriceBreakdown {
+  const vatTaxableAmountAed = round2(
+    breakdown.merchandiseSubtotalAed + breakdown.platformFee + breakdown.deliveryFee,
+  );
+  const vatAed = round2(vatTaxableAmountAed * breakdown.vatRateBps / 10_000);
   return {
     ...breakdown,
-    deliveryFee: nextDeliveryFee,
-    unitPriceAed: round2(breakdown.merchandiseSubtotalAed + breakdown.platformFee + nextDeliveryFee),
+    vatTaxableAmountAed,
+    vatAed,
+    unitPriceAed: round2(vatTaxableAmountAed + vatAed),
   };
 }
 

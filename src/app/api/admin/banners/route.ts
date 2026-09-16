@@ -8,7 +8,13 @@ import { ipFromRequest } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-const ALLOWED_TYPES = new Map([["image/jpeg", "jpg"], ["image/png", "png"], ["image/webp", "webp"]]);
+const ALLOWED_TYPES = new Map<string, { extension: string; mediaType: "image" | "video"; limit: number }>([
+  ["image/jpeg", { extension: "jpg", mediaType: "image", limit: 5 * 1024 * 1024 }],
+  ["image/png", { extension: "png", mediaType: "image", limit: 5 * 1024 * 1024 }],
+  ["image/webp", { extension: "webp", mediaType: "image", limit: 5 * 1024 * 1024 }],
+  ["video/mp4", { extension: "mp4", mediaType: "video", limit: 20 * 1024 * 1024 }],
+  ["video/webm", { extension: "webm", mediaType: "video", limit: 20 * 1024 * 1024 }],
+]);
 
 async function adminContext() {
   const userClient = await getServerSupabase();
@@ -34,14 +40,15 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: "invalid_input", details: parsed.error.flatten() }, { status: 400 });
   const candidate = form.get("image");
   const image = candidate instanceof File && candidate.size > 0 ? candidate : null;
-  if (image && (!ALLOWED_TYPES.has(image.type) || image.size > 5 * 1024 * 1024)) {
-    return NextResponse.json({ error: "Use a JPG, PNG or WebP image up to 5 MB." }, { status: 400 });
+  const mediaRule = image ? ALLOWED_TYPES.get(image.type) : null;
+  if (image && (!mediaRule || image.size > mediaRule.limit)) {
+    return NextResponse.json({ error: "Use a JPG, PNG or WebP image up to 5 MB, or an MP4/WebM video up to 20 MB." }, { status: 400 });
   }
   if (image && !parsed.data.imageAlt) return NextResponse.json({ error: "Describe the banner image for accessibility." }, { status: 400 });
 
   let imagePath: string | null = null;
   if (image) {
-    imagePath = `admin/${new Date().toISOString().slice(0, 10)}/${randomUUID()}.${ALLOWED_TYPES.get(image.type)}`;
+    imagePath = `admin/${new Date().toISOString().slice(0, 10)}/${randomUUID()}.${mediaRule!.extension}`;
     const { error: uploadError } = await context.admin.storage.from(MARKETING_ASSET_BUCKET).upload(imagePath, image, { contentType: image.type, upsert: false });
     if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
   }
@@ -49,6 +56,7 @@ export async function POST(request: Request) {
   const endsAt = new Date(startsAt.getTime() + parsed.data.durationDays * 86_400_000);
   const { data, error } = await context.admin.from("site_banners").insert({
     title: parsed.data.title, body: parsed.data.body || null, image_path: imagePath,
+    media_type: mediaRule?.mediaType ?? "image",
     image_alt: imagePath ? parsed.data.imageAlt : null, cta_label: parsed.data.ctaLabel || null,
     cta_href: parsed.data.ctaHref || null, placement: parsed.data.placement,
     display_order: parsed.data.displayOrder, starts_at: startsAt.toISOString(), ends_at: endsAt.toISOString(),

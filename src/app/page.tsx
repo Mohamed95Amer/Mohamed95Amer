@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import { ProductCard } from "@/components/ProductCard";
-import { ProductImage } from "@/components/ProductImage";
+import { firstProductPhoto, ProductImage } from "@/components/ProductImage";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { reputationMap, type VendorReputationRow } from "@/lib/reputation";
@@ -12,6 +12,7 @@ import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { applyEventDeliveryDiscount, getActiveSiteBanners, getActiveVendorPromotionMap } from "@/lib/marketing";
 import { SiteBannerStack } from "@/components/SiteBanner";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
+import { HomeMediaCarousel, type HomeShowcaseSlide } from "@/components/HomeMediaCarousel";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,7 @@ export default async function HomePage() {
     supabase
       .from("products")
       .select(
-        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
+        "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vat_rate_bps, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
       )
       .eq("product_status", "approved")
       .eq("vendors.verification_status", "approved")
@@ -80,6 +81,22 @@ export default async function HomePage() {
   activeVendors.sort((a, b) => Number(promotedVendors.has(b.id)) - Number(promotedVendors.has(a.id)) || a.business_name.localeCompare(b.business_name));
   const topBanners = banners.filter((banner) => banner.placement === "home_top");
   const middleBanners = banners.filter((banner) => banner.placement === "home_middle");
+  const showcaseSlides = (categoryProducts ?? []).reduce<HomeShowcaseSlide[]>((slides, product) => {
+    if (slides.length >= 4 || slides.some((slide) => slide.id === product.id)) return slides;
+    const photo = firstProductPhoto(product.images);
+    if (!photo) return slides;
+    slides.push({
+      id: product.id,
+      title: product.name,
+      body: `${product.karat}K gold from a verified UAE jeweller, priced against the live market.`,
+      mediaPath: photo,
+      mediaAlt: product.name,
+      mediaType: "image",
+      ctaLabel: "View this piece",
+      ctaHref: `/products/${product.id}`,
+    });
+    return slides;
+  }, []);
 
   return (
     <>
@@ -94,8 +111,8 @@ export default async function HomePage() {
           <div>
             <p className="eyebrow text-gold-200">Gold, clearly priced</p>
             <h1 className="mt-5 max-w-3xl font-serif text-4xl font-semibold leading-[1.03] tracking-[-0.035em] sm:text-6xl lg:text-7xl">
-              Buy gold with the
-              <span className="block text-gold-200">market in plain sight.</span>
+              Bringing the UAE
+              <span className="block text-gold-200">gold market online.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base leading-relaxed text-white/68 sm:text-lg">
               Discover jewellery and bullion from verified UAE gold shops. Every listing moves
@@ -173,7 +190,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {(topBanners.length > 0 || feeOffer.eventPromotionTitle) && <section className="container-pro grid gap-4 py-7"><SiteBannerStack banners={topBanners} /><ActiveOfferNotice offer={feeOffer} /></section>}
+      <HomeMediaCarousel banners={topBanners} fallbackSlides={showcaseSlides} />
+      {feeOffer.eventPromotionTitle && <section className="container-pro pb-4"><ActiveOfferNotice offer={feeOffer} /></section>}
 
       <section className="container-pro py-16 sm:py-20">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

@@ -167,6 +167,8 @@ export default async function ReservationDetailPage({ params }: { params: Promis
             <dt className="text-ink-muted">Delivery {snap.delivery_fee_basis === "per_order" ? "(once per order)" : "(original per-item rate)"}</dt>
             <dd className="text-right">{formatAed(Number(snap.delivery_fee) * (snap.delivery_fee_basis === "per_order" ? 1 : snapshotQuantity))}</dd>
             {Number(snap.delivery_event_discount_percent ?? 0) > 0 && <><dt className="text-signal-ok">Delivery offer</dt><dd className="text-right font-medium text-signal-ok">{snap.delivery_event_discount_percent}% off · was {formatAed(Number(snap.delivery_fee_before_event_discount ?? 0))}</dd></>}
+            <dt className="text-ink-muted">VAT ({Number(snap.vat_rate_bps ?? 0) / 100}%)</dt>
+            <dd className="text-right">{Number(snap.vat_rate_bps ?? 0) === 0 && Number(snap.vat_aed ?? 0) === 0 ? "Not charged" : formatAed(Number(snap.vat_aed))}</dd>
             <dt className="font-medium">Total</dt>
             <dd className="text-right font-medium">{formatAed(Number(snap.total_price_aed))}</dd>
           </dl>

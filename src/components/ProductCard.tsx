@@ -21,6 +21,7 @@ export interface ProductCardData {
   certificate_fee: number | string;
   stone_value: number | string;
   vendor_premium: number | string;
+  vat_rate_bps?: number | string;
   images?: unknown;
   available?: number | null;
   vendor?: {
@@ -78,6 +79,7 @@ export function ProductCard({
           vendorPremium: Number(p.vendor_premium),
           platformFeeBps,
           deliveryFee,
+          vatRateBps: Number(p.vat_rate_bps ?? 500),
         })
       : null;
   const price = breakdown?.unitPriceAed ?? null;
@@ -130,7 +132,7 @@ export function ProductCard({
 
         <div className="mt-4 flex items-baseline gap-2">
           {price !== null ? (
-            <span className="text-2xl font-bold tabular-nums tracking-tight text-jade-900">{formatAed(price)}</span>
+            <><span className="text-2xl font-bold tabular-nums tracking-tight text-jade-900">{formatAed(price)}</span><span className="text-[10px] font-semibold uppercase tracking-wide text-ink-muted">incl. VAT</span></>
           ) : (
             <span className="text-sm text-ink-muted">{loading ? "Loading price…" : "Price unavailable"}</span>
           )}

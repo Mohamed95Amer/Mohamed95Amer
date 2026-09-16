@@ -18,6 +18,7 @@ export interface ActiveSiteBanner {
   body: string | null;
   imagePath: string | null;
   imageAlt: string | null;
+  mediaType: "image" | "video";
   ctaLabel: string | null;
   ctaHref: string | null;
   placement: "home_top" | "home_middle" | "marketplace_top" | "vendors_top";
@@ -60,7 +61,7 @@ export async function getActiveSiteBanners(placements: ActiveSiteBanner["placeme
   const iso = new Date().toISOString();
   const { data } = await getServiceSupabase()
     .from("site_banners")
-    .select("id, title, body, image_path, image_alt, cta_label, cta_href, placement")
+    .select("id, title, body, image_path, image_alt, media_type, cta_label, cta_href, placement")
     .in("placement", placements)
     .is("cancelled_at", null)
     .lte("starts_at", iso)
@@ -73,6 +74,7 @@ export async function getActiveSiteBanners(placements: ActiveSiteBanner["placeme
     body: banner.body,
     imagePath: banner.image_path,
     imageAlt: banner.image_alt,
+    mediaType: banner.media_type as "image" | "video",
     ctaLabel: banner.cta_label,
     ctaHref: banner.cta_href,
     placement: banner.placement as ActiveSiteBanner["placement"],

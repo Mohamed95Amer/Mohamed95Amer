@@ -11,6 +11,32 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
+**Latest checkpoint — homepage media carousel and UAE VAT (16 Sep 2026; deployed):**
+Deployment `83tkL3MdNiDkxcbqdFQTK3aPCzSs` is live at https://getgold.ae. The homepage
+headline is now **“Bringing the UAE gold market online.”** A rotating photo/video
+showcase sits immediately before **Find your piece**; it rotates every 5.5 seconds,
+has manual controls, pauses for interaction, respects reduced-motion preferences and
+uses four real product listings as fallbacks. Admin `home_top` banners replace those
+fallbacks when active and remain visibly labelled **Ad**. Marketing uploads now accept
+JPG/PNG/WebP up to 5 MB and MP4/WebM up to 20 MB.
+
+New orders calculate UAE VAT once on the complete order after the once-per-order
+delivery charge. Ordinary products default to 5%; `products.vat_rate_bps = 0` is an
+explicit path reserved for confirmed qualifying investment bullion. The exact VAT
+rate, taxable amount and AED amount are locked in every new price snapshot and shown
+on the product, checkout, customer order, Vendor order and admin order views. Existing
+orders remain historical and were not repriced. Migration
+`20260916043214_home_media_and_vat.sql` is applied and recorded in both production and
+local migration history. Production readback confirmed the 500-bps product default,
+image banner default and 20 MB Storage limit.
+
+Evidence: **41 app tests, 19 real local Auth/PostgREST/Storage integration tests and
+59 pgTAP assertions pass**; typecheck, ESLint, local build and both Vercel builds pass
+(28/28 generated pages). The live browser confirms the rotating imagery, formatted
+headline, 5% VAT line and VAT-inclusive total. `/api/gold-price/latest` remains fresh
+with `source: goldapicom`; the separate 10-second refresh and 60-second stale limits
+were not changed.
+
 **Latest checkpoint — Didit connected, boarding pass removed (15 Sep 2026; deployed):**
 Deployment `GJ4855ftytBCcR1rsGF3BU6xm1P9` is live at https://getgold.ae.
 The owner removed the visitor boarding-pass requirement. Both Live and Sandbox visitor

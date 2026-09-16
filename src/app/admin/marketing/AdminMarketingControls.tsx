@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Campaign = { id: string; title: string; service_fee_discount_percent: number; delivery_discount_percent: number; starts_at: string; ends_at: string; cancelled_at: string | null };
-type Banner = { id: string; title: string; placement: string; image_path: string | null; starts_at: string; ends_at: string; cancelled_at: string | null };
+type Banner = { id: string; title: string; placement: string; image_path: string | null; media_type: "image" | "video"; starts_at: string; ends_at: string; cancelled_at: string | null };
 
 export function AdminMarketingControls({ campaigns, banners }: { campaigns: Campaign[]; banners: Banner[] }) {
   const router = useRouter();
@@ -57,13 +57,13 @@ export function AdminMarketingControls({ campaigns, banners }: { campaigns: Camp
 
     <section className="card p-6">
       <p className="eyebrow text-jade-600">Creative control</p><h2 className="mt-1 font-serif text-2xl">Marketplace ad banners</h2>
-      <p className="mt-2 max-w-3xl text-sm text-ink-muted">Upload promotional artwork or publish a text-only banner. JPG, PNG and WebP files are stored in Get Gold’s public marketing bucket.</p>
+      <p className="mt-2 max-w-3xl text-sm text-ink-muted">Upload promotional artwork or short video, or publish a text-only banner. Homepage-top items automatically rotate as a showcase before “Find your piece.”</p>
       <form action={createBanner} className="mt-5 grid gap-4 md:grid-cols-2">
         <div><label className="label" htmlFor="banner-title">Headline</label><input id="banner-title" className="input" name="title" required maxLength={100} /></div>
         <div><label className="label" htmlFor="banner-placement">Placement</label><select id="banner-placement" className="input" name="placement" defaultValue="home_top"><option value="home_top">Homepage · top</option><option value="home_middle">Homepage · middle</option><option value="marketplace_top">Marketplace · top</option><option value="vendors_top">Vendor directory · top</option></select></div>
         <div className="md:col-span-2"><label className="label" htmlFor="banner-body">Supporting text</label><textarea id="banner-body" className="input min-h-20" name="body" maxLength={280} /></div>
-        <div><label className="label" htmlFor="banner-image">Banner artwork (optional)</label><input id="banner-image" className="input file:mr-3 file:border-0 file:bg-transparent file:font-semibold" name="image" type="file" accept="image/jpeg,image/png,image/webp" /></div>
-        <div><label className="label" htmlFor="banner-alt">Image description</label><input id="banner-alt" className="input" name="imageAlt" maxLength={160} placeholder="Required when artwork is uploaded" /></div>
+        <div><label className="label" htmlFor="banner-image">Photo or video (optional)</label><input id="banner-image" className="input file:mr-3 file:border-0 file:bg-transparent file:font-semibold" name="image" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" /><p className="mt-1 text-xs text-ink-muted">Images up to 5 MB; MP4/WebM video up to 20 MB.</p></div>
+        <div><label className="label" htmlFor="banner-alt">Media description</label><input id="banner-alt" className="input" name="imageAlt" maxLength={160} placeholder="Required when media is uploaded" /></div>
         <div><label className="label" htmlFor="banner-cta">Button text (optional)</label><input id="banner-cta" className="input" name="ctaLabel" maxLength={40} placeholder="Shop the offer" /></div>
         <div><label className="label" htmlFor="banner-href">Button link</label><input id="banner-href" className="input" name="ctaHref" maxLength={500} placeholder="/marketplace or https://…" /></div>
         <div><label className="label" htmlFor="banner-days">Duration (days)</label><input id="banner-days" className="input" name="durationDays" type="number" min={1} max={90} defaultValue={7} required /></div>

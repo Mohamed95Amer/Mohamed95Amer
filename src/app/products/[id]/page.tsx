@@ -28,7 +28,7 @@ import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 export const dynamic = "force-dynamic";
 
 const SELECT =
-  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)";
+  "id, name, description, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vat_rate_bps, quantity, images, certificate_number, hallmark_info, vendor_id, product_status, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)";
 
 type Vendor = {
   id: string;
@@ -240,6 +240,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               certificateFee={Number(product.certificate_fee)}
               stoneValue={Number(product.stone_value)}
               vendorPremium={Number(product.vendor_premium)}
+              vatRateBps={Number(product.vat_rate_bps)}
               platformFeeBps={customerFeeOffer.effectiveBps}
               customerFeeDiscountPercent={customerFeeOffer.discountPercent}
               discountedOrdersRemaining={customerFeeOffer.remainingDiscountedOrders}
@@ -293,6 +294,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   certificateFee: Number(product.certificate_fee),
                   stoneValue: Number(product.stone_value),
                   vendorPremium: Number(product.vendor_premium),
+                  vatRateBps: Number(product.vat_rate_bps),
                   platformFeeBps: customerFeeOffer.effectiveBps,
                   deliveryFee: displayedDeliveryFee,
                 }}

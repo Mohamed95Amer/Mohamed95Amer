@@ -9,7 +9,7 @@ import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
 import { notifyUser } from "@/lib/notifications/server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import { diditIsConfigured } from "@/lib/identity/didit";
-import { applyCustomerServiceFee, computeOrderTotal } from "@/lib/pricing/calc";
+import { applyCustomerServiceFee, computeOrderPricing } from "@/lib/pricing/calc";
 import { applyEventFeeDiscount } from "@/lib/marketing";
 
 export const runtime = "nodejs";
@@ -188,7 +188,8 @@ export async function POST(request: Request) {
   const eventFeeDiscount = priced.marketplacePromotion?.serviceFeeDiscountPercent ?? 0;
   const finalFeeBps = applyEventFeeDiscount(Number(feeOffer.effective_bps), eventFeeDiscount);
   priced.breakdown = applyCustomerServiceFee(priced.breakdown, finalFeeBps);
-  priced.totalPriceAed = computeOrderTotal(priced.breakdown, parsed.data.quantity);
+  const orderPricing = computeOrderPricing(priced.breakdown, parsed.data.quantity);
+  priced.totalPriceAed = orderPricing.totalAed;
   const { error: snapErr } = await admin.from("order_price_snapshots").insert({
     vendor_commission_basis: "paused",
     vendor_commission_standard_aed: 0,
@@ -218,6 +219,9 @@ export async function POST(request: Request) {
     platform_fee_bps: priced.breakdown.platformFeeBps,
     delivery_fee: priced.breakdown.deliveryFee,
     delivery_fee_basis: "per_order",
+    vat_rate_bps: priced.breakdown.vatRateBps,
+    vat_taxable_amount_aed: orderPricing.subtotalBeforeVatAed,
+    vat_aed: orderPricing.vatAed,
     quantity: parsed.data.quantity,
     gold_value_aed: priced.breakdown.goldValueAed,
     unit_price_aed: priced.breakdown.unitPriceAed,

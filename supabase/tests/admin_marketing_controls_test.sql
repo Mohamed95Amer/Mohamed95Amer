@@ -1,5 +1,5 @@
 begin;
-select plan(18);
+select plan(23);
 
 select has_table('public', 'vendor_promotions', 'premium vendor placements table exists');
 select has_table('public', 'site_banners', 'site banners table exists');
@@ -9,6 +9,11 @@ select has_column('public', 'order_price_snapshots', 'marketplace_promotion_titl
 select has_column('public', 'order_price_snapshots', 'service_fee_event_discount_percent', 'orders retain the fee discount');
 select has_column('public', 'order_price_snapshots', 'delivery_event_discount_percent', 'orders retain the delivery discount');
 select has_column('public', 'order_price_snapshots', 'delivery_fee_before_event_discount', 'orders retain the delivery subsidy basis');
+select has_column('public', 'products', 'vat_rate_bps', 'products carry an explicit VAT rate');
+select has_column('public', 'order_price_snapshots', 'vat_rate_bps', 'orders retain the VAT rate');
+select has_column('public', 'order_price_snapshots', 'vat_taxable_amount_aed', 'orders retain the VAT basis');
+select has_column('public', 'order_price_snapshots', 'vat_aed', 'orders retain the VAT amount');
+select has_column('public', 'site_banners', 'media_type', 'site banners distinguish photos from videos');
 
 select ok((select relrowsecurity from pg_class where oid = 'public.vendor_promotions'::regclass), 'vendor promotions has RLS');
 select ok((select relrowsecurity from pg_class where oid = 'public.site_banners'::regclass), 'site banners has RLS');
@@ -20,7 +25,13 @@ select is(has_table_privilege('authenticated', 'public.marketplace_promotions', 
 select is(has_table_privilege('service_role', 'public.vendor_promotions', 'INSERT'), true, 'service role can grant premium placement');
 select is(has_table_privilege('service_role', 'public.site_banners', 'UPDATE'), true, 'service role can cancel banners');
 
-select ok(exists (select 1 from storage.buckets where id = 'marketing-assets' and public and file_size_limit = 5242880), 'public marketing bucket has the five-megabyte limit');
+select ok(exists (
+  select 1 from storage.buckets
+  where id = 'marketing-assets'
+    and public
+    and file_size_limit = 20971520
+    and allowed_mime_types @> array['image/jpeg', 'video/mp4']::text[]
+), 'public marketing bucket accepts campaign photos and videos up to twenty megabytes');
 select ok(exists (select 1 from pg_indexes where schemaname = 'public' and indexname = 'vendor_promotions_active_idx'), 'active premium placements are indexed');
 
 select * from finish();

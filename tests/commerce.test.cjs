@@ -22,7 +22,8 @@ test('valid coordinates take priority; invalid coordinates use a safe HTTPS fall
 test('first three orders receive a 0.5% customer service fee', () => {
   const price = computePrice(base);
   assert.equal(price.platformFee, 3);
-  assert.equal(price.unitPriceAed, 623);
+  assert.equal(price.vatAed, 31.15);
+  assert.equal(price.unitPriceAed, 654.15);
   assert.equal(goldRateForKarat(500, 22), 458);
 });
 test('customer service fee becomes 1% after the introductory orders', () => {
@@ -30,14 +31,14 @@ test('customer service fee becomes 1% after the introductory orders', () => {
   const standard = applyCustomerServiceFee(introductory, 100);
   assert.equal(standard.platformFeeBps, 100);
   assert.equal(standard.platformFee, 6);
-  assert.equal(standard.unitPriceAed, 626);
-  assert.equal(computeOrderTotal(standard, 3), 1838);
+  assert.equal(standard.unitPriceAed, 657.3);
+  assert.equal(computeOrderTotal(standard, 3), 1929.9);
 });
 test('making charge discount reduces customer price and customer fee', () => {
   const price = computePrice({ ...base, makingChargeDiscountPercent: 20 });
   assert.equal(price.makingCharge, 80);
   assert.equal(price.platformFee, 2.9);
-  assert.equal(price.unitPriceAed, 602.9);
+  assert.equal(price.unitPriceAed, 633.05);
 });
 test('100% making offer expires at its exact deadline', () => {
   const active = computePrice({ ...base, makingChargeDiscountPercent: 100, makingChargeOfferEndsAt: '2026-09-15T00:00:00Z' });
@@ -50,15 +51,15 @@ test('certificate-only bars retain their certificate charge when making is zero'
   assert.equal(price.makingCharge, 0);
   assert.equal(price.certificateFee, 25);
   assert.equal(price.platformFee, 2.63);
-  assert.equal(price.unitPriceAed, 547.63);
+  assert.equal(price.unitPriceAed, 575.01);
 });
 test('online checkout remains disabled until an actual processor is integrated', () => {
   assert.equal(onlinePaymentCheckoutIsOperational(), false);
 });
 test('delivery is charged once for a multi-item order; collection is free', () => {
-  assert.equal(computeOrderTotal(computePrice(base), 3), 1829);
-  assert.equal(computeOrderTotal(computePrice(base), 1), 623);
-  assert.equal(computeOrderTotal(computePrice({ ...base, deliveryFee: 0 }), 3), 1809);
+  assert.equal(computeOrderTotal(computePrice(base), 3), 1920.45);
+  assert.equal(computeOrderTotal(computePrice(base), 1), 654.15);
+  assert.equal(computeOrderTotal(computePrice({ ...base, deliveryFee: 0 }), 3), 1899.45);
   for (const quantity of [0, -1, 1.5, 51, NaN]) assert.throws(() => computeOrderTotal(computePrice(base), quantity));
 });
 test('delivery pins accept only Google or Apple Maps links and extract visible coordinates', () => {
@@ -85,8 +86,15 @@ test('seasonal promotions stack after the customer introductory fee and snapshot
   assert.equal(applyEventDeliveryDiscount(35, 20), 28);
   const promoted = applyDeliveryFee(computePrice(base), 0);
   assert.equal(promoted.deliveryFee, 0);
-  assert.equal(promoted.unitPriceAed, 603);
-  assert.equal(computeOrderTotal(promoted, 3), 1809);
+  assert.equal(promoted.unitPriceAed, 633.15);
+  assert.equal(computeOrderTotal(promoted, 3), 1899.45);
+});
+test('qualifying investment bullion can be explicitly zero-rated', () => {
+  const price = computePrice({ ...base, vatRateBps: 0 });
+  assert.equal(price.vatRateBps, 0);
+  assert.equal(price.vatAed, 0);
+  assert.equal(price.unitPriceAed, 623);
+  assert.equal(computeOrderTotal(price, 3), 1829);
 });
 test('gold insights preserve both legacy and per-order delivery without invented savings', () => {
   const snapshot = { gold_price_per_gram_24k_aed: 500, karat_purity_factor: 1, weight_grams: 1, gold_value_aed: 500, quantity: 3 };

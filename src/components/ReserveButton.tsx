@@ -3,7 +3,7 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
 import { useRouter } from "next/navigation";
-import { computePrice, computeOrderTotal, formatAed } from "@/lib/pricing/calc";
+import { computeOrderPricing, computePrice, formatAed } from "@/lib/pricing/calc";
 import {
   coordinatesFromDeliveryMapLink,
   deliveryPinUrl,
@@ -32,6 +32,7 @@ interface ReservePricing {
   vendorPremium: number;
   platformFeeBps: number;
   deliveryFee: number;
+  vatRateBps: number;
 }
 
 interface DeliveryForm {
@@ -117,7 +118,8 @@ export function ReserveButton({
         deliveryFee: fulfilmentMethod === "delivery" ? pricing.deliveryFee : 0,
       })
     : null;
-  const total = breakdown ? computeOrderTotal(breakdown, quantity) : null;
+  const orderPricing = breakdown ? computeOrderPricing(breakdown, quantity) : null;
+  const total = orderPricing?.totalAed ?? null;
   const hasCoordinates = details.deliveryLatitude !== null && details.deliveryLongitude !== null;
   const hasValidMapLink = isAcceptedDeliveryMapLink(details.deliveryMapLink);
   const hasInvalidMapLink = details.deliveryMapLink.trim().length > 0 && !hasValidMapLink;
@@ -471,6 +473,10 @@ export function ReserveButton({
           <div className="flex items-center justify-between gap-3">
             <span className="text-ink-muted">Making for this exact item</span>
             <span className="font-semibold tabular-nums text-jade-950">{formatAed(breakdown.makingCharge)}</span>
+          </div>
+          <div className="mt-2 flex items-center justify-between gap-3 border-t border-jade-900/10 pt-2">
+            <span className="text-ink-muted">VAT ({breakdown.vatRateBps / 100}%)</span>
+            <span className="font-semibold tabular-nums text-jade-950">{breakdown.vatRateBps === 0 ? "Zero-rated" : formatAed(orderPricing?.vatAed)}</span>
           </div>
           <div className="mt-2 flex items-center justify-between gap-3 border-t border-jade-900/10 pt-2">
             <span className="font-medium text-jade-950">Total for {quantity}</span>

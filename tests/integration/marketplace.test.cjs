@@ -167,7 +167,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(promotionalSnapshot.delivery_fee, 0);
       assert.equal(promotionalSnapshot.delivery_event_discount_percent, 100);
       assert.equal(promotionalSnapshot.marketplace_promotion_title, 'Synthetic event');
-      assert.equal(promotionalSnapshot.total_price_aed, 4691.7);
+      assert.equal(promotionalSnapshot.total_price_aed, 4926.29);
       must(await admin.from('reservations').delete().eq('id', promotionalOrder.body.reservation.id));
       activeClient = fixtures.admin_test.client;
       assert.equal((await route('admin/marketplace-promotions', { id: campaign.body.promotion.id }, 'DELETE')).status, 200);
@@ -207,7 +207,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(must(await admin.rpc('available_quantity', { p_product_id: products[0].id })), 7);
       const snapshot = must(await admin.from('order_price_snapshots').select('*').eq('reservation_id', order.id).single());
       assert.equal(snapshot.delivery_fee_basis, 'per_order'); assert.equal(snapshot.delivery_fee, 20);
-      assert.equal(snapshot.total_price_aed, 14130.2);
+      assert.equal(snapshot.total_price_aed, 14836.71);
       assert.equal(snapshot.platform_fee_bps, 50);
       assert.equal(snapshot.customer_fee_standard_bps, 100);
       assert.equal(snapshot.customer_fee_discount_percent, 50);
@@ -326,7 +326,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       reservations.push(created.body.reservation.id);
       cardOrder = created.body.reservation;
       const snapshot = must(await admin.from('order_price_snapshots').select('*').eq('reservation_id', created.body.reservation.id).single());
-      assert.equal(snapshot.delivery_fee, 0); assert.equal(snapshot.total_price_aed, 9406.8);
+      assert.equal(snapshot.delivery_fee, 0); assert.equal(snapshot.total_price_aed, 9877.14);
       assert.equal(snapshot.platform_fee_bps, 50);
       assert.equal(snapshot.customer_fee_promo_order_number, 3);
       activeClient = fixtures.vendor.client;
@@ -343,7 +343,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(created.status, 200, JSON.stringify(created.body));
       reservations.push(created.body.reservation.id);
       const snapshot = must(await admin.from('order_price_snapshots').select('*').eq('reservation_id', created.body.reservation.id).single());
-      assert.equal(snapshot.total_price_aed, 4726.8);
+      assert.equal(snapshot.total_price_aed, 4963.14);
       assert.equal(snapshot.platform_fee_bps, 100);
       assert.equal(snapshot.customer_fee_standard_bps, 100);
       assert.equal(snapshot.customer_fee_discount_percent, 0);
@@ -361,7 +361,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(created.status, 200, JSON.stringify(created.body));
       reservations.push(created.body.reservation.id);
       const snapshot = must(await admin.from('order_price_snapshots').select('*').eq('reservation_id', created.body.reservation.id).single());
-      assert.equal(snapshot.total_price_aed, 4703.4);
+      assert.equal(snapshot.total_price_aed, 4938.57);
       assert.equal(snapshot.platform_fee_bps, 50);
       assert.equal(snapshot.customer_fee_promo_order_number, 3);
       const slot = must(await admin.from('customer_fee_promotions').select('reservation_id').eq('customer_user_id', fixtures.customer.id).eq('promo_order_number', 3).single());
