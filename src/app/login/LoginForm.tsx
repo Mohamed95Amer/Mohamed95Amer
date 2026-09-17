@@ -14,6 +14,7 @@ export function LoginForm({ next, error: initialError }: { next?: string; error?
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [busy, setBusy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const needsEmailVerification = Boolean(error && /email\s+not\s+confirmed|confirm\s+your\s+email/i.test(error));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,7 +46,7 @@ export function LoginForm({ next, error: initialError }: { next?: string; error?
           <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 min-h-9 -translate-y-[42%] text-xs font-semibold text-jade-700" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
         </div>
       </div>
-      {error && <p id="login-error" role="alert" className="text-sm text-signal-err">{error}</p>}
+      {error && <div id="login-error" role="alert" className="space-y-2 text-sm"><p className="text-signal-err">{error}</p>{needsEmailVerification && <Link href={`/register/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(safeInternalRedirect(next))}`} className="inline-block font-semibold text-jade-700 underline underline-offset-4">Resend confirmation email</Link>}</div>}
       <button type="submit" className="btn-primary w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
     </form>
   );

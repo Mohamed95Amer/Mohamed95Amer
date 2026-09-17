@@ -44,8 +44,13 @@ export function RegisterForm({ initialRole = "customer", referralCode }: { initi
       setErr(error.message);
       return;
     }
-    if (!data.session) {
-      setMsg("Check your email to confirm your account.");
+    const emailConfirmed = Boolean(data.user?.email_confirmed_at);
+    if (!data.session || !emailConfirmed) {
+      // Do not leave an auto-confirmed or partially-created session active while
+      // asking the user to verify. This keeps the flow safe if Auth settings
+      // differ between local, preview and production projects.
+      if (data.session) await supabase.auth.signOut();
+      router.push(`/register/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(destination[role])}`);
       return;
     }
     router.push(destination[role]);
