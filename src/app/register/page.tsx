@@ -27,7 +27,7 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
       </section>
       <section className="mx-auto w-full max-w-xl">
         <div className="card p-6 sm:p-8"><RegisterForm initialRole={role} referralCode={referralCode} /></div>
-        <p className="mt-4 text-sm text-ink-muted">Already have an account? <Link href="/login" className="font-semibold text-jade-700 underline underline-offset-4">Sign in</Link></p>
+        <p className="mt-4 text-sm text-ink-muted">Already have an account? <Link href={role === "vendor" ? "/login?role=vendor&next=/vendor" : "/login"} className="font-semibold text-jade-700 underline underline-offset-4">Sign in</Link></p>
       </section>
     </div>
   );

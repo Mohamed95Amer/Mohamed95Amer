@@ -33,7 +33,7 @@ export function SiteFooter() {
           <h4 className="eyebrow text-gold-600">Partners</h4>
           <ul className="mt-4 space-y-2.5 text-sm text-ink-muted">
             <li><Link className="transition hover:text-jade-700" href="/vendor/register">List your shop</Link></li>
-            <li><Link className="transition hover:text-jade-700" href="/vendor">Vendor dashboard</Link></li>
+            <li><Link className="transition hover:text-jade-700" href="/login?role=vendor&next=/vendor">Vendor dashboard</Link></li>
             <li><Link className="transition hover:text-jade-700" href="/delivery/register">Join as delivery company</Link></li>
             <li><Link className="transition hover:text-jade-700" href="/delivery">Delivery dashboard</Link></li>
           </ul>
