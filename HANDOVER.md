@@ -1,6 +1,6 @@
 # Get Gold — handover
 
-**Latest checkpoint — certified bullion fineness (17 Sep 2026; ready to deploy):**
+**Latest checkpoint — certified bullion fineness (17 Sep 2026; deployed):**
 Vendor listings now support an optional certificate fineness in parts per thousand for
 bars and coins (for example 995, 999 or 999.9). The exact assay is validated as a
 bullion-only field, used against the 999 24K reference in live pricing, shown in
@@ -8,8 +8,8 @@ customer/vendor/admin product views, and stored in every new locked price snapsh
 Migration `20260917080705_exact_bullion_fineness.sql` is applied and verified in the
 production Supabase SQL Editor; both `products.assay_fineness` and
 `order_price_snapshots.assay_fineness` exist. 46 app tests, typecheck, lint and a
-29-page production build pass. Vercel deployment is the remaining step for this
-checkpoint.
+29-page production build pass. Vercel deployment `FFfin1n6XHayANVFa4yAUuG6Vb62` is
+Ready and aliased to https://getgold.ae.
 
 **Latest checkpoint — UAE karat coverage and transparent store rate adjustment (17 Sep 2026; deployed):**
 Production now supports UAE-market 12K, 14K, 16K, 18K, 21K, 22K and 24K listings. Vendors can
