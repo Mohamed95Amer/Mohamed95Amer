@@ -28,7 +28,7 @@ export default async function VendorOrdersPage() {
     admin
       .from("reservations")
       .select(
-        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, vat_rate_bps, vat_aed, quantity)",
+        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, vendor_rate_adjustment_aed, vat_rate_bps, vat_aed, quantity)",
       )
       .eq("vendor_id", vendor.id)
       .order("created_at", { ascending: false }),
@@ -80,7 +80,7 @@ export default async function VendorOrdersPage() {
             {(orders ?? []).map((o) => {
               const product = o.product as unknown as { name: string; karat: number; weight_grams: number } | null;
               const customer = o.customer as unknown as { full_name: string | null } | null;
-              type PriceSnapshot = { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; vat_rate_bps: number; vat_aed: number; quantity: number };
+              type PriceSnapshot = { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; vendor_rate_adjustment_aed: number | null; vat_rate_bps: number; vat_aed: number; quantity: number };
               const snap = o.snapshot as unknown as PriceSnapshot[] | PriceSnapshot | null;
               const total = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
               const priceSnapshot = Array.isArray(snap) ? snap[0] : snap;
@@ -93,7 +93,7 @@ export default async function VendorOrdersPage() {
                   <td className="px-4 py-2">{customer?.full_name ?? "—"}</td>
                   <td className="px-4 py-2">{product?.name} · {product?.karat}K · {product?.weight_grams}g</td>
                   <td className="px-4 py-2 text-right">{o.quantity}</td>
-                  <td className="px-4 py-2 text-right">{formatAed(total)}<span className="block text-[10px] text-ink-muted">{Number(priceSnapshot?.vat_rate_bps ?? 0) > 0 ? `${formatAed(Number(priceSnapshot?.vat_aed ?? 0))} VAT included` : "VAT not charged"}</span></td>
+                  <td className="px-4 py-2 text-right">{formatAed(total)}<span className="block text-[10px] text-ink-muted">{Number(priceSnapshot?.vat_rate_bps ?? 0) > 0 ? `${formatAed(Number(priceSnapshot?.vat_aed ?? 0))} VAT included` : "VAT not charged"}</span>{Number(priceSnapshot?.vendor_rate_adjustment_aed ?? 0) > 0 && <span className="block text-[10px] text-ink-muted">{formatAed(Number(priceSnapshot?.vendor_rate_adjustment_aed))} store rate adj.</span>}</td>
                   <td className="px-4 py-2"><span className="pill border-bone-deep bg-bone-soft">{statusLabel(o.status)}</span></td>
                   <td className="px-4 py-2 text-ink-muted">{formatDubaiDateTime(o.expires_at)}</td>
                   <td className="px-4 py-2 text-right">

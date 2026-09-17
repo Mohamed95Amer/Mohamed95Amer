@@ -36,6 +36,7 @@ export function computeGoldHubValueScore(
     breakdown.goldValueAed +
       breakdown.makingCharge +
       breakdown.certificateFee +
+      breakdown.vendorRateAdjustmentAed +
       breakdown.vendorPremium,
   );
   const comparableServiceFee = round2(
@@ -44,6 +45,7 @@ export function computeGoldHubValueScore(
   const premiumAboveGoldAed = round2(
     breakdown.makingCharge +
       breakdown.certificateFee +
+      breakdown.vendorRateAdjustmentAed +
       breakdown.vendorPremium +
       comparableServiceFee,
   );

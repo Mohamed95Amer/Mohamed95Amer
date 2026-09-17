@@ -30,6 +30,7 @@ interface ReservePricing {
   certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
+  vendorRateAdjustmentPerGram: number;
   platformFeeBps: number;
   deliveryFee: number;
   vatRateBps: number;

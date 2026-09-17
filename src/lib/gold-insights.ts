@@ -15,6 +15,8 @@ export interface PriceSnapshotForInsight {
   certificate_fee: number | string;
   stone_value: number | string;
   vendor_premium: number | string;
+  vendor_rate_adjustment_per_gram?: number | string;
+  vendor_rate_adjustment_aed?: number | string;
   platform_fee: number | string;
   delivery_fee: number | string;
   quantity: number | string;

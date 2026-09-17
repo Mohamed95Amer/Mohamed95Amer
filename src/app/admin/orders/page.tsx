@@ -12,7 +12,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   let q = admin
     .from("reservations")
     .select(
-      "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, vendor:vendors(business_name), customer:profiles(full_name), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_standard_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, vat_rate_bps, vat_aed, quantity)",
+      "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, vendor:vendors(business_name), customer:profiles(full_name), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_standard_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, vendor_rate_adjustment_aed, vat_rate_bps, vat_aed, quantity)",
     )
     .order("created_at", { ascending: false })
     .limit(200);
@@ -42,7 +42,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
           {(data ?? []).map((o) => {
             const c = o.customer as unknown as { full_name: string | null } | null;
             const v = o.vendor as unknown as { business_name: string } | null;
-            type PriceSnapshot = { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_standard_bps: number | null; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; vat_rate_bps: number; vat_aed: number; quantity: number };
+            type PriceSnapshot = { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_standard_bps: number | null; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; vendor_rate_adjustment_aed: number | null; vat_rate_bps: number; vat_aed: number; quantity: number };
             const snap = o.snapshot as unknown as PriceSnapshot[] | PriceSnapshot | null;
             const total = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
             const priceSnapshot = Array.isArray(snap) ? snap[0] : snap;
@@ -55,7 +55,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                 <td className="px-4 py-2">{c?.full_name ?? "—"}</td>
                 <td className="px-4 py-2">{v?.business_name ?? "—"}</td>
                 <td className="px-4 py-2 text-right">{o.quantity}</td>
-                <td className="px-4 py-2 text-right">{formatAed(total)}<span className="block text-[10px] text-ink-muted">{Number(priceSnapshot?.vat_rate_bps ?? 0) > 0 ? `${formatAed(Number(priceSnapshot?.vat_aed ?? 0))} VAT included` : "VAT not charged"}</span></td>
+                <td className="px-4 py-2 text-right">{formatAed(total)}<span className="block text-[10px] text-ink-muted">{Number(priceSnapshot?.vat_rate_bps ?? 0) > 0 ? `${formatAed(Number(priceSnapshot?.vat_aed ?? 0))} VAT included` : "VAT not charged"}</span>{Number(priceSnapshot?.vendor_rate_adjustment_aed ?? 0) > 0 && <span className="block text-[10px] text-ink-muted">{formatAed(Number(priceSnapshot?.vendor_rate_adjustment_aed))} store rate adj.</span>}</td>
                 <td className="px-4 py-2 text-right">
                   {usesCurrentCustomerFee ? <>{formatAed(customerServiceFee)}<span className="block text-[10px] text-ink-muted">{Number(priceSnapshot?.platform_fee_bps ?? 0) / 100}%{Number(priceSnapshot?.customer_fee_discount_percent ?? 0) > 0 ? " · intro offer" : ""}{Number(priceSnapshot?.service_fee_event_discount_percent ?? 0) > 0 ? ` · ${priceSnapshot?.marketplace_promotion_title ?? "event offer"}` : ""}</span></> : <>{customerServiceFee > 0 ? formatAed(customerServiceFee) : "Not charged"}<span className="block text-[10px] text-ink-muted">Legacy pricing · before customer fee</span></>}
                 </td>

@@ -41,7 +41,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   let query = supabase
     .from("products")
     .select(
-      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vat_rate_bps, quantity, images, vendor_id, created_at, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
+      "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, vat_rate_bps, quantity, images, vendor_id, created_at, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
     )
     .eq("product_status", "approved")
     .eq("vendors.verification_status", "approved")
@@ -121,7 +121,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
             <label className="label" htmlFor="marketplace-karat">Purity</label>
             <select id="marketplace-karat" className="input" name="karat" defaultValue={filters.karat ?? ""}>
               <option value="">All karats</option>
-              {[18, 21, 22, 24].map((k) => <option key={k} value={k}>{k}K</option>)}
+              {[24, 22, 21, 18, 16, 14, 12].map((k) => <option key={k} value={k}>{k}K</option>)}
             </select>
           </div>
           <div>
@@ -220,6 +220,7 @@ function listingPrice(product: any, liveRate: number, platformFeeBps: number, de
     certificateFee: Number(product.certificate_fee),
     stoneValue: Number(product.stone_value),
     vendorPremium: Number(product.vendor_premium),
+    vendorRateAdjustmentPerGram: Number(product.vendor_rate_adjustment_per_gram ?? 0),
     platformFeeBps,
     deliveryFee,
     vatRateBps: Number(product.vat_rate_bps ?? 500),

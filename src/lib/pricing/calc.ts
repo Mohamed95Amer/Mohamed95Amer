@@ -4,11 +4,27 @@
  * server-side in src/lib/pricing/server.ts using the same formula.
  */
 
+/** UAE market/legal fineness equivalents used for catalogue pricing. */
+export const SUPPORTED_KARATS = [24, 22, 21, 18, 16, 14, 12] as const;
 export const KARAT_PURITY: Record<number, number> = {
   24: 1.0,
   22: 0.916,
   21: 0.875,
   18: 0.75,
+  16: 0.666,
+  14: 0.583,
+  12: 0.5,
+};
+
+/** UAE statutory fineness marks (parts per thousand) for common jewellery karats. */
+export const KARAT_FINENESS: Record<number, number> = {
+  24: 999,
+  22: 916,
+  21: 875,
+  18: 750,
+  16: 666,
+  14: 583,
+  12: 500,
 };
 
 export function karatPurityFactor(karat: number): number {
@@ -32,6 +48,8 @@ export interface PriceInputs {
   certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
+  /** Optional shop-wide AED/g adjustment, shown separately from making charge. */
+  vendorRateAdjustmentPerGram?: number;
   platformFeeBps: number;
   deliveryFee: number;
   vatRateBps?: number;
@@ -48,6 +66,8 @@ export interface PriceBreakdown {
   certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
+  vendorRateAdjustmentPerGram: number;
+  vendorRateAdjustmentAed: number;
   merchandiseSubtotalAed: number;
   platformFee: number;
   platformFeeBps: number;
@@ -94,12 +114,17 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
   const makingCharge = round2(makingChargeOriginal - makingChargeDiscountAed);
   const certificateFee = round2(inputs.certificateFee);
   const stoneValue = round2(inputs.stoneValue);
+  const vendorRateAdjustmentPerGram = round2(inputs.vendorRateAdjustmentPerGram ?? 0);
+  if (!Number.isFinite(vendorRateAdjustmentPerGram) || vendorRateAdjustmentPerGram < 0 || vendorRateAdjustmentPerGram > 1000) {
+    throw new Error("Store rate adjustment must be between AED 0 and AED 1,000 per gram");
+  }
+  const vendorRateAdjustmentAed = round2(vendorRateAdjustmentPerGram * inputs.weightGrams);
   // Retained in the shape for historical snapshots only. New quotes never charge
   // a vendor premium, including listings that still carry a legacy database value.
   const vendorPremium = 0;
   const deliveryFee = round2(inputs.deliveryFee);
   const merchandiseSubtotalAed = round2(
-    goldValueAed + makingCharge + certificateFee + stoneValue + vendorPremium,
+    goldValueAed + vendorRateAdjustmentAed + makingCharge + certificateFee + stoneValue + vendorPremium,
   );
   const platformFee = round2(merchandiseSubtotalAed * inputs.platformFeeBps / 10_000);
   const vatTaxableAmountAed = round2(merchandiseSubtotalAed + platformFee + deliveryFee);
@@ -116,6 +141,8 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
     certificateFee,
     stoneValue,
     vendorPremium,
+    vendorRateAdjustmentPerGram,
+    vendorRateAdjustmentAed,
     merchandiseSubtotalAed,
     platformFee,
     platformFeeBps: inputs.platformFeeBps,

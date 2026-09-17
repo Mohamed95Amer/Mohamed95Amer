@@ -35,6 +35,7 @@ export default async function AdminProductDetail({ params }: { params: Promise<{
           <dt className="text-ink-muted">Offer ends</dt><dd>{p.making_charge_offer_ends_at ? new Date(p.making_charge_offer_ends_at).toLocaleString("en-AE", { timeZone: "Asia/Dubai" }) : "—"}</dd>
           <dt className="text-ink-muted">Certificate / assay fee</dt><dd>{p.certificate_fee}</dd>
           <dt className="text-ink-muted">Stone</dt><dd>{p.stone_value}</dd>
+          <dt className="text-ink-muted">Store rate adjustment</dt><dd>{p.vendor_rate_adjustment_per_gram ?? 0} AED/g</dd>
           <dt className="text-ink-muted">Vendor VAT selection</dt><dd>{Number(p.vat_rate_bps) === 0 ? "No VAT charged — verify tax treatment before approval" : "5% VAT"}</dd>
           <dt className="text-ink-muted">Certificate</dt><dd>{p.certificate_number ?? "—"}</dd>
           <dt className="text-ink-muted">Hallmark</dt><dd>{p.hallmark_info ?? "—"}</dd>

@@ -94,7 +94,7 @@ export const productUpsertSchema = z.object({
   category: z.enum([
     "ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other",
   ]),
-  karat: z.union([z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
+  karat: z.union([z.literal(12), z.literal(14), z.literal(16), z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
   weight_grams: z.number().positive().max(10000),
   making_charge: z.number().min(0).max(1_000_000),
   making_charge_discount_percent: z.number().int().min(0).max(100),
@@ -102,6 +102,7 @@ export const productUpsertSchema = z.object({
   certificate_fee: z.number().min(0).max(1_000_000),
   stone_value: z.number().min(0).max(10_000_000),
   vendor_premium: z.literal(0).default(0),
+  vendor_rate_adjustment_per_gram: z.number().min(0).max(1000).default(0),
   vat_rate_bps: z.union([z.literal(0), z.literal(500)]),
   vat_choice_confirmed: z.boolean().default(false),
   quantity: z.number().int().min(0).max(100000),
@@ -231,7 +232,7 @@ export const vendorOrderProgressSchema = z.object({
 
 export const buyerRequestCreateSchema = z.object({
   category: z.enum(["ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other"]),
-  karat: z.union([z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
+  karat: z.union([z.literal(12), z.literal(14), z.literal(16), z.literal(18), z.literal(21), z.literal(22), z.literal(24)]),
   budgetMinAed: z.number().min(0).max(10_000_000),
   budgetMaxAed: z.number().positive().max(10_000_000),
   emirate: z.enum(UAE_EMIRATES),

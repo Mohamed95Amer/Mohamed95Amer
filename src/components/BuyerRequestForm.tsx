@@ -3,6 +3,7 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { UAE_EMIRATES } from "@/lib/fulfilment";
+import { SUPPORTED_KARATS } from "@/lib/pricing/calc";
 
 const CATEGORIES = ["ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other"];
 
@@ -59,7 +60,7 @@ export function BuyerRequestForm() {
           <select id="request-category" name="category" className="input capitalize" required>{CATEGORIES.map((category) => <option key={category}>{category}</option>)}</select>
         </Field>
         <Field label="Gold purity" htmlFor="request-karat">
-          <select id="request-karat" name="karat" className="input" defaultValue="22" required>{[18, 21, 22, 24].map((karat) => <option key={karat} value={karat}>{karat}K</option>)}</select>
+          <select id="request-karat" name="karat" className="input" defaultValue="22" required>{SUPPORTED_KARATS.map((karat) => <option key={karat} value={karat}>{karat}K</option>)}</select>
         </Field>
         <Field label="Minimum budget (AED)" htmlFor="request-budget-min">
           <input id="request-budget-min" name="budgetMinAed" className="input" type="number" min="0" step="50" defaultValue="0" required />

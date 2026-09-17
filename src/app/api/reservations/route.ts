@@ -215,6 +215,8 @@ export async function POST(request: Request) {
     certificate_fee: priced.breakdown.certificateFee,
     stone_value: priced.breakdown.stoneValue,
     vendor_premium: priced.breakdown.vendorPremium,
+    vendor_rate_adjustment_per_gram: priced.breakdown.vendorRateAdjustmentPerGram,
+    vendor_rate_adjustment_aed: priced.breakdown.vendorRateAdjustmentAed,
     platform_fee: priced.breakdown.platformFee,
     platform_fee_bps: priced.breakdown.platformFeeBps,
     delivery_fee: priced.breakdown.deliveryFee,

@@ -158,12 +158,14 @@ export default async function ReservationDetailPage({ params }: { params: Promis
             )}
             <dt className="text-ink-muted">Stone</dt>
             <dd className="text-right">{formatAed(Number(snap.stone_value) * snapshotQuantity)}</dd>
+            {Number(snap.vendor_rate_adjustment_aed ?? 0) > 0 && <><dt className="text-ink-muted">Store rate adjustment ({formatAed(Number(snap.vendor_rate_adjustment_per_gram ?? 0))}/g)</dt>
+            <dd className="text-right">{formatAed(Number(snap.vendor_rate_adjustment_aed) * snapshotQuantity)}</dd></>}
             {Number(snap.vendor_premium) > 0 && <><dt className="text-ink-muted">Vendor premium (historical order)</dt>
             <dd className="text-right">{formatAed(Number(snap.vendor_premium) * snapshotQuantity)}</dd></>}
             <dt className="text-ink-muted">Get Gold fee {Number(snap.customer_fee_discount_percent ?? 0) > 0 ? "(50% off)" : ""}</dt>
             <dd className="text-right">{formatAed(Number(snap.platform_fee) * snapshotQuantity)}</dd>
             {Number(snap.service_fee_event_discount_percent ?? 0) > 0 && <><dt className="text-signal-ok">{String(snap.marketplace_promotion_title ?? "Seasonal offer")}</dt><dd className="text-right font-medium text-signal-ok">{snap.service_fee_event_discount_percent}% extra off fee</dd></>}
-            {(Number(snap.customer_fee_discount_percent ?? 0) > 0 || Number(snap.service_fee_event_discount_percent ?? 0) > 0) && <><dt className="text-ink-muted">Standard 1% fee</dt><dd className="text-right text-ink-muted line-through">{formatAed((Number(snap.gold_value_aed) + Number(snap.making_charge) + Number(snap.certificate_fee ?? 0) + Number(snap.stone_value) + Number(snap.vendor_premium)) * snapshotQuantity / 100)}</dd></>}
+            {(Number(snap.customer_fee_discount_percent ?? 0) > 0 || Number(snap.service_fee_event_discount_percent ?? 0) > 0) && <><dt className="text-ink-muted">Standard 1% fee</dt><dd className="text-right text-ink-muted line-through">{formatAed((Number(snap.gold_value_aed) + Number(snap.making_charge) + Number(snap.certificate_fee ?? 0) + Number(snap.stone_value) + Number(snap.vendor_premium) + Number(snap.vendor_rate_adjustment_aed ?? 0)) * snapshotQuantity / 100)}</dd></>}
             <dt className="text-ink-muted">Delivery {snap.delivery_fee_basis === "per_order" ? "(once per order)" : "(original per-item rate)"}</dt>
             <dd className="text-right">{formatAed(Number(snap.delivery_fee) * (snap.delivery_fee_basis === "per_order" ? 1 : snapshotQuantity))}</dd>
             {Number(snap.delivery_event_discount_percent ?? 0) > 0 && <><dt className="text-signal-ok">Delivery offer</dt><dd className="text-right font-medium text-signal-ok">{snap.delivery_event_discount_percent}% off · was {formatAed(Number(snap.delivery_fee_before_event_discount ?? 0))}</dd></>}
@@ -192,7 +194,7 @@ export default async function ReservationDetailPage({ params }: { params: Promis
           </div>
         </section>
       )}
-      <p className="mt-6 text-xs leading-relaxed text-ink-muted">The current comparison updates only the gold component and holds the captured making, certificate or assay, stone, premium and fee amounts constant. It is not an appraisal, resale offer or financial advice.</p>
+      <p className="mt-6 text-xs leading-relaxed text-ink-muted">The current comparison updates only the gold component and holds the captured making, certificate or assay, store rate adjustment, stone and fee amounts constant. It is not an appraisal, resale offer or financial advice.</p>
     </div>
   );
 }

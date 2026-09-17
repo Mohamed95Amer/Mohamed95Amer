@@ -62,6 +62,20 @@ test('delivery is charged once for a multi-item order; collection is free', () =
   assert.equal(computeOrderTotal(computePrice({ ...base, deliveryFee: 0 }), 3), 1899.45);
   for (const quantity of [0, -1, 1.5, 51, NaN]) assert.throws(() => computeOrderTotal(computePrice(base), quantity));
 });
+test('store rate adjustment is transparent and included before fee and VAT', () => {
+  const price = computePrice({ ...base, karat: 18, weightGrams: 4.5, vendorRateAdjustmentPerGram: 10 });
+  assert.equal(price.purityFactor, 0.75);
+  assert.equal(price.vendorRateAdjustmentPerGram, 10);
+  assert.equal(price.vendorRateAdjustmentAed, 45);
+  assert.equal(price.merchandiseSubtotalAed, 1832.5);
+  assert.equal(price.platformFee, 9.16);
+  assert.equal(price.vatAed, 93.08);
+});
+test('UAE common karats map to statutory fineness factors', () => {
+  for (const [karat, factor] of [[24, 1], [22, .916], [21, .875], [18, .75], [16, .666], [14, .583], [12, .5]]) {
+    assert.equal(computePrice({ ...base, karat, vendorRateAdjustmentPerGram: 0 }).purityFactor, factor);
+  }
+});
 
 test('legacy vendor premiums never increase new quotes, fees or VAT', () => {
   for (const vendorPremium of [0, 55, 150, 1000000]) {

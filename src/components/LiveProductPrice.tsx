@@ -15,6 +15,7 @@ interface Props {
   certificateFee: number;
   stoneValue: number;
   vendorPremium: number;
+  vendorRateAdjustmentPerGram?: number;
   vatRateBps?: number;
   platformFeeBps?: number;
   customerFeeDiscountPercent?: number;
@@ -54,6 +55,7 @@ export function LiveProductPrice(props: Props) {
     certificateFee: props.certificateFee,
     stoneValue: props.stoneValue,
     vendorPremium: props.vendorPremium,
+    vendorRateAdjustmentPerGram: props.vendorRateAdjustmentPerGram ?? 0,
     platformFeeBps: props.platformFeeBps ?? 100,
     deliveryFee: props.deliveryFee ?? 0,
     vatRateBps: props.vatRateBps ?? 500,
@@ -147,6 +149,12 @@ export function LiveProductPrice(props: Props) {
               <>
                 <dt>Stone value</dt>
                 <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.stoneValue)}</dd>
+              </>
+            )}
+            {breakdown.vendorRateAdjustmentAed > 0 && (
+              <>
+                <dt>Store rate adjustment ({formatAed(breakdown.vendorRateAdjustmentPerGram)}/g)</dt>
+                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorRateAdjustmentAed)}</dd>
               </>
             )}
             <dt>Get Gold fee {props.customerFeeDiscountPercent ? <span className="ml-1 rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">50% OFF</span> : null}{props.eventFeeDiscountPercent ? <span className="ml-1 rounded-full bg-jade-100 px-2 py-0.5 text-[10px] font-bold text-jade-700">EXTRA {props.eventFeeDiscountPercent}% OFF</span> : null}</dt>

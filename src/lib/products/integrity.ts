@@ -19,7 +19,7 @@ export interface ProductIntegrityIssue {
   field?: keyof ProductIntegrityInput;
 }
 
-const KARATS = [18, 21, 22, 24] as const;
+const KARATS = [12, 14, 16, 18, 21, 22, 24] as const;
 
 /**
  * Catalogue integrity gate shared by vendor submission and admin approval.

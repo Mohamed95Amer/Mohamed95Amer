@@ -21,6 +21,7 @@ export interface ProductCardData {
   certificate_fee: number | string;
   stone_value: number | string;
   vendor_premium: number | string;
+  vendor_rate_adjustment_per_gram?: number | string;
   vat_rate_bps?: number | string;
   images?: unknown;
   available?: number | null;
@@ -79,6 +80,7 @@ export function ProductCard({
           certificateFee: Number(p.certificate_fee),
           stoneValue: Number(p.stone_value),
           vendorPremium: Number(p.vendor_premium),
+          vendorRateAdjustmentPerGram: Number(p.vendor_rate_adjustment_per_gram ?? 0),
           platformFeeBps,
           deliveryFee,
           vatRateBps: Number(p.vat_rate_bps ?? 500),
@@ -113,6 +115,7 @@ export function ProductCard({
               <div className="flex justify-between gap-2"><dt className="text-ink-muted">Making charge</dt><dd className="text-right tabular-nums">{breakdown.makingChargeDiscountPercent > 0 && <del className="mr-1 text-[10px] text-ink-muted">{formatAed(breakdown.makingChargeOriginal)}</del>}{breakdown.makingCharge === 0 ? "No charge" : formatAed(breakdown.makingCharge)}</dd></div>
               {breakdown.certificateFee > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Certificate / assay</dt><dd>{formatAed(breakdown.certificateFee)}</dd></div>}
               {breakdown.stoneValue > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Stones</dt><dd>{formatAed(breakdown.stoneValue)}</dd></div>}
+              {breakdown.vendorRateAdjustmentAed > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Store rate adjustment ({formatAed(breakdown.vendorRateAdjustmentPerGram)}/g)</dt><dd>{formatAed(breakdown.vendorRateAdjustmentAed)}</dd></div>}
               <div className="flex justify-between gap-2"><dt className="text-ink-muted">Get Gold fee</dt><dd>{formatAed(breakdown.platformFee)}</dd></div>
               {breakdown.deliveryFee > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Delivery</dt><dd>{formatAed(breakdown.deliveryFee)}</dd></div>}
               <div className="flex justify-between gap-2"><dt className="text-ink-muted">VAT ({breakdown.vatRateBps / 100}%)</dt><dd>{breakdown.vatRateBps === 0 ? "Not charged" : formatAed(breakdown.vatAed)}</dd></div>

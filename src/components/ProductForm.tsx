@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProductImageUploader } from "./ProductImageUploader";
+import { SUPPORTED_KARATS } from "@/lib/pricing/calc";
 
 interface ProductInitial {
   id?: string;
@@ -16,6 +17,7 @@ interface ProductInitial {
   making_charge_offer_ends_at?: string | null;
   certificate_fee?: number;
   stone_value?: number;
+  vendor_rate_adjustment_per_gram?: number;
   vat_rate_bps?: number;
   quantity?: number;
   certificate_number?: string | null;
@@ -24,7 +26,6 @@ interface ProductInitial {
 }
 
 const CATEGORIES = ["ring","necklace","bracelet","earring","bangle","chain","pendant","bar","coin","other"];
-const KARATS = [18, 21, 22, 24];
 
 export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; vendorId?: string }) {
   const router = useRouter();
@@ -39,6 +40,7 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
     making_charge_offer_ends_at: toLocalDateTimeInput(initial?.making_charge_offer_ends_at),
     certificate_fee: initial?.certificate_fee ?? 0,
     stone_value: initial?.stone_value ?? 0,
+    vendor_rate_adjustment_per_gram: initial?.vendor_rate_adjustment_per_gram ?? 0,
     vat_rate_bps: initial?.vat_rate_bps ?? 500,
     vat_choice_confirmed: false,
     quantity: initial?.quantity ?? 1,
@@ -70,6 +72,7 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
             : null,
           certificate_fee: Number(form.certificate_fee),
           stone_value: Number(form.stone_value),
+          vendor_rate_adjustment_per_gram: Number(form.vendor_rate_adjustment_per_gram),
           vendor_premium: 0,
           vat_rate_bps: Number(form.vat_rate_bps),
           quantity: Number(form.quantity),
@@ -116,7 +119,7 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
       <div>
         <label className="label" htmlFor="product-karat">Karat</label>
         <select id="product-karat" name="karat" className="input" value={form.karat} onChange={(e) => set("karat", Number(e.target.value))}>
-          {KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}
+          {SUPPORTED_KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}
         </select>
       </div>
       <div>
@@ -149,6 +152,11 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
       <div>
         <label className="label" htmlFor="product-stone">Stone value (AED)</label>
         <input id="product-stone" name="stone_value" className="input" type="number" inputMode="decimal" min="0" step="0.01" value={form.stone_value} onChange={(e) => set("stone_value", Number(e.target.value))} />
+      </div>
+      <div>
+        <label className="label" htmlFor="product-rate-adjustment">Store rate adjustment (AED per gram)</label>
+        <input id="product-rate-adjustment" name="vendor_rate_adjustment_per_gram" className="input" type="number" inputMode="decimal" min="0" max="1000" step="0.01" value={form.vendor_rate_adjustment_per_gram} onChange={(e) => set("vendor_rate_adjustment_per_gram", Number(e.target.value))} />
+        <p className="mt-1 text-xs text-ink-muted">Optional shop-specific uplift on the UAE karat rate. It is shown separately from making charge and never hidden in the gold price.</p>
       </div>
       <fieldset className="md:col-span-2 rounded-xl border border-jade-900/15 bg-bone-soft p-4 sm:p-5">
         <legend className="px-1 text-sm font-semibold text-jade-950">VAT for this product</legend>
