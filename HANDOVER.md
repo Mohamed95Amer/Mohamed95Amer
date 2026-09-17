@@ -11,8 +11,8 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
-**Latest checkpoint — design audit, no vendor premium, vendor VAT choice (16 Sep 2026; deployed):**
-Deployment `2bn7otC7yhVUxq9cqevJmdPEHZ2D` is live at https://getgold.ae. Shared pricing
+**Latest checkpoint — vendor onboarding and advertising guardrails (17 Sep 2026; deployed):**
+Deployment `6qUHYgunncRHupbk7KJGikQggzC7` is live at https://getgold.ae. Shared pricing
 now ignores legacy product premiums and returns zero premium for every new quote/order.
 Do not restore the charge by reading the old catalogue column. Old locked snapshots
 are untouched and retain their historical receipt details.
