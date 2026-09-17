@@ -1,5 +1,15 @@
 # Get Gold — handover
 
+**Latest checkpoint — UAE karat coverage and transparent store rate adjustment (17 Sep 2026; deployed):**
+Production now supports UAE-market 12K, 14K, 16K, 18K, 21K, 22K and 24K listings. Vendors can
+enter an optional **store rate adjustment in AED per gram**, which is displayed separately from
+making charge and included in the live total, Get Gold fee base, VAT and locked order snapshot.
+The adjustment is capped at AED 1,000/g. Legacy `vendor_premium` values remain historical only.
+The production Supabase schema migration `20260917065532_uae_karats_and_vendor_rate_adjustment.sql`
+was applied and verified in SQL Editor (three adjustment columns and both karat constraints).
+Deployment `AbeBySFu5uB2vdEqgzzCM6XkjCqb` is Ready at https://getgold.ae. 45 app tests,
+typecheck, lint and a 29-page production build pass.
+
 UAE gold marketplace, renamed from GoldHub. Next.js 15 (App Router) + Supabase + Tailwind, deployed on Vercel.
 Customers browse listings priced live against the gold market and reserve at a locked price;
 vendors list stock; delivery companies maintain verified partner profiles; admins approve businesses and listings.
