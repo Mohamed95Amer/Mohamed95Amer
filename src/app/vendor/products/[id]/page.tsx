@@ -2,10 +2,13 @@ import { notFound, redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { ProductForm } from "@/components/ProductForm";
+import { VendorNav } from "@/components/VendorNav";
+import { statusLabel } from "@/lib/presentation";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await requireUser();
   const admin = getServiceSupabase();
   const { data: vendor } = await admin
@@ -18,16 +21,17 @@ export default async function EditProductPage({ params }: { params: { id: string
   const { data: product } = await admin
     .from("products")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
   if (!product || product.vendor_id !== vendor.id) return notFound();
 
   return (
     <div className="container-pro py-10 max-w-3xl">
       <h1 className="font-serif text-3xl">Edit product</h1>
-      <p className="text-sm text-ink-muted mt-1">Status: <span className="font-medium">{product.product_status}</span></p>
+      <p className="text-sm text-ink-muted mt-1">Status: <span className="font-medium">{statusLabel(product.product_status)}</span></p>
+      <VendorNav />
       <div className="card mt-6 p-6">
-        <ProductForm initial={product} />
+        <ProductForm initial={product} vendorId={vendor.id} />
       </div>
     </div>
   );

@@ -3,12 +3,13 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { vendorResponseSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit";
 import { ipFromRequest } from "@/lib/security/rate-limit";
+import { notifyUser } from "@/lib/notifications/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
 
   const { data: reservation } = await admin
     .from("reservations")
-    .select("id, vendor_id, status, expires_at")
+    .select("id, vendor_id, customer_user_id, status, expires_at, payment_method")
     .eq("id", parsed.data.reservationId)
     .single();
   if (!reservation || reservation.vendor_id !== vendor.id) {
@@ -37,18 +38,34 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_state" }, { status: 409 });
   }
   if (new Date(reservation.expires_at).getTime() < Date.now()) {
-    await admin.from("reservations").update({ status: "expired" }).eq("id", reservation.id);
+    await admin.from("reservations").update({ status: "expired" }).eq("id", reservation.id).eq("status", "pending_vendor_confirmation");
     return NextResponse.json({ error: "expired" }, { status: 409 });
   }
 
-  const nextStatus =
-    parsed.data.decision === "confirm" ? "payment_link_pending" : "rejected_by_vendor";
+  const nextStatus = parsed.data.decision === "confirm"
+    ? reservation.payment_method === "pay_online" ? "payment_link_pending" : "payment_pending"
+    : "rejected_by_vendor";
 
-  const { error } = await admin
+  const { data: changed, error } = reservation.payment_method === "bank_transfer" && parsed.data.decision === "confirm"
+    ? await admin.rpc("accept_vendor_bank_transfer", { p_reservation_id: reservation.id, p_vendor_user_id: auth.user.id, p_note: parsed.data.note ?? null })
+    : ["cash", "card"].includes(reservation.payment_method) && parsed.data.decision === "confirm"
+    ? await admin.rpc("accept_vendor_offline_order", { p_reservation_id: reservation.id, p_vendor_user_id: auth.user.id, p_note: parsed.data.note ?? null })
+    : await admin
     .from("reservations")
-    .update({ status: nextStatus, vendor_response_note: parsed.data.note ?? null })
-    .eq("id", reservation.id);
+    .update({
+      status: nextStatus,
+      vendor_response_note: parsed.data.note ?? null,
+      vendor_responded_at: new Date().toISOString(),
+      payment_status: parsed.data.decision === "confirm" && reservation.payment_method === "pay_online"
+        ? "awaiting_checkout"
+        : "not_required",
+    })
+    .eq("id", reservation.id)
+    .eq("status", "pending_vendor_confirmation")
+    .gt("expires_at", new Date().toISOString())
+    .select("id").maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!changed) return NextResponse.json({ error: "order_changed_or_expired" }, { status: 409 });
 
   await logAudit({
     actor_user_id: auth.user.id,
@@ -60,6 +77,7 @@ export async function POST(request: Request) {
     new_value: { status: nextStatus, note: parsed.data.note ?? null },
     ip_address: ipFromRequest(request),
   });
+  await notifyUser({ userId: reservation.customer_user_id, kind: "order", title: parsed.data.decision === "confirm" ? "The store confirmed your order" : "The store could not confirm your order", body: parsed.data.decision === "confirm" ? (reservation.payment_method === "pay_online" ? "Your order is ready for the payment step when online checkout becomes available." : "Arrange payment directly with the seller using the details in your order.") : (parsed.data.note || "The price lock has been released. You can browse another listing or create a gold request."), href: `/account/reservations/${reservation.id}`, dedupeKey: `reservation-response:${reservation.id}:${parsed.data.decision}` });
 
   return NextResponse.json({ id: reservation.id, status: nextStatus });
 }

@@ -2,6 +2,7 @@ node_modules
 .next
 tsconfig.tsbuildinfo
 .vercel
+supabase/.temp/
 out
 dist
 .env
