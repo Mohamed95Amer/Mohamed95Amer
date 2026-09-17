@@ -101,13 +101,18 @@ export const productUpsertSchema = z.object({
   making_charge_offer_ends_at: z.string().datetime({ offset: true }).nullable(),
   certificate_fee: z.number().min(0).max(1_000_000),
   stone_value: z.number().min(0).max(10_000_000),
-  vendor_premium: z.number().min(0).max(1_000_000),
+  vendor_premium: z.literal(0).default(0),
+  vat_rate_bps: z.union([z.literal(0), z.literal(500)]),
+  vat_choice_confirmed: z.boolean().default(false),
   quantity: z.number().int().min(0).max(100000),
   images: z.array(z.string()).max(20).default([]),
   certificate_number: z.string().max(120).optional().nullable(),
   hallmark_info: z.string().max(200).optional().nullable(),
   submit_for_approval: z.boolean().optional().default(false),
 }).superRefine((product, ctx) => {
+  if (product.vat_rate_bps === 0 && !product.vat_choice_confirmed) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["vat_choice_confirmed"], message: "Confirm that not charging VAT is appropriate for this product and your business" });
+  }
   if (product.making_charge_discount_percent > 0 && product.making_charge <= 0) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,

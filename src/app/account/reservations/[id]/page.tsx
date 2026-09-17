@@ -158,8 +158,8 @@ export default async function ReservationDetailPage({ params }: { params: Promis
             )}
             <dt className="text-ink-muted">Stone</dt>
             <dd className="text-right">{formatAed(Number(snap.stone_value) * snapshotQuantity)}</dd>
-            <dt className="text-ink-muted">Vendor premium</dt>
-            <dd className="text-right">{formatAed(Number(snap.vendor_premium) * snapshotQuantity)}</dd>
+            {Number(snap.vendor_premium) > 0 && <><dt className="text-ink-muted">Vendor premium (historical order)</dt>
+            <dd className="text-right">{formatAed(Number(snap.vendor_premium) * snapshotQuantity)}</dd></>}
             <dt className="text-ink-muted">Get Gold fee {Number(snap.customer_fee_discount_percent ?? 0) > 0 ? "(50% off)" : ""}</dt>
             <dd className="text-right">{formatAed(Number(snap.platform_fee) * snapshotQuantity)}</dd>
             {Number(snap.service_fee_event_discount_percent ?? 0) > 0 && <><dt className="text-signal-ok">{String(snap.marketplace_promotion_title ?? "Seasonal offer")}</dt><dd className="text-right font-medium text-signal-ok">{snap.service_fee_event_discount_percent}% extra off fee</dd></>}

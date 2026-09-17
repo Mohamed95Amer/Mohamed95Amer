@@ -8,7 +8,7 @@ const { applyEventDeliveryDiscount, applyEventFeeDiscount } = load('src/lib/mark
 const { calculateReservationValue } = load('src/lib/gold-insights.ts');
 const { onlinePaymentCheckoutIsOperational } = load('src/lib/payments/readiness.ts');
 const { canTransitionDelivery } = load('src/lib/delivery/transitions.ts');
-const { deliveryStatusSchema } = load('src/lib/validation/schemas.ts');
+const { deliveryStatusSchema, productUpsertSchema } = load('src/lib/validation/schemas.ts');
 const base = { pricePerGram24kAed: 500, karat: 24, weightGrams: 1, makingCharge: 100, makingChargeDiscountPercent: 0, makingChargeOfferEndsAt: null, certificateFee: 0, stoneValue: 0, vendorPremium: 0, platformFeeBps: 50, deliveryFee: 20, pricedAt: Date.parse('2026-09-14T00:00:00Z') };
 
 test('missing or blank coordinates do not produce a false 0,0 map pin', () => {
@@ -61,6 +61,30 @@ test('delivery is charged once for a multi-item order; collection is free', () =
   assert.equal(computeOrderTotal(computePrice(base), 1), 654.15);
   assert.equal(computeOrderTotal(computePrice({ ...base, deliveryFee: 0 }), 3), 1899.45);
   for (const quantity of [0, -1, 1.5, 51, NaN]) assert.throws(() => computeOrderTotal(computePrice(base), quantity));
+});
+
+test('legacy vendor premiums never increase new quotes, fees or VAT', () => {
+  for (const vendorPremium of [0, 55, 150, 1000000]) {
+    const price = computePrice({ ...base, vendorPremium });
+    assert.equal(price.vendorPremium, 0);
+    assert.equal(price.merchandiseSubtotalAed, 600);
+    assert.equal(price.platformFee, 3);
+    assert.equal(price.vatAed, 31.15);
+    assert.equal(computeOrderTotal(price, 3), 1920.45);
+  }
+});
+
+test('vendor VAT choices are explicit, restricted and require a no-VAT declaration', () => {
+  const product = { name: '22K Test ring', category: 'ring', karat: 22, weight_grams: 2,
+    making_charge: 100, making_charge_discount_percent: 0, making_charge_offer_ends_at: null,
+    certificate_fee: 0, stone_value: 0, quantity: 1, vat_rate_bps: 500 };
+  assert.equal(productUpsertSchema.parse(product).vendor_premium, 0);
+  assert.equal(productUpsertSchema.parse({ ...product, vat_rate_bps: 0, vat_choice_confirmed: true }).vat_rate_bps, 0);
+  for (const invalid of [
+    { ...product, vat_rate_bps: 0 }, { ...product, vat_rate_bps: 100 },
+    { ...product, vat_rate_bps: undefined }, { ...product, vat_rate_bps: '500' },
+    { ...product, vendor_premium: 25 },
+  ]) assert.equal(productUpsertSchema.safeParse(invalid).success, false);
 });
 test('delivery pins accept only Google or Apple Maps links and extract visible coordinates', () => {
   for (const link of [

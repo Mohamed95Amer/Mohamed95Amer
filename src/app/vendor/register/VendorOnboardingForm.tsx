@@ -47,24 +47,32 @@ export function VendorOnboardingForm({ initial }: { initial: InitialVendor | nul
     setBusy(true);
     setErr(null);
     setOk(false);
-    const res = await fetch("/api/vendor/onboard", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        google_maps_link: form.google_maps_link || null,
-        vat_trn_number: form.vat_trn_number || null,
-      }),
-    });
-    setBusy(false);
-    if (!res.ok) {
-      const j = await res.json().catch(() => ({}));
-      setErr(typeof j.error === "string" ? j.error : "Could not submit");
-      return;
+    try {
+      const res = await fetch("/api/vendor/onboard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          google_maps_link: form.google_maps_link || null,
+          vat_trn_number: form.vat_trn_number || null,
+        }),
+      });
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        const fieldErrors = j?.details?.fieldErrors && typeof j.details.fieldErrors === "object"
+          ? Object.values(j.details.fieldErrors).flat().map(String).join(" ")
+          : "";
+        setErr(fieldErrors || (typeof j.error === "string" ? j.error : "Could not submit"));
+        return;
+      }
+      setOk(true);
+      router.push("/vendor");
+      router.refresh();
+    } catch {
+      setErr("Could not connect. Check your internet connection and try again.");
+    } finally {
+      setBusy(false);
     }
-    setOk(true);
-    router.push("/vendor");
-    router.refresh();
   }
 
   return (

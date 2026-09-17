@@ -19,7 +19,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
   const admin = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY, clientOptions);
   const anon = () => createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, clientOptions);
   const users = [], products = [], reservations = [], ticks = [];
-  let vendorId, companyId;
+  let vendorId, companyId, onboardingVendorId;
   const fixtures = {};
   const must = result => { assert.equal(result.error, null, result.error?.message); return result.data; };
   const previousSettings = must(await admin.from('platform_settings').select('*').eq('id', true).single());
@@ -62,6 +62,49 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       phone: '+971500000000', emirate: 'Dubai', store_address: 'Test fixture only', verification_status: 'approved',
     }).select().single());
     vendorId = vendor.id;
+    await t.test('New vendor can submit onboarding, revise it, and stays pending for review', async () => {
+      const email = `getgold-onboarding-${randomUUID()}@example.invalid`;
+      const password = `Test-${randomUUID()}!`;
+      const onboardingUser = must(await admin.auth.admin.createUser({
+        email, password, email_confirm: true,
+        user_metadata: { role: 'customer', full_name: 'Synthetic new vendor' },
+      })).user;
+      users.push(onboardingUser.id);
+      const onboardingClient = anon();
+      must(await onboardingClient.auth.signInWithPassword({ email, password }));
+      activeClient = onboardingClient;
+      const payload = {
+        business_name: 'Synthetic New Souq Jewellers',
+        trade_license_number: `TEST-ONBOARD-${randomUUID()}`,
+        license_expiry_date: '2099-01-01',
+        owner_name: 'Synthetic new vendor owner',
+        email,
+        phone: '+971500000002',
+        emirate: 'Dubai',
+        store_address: 'Gold Souq, Deira, Dubai',
+        google_maps_link: null,
+        vat_trn_number: null,
+      };
+      const created = await route('vendor/onboard', payload);
+      assert.equal(created.status, 200, JSON.stringify(created.body));
+      onboardingVendorId = created.body.vendorId;
+      const pending = must(await admin.from('vendors').select('owner_user_id,business_name,verification_status').eq('id', onboardingVendorId).single());
+      assert.equal(pending.owner_user_id, onboardingUser.id);
+      assert.equal(pending.business_name, payload.business_name);
+      assert.equal(pending.verification_status, 'pending');
+      assert.equal(must(await admin.from('profiles').select('role').eq('id', onboardingUser.id).single()).role, 'vendor');
+
+      const invalid = await route('vendor/onboard', { ...payload, trade_license_number: 'x' });
+      assert.equal(invalid.status, 400, JSON.stringify(invalid.body));
+      const revised = await route('vendor/onboard', { ...payload, business_name: 'Synthetic New Souq Jewellers Revised' });
+      assert.equal(revised.status, 200, JSON.stringify(revised.body));
+      assert.equal(revised.body.vendorId, onboardingVendorId);
+      assert.equal(must(await admin.from('vendors').select('business_name,verification_status').eq('id', onboardingVendorId).single()).verification_status, 'pending');
+
+      activeClient = anon();
+      assert.equal((await route('vendor/onboard', payload)).status, 401);
+      activeClient = fixtures.vendor.client;
+    });
     const company = must(await admin.from('delivery_companies').insert({ owner_user_id: fixtures.delivery_company.id,
       company_name: 'Synthetic test courier', trade_license_number: `TEST-${randomUUID()}`,
       license_expiry_date: '2099-01-01', contact_name: 'Synthetic courier', email: fixtures.delivery_company.email,
@@ -71,7 +114,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
     for (const quantity of [10, 1]) {
       products.push(must(await admin.from('products').insert({ vendor_id: vendor.id, name: 'Synthetic 22K Bangle',
         description: 'Synthetic integration fixture, never a real listing.', category: 'bangle', karat: 22,
-        weight_grams: 10, quantity, making_charge: 100, images: ['test-only/bangle.jpg'],
+        weight_grams: 10, quantity, making_charge: 100, vendor_premium: 150, images: ['test-only/bangle.jpg'],
         hallmark_info: 'Synthetic 22K hallmark', product_status: 'approved',
       }).select().single()));
     }
@@ -80,6 +123,34 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       usd_aed: 3.6725, price_per_gram_24k_aed: 500, status: 'ok', fetched_at: new Date().toISOString(),
     }).select().single()); ticks.push(tick.id);
 
+    await t.test('Vendor VAT survives create/edit round trips; tax changes require review and reject premium', async () => {
+      activeClient = fixtures.vendor.client;
+      const payload = { name: 'Synthetic 24K Gold Bar', description: 'Synthetic integration fixture only, not a real product.', category: 'bar', karat: 24,
+        weight_grams: 10, making_charge: 0, making_charge_discount_percent: 0, making_charge_offer_ends_at: null,
+        certificate_fee: 25, certificate_number: 'SYNTHETIC-ASSAY', stone_value: 0, quantity: 2, vat_rate_bps: 0, vat_choice_confirmed: true,
+        images: ['test-only/bar.jpg'], hallmark_info: 'Synthetic 24K hallmark', submit_for_approval: false };
+      const created = await route('vendor/products', payload);
+      assert.equal(created.status, 200, JSON.stringify(created.body));
+      const item = must(await admin.from('products').select('*').eq('id', created.body.id).single());
+      products.push(item);
+      assert.equal(item.vat_rate_bps, 0); assert.equal(item.vendor_premium, 0);
+      must(await admin.from('products').update({ product_status: 'approved' }).eq('id', item.id));
+      const official = await load('src/lib/pricing/server.ts').computeOfficialPriceForProduct(item.id, 2, 'collection');
+      assert.equal(official.breakdown.vatRateBps, 0); assert.equal(official.breakdown.vatAed, 0);
+      assert.equal(official.totalPriceAed, 10150.5);
+      const changed = await route('vendor/products', { ...payload, id: item.id, vat_rate_bps: 500, submit_for_approval: true }, 'PUT');
+      assert.equal(changed.status, 200, JSON.stringify(changed.body));
+      const updated = must(await admin.from('products').select('*').eq('id', item.id).single());
+      assert.equal(updated.vat_rate_bps, 500); assert.equal(updated.product_status, 'pending_approval');
+      assert.equal((await route('vendor/products', { ...payload, id: item.id, vendor_premium: 25 }, 'PUT')).status, 400);
+      assert.equal((await route('vendor/products', { ...payload, id: item.id, vat_choice_confirmed: false }, 'PUT')).status, 400);
+      activeClient = fixtures.outsider.client;
+      assert.equal((await route('vendor/products', { ...payload, id: item.id }, 'PUT')).status, 403);
+      activeClient = fixtures.vendor.client;
+      must(await admin.from('products').update({ product_status: 'suspended' }).eq('id', item.id));
+      assert.equal((await route('vendor/products', { ...payload, id: item.id, submit_for_approval: true }, 'PUT')).status, 200);
+      assert.equal(must(await admin.from('products').select('product_status').eq('id', item.id).single()).product_status, 'suspended');
+    });
     await t.test('Auth roles cannot be self-promoted; private data is denied', async () => {
       assert.equal(must(await admin.from('profiles').select('role').eq('id', fixtures.outsider.id).single()).role, 'customer');
       const attack = await fixtures.customer.client.from('profiles').update({ role: 'super_admin' }).eq('id', fixtures.customer.id);
@@ -142,6 +213,9 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       activeClient = fixtures.customer.client;
       assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward' })).status, 401);
       assert.ok((await fixtures.customer.client.from('vendor_promotions').select('*')).error);
+      activeClient = fixtures.vendor.client;
+      assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Vendor self-promotion', rewardReason: 'referral_reward' })).status, 403);
+      assert.equal((await formRoute('admin/banners', new FormData())).status, 403);
 
       activeClient = fixtures.admin_test.client;
       const premium = await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward', adminNote: 'Synthetic test reward' });
@@ -377,6 +451,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
     for (const id of users) must(await admin.from('order_identity_verifications').delete().eq('user_id', id));
     for (const product of products) must(await admin.from('products').delete().eq('id', product.id));
     if (companyId) must(await admin.from('delivery_companies').delete().eq('id', companyId));
+    if (onboardingVendorId) must(await admin.from('vendors').delete().eq('id', onboardingVendorId));
     if (vendorId) must(await admin.from('vendors').delete().eq('id', vendorId));
     for (const id of ticks) must(await admin.from('gold_price_ticks').delete().eq('id', id));
     if (fixtures.admin_test) {

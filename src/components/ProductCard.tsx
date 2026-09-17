@@ -102,27 +102,28 @@ export function ProductCard({
         </div>
         <div className="flex flex-1 flex-col p-3.5">
           <h3 className="min-h-10 text-sm font-medium leading-5 text-ink">{p.name}</h3>
-          <p className="mt-1 text-[10px] text-ink-muted">{p.karat}K gold · {Number(p.weight_grams)}g{productGoldRate !== null ? ` · ${formatAed(productGoldRate)}/g` : ""}</p>
+          <p className="mt-1 text-xs leading-relaxed text-ink-muted">{p.karat}K gold · {Number(p.weight_grams)}g{productGoldRate !== null ? ` · ${formatAed(productGoldRate)}/g` : ""}</p>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             <StoreRating reputation={p.vendor?.reputation} compact />
             {valueScore && <span className="rounded bg-jade-100 px-2 py-1 text-[10px] font-semibold text-jade-800" title={`Get Gold Value Score: ${valueScore.score}/100. ${valueScore.label}.`}>Value {valueScore.score}/100</span>}
           </div>
           {breakdown ? (
-            <dl className="mt-3 space-y-1 text-[11px]">
+            <dl className="mt-3 space-y-1.5 text-xs [&_dd]:shrink-0 [&_dd]:text-right [&_dd]:tabular-nums">
               <div className="flex justify-between gap-2"><dt className="text-ink-muted">Live gold value ({p.karat}K)</dt><dd className="tabular-nums">{formatAed(breakdown.goldValueAed)}</dd></div>
               <div className="flex justify-between gap-2"><dt className="text-ink-muted">Making charge</dt><dd className="text-right tabular-nums">{breakdown.makingChargeDiscountPercent > 0 && <del className="mr-1 text-[10px] text-ink-muted">{formatAed(breakdown.makingChargeOriginal)}</del>}{breakdown.makingCharge === 0 ? "No charge" : formatAed(breakdown.makingCharge)}</dd></div>
               {breakdown.certificateFee > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Certificate / assay</dt><dd>{formatAed(breakdown.certificateFee)}</dd></div>}
               {breakdown.stoneValue > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Stones</dt><dd>{formatAed(breakdown.stoneValue)}</dd></div>}
-              {breakdown.vendorPremium > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Vendor premium</dt><dd>{formatAed(breakdown.vendorPremium)}</dd></div>}
-              <div className="flex justify-between gap-2"><dt className="text-ink-muted">Fees, delivery &amp; VAT</dt><dd>{formatAed(breakdown.platformFee + breakdown.deliveryFee + breakdown.vatAed)}</dd></div>
-              <div className="flex justify-between gap-2 border-t border-bone-deep/60 pt-2 text-sm font-semibold"><dt>Total <span className="text-[9px] font-normal text-ink-muted">incl. VAT</span></dt><dd className="tabular-nums">{formatAed(price)}</dd></div>
+              <div className="flex justify-between gap-2"><dt className="text-ink-muted">Get Gold fee</dt><dd>{formatAed(breakdown.platformFee)}</dd></div>
+              {breakdown.deliveryFee > 0 && <div className="flex justify-between gap-2"><dt className="text-ink-muted">Delivery</dt><dd>{formatAed(breakdown.deliveryFee)}</dd></div>}
+              <div className="flex justify-between gap-2"><dt className="text-ink-muted">VAT ({breakdown.vatRateBps / 100}%)</dt><dd>{breakdown.vatRateBps === 0 ? "Not charged" : formatAed(breakdown.vatAed)}</dd></div>
+              <div className="flex justify-between gap-2 border-t border-bone-deep/60 pt-2 text-base font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatAed(price)}</dd></div>
             </dl>
           ) : <p className="mt-4 text-sm text-ink-muted">{loading ? "Loading price…" : "Price unavailable"}</p>}
           {price !== null && !isFresh && <p className="mt-1 text-[10px] text-signal-warn">Quote updating · checkout requires a fresh price</p>}
-          {customerFeeDiscountPercent > 0 && <p className="mt-2 text-[10px] text-jade-700">50% off Get Gold fee · first 3 orders</p>}
+          {customerFeeDiscountPercent > 0 && <p className="mt-2 text-xs leading-relaxed text-jade-700">50% off Get Gold fee · first 3 orders</p>}
           {eventFeeDiscountPercent > 0 && <p className="mt-1 text-[10px] text-jade-700">{eventPromotionTitle ?? "Limited offer"} · extra {eventFeeDiscountPercent}% off fee</p>}
           {breakdown?.makingChargeOfferEndsAt && <p className="mt-1 text-[10px] text-gold-600">Making offer ends {formatShortOfferEnd(breakdown.makingChargeOfferEndsAt)}</p>}
-          {p.vendor && <p className="mb-3 mt-3 truncate text-[10px] text-ink-muted">{p.vendor.verification_status === "approved" && <span className="text-jade-700">✓ </span>}{p.vendor.business_name} · {p.vendor.emirate}</p>}
+          {p.vendor && <p className="mb-3 mt-3 text-xs leading-relaxed text-ink-muted">{p.vendor.verification_status === "approved" && <span className="text-jade-700">✓ </span>}{p.vendor.business_name} · {p.vendor.emirate}</p>}
           <span className="mt-auto flex min-h-11 items-center justify-center rounded bg-jade-800 px-3 py-2 text-xs font-semibold text-white transition group-hover:bg-jade-700">View piece &amp; price breakdown <span className="ml-2" aria-hidden="true">→</span></span>
         </div>
       </Link>

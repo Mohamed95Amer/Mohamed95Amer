@@ -11,6 +11,31 @@ All work described here is on that branch. `main` does not have it.
 
 ## 1. Current production state
 
+**Latest checkpoint — design audit, no vendor premium, vendor VAT choice (16 Sep 2026; deployed):**
+Deployment `2bn7otC7yhVUxq9cqevJmdPEHZ2D` is live at https://getgold.ae. Shared pricing
+now ignores legacy product premiums and returns zero premium for every new quote/order.
+Do not restore the charge by reading the old catalogue column. Old locked snapshots
+are untouched and retain their historical receipt details.
+
+Vendor create/edit now explicitly accepts 5% or no VAT per product, using the existing
+`vat_rate_bps` column. No VAT requires a vendor declaration (audited). VAT changes remove
+approved listings from sale until resubmission/approval; suspended products remain
+suspended. Updates verify ownership and compare `updated_at`. Admin product review and
+vendor inventory show the selection. No-VAT copy says Not charged, not an automatic
+legal exemption. The existing whole-order single-rate tax model is unchanged; separate
+tax treatment for independently supplied platform/delivery services still needs tax review.
+
+Visual polish increases price/trust readability, separates fee/VAT in cards, prevents
+mobile carousel-control overlap, and collapses secondary marketplace filters. Vendor
+form errors now recover from network failures and show field messages. The vendor
+journey is covered from public signup through authenticated onboarding, pending review,
+listing creation and controlled merchandising; vendors cannot call admin advertising
+endpoints. 43 app tests, the existing 20 real isolated integration tests, typecheck,
+lint and production builds pass (28/28). A new onboarding/advertising isolation test
+is included and should be rerun when Docker/Supabase is available. Live public and
+demo-vendor form checks passed; no production product/order/identity data was changed
+in testing. See `docs/DESIGN-PRICING-AUDIT-2026-09-16.md`.
+
 **Latest checkpoint — selected UAE Heritage design (16 Sep 2026; deployed):**
 Deployment `FsQVskY1jZCknoisncP4KzU5gn2A` is Ready and aliased to https://getgold.ae
 and www. The owner's selected ivory/emerald/gold reference is implemented with an

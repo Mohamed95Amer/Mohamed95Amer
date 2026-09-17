@@ -94,7 +94,9 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
   const makingCharge = round2(makingChargeOriginal - makingChargeDiscountAed);
   const certificateFee = round2(inputs.certificateFee);
   const stoneValue = round2(inputs.stoneValue);
-  const vendorPremium = round2(inputs.vendorPremium);
+  // Retained in the shape for historical snapshots only. New quotes never charge
+  // a vendor premium, including listings that still carry a legacy database value.
+  const vendorPremium = 0;
   const deliveryFee = round2(inputs.deliveryFee);
   const merchandiseSubtotalAed = round2(
     goldValueAed + makingCharge + certificateFee + stoneValue + vendorPremium,

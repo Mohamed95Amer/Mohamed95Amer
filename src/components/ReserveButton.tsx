@@ -476,7 +476,7 @@ export function ReserveButton({
           </div>
           <div className="mt-2 flex items-center justify-between gap-3 border-t border-jade-900/10 pt-2">
             <span className="text-ink-muted">VAT ({breakdown.vatRateBps / 100}%)</span>
-            <span className="font-semibold tabular-nums text-jade-950">{breakdown.vatRateBps === 0 ? "Zero-rated" : formatAed(orderPricing?.vatAed)}</span>
+            <span className="font-semibold tabular-nums text-jade-950">{breakdown.vatRateBps === 0 ? "Not charged" : formatAed(orderPricing?.vatAed)}</span>
           </div>
           <div className="mt-2 flex items-center justify-between gap-3 border-t border-jade-900/10 pt-2">
             <span className="font-medium text-jade-950">Total for {quantity}</span>

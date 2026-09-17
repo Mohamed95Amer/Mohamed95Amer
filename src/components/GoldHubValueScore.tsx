@@ -78,7 +78,7 @@ export function GoldHubValueScore({ value, compact = false }: Props) {
         </summary>
         <p className="mt-2 leading-relaxed">
           The score starts at 100 and subtracts the percentage added by effective making,
-          certificate or assay, vendor premium and the Get Gold fee. Delivery and separately
+          certificate or assay and the Get Gold fee. Delivery and separately
           priced stones are shown in the breakdown but excluded for a fair gold-to-gold comparison.
           It compares price transparency, not craftsmanship, resale value or investment performance.
         </p>

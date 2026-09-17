@@ -108,11 +108,6 @@ export default async function MarketplacePage({ searchParams }: SP) {
             <label className="label" htmlFor="marketplace-search">Search listings</label>
             <input id="marketplace-search" className="input" name="q" type="search" defaultValue={filters.q ?? ""} placeholder="Try ‘bangle’ or ‘gold bar’" />
           </div>
-          <div><label className="label" htmlFor="marketplace-emirate">Store emirate</label><select id="marketplace-emirate" className="input" name="emirate" defaultValue={filters.emirate ?? ""}><option value="">All Emirates</option>{["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
-          <div><label className="label" htmlFor="marketplace-min-weight">Minimum weight (g)</label><input id="marketplace-min-weight" className="input" name="minWeight" type="number" min="0" step="0.1" defaultValue={filters.minWeight ?? ""} placeholder="Any" /></div>
-          <div><label className="label" htmlFor="marketplace-max-weight">Maximum weight (g)</label><input id="marketplace-max-weight" className="input" name="maxWeight" type="number" min="0" step="0.1" defaultValue={filters.maxWeight ?? ""} placeholder="Any" /></div>
-          <div><label className="label" htmlFor="marketplace-max-total">Maximum live total (AED)</label><input id="marketplace-max-total" className="input" name="maxTotal" type="number" min="1" step="1" defaultValue={filters.maxTotal ?? ""} placeholder="Any" /></div>
-          <div><label className="label" htmlFor="marketplace-certified">Certificate / assay</label><select id="marketplace-certified" className="input" name="certified" defaultValue={filters.certified ?? ""}><option value="">Any</option><option value="yes">Certificate reference listed</option></select></div>
           <div>
             <label className="label" htmlFor="marketplace-category">Category</label>
             <select id="marketplace-category" className="input capitalize" name="category" defaultValue={filters.category ?? ""}>
@@ -139,6 +134,16 @@ export default async function MarketplacePage({ searchParams }: SP) {
               <option value="rating">Store rating</option>
             </select>
           </div>
+          <details className="rounded-lg border border-jade-900/10 bg-bone-soft p-3 md:col-span-2 lg:col-span-4" open={Boolean(filters.emirate || filters.minWeight || filters.maxWeight || filters.maxTotal || filters.certified)}>
+            <summary className="cursor-pointer py-1.5 text-sm font-semibold text-jade-900">More filters <span className="ml-1 text-xs font-normal text-ink-muted">Emirate, weight, budget &amp; certificates</span></summary>
+            <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div><label className="label" htmlFor="marketplace-emirate">Store emirate</label><select id="marketplace-emirate" className="input" name="emirate" defaultValue={filters.emirate ?? ""}><option value="">All Emirates</option>{["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
+          <div><label className="label" htmlFor="marketplace-min-weight">Minimum weight (g)</label><input id="marketplace-min-weight" className="input" name="minWeight" type="number" min="0" step="0.1" defaultValue={filters.minWeight ?? ""} placeholder="Any" /></div>
+          <div><label className="label" htmlFor="marketplace-max-weight">Maximum weight (g)</label><input id="marketplace-max-weight" className="input" name="maxWeight" type="number" min="0" step="0.1" defaultValue={filters.maxWeight ?? ""} placeholder="Any" /></div>
+          <div><label className="label" htmlFor="marketplace-max-total">Maximum live total (AED)</label><input id="marketplace-max-total" className="input" name="maxTotal" type="number" min="1" step="1" defaultValue={filters.maxTotal ?? ""} placeholder="Any" /></div>
+          <div><label className="label" htmlFor="marketplace-certified">Certificate / assay</label><select id="marketplace-certified" className="input" name="certified" defaultValue={filters.certified ?? ""}><option value="">Any</option><option value="yes">Certificate reference listed</option></select></div>
+            </div>
+          </details>
           <button className="btn-primary min-w-28 lg:col-span-4">Apply filters</button>
         </form>
 

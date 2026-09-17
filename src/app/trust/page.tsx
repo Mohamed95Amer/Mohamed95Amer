@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const checks = [
   ["01", "Business identity", "We review the shop's UAE trade licence, owner identity, contact information and store address before approval."],
   ["02", "Listing evidence", "Weight, karat, hallmark and certificate or assay information are reviewed before a listing becomes public."],
-  ["03", "Transparent pricing", "Gold value, making, certificates, stones, vendor premium, Get Gold fee and delivery are separated so the total can be understood."],
+  ["03", "Transparent pricing", "Gold value, making, certificates, stones, Get Gold fee, delivery and applicable VAT are separated so the total can be understood."],
   ["04", "Fresh-price protection", "The official price is recomputed on the server. Reservations pause automatically when the market reference is too old."],
   ["05", "Stock protection", "A database lock prevents two customers from reserving the final unit at the same time."],
   ["06", "Verified reviews", "Only completed purchasers can review. Store replies and reports are moderated separately from courier performance."],

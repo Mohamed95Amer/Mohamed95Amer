@@ -81,13 +81,13 @@ export function HomeMediaCarousel({ banners, fallbackSlides }: { banners: Active
 
         {slides.length > 1 && (
           <>
-            <div className="absolute right-3 top-3 z-30 flex gap-1">
+            <div className="relative z-30 flex justify-end gap-1 px-4 pb-2 sm:absolute sm:right-3 sm:top-3 sm:p-0">
               <button type="button" aria-label={manualPause ? "Resume highlight rotation" : "Pause highlight rotation"} aria-pressed={manualPause} onClick={() => setManualPause((value) => !value)} className="grid h-11 w-11 place-items-center rounded-full border border-white/60 bg-white/85 text-xs text-jade-900 backdrop-blur transition hover:bg-white">{manualPause ? "▶" : "Ⅱ"}</button>
               <button type="button" aria-label="Previous highlight" onClick={() => setActive((value) => (value - 1 + slides.length) % slides.length)} className="grid h-11 w-11 place-items-center rounded-full border border-white/60 bg-white/85 text-lg text-jade-900 backdrop-blur transition hover:bg-white">‹</button>
               <button type="button" aria-label="Next highlight" onClick={() => setActive((value) => (value + 1) % slides.length)} className="grid h-11 w-11 place-items-center rounded-full border border-white/60 bg-white/85 text-lg text-jade-900 backdrop-blur transition hover:bg-white">›</button>
             </div>
-            <div className="absolute bottom-5 right-5 z-30 flex items-center gap-2" role="tablist" aria-label="Choose highlight">
-              {slides.map((item, index) => <button key={item.id} type="button" role="tab" aria-selected={index === active} aria-label={`Show highlight ${index + 1}: ${item.title}`} onClick={() => setActive(index)} className="grid h-11 w-11 place-items-center"><span className={`block h-1.5 rounded-full transition-all ${index === active ? "w-7 bg-jade-800" : "w-2 bg-jade-800/35"}`} /></button>)}
+            <div className="relative z-30 flex flex-wrap items-center justify-end px-4 pb-2 sm:absolute sm:bottom-3 sm:right-5 sm:max-w-[45%] sm:p-0" role="group" aria-label="Choose highlight">
+              {slides.map((item, index) => <button key={item.id} type="button" aria-pressed={index === active} aria-label={`Show highlight ${index + 1}: ${item.title}`} onClick={() => setActive(index)} className="grid h-11 w-11 place-items-center"><span className={`block h-1.5 rounded-full transition-all ${index === active ? "w-7 bg-jade-800" : "w-2 bg-jade-800/35"}`} /></button>)}
             </div>
           </>
         )}

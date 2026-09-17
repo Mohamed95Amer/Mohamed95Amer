@@ -149,18 +149,12 @@ export function LiveProductPrice(props: Props) {
                 <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.stoneValue)}</dd>
               </>
             )}
-            {breakdown.vendorPremium > 0 && (
-              <>
-                <dt>Vendor premium</dt>
-                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorPremium)}</dd>
-              </>
-            )}
             <dt>Get Gold fee {props.customerFeeDiscountPercent ? <span className="ml-1 rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">50% OFF</span> : null}{props.eventFeeDiscountPercent ? <span className="ml-1 rounded-full bg-jade-100 px-2 py-0.5 text-[10px] font-bold text-jade-700">EXTRA {props.eventFeeDiscountPercent}% OFF</span> : null}</dt>
             <dd className="text-right tabular-nums text-ink"><span className="mr-2 text-xs text-ink-muted">{breakdown.platformFeeBps / 100}%</span>{formatAed(breakdown.platformFee)}</dd>
             <dt>Delivery fee (once per order)</dt>
             <dd className="text-right tabular-nums text-ink">{props.eventDeliveryDiscountPercent ? <span className="mr-2 text-ink-muted line-through">{formatAed(props.deliveryFeeBeforeEventDiscount)}</span> : null}{breakdown.deliveryFee === 0 && props.eventDeliveryDiscountPercent ? <span className="font-semibold text-signal-ok">FREE</span> : formatAed(breakdown.deliveryFee)}</dd>
             <dt>VAT ({breakdown.vatRateBps / 100}%)</dt>
-            <dd className="text-right tabular-nums text-ink">{breakdown.vatRateBps === 0 ? <span className="font-semibold text-signal-ok">Zero-rated</span> : formatAed(breakdown.vatAed)}</dd>
+            <dd className="text-right tabular-nums text-ink">{breakdown.vatRateBps === 0 ? <span className="font-semibold text-signal-ok">Not charged</span> : formatAed(breakdown.vatAed)}</dd>
             <dt className="mt-1 border-t border-jade-900/10 pt-3 font-semibold text-jade-950">Total</dt>
             <dd className="mt-1 border-t border-jade-900/10 pt-3 text-right font-bold tabular-nums text-jade-950">
               {formatAed(breakdown.unitPriceAed)}
@@ -168,7 +162,7 @@ export function LiveProductPrice(props: Props) {
           </dl>
           <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
             The {props.karat}K rate is the metal-only value per gram. Making, certificate or assay,
-            stones, vendor premium, service, delivery and VAT are listed separately above when applicable.
+            stones, service, delivery and VAT are listed separately above when applicable.
           </p>
           {props.customerFeeDiscountPercent ? <p className="mt-2 text-[11px] font-medium text-jade-700">Introductory offer: 50% off the standard 1% Get Gold fee for your first 3 active or completed orders{props.discountedOrdersRemaining != null ? ` · ${props.discountedOrdersRemaining} discounted ${props.discountedOrdersRemaining === 1 ? "order" : "orders"} remaining before checkout` : ""}.</p> : null}
           {props.eventPromotionTitle ? <p className="mt-2 text-[11px] font-medium text-signal-ok">{props.eventPromotionTitle}: {props.eventFeeDiscountPercent ? `${props.eventFeeDiscountPercent}% additional fee discount` : ""}{props.eventFeeDiscountPercent && props.eventDeliveryDiscountPercent ? " · " : ""}{props.eventDeliveryDiscountPercent === 100 ? "free delivery" : props.eventDeliveryDiscountPercent ? `${props.eventDeliveryDiscountPercent}% off delivery` : ""}.</p> : null}
