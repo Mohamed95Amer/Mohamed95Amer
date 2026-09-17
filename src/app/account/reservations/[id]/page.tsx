@@ -160,6 +160,7 @@ export default async function ReservationDetailPage({ params }: { params: Promis
             <dd className="text-right">{formatAed(Number(snap.stone_value) * snapshotQuantity)}</dd>
             {Number(snap.vendor_rate_adjustment_aed ?? 0) > 0 && <><dt className="text-ink-muted">Store rate adjustment ({formatAed(Number(snap.vendor_rate_adjustment_per_gram ?? 0))}/g)</dt>
             <dd className="text-right">{formatAed(Number(snap.vendor_rate_adjustment_aed) * snapshotQuantity)}</dd></>}
+            {snap.assay_fineness != null && <><dt className="text-ink-muted">Certified fineness</dt><dd className="text-right">{snap.assay_fineness}‰</dd></>}
             {Number(snap.vendor_premium) > 0 && <><dt className="text-ink-muted">Vendor premium (historical order)</dt>
             <dd className="text-right">{formatAed(Number(snap.vendor_premium) * snapshotQuantity)}</dd></>}
             <dt className="text-ink-muted">Get Gold fee {Number(snap.customer_fee_discount_percent ?? 0) > 0 ? "(50% off)" : ""}</dt>

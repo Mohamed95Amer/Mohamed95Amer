@@ -103,6 +103,7 @@ export const productUpsertSchema = z.object({
   stone_value: z.number().min(0).max(10_000_000),
   vendor_premium: z.literal(0).default(0),
   vendor_rate_adjustment_per_gram: z.number().min(0).max(1000).default(0),
+  assay_fineness: z.number().min(500).max(1000).refine((value) => Math.abs(value * 10 - Math.round(value * 10)) < 1e-6, "Use one decimal place or less").nullable().default(null),
   vat_rate_bps: z.union([z.literal(0), z.literal(500)]),
   vat_choice_confirmed: z.boolean().default(false),
   quantity: z.number().int().min(0).max(100000),
@@ -126,6 +127,13 @@ export const productUpsertSchema = z.object({
       code: z.ZodIssueCode.custom,
       path: ["making_charge_offer_ends_at"],
       message: "Set a making-charge discount before scheduling an end time",
+    });
+  }
+  if (product.assay_fineness !== null && !["bar", "coin"].includes(product.category)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["assay_fineness"],
+      message: "Exact assay fineness is for bullion bars or coins; use the karat field for jewellery",
     });
   }
 });

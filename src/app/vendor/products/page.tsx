@@ -21,7 +21,7 @@ export default async function VendorProductsPage() {
 
   const { data: products } = await admin
     .from("products")
-    .select("id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, vendor_rate_adjustment_per_gram, vat_rate_bps, quantity, product_status, inventory_confirmed_at, data_quality_status, data_quality_issues, updated_at")
+    .select("id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, quantity, product_status, inventory_confirmed_at, data_quality_status, data_quality_issues, updated_at")
     .eq("vendor_id", vendor.id)
     .order("updated_at", { ascending: false });
 
@@ -42,6 +42,7 @@ export default async function VendorProductsPage() {
               <th className="px-4 py-2 text-right">Weight (g)</th>
               <th className="px-4 py-2 text-right">Item making</th>
               <th className="px-4 py-2 text-right">Store rate adj./g</th>
+              <th className="px-4 py-2 text-right">Assay</th>
               <th className="px-4 py-2 text-right">VAT</th>
               <th className="px-4 py-2 text-right">Qty</th>
               <th className="px-4 py-2 text-left">Status</th>
@@ -61,6 +62,7 @@ export default async function VendorProductsPage() {
                   {Number(p.making_charge_discount_percent) > 0 && <span className="ml-1.5 text-[10px] font-semibold text-gold-600">{p.making_charge_discount_percent}% off</span>}
                 </td>
                 <td className="px-4 py-2 text-right">{formatAed(Number(p.vendor_rate_adjustment_per_gram ?? 0))}/g</td>
+                <td className="px-4 py-2 text-right">{p.assay_fineness ? `${p.assay_fineness}‰` : "—"}</td>
                 <td className="px-4 py-2 text-right">{Number(p.vat_rate_bps) === 0 ? "Not charged" : "5%"}</td>
                 <td className="px-4 py-2 text-right">{p.quantity}</td>
                 <td className="px-4 py-2">
@@ -74,7 +76,7 @@ export default async function VendorProductsPage() {
               </tr>
             ))}
             {(products ?? []).length === 0 && (
-              <tr><td colSpan={10} className="px-4 py-6 text-center text-ink-muted">No products yet.</td></tr>
+              <tr><td colSpan={11} className="px-4 py-6 text-center text-ink-muted">No products yet.</td></tr>
             )}
           </tbody>
         </table>

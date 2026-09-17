@@ -31,6 +31,7 @@ interface ReservePricing {
   stoneValue: number;
   vendorPremium: number;
   vendorRateAdjustmentPerGram: number;
+  assayFineness: number | null;
   platformFeeBps: number;
   deliveryFee: number;
   vatRateBps: number;

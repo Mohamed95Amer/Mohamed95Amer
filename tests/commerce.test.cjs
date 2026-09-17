@@ -76,6 +76,13 @@ test('UAE common karats map to statutory fineness factors', () => {
     assert.equal(computePrice({ ...base, karat, vendorRateAdjustmentPerGram: 0 }).purityFactor, factor);
   }
 });
+test('certified bullion fineness overrides the 999 reference while retaining the karat label', () => {
+  const price = computePrice({ ...base, karat: 24, assayFineness: 995 });
+  assert.equal(price.assayFineness, 995);
+  assert.ok(Math.abs(price.purityFactor - (995 / 999)) < 1e-12);
+  assert.equal(price.goldValueAed, 498);
+  assert.equal(price.merchandiseSubtotalAed, 598);
+});
 
 test('legacy vendor premiums never increase new quotes, fees or VAT', () => {
   for (const vendorPremium of [0, 55, 150, 1000000]) {
@@ -99,6 +106,9 @@ test('vendor VAT choices are explicit, restricted and require a no-VAT declarati
     { ...product, vat_rate_bps: undefined }, { ...product, vat_rate_bps: '500' },
     { ...product, vendor_premium: 25 },
   ]) assert.equal(productUpsertSchema.safeParse(invalid).success, false);
+  assert.equal(productUpsertSchema.parse({ ...product, category: 'bar', assay_fineness: 999.9 }).assay_fineness, 999.9);
+  assert.equal(productUpsertSchema.safeParse({ ...product, assay_fineness: 999.9 }).success, false);
+  assert.equal(productUpsertSchema.safeParse({ ...product, category: 'bar', assay_fineness: 999.95 }).success, false);
 });
 test('delivery pins accept only Google or Apple Maps links and extract visible coordinates', () => {
   for (const link of [

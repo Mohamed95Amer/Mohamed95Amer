@@ -16,6 +16,7 @@ interface Props {
   stoneValue: number;
   vendorPremium: number;
   vendorRateAdjustmentPerGram?: number;
+  assayFineness?: number | null;
   vatRateBps?: number;
   platformFeeBps?: number;
   customerFeeDiscountPercent?: number;
@@ -56,6 +57,7 @@ export function LiveProductPrice(props: Props) {
     stoneValue: props.stoneValue,
     vendorPremium: props.vendorPremium,
     vendorRateAdjustmentPerGram: props.vendorRateAdjustmentPerGram ?? 0,
+    assayFineness: props.assayFineness ?? null,
     platformFeeBps: props.platformFeeBps ?? 100,
     deliveryFee: props.deliveryFee ?? 0,
     vatRateBps: props.vatRateBps ?? 500,
@@ -98,6 +100,7 @@ export function LiveProductPrice(props: Props) {
             <h2 className="font-serif text-lg font-semibold text-jade-950">Price breakdown</h2>
             <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">One-item order</span>
           </div>
+          {breakdown.assayFineness !== null && <p className="mt-2 text-xs text-ink-muted">Certified bullion fineness: {breakdown.assayFineness}‰ · metal value uses the exact assay against the 999 24K reference.</p>}
           <dl className="mt-3 grid grid-cols-2 gap-y-2.5 text-sm text-ink-muted">
             <dt>Gold ({props.karat}K × {props.weightGrams}g)</dt>
             <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.goldValueAed)}</dd>

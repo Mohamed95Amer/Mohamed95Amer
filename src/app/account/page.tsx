@@ -63,7 +63,7 @@ export default async function AccountPage() {
   const { data: rawReservations } = await admin
     .from("reservations")
     .select(
-      "id, status, quantity, expires_at, created_at, product:products(name, category, karat, weight_grams, images), snapshot:order_price_snapshots(gold_price_per_gram_24k_aed, karat_purity_factor, weight_grams, making_charge, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, vendor_rate_adjustment_aed, platform_fee, delivery_fee, quantity, gold_value_aed, total_price_aed, gold_price_fetched_at)",
+      "id, status, quantity, expires_at, created_at, product:products(name, category, karat, weight_grams, images), snapshot:order_price_snapshots(gold_price_per_gram_24k_aed, karat_purity_factor, weight_grams, making_charge, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, vendor_rate_adjustment_aed, assay_fineness, platform_fee, delivery_fee, quantity, gold_value_aed, total_price_aed, gold_price_fetched_at)",
     )
     .eq("customer_user_id", user.id)
     .order("created_at", { ascending: false });

@@ -17,6 +17,7 @@ export interface PriceSnapshotForInsight {
   vendor_premium: number | string;
   vendor_rate_adjustment_per_gram?: number | string;
   vendor_rate_adjustment_aed?: number | string;
+  assay_fineness?: number | string | null;
   platform_fee: number | string;
   delivery_fee: number | string;
   quantity: number | string;

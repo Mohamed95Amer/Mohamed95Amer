@@ -18,6 +18,7 @@ interface ProductInitial {
   certificate_fee?: number;
   stone_value?: number;
   vendor_rate_adjustment_per_gram?: number;
+  assay_fineness?: number | null;
   vat_rate_bps?: number;
   quantity?: number;
   certificate_number?: string | null;
@@ -41,6 +42,7 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
     certificate_fee: initial?.certificate_fee ?? 0,
     stone_value: initial?.stone_value ?? 0,
     vendor_rate_adjustment_per_gram: initial?.vendor_rate_adjustment_per_gram ?? 0,
+    assay_fineness: initial?.assay_fineness ?? "",
     vat_rate_bps: initial?.vat_rate_bps ?? 500,
     vat_choice_confirmed: false,
     quantity: initial?.quantity ?? 1,
@@ -73,6 +75,7 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
           certificate_fee: Number(form.certificate_fee),
           stone_value: Number(form.stone_value),
           vendor_rate_adjustment_per_gram: Number(form.vendor_rate_adjustment_per_gram),
+          assay_fineness: form.assay_fineness === "" ? null : Number(form.assay_fineness),
           vendor_premium: 0,
           vat_rate_bps: Number(form.vat_rate_bps),
           quantity: Number(form.quantity),
@@ -180,6 +183,11 @@ export function ProductForm({ initial, vendorId }: { initial?: ProductInitial; v
         <label className="label" htmlFor="product-hallmark">Hallmark info</label>
         <input id="product-hallmark" name="hallmark_info" className="input" value={form.hallmark_info} onChange={(e) => set("hallmark_info", e.target.value)} />
       </div>
+      {(form.category === "bar" || form.category === "coin") && <div>
+        <label className="label" htmlFor="product-assay">Exact assay fineness (‰)</label>
+        <input id="product-assay" name="assay_fineness" className="input" type="number" inputMode="decimal" min="500" max="1000" step="0.1" value={form.assay_fineness} onChange={(e) => set("assay_fineness", e.target.value === "" ? "" : Number(e.target.value))} placeholder="e.g. 999.9" />
+        <p className="mt-1 text-xs text-ink-muted">Use the certificate value for bullion, such as 995, 999 or 999.9. This adjusts the metal calculation against the 999 24K reference.</p>
+      </div>}
       {vendorId && (
         <div className="md:col-span-2">
           <ProductImageUploader vendorId={vendorId} value={images} onChange={setImages} />

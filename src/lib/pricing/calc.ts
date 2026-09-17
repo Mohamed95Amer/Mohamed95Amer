@@ -50,6 +50,8 @@ export interface PriceInputs {
   vendorPremium: number;
   /** Optional shop-wide AED/g adjustment, shown separately from making charge. */
   vendorRateAdjustmentPerGram?: number;
+  /** Optional certified fineness in parts per thousand (995, 999, 999.9). */
+  assayFineness?: number | null;
   platformFeeBps: number;
   deliveryFee: number;
   vatRateBps?: number;
@@ -68,6 +70,7 @@ export interface PriceBreakdown {
   vendorPremium: number;
   vendorRateAdjustmentPerGram: number;
   vendorRateAdjustmentAed: number;
+  assayFineness: number | null;
   merchandiseSubtotalAed: number;
   platformFee: number;
   platformFeeBps: number;
@@ -86,7 +89,15 @@ export interface OrderPricing {
 }
 
 export function computePrice(inputs: PriceInputs): PriceBreakdown {
-  const purity = karatPurityFactor(inputs.karat);
+  const karatPurity = karatPurityFactor(inputs.karat);
+  const assayFineness = inputs.assayFineness == null ? null : round2(inputs.assayFineness);
+  if (assayFineness !== null && (!Number.isFinite(assayFineness) || assayFineness < 500 || assayFineness > 1000)) {
+    throw new Error("Assay fineness must be between 500 and 1000 parts per thousand");
+  }
+  // UAE 24K market rates are conventionally quoted against 999 fineness.
+  // When a bullion certificate gives an exact fineness, use it for the metal
+  // component while retaining the selected karat as the catalogue label.
+  const purity = assayFineness === null ? karatPurity : assayFineness / 999;
   if (!Number.isInteger(inputs.platformFeeBps) || inputs.platformFeeBps < 0 || inputs.platformFeeBps > 1000) {
     throw new Error("Platform fee must be between 0 and 1,000 basis points");
   }
@@ -143,6 +154,7 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
     vendorPremium,
     vendorRateAdjustmentPerGram,
     vendorRateAdjustmentAed,
+    assayFineness,
     merchandiseSubtotalAed,
     platformFee,
     platformFeeBps: inputs.platformFeeBps,

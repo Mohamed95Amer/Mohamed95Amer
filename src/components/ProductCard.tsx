@@ -22,6 +22,7 @@ export interface ProductCardData {
   stone_value: number | string;
   vendor_premium: number | string;
   vendor_rate_adjustment_per_gram?: number | string;
+  assay_fineness?: number | string | null;
   vat_rate_bps?: number | string;
   images?: unknown;
   available?: number | null;
@@ -81,6 +82,7 @@ export function ProductCard({
           stoneValue: Number(p.stone_value),
           vendorPremium: Number(p.vendor_premium),
           vendorRateAdjustmentPerGram: Number(p.vendor_rate_adjustment_per_gram ?? 0),
+          assayFineness: p.assay_fineness == null ? null : Number(p.assay_fineness),
           platformFeeBps,
           deliveryFee,
           vatRateBps: Number(p.vat_rate_bps ?? 500),
