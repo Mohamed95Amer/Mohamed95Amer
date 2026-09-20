@@ -1,5 +1,13 @@
 # Get Gold — handover
 
+**Latest checkpoint — admin vendor export (20 Sep 2026; deployed):**
+The Admin → Vendors page now has an admin-only **Export Excel CSV** action. It exports
+all vendors or the selected status filter and includes application/contact details,
+store count, delivery/payment/website capabilities, document count/types/filenames,
+status and admin notes. CSV is UTF-8/BOM encoded so it opens cleanly in Excel. Private
+document contents and signed URLs are never exported. Endpoint:
+`/api/admin/vendors/export`.
+
 **Latest checkpoint — vendor partner application (20 Sep 2026; deployed):**
 `/vendor/register` now presents a premium, sectioned onboarding form for UAE jewellery
 partners. It collects first/last name, title, contact details, official store name,
