@@ -1,5 +1,17 @@
 # Get Gold — handover
 
+**Latest checkpoint — vendor partner application (20 Sep 2026; deployed):**
+`/vendor/register` now presents a premium, sectioned onboarding form for UAE jewellery
+partners. It collects first/last name, title, contact details, official store name,
+trade licence number/expiry, store count, emirate/address, delivery availability,
+online-payment availability and website availability. Selecting Yes for a website
+requires a valid link. Trade-licence and Emirates ID files are optional, upload
+privately to `vendor-docs` under the vendor folder, and can also be added later from
+the Documents page. New business fields are stored on `public.vendors` by migration
+`20260920141129_vendor_onboarding_details.sql` and shown in admin vendor review.
+46 tests, typecheck, lint and production build pass. Deployment
+`2Bnji5CNPpKgVqKzW7qZhBi3prHM` is Ready and aliased to https://getgold.ae.
+
 **Latest checkpoint — certified bullion fineness (17 Sep 2026; deployed):**
 Vendor listings now support an optional certificate fineness in parts per thousand for
 bars and coins (for example 995, 999 or 999.9). The exact assay is validated as a
