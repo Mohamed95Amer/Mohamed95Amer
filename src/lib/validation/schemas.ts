@@ -71,6 +71,9 @@ export const vendorOnboardingSchema = z.object({
   trade_license_number: z.string().min(3).max(60),
   license_expiry_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "YYYY-MM-DD required"),
   owner_name: z.string().min(2).max(120),
+  contact_first_name: z.string().trim().min(2).max(80).optional(),
+  contact_last_name: z.string().trim().min(2).max(80).optional(),
+  contact_title: z.string().trim().min(2).max(100).optional(),
   email: z.string().email(),
   phone: z.string().min(7).max(20),
   emirate: z.enum([
@@ -85,6 +88,15 @@ export const vendorOnboardingSchema = z.object({
   store_address: z.string().min(5).max(500),
   google_maps_link: z.string().url().optional().nullable(),
   vat_trn_number: z.string().max(20).optional().nullable(),
+  number_of_stores: z.number().int().min(1).max(1000).default(1),
+  delivery_available: z.boolean().default(false),
+  online_payment_available: z.boolean().default(false),
+  website_available: z.boolean().default(false),
+  website_url: z.string().url().optional().nullable(),
+}).superRefine((data, ctx) => {
+  if (data.website_available && !data.website_url) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["website_url"], message: "Add your website link when website is enabled" });
+  }
 });
 
 export const productUpsertSchema = z.object({

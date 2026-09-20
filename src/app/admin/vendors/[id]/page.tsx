@@ -32,11 +32,15 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
           <span className="pill border-bone-deep bg-bone-soft">{vendor.verification_status}</span>
         </div>
         <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm">
-          <dt className="text-ink-muted">Owner</dt><dd>{vendor.owner_name}</dd>
+          <dt className="text-ink-muted">Contact</dt><dd>{[vendor.contact_first_name, vendor.contact_last_name].filter(Boolean).join(" ") || vendor.owner_name}{vendor.contact_title ? ` · ${vendor.contact_title}` : ""}</dd>
           <dt className="text-ink-muted">Email</dt><dd>{vendor.email}</dd>
           <dt className="text-ink-muted">Phone</dt><dd>{vendor.phone}</dd>
           <dt className="text-ink-muted">License #</dt><dd>{vendor.trade_license_number}</dd>
           <dt className="text-ink-muted">License expiry</dt><dd>{vendor.license_expiry_date}</dd>
+          <dt className="text-ink-muted">Stores</dt><dd>{vendor.number_of_stores ?? 1}</dd>
+          <dt className="text-ink-muted">Delivery</dt><dd>{vendor.delivery_available ? "Available" : "Not currently offered"}</dd>
+          <dt className="text-ink-muted">Online payment</dt><dd>{vendor.online_payment_available ? "Available" : "Not currently offered"}</dd>
+          <dt className="text-ink-muted">Website</dt><dd>{vendor.website_available ? (vendor.website_url ?? "Link not supplied") : "Not listed"}</dd>
           <dt className="text-ink-muted">VAT TRN</dt><dd>{vendor.vat_trn_number ?? "—"}</dd>
         </dl>
       </div>
