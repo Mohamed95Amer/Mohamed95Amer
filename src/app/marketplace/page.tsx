@@ -15,6 +15,7 @@ import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { applyEventDeliveryDiscount, getActiveSiteBanners } from "@/lib/marketing";
 import { SiteBannerStack } from "@/components/SiteBanner";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -30,6 +31,8 @@ interface SP {
 export default async function MarketplacePage({ searchParams }: SP) {
   const filters = await searchParams;
   const supabase = getServiceSupabase();
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = arabic ? { eyebrow: "مخزون إماراتي موثق", title: "سوق الذهب", desc: "قارن المجوهرات والسبائك المعتمدة مع إجماليات تتبع سعر السوق المباشر.", search: "ابحث في المنتجات", category: "الفئة", purity: "العيار", sort: "ترتيب حسب", more: "فلاتر إضافية", apply: "تطبيق الفلاتر", available: "متاح الآن", no: "لا توجد منتجات مطابقة", broaden: "جرّب فئة أوسع أو امسح البحث." } : { eyebrow: "Verified UAE inventory", title: "The marketplace", desc: "Compare approved jewellery and bullion with totals that follow the live market.", search: "Search listings", category: "Category", purity: "Purity", sort: "Sort by", more: "More filters", apply: "Apply filters", available: "Available now", no: "No matching gold yet.", broaden: "Try a broader category or clear your search." };
   const profile = await getCurrentProfile();
   const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const { data: settings } = await supabase
@@ -90,10 +93,10 @@ export default async function MarketplacePage({ searchParams }: SP) {
         <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full border border-gold-200/15" />
         <div className="container-pro relative flex flex-col gap-6 py-12 sm:py-14 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="eyebrow text-gold-200">Verified UAE inventory</p>
-            <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight sm:text-5xl">The marketplace</h1>
+            <p className="eyebrow text-gold-200">{t.eyebrow}</p>
+            <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight sm:text-5xl">{t.title}</h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65">
-              Compare approved jewellery and bullion with totals that follow the live market.
+              {t.desc}
             </p>
           </div>
           <div className="shrink-0">
@@ -106,11 +109,11 @@ export default async function MarketplacePage({ searchParams }: SP) {
         {(banners.length > 0 || feeOffer.eventPromotionTitle) && <div className="mb-5 grid gap-4 pt-10"><SiteBannerStack banners={banners} /><ActiveOfferNotice offer={feeOffer} /></div>}
         <form className="card grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-4 lg:items-end">
           <div>
-            <label className="label" htmlFor="marketplace-search">Search listings</label>
+            <label className="label" htmlFor="marketplace-search">{t.search}</label>
             <input id="marketplace-search" className="input" name="q" type="search" defaultValue={filters.q ?? ""} placeholder="Try ‘bangle’ or ‘gold bar’" />
           </div>
           <div>
-            <label className="label" htmlFor="marketplace-category">Category</label>
+            <label className="label" htmlFor="marketplace-category">{t.category}</label>
             <select id="marketplace-category" className="input capitalize" name="category" defaultValue={filters.category ?? ""}>
               <option value="">All categories</option>
               {["ring","necklace","bracelet","earring","bangle","chain","pendant","bar","coin","other"].map((c) => (
@@ -119,14 +122,14 @@ export default async function MarketplacePage({ searchParams }: SP) {
             </select>
           </div>
           <div>
-            <label className="label" htmlFor="marketplace-karat">Purity</label>
+            <label className="label" htmlFor="marketplace-karat">{t.purity}</label>
             <select id="marketplace-karat" className="input" name="karat" defaultValue={filters.karat ?? ""}>
               <option value="">All karats</option>
               {[24, 22, 21, 18, 16, 14, 12].map((k) => <option key={k} value={k}>{k}K</option>)}
             </select>
           </div>
           <div>
-            <label className="label" htmlFor="marketplace-sort">Sort by</label>
+            <label className="label" htmlFor="marketplace-sort">{t.sort}</label>
             <select id="marketplace-sort" className="input" name="sort" defaultValue={filters.sort ?? "newest"}>
               <option value="newest">Newest</option>
               <option value="value">Best Value Score</option>
@@ -136,7 +139,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
             </select>
           </div>
           <details className="rounded-lg border border-jade-900/10 bg-bone-soft p-3 md:col-span-2 lg:col-span-4" open={Boolean(filters.emirate || filters.minWeight || filters.maxWeight || filters.maxTotal || filters.certified)}>
-            <summary className="cursor-pointer py-1.5 text-sm font-semibold text-jade-900">More filters <span className="ml-1 text-xs font-normal text-ink-muted">Emirate, weight, budget &amp; certificates</span></summary>
+          <summary className="cursor-pointer py-1.5 text-sm font-semibold text-jade-900">{t.more} <span className="ml-1 text-xs font-normal text-ink-muted">{arabic ? "الإمارة والوزن والميزانية والشهادات" : "Emirate, weight, budget & certificates"}</span></summary>
             <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <div><label className="label" htmlFor="marketplace-emirate">Store emirate</label><select id="marketplace-emirate" className="input" name="emirate" defaultValue={filters.emirate ?? ""}><option value="">All Emirates</option>{["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
           <div><label className="label" htmlFor="marketplace-min-weight">Minimum weight (g)</label><input id="marketplace-min-weight" className="input" name="minWeight" type="number" min="0" step="0.1" defaultValue={filters.minWeight ?? ""} placeholder="Any" /></div>
@@ -145,7 +148,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
           <div><label className="label" htmlFor="marketplace-certified">Certificate / assay</label><select id="marketplace-certified" className="input" name="certified" defaultValue={filters.certified ?? ""}><option value="">Any</option><option value="yes">Certificate reference listed</option></select></div>
             </div>
           </details>
-          <button className="btn-primary min-w-28 lg:col-span-4">Apply filters</button>
+          <button className="btn-primary min-w-28 lg:col-span-4">{t.apply}</button>
         </form>
 
         {(filters.category || filters.karat || filters.q || filters.emirate || filters.minWeight || filters.maxWeight || filters.maxTotal || filters.certified || (filters.sort && filters.sort !== "newest")) && (
@@ -166,7 +169,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
 
         <div className="mt-10 flex items-center justify-between gap-4">
           <div>
-            <p className="eyebrow text-jade-600">Available now</p>
+            <p className="eyebrow text-jade-600">{t.available}</p>
             <h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">
               {sorted.length} {sorted.length === 1 ? "listing" : "listings"}
             </h2>
@@ -198,8 +201,8 @@ export default async function MarketplacePage({ searchParams }: SP) {
           })}
           {sorted.length === 0 && (
             <div className="card col-span-full px-6 py-14 text-center">
-              <p className="font-serif text-2xl text-jade-950">No matching gold yet.</p>
-              <p className="mt-2 text-sm text-ink-muted">Try a broader category or clear your search.</p>
+              <p className="font-serif text-2xl text-jade-950">{t.no}</p>
+              <p className="mt-2 text-sm text-ink-muted">{t.broaden}</p>
               <Link href="/requests/new" className="btn-primary mt-5">Ask verified stores</Link>
             </div>
           )}

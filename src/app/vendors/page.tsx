@@ -8,6 +8,7 @@ import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
 import { getActiveSiteBanners, getActiveVendorPromotionMap } from "@/lib/marketing";
 import { SiteBannerStack } from "@/components/SiteBanner";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ type Listing = { id: string; category: string; karat: number; name: string; imag
 
 export default async function VendorsListPage() {
   const supabase = getServiceSupabase();
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
   const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
@@ -63,10 +65,9 @@ export default async function VendorsListPage() {
 
   return (
     <div className="container-pro py-10">
-      <h1 className="font-serif text-3xl">Verified vendors</h1>
+      <h1 className="font-serif text-3xl">{arabic ? "المتاجر الموثقة" : "Verified vendors"}</h1>
       <p className="mt-1 max-w-2xl text-sm text-ink-muted">
-        Every shop below has passed trade-license and identity verification, reviewed by hand. The
-        vendor remains the seller of record on any order.
+        {arabic ? "اجتاز كل متجر أدناه التحقق من الرخصة والهوية وراجعه فريقنا يدوياً. يظل المتجر هو البائع المسؤول عن أي طلب." : "Every shop below has passed trade-license and identity verification, reviewed by hand. The vendor remains the seller of record on any order."}
       </p>
 
       <div className="mt-7"><SiteBannerStack banners={banners} /></div>
@@ -131,7 +132,7 @@ export default async function VendorsListPage() {
         })}
 
         {visibleVendors.length === 0 && (
-          <p className="text-sm text-ink-muted">No verified vendors yet.</p>
+          <p className="text-sm text-ink-muted">{arabic ? "لا توجد متاجر موثقة بعد." : "No verified vendors yet."}</p>
         )}
       </div>
     </div>

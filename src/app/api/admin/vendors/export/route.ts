@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const columns = [
   "application_id", "created_at", "status", "official_store_name", "first_name", "last_name", "title",
   "email", "phone", "trade_license_number", "license_expiry_date", "number_of_stores", "emirate",
-  "store_address", "map_link", "vat_trn_number", "delivery_available", "online_payment_available",
+  "store_address", "map_link", "latitude", "longitude", "vat_trn_number", "delivery_available", "online_payment_available",
   "website_available", "website_url", "document_count", "document_types", "document_filenames", "admin_notes",
 ] as const;
 
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   await requireAdmin();
   const status = new URL(request.url).searchParams.get("status");
   const admin = getServiceSupabase();
-  let vendorsQuery = admin.from("vendors").select("id, created_at, verification_status, business_name, owner_name, contact_first_name, contact_last_name, contact_title, email, phone, trade_license_number, license_expiry_date, number_of_stores, emirate, store_address, google_maps_link, vat_trn_number, delivery_available, online_payment_available, website_available, website_url, admin_notes").order("created_at", { ascending: false });
+  let vendorsQuery = admin.from("vendors").select("id, created_at, verification_status, business_name, owner_name, contact_first_name, contact_last_name, contact_title, email, phone, trade_license_number, license_expiry_date, number_of_stores, emirate, store_address, google_maps_link, store_latitude, store_longitude, vat_trn_number, delivery_available, online_payment_available, website_available, website_url, admin_notes").order("created_at", { ascending: false });
   if (status && ["pending", "approved", "rejected", "suspended"].includes(status)) vendorsQuery = vendorsQuery.eq("verification_status", status);
   const [{ data: vendors, error: vendorsError }, { data: documents, error: documentsError }] = await Promise.all([
     vendorsQuery,
@@ -56,6 +56,8 @@ export async function GET(request: Request) {
       vendor.emirate,
       vendor.store_address,
       vendor.google_maps_link,
+      vendor.store_latitude,
+      vendor.store_longitude,
       vendor.vat_trn_number,
       vendor.delivery_available ? "Yes" : "No",
       vendor.online_payment_available ? "Yes" : "No",

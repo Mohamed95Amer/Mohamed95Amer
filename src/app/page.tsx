@@ -14,6 +14,7 @@ import { applyEventDeliveryDiscount, getActiveSiteBanners, getActiveVendorPromot
 import { SiteBannerStack } from "@/components/SiteBanner";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 import { HomeMediaCarousel, type HomeShowcaseSlide } from "@/components/HomeMediaCarousel";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,8 @@ const categories = [
 
 export default async function HomePage() {
   const supabase = getServiceSupabase();
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = arabic ? { kicker: "أكثر من مجرد مجوهرات\nمستقبل أجمل", hero: "نضع سوق الذهب الإماراتي على الإنترنت.", desc: "متاجر موثوقة. أسعار ذهب مباشرة. طريقة أوضح وأجمل لشراء الذهب في الإمارات.", shop: "تسوق الآن", stores: "تعرّف على المتاجر", find: "اكتشف قطعتك", all: "تصفح كل الفئات", featured: "متاجر موثوقة", viewStores: "عرض كل المتاجر", picks: "اختياراتنا", viewProducts: "عرض كل المنتجات", story: "ذهب من أجل إمارات أكثر إشراقاً.", storyBody: "الأشخاص والثقافة والفرص — يجمعها الذهب.", explore: "اكتشف قصتنا", request: "تبحث عن قطعة خاصة؟ اطلبها الآن ←", vendor: "للمجوهرات الإماراتية · أضف متجرك ←" } : { kicker: "More than jewellery\nA market brought together", hero: "Bringing the UAE\n gold market online.", desc: "Trusted jewellers. Live gold prices. A more transparent, beautiful way to buy gold in the UAE.", shop: "Shop now", stores: "Meet the jewellers", find: "Find your piece", all: "Shop all categories", featured: "Featured jewellers", viewStores: "View all stores", picks: "Our top picks", viewProducts: "Shop all products", story: "Gold for a brighter UAE.", storyBody: "People, culture and opportunity — connected through gold.", explore: "Explore our story", request: "Looking for something special? Request a piece →", vendor: "For UAE jewellers · Bring your store online →" };
   const profile = await getCurrentProfile();
   const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const { data: settings } = await supabase
@@ -123,13 +126,13 @@ export default async function HomePage() {
         <UaeRibbon />
         <div className="container-pro relative z-10">
           <div className="heritage-hero-copy">
-            <p className="heritage-kicker">More than jewellery<br />A market brought together</p>
+            <p className="heritage-kicker whitespace-pre-line">{t.kicker}</p>
             <span className="mt-5 block h-px w-10 bg-gold-500" aria-hidden="true" />
-            <h1>Bringing the UAE<br className="hidden sm:block" /> gold market online.</h1>
-            <p className="heritage-hero-description">Trusted jewellers. Live gold prices. A more transparent, beautiful way to buy gold in the UAE.</p>
+            <h1 className="whitespace-pre-line">{t.hero}</h1>
+            <p className="heritage-hero-description">{t.desc}</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/marketplace" className="btn-primary">Shop now <span className="ml-5" aria-hidden="true">→</span></Link>
-              <Link href="/vendors" className="btn-ghost">Meet the jewellers</Link>
+              <Link href="/marketplace" className="btn-primary">{t.shop} <span className="ml-5" aria-hidden="true">→</span></Link>
+              <Link href="/vendors" className="btn-ghost">{t.stores}</Link>
             </div>
             <div className="heritage-hero-promises">
               <div><HeritageIcon kind="shield" /><span>Verified in the UAE<small>Trade licences checked</small></span></div>
@@ -157,7 +160,7 @@ export default async function HomePage() {
       <div className="container-pro"><ActiveOfferNotice offer={feeOffer} /></div>
 
       <section className="container-pro heritage-section">
-        <div className="heritage-section-heading"><h2>Find your piece</h2><Link href="/marketplace">Shop all categories <span aria-hidden="true">→</span></Link></div>
+        <div className="heritage-section-heading"><h2>{t.find}</h2><Link href="/marketplace">{t.all} <span aria-hidden="true">→</span></Link></div>
         <div className="heritage-categories">
           {categoryTiles.slice(0, 6).map((category) => (
             <Link key={category.slug} href={`/marketplace?category=${category.slug}`} className="heritage-category group">
@@ -170,7 +173,7 @@ export default async function HomePage() {
       </section>
 
       <section className="container-pro heritage-section">
-        <div className="heritage-section-heading"><h2>Featured jewellers</h2><Link href="/vendors">View all stores <span aria-hidden="true">→</span></Link></div>
+        <div className="heritage-section-heading"><h2>{t.featured}</h2><Link href="/vendors">{t.viewStores} <span aria-hidden="true">→</span></Link></div>
         <div className="grid gap-4 md:grid-cols-3">
           {activeVendors.slice(0, 3).map((vendor) => {
             const collection = (categoryProducts ?? []).filter((item) => item.vendor_id === vendor.id && firstProductPhoto(item.images)).slice(0, 2);
@@ -195,7 +198,7 @@ export default async function HomePage() {
       {middleBanners.length > 0 && <section className="container-pro py-6"><SiteBannerStack banners={middleBanners} /></section>}
 
       <section className="container-pro heritage-section pb-12 sm:pb-16">
-        <div className="heritage-section-heading"><h2>Our top picks</h2><Link href="/marketplace">Shop all products <span aria-hidden="true">→</span></Link></div>
+        <div className="heritage-section-heading"><h2>{t.picks}</h2><Link href="/marketplace">{t.viewProducts} <span aria-hidden="true">→</span></Link></div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {(products ?? []).map((product) => {
             const vendor = product.vendors as unknown as { id: string; business_name: string; emirate: string; verification_status: string } | null;
@@ -209,14 +212,14 @@ export default async function HomePage() {
 
       <section className="heritage-story">
         <div className="container-pro flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
-          <div><p className="heritage-kicker">A richer tomorrow</p><h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">Gold for a brighter UAE.</h2></div>
-          <p className="max-w-xs text-sm leading-relaxed text-ink-soft">People, culture and opportunity — connected through gold.</p>
-          <Link href="/how-it-works" className="btn-primary w-fit">Explore our story <span className="ml-5" aria-hidden="true">→</span></Link>
+          <div><p className="heritage-kicker">{arabic ? "غد أكثر ازدهاراً" : "A richer tomorrow"}</p><h2 className="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">{t.story}</h2></div>
+          <p className="max-w-xs text-sm leading-relaxed text-ink-soft">{t.storyBody}</p>
+          <Link href="/how-it-works" className="btn-primary w-fit">{t.explore} <span className="ml-5" aria-hidden="true">→</span></Link>
         </div>
       </section>
       <section className="container-pro flex flex-col gap-4 py-7 text-sm sm:flex-row sm:items-center sm:justify-between">
-        <Link href="/requests/new" className="font-medium text-jade-700 hover:underline">Looking for something special? Request a piece →</Link>
-        <Link href="/vendor/register" className="text-ink-muted hover:text-jade-700">For UAE jewellers · Bring your store online →</Link>
+        <Link href="/requests/new" className="font-medium text-jade-700 hover:underline">{t.request}</Link>
+        <Link href="/vendor/register" className="text-ink-muted hover:text-jade-700">{t.vendor}</Link>
       </section>
     </div>
   );

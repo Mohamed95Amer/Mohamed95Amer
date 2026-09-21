@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 async function loadVendor(id: string) {
   const supabase = getServiceSupabase();
   const { data: settings } = await supabase.from("platform_settings").select("demo_data_visible").eq("id", true).maybeSingle();
-  let vendorQuery = supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, verification_status, license_expiry_date").eq("id", id);
+  let vendorQuery = supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, store_latitude, store_longitude, verification_status, license_expiry_date").eq("id", id);
   if (settings?.demo_data_visible === false) vendorQuery = vendorQuery.eq("is_demo", false);
   const { data } = await vendorQuery.single();
   return data;
@@ -85,9 +85,9 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
         <p className="text-sm text-ink-muted">{vendor.emirate} · {vendor.store_address}</p>
         <p className="mt-1 text-xs text-signal-ok">Trade licence checked · current through {new Intl.DateTimeFormat("en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
         <div className="mt-3"><StoreRating reputation={reputation} /></div>
-        {vendor.google_maps_link && (
-          <a className="text-sm underline" href={vendor.google_maps_link} target="_blank" rel="noreferrer">
-            View on Google Maps
+        {(vendor.google_maps_link || (vendor.store_latitude != null && vendor.store_longitude != null)) && (
+          <a className="mt-2 inline-flex text-sm font-semibold text-jade-700 underline" href={vendor.store_latitude != null && vendor.store_longitude != null ? `https://www.google.com/maps/search/?api=1&query=${vendor.store_latitude},${vendor.store_longitude}` : vendor.google_maps_link!} target="_blank" rel="noreferrer">
+            Open exact store pin →
           </a>
         )}
       </div>

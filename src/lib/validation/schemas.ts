@@ -87,6 +87,8 @@ export const vendorOnboardingSchema = z.object({
   ]),
   store_address: z.string().min(5).max(500),
   google_maps_link: z.string().url().optional().nullable(),
+  store_latitude: z.number().min(-90).max(90).optional().nullable(),
+  store_longitude: z.number().min(-180).max(180).optional().nullable(),
   vat_trn_number: z.string().max(20).optional().nullable(),
   number_of_stores: z.number().int().min(1).max(1000).default(1),
   delivery_available: z.boolean().default(false),
