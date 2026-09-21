@@ -73,7 +73,7 @@ export default async function VendorsListPage() {
       <div className="mt-7"><SiteBannerStack banners={banners} /></div>
 
       {promotedVendors.length > 0 && <section className="mt-8">
-        <p className="eyebrow text-jade-600">Promoted stores</p>
+        <p className="eyebrow text-jade-600">{arabic ? "متاجر مميزة" : "Promoted stores"}</p>
         <div className="mt-3 grid gap-4">
           {promotedVendors.map((vendor) => {
             const items = byVendor.get(vendor.id) ?? [];
@@ -86,7 +86,7 @@ export default async function VendorsListPage() {
                 <p className="mt-1 text-sm text-ink-muted">{vendor.emirate} · {vendor.store_address}</p>
                 <div className="mt-4"><StoreRating reputation={reputations.get(vendor.id)} /></div>
                 <div className="mt-2"><StoreBadges reputation={reputations.get(vendor.id)} compact limit={2} /></div>
-                <p className="mt-5 text-sm font-semibold text-jade-700">Explore {items.length} {items.length === 1 ? "listing" : "listings"} →</p>
+                <p className="mt-5 text-sm font-semibold text-jade-700">{arabic ? `استكشف ${items.length} ${items.length === 1 ? "منتجاً" : "منتجات"} ←` : `Explore ${items.length} ${items.length === 1 ? "listing" : "listings"} →`}</p>
               </div>
             </Link>;
           })}
@@ -116,7 +116,7 @@ export default async function VendorsListPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div className="font-medium">{v.business_name}</div>
                   <span className="pill shrink-0 border-signal-ok/30 bg-signal-ok/10 text-[10px] text-signal-ok">
-                    Verified
+                    {arabic ? "موثق" : "Verified"}
                   </span>
                 </div>
                 <div className="mt-1 text-xs text-ink-muted">{v.emirate}</div>
@@ -124,7 +124,7 @@ export default async function VendorsListPage() {
                 <div className="mt-3"><StoreRating reputation={reputations.get(v.id)} compact /></div>
                 <div className="mt-2"><StoreBadges reputation={reputations.get(v.id)} compact limit={2} /></div>
                 <div className="mt-auto pt-3 text-xs font-medium text-ink">
-                  {items.length} {items.length === 1 ? "listing" : "listings"}
+                  {arabic ? `${items.length} ${items.length === 1 ? "منتج" : "منتجات"}` : `${items.length} ${items.length === 1 ? "listing" : "listings"}`}
                 </div>
               </div>
             </Link>
