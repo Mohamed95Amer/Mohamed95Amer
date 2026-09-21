@@ -34,7 +34,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const { data: settings } = await supabase
     .from("platform_settings")
-    .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days")
+    .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days, demo_data_visible")
     .eq("id", true)
     .maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
@@ -59,6 +59,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (Number(filters.minWeight) > 0) query = query.gte("weight_grams", Number(filters.minWeight));
   if (Number(filters.maxWeight) > 0) query = query.lte("weight_grams", Number(filters.maxWeight));
   if (filters.certified === "yes") query = query.not("certificate_number", "is", null);
+  if (settings?.demo_data_visible === false) query = query.eq("is_demo", false).eq("vendors.is_demo", false);
 
   const [{ data }, { data: reputationRows }, latestTick, banners] = await Promise.all([
     query,

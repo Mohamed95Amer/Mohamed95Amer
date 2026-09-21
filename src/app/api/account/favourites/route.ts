@@ -12,7 +12,10 @@ export async function POST(request: Request) {
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   const admin = getServiceSupabase();
-  const { data: product } = await admin.from("products").select("id, vendor_id, product_status").eq("id", parsed.data.productId).maybeSingle();
+  const { data: settings } = await admin.from("platform_settings").select("demo_data_visible").eq("id", true).maybeSingle();
+  let productQuery = admin.from("products").select("id, vendor_id, product_status, vendors!inner(is_demo)").eq("id", parsed.data.productId);
+  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const { data: product } = await productQuery.maybeSingle();
   if (!product || product.product_status !== "approved") return NextResponse.json({ error: "product_not_found" }, { status: 404 });
   const result = parsed.data.favourite
     ? await admin.from("product_favourites").upsert({ user_id: auth.user.id, product_id: product.id }, { onConflict: "user_id,product_id" })
@@ -21,4 +24,3 @@ export async function POST(request: Request) {
   if (parsed.data.favourite) await trackServerEvent({ eventName: "favourite_added", userId: auth.user.id, productId: product.id, vendorId: product.vendor_id });
   return NextResponse.json({ favourite: parsed.data.favourite });
 }
-

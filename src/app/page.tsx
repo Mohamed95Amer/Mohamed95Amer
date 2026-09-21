@@ -35,12 +35,11 @@ export default async function HomePage() {
   const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const { data: settings } = await supabase
     .from("platform_settings")
-    .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days")
+    .select("platform_fee_bps, delivery_fee_aed, listing_fresh_days, demo_data_visible")
     .eq("id", true)
     .maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
-  const [{ data: products }, { data: vendors }, { data: categoryProducts }, { data: reputationRows }, banners] = await Promise.all([
-    supabase
+  let productsQuery = supabase
       .from("products")
       .select(
         "id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date)",
@@ -52,14 +51,14 @@ export default async function HomePage() {
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false })
-      .limit(4),
-    supabase
+      .limit(4);
+  let vendorsQuery = supabase
       .from("vendors")
       .select("id, business_name, emirate")
       .eq("verification_status", "approved")
       .gte("license_expiry_date", dubaiTodayIso())
-      .limit(30),
-    supabase
+      .limit(30);
+  let categoryProductsQuery = supabase
       .from("products")
       .select("id, name, category, karat, images, vendor_id, vendors!inner(verification_status, license_expiry_date)")
       .eq("product_status", "approved")
@@ -69,7 +68,16 @@ export default async function HomePage() {
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false })
-      .limit(60),
+      .limit(60);
+  if (settings?.demo_data_visible === false) {
+    productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+    vendorsQuery = vendorsQuery.eq("is_demo", false);
+    categoryProductsQuery = categoryProductsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  }
+  const [{ data: products }, { data: vendors }, { data: categoryProducts }, { data: reputationRows }, banners] = await Promise.all([
+    productsQuery,
+    vendorsQuery,
+    categoryProductsQuery,
     supabase.from("vendor_reputation_summary").select("*"),
     getActiveSiteBanners(["home_top", "home_middle"]),
   ]);

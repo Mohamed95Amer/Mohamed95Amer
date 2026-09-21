@@ -22,8 +22,10 @@ export async function POST(request: Request) {
   const admin = getServiceSupabase();
   const { data: profile } = await admin.from("profiles").select("role").eq("id", auth.user.id).maybeSingle();
   if (profile?.role !== "customer") return NextResponse.json({ error: "customer_account_required" }, { status: 403 });
-  const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
-  const { data: product } = await admin.from("products").select("id, vendor_id, product_status, quantity, vendors!inner(verification_status, license_expiry_date)").eq("id", parsed.data.productId).eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).eq("data_quality_status", "valid").gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))).maybeSingle();
+  const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle();
+  let productQuery = admin.from("products").select("id, vendor_id, product_status, quantity, vendors!inner(verification_status, license_expiry_date, is_demo)").eq("id", parsed.data.productId).eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).eq("data_quality_status", "valid").gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)));
+  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const { data: product } = await productQuery.maybeSingle();
   if (!product || product.product_status !== "approved" || Number(product.quantity) < 1) return NextResponse.json({ error: "product_unavailable" }, { status: 409 });
   const { data, error } = await admin.from("store_visit_requests").insert({
     customer_user_id: auth.user.id,

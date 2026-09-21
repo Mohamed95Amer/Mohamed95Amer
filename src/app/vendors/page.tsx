@@ -20,25 +20,31 @@ type Listing = { id: string; category: string; karat: number; name: string; imag
 
 export default async function VendorsListPage() {
   const supabase = getServiceSupabase();
-  const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
+  const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
-  const [{ data: vendors }, { data: listings }, { data: reputationRows }, banners] = await Promise.all([
-    supabase
+  let vendorsQuery = supabase
       .from("vendors")
       .select("id, business_name, emirate, store_address")
       .eq("verification_status", "approved")
       .gte("license_expiry_date", dubaiTodayIso())
-      .order("business_name"),
+      .order("business_name");
     // One pass for every approved listing, grouped in memory. A per-vendor
     // query would mean N round trips to render a single page.
-    supabase
+  let listingsQuery = supabase
       .from("products")
-      .select("id, vendor_id, name, category, karat, images")
+      .select("id, vendor_id, name, category, karat, images, vendors!inner(is_demo)")
       .eq("product_status", "approved")
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
-      .gte("inventory_confirmed_at", freshAfter),
+      .gte("inventory_confirmed_at", freshAfter);
+  if (settings?.demo_data_visible === false) {
+    vendorsQuery = vendorsQuery.eq("is_demo", false);
+    listingsQuery = listingsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  }
+  const [{ data: vendors }, { data: listings }, { data: reputationRows }, banners] = await Promise.all([
+    vendorsQuery,
+    listingsQuery,
     supabase.from("vendor_reputation_summary").select("*"),
     getActiveSiteBanners(["vendors_top"]),
   ]);

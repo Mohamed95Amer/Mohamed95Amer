@@ -13,17 +13,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const supabase = getServiceSupabase();
-    const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
+    const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle();
     const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
-    const { data: products } = await supabase
+    let productsQuery = supabase
       .from("products")
-      .select("id, vendor_id, updated_at, vendors!inner(updated_at, verification_status, license_expiry_date)")
+      .select("id, vendor_id, updated_at, vendors!inner(updated_at, verification_status, license_expiry_date, is_demo)")
       .eq("product_status", "approved")
       .eq("vendors.verification_status", "approved")
       .gte("vendors.license_expiry_date", dubaiTodayIso())
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter);
+    if (settings?.demo_data_visible === false) {
+      productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+    }
+    const { data: products } = await productsQuery;
     const visibleVendors = new Map<string, string>();
     for (const product of products ?? []) {
       const vendor = product.vendors as unknown as { updated_at: string } | null;

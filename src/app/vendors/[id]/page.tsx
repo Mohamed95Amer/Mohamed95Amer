@@ -18,7 +18,10 @@ export const dynamic = "force-dynamic";
 
 async function loadVendor(id: string) {
   const supabase = getServiceSupabase();
-  const { data } = await supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, verification_status, license_expiry_date").eq("id", id).single();
+  const { data: settings } = await supabase.from("platform_settings").select("demo_data_visible").eq("id", true).maybeSingle();
+  let vendorQuery = supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, verification_status, license_expiry_date").eq("id", id);
+  if (settings?.demo_data_visible === false) vendorQuery = vendorQuery.eq("is_demo", false);
+  const { data } = await vendorQuery.single();
   return data;
 }
 
@@ -38,19 +41,21 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
   const supabase = getServiceSupabase();
   const vendor = await loadVendor(id);
   if (!vendor || vendor.verification_status !== "approved" || vendor.license_expiry_date < dubaiTodayIso()) return notFound();
-  const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
+  const { data: settings } = await supabase.from("platform_settings").select("listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle();
   const freshAfter = listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45));
 
-  const [{ data: products }, { data: reputationRow }, { data: reviews }] = await Promise.all([
-    supabase
+  let productsQuery = supabase
       .from("products")
-      .select("id, name, category, karat, weight_grams, images")
+      .select("id, name, category, karat, weight_grams, images, vendors!inner(is_demo)")
       .eq("vendor_id", id)
       .eq("product_status", "approved")
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
-      .order("created_at", { ascending: false }),
+      .order("created_at", { ascending: false });
+  if (settings?.demo_data_visible === false) productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const [{ data: products }, { data: reputationRow }, { data: reviews }] = await Promise.all([
+    productsQuery,
     supabase.from("vendor_reputation_summary").select("*").eq("vendor_id", id).maybeSingle(),
     supabase
       .from("reviews")

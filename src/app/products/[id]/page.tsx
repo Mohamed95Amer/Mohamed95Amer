@@ -42,10 +42,10 @@ async function loadProduct(id: string) {
   const supabase = getServiceSupabase();
   const { data: settings } = await supabase
     .from("platform_settings")
-    .select("platform_fee_bps, delivery_fee_aed, online_payments_enabled, listing_fresh_days")
+    .select("platform_fee_bps, delivery_fee_aed, online_payments_enabled, listing_fresh_days, demo_data_visible")
     .eq("id", true)
     .maybeSingle();
-  const { data: product } = await supabase
+  let productQuery = supabase
     .from("products")
     .select(SELECT)
     .eq("id", id)
@@ -54,8 +54,9 @@ async function loadProduct(id: string) {
     .gte("vendors.license_expiry_date", dubaiTodayIso())
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
-    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)))
-    .maybeSingle();
+    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)));
+  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const { data: product } = await productQuery.maybeSingle();
   return { product, settings };
 }
 

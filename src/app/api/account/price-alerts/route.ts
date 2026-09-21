@@ -12,8 +12,10 @@ export async function POST(request: Request) {
   const parsed = priceAlertSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_input", details: parsed.error.flatten() }, { status: 400 });
   const admin = getServiceSupabase();
-  const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days").eq("id", true).maybeSingle();
-  const { data: product } = await admin.from("products").select("id, vendor_id, product_status, vendors!inner(verification_status, license_expiry_date)").eq("id", parsed.data.productId).eq("product_status", "approved").eq("data_quality_status", "valid").eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).gt("quantity", 0).gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))).maybeSingle();
+  const { data: settings } = await admin.from("platform_settings").select("listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle();
+  let productQuery = admin.from("products").select("id, vendor_id, product_status, vendors!inner(verification_status, license_expiry_date, is_demo)").eq("id", parsed.data.productId).eq("product_status", "approved").eq("data_quality_status", "valid").eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).gt("quantity", 0).gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)));
+  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const { data: product } = await productQuery.maybeSingle();
   if (!product || product.product_status !== "approved") return NextResponse.json({ error: "product_not_found" }, { status: 404 });
   const { data, error } = await admin.from("price_alerts").upsert({
     user_id: auth.user.id,

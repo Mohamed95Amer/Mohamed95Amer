@@ -9,6 +9,7 @@ interface Settings {
   reservation_lock_minutes: number;
   stale_price_seconds: number;
   listing_fresh_days: number;
+  demo_data_visible: boolean;
   online_payments_enabled: boolean;
   online_payment_provider: string | null;
 }
@@ -21,6 +22,7 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
     reservation_lock_minutes: initial?.reservation_lock_minutes ?? 10,
     stale_price_seconds: initial?.stale_price_seconds ?? 60,
     listing_fresh_days: initial?.listing_fresh_days ?? 45,
+    demo_data_visible: initial?.demo_data_visible ?? true,
     online_payments_enabled: false,
     online_payment_provider: null,
   });
@@ -40,6 +42,7 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
         reservation_lock_minutes: Number(form.reservation_lock_minutes),
         stale_price_seconds: Number(form.stale_price_seconds),
         listing_fresh_days: Number(form.listing_fresh_days),
+        demo_data_visible: Boolean(form.demo_data_visible),
         online_payments_enabled: Boolean(form.online_payments_enabled),
         online_payment_provider: form.online_payment_provider || null,
       }),
@@ -82,6 +85,13 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
       <div>
         <label className="label" htmlFor="setting-listing-freshness">Hide listings after (days without stock confirmation)</label>
         <input id="setting-listing-freshness" className="input" type="number" min="7" max="180" step="1" value={form.listing_fresh_days} onChange={(e) => set("listing_fresh_days", Number(e.target.value))} />
+      </div>
+      <div className="rounded-xl border border-gold-300/50 bg-gold-50/50 p-4">
+        <label className="flex items-start gap-3 text-sm font-semibold text-jade-950" htmlFor="setting-demo-data">
+          <input id="setting-demo-data" type="checkbox" className="mt-1" checked={form.demo_data_visible} onChange={(e) => set("demo_data_visible", e.target.checked)} />
+          Show demo data on the public site
+        </label>
+        <p className="mt-1 text-xs text-ink-muted">Turn this off before launch to hide the five seeded demo stores, their listings, demo orders and demo review. You can turn it back on any time for testing; real vendor data is never affected.</p>
       </div>
       <div className="rounded-xl border border-jade-900/10 bg-jade-50 p-4">
         <label className="flex items-start gap-3 text-sm font-semibold text-jade-950">

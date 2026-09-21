@@ -2,11 +2,13 @@ import { getServiceSupabase } from "@/lib/supabase/server";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
 import Link from "next/link";
 import { formatDubaiDateTime, shortId, statusLabel } from "@/lib/presentation";
+import { AdminDemoDataControl } from "@/components/AdminDemoDataControl";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
   const admin = getServiceSupabase();
+  const { data: platformSettings } = await admin.from("platform_settings").select("demo_data_visible").eq("id", true).maybeSingle();
   const [
     pendingVendors, pendingDeliveryCompanies, pendingProducts, pendingOrders, failedTicks, openBuyerRequests, catalogueRequests, activePremium, activeBanners, activeCampaigns, recentAudit,
   ] = await Promise.all([
@@ -25,6 +27,7 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="grid gap-6">
+      <AdminDemoDataControl initialVisible={platformSettings?.demo_data_visible !== false} />
       <div className="card p-6">
         <p className="text-xs uppercase tracking-wide text-ink-muted">Live gold price</p>
         <div className="mt-3"><GoldPriceBadge /></div>

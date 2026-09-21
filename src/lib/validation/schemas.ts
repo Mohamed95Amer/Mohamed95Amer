@@ -199,6 +199,7 @@ export const platformSettingsSchema = z.object({
   reservation_lock_minutes: z.number().int().min(1).max(60),
   stale_price_seconds: z.number().int().min(15).max(600),
   listing_fresh_days: z.number().int().min(7).max(180),
+  demo_data_visible: z.boolean(),
   online_payments_enabled: z.boolean(),
   online_payment_provider: z.string().trim().max(80).optional().nullable(),
 });

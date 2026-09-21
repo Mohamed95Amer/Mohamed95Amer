@@ -22,10 +22,12 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
   const profile = await getCurrentProfile();
   const feeOffer = await getCustomerFeeOffer(profile?.role === "customer" ? profile.id : null);
   const [{ data: settings }, tick] = await Promise.all([
-    admin.from("platform_settings").select("platform_fee_bps, delivery_fee_aed, listing_fresh_days").eq("id", true).maybeSingle(),
+    admin.from("platform_settings").select("platform_fee_bps, delivery_fee_aed, listing_fresh_days, demo_data_visible").eq("id", true).maybeSingle(),
     getLatestTick(),
   ]);
-  const { data: products } = ids.length ? await admin.from("products").select("id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, images, inventory_confirmed_at, data_quality_status, quantity, product_status, vendor:vendors!inner(business_name, verification_status, license_expiry_date)").in("id", ids).eq("product_status", "approved").eq("data_quality_status", "valid").eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).gt("quantity", 0).gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))) : { data: [] };
+  let productsQuery = ids.length ? admin.from("products").select("id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, images, inventory_confirmed_at, data_quality_status, quantity, product_status, vendor:vendors!inner(business_name, verification_status, license_expiry_date, is_demo)").in("id", ids).eq("product_status", "approved").eq("data_quality_status", "valid").eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).gt("quantity", 0).gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))) : null;
+  if (productsQuery && settings?.demo_data_visible === false) productsQuery = productsQuery.eq("is_demo", false).eq("vendor.is_demo", false);
+  const { data: products } = productsQuery ? await productsQuery : { data: [] };
   const ordered = ids.map((id) => products?.find((product) => product.id === id)).filter(Boolean) as any[];
   const rate = Number(tick?.price_per_gram_24k_aed ?? 0);
   const rows = ordered.map((product) => {

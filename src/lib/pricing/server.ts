@@ -54,12 +54,12 @@ export async function computeOfficialPriceForProduct(
 
   const { data: settings, error: setErr } = await supabase
     .from("platform_settings")
-    .select("platform_fee_bps, delivery_fee_aed, stale_price_seconds, listing_fresh_days")
+    .select("platform_fee_bps, delivery_fee_aed, stale_price_seconds, listing_fresh_days, demo_data_visible")
     .eq("id", true)
     .single();
   if (setErr || !settings) throw new Error("Platform settings missing");
 
-  const { data: product, error: prodErr } = await supabase
+  let productQuery = supabase
     .from("products")
     .select(
       "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, quantity, product_status, vendors!inner(verification_status, license_expiry_date)",
@@ -70,8 +70,9 @@ export async function computeOfficialPriceForProduct(
     .gte("vendors.license_expiry_date", dubaiTodayIso())
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
-    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)))
-    .maybeSingle();
+    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)));
+  if (settings.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const { data: product, error: prodErr } = await productQuery.maybeSingle();
   if (prodErr || !product) throw new Error("Product not found");
   const [{ data: vendorDelivery }, marketplacePromotion] = await Promise.all([
     supabase.from("vendor_payment_settings").select("delivery_fee_aed").eq("vendor_id", product.vendor_id).maybeSingle(),
