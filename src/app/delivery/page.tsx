@@ -27,7 +27,7 @@ export default async function DeliveryDashboardPage() {
 
   const approved = company.verification_status === "approved" && company.license_expiry_date >= dubaiTodayIso();
   const { data: assignments } = approved
-    ? await admin.from("delivery_assignments").select("id, status, tracking_code, public_note, created_at, reservation:reservations(id, quantity, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), vendor:vendors(business_name, phone), snapshot:order_price_snapshots(total_price_aed))").eq("delivery_company_id", company.id).order("created_at", { ascending: false })
+    ? await admin.from("delivery_assignments").select("id, status, tracking_code, public_note, created_at, reservation:reservations(id, quantity, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles!reservations_customer_user_id_fkey(full_name), product:products(name, karat, weight_grams), vendor:vendors(business_name, phone), snapshot:order_price_snapshots(total_price_aed))").eq("delivery_company_id", company.id).order("created_at", { ascending: false })
     : { data: [] as any[] };
   const activeAssignments = (assignments ?? []).filter((assignment) => !["delivered", "declined", "cancelled"].includes(assignment.status));
   return (

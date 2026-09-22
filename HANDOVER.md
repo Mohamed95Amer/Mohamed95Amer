@@ -1,5 +1,24 @@
 # Get Gold — handover
 
+**Latest checkpoint — auditable vendor-direct payment tracking (22 Sep 2026; deployed):**
+Admin → Orders now links every order to a protected payment trail showing the exact
+vendor-confirmed amount, payment method, preserved payment deadline, customer payment
+claim time, optional transaction reference/private proof, vendor receipt-confirmation
+time and the authenticated vendor account that confirmed it. The trail calculates the
+confirmation delay and flags late submissions, expired payment windows and vendor
+confirmations taking more than 24 hours. Admins can report, resolve or clear payment
+disputes with notes; every customer claim and dispute transition is also written to the
+immutable audit log. A screenshot or reference remains evidence only and never confirms
+payment—the vendor's bank-account check is authoritative.
+
+Migration `20260922071739_admin_payment_tracking.sql` is applied to production and
+recorded in migration history. Its service-only confirmation RPC has zero anon/public/
+authenticated grants. Deployment `FuXNRCT5bc2rxy9cUWWsCVGPGVGo` is Ready and aliased
+to https://getgold.ae. Production checks: homepage 200, protected dispute API 401 when
+signed out, live gold fresh from `goldapicom`, eight tracking columns and deadline
+trigger present, database lint clean. Evidence: 50/50 app tests, 23/23 integration
+tests, 59 pgTAP checks, typecheck, ESLint, local build and Vercel production build pass.
+
 **Latest checkpoint — vendor-confirmed direct payment flow (22 Sep 2026; deployed):**
 Customers now submit a purchase request without paying or holding stock. Requests made
 outside a store's configured Dubai working hours queue until its next opening. The vendor

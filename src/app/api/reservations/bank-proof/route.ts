@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { proofMime } from "@/lib/payments/bank";
-import { rateLimit } from "@/lib/security/rate-limit";
+import { rateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { notifyUser } from "@/lib/notifications/server";
+import { logAudit } from "@/lib/audit";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -42,7 +43,10 @@ export async function POST(request: Request) {
     .eq("id", order.id).eq("customer_user_id", auth.user.id).eq("status", "payment_pending").gt("expires_at", submittedAt).is("transfer_submitted_at", null).select("id").maybeSingle();
   if (error || !changed) { if (path) await admin.storage.from("payment-proofs").remove([path]); return NextResponse.json({ error: "Order changed or expired. Contact the store if money was sent." }, { status: 409 }); }
   const { data: vendor } = await admin.from("vendors").select("owner_user_id").eq("id", order.vendor_id).single();
-  if (vendor) await notifyUser({ userId: vendor.owner_user_id, kind: "order", title: "Customer marked payment as sent", body: "Check your own Aani or bank account before confirming receipt. A screenshot or transaction reference alone is not payment confirmation.", href: "/vendor/orders", dedupeKey: `bank-proof:${order.id}` });
+  await Promise.all([
+    vendor ? notifyUser({ userId: vendor.owner_user_id, kind: "order", title: "Customer marked payment as sent", body: "Check your own Aani or bank account before confirming receipt. A screenshot or transaction reference alone is not payment confirmation.", href: "/vendor/orders", dedupeKey: `bank-proof:${order.id}` }) : Promise.resolve(),
+    logAudit({ actor_user_id: auth.user.id, actor_role: "customer", action: "reservation.payment_marked_sent", entity_type: "reservation", entity_id: order.id, old_value: { status: order.status }, new_value: { status: "payment_verification", submitted_at: submittedAt, has_reference: Boolean(reference), has_proof: Boolean(path) }, ip_address: ipFromRequest(request) }),
+  ]);
   return NextResponse.json({ submitted: true });
 }
 
@@ -54,8 +58,12 @@ export async function GET(request: Request) {
   const admin = getServiceSupabase();
   const { data: order } = await admin.from("reservations").select("customer_user_id, vendor_id, transfer_proof_path").eq("id", id.data).maybeSingle();
   if (!order?.transfer_proof_path) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const { data: vendor } = await admin.from("vendors").select("id").eq("id", order.vendor_id).eq("owner_user_id", auth.user.id).eq("verification_status", "approved").maybeSingle();
-  if (order.customer_user_id !== auth.user.id && !vendor) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  const [{ data: vendor }, { data: profile }] = await Promise.all([
+    admin.from("vendors").select("id").eq("id", order.vendor_id).eq("owner_user_id", auth.user.id).eq("verification_status", "approved").maybeSingle(),
+    admin.from("profiles").select("role").eq("id", auth.user.id).maybeSingle(),
+  ]);
+  const isAdmin = profile && ["admin", "super_admin"].includes(profile.role);
+  if (order.customer_user_id !== auth.user.id && !vendor && !isAdmin) return NextResponse.json({ error: "not_found" }, { status: 404 });
   const { data, error } = await admin.storage.from("payment-proofs").createSignedUrl(order.transfer_proof_path, 60, { download: "transfer-proof" });
   if (error || !data) return NextResponse.json({ error: "unavailable" }, { status: 503 });
   return NextResponse.redirect(data.signedUrl, { headers: { "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" } });

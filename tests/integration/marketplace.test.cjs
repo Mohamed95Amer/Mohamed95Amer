@@ -296,7 +296,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.ok(order, 'reservation test must pass');
       const before = must(await admin.from('reservations').select('status,payment_status,quantity,identity_verification_id').eq('id', order.id).single());
       for (const client of [anon(), fixtures.customer.client, fixtures.vendor.client, fixtures.outsider.client]) {
-        assert.ok((await client.from('reservations').update({ status: 'paid', payment_status: 'paid', quantity: 999 }).eq('id', order.id)).error);
+        assert.ok((await client.from('reservations').update({ status: 'paid', payment_status: 'paid', quantity: 999, payment_confirmed_by: fixtures.outsider.id, payment_dispute_status: 'resolved' }).eq('id', order.id)).error);
         assert.ok((await client.from('order_price_snapshots').update({ total_price_aed: 0 }).eq('reservation_id', order.id)).error);
       }
       assert.deepEqual(must(await admin.from('reservations').select('status,payment_status,quantity,identity_verification_id').eq('id', order.id).single()), before);
@@ -333,7 +333,8 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       must(await admin.from('reservations').update({ expires_at: new Date(Date.now() + 600000).toISOString() }).eq('id', order.id));
       const paid = await route('vendor/reservations/progress', { reservationId: order.id, action: 'confirm_payment_received' });
       assert.equal(paid.status, 200, JSON.stringify(paid.body));
-      assert.equal(must(await admin.from('reservations').select('status').eq('id', order.id).single()).status, 'payment_confirmed');
+      const payment = must(await admin.from('reservations').select('status,payment_confirmed_by,payment_window_expires_at').eq('id', order.id).single());
+      assert.equal(payment.status, 'payment_confirmed'); assert.equal(payment.payment_confirmed_by, fixtures.vendor.id); assert.ok(payment.payment_window_expires_at);
     });
     await t.test('Courier assignment, ownership denial, failed delivery, retry and proof persist', async () => {
       assert.ok(order, 'reservation test must pass');
@@ -380,18 +381,38 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 409, 'missing proof cannot be confirmed');
       activeClient = fixtures.customer.client;
       assert.equal((await route('reservations/confirmed-price', { reservationId: id, action: 'accept' })).status, 200);
+      const accepted = must(await admin.from('reservations').select('expires_at,payment_window_expires_at').eq('id', id).single());
+      assert.ok(accepted.payment_window_expires_at);
+      assert.ok(Math.abs(Date.parse(accepted.expires_at) - Date.parse(accepted.payment_window_expires_at)) < 1000);
       activeClient = fixtures.outsider.client; assert.equal((await submit()).status, 404);
       activeClient = fixtures.customer.client; assert.equal((await submit()).status, 200);
       let row = must(await admin.from('reservations').select('*').eq('id', id).single());
       assert.equal(row.status, 'payment_verification'); assert.notEqual(row.payment_status, 'paid');
+      assert.equal(row.transfer_reference, 'SYNTHETIC-TRANSFER'); assert.ok(row.transfer_submitted_at);
+      const paymentClaimAudit = must(await admin.from('audit_logs').select('actor_user_id,new_value').eq('entity_type', 'reservation').eq('entity_id', id).eq('action', 'reservation.payment_marked_sent').single());
+      assert.equal(paymentClaimAudit.actor_user_id, fixtures.customer.id); assert.equal(paymentClaimAudit.new_value.has_proof, true);
       assert.equal((await anon().storage.from('payment-proofs').download(row.transfer_proof_path)).data, null);
       activeClient = fixtures.outsider.client;
       assert.equal((await load('src/app/api/reservations/bank-proof/route.ts').GET(new Request(`http://localhost:3000/api/reservations/bank-proof?id=${id}`))).status, 404);
+      activeClient = fixtures.admin_test.client;
+      assert.equal((await load('src/app/api/reservations/bank-proof/route.ts').GET(new Request(`http://localhost:3000/api/reservations/bank-proof?id=${id}`))).status, 307);
       activeClient = fixtures.vendor.client;
       assert.equal((await load('src/app/api/reservations/bank-proof/route.ts').GET(new Request(`http://localhost:3000/api/reservations/bank-proof?id=${id}`))).status, 307);
       assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 200);
       assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 409);
-      row = must(await admin.from('reservations').select('*').eq('id', id).single()); assert.equal(row.status, 'payment_confirmed'); assert.ok(row.payment_confirmed_at);
+      row = must(await admin.from('reservations').select('*').eq('id', id).single()); assert.equal(row.status, 'payment_confirmed'); assert.ok(row.payment_confirmed_at); assert.equal(row.payment_confirmed_by, fixtures.vendor.id);
+      const joined = must(await admin.from('reservations').select('customer:profiles!reservations_customer_user_id_fkey(full_name),payment_confirmer:profiles!reservations_payment_confirmed_by_fkey(full_name)').eq('id', id).single());
+      assert.ok(joined.customer); assert.ok(joined.payment_confirmer);
+      activeClient = fixtures.outsider.client;
+      assert.equal((await route('admin/orders/payment-dispute', { reservationId: id, action: 'report', note: 'Synthetic unmatched reference' })).status, 403);
+      activeClient = fixtures.admin_test.client;
+      assert.equal((await route('admin/orders/payment-dispute', { reservationId: id, action: 'report', note: '' })).status, 400);
+      assert.equal((await route('admin/orders/payment-dispute', { reservationId: id, action: 'report', note: 'Synthetic unmatched reference' })).status, 200);
+      row = must(await admin.from('reservations').select('payment_dispute_status,payment_dispute_note,payment_dispute_updated_by').eq('id', id).single());
+      assert.equal(row.payment_dispute_status, 'reported'); assert.equal(row.payment_dispute_updated_by, fixtures.admin_test.id);
+      assert.equal((await route('admin/orders/payment-dispute', { reservationId: id, action: 'resolve', note: 'Synthetic issue reconciled' })).status, 200);
+      row = must(await admin.from('reservations').select('payment_dispute_status,payment_dispute_resolution_note,payment_dispute_resolved_at').eq('id', id).single());
+      assert.equal(row.payment_dispute_status, 'resolved'); assert.ok(row.payment_dispute_resolved_at);
     });
     await t.test('Vendor-enabled cards and vendor delivery fees are enforced; pickup stays free', async () => {
       activeClient = fixtures.customer.client;

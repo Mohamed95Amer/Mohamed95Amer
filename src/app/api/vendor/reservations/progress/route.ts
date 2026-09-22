@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       if (reservation.status !== "payment_pending" || Date.parse(reservation.expires_at) <= Date.now()) return NextResponse.json({ error: "order_changed_or_expired" }, { status: 409 });
       const now = new Date().toISOString();
       const { data: changed, error } = await admin.from("reservations")
-        .update({ status: "payment_confirmed", payment_status: "paid", payment_confirmed_at: now, expires_at: new Date(Date.now() + 30 * 86_400_000).toISOString() })
+        .update({ status: "payment_confirmed", payment_status: "paid", payment_confirmed_at: now, payment_confirmed_by: auth.user.id, expires_at: new Date(Date.now() + 30 * 86_400_000).toISOString() })
         .eq("id", reservation.id).eq("status", "payment_pending").gt("expires_at", now).select("id").maybeSingle();
       if (error || !changed) return NextResponse.json({ error: "order_changed_or_expired" }, { status: 409 });
     }

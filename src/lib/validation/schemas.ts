@@ -415,3 +415,13 @@ export const marketplaceEventSchema = z.object({
   vendorId: z.string().uuid().optional().nullable(),
   metadata: z.record(z.union([z.string().max(120), z.number(), z.boolean(), z.null()])).optional().default({}),
 });
+
+export const adminPaymentDisputeSchema = z.object({
+  reservationId: z.string().uuid(),
+  action: z.enum(["report", "resolve", "clear"]),
+  note: z.string().trim().max(1000).optional().nullable(),
+}).superRefine((value, ctx) => {
+  if (value.action === "report" && (!value.note || value.note.length < 5)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["note"], message: "Add a short reason for the dispute." });
+  }
+});
