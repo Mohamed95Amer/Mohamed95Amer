@@ -62,6 +62,12 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       phone: '+971500000000', emirate: 'Dubai', store_address: 'Test fixture only', verification_status: 'approved',
     }).select().single());
     vendorId = vendor.id;
+    // Payment-transition tests must not depend on the wall-clock opening hours.
+    // PostgreSQL time supports 24:00 as the end of day. The separate closed-store
+    // test replaces this isolated fixture schedule and exercises real queueing.
+    must(await admin.from('vendor_working_hours').upsert(Array.from({ length: 7 }, (_, day) => ({
+      vendor_id: vendorId, day_of_week: day, is_open: true, opens_at: '00:00', closes_at: '24:00',
+    })), { onConflict: 'vendor_id,day_of_week' }));
     await t.test('New vendor can submit onboarding, revise it, and stays pending for review', async () => {
       const email = `getgold-onboarding-${randomUUID()}@example.invalid`;
       const password = `Test-${randomUUID()}!`;
@@ -322,7 +328,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal((await route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })).status, 403);
       activeClient = fixtures.vendor.client;
       const responses = await Promise.all([route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed }), route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })]);
-      assert.deepEqual(responses.map(response => response.status).sort(), [200, 409]);
+      assert.deepEqual(responses.map(response => response.status).sort(), [200, 409], JSON.stringify(responses));
       assert.equal(must(await admin.rpc('available_quantity', { p_product_id: products[0].id })), 10, 'vendor confirmation is not a stock hold');
       activeClient = fixtures.customer.client;
       assert.equal((await route('reservations/confirmed-price', { reservationId: order.id, action: 'accept' })).status, 200);

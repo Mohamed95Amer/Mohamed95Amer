@@ -1,33 +1,37 @@
 "use client";
 import { useState, type FormEvent } from "react";
-
 import { WorkingHoursForm, type WorkingHourValue } from "./WorkingHoursForm";
-
-export function BankSettingsForm({ initial, initialHours }: { initial: { aani_enabled?: boolean; aani_mobile?: string; bank_transfer_enabled: boolean; bank_name: string; beneficiary_name: string; iban: string; cash_enabled?: boolean; card_enabled?: boolean; delivery_mode?: string; courier_name?: string; delivery_fee_aed?: number | null }; initialHours: WorkingHourValue[] }) {
+export function BankSettingsForm({ initial, initialHours, arabic = false }: { initial: { aani_enabled?: boolean; aani_mobile?: string; bank_transfer_enabled: boolean; bank_name: string; beneficiary_name: string; iban: string; cash_enabled?: boolean; card_enabled?: boolean; delivery_mode?: string; courier_name?: string; delivery_fee_aed?: number | null }; initialHours: WorkingHourValue[]; arabic?: boolean }) {
   const [values, setValues] = useState({ aani_enabled: false, aani_mobile: "", cash_enabled: true, card_enabled: false, delivery_mode: "own_staff", courier_name: "", delivery_fee_aed: null as number | null, ...initial });
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [saved, setSaved] = useState(false);
+  const t = (en: string, ar: string) => arabic ? ar : en;
   async function save(event: FormEvent) {
-    event.preventDefault(); setBusy(true); setMessage("");
+    event.preventDefault(); setBusy(true); setMessage(""); setSaved(false);
     try {
       const response = await fetch("/api/vendor/payment-settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(values) });
-      const body = await response.json(); setMessage(response.ok ? "Saved. Existing orders retain their original bank details." : body.error);
-    } catch { setMessage("Connection failed. Please retry."); } finally { setBusy(false); }
+      const body = await response.json().catch(() => ({}));
+      setSaved(response.ok);
+      setMessage(response.ok ? t("Payment and delivery settings saved. Existing orders retain their original details.", "تم حفظ إعدادات الدفع والتوصيل. تبقى تفاصيل الطلبات السابقة كما هي.") : t("Could not save. Check the bank details and delivery fee. " + (body.error ?? ""), "تعذر الحفظ. راجع بيانات الحساب ورسوم التوصيل."));
+    } catch { setMessage(t("Connection failed. Please retry.", "تعذر الاتصال. حاول مرة أخرى.")); } finally { setBusy(false); }
   }
-  return <div className="grid gap-6 lg:grid-cols-2"><form className="card mt-6 space-y-5 p-6" onSubmit={save}>
-    <h2 className="font-serif text-2xl">Payment and delivery options</h2>
-    <label className="flex gap-3"><input type="checkbox" checked={values.cash_enabled} onChange={event => setValues({ ...values, cash_enabled: event.target.checked })} />Cash at delivery or collection</label>
-    <label className="flex gap-3"><input type="checkbox" checked={values.card_enabled} onChange={event => setValues({ ...values, card_enabled: event.target.checked })} />Card at delivery or collection (our terminal is available)</label>
-    <label className="block"><span className="label">Delivery arranged by the vendor</span><select className="input" value={values.delivery_mode} onChange={event => setValues({ ...values, delivery_mode: event.target.value })}><option value="own_staff">Our own staff</option><option value="external_courier">Our appointed third-party courier</option></select></label>
-    {values.delivery_mode === "external_courier" && <label className="block"><span className="label">Courier name</span><input className="input" required value={values.courier_name} onChange={event => setValues({ ...values, courier_name: event.target.value })} /></label>}
-    <label className="block"><span className="label">Delivery fee once per order (AED; maximum 60)</span><input className="input" type="number" min="0" max="60" step="0.01" value={values.delivery_fee_aed ?? ""} onChange={event => setValues({ ...values, delivery_fee_aed: event.target.value === "" ? null : Number(event.target.value) })} /><span className="text-xs text-ink-muted">Blank uses the platform estimate. Pickup is always free. Arrange insured delivery and any cash collection directly with your courier.</span></label>
-    <div className="rounded-2xl border border-jade-900/10 bg-jade-50 p-4">
-      <label className="flex gap-3 font-semibold text-jade-950"><input type="checkbox" checked={values.aani_enabled} onChange={event => setValues({ ...values, aani_enabled: event.target.checked })} />Accept Aani instant transfers</label>
-      {values.aani_enabled && <label className="mt-4 block"><span className="label">Aani registered UAE mobile number</span><input className="input mt-1" inputMode="tel" placeholder="050 123 4567" required value={values.aani_mobile} onChange={event => setValues({ ...values, aani_mobile: event.target.value })} /><span className="mt-1 block text-xs text-ink-muted">Customers see this only after they accept your confirmed price.</span></label>}
-    </div>
-    <label className="flex gap-3"><input type="checkbox" checked={values.bank_transfer_enabled} onChange={event => setValues({ ...values, bank_transfer_enabled: event.target.checked })} />Accept ordinary bank transfers directly to this store</label>
-    {([['bank_name','Bank name'],['beneficiary_name','Beneficiary legal name'],['iban','UAE IBAN']] as const).map(([key,label]) => <label key={key} className="block"><span className="label">{label}</span><input className="input mt-1" value={values[key]} required={values.bank_transfer_enabled} maxLength={key === 'iban' ? 40 : 120} onChange={event => setValues({ ...values, [key]: event.target.value })} /></label>)}
-    <p className="text-sm text-ink-muted">Use only this business’s Aani profile or bank account. Customers pay you, not Get Gold. Verify cleared funds in your own account before confirming payment; a screenshot or reference is never proof of settlement.</p>
-    <button className="btn-primary" disabled={busy}>{busy ? "Saving…" : "Save payment settings"}</button><p role="status" className="text-sm">{message}</p>
-  </form><WorkingHoursForm initial={initialHours} /></div>;
+  const methods = [
+    { key: "aani_enabled" as const, title: t("Aani instant transfer", "تحويل آني الفوري"), body: t("Customer pays your registered business mobile.", "يدفع العميل إلى رقم الجوال المسجل لنشاطك.") },
+    { key: "bank_transfer_enabled" as const, title: t("Bank transfer", "التحويل البنكي"), body: t("Customer transfers to your business IBAN.", "يحوّل العميل إلى آيبان حساب نشاطك.") },
+    { key: "cash_enabled" as const, title: t("Cash", "نقداً"), body: t("Collect at delivery or store pickup.", "التحصيل عند التوصيل أو الاستلام من المتجر.") },
+    { key: "card_enabled" as const, title: t("Card at handover", "البطاقة عند التسليم"), body: t("Use your own card terminal.", "استخدم جهاز البطاقات الخاص بمتجرك.") },
+  ];
+  return <div className="grid items-start gap-6 xl:grid-cols-2">
+    <form className="space-y-6" onSubmit={save} onChange={() => { setSaved(false); setMessage(""); }}>
+      <section className="card p-5 sm:p-6"><p className="eyebrow text-jade-600">{t("01 · Get paid directly", "٠١ · استلم المدفوعات مباشرة")}</p><h2 className="mt-2 font-serif text-2xl">{t("How can customers pay you?", "كيف يدفع لك العملاء؟")}</h2><p className="mt-2 text-sm leading-relaxed text-ink-muted">{t("Select the methods your store can accept. Customers see transfer details after accepting your confirmed price.", "حدد طرق الدفع التي يقبلها متجرك. تظهر تفاصيل التحويل بعد قبول السعر المؤكد.")}</p>
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">{methods.map(m => <label key={m.key} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${values[m.key] ? "border-jade-700 bg-jade-50" : "border-jade-900/10 bg-white"}`}><input className="mt-1 h-5 w-5 shrink-0 accent-jade-800" type="checkbox" checked={values[m.key]} onChange={e => setValues({ ...values, [m.key]: e.target.checked })} /><span><strong className="block text-sm text-jade-950">{m.title}</strong><span className="mt-1 block text-xs leading-relaxed text-ink-muted">{m.body}</span></span></label>)}</div>
+      {values.aani_enabled && <label className="mt-5 block"><span className="label">{t("Aani registered UAE mobile", "رقم الجوال الإماراتي المسجل في آني")}</span><input className="input mt-1" type="tel" dir="ltr" placeholder="050 123 4567" required value={values.aani_mobile} onChange={e => setValues({ ...values, aani_mobile: e.target.value })} /></label>}
+      {values.bank_transfer_enabled && <fieldset className="mt-5 grid gap-4 rounded-xl border border-jade-900/10 p-4"><legend className="px-1 text-sm font-semibold">{t("Business bank account", "الحساب البنكي للنشاط")}</legend>{([["bank_name", t("Bank name", "اسم البنك")], ["beneficiary_name", t("Beneficiary legal name", "الاسم القانوني للمستفيد")], ["iban", t("UAE IBAN", "الآيبان الإماراتي")]] as const).map(([key, label]) => <label key={key}><span className="label">{label}</span><input className="input mt-1" dir={key === "iban" ? "ltr" : undefined} value={values[key] ?? ""} required maxLength={key === "iban" ? 40 : 120} onChange={e => setValues({ ...values, [key]: e.target.value })} placeholder={key === "iban" ? "AE…" : undefined} /></label>)}</fieldset>}
+      <p className="mt-5 rounded-xl bg-gold-50 p-4 text-xs leading-relaxed text-gold-700">{t("Use your business account. Check cleared funds before confirming a payment; customer screenshots and references do not confirm receipt.", "استخدم حساب نشاطك التجاري. تحقق من وصول الأموال قبل تأكيد الدفع؛ الصور والمراجع وحدها لا تؤكد الاستلام.")}</p></section>
+      <section className="card p-5 sm:p-6"><p className="eyebrow text-jade-600">{t("02 · Delivery & collection", "٠٢ · التوصيل والاستلام")}</p><h2 className="mt-2 font-serif text-2xl">{t("Getting the gold to your customer", "تسليم الذهب لعميلك")}</h2><div className="mt-5 space-y-4"><label className="block"><span className="label">{t("Who handles delivery?", "من يتولى التوصيل؟")}</span><select className="input mt-1" value={values.delivery_mode} onChange={e => setValues({ ...values, delivery_mode: e.target.value })}><option value="own_staff">{t("Our own staff", "موظفو المتجر")}</option><option value="external_courier">{t("Our appointed courier", "شركة التوصيل التي نختارها")}</option></select></label>{values.delivery_mode === "external_courier" && <label className="block"><span className="label">{t("Courier name", "اسم شركة التوصيل")}</span><input className="input mt-1" required value={values.courier_name ?? ""} onChange={e => setValues({ ...values, courier_name: e.target.value })} /></label>}<label className="block"><span className="label">{t("Delivery fee per order (AED, maximum 60)", "رسوم التوصيل للطلب (درهم، بحد أقصى ٦٠)")}</span><input className="input mt-1" type="number" inputMode="decimal" min="0" max="60" step="0.01" value={values.delivery_fee_aed ?? ""} onChange={e => setValues({ ...values, delivery_fee_aed: e.target.value === "" ? null : Number(e.target.value) })} /><span className="mt-2 block text-xs text-ink-muted">{t("Leave blank for the platform estimate. Enter 0 for free delivery. Store pickup has no delivery fee.", "اتركه فارغاً لتقدير المنصة. أدخل ٠ للتوصيل المجاني. لا توجد رسوم توصيل للاستلام من المتجر.")}</span></label></div></section>
+      <div className="rounded-xl border border-jade-900/10 bg-white p-4"><button className="btn-primary w-full sm:w-auto" disabled={busy}>{busy ? t("Saving…", "جارٍ الحفظ…") : t("Save payment & delivery settings", "حفظ إعدادات الدفع والتوصيل")}</button>{message && <p role={saved ? "status" : "alert"} className={`mt-3 text-sm ${saved ? "text-jade-700" : "text-signal-err"}`}>{message}</p>}</div>
+    </form>
+    <WorkingHoursForm initial={initialHours} arabic={arabic} />
+  </div>;
 }

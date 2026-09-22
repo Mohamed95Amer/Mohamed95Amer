@@ -103,6 +103,7 @@ export function VendorOnboardingForm({ initial, language = "en" }: { initial: In
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (initial && !window.confirm(arabic ? "إعادة الإرسال تعيد المتجر إلى المراجعة. هل تريد المتابعة؟" : "Resubmitting returns your store to review and pauses its public visibility. Continue?")) return;
     setBusy(true);
     setErr(null);
     setUploadNote(null);
@@ -208,7 +209,7 @@ export function VendorOnboardingForm({ initial, language = "en" }: { initial: In
 
       {err && <p role="alert" className="rounded-xl border border-signal-err/20 bg-signal-err/5 p-3 text-sm text-signal-err">{err}</p>}
       {ok && <div role="status" className="rounded-xl border border-signal-ok/20 bg-signal-ok/5 p-4 text-sm text-signal-ok"><p className="font-semibold">{arabic ? "تم حفظ الطلب وإرساله للمراجعة." : "Application saved and sent for review."}</p><p className="mt-1">{arabic ? "سنتواصل معك عبر البيانات أعلاه. يمكنك متابعة إضافة المستندات من " : "We will contact you using the details above. You can continue adding documents from "}<Link href="/vendor/documents" className="font-semibold underline">{arabic ? "المستندات" : "Documents"}</Link>.</p>{uploadNote && <p className="mt-2 text-signal-warn">{uploadNote}</p>}</div>}
-      <div className="flex flex-col gap-3 border-t border-bone-deep pt-6 sm:flex-row sm:items-center sm:justify-between"><p className="max-w-md text-xs leading-relaxed text-ink-muted">{arabic ? "بإرسال الطلب، توافق على تواصل Get Gold معك بشأن التسجيل والتحقق من بيانات نشاطك." : "By submitting, you agree that Get Gold may contact you about onboarding and verify your business information."}</p><button className="btn-primary min-h-12 px-6" disabled={busy}>{busy ? (arabic ? "جارٍ حفظ الطلب…" : "Saving application…") : (arabic ? "إرسال طلب المتجر ←" : "Submit vendor application →")}</button></div>
+      <div className="flex flex-col gap-3 border-t border-bone-deep pt-6 sm:flex-row sm:items-center sm:justify-between"><p className="max-w-md text-xs leading-relaxed text-ink-muted">{arabic ? "بإرسال الطلب، توافق على تواصل Get Gold معك بشأن التسجيل والتحقق من بيانات نشاطك." : "By submitting, you agree that Get Gold may contact you about onboarding and verify your business information."}</p><button className="btn-primary min-h-12 px-6" disabled={busy}>{busy ? (arabic ? "جارٍ حفظ الطلب…" : "Saving application…") : (initial ? (arabic ? "حفظ وإعادة إرسال للمراجعة" : "Save & resubmit for review") : (arabic ? "إرسال طلب المتجر ←" : "Submit vendor application →"))}</button></div>
     </form>
   );
 }

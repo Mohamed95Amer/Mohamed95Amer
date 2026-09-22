@@ -1,5 +1,39 @@
 # Get Gold — handover
 
+**Latest checkpoint — vendor workspace redesign (23 Sep 2026; deployed):**
+Vendor overview now prioritises actionable requests, payment checks and fulfilment,
+with an actual settings-backed setup checklist. Navigation separates everyday work
+from store tools. Orders and products use mobile cards, search and status filters;
+expired requests cannot look actionable and customer proof never confirms payment.
+Order cards retain the private receipt, fee/VAT details, delivery assignment and
+store-visit controls. Existing payment/stock RPCs are unchanged.
+
+Product entry is organised into details, photos, charges and review, with listing
+quality checks, a live merchandise subtotal preview using the shared gold provider,
+touch-visible photo controls and separate making/certificate/assay/VAT inputs.
+Payment methods, delivery settings and UAE opening hours have clearer guidance,
+including copy-hours-to-open-days. Documents, catalogue assistance, buyer offers
+and review replies have better mobile layouts and recoverable network errors.
+Key vendor screens and forms have English/Arabic copy. Resubmitting business
+details explicitly warns that existing backend behaviour returns the store to
+admin review; it does not silently leave an approved store published.
+
+Verification: 52/52 app tests, 23/23 isolated integration tests, typecheck,
+ESLint and production build (31 static pages) pass. The integration payment
+fixtures now explicitly use an always-open schedule: previously they incorrectly
+assumed the real clock was inside default 10:00–22:00 opening hours. The separate
+closed-store test still verifies queueing and denial before opening.
+`scripts/test-vendor-workspace.cjs` covers search/filter, missing-photo validation,
+real local Storage upload/draft save, Aani settings and working-hours saves, plus
+ten vendor routes on 390px mobile in English/Arabic without overflow or runtime
+errors. Screenshots are in `output/vendor-workspace-20260922/` (local only).
+No schema migration. Local outputs, temporary work and secrets are excluded
+from Vercel uploads through `.vercelignore`.
+Production deployment `B5k5Lz18zRuDqHTM26hbzPmRCLHC` is Ready and aliased to
+https://getgold.ae. Homepage and marketplace return 200; the gold API returns
+a fresh `goldapicom` quote with the separate 10-second refresh and 60-second stale
+threshold intact.
+
 **Latest checkpoint — auditable vendor-direct payment tracking (22 Sep 2026; deployed):**
 Admin → Orders now links every order to a protected payment trail showing the exact
 vendor-confirmed amount, payment method, preserved payment deadline, customer payment
