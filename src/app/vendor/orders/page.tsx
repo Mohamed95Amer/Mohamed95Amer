@@ -28,7 +28,7 @@ export default async function VendorOrdersPage() {
     admin
       .from("reservations")
       .select(
-        "id, status, quantity, expires_at, created_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, vendor_rate_adjustment_aed, vat_rate_bps, vat_aed, quantity)",
+        "id, status, quantity, expires_at, created_at, vendor_action_available_at, submitted_during_working_hours, vendor_confirmed_price_aed, vendor_price_confirmed_at, transfer_proof_path, transfer_reference, transfer_submitted_at, identity_verification_id, fulfilment_method, payment_method, payment_status, recipient_name, recipient_phone, delivery_emirate, delivery_area, delivery_address_line_1, delivery_address_line_2, delivery_landmark, delivery_latitude, delivery_longitude, delivery_map_link, customer_note, customer:profiles(full_name), product:products(name, karat, weight_grams), snapshot:order_price_snapshots(total_price_aed, platform_fee, platform_fee_bps, customer_fee_discount_percent, service_fee_event_discount_percent, delivery_fee, delivery_fee_before_event_discount, delivery_event_discount_percent, marketplace_promotion_title, vendor_rate_adjustment_aed, vat_rate_bps, vat_aed, quantity)",
       )
       .eq("vendor_id", vendor.id)
       .order("created_at", { ascending: false }),
@@ -82,7 +82,8 @@ export default async function VendorOrdersPage() {
               const customer = o.customer as unknown as { full_name: string | null } | null;
               type PriceSnapshot = { total_price_aed: number; platform_fee: number; platform_fee_bps: number; customer_fee_discount_percent: number | null; service_fee_event_discount_percent: number; delivery_fee: number; delivery_fee_before_event_discount: number | null; delivery_event_discount_percent: number; marketplace_promotion_title: string | null; vendor_rate_adjustment_aed: number | null; vat_rate_bps: number; vat_aed: number; quantity: number };
               const snap = o.snapshot as unknown as PriceSnapshot[] | PriceSnapshot | null;
-              const total = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
+              const estimatedTotal = Array.isArray(snap) ? snap[0]?.total_price_aed : snap?.total_price_aed;
+              const total = o.vendor_confirmed_price_aed ?? estimatedTotal;
               const priceSnapshot = Array.isArray(snap) ? snap[0] : snap;
               const customerServiceFee = Number(priceSnapshot?.platform_fee ?? 0) * Number(priceSnapshot?.quantity ?? o.quantity);
               const deliverySubsidy = Math.max(0, Number(priceSnapshot?.delivery_fee_before_event_discount ?? priceSnapshot?.delivery_fee ?? 0) - Number(priceSnapshot?.delivery_fee ?? 0));
@@ -98,22 +99,24 @@ export default async function VendorOrdersPage() {
                   <td className="px-4 py-2 text-ink-muted">{formatDubaiDateTime(o.expires_at)}</td>
                   <td className="px-4 py-2 text-right">
                     {o.status === "pending_vendor_confirmation" && (
-                      <VendorOrderActions reservationId={o.id} />
+                      <VendorOrderActions reservationId={o.id} estimatedTotalAed={Number(estimatedTotal ?? 0)} availableAt={o.vendor_action_available_at} />
                     )}
                   </td>
                 </tr>
                 <tr className="bg-jade-50/50">
                   <td colSpan={7} className="px-4 py-3">
                     <p className={`mb-2 text-xs font-semibold ${o.identity_verification_id ? "text-signal-ok" : "text-ink-muted"}`}>{o.identity_verification_id ? "✓ Identity verified for this order" : "Legacy order · no per-order identity record"}</p>
-                    <p className="mb-2 text-xs text-ink-muted">Payment: {o.payment_method === "pay_online" ? "online requested" : "paid directly to store"} · {statusLabel(o.payment_status)}</p>
+                    <p className="mb-2 text-xs text-ink-muted">Payment: {o.payment_method === "aani" ? "Aani direct to store" : o.payment_method === "bank_transfer" ? "bank transfer direct to store" : o.payment_method === "pay_online" ? "online requested" : "paid directly to store"} · {statusLabel(o.payment_status)}</p>
+                    {!o.submitted_during_working_hours && o.status === "pending_vendor_confirmation" && <p className="mb-2 text-xs font-medium text-gold-700">Submitted while closed · vendor action opens {formatDubaiDateTime(o.vendor_action_available_at)}</p>}
+                    {o.vendor_confirmed_price_aed != null && Number(o.vendor_confirmed_price_aed) !== Number(estimatedTotal) && <p className="mb-2 text-xs text-gold-700">Vendor-confirmed final total: <strong>{formatAed(Number(o.vendor_confirmed_price_aed))}</strong> · request estimate was {formatAed(Number(estimatedTotal))}</p>}
                     {Number(priceSnapshot?.vat_rate_bps ?? 0) > 0 && <p className="mb-2 text-xs text-ink-muted">VAT included in the customer total: <strong>{formatAed(Number(priceSnapshot?.vat_aed ?? 0))}</strong> at {Number(priceSnapshot?.vat_rate_bps ?? 0) / 100}%.</p>}
                     {customerServiceFee > 0 && <p className="mb-2 text-xs text-gold-700"><strong>{formatAed(customerServiceFee)} Get Gold customer fee included.</strong> You collect it inside the displayed total for later settlement to Get Gold; it is not a commission on your making charge.</p>}
                     {Number(priceSnapshot?.service_fee_event_discount_percent ?? 0) > 0 && <p className="mb-2 text-xs text-signal-ok">Applied marketplace offer: {priceSnapshot?.marketplace_promotion_title ?? "seasonal campaign"} · {priceSnapshot?.service_fee_event_discount_percent}% off the Get Gold fee.</p>}
                     {deliverySubsidy > 0 && <p className="mb-2 text-xs text-signal-ok"><strong>{formatAed(deliverySubsidy)} Get Gold-funded delivery credit.</strong> The customer paid the discounted delivery amount; include this credit when reconciling the order. Net amount due to Get Gold for this order: {formatAed(netSettlement)}.</p>}
-                    {o.payment_method === "bank_transfer" && <p className="my-2 text-xs">Bank transfer: <a className="underline" href={`/api/reservations/bank-proof?id=${o.id}`}>View submitted proof</a>. Check cleared funds in your bank; a receipt alone is not confirmation.</p>}
-                    {o.status === "payment_pending" && ["pay_at_store", "bank_transfer", "cash", "card"].includes(o.payment_method) && <VendorOrderProgress reservationId={o.id} />}
+                    {["bank_transfer", "aani"].includes(o.payment_method) && o.transfer_submitted_at && <p className="my-2 text-xs">Customer marked payment as sent{o.transfer_reference ? ` · reference ${o.transfer_reference}` : ""}. {o.transfer_proof_path && <a className="underline" href={`/api/reservations/bank-proof?id=${o.id}`}>View optional screenshot</a>} Check cleared funds in your own account; customer evidence alone is not confirmation.</p>}
+                    {["payment_pending", "payment_verification", "payment_confirmed", "preparing_order", "ready_for_delivery", "out_for_delivery", "delivered"].includes(o.status) && <VendorOrderProgress reservationId={o.id} status={o.status} paymentMethod={o.payment_method} fulfilmentMethod={o.fulfilment_method} />}
                     <FulfilmentDetails details={o} compact />
-                    {o.fulfilment_method === "delivery" && ["payment_pending", "payment_link_pending", "paid"].includes(o.status) && (
+                    {o.fulfilment_method === "delivery" && ["payment_confirmed", "preparing_order", "ready_for_delivery", "out_for_delivery", "delivered", "completed", "paid"].includes(o.status) && (
                       <div className="mt-3 border-t border-jade-900/10 pt-3"><DeliveryAssignmentControl reservationId={o.id} emirate={o.delivery_emirate} companies={deliveryCompanies ?? []} assignment={assignmentByReservation.get(o.id) as any} /></div>
                     )}
                   </td>

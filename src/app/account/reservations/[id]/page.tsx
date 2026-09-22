@@ -19,6 +19,7 @@ import { FulfilmentDetails } from "@/components/FulfilmentDetails";
 import Link from "next/link";
 import { statusLabel } from "@/lib/presentation";
 import { BankTransferProof } from "@/components/BankTransferProof";
+import { ConfirmedPriceActions } from "@/components/ConfirmedPriceActions";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +60,14 @@ export default async function ReservationDetailPage({ params }: { params: Promis
   const lapsedLock = isActiveLockStatus(r.status) && !active;
   const tracked = isPurchaseStatus(r.status) || active;
   const difference = insight?.differenceAed ?? 0;
-  const stage = r.status === "paid" ? 3 : ["payment_link_pending", "payment_pending"].includes(r.status) ? 2 : r.status === "pending_vendor_confirmation" ? 1 : 0;
+  const stage = ["completed"].includes(r.status) ? 5
+    : ["delivered"].includes(r.status) ? 4
+    : ["preparing_order", "ready_for_delivery", "out_for_delivery"].includes(r.status) ? 3
+    : ["paid", "payment_confirmed"].includes(r.status) ? 2
+    : ["payment_pending", "payment_verification"].includes(r.status) ? 1
+    : 0;
+  const confirmedTotal = Number(r.vendor_confirmed_price_aed ?? snap?.total_price_aed ?? 0);
+  const estimateTotal = Number(snap?.total_price_aed ?? 0);
 
   return (
     <div className="container-pro max-w-4xl py-10 sm:py-14">
@@ -76,7 +84,7 @@ export default async function ReservationDetailPage({ params }: { params: Promis
       <div className="card mt-7 grid gap-4 p-6 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div><span className="label">Status</span><span className="pill mt-2 border-jade-900/10 bg-jade-50">{lapsedLock ? "Price lock expired" : reservationStatusLabel(r.status)}</span></div>
         <div><span className="label">Item</span><p className="mt-2 text-jade-950">{product?.karat}K · {product?.weight_grams}g · quantity {r.quantity}</p></div>
-        <div><span className="label">Price lock</span><p className="mt-2 text-jade-950">{lapsedLock ? "Ended" : "Until"} {formatDubaiDate(r.expires_at, true)}</p></div>
+        <div><span className="label">Timing</span><p className="mt-2 text-jade-950">{r.status === "pending_vendor_confirmation" ? (r.submitted_during_working_hours ? "Sent to store" : `Queued until ${formatDubaiDate(r.vendor_action_available_at, true)}`) : r.status === "vendor_confirmed" ? `Respond by ${formatDubaiDate(r.expires_at, true)}` : ["payment_pending"].includes(r.status) ? `${lapsedLock ? "Payment window ended" : `Pay by ${formatDubaiDate(r.expires_at, true)}`}` : reservationStatusLabel(r.status)}</p></div>
         <div><span className="label">Order identity</span><p className="mt-2 font-medium text-jade-950">{r.identity_verification_id ? "✓ Verified for this order" : "Legacy order"}</p></div>
       </div>
 
@@ -85,13 +93,14 @@ export default async function ReservationDetailPage({ params }: { params: Promis
         {r.vendor_delivery_snapshot && <p className="mt-3 text-sm text-ink-muted">Delivery arranged and paid for by the store from the delivery fee you pay it: {r.vendor_delivery_snapshot.mode === "external_courier" ? r.vendor_delivery_snapshot.courier_name : "the store’s own staff"}. Contact the store for scheduling.</p>}
         {["cash", "card"].includes(r.payment_method) && <p className="mt-3 text-sm">Payment: {r.payment_method === "cash" ? "cash" : "card using the vendor’s terminal"} directly to the store at {r.fulfilment_method === "collection" ? "collection" : "delivery"}. After store acceptance, arrange completion within the displayed 24-hour deadline. Contact the store before paying for an expired order.</p>}
       </div>
-      {r.payment_method === "bank_transfer" && <section className="card mt-6 p-6"><h2 className="font-serif text-2xl">Bank transfer to the store</h2>
+      {r.status === "vendor_confirmed" && active && <section className="card mt-6 border-gold-400/40 bg-gold-50 p-6"><p className="eyebrow text-gold-700">Store confirmed</p><h2 className="mt-1 font-serif text-2xl">Review the final price</h2><p className="mt-3 text-sm">The store confirmed the item is available at <strong>{formatAed(confirmedTotal)}</strong>. The request estimate was {formatAed(estimateTotal)}. No money has been taken and the item is not held until you accept.</p>{r.vendor_response_note && <p className="mt-3 rounded-xl bg-white p-3 text-sm text-ink-muted">Store note: {r.vendor_response_note}</p>}<ConfirmedPriceActions reservationId={r.id} /></section>}
+      {(["bank_transfer", "aani"].includes(r.payment_method)) && <section className="card mt-6 p-6"><h2 className="font-serif text-2xl">{r.payment_method === "aani" ? "Aani transfer to the store" : "Bank transfer to the store"}</h2>
         {r.status === "payment_pending" && active ? <>
-          <p className="mt-3 text-sm">The store accepted the stock request. Transfer exactly {formatAed(Number(snap?.total_price_aed))} and submit proof before {formatDubaiDate(r.expires_at, true)}. Use only a transfer that can clear before this deadline; otherwise contact the store first.</p>
-          <dl className="mt-4 space-y-2 text-sm"><div>Bank: {r.bank_details_snapshot?.bank_name}</div><div>Beneficiary: {r.bank_details_snapshot?.beneficiary_name}</div><div className="break-all">IBAN: {r.bank_details_snapshot?.iban}</div><div className="break-all">Order reference: {r.id}</div></dl>
+          <p className="mt-3 text-sm">The item and vendor-confirmed price are reserved for you. Transfer exactly <strong>{formatAed(confirmedTotal)}</strong> before {formatDubaiDate(r.expires_at, true)}, then click “I have paid”.</p>
+          <dl className="mt-4 space-y-2 text-sm">{r.payment_method === "aani" ? <div>Aani registered mobile: <strong>{r.bank_details_snapshot?.aani_mobile}</strong></div> : <><div>Bank: {r.bank_details_snapshot?.bank_name}</div><div>Beneficiary: {r.bank_details_snapshot?.beneficiary_name}</div><div className="break-all">IBAN: {r.bank_details_snapshot?.iban}</div></>}<div className="break-all">Amount: <strong>{formatAed(confirmedTotal)}</strong></div><div className="break-all">Get Gold order reference: {r.id}</div></dl>
           <p className="mt-3 text-xs text-ink-muted">These bank details were supplied by the vendor. Get Gold does not receive your money. Fulfilment starts only after the vendor checks its bank and confirms receipt.</p>
           <BankTransferProof reservationId={r.id} submitted={Boolean(r.transfer_proof_path)} />
-        </> : <p className="mt-3 text-sm">{r.status === "pending_vendor_confirmation" ? "Do not transfer yet. Wait for the store to accept the stock request." : r.payment_status === "paid" ? "The store confirmed receipt of your payment." : "Do not send money for this inactive order. If you already transferred, contact the store to arrange reconciliation or a refund. Do not pay twice."}</p>}
+        </> : <p className="mt-3 text-sm">{["pending_vendor_confirmation", "vendor_confirmed"].includes(r.status) ? "Do not transfer yet. Payment details unlock only after you accept the vendor-confirmed price." : r.status === "payment_verification" ? "You marked the transfer as sent. The store is checking its own account; your screenshot or reference did not automatically confirm payment." : ["payment_confirmed", "preparing_order", "ready_for_delivery", "out_for_delivery", "delivered", "completed", "paid"].includes(r.status) ? "The store confirmed receipt of your payment." : "Do not send money for this inactive order. If you already transferred, contact the store to arrange reconciliation or a refund. Do not pay twice."}</p>}
       </section>}
 
       {deliveryAssignment && (() => { const company = Array.isArray(deliveryAssignment.company) ? deliveryAssignment.company[0] : deliveryAssignment.company; return <section className="card mt-6 border-gold-300/30 p-5 sm:p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="eyebrow text-jade-600">Delivery tracking</p><h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">{company?.company_name ?? "Assigned delivery partner"}</h2><p className="mt-1 text-xs text-ink-muted">Tracking {deliveryAssignment.tracking_code}{company?.phone ? ` · ${company.phone}` : ""}</p></div><span className="pill border-jade-900/10 bg-jade-50">{statusLabel(deliveryAssignment.status)}</span></div>{deliveryAssignment.public_note && <p className="mt-4 rounded-xl bg-jade-50 p-3 text-sm text-ink-muted">{deliveryAssignment.public_note}</p>}<ol className="mt-5 grid grid-cols-4 gap-2 text-center text-[10px] text-ink-muted">{[["accepted", "Accepted"], ["collected", "Collected"], ["out_for_delivery", "On the way"], ["delivered", "Delivered"]].map(([key, label], index, all) => { const current = all.findIndex(([state]) => state === deliveryAssignment.status); const complete = deliveryAssignment.status === "delivered" || (current >= 0 && index <= current); return <li key={key}><span className={`mx-auto mb-2 block h-2.5 w-2.5 rounded-full ${complete ? "bg-jade-700" : "bg-bone-deep"}`} />{label}</li>; })}</ol></section>; })()}
@@ -103,8 +112,8 @@ export default async function ReservationDetailPage({ params }: { params: Promis
           <div><p className="eyebrow text-jade-600">Order journey</p><h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">What happens next</h2></div>
           {vendor && <p className="text-sm text-ink-muted">Seller: <span className="font-semibold text-jade-950">{vendor.business_name}</span> · {vendor.emirate}</p>}
         </div>
-        <ol className="mt-6 grid gap-3 sm:grid-cols-4">
-          {["Price reserved", "Store confirmation", "Payment arranged", "Purchase complete"].map((label, index) => (
+        <ol className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {["Store confirmation", "Customer payment", "Payment confirmed", "Preparing", "Delivered", "Completed"].map((label, index) => (
             <li key={label} className={`rounded-xl border p-4 text-sm ${index <= stage ? "border-jade-300 bg-jade-50 text-jade-950" : "border-jade-900/10 bg-white text-ink-muted"}`}>
               <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${index < stage ? "bg-jade-700 text-white" : index === stage ? "bg-gold-300 text-jade-950" : "bg-bone text-ink-muted"}`}>{index < stage ? "✓" : index + 1}</span>
               <span className="mt-3 block font-semibold">{label}</span>
@@ -114,7 +123,7 @@ export default async function ReservationDetailPage({ params }: { params: Promis
         {vendor && <p className="mt-5 text-sm text-ink-muted">Store contact: <a href={`mailto:${vendor.email}`} className="font-semibold text-jade-700 underline underline-offset-4">{vendor.email}</a>{vendor.phone ? ` · ${vendor.phone}` : ""}</p>}
       </section>
 
-      {stage >= 1 && stage < 3 && (
+      {stage >= 0 && stage < 3 && (
         <div className="mt-6 rounded-2xl border border-gold-400/25 bg-gold-50 p-5 text-sm leading-relaxed text-ink-muted">
           <strong className="text-jade-950">Before paying:</strong> match the vendor name, item, quantity and locked total shown here. Get Gold will never ask for your OTP, banking password or card details by email.
         </div>
@@ -136,8 +145,8 @@ export default async function ReservationDetailPage({ params }: { params: Promis
 
       {snap && (
         <div className="card mt-6 p-6">
-          <h2 className="font-serif text-xl">Locked price breakdown</h2>
-          <p className="mt-1 text-xs text-ink-muted">All amounts below cover {snapshotQuantity} {snapshotQuantity === 1 ? "item" : "items"}. Captured server-side and never rewritten by later market moves.</p>
+          <h2 className="font-serif text-xl">Price breakdown</h2>
+          <p className="mt-1 text-xs text-ink-muted">All amounts below cover {snapshotQuantity} {snapshotQuantity === 1 ? "item" : "items"}. The store must separately confirm the final payable total.</p>
           <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm">
             <dt className="text-ink-muted">Gold value</dt>
             <dd className="text-right">{formatAed(Number(snap.gold_value_aed) * snapshotQuantity)}</dd>
@@ -172,8 +181,9 @@ export default async function ReservationDetailPage({ params }: { params: Promis
             {Number(snap.delivery_event_discount_percent ?? 0) > 0 && <><dt className="text-signal-ok">Delivery offer</dt><dd className="text-right font-medium text-signal-ok">{snap.delivery_event_discount_percent}% off · was {formatAed(Number(snap.delivery_fee_before_event_discount ?? 0))}</dd></>}
             <dt className="text-ink-muted">VAT ({Number(snap.vat_rate_bps ?? 0) / 100}%)</dt>
             <dd className="text-right">{Number(snap.vat_rate_bps ?? 0) === 0 && Number(snap.vat_aed ?? 0) === 0 ? "Not charged" : formatAed(Number(snap.vat_aed))}</dd>
-            <dt className="font-medium">Total</dt>
-            <dd className="text-right font-medium">{formatAed(Number(snap.total_price_aed))}</dd>
+            {r.vendor_confirmed_price_aed != null && confirmedTotal !== estimateTotal && <><dt className="text-gold-700">Vendor-confirmed adjustment</dt><dd className="text-right text-gold-700">{confirmedTotal - estimateTotal > 0 ? "+" : ""}{formatAed(confirmedTotal - estimateTotal)}</dd></>}
+            <dt className="font-medium">{r.vendor_confirmed_price_aed != null ? "Vendor-confirmed total" : "Request estimate"}</dt>
+            <dd className="text-right font-medium">{formatAed(r.vendor_confirmed_price_aed != null ? confirmedTotal : estimateTotal)}</dd>
           </dl>
           <p className="mt-4 text-xs text-ink-muted">
             Locked gold price: {formatAed(Number(snap.gold_price_per_gram_24k_aed))}/g 24K ·
@@ -181,7 +191,7 @@ export default async function ReservationDetailPage({ params }: { params: Promis
           </p>
         </div>
       )}
-      {r.status === "paid" && (
+      {["paid", "completed"].includes(r.status) && (
         <section id="review" className="card mt-6 p-6 sm:p-8">
           <p className="eyebrow text-jade-600">Verified purchase</p>
           <h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">

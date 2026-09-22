@@ -87,7 +87,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const supabase = getServiceSupabase();
   const { product, settings } = await loadProduct(id);
   if (!product) return notFound();
-  const { data: bankOption } = await supabase.from("vendor_payment_settings").select("bank_transfer_enabled, cash_enabled, card_enabled, delivery_fee_aed").eq("vendor_id", product.vendor_id).maybeSingle();
+  const { data: bankOption } = await supabase.from("vendor_payment_settings").select("aani_enabled, bank_transfer_enabled, cash_enabled, card_enabled, delivery_fee_aed").eq("vendor_id", product.vendor_id).maybeSingle();
 
   const vendor = product.vendors as unknown as Vendor;
 
@@ -282,6 +282,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 defaultRecipientPhone={profile?.phone ?? ""}
                 identityVerificationAvailable={diditIsConfigured()}
                 bankTransferEnabled={Boolean(bankOption?.bank_transfer_enabled)}
+                aaniEnabled={Boolean(bankOption?.aani_enabled)}
                 cashEnabled={bankOption?.cash_enabled ?? true}
                 cardEnabled={bankOption?.card_enabled ?? false}
                 customerFeeDiscountPercent={customerFeeOffer.discountPercent}

@@ -23,7 +23,7 @@ async function handle(request: Request) {
     .from("reservations")
     .update({ status: "expired" })
     .lt("expires_at", new Date().toISOString())
-    .in("status", ["pending_vendor_confirmation", "payment_link_pending", "payment_pending"])
+    .in("status", ["pending_vendor_confirmation", "vendor_confirmed", "payment_link_pending", "payment_pending"])
     .select("id");
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

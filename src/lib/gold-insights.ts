@@ -1,10 +1,12 @@
 import { round2 } from "@/lib/pricing/calc";
 
-export const PURCHASE_STATUSES = ["paid"] as const;
+export const PURCHASE_STATUSES = ["paid", "payment_confirmed", "preparing_order", "ready_for_delivery", "out_for_delivery", "delivered", "completed"] as const;
 export const ACTIVE_LOCK_STATUSES = [
   "pending_vendor_confirmation",
+  "vendor_confirmed",
   "payment_link_pending",
   "payment_pending",
+  "payment_verification",
 ] as const;
 
 export interface PriceSnapshotForInsight {
@@ -101,8 +103,16 @@ export function isReservationActive(status: string, expiresAt: string, now = Dat
 export function reservationStatusLabel(status: string): string {
   const labels: Record<string, string> = {
     pending_vendor_confirmation: "Awaiting vendor",
+    vendor_confirmed: "Awaiting your acceptance",
     payment_link_pending: "Payment link pending",
     payment_pending: "Payment pending",
+    payment_verification: "Payment verification",
+    payment_confirmed: "Payment confirmed",
+    preparing_order: "Preparing order",
+    ready_for_delivery: "Ready",
+    out_for_delivery: "Out for delivery",
+    delivered: "Delivered",
+    completed: "Completed",
     paid: "Purchased",
     cancelled: "Cancelled",
     expired: "Expired",

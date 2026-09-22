@@ -42,7 +42,7 @@ async function saveReview(request: Request, updating: boolean) {
   if (!reservation || reservation.customer_user_id !== auth.user.id) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
-  if (reservation.status !== "paid") {
+  if (!["paid", "completed"].includes(reservation.status)) {
     return NextResponse.json({ error: "not_a_completed_purchase" }, { status: 409 });
   }
 

@@ -9,6 +9,7 @@ export async function notifyUser(input: {
   body: string;
   href?: string | null;
   dedupeKey?: string | null;
+  availableAt?: string | null;
 }) {
   const admin = getServiceSupabase();
   const values = {
@@ -18,6 +19,7 @@ export async function notifyUser(input: {
     body: input.body,
     href: input.href ?? null,
     dedupe_key: input.dedupeKey ?? null,
+    available_at: input.availableAt ?? new Date().toISOString(),
   };
   const query = input.dedupeKey
     ? admin.from("notifications").upsert(values, { onConflict: "user_id,dedupe_key", ignoreDuplicates: true })
@@ -25,4 +27,3 @@ export async function notifyUser(input: {
   const { error } = await query;
   if (error) console.error("notification_write_failed", error.message);
 }
-

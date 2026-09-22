@@ -1,5 +1,29 @@
 # Get Gold — handover
 
+**Latest checkpoint — vendor-confirmed direct payment flow (22 Sep 2026; deployed):**
+Customers now submit a purchase request without paying or holding stock. Requests made
+outside a store's configured Dubai working hours queue until its next opening. The vendor
+must confirm availability and enter the final current selling price; only after the
+customer accepts that price does the database atomically acquire stock and start the
+payment window (30 minutes for Aani/bank transfer, 24 hours for enabled cash/card paths).
+
+Aani is the preferred vendor-direct option. Vendors configure their Aani UAE mobile,
+bank details and seven-day working schedule under **Vendor → Payments & hours**. Direct
+payment details, exact amount and Get Gold order reference are disclosed only after price
+acceptance. **I have paid** and optional screenshot/reference evidence move the order only
+to `payment_verification`; only the vendor can confirm cleared funds. Fulfilment then
+progresses through payment confirmed, preparing, ready, out for delivery, delivered and
+completed. Customer evidence remains private and never auto-confirms payment.
+
+Migrations `20260922053420_vendor_confirmed_payment_statuses.sql` and
+`20260922053424_vendor_confirmed_payment_flow.sql` are applied to production and recorded
+in its migration history. Production grants read back with zero anon/authenticated access
+to the service-only working-hours table and order-transition RPCs. Deployment
+`D5ADhfcZGLMoYNJnUVcekxfaTvTi` is Ready and aliased to https://getgold.ae. Live homepage
+and marketplace return 200; live gold remains fresh with `source: goldapicom`. Evidence:
+50/50 app tests, 23/23 isolated Auth/PostgREST/Storage integration tests, 59 pgTAP checks,
+typecheck, ESLint, local/production builds and local/production schema lint all pass.
+
 **Latest checkpoint — admin vendor export (20 Sep 2026; deployed):**
 The Admin → Vendors page now has an admin-only **Export Excel CSV** action. It exports
 all vendors or the selected status filter and includes application/contact details,

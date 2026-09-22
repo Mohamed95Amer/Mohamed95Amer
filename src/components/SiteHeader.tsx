@@ -23,7 +23,7 @@ export async function SiteHeader() {
   const isAdmin = role === "admin" || role === "super_admin";
   const isVendor = role === "vendor";
   const isDeliveryCompany = role === "delivery_company";
-  const unreadCount = profile ? (await getServiceSupabase().from("notifications").select("id", { count: "exact", head: true }).eq("user_id", profile.id).is("read_at", null)).count ?? 0 : 0;
+  const unreadCount = profile ? (await getServiceSupabase().from("notifications").select("id", { count: "exact", head: true }).eq("user_id", profile.id).is("read_at", null).lte("available_at", new Date().toISOString())).count ?? 0 : 0;
 
   return (
     <header className="sticky top-0 z-30 border-b border-bone-deep/60 bg-[#fcfaf7]/95 backdrop-blur-xl">

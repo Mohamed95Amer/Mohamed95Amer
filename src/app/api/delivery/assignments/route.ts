@@ -20,6 +20,11 @@ export async function POST(request: Request) {
     .eq("status", assignment.status).select("id").maybeSingle();
   if (error) return NextResponse.json({ error: "delivery_update_failed" }, { status: 500 });
   if (!changed) return NextResponse.json({ error: "delivery_changed", message: "This assignment changed. Refresh before trying again." }, { status: 409 });
+  if (parsed.data.status === "out_for_delivery") {
+    await admin.from("reservations").update({ status: "out_for_delivery", out_for_delivery_at: now }).eq("id", assignment.reservation_id).eq("status", "ready_for_delivery");
+  } else if (parsed.data.status === "delivered") {
+    await admin.from("reservations").update({ status: "delivered", delivered_at: now }).eq("id", assignment.reservation_id).eq("status", "out_for_delivery");
+  }
   const reservation = assignment.reservation as unknown as { customer_user_id: string; vendor: { owner_user_id: string } | Array<{ owner_user_id: string }> | null } | null; const vendorOwner = Array.isArray(reservation?.vendor) ? reservation.vendor[0] : reservation?.vendor; const label = parsed.data.status.replaceAll("_", " "); const notices = [] as Promise<unknown>[]; if (reservation?.customer_user_id) notices.push(notifyUser({ userId: reservation.customer_user_id, kind: "delivery", title: `Delivery ${label}`, body: parsed.data.publicNote || `${company.company_name} updated your delivery.`, href: `/account/reservations/${assignment.reservation_id}`, dedupeKey: `delivery-status:${assignment.id}:${parsed.data.status}:customer` })); if (vendorOwner?.owner_user_id) notices.push(notifyUser({ userId: vendorOwner.owner_user_id, kind: "delivery", title: `Delivery ${label}`, body: `${company.company_name} updated the assigned order.`, href: "/vendor/orders", dedupeKey: `delivery-status:${assignment.id}:${parsed.data.status}:vendor` })); await Promise.all(notices);
   await logAudit({ actor_user_id: auth.user.id, actor_role: "delivery_company", action: `delivery.${parsed.data.status}`, entity_type: "delivery_assignment", entity_id: assignment.id, old_value: { status: assignment.status }, new_value: { status: parsed.data.status }, ip_address: ipFromRequest(request) }); return NextResponse.json({ id: assignment.id, status: parsed.data.status });
 }

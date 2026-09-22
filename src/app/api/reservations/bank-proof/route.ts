@@ -23,22 +23,26 @@ export async function POST(request: Request) {
   }
   const form = await new Response(buffer.slice(0, length), { headers: { "Content-Type": request.headers.get("content-type") ?? "" } }).formData().catch(() => null);
   const id = z.string().uuid().safeParse(form?.get("reservationId"));
-  const file = form?.get("proof"); const reference = String(form?.get("reference") ?? "").trim();
-  if (!id.success || !(file instanceof File) || !file.size || file.size > 5242880 || reference.length < 2 || reference.length > 120) return NextResponse.json({ error: "Add a transfer reference and a PDF, PNG or JPEG under 5 MB." }, { status: 400 });
+  const rawFile = form?.get("proof"); const file = rawFile instanceof File && rawFile.size > 0 ? rawFile : null; const reference = String(form?.get("reference") ?? "").trim();
+  if (!id.success || (file && file.size > 5242880) || reference.length > 120) return NextResponse.json({ error: "Use an optional reference and an optional PDF, PNG or JPEG under 5 MB." }, { status: 400 });
   const admin = getServiceSupabase();
-  const { data: order } = await admin.from("reservations").select("id, vendor_id, status, expires_at, payment_method, transfer_proof_path").eq("id", id.data).eq("customer_user_id", auth.user.id).maybeSingle();
+  const { data: order } = await admin.from("reservations").select("id, vendor_id, status, expires_at, payment_method, transfer_proof_path, transfer_submitted_at").eq("id", id.data).eq("customer_user_id", auth.user.id).maybeSingle();
   if (!order) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  if (order.payment_method !== "bank_transfer" || order.status !== "payment_pending" || Date.parse(order.expires_at) <= Date.now() || order.transfer_proof_path) return NextResponse.json({ error: "This order cannot accept proof. If you already transferred funds, contact the store to reconcile or refund; do not transfer again." }, { status: 409 });
-  const bytes = new Uint8Array(await file.arrayBuffer()); const mime = proofMime(bytes);
-  if (!mime) return NextResponse.json({ error: "Unsupported file content." }, { status: 400 });
-  const path = `${order.id}/${randomUUID()}.${mime === "application/pdf" ? "pdf" : mime === "image/png" ? "png" : "jpg"}`;
-  const { error: uploadError } = await admin.storage.from("payment-proofs").upload(path, bytes, { contentType: mime, upsert: false });
-  if (uploadError) return NextResponse.json({ error: "Upload failed. Please retry." }, { status: 503 });
-  const { data: changed, error } = await admin.from("reservations").update({ transfer_proof_path: path, transfer_reference: reference, transfer_submitted_at: new Date().toISOString() })
-    .eq("id", order.id).eq("customer_user_id", auth.user.id).eq("status", "payment_pending").gt("expires_at", new Date().toISOString()).is("transfer_proof_path", null).select("id").maybeSingle();
-  if (error || !changed) { await admin.storage.from("payment-proofs").remove([path]); return NextResponse.json({ error: "Order changed or expired. Contact the store if money was sent." }, { status: 409 }); }
+  if (!["bank_transfer", "aani"].includes(order.payment_method) || order.status !== "payment_pending" || Date.parse(order.expires_at) <= Date.now() || order.transfer_submitted_at) return NextResponse.json({ error: "This order cannot be marked paid. If money was already sent, contact the store; do not pay twice." }, { status: 409 });
+  let path: string | null = null;
+  if (file) {
+    const bytes = new Uint8Array(await file.arrayBuffer()); const mime = proofMime(bytes);
+    if (!mime) return NextResponse.json({ error: "Unsupported file content." }, { status: 400 });
+    path = `${order.id}/${randomUUID()}.${mime === "application/pdf" ? "pdf" : mime === "image/png" ? "png" : "jpg"}`;
+    const { error: uploadError } = await admin.storage.from("payment-proofs").upload(path, bytes, { contentType: mime, upsert: false });
+    if (uploadError) return NextResponse.json({ error: "Upload failed. Please retry." }, { status: 503 });
+  }
+  const submittedAt = new Date().toISOString();
+  const { data: changed, error } = await admin.from("reservations").update({ status: "payment_verification", payment_status: "verification_pending", transfer_proof_path: path, transfer_reference: reference || null, transfer_submitted_at: submittedAt, expires_at: new Date(Date.now() + 24 * 60 * 60_000).toISOString() })
+    .eq("id", order.id).eq("customer_user_id", auth.user.id).eq("status", "payment_pending").gt("expires_at", submittedAt).is("transfer_submitted_at", null).select("id").maybeSingle();
+  if (error || !changed) { if (path) await admin.storage.from("payment-proofs").remove([path]); return NextResponse.json({ error: "Order changed or expired. Contact the store if money was sent." }, { status: 409 }); }
   const { data: vendor } = await admin.from("vendors").select("owner_user_id").eq("id", order.vendor_id).single();
-  if (vendor) await notifyUser({ userId: vendor.owner_user_id, kind: "order", title: "Bank transfer proof received", body: "Check cleared funds in your bank account before confirming this order. A receipt alone is not payment confirmation.", href: "/vendor/orders", dedupeKey: `bank-proof:${order.id}` });
+  if (vendor) await notifyUser({ userId: vendor.owner_user_id, kind: "order", title: "Customer marked payment as sent", body: "Check your own Aani or bank account before confirming receipt. A screenshot or transaction reference alone is not payment confirmation.", href: "/vendor/orders", dedupeKey: `bank-proof:${order.id}` });
   return NextResponse.json({ submitted: true });
 }
 

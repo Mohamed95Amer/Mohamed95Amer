@@ -214,8 +214,8 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward' })).status, 401);
       assert.ok((await fixtures.customer.client.from('vendor_promotions').select('*')).error);
       activeClient = fixtures.vendor.client;
-      assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Vendor self-promotion', rewardReason: 'referral_reward' })).status, 403);
-      assert.equal((await formRoute('admin/banners', new FormData())).status, 403);
+      assert.equal((await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Vendor self-promotion', rewardReason: 'referral_reward' })).status, 401);
+      assert.equal((await formRoute('admin/banners', new FormData())).status, 401);
 
       activeClient = fixtures.admin_test.client;
       const premium = await route('admin/vendor-promotions', { vendorId, durationDays: 5, label: 'Premium vendor', rewardReason: 'referral_reward', adminNote: 'Synthetic test reward' });
@@ -266,7 +266,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
         must(await admin.from('gold_price_ticks').update({ status: 'ok' }).eq('id', tick.id));
       }
     });
-    await t.test('Reservation handler calls real RPC, charges delivery once, and drops stock', async () => {
+    await t.test('Purchase request consumes identity, charges delivery once, and does not hold stock before acceptance', async () => {
       activeClient = fixtures.customer.client;
       const check = await identity(fixtures.customer, products[0]);
       // ProductPage uses the server-only service client, not an RLS-filtered buyer client.
@@ -278,7 +278,7 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       });
       assert.equal(result.status, 200, JSON.stringify(result.body));
       order = result.body.reservation; reservations.push(order.id);
-      assert.equal(must(await admin.rpc('available_quantity', { p_product_id: products[0].id })), 7);
+      assert.equal(must(await admin.rpc('available_quantity', { p_product_id: products[0].id })), 10);
       const snapshot = must(await admin.from('order_price_snapshots').select('*').eq('reservation_id', order.id).single());
       assert.equal(snapshot.delivery_fee_basis, 'per_order'); assert.equal(snapshot.delivery_fee, 20);
       assert.equal(snapshot.total_price_aed, 14836.71);
@@ -317,17 +317,23 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
     });
     await t.test('Vendor confirms payment; unrelated users cannot progress the order', async () => {
       assert.ok(order, 'reservation test must pass');
+      const snapshot = must(await admin.from('order_price_snapshots').select('total_price_aed').eq('reservation_id', order.id).single());
       activeClient = fixtures.outsider.client;
-      assert.equal((await route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm' })).status, 403);
+      assert.equal((await route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })).status, 403);
       activeClient = fixtures.vendor.client;
-      const responses = await Promise.all([route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm' }), route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm' })]);
+      const responses = await Promise.all([route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed }), route('vendor/reservations/respond', { reservationId: order.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })]);
       assert.deepEqual(responses.map(response => response.status).sort(), [200, 409]);
+      assert.equal(must(await admin.rpc('available_quantity', { p_product_id: products[0].id })), 10, 'vendor confirmation is not a stock hold');
+      activeClient = fixtures.customer.client;
+      assert.equal((await route('reservations/confirmed-price', { reservationId: order.id, action: 'accept' })).status, 200);
+      assert.equal(must(await admin.rpc('available_quantity', { p_product_id: products[0].id })), 7, 'customer acceptance acquires stock atomically');
+      activeClient = fixtures.vendor.client;
       must(await admin.from('reservations').update({ expires_at: new Date(Date.now() - 1000).toISOString() }).eq('id', order.id));
       assert.equal((await route('vendor/reservations/progress', { reservationId: order.id, action: 'confirm_payment_received' })).status, 409);
       must(await admin.from('reservations').update({ expires_at: new Date(Date.now() + 600000).toISOString() }).eq('id', order.id));
       const paid = await route('vendor/reservations/progress', { reservationId: order.id, action: 'confirm_payment_received' });
       assert.equal(paid.status, 200, JSON.stringify(paid.body));
-      assert.equal(must(await admin.from('reservations').select('status').eq('id', order.id).single()).status, 'paid');
+      assert.equal(must(await admin.from('reservations').select('status').eq('id', order.id).single()).status, 'payment_confirmed');
     });
     await t.test('Courier assignment, ownership denial, failed delivery, retry and proof persist', async () => {
       assert.ok(order, 'reservation test must pass');
@@ -370,23 +376,22 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       };
       assert.equal((await submit()).status, 409, 'cannot pay before store accepts stock');
       activeClient = fixtures.vendor.client;
-      assert.equal((await route('vendor/reservations/respond', { reservationId: id, decision: 'confirm' })).status, 200);
+      assert.equal((await route('vendor/reservations/respond', { reservationId: id, decision: 'confirm', finalTotalAed: promotionalSnapshot.total_price_aed })).status, 200);
       assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 409, 'missing proof cannot be confirmed');
+      activeClient = fixtures.customer.client;
+      assert.equal((await route('reservations/confirmed-price', { reservationId: id, action: 'accept' })).status, 200);
       activeClient = fixtures.outsider.client; assert.equal((await submit()).status, 404);
       activeClient = fixtures.customer.client; assert.equal((await submit()).status, 200);
       let row = must(await admin.from('reservations').select('*').eq('id', id).single());
-      assert.equal(row.status, 'payment_pending'); assert.notEqual(row.payment_status, 'paid');
+      assert.equal(row.status, 'payment_verification'); assert.notEqual(row.payment_status, 'paid');
       assert.equal((await anon().storage.from('payment-proofs').download(row.transfer_proof_path)).data, null);
       activeClient = fixtures.outsider.client;
       assert.equal((await load('src/app/api/reservations/bank-proof/route.ts').GET(new Request(`http://localhost:3000/api/reservations/bank-proof?id=${id}`))).status, 404);
       activeClient = fixtures.vendor.client;
       assert.equal((await load('src/app/api/reservations/bank-proof/route.ts').GET(new Request(`http://localhost:3000/api/reservations/bank-proof?id=${id}`))).status, 307);
-      must(await admin.from('reservations').update({ expires_at: new Date(Date.now()-1000).toISOString() }).eq('id', id));
-      assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 409);
-      must(await admin.from('reservations').update({ expires_at: new Date(Date.now()+600000).toISOString() }).eq('id', id));
       assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 200);
       assert.equal((await route('vendor/reservations/progress', { reservationId: id, action: 'confirm_payment_received' })).status, 409);
-      row = must(await admin.from('reservations').select('*').eq('id', id).single()); assert.equal(row.status, 'paid'); assert.ok(row.payment_confirmed_at);
+      row = must(await admin.from('reservations').select('*').eq('id', id).single()); assert.equal(row.status, 'payment_confirmed'); assert.ok(row.payment_confirmed_at);
     });
     await t.test('Vendor-enabled cards and vendor delivery fees are enforced; pickup stays free', async () => {
       activeClient = fixtures.customer.client;
@@ -404,7 +409,9 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(snapshot.platform_fee_bps, 50);
       assert.equal(snapshot.customer_fee_promo_order_number, 3);
       activeClient = fixtures.vendor.client;
-      assert.equal((await route('vendor/reservations/respond', { reservationId: created.body.reservation.id, decision: 'confirm' })).status, 200);
+      assert.equal((await route('vendor/reservations/respond', { reservationId: created.body.reservation.id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })).status, 200);
+      activeClient = fixtures.customer.client;
+      assert.equal((await route('reservations/confirmed-price', { reservationId: created.body.reservation.id, action: 'accept' })).status, 200);
       const order = must(await admin.from('reservations').select('*').eq('id', created.body.reservation.id).single());
       assert.ok(Date.parse(order.expires_at) - Date.now() > 23 * 3600000);
       assert.equal(order.status, 'payment_pending'); assert.notEqual(order.payment_status, 'paid');
@@ -440,6 +447,50 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       assert.equal(snapshot.customer_fee_promo_order_number, 3);
       const slot = must(await admin.from('customer_fee_promotions').select('reservation_id').eq('customer_user_id', fixtures.customer.id).eq('promo_order_number', 3).single());
       assert.equal(slot.reservation_id, created.body.reservation.id);
+    });
+    await t.test('Aani stays direct-to-vendor, optional evidence never self-confirms, and fulfilment completes in order', async () => {
+      activeClient = fixtures.vendor.client;
+      const settings = await route('vendor/payment-settings', { aani_enabled: true, aani_mobile: '050 908 1312', bank_transfer_enabled: false, bank_name: '', beneficiary_name: '', iban: '', cash_enabled: true, card_enabled: true, delivery_mode: 'own_staff', courier_name: '', delivery_fee_aed: 20 });
+      assert.equal(settings.status, 200, JSON.stringify(settings.body));
+      activeClient = fixtures.customer.client;
+      const check = await identity(fixtures.customer, products[0]);
+      const created = await route('reservations', { productId: products[0].id, quantity: 1, identityVerificationId: check.id, paymentMethod: 'aani', fulfilmentMethod: 'collection' });
+      assert.equal(created.status, 200, JSON.stringify(created.body));
+      const id = created.body.reservation.id; reservations.push(id);
+      const snapshot = must(await admin.from('order_price_snapshots').select('total_price_aed').eq('reservation_id', id).single());
+      activeClient = fixtures.vendor.client;
+      assert.equal((await route('vendor/reservations/respond', { reservationId: id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })).status, 200);
+      activeClient = fixtures.customer.client;
+      assert.equal((await route('reservations/confirmed-price', { reservationId: id, action: 'accept' })).status, 200);
+      const form = new FormData(); form.set('reservationId', id);
+      const sent = await load('src/app/api/reservations/bank-proof/route.ts').POST(new Request('http://localhost:3000/api/reservations/bank-proof', { method: 'POST', body: form }));
+      assert.equal(sent.status, 200, await sent.text());
+      let row = must(await admin.from('reservations').select('status,payment_status,transfer_proof_path,bank_details_snapshot').eq('id', id).single());
+      assert.equal(row.status, 'payment_verification'); assert.equal(row.payment_status, 'verification_pending'); assert.equal(row.transfer_proof_path, null); assert.equal(row.bank_details_snapshot.aani_mobile, '+971509081312');
+      activeClient = fixtures.vendor.client;
+      for (const action of ['confirm_payment_received', 'start_preparing', 'mark_ready', 'complete']) {
+        const result = await route('vendor/reservations/progress', { reservationId: id, action });
+        assert.equal(result.status, 200, JSON.stringify(result.body));
+      }
+      row = must(await admin.from('reservations').select('status,payment_confirmed_at,completed_at').eq('id', id).single());
+      assert.equal(row.status, 'completed'); assert.ok(row.payment_confirmed_at); assert.ok(row.completed_at);
+    });
+    await t.test('Requests made while closed wait for the next vendor opening and cannot be actioned early', async () => {
+      const dubaiDay = new Date(Date.now() + 4 * 3600000).getUTCDay();
+      const nextDay = (dubaiDay + 1) % 7;
+      const hours = Array.from({ length: 7 }, (_, day) => ({ day_of_week: day, is_open: day === nextDay, opens_at: '09:00', closes_at: '18:00' }));
+      activeClient = fixtures.vendor.client;
+      assert.equal((await route('vendor/working-hours', { hours })).status, 200);
+      activeClient = fixtures.customer.client;
+      const check = await identity(fixtures.customer, products[0]);
+      const created = await route('reservations', { productId: products[0].id, quantity: 1, identityVerificationId: check.id, paymentMethod: 'cash', fulfilmentMethod: 'collection' });
+      assert.equal(created.status, 200, JSON.stringify(created.body));
+      const id = created.body.reservation.id; reservations.push(id);
+      const row = must(await admin.from('reservations').select('submitted_during_working_hours,vendor_action_available_at').eq('id', id).single());
+      assert.equal(row.submitted_during_working_hours, false); assert.ok(Date.parse(row.vendor_action_available_at) > Date.now());
+      const snapshot = must(await admin.from('order_price_snapshots').select('total_price_aed').eq('reservation_id', id).single());
+      activeClient = fixtures.vendor.client;
+      assert.equal((await route('vendor/reservations/respond', { reservationId: id, decision: 'confirm', finalTotalAed: snapshot.total_price_aed })).status, 409);
     });
   } finally {
     // Delete only this run's generated fixtures, never broad tables or existing data.

@@ -13,7 +13,7 @@ export const createReservationSchema = z.object({
   productId: z.string().uuid(),
   quantity: z.number().int().min(1).max(50),
   identityVerificationId: z.string().uuid(),
-  paymentMethod: z.enum(["pay_at_store", "pay_online", "bank_transfer", "cash", "card"]),
+  paymentMethod: z.enum(["pay_at_store", "pay_online", "bank_transfer", "aani", "cash", "card"]),
   fulfilmentMethod: z.enum(["delivery", "collection"]),
   recipientName: optionalTrimmed(120),
   recipientPhone: optionalTrimmed(20),
@@ -180,7 +180,17 @@ export const profileUpdateSchema = z.object({
 export const vendorResponseSchema = z.object({
   reservationId: z.string().uuid(),
   decision: z.enum(["confirm", "reject"]),
+  finalTotalAed: z.number().positive().max(100_000_000).optional(),
   note: z.string().max(500).optional().nullable(),
+}).superRefine((value, ctx) => {
+  if (value.decision === "confirm" && value.finalTotalAed == null) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["finalTotalAed"], message: "Confirm the final customer total." });
+  }
+});
+
+export const customerConfirmedPriceSchema = z.object({
+  reservationId: z.string().uuid(),
+  action: z.enum(["accept", "cancel"]),
 });
 
 export const adminVendorDecisionSchema = z.object({
@@ -250,7 +260,14 @@ export const siteBannerCreateSchema = z.object({
 
 export const vendorOrderProgressSchema = z.object({
   reservationId: z.string().uuid(),
-  action: z.literal("confirm_payment_received"),
+  action: z.enum([
+    "confirm_payment_received",
+    "start_preparing",
+    "mark_ready",
+    "mark_out_for_delivery",
+    "mark_delivered",
+    "complete",
+  ]),
 });
 
 export const buyerRequestCreateSchema = z.object({

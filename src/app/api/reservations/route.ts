@@ -11,6 +11,7 @@ import { trackServerEvent } from "@/lib/analytics/server";
 import { diditIsConfigured } from "@/lib/identity/didit";
 import { applyCustomerServiceFee, computeOrderPricing } from "@/lib/pricing/calc";
 import { applyEventFeeDiscount } from "@/lib/marketing";
+import { vendorRequestTiming, type VendorWorkingHour } from "@/lib/vendors/working-hours";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -99,27 +100,33 @@ export async function POST(request: Request) {
     .select("reservation_lock_minutes, online_payments_enabled")
     .eq("id", true)
     .single();
-  const lockMinutes = settings?.reservation_lock_minutes ?? env.reservationLockMinutes();
   if (parsed.data.paymentMethod === "pay_online" && (!settings?.online_payments_enabled || !onlinePaymentCheckoutIsOperational())) {
     return NextResponse.json({ error: "online_payment_unavailable", message: "Online checkout is not active yet. Choose pay at store to continue." }, { status: 409 });
   }
-  const expiresAt = new Date(Date.now() + lockMinutes * 60_000).toISOString();
-  const { data: vendorOptions } = await admin.from("vendor_payment_settings").select("cash_enabled, card_enabled, delivery_mode, courier_name").eq("vendor_id", priced.product.vendor_id).maybeSingle();
+  const [{ data: vendorOptions }, { data: workingHours }] = await Promise.all([
+    admin.from("vendor_payment_settings").select("aani_enabled, aani_mobile, bank_transfer_enabled, bank_name, beneficiary_name, iban, cash_enabled, card_enabled, delivery_mode, courier_name").eq("vendor_id", priced.product.vendor_id).maybeSingle(),
+    admin.from("vendor_working_hours").select("day_of_week, is_open, opens_at, closes_at").eq("vendor_id", priced.product.vendor_id).order("day_of_week"),
+  ]);
   if ((["cash", "pay_at_store"].includes(parsed.data.paymentMethod) && vendorOptions?.cash_enabled === false) || (parsed.data.paymentMethod === "card" && !vendorOptions?.card_enabled)) return NextResponse.json({ error: "payment_method_unavailable" }, { status: 409 });
-  const { data: bank } = parsed.data.paymentMethod === "bank_transfer"
-    ? await admin.from("vendor_payment_settings").select("bank_name, beneficiary_name, iban").eq("vendor_id", priced.product.vendor_id).eq("bank_transfer_enabled", true).maybeSingle()
-    : { data: null };
-  if (parsed.data.paymentMethod === "bank_transfer" && !bank) return NextResponse.json({ error: "bank_transfer_unavailable" }, { status: 409 });
+  if (parsed.data.paymentMethod === "bank_transfer" && !vendorOptions?.bank_transfer_enabled) return NextResponse.json({ error: "bank_transfer_unavailable" }, { status: 409 });
+  if (parsed.data.paymentMethod === "aani" && !vendorOptions?.aani_enabled) return NextResponse.json({ error: "aani_unavailable" }, { status: 409 });
+  let timing;
+  try { timing = vendorRequestTiming(workingHours as VendorWorkingHour[] | null); }
+  catch { return NextResponse.json({ error: "store_schedule_unavailable" }, { status: 409 }); }
+  const expiresAt = timing.requestExpiresAt.toISOString();
 
-  // Claim through the DB function rather than a bare insert: it locks the
-  // product row and counts in-flight reservations, so two customers racing for
-  // the last unit cannot both succeed.
+  // The request itself does not hold stock.  It is still created through a DB
+  // function so the single-use identity result is consumed transactionally.
+  // Stock is acquired later by accept_vendor_confirmed_price(), under a product
+  // row lock, after the customer accepts the vendor-confirmed amount.
   const { data: claimed, error: resErr } = await admin
-    .rpc("claim_reservation", {
+    .rpc("create_vendor_order_request", {
       p_customer_user_id: auth.user.id,
       p_product_id: priced.product.id,
       p_quantity: parsed.data.quantity,
       p_expires_at: expiresAt,
+      p_vendor_action_available_at: timing.availableAt.toISOString(),
+      p_submitted_during_working_hours: timing.isOpenNow,
       p_identity_verification_id: parsed.data.identityVerificationId,
       p_fulfilment_method: parsed.data.fulfilmentMethod,
       p_recipient_name: parsed.data.fulfilmentMethod === "delivery" ? parsed.data.recipientName : null,
@@ -139,13 +146,8 @@ export async function POST(request: Request) {
 
   if (resErr || !reservation) {
     const raw = resErr?.message ?? "insert_failed";
-    // The function signals contention and validation failures by raising.
-    if (raw.includes("insufficient_stock")) {
-      return NextResponse.json(
-        { error: "insufficient_stock", message: "That item was just reserved by someone else." },
-        { status: 409 },
-      );
-    }
+    // The function signals validation failures by raising.  Stock contention
+    // is intentionally checked only when the customer accepts the final price.
     if (raw.includes("product_not_available") || raw.includes("product_not_found")) {
       return NextResponse.json({ error: "product_unavailable" }, { status: 400 });
     }
@@ -246,11 +248,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: snapErr.message }, { status: 500 });
   }
 
-  const paymentStatus = parsed.data.paymentMethod === "pay_online" ? "awaiting_store_confirmation" : "not_required";
+  const paymentStatus = "awaiting_store_confirmation";
   const { error: paymentPreferenceError } = await admin.from("reservations").update({
     payment_method: parsed.data.paymentMethod,
     payment_status: paymentStatus,
-    bank_details_snapshot: bank,
+    bank_details_snapshot: null,
     vendor_delivery_snapshot: parsed.data.fulfilmentMethod === "delivery" ? { mode: vendorOptions?.delivery_mode ?? "own_staff", courier_name: vendorOptions?.courier_name ?? "" } : null,
   }).eq("id", reservation.id);
   if (paymentPreferenceError) {
@@ -268,7 +270,8 @@ export async function POST(request: Request) {
     new_value: {
       total: priced.totalPriceAed,
       tick_id: priced.tick.id,
-      expires_at: expiresAt,
+      request_expires_at: expiresAt,
+      vendor_action_available_at: timing.availableAt.toISOString(),
       fulfilment_method: parsed.data.fulfilmentMethod,
       payment_method: parsed.data.paymentMethod,
       marketplace_promotion_id: priced.marketplacePromotion?.id ?? null,
@@ -277,8 +280,8 @@ export async function POST(request: Request) {
   });
   const { data: vendorOwner } = await admin.from("vendors").select("owner_user_id").eq("id", reservation.vendor_id).maybeSingle();
   await Promise.all([
-    vendorOwner?.owner_user_id ? notifyUser({ userId: vendorOwner.owner_user_id, kind: "order", title: "New order awaiting confirmation", body: "A verified customer locked a live price. Review the item and fulfilment details before the lock expires.", href: "/vendor/orders", dedupeKey: `reservation-created:${reservation.id}:vendor` }) : Promise.resolve(),
-    notifyUser({ userId: auth.user.id, kind: "order", title: "Your price is locked", body: "The store is reviewing availability. Follow this order for confirmation, payment and delivery updates.", href: `/account/reservations/${reservation.id}`, dedupeKey: `reservation-created:${reservation.id}:customer` }),
+    vendorOwner?.owner_user_id ? notifyUser({ userId: vendorOwner.owner_user_id, kind: "order", title: "New purchase request", body: "A verified customer is waiting for availability and final-price confirmation. No payment or stock hold exists yet.", href: "/vendor/orders", dedupeKey: `reservation-created:${reservation.id}:vendor`, availableAt: timing.availableAt.toISOString() }) : Promise.resolve(),
+    notifyUser({ userId: auth.user.id, kind: "order", title: timing.isOpenNow ? "Request sent to the store" : "Request queued until the store opens", body: "Do not pay yet. The store must confirm availability and the final current price first.", href: `/account/reservations/${reservation.id}`, dedupeKey: `reservation-created:${reservation.id}:customer` }),
     trackServerEvent({ eventName: "reservation_created", userId: auth.user.id, productId: reservation.product_id, vendorId: reservation.vendor_id, reservationId: reservation.id, metadata: { fulfilment: parsed.data.fulfilmentMethod, payment: parsed.data.paymentMethod } }),
   ]);
 
@@ -288,7 +291,8 @@ export async function POST(request: Request) {
       total_price_aed: priced.totalPriceAed,
       unit_price_aed: priced.breakdown.unitPriceAed,
       gold_price_fetched_at: priced.tick.fetched_at,
-      expires_at: expiresAt,
+      request_expires_at: expiresAt,
+      vendor_action_available_at: timing.availableAt.toISOString(),
     },
   });
 }
