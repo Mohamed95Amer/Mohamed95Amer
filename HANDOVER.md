@@ -1,5 +1,40 @@
 # Get Gold — handover
 
+**Latest checkpoint — private order chat and vendor payment links (23 Sep 2026; deployed):**
+Customers and the matching approved vendor now have one private conversation inside
+each order. Customers open it from their order-detail page; vendors use **Vendor →
+Orders → Message customer**. New messages create an in-app notification for the other
+party and the conversation refreshes through one order-scoped Realtime channel with a
+15-second polling fallback. English/Arabic copy and 390 px mobile layouts are covered.
+
+Vendors can send a structured, clickable HTTPS payment link only after they have
+confirmed availability/final price and the customer has accepted it, while the payment
+window is still active. URLs typed in ordinary messages remain plain text. A link,
+transaction reference or screenshot is evidence only: none can mark an order paid.
+The vendor must still verify their own bank/payment-provider account and explicitly
+confirm receipt before fulfilment can proceed. The existing vendor-direct settlement
+and stock/price-lock controls are unchanged.
+
+`order_messages` is immutable to browser clients: authenticated users receive SELECT
+only, anon has no access, and the server validates participant ownership, approved
+vendor status, link safety, message size and a 20/minute user rate limit before the
+service role inserts. RLS permits only the order customer, vendor owner or admin to
+read. The new reservation/time and sender foreign-key indexes are present and the
+table is in `supabase_realtime`. Local migrations are
+`20260923110601_order_messages.sql` and
+`20260923112914_order_messages_sender_index.sql`; production recorded them as
+`20260923112834_order_messages` and `20260923112941_order_messages_sender_index`.
+
+Verification: 58/58 app tests, 66/66 pgTAP checks, typecheck, ESLint and local/Vercel
+production builds (33 static pages) pass. The disposable local Auth/PostgREST/browser
+test proves customer/vendor sends, outsider denial, customer link-forgery denial,
+pre-acceptance link denial, notifications, both mobile pages and unchanged payment
+state. Production readback confirms RLS, no authenticated INSERT, no anon SELECT, one
+scoped policy, Realtime publication, both indexes and zero rollout messages. Live smoke:
+homepage/marketplace 200, unauthenticated message API 401, and a fresh `goldapicom`
+quote with 10-second refresh and 60-second stale thresholds. Deployment
+`B22x5iZQZLZw5V8QFFzVEErTADiX` is Ready and aliased to https://getgold.ae.
+
 **Latest checkpoint — site-wide responsiveness pass (23 Sep 2026; deployed):**
 Server authentication and profile reads are now request-memoized with React `cache`,
 so the root header, protected layout, page and admin data loaders share one verified
