@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  packages: read
 
 # A branch push and its pull_request event can point at the same commit. Run
 # only one expensive Docker validation for that SHA instead of pulling the
@@ -45,9 +44,12 @@ jobs:
         with:
           version: 2.117.0
           github-token: ${{ github.token }}
-      - name: Authenticate Supabase image pulls
-        run: echo "${{ github.token }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
       - name: Start isolated Supabase and apply all migrations
+        # setup-cli defaults to GHCR, whose shared runner quota can be
+        # exhausted before the database tests even start. Supabase publishes
+        # the same images to its public ECR mirror.
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
         run: |
           for attempt in 1 2 3; do
             if supabase start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor; then
