@@ -30,7 +30,7 @@ integration tests, schema lint, typecheck, ESLint, local build, Vercel build and
 (0 known vulnerabilities) pass. Live public routes return 200; a fresh `goldapicom` quote
 still reports separate 10-second refresh and 60-second stale thresholds; same-origin
 analytics returns 204 while missing/cross-site cookie origins return 403. Deployment
-`dpl_4b2Zw3zcVBSo4tJwCkVRMXUoybnB` is Ready and aliased to https://getgold.ae.
+`dpl_CFQV83dNUmRSunJ6ZzAVDu16VGGA` is Ready and aliased to https://getgold.ae.
 
 GitHub dependency alerts and secret scanning with push protection were enabled for the
 public repository. Secret scanning currently reports zero alerts. GitHub still reports
