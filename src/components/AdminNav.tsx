@@ -1,40 +1,59 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-
-export function AdminNav() {
+export function AdminNav({ arabic = false }: { arabic?: boolean }) {
   const pathname = usePathname();
-  const [arabic, setArabic] = useState(false);
-  useEffect(() => setArabic(document.cookie.split(";").some((part) => part.trim() === "gg_lang=ar")), []);
-  const items = [
-    ["/admin", "Overview"],
-    ["/admin/vendors", "Vendors"],
-    ["/admin/delivery-companies", "Delivery companies"],
-    ["/admin/products", "Products"],
-    ["/admin/catalogue-support", "Catalogue support"],
-    ["/admin/liquidity", "Marketplace health"],
-    ["/admin/growth", "Growth funnel"],
-    ["/admin/marketing", "Promotions & banners"],
-    ["/admin/orders", "Orders"],
-    ["/admin/reviews", "Reviews"],
-    ["/admin/gold-price", "Gold price"],
-    ["/admin/audit", "Audit logs"],
-    ["/admin/settings", "Settings"],
-    ["/profile", "My profile"],
-  ] as const;
-  const labels = arabic ? ["نظرة عامة", "المتاجر", "شركات التوصيل", "المنتجات", "دعم الكتالوج", "صحة السوق", "مسار النمو", "العروض والإعلانات", "الطلبات", "التقييمات", "سعر الذهب", "سجل التدقيق", "الإعدادات", "ملفي"] : items.map(([, label]) => label);
+  const primary = [
+    ["/admin", "Overview", "نظرة عامة"],
+    ["/admin/orders", "Orders", "الطلبات"],
+    ["/admin/vendors", "Stores", "المتاجر"],
+    ["/admin/products", "Products", "المنتجات"],
+    ["/admin/commissions", "Commissions", "الرسوم"],
+    ["/admin/notifications", "Notifications", "الإشعارات"],
+  ];
+  const more = [
+    ["/admin/marketing", "Promotions & banners", "العروض والإعلانات"],
+    ["/admin/delivery-companies", "Delivery partners", "شركاء التوصيل"],
+    ["/admin/catalogue-support", "Catalogue support", "دعم الكتالوج"],
+    ["/admin/liquidity", "Marketplace health", "صحة السوق"],
+    ["/admin/growth", "Growth funnel", "مسار النمو"],
+    ["/admin/reviews", "Reviews", "التقييمات"],
+    ["/admin/gold-price", "Gold price", "سعر الذهب"],
+    ["/admin/audit", "Audit logs", "سجل التدقيق"],
+    ["/admin/settings", "Settings", "الإعدادات"],
+    ["/profile", "My profile", "ملفي"],
+  ];
+  const active = (href: string) =>
+    href === "/admin" ? pathname === href : pathname.startsWith(href);
+  const link = ([href, en, ar]: string[]) => (
+    <Link
+      key={href}
+      href={href}
+      aria-current={active(href) ? "page" : undefined}
+      className={`flex min-h-11 items-center justify-center rounded-xl px-3 text-sm font-medium transition ${active(href) ? "bg-jade-800 text-white" : "text-ink-muted hover:bg-jade-50 hover:text-jade-950"}`}
+    >
+      {arabic ? ar : en}
+    </Link>
+  );
   return (
-    <nav className="card flex gap-1 overflow-x-auto p-1.5" aria-label="Administration">
-      {items.map(([href, label], index) => {
-        const active = href === "/admin" ? pathname === href : pathname.startsWith(href);
-        return (
-          <Link key={href} href={href} aria-current={active ? "page" : undefined} className={`flex min-h-10 shrink-0 items-center rounded-xl px-3.5 text-sm font-semibold transition ${active ? "bg-jade-800 text-white" : "text-ink-muted hover:bg-jade-50 hover:text-jade-900"}`}>
-            {labels[index] ?? label}
-          </Link>
-        );
-      })}
+    <nav
+      aria-label={arabic ? "الإدارة" : "Administration"}
+      className="card p-2"
+    >
+      <div className="grid grid-cols-3 gap-1 lg:grid-cols-6">
+        {primary.map(link)}
+      </div>
+      <details
+        className="mt-1 border-t border-bone-deep pt-1"
+        open={more.some(([href]) => active(href)) || undefined}
+      >
+        <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-jade-700">
+          {arabic ? "المزيد من الأدوات والإعدادات" : "More tools & settings"}
+        </summary>
+        <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-5">
+          {more.map(link)}
+        </div>
+      </details>
     </nav>
   );
 }

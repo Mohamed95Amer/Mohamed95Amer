@@ -1,5 +1,58 @@
 # Get Gold — handover
 
+**Latest checkpoint — admin insights, commission accounts and timed promotions (23 Sep 2026; deployed):**
+Admin overview now has a compact six-item primary navigation with secondary tools,
+real-data default, 7/30/90 Dubai-calendar-day performance filters, store selection,
+daily earned-fee/paid-order charts with exact-value tables, and current order pipeline.
+Display period/chart visibility are remembered per admin on that device. Account
+balances are explicitly **all-time** and never silently restricted by the date filter.
+
+`/admin/commissions` shows fees earned, recorded receipts, net credits and balance
+overall/per store, plus underlying orders and links to the existing payment trail.
+Fees come from immutable current-model snapshots × quantity, not today's rate.
+Only paid non-refunded/non-cancelled orders earn fees. Delivery campaign subsidies
+reduce the balance; receipts/credits reduce it and debit corrections increase it.
+Negative balances remain visible as store credits. Legacy pricing and missing
+snapshots are flagged; demo data is excluded by default. Paginated server reads
+avoid PostgREST's default 1,000-row truncation. Receipts require a reference and an
+explicit admin attestation; adjustments require a reason. Entries may be voided
+with a reason, never silently overwritten. RPC mutation + audit insert are atomic.
+This is manual reconciliation, **not** bank verification or automatic collection,
+and it never changes a customer order total or vendor payment-confirmation state.
+
+`/admin/notifications` supports draft/edit/preview, explicit publish, Dubai start
+time, 1–90-day expiry presets, optional Arabic text, internal links and cancellation.
+Audience: all opted-in customers, customers with a paid non-demo order, or those
+without one. Audience eligibility is dynamic when the inbox is loaded. Promotions
+are separate from operational notifications and labelled Ad; no email/SMS/WhatsApp/
+push is sent. Published copy is immutable (cancel and replace). Consent, start/end,
+role and read receipts are enforced server-side. Inboxes refresh each minute while
+visible, and on returning to the tab. Mark-all-read no longer consumes future
+operational notifications. A proper accessible bell now appears on desktop/mobile.
+No real campaign was published and no real receipt was inserted during rollout.
+
+Migration `20260923042658_admin_workspace_campaigns_commissions.sql` applied to
+production `xgbzvdrdpinwkdbgpxdh` and local history. Three new tables are service-only
+with RLS enabled, browser grants revoked, and no service-role DELETE grants. New
+management RPCs check trusted admin roles. The view has security_invoker=true.
+Production order-view grain verified 4 rows = 4 reservations. Zero customer access
+to ledger/campaign management; zero production campaign/ledger records at rollout.
+
+Verification: 57 unit tests, 23 existing isolated integration tests, 59 pgTAP checks,
+local schema lint, typecheck, ESLint and local/Vercel builds (33 static pages) pass.
+`scripts/test-admin-workspace.cjs` exercises actual local Auth/PostgREST/browser
+flows: receipt/void/audit, duplicate-ID denial, admin access checks, three-unit
+commission snapshot, draft/publish, opt-out, audience, read, scheduling, expiry,
+cancellation and future-notification protection. Desktop/390px English/Arabic
+screens have no viewport overflow or runtime errors. Synthetic fixtures cleaned.
+Visual evidence: `output/admin-workspace-20260923/` (untracked local-only).
+Deployment `D72262v1A8RTJPvg5u7eaG4sCFjq` is Ready, aliased to https://getgold.ae.
+
+Advisors: new tables' RLS-without-policies INFO is intentional deny-all for browser
+roles; do not add broad read policies to silence it. Existing Auth warning remains:
+[leaked password protection disabled](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+Existing performance advisories are outside this change; new foreign keys are indexed.
+
 **Latest checkpoint — vendor workspace redesign (23 Sep 2026; deployed):**
 Vendor overview now prioritises actionable requests, payment checks and fulfilment,
 with an actual settings-backed setup checklist. Navigation separates everyday work
