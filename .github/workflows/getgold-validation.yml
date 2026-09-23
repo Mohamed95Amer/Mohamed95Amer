@@ -11,6 +11,13 @@ on:
 permissions:
   contents: read
 
+# A branch push and its pull_request event can point at the same commit. Run
+# only one expensive Docker validation for that SHA instead of pulling the
+# Supabase image set twice in parallel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.sha }}
+  cancel-in-progress: true
+
 jobs:
   app:
     runs-on: ubuntu-latest
@@ -40,7 +47,17 @@ jobs:
         with:
           version: 2.117.0
       - name: Start isolated Supabase and apply all migrations
-        run: supabase start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor
+        run: |
+          for attempt in 1 2 3; do
+            if supabase start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            echo "Supabase image pull failed; retrying on this runner in $((attempt * 30)) seconds."
+            sleep $((attempt * 30))
+          done
       - name: Run rollback-only database regression tests
         run: supabase test db --local
       - name: Lint database routines and security
