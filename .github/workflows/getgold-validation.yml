@@ -15,7 +15,7 @@ permissions:
 # only one expensive Docker validation for that SHA instead of pulling the
 # Supabase image set twice in parallel.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.sha }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
