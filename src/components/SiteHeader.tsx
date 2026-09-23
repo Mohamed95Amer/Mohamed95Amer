@@ -5,7 +5,10 @@ import { getCurrentProfile } from "@/lib/auth/server";
 import { MobileNav } from "./MobileNav";
 import { cookies } from "next/headers";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { getInboxSummary } from "@/lib/notifications/inbox";
+import {
+  getInboxSummary,
+  getUnreadNotificationCount,
+} from "@/lib/notifications/inbox";
 import { NotificationBell } from "./NotificationBell";
 
 /**
@@ -54,9 +57,11 @@ export async function SiteHeader() {
   const isDeliveryCompany = role === "delivery_company";
   // A notification outage must not take down checkout or the whole marketplace.
   const unreadCount = profile
-    ? await getInboxSummary(profile.id)
-        .then((r) => r.unread)
-        .catch(() => 0)
+    ? await (
+        role === "customer"
+          ? getInboxSummary(profile.id).then((r) => r.unread)
+          : getUnreadNotificationCount(profile.id)
+      ).catch(() => 0)
     : 0;
 
   return (

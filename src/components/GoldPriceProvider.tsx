@@ -1,7 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { getBrowserSupabase } from "@/lib/supabase/browser";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 export interface LiveTick {
   id: number;
@@ -52,21 +58,35 @@ export function GoldPriceProvider({
     Math.max(1, Math.round(pollMs / 1000)),
   );
   const [loading, setLoading] = useState(true);
-  const [now, setNow] = useState(() => Date.now());
+  const [freshnessVersion, setFreshnessVersion] = useState(0);
   const lastTickIdRef = useRef<number | null>(null);
 
-  // Drives the "x seconds ago" readout.
+  // Re-render once when the quote crosses the stale boundary. The visible
+  // second-by-second clock lives only in the two small labels that display it;
+  // keeping it out of this site-wide provider prevents every product card from
+  // recalculating its price once per second.
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
+    if (!tick) return;
+    const fetchedAtMs = new Date(tick.fetched_at).getTime();
+    if (!Number.isFinite(fetchedAtMs)) return;
+    const staleAtMs = fetchedAtMs + (staleAfterSeconds + 1) * 1000;
+    const delay = staleAtMs - Date.now();
+    if (delay <= 0) return;
+    const id = window.setTimeout(
+      () => setFreshnessVersion((value) => value + 1),
+      delay,
+    );
+    return () => window.clearTimeout(id);
+  }, [tick, staleAfterSeconds]);
 
   useEffect(() => {
     let cancelled = false;
 
     async function refresh() {
       try {
-        const res = await fetch("/api/gold-price/latest", { cache: "no-store" });
+        const res = await fetch("/api/gold-price/latest", {
+          cache: "no-store",
+        });
         if (!res.ok) return;
         const json = (await res.json()) as {
           tick: LiveTick | null;
@@ -75,7 +95,10 @@ export function GoldPriceProvider({
         };
         if (cancelled) return;
         setStaleAfterSeconds(json.staleAfterSeconds);
-        if (typeof json.refreshIntervalSeconds === "number" && json.refreshIntervalSeconds > 0) {
+        if (
+          typeof json.refreshIntervalSeconds === "number" &&
+          json.refreshIntervalSeconds > 0
+        ) {
           setRefreshIntervalSeconds(json.refreshIntervalSeconds);
         }
         if (json.tick && json.tick.id !== lastTickIdRef.current) {
@@ -100,40 +123,81 @@ export function GoldPriceProvider({
   }, [pollMs]);
 
   useEffect(() => {
-    const supabase = getBrowserSupabase();
-    const channel = supabase
-      .channel("gold_price_ticks_live")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "gold_price_ticks" },
-        (payload) => {
-          const t = payload.new as LiveTick;
-          if ((t.status === "ok" || t.status === "degraded") && t.price_per_gram_24k_aed !== null) {
-            lastTickIdRef.current = t.id;
-            setTick(t);
-          }
-        },
-      )
-      .subscribe();
+    let cancelled = false;
+    let disconnect: (() => void) | null = null;
+
+    // Price polling starts immediately above. Defer the websocket client until
+    // after first paint so it does not compete with the page's critical JS.
+    const connectTimer = window.setTimeout(async () => {
+      const { getBrowserSupabase } = await import("@/lib/supabase/browser");
+      if (cancelled) return;
+      const supabase = getBrowserSupabase();
+      const channel = supabase
+        .channel("gold_price_ticks_live")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "gold_price_ticks" },
+          (payload) => {
+            const t = payload.new as LiveTick;
+            if (
+              (t.status === "ok" || t.status === "degraded") &&
+              t.price_per_gram_24k_aed !== null
+            ) {
+              lastTickIdRef.current = t.id;
+              setTick(t);
+            }
+          },
+        )
+        .subscribe();
+      disconnect = () => {
+        void supabase.removeChannel(channel);
+      };
+    }, 750);
 
     return () => {
-      supabase.removeChannel(channel);
+      cancelled = true;
+      window.clearTimeout(connectTimer);
+      disconnect?.();
     };
   }, []);
 
   const fetchedAtMs = tick ? new Date(tick.fetched_at).getTime() : Number.NaN;
   const hasValidFetchedAt = Number.isFinite(fetchedAtMs);
-  const ageSeconds = tick && hasValidFetchedAt
-    ? Math.max(0, Math.floor((now - fetchedAtMs) / 1000))
-    : 0;
+  const ageSeconds =
+    tick && hasValidFetchedAt
+      ? Math.max(0, Math.floor((Date.now() - fetchedAtMs) / 1000))
+      : 0;
   // A degraded quote can remain visible as the last known reference, but it is
   // never described as live or used to enable reservation.
-  const isFresh = !!tick && hasValidFetchedAt && tick.status === "ok" && ageSeconds <= staleAfterSeconds;
+  const isFresh =
+    !!tick &&
+    hasValidFetchedAt &&
+    tick.status === "ok" &&
+    ageSeconds <= staleAfterSeconds;
+  const value = useMemo(
+    () => ({
+      tick,
+      isFresh,
+      ageSeconds,
+      staleAfterSeconds,
+      refreshIntervalSeconds,
+      loading,
+    }),
+    // freshnessVersion deliberately invalidates the snapshot at the stale boundary.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      tick,
+      isFresh,
+      ageSeconds,
+      staleAfterSeconds,
+      refreshIntervalSeconds,
+      loading,
+      freshnessVersion,
+    ],
+  );
 
   return (
-    <GoldPriceContext.Provider
-      value={{ tick, isFresh, ageSeconds, staleAfterSeconds, refreshIntervalSeconds, loading }}
-    >
+    <GoldPriceContext.Provider value={value}>
       {children}
     </GoldPriceContext.Provider>
   );
@@ -146,4 +210,18 @@ export function useLiveGoldPrice(): LiveGoldPriceState {
     throw new Error("useLiveGoldPrice must be used within <GoldPriceProvider>");
   }
   return ctx;
+}
+
+/** A local display clock for the few labels that actually show quote age. */
+export function useQuoteAge(fetchedAt?: string | null): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+  if (!fetchedAt) return 0;
+  const fetchedAtMs = new Date(fetchedAt).getTime();
+  return Number.isFinite(fetchedAtMs)
+    ? Math.max(0, Math.floor((now - fetchedAtMs) / 1000))
+    : 0;
 }

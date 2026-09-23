@@ -1,6 +1,6 @@
 "use client";
 
-import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
+import { useLiveGoldPrice, useQuoteAge } from "@/hooks/useLiveGoldPrice";
 import { formatAed } from "@/lib/pricing/calc";
 import { quoteRecency, secondsUntilNextRefresh } from "@/lib/time";
 
@@ -20,15 +20,23 @@ export function GoldPriceBadge({
   compact?: boolean;
   tone?: "light" | "dark";
 }) {
-  const { tick, isFresh, ageSeconds, staleAfterSeconds, refreshIntervalSeconds, loading } =
+  const { tick, isFresh, staleAfterSeconds, refreshIntervalSeconds, loading } =
     useLiveGoldPrice();
+  const ageSeconds = useQuoteAge(tick?.fetched_at);
 
   if (loading && !tick) {
     return (
-      <div aria-live="polite" className={`inline-flex min-w-[11rem] items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${
-        tone === "dark" ? "border-white/15 bg-white/10 text-white/70" : "border-jade-900/10 bg-jade-50 text-ink-muted"
-      }`}>
-        <span className={`h-2 w-2 animate-pulse rounded-full ${tone === "dark" ? "bg-white/50" : "bg-jade-200"}`} />
+      <div
+        aria-live="polite"
+        className={`inline-flex min-w-[11rem] items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${
+          tone === "dark"
+            ? "border-white/15 bg-white/10 text-white/70"
+            : "border-jade-900/10 bg-jade-50 text-ink-muted"
+        }`}
+      >
+        <span
+          className={`h-2 w-2 animate-pulse rounded-full ${tone === "dark" ? "bg-white/50" : "bg-jade-200"}`}
+        />
         Loading gold price…
       </div>
     );
@@ -52,7 +60,8 @@ export function GoldPriceBadge({
     : tone === "dark"
       ? "border-white/15 bg-white/10 text-white"
       : "border-jade-200 bg-jade-50 text-jade-900";
-  const secondary = tone === "dark" && !stale ? "text-white/65" : "text-ink-muted";
+  const secondary =
+    tone === "dark" && !stale ? "text-white/65" : "text-ink-muted";
 
   return (
     <div
@@ -66,13 +75,19 @@ export function GoldPriceBadge({
     >
       <span className="relative flex h-2 w-2" aria-hidden="true">
         {!stale && (
-          <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 ${
-            tone === "dark" ? "bg-gold-300" : "bg-signal-ok"
-          }`} />
+          <span
+            className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-70 ${
+              tone === "dark" ? "bg-gold-300" : "bg-signal-ok"
+            }`}
+          />
         )}
         <span
           className={`relative inline-flex h-2 w-2 rounded-full ${
-            stale ? "animate-pulse bg-gold-500" : tone === "dark" ? "bg-gold-300" : "bg-signal-ok"
+            stale
+              ? "animate-pulse bg-gold-500"
+              : tone === "dark"
+                ? "bg-gold-300"
+                : "bg-signal-ok"
           }`}
         />
       </span>
@@ -86,7 +101,9 @@ export function GoldPriceBadge({
           {stale ? (
             <>Refreshing quote · last update {recency}</>
           ) : (
-            <>Live · refresh in <span className="tabular-nums">{nextIn}s</span></>
+            <>
+              Live · refresh in <span className="tabular-nums">{nextIn}s</span>
+            </>
           )}
         </span>
       )}

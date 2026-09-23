@@ -1,6 +1,6 @@
 "use client";
 
-import { useLiveGoldPrice } from "@/hooks/useLiveGoldPrice";
+import { useLiveGoldPrice, useQuoteAge } from "@/hooks/useLiveGoldPrice";
 import { GoldHubValueScore } from "@/components/GoldHubValueScore";
 import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
 import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
@@ -36,7 +36,8 @@ interface Props {
  * for the customer-facing display only.
  */
 export function LiveProductPrice(props: Props) {
-  const { tick, isFresh, ageSeconds, refreshIntervalSeconds, loading } = useLiveGoldPrice();
+  const { tick, isFresh, refreshIntervalSeconds, loading } = useLiveGoldPrice();
+  const ageSeconds = useQuoteAge(tick?.fetched_at);
 
   if (loading || !tick || tick.price_per_gram_24k_aed === null) {
     return (
@@ -69,7 +70,9 @@ export function LiveProductPrice(props: Props) {
   return (
     <div>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <div className="font-serif text-4xl font-semibold tracking-tight text-jade-950">{formatAed(breakdown.unitPriceAed)}</div>
+        <div className="font-serif text-4xl font-semibold tracking-tight text-jade-950">
+          {formatAed(breakdown.unitPriceAed)}
+        </div>
         {isFresh ? (
           <span className="inline-flex items-center gap-1.5 text-xs font-medium text-signal-ok">
             <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
@@ -79,7 +82,9 @@ export function LiveProductPrice(props: Props) {
             Live price
           </span>
         ) : (
-          <span className="text-xs font-medium text-signal-warn">Price updating…</span>
+          <span className="text-xs font-medium text-signal-warn">
+            Price updating…
+          </span>
         )}
       </div>
       {valueScore && <GoldHubValueScore value={valueScore} />}
@@ -87,23 +92,44 @@ export function LiveProductPrice(props: Props) {
         <div className="mt-5 border-t border-jade-900/10 pt-5">
           <div className="grid grid-cols-2 gap-2">
             <div className="rounded-xl bg-jade-50 p-3">
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">Live 24K market rate</p>
-              <p className="mt-1 font-semibold tabular-nums text-jade-950">{formatAed(liveRate24k)}/g</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">
+                Live 24K market rate
+              </p>
+              <p className="mt-1 font-semibold tabular-nums text-jade-950">
+                {formatAed(liveRate24k)}/g
+              </p>
             </div>
             <div className="rounded-xl bg-gold-100/60 p-3">
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">{props.karat}K metal rate</p>
-              <p className="mt-1 font-semibold tabular-nums text-jade-950">{formatAed(productGoldRate)}/g</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">
+                {props.karat}K metal rate
+              </p>
+              <p className="mt-1 font-semibold tabular-nums text-jade-950">
+                {formatAed(productGoldRate)}/g
+              </p>
             </div>
           </div>
 
           <div className="mt-5 flex items-center justify-between gap-3">
-            <h2 className="font-serif text-lg font-semibold text-jade-950">Price breakdown</h2>
-            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">One-item order</span>
+            <h2 className="font-serif text-lg font-semibold text-jade-950">
+              Price breakdown
+            </h2>
+            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted">
+              One-item order
+            </span>
           </div>
-          {breakdown.assayFineness !== null && <p className="mt-2 text-xs text-ink-muted">Certified bullion fineness: {breakdown.assayFineness}‰ · metal value uses the exact assay against the 999 24K reference.</p>}
+          {breakdown.assayFineness !== null && (
+            <p className="mt-2 text-xs text-ink-muted">
+              Certified bullion fineness: {breakdown.assayFineness}‰ · metal
+              value uses the exact assay against the 999 24K reference.
+            </p>
+          )}
           <dl className="mt-3 grid grid-cols-2 gap-y-2.5 text-sm text-ink-muted">
-            <dt>Gold ({props.karat}K × {props.weightGrams}g)</dt>
-            <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.goldValueAed)}</dd>
+            <dt>
+              Gold ({props.karat}K × {props.weightGrams}g)
+            </dt>
+            <dd className="text-right tabular-nums text-ink">
+              {formatAed(breakdown.goldValueAed)}
+            </dd>
             <dt className="flex flex-wrap items-center gap-1.5">
               Making charge for this item
               {breakdown.makingChargeDiscountPercent > 0 && (
@@ -117,9 +143,13 @@ export function LiveProductPrice(props: Props) {
                 <span className="font-semibold text-signal-ok">No charge</span>
               ) : breakdown.makingChargeDiscountPercent > 0 ? (
                 <>
-                  <span className="mr-2 text-ink-muted line-through">{formatAed(breakdown.makingChargeOriginal)}</span>
+                  <span className="mr-2 text-ink-muted line-through">
+                    {formatAed(breakdown.makingChargeOriginal)}
+                  </span>
                   <span className="font-semibold text-jade-950">
-                    {breakdown.makingCharge === 0 ? "FREE" : formatAed(breakdown.makingCharge)}
+                    {breakdown.makingCharge === 0
+                      ? "FREE"
+                      : formatAed(breakdown.makingCharge)}
                   </span>
                 </>
               ) : (
@@ -145,38 +175,113 @@ export function LiveProductPrice(props: Props) {
             {breakdown.certificateFee > 0 && (
               <>
                 <dt>Certificate / assay fee</dt>
-                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.certificateFee)}</dd>
+                <dd className="text-right tabular-nums text-ink">
+                  {formatAed(breakdown.certificateFee)}
+                </dd>
               </>
             )}
             {breakdown.stoneValue > 0 && (
               <>
                 <dt>Stone value</dt>
-                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.stoneValue)}</dd>
+                <dd className="text-right tabular-nums text-ink">
+                  {formatAed(breakdown.stoneValue)}
+                </dd>
               </>
             )}
             {breakdown.vendorRateAdjustmentAed > 0 && (
               <>
-                <dt>Store rate adjustment ({formatAed(breakdown.vendorRateAdjustmentPerGram)}/g)</dt>
-                <dd className="text-right tabular-nums text-ink">{formatAed(breakdown.vendorRateAdjustmentAed)}</dd>
+                <dt>
+                  Store rate adjustment (
+                  {formatAed(breakdown.vendorRateAdjustmentPerGram)}/g)
+                </dt>
+                <dd className="text-right tabular-nums text-ink">
+                  {formatAed(breakdown.vendorRateAdjustmentAed)}
+                </dd>
               </>
             )}
-            <dt>Get Gold fee {props.customerFeeDiscountPercent ? <span className="ml-1 rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">50% OFF</span> : null}{props.eventFeeDiscountPercent ? <span className="ml-1 rounded-full bg-jade-100 px-2 py-0.5 text-[10px] font-bold text-jade-700">EXTRA {props.eventFeeDiscountPercent}% OFF</span> : null}</dt>
-            <dd className="text-right tabular-nums text-ink"><span className="mr-2 text-xs text-ink-muted">{breakdown.platformFeeBps / 100}%</span>{formatAed(breakdown.platformFee)}</dd>
+            <dt>
+              Get Gold fee{" "}
+              {props.customerFeeDiscountPercent ? (
+                <span className="ml-1 rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-bold text-gold-700">
+                  50% OFF
+                </span>
+              ) : null}
+              {props.eventFeeDiscountPercent ? (
+                <span className="ml-1 rounded-full bg-jade-100 px-2 py-0.5 text-[10px] font-bold text-jade-700">
+                  EXTRA {props.eventFeeDiscountPercent}% OFF
+                </span>
+              ) : null}
+            </dt>
+            <dd className="text-right tabular-nums text-ink">
+              <span className="mr-2 text-xs text-ink-muted">
+                {breakdown.platformFeeBps / 100}%
+              </span>
+              {formatAed(breakdown.platformFee)}
+            </dd>
             <dt>Delivery fee (once per order)</dt>
-            <dd className="text-right tabular-nums text-ink">{props.eventDeliveryDiscountPercent ? <span className="mr-2 text-ink-muted line-through">{formatAed(props.deliveryFeeBeforeEventDiscount)}</span> : null}{breakdown.deliveryFee === 0 && props.eventDeliveryDiscountPercent ? <span className="font-semibold text-signal-ok">FREE</span> : formatAed(breakdown.deliveryFee)}</dd>
+            <dd className="text-right tabular-nums text-ink">
+              {props.eventDeliveryDiscountPercent ? (
+                <span className="mr-2 text-ink-muted line-through">
+                  {formatAed(props.deliveryFeeBeforeEventDiscount)}
+                </span>
+              ) : null}
+              {breakdown.deliveryFee === 0 &&
+              props.eventDeliveryDiscountPercent ? (
+                <span className="font-semibold text-signal-ok">FREE</span>
+              ) : (
+                formatAed(breakdown.deliveryFee)
+              )}
+            </dd>
             <dt>VAT ({breakdown.vatRateBps / 100}%)</dt>
-            <dd className="text-right tabular-nums text-ink">{breakdown.vatRateBps === 0 ? <span className="font-semibold text-signal-ok">Not charged</span> : formatAed(breakdown.vatAed)}</dd>
-            <dt className="mt-1 border-t border-jade-900/10 pt-3 font-semibold text-jade-950">Total</dt>
+            <dd className="text-right tabular-nums text-ink">
+              {breakdown.vatRateBps === 0 ? (
+                <span className="font-semibold text-signal-ok">
+                  Not charged
+                </span>
+              ) : (
+                formatAed(breakdown.vatAed)
+              )}
+            </dd>
+            <dt className="mt-1 border-t border-jade-900/10 pt-3 font-semibold text-jade-950">
+              Total
+            </dt>
             <dd className="mt-1 border-t border-jade-900/10 pt-3 text-right font-bold tabular-nums text-jade-950">
               {formatAed(breakdown.unitPriceAed)}
             </dd>
           </dl>
           <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
-            The {props.karat}K rate is the metal-only value per gram. Making, certificate or assay,
-            stones, service, delivery and VAT are listed separately above when applicable.
+            The {props.karat}K rate is the metal-only value per gram. Making,
+            certificate or assay, stones, service, delivery and VAT are listed
+            separately above when applicable.
           </p>
-          {props.customerFeeDiscountPercent ? <p className="mt-2 text-[11px] font-medium text-jade-700">Introductory offer: 50% off the standard 1% Get Gold fee for your first 3 active or completed orders{props.discountedOrdersRemaining != null ? ` · ${props.discountedOrdersRemaining} discounted ${props.discountedOrdersRemaining === 1 ? "order" : "orders"} remaining before checkout` : ""}.</p> : null}
-          {props.eventPromotionTitle ? <p className="mt-2 text-[11px] font-medium text-signal-ok">{props.eventPromotionTitle}: {props.eventFeeDiscountPercent ? `${props.eventFeeDiscountPercent}% additional fee discount` : ""}{props.eventFeeDiscountPercent && props.eventDeliveryDiscountPercent ? " · " : ""}{props.eventDeliveryDiscountPercent === 100 ? "free delivery" : props.eventDeliveryDiscountPercent ? `${props.eventDeliveryDiscountPercent}% off delivery` : ""}.</p> : null}
+          {props.customerFeeDiscountPercent ? (
+            <p className="mt-2 text-[11px] font-medium text-jade-700">
+              Introductory offer: 50% off the standard 1% Get Gold fee for your
+              first 3 active or completed orders
+              {props.discountedOrdersRemaining != null
+                ? ` · ${props.discountedOrdersRemaining} discounted ${props.discountedOrdersRemaining === 1 ? "order" : "orders"} remaining before checkout`
+                : ""}
+              .
+            </p>
+          ) : null}
+          {props.eventPromotionTitle ? (
+            <p className="mt-2 text-[11px] font-medium text-signal-ok">
+              {props.eventPromotionTitle}:{" "}
+              {props.eventFeeDiscountPercent
+                ? `${props.eventFeeDiscountPercent}% additional fee discount`
+                : ""}
+              {props.eventFeeDiscountPercent &&
+              props.eventDeliveryDiscountPercent
+                ? " · "
+                : ""}
+              {props.eventDeliveryDiscountPercent === 100
+                ? "free delivery"
+                : props.eventDeliveryDiscountPercent
+                  ? `${props.eventDeliveryDiscountPercent}% off delivery`
+                  : ""}
+              .
+            </p>
+          ) : null}
         </div>
       )}
       {props.showFooter !== false && (

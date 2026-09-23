@@ -11,22 +11,30 @@ export type InboxCampaign = {
   ends_at: string;
   read_at: string | null;
 };
+
+export const getUnreadNotificationCount = cache(async (userId: string) => {
+  const db = getServiceSupabase();
+  const result = await db
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .is("read_at", null)
+    .lte("available_at", new Date().toISOString());
+  if (result.error) throw new Error("Notification count could not be loaded.");
+  return result.count ?? 0;
+});
+
 export const getInboxSummary = cache(async (userId: string) => {
   const db = getServiceSupabase();
   const [count, campaigns] = await Promise.all([
-    db
-      .from("notifications")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", userId)
-      .is("read_at", null)
-      .lte("available_at", new Date().toISOString()),
+    getUnreadNotificationCount(userId),
     db.rpc("customer_campaign_inbox", { p_user_id: userId }),
   ]);
-  if (count.error || campaigns.error)
+  if (campaigns.error)
     throw new Error("Notification inbox could not be loaded.");
   const offers = (campaigns.data ?? []) as InboxCampaign[];
   return {
-    unread: (count.count ?? 0) + offers.filter((c) => !c.read_at).length,
+    unread: count + offers.filter((c) => !c.read_at).length,
     campaigns: offers,
   };
 });

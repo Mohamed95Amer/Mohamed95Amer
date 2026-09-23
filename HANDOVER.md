@@ -1,5 +1,28 @@
 # Get Gold — handover
 
+**Latest checkpoint — site-wide responsiveness pass (23 Sep 2026; deployed):**
+Server authentication and profile reads are now request-memoized with React `cache`,
+so the root header, protected layout, page and admin data loaders share one verified
+user/profile result instead of repeating the same Supabase Auth/PostgREST round trips.
+Non-customer headers no longer call the customer advertising-inbox RPC; they perform
+only the operational unread count needed by the bell.
+
+The single global gold-price provider still owns exactly one 10-second poll and one
+Realtime channel. Its one-second age clock was removed from the shared context because
+it forced every product card on a listing grid to recalculate each second even when the
+quote had not changed. Only the two small components that visibly display quote age now
+tick each second. The provider schedules one update at the 60-second stale boundary,
+and the Realtime client is loaded 750 ms after mount so first paint is not competing with
+websocket setup. Do not move subscriptions back into cards or merge refresh/stale timing.
+
+Verification: 57/57 app tests, typecheck, ESLint and local/Vercel production builds pass.
+All five public performance routes returned 200 after deployment; a warmed 390 px Chrome
+run measured TTFB 134–147 ms and LCP 0.74–1.32 s, with marketplace LCP improving from
+1.03 s to 0.82 s and homepage from 1.45 s to 1.32 s in the same probe. The live endpoint
+still reports `goldapicom`, `status: ok`, 10-second refresh and 60-second stale threshold.
+The reusable read-only probe is `scripts/profile-performance.cjs`.
+Deployment `8JVDxxiwLN4ZBrKqwaCbrGCyX2zU` is Ready and aliased to https://getgold.ae.
+
 **Latest checkpoint — admin insights, commission accounts and timed promotions (23 Sep 2026; deployed):**
 Admin overview now has a compact six-item primary navigation with secondary tools,
 real-data default, 7/30/90 Dubai-calendar-day performance filters, store selection,
