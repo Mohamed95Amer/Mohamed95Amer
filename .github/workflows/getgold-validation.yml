@@ -33,6 +33,10 @@ jobs:
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # setup-cli defaults to GHCR, whose shared runner quota can be exhausted
+    # before validation starts. Supabase publishes the same images to ECR.
+    env:
+      SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,11 +49,6 @@ jobs:
           version: 2.117.0
           github-token: ${{ github.token }}
       - name: Start isolated Supabase and apply all migrations
-        # setup-cli defaults to GHCR, whose shared runner quota can be
-        # exhausted before the database tests even start. Supabase publishes
-        # the same images to its public ECR mirror.
-        env:
-          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
         run: |
           for attempt in 1 2 3; do
             if supabase start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor; then
