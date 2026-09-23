@@ -75,10 +75,10 @@ export function RegisterForm({ initialRole = "customer", referralCode }: { initi
       <div>
         <label className="label" htmlFor="register-password">Password</label>
         <div className="relative">
-          <input id="register-password" name="new-password" className="input pr-16" type={showPassword ? "text" : "password"} required minLength={8} autoComplete="new-password" aria-describedby="register-password-help" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input id="register-password" name="new-password" className="input pr-16" type={showPassword ? "text" : "password"} required minLength={12} autoComplete="new-password" aria-describedby="register-password-help" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 min-h-9 -translate-y-[42%] text-xs font-semibold text-jade-700" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
         </div>
-        <p id="register-password-help" className="mt-1.5 text-xs text-ink-muted">Use at least 8 characters. A longer, unique password is safer.</p>
+        <p id="register-password-help" className="mt-1.5 text-xs text-ink-muted">Use at least 12 characters and a unique password you do not use elsewhere.</p>
       </div>
       <div>
         <label className="label" htmlFor="register-role">Account type</label>

@@ -1,7 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createLoader } = require('./load-ts.cjs');
-const { validUaeIban, validUaeMobile, normalizeUaeMobile, bankSettingsSchema, proofMime } = createLoader()('src/lib/payments/bank.ts');
+const { validUaeIban, validUaeMobile, normalizeUaeMobile, maskUaeMobile, maskIban, bankSettingsSchema, proofMime } = createLoader()('src/lib/payments/bank.ts');
 test('bank settings enforce UAE IBAN checksum and beneficiary when enabled', () => {
   assert.equal(validUaeIban('AE070331234567890123456'), true);
   assert.equal(validUaeIban('AE070331234567890123457'), false);
@@ -14,6 +14,11 @@ test('Aani accepts only normalized UAE mobile numbers', () => {
   assert.equal(validUaeMobile('+971409081312'), false);
   assert.equal(bankSettingsSchema.safeParse({ aani_enabled: true, aani_mobile: '050 908 1312', bank_transfer_enabled: false, bank_name: '', beneficiary_name: '', iban: '' }).success, true);
   assert.equal(bankSettingsSchema.safeParse({ aani_enabled: true, aani_mobile: '123', bank_transfer_enabled: false, bank_name: '', beneficiary_name: '', iban: '' }).success, false);
+});
+test('payment destinations are masked for logs and default admin display', () => {
+  assert.equal(maskUaeMobile('050 908 1312'), '+971509•••312');
+  assert.equal(maskIban('AE070331234567890123456'), 'AE0703 •••• •••• •••• 3456');
+  assert.equal(maskIban('not-an-iban'), 'Not set');
 });
 test('transfer proof rejects HTML and unknown content regardless of extension', () => {
   assert.equal(proofMime(new TextEncoder().encode('<html>not a receipt</html>')), null);

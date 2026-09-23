@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { reviewReportSchema } from "@/lib/validation/schemas";
-import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
+import { distributedRateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 
 export const runtime = "nodejs";
@@ -13,7 +13,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const limited = rateLimit(`review-report:${auth.user.id}`, 10, 24 * 60 * 60_000);
+  const limited = await distributedRateLimit(`review-report:${auth.user.id}`, 10, 24 * 60 * 60_000);
   if (!limited.ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
 
   const body = await request.json().catch(() => null);

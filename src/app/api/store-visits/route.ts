@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { storeVisitRequestSchema } from "@/lib/validation/schemas";
-import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
+import { distributedRateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (!rateLimit(`store-visit:${auth.user.id}`, 5, 60_000).ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  if (!(await distributedRateLimit(`store-visit:${auth.user.id}`, 5, 60_000)).ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   const parsed = storeVisitRequestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_input", details: parsed.error.flatten() }, { status: 400 });
 

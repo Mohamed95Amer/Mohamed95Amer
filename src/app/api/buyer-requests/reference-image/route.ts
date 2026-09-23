@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/security/rate-limit";
+import { distributedRateLimit } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (!rateLimit(`request-image:${auth.user.id}`, 8, 60_000).ok) {
+  if (!(await distributedRateLimit(`request-image:${auth.user.id}`, 8, 60_000)).ok) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 

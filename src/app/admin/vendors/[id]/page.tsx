@@ -4,6 +4,7 @@ import { AdminVendorActions } from "./AdminVendorActions";
 import { AdminDocViewerClient } from "@/components/AdminDocViewerClient";
 import { AdminVendorPromotionControl } from "./AdminVendorPromotionControl";
 import { cookies } from "next/headers";
+import { AdminPaymentDestinationReview } from "./AdminPaymentDestinationReview";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,9 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
   const { data: promotions } = await admin.from("vendor_promotions")
     .select("id, label, reward_reason, starts_at, ends_at, cancelled_at, admin_note")
     .eq("vendor_id", vendor.id).order("created_at", { ascending: false }).limit(25);
+  const { data: paymentSettings } = await admin.from("vendor_payment_settings")
+    .select("aani_enabled, aani_mobile, bank_transfer_enabled, bank_name, beneficiary_name, iban, destination_verification_status, destination_submitted_at, destination_verified_at, destination_review_note")
+    .eq("vendor_id", vendor.id).maybeSingle();
 
   return (
     <div className="grid gap-6">
@@ -66,6 +70,12 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
           ))}
           {(docs ?? []).length === 0 && <li className="py-3 text-ink-muted">{arabic ? "لم تُرفع مستندات." : "No documents uploaded."}</li>}
         </ul>
+      </div>
+
+      <div className="card p-6">
+        <h3 className="font-serif text-xl">{arabic ? "اعتماد وجهة الدفع" : "Payment destination approval"}</h3>
+        <p className="mt-1 text-sm text-ink-muted">{arabic ? "اعتمد رقم آني أو الحساب البنكي بشكل منفصل عن اعتماد المتجر. أي تغيير يعيد المراجعة تلقائياً." : "Approve Aani or bank details separately from the store. Any destination change automatically pauses transfers and requests a new review."}</p>
+        <AdminPaymentDestinationReview vendorId={vendor.id} settings={paymentSettings} arabic={arabic} />
       </div>
 
       <div className="card p-6">

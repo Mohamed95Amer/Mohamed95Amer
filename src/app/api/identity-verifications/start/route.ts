@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { identityVerificationStartSchema } from "@/lib/validation/schemas";
 import { createDiditVerificationSession, diditIsConfigured } from "@/lib/identity/didit";
-import { rateLimit } from "@/lib/security/rate-limit";
+import { distributedRateLimit } from "@/lib/security/rate-limit";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
 import { trackServerEvent } from "@/lib/analytics/server";
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const limit = rateLimit(`identity:${auth.user.id}`, 3, 10 * 60_000);
+  const limit = await distributedRateLimit(`identity:${auth.user.id}`, 3, 10 * 60_000);
   if (!limit.ok) return NextResponse.json({ error: "rate_limited", message: "Please wait before starting another identity check." }, { status: 429 });
 
   const payload = await request.json().catch(() => null);

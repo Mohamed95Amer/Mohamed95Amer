@@ -50,10 +50,10 @@ export async function POST(request: Request) {
   let error: { message: string } | null = null;
   if (parsed.data.decision === "confirm") {
     const { data: paymentSettings } = await admin.from("vendor_payment_settings")
-      .select("aani_enabled, aani_mobile, bank_transfer_enabled, bank_name, beneficiary_name, iban")
+      .select("aani_enabled, aani_mobile, bank_transfer_enabled, bank_name, beneficiary_name, iban, destination_verification_status")
       .eq("vendor_id", vendor.id).maybeSingle();
-    if (reservation.payment_method === "aani" && !paymentSettings?.aani_enabled) return NextResponse.json({ error: "Aani is no longer enabled for this store." }, { status: 409 });
-    if (reservation.payment_method === "bank_transfer" && !paymentSettings?.bank_transfer_enabled) return NextResponse.json({ error: "Bank transfer is no longer enabled for this store." }, { status: 409 });
+    if (reservation.payment_method === "aani" && (!paymentSettings?.aani_enabled || paymentSettings.destination_verification_status !== "approved")) return NextResponse.json({ error: "Aani is unavailable until this store's payment destination is approved." }, { status: 409 });
+    if (reservation.payment_method === "bank_transfer" && (!paymentSettings?.bank_transfer_enabled || paymentSettings.destination_verification_status !== "approved")) return NextResponse.json({ error: "Bank transfer is unavailable until this store's payment destination is approved." }, { status: 409 });
     const details = reservation.payment_method === "aani"
       ? { method: "aani", aani_mobile: paymentSettings?.aani_mobile }
       : reservation.payment_method === "bank_transfer"

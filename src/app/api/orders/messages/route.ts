@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { orderMessageSchema } from "@/lib/validation/schemas";
 import { notifyUser } from "@/lib/notifications/server";
-import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
+import { distributedRateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 
 export const runtime = "nodejs";
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
   if (Number(request.headers.get("content-length") ?? 0) > 10_000) {
     return NextResponse.json({ error: "message_too_large" }, { status: 413 });
   }
-  if (!rateLimit(`order-message:${auth.user.id}`, 20, 60_000).ok) {
+  if (!(await distributedRateLimit(`order-message:${auth.user.id}`, 20, 60_000)).ok) {
     return NextResponse.json(
       { error: "Please wait before sending more messages." },
       { status: 429 },

@@ -1,5 +1,42 @@
 # Get Gold — handover
 
+**Latest checkpoint — payment-destination approval and shared limiter readiness (23 Sep 2026; deployed):**
+Vendor approval and payment-destination approval are now separate trust decisions. A
+new or changed Aani number, beneficiary, bank name or IBAN is set to `pending` by a
+database trigger; Aani/bank transfer is hidden from the product checkout and rejected
+again by both reservation and vendor-confirmation APIs until an admin approves the
+current destination. Cash and card-at-handover remain usable. Admins see pending/rejected
+badges in `/admin/vendors`, review masked details by default in the vendor detail page,
+may reveal them for document comparison, and must leave a correction note when rejecting.
+Every decision and vendor edit is audit logged without storing the full phone or IBAN.
+Existing confirmed-order snapshots are never rewritten. Production had no payment-settings
+rows at migration time, so no active production destination was interrupted.
+
+The database trigger makes re-review race-safe: a payment destination change atomically
+clears the previous reviewer/timestamp and returns to pending, while a delivery-fee or
+working-setting edit preserves approval. The browser still has no direct access to the
+private settings table or trigger helper. Five previous foreign-key advisor findings plus
+the new reviewer foreign key now have covering indexes; the production performance advisor
+has no remaining unindexed-FK finding.
+
+All API routes that already used application rate limits now call one asynchronous limiter.
+It automatically uses Upstash Redis across all Vercel instances when
+`UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, with telemetry off and
+a one-second bounded fallback if Redis is unavailable. Production does not yet have those
+two variables, so limits currently use the safe per-instance fallback. Registration and
+password-reset forms now require at least 12 characters; Supabase Auth must still enforce
+the corresponding server-side policy in the dashboard.
+
+Local migrations `20260923190510_vendor_payment_destination_approval.sql`,
+`20260923190514_add_missing_foreign_key_indexes.sql` and
+`20260923192408_index_payment_destination_reviewer.sql` are recorded in production as
+`20260923192306`, `20260923192319` and `20260923192446`. Evidence: 62/62 application
+tests, 93/93 pgTAP assertions, 23/23 isolated integration tests, schema lint, typecheck,
+ESLint, local/Vercel builds and npm audit (zero vulnerabilities) pass. Production deployment
+`dpl_9DKVxrJnebc62gUXUA74N7Bkkx2g` is Ready and aliased to https://getgold.ae. Live pages
+return 200, the admin endpoint rejects signed-out access, security headers remain present,
+and the quote is fresh `goldapicom` with separate 10-second refresh / 60-second stale limits.
+
 **Latest checkpoint — full marketplace security hardening (23 Sep 2026; deployed):**
 The customer/vendor/admin/identity/payment trust chain was reviewed across every API
 mutation, server/service-role use, RLS policy, grant, view, privileged function,
@@ -41,22 +78,20 @@ branch-protected; enabling protection was deliberately left to the owner because
 changes the repository workflow.
 
 Launch controls that still require account/contract decisions: enable Supabase leaked-
-password protection (paid plan), CAPTCHA and strong Auth password/OTP settings; enforce
+password protection (paid plan), CAPTCHA and server-side strong Auth password/OTP settings; enforce
 MFA on Supabase, GitHub, Vercel and the domain/email provider; configure custom SMTP;
-review SSL enforcement/network restrictions and backup/PITR requirements; replace the
-per-instance application limiter with shared edge/Redis enforcement before meaningful
-traffic; complete Didit live-mode/DPA/legal approval before processing identity data;
+review SSL enforcement/network restrictions and backup/PITR requirements; provision the
+two Upstash Redis variables to activate the already-wired shared limiter before meaningful
+traffic; complete Didit live-mode/DPA/legal approval and a real hosted-flow test before processing identity data;
 and arrange an independent penetration test before accepting real high-value orders.
 No security audit can guarantee zero risk.
 
-Vendor payment destinations remain a deliberate phase-one operational control: an
-approved seller can edit its Aani/mobile/IBAN settings and may send a vendor-hosted HTTPS
-payment page. Those changes are audit logged and each confirmed order snapshots the
-destination, but Get Gold does not independently verify that the beneficiary still matches
-the licensed business. Before real money, add admin beneficiary verification and re-review
-on every destination change (or a PSP/open-banking confirmation). The customer UI labels
-these pages as vendor-provided, displays the hostname and warns never to share a bank
-password or OTP; HTTPS validation alone is not a trust certification.
+Vendor payment destinations remain a phase-one operational control: the admin approval
+gate and automatic re-review are implemented, but a human must actually compare each Aani
+number/IBAN/beneficiary with official vendor evidence. A vendor-hosted HTTPS payment page
+is still vendor-provided rather than platform-certified. The customer UI displays its
+hostname and warns never to share a bank password or OTP; HTTPS validation alone is not
+a trust certification. A future PSP/open-banking confirmation would reduce this manual work.
 
 **Latest checkpoint — private order chat and vendor payment links (23 Sep 2026; deployed):**
 Customers and the matching approved vendor now have one private conversation inside
@@ -433,8 +468,9 @@ The remaining security advisor warning is leaked-password protection, which the
 dashboard confirms is Pro-plan-only; no upgrade was made. The 20 no-policy INFO findings
 are intentional service-only tables with browser privileges revoked.
 
-Production checkout remains fail-closed: Vercel has no `DIDIT_*` credentials. Never copy
-the local Sandbox key into Production. Actual sandbox API simulations cover Approved,
+This paragraph is historical and superseded by the **Didit connected** checkpoint above:
+Production now has Live `DIDIT_*` secrets. Never copy the local Sandbox key into Production.
+Actual sandbox API simulations cover Approved,
 Declined, In Review and Expired for both routes, but not hosted capture or delivered
 signed webhooks. Supabase still uses its limited built-in test email service, not custom
 SMTP. The Contact page's legacy `@getgold.app` mailboxes remain unverified; do not claim

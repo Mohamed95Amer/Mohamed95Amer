@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { computeOfficialPriceForProduct } from "@/lib/pricing/server";
 import { createReservationSchema } from "@/lib/validation/schemas";
-import { rateLimit, ipFromRequest } from "@/lib/security/rate-limit";
+import { distributedRateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 import { env } from "@/lib/env";
 import { onlinePaymentCheckoutIsOperational } from "@/lib/payments/readiness";
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "identity_provider_not_configured" }, { status: 503 });
   }
 
-  const rl = rateLimit(`res:${auth.user.id}`, env.reservationsPerMin(), 60_000);
+  const rl = await distributedRateLimit(`res:${auth.user.id}`, env.reservationsPerMin(), 60_000);
   if (!rl.ok) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
 
   const admin = getServiceSupabase();
@@ -104,12 +104,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "online_payment_unavailable", message: "Online checkout is not active yet. Choose pay at store to continue." }, { status: 409 });
   }
   const [{ data: vendorOptions }, { data: workingHours }] = await Promise.all([
-    admin.from("vendor_payment_settings").select("aani_enabled, aani_mobile, bank_transfer_enabled, bank_name, beneficiary_name, iban, cash_enabled, card_enabled, delivery_mode, courier_name").eq("vendor_id", priced.product.vendor_id).maybeSingle(),
+    admin.from("vendor_payment_settings").select("aani_enabled, aani_mobile, bank_transfer_enabled, bank_name, beneficiary_name, iban, cash_enabled, card_enabled, delivery_mode, courier_name, destination_verification_status").eq("vendor_id", priced.product.vendor_id).maybeSingle(),
     admin.from("vendor_working_hours").select("day_of_week, is_open, opens_at, closes_at").eq("vendor_id", priced.product.vendor_id).order("day_of_week"),
   ]);
   if ((["cash", "pay_at_store"].includes(parsed.data.paymentMethod) && vendorOptions?.cash_enabled === false) || (parsed.data.paymentMethod === "card" && !vendorOptions?.card_enabled)) return NextResponse.json({ error: "payment_method_unavailable" }, { status: 409 });
-  if (parsed.data.paymentMethod === "bank_transfer" && !vendorOptions?.bank_transfer_enabled) return NextResponse.json({ error: "bank_transfer_unavailable" }, { status: 409 });
-  if (parsed.data.paymentMethod === "aani" && !vendorOptions?.aani_enabled) return NextResponse.json({ error: "aani_unavailable" }, { status: 409 });
+  if (parsed.data.paymentMethod === "bank_transfer" && (!vendorOptions?.bank_transfer_enabled || vendorOptions.destination_verification_status !== "approved")) return NextResponse.json({ error: "bank_transfer_unavailable" }, { status: 409 });
+  if (parsed.data.paymentMethod === "aani" && (!vendorOptions?.aani_enabled || vendorOptions.destination_verification_status !== "approved")) return NextResponse.json({ error: "aani_unavailable" }, { status: 409 });
   let timing;
   try { timing = vendorRequestTiming(workingHours as VendorWorkingHour[] | null); }
   catch { return NextResponse.json({ error: "store_schedule_unavailable" }, { status: 409 }); }

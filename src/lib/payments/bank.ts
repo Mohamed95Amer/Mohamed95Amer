@@ -19,6 +19,16 @@ export function validUaeMobile(value: string): boolean {
   return /^\+9715\d{8}$/.test(normalizeUaeMobile(value));
 }
 
+export function maskUaeMobile(value: string): string {
+  const normalized = normalizeUaeMobile(value);
+  return validUaeMobile(normalized) ? `${normalized.slice(0, 7)}•••${normalized.slice(-3)}` : "Not set";
+}
+
+export function maskIban(value: string): string {
+  const normalized = value.replace(/\s/g, "").toUpperCase();
+  return /^AE\d{21}$/.test(normalized) ? `${normalized.slice(0, 6)} •••• •••• •••• ${normalized.slice(-4)}` : "Not set";
+}
+
 export const bankSettingsSchema = z.object({
   aani_enabled: z.boolean().default(false),
   aani_mobile: z.string().trim().max(24).default("").transform(normalizeUaeMobile),

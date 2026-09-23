@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { buyerRequestCreateSchema } from "@/lib/validation/schemas";
-import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
+import { distributedRateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { logAudit } from "@/lib/audit";
 import { notifyUser } from "@/lib/notifications/server";
 import { trackServerEvent } from "@/lib/analytics/server";
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (!rateLimit(`buyer-request:${auth.user.id}`, 5, 60_000).ok) {
+  if (!(await distributedRateLimit(`buyer-request:${auth.user.id}`, 5, 60_000)).ok) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
   const body = await request.json().catch(() => null);

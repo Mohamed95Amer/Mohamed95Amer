@@ -1,6 +1,6 @@
 # Get Gold — what remains before real Phase 1 orders
 
-Updated 15 September 2026. Website: https://getgold.ae
+Updated 23 September 2026. Website: https://getgold.ae
 
 The website is deployed with **Live Didit credentials configured and the checkout
 identity gate enabled**. A participant still needs to complete the actual hosted
@@ -95,6 +95,13 @@ Agree with the first vendor on:
 - Delivery staff or courier, coverage, insurance, failed deliveries, returns and refunds.
 - How often the vendor remits the customer Get Gold fee and how disputes are reconciled.
 
+For each store that enables Aani or bank transfer, open **Admin → Vendors → Review →
+Payment destination approval**. Compare the displayed destination with an official bank
+letter, Aani business-registration evidence and the licensed legal name before approving.
+The website will keep that transfer method unavailable until approval and automatically
+request a new review whenever the vendor changes the destination. This is a manual
+operational check, not bank-account ownership confirmation by Get Gold.
+
 Current pricing: customer fee 1% of merchandise, excluding delivery; 50% off that fee
 for the first three qualifying orders (effective 0.5%). Vendor making-charge commission
 is paused. The vendor collects the full displayed total and remits Get Gold's fee under
@@ -122,3 +129,19 @@ Supabase leaked-password protection is an optional paid-plan enhancement; it was
 enabled because this project is on Free. See the [provider's explanation](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 
 No further Tasjeel website-routing changes are needed. Both apex and www HTTPS work.
+
+## 5. Account security and production-wide abuse controls
+
+- In Supabase Auth, enable CAPTCHA, set password minimum length to at least 12 and keep
+  email/password recovery OTP expiry to one hour or less. The website forms already ask
+  for 12 characters, but the server-side Auth setting is the enforcement boundary.
+- Leaked-password protection is still the only Supabase security-advisor warning and
+  requires the relevant paid plan.
+- Enable MFA on Supabase, GitHub, Vercel, Tasjeel and the domain-email administrator.
+- Create a free Upstash Redis database, then add `UPSTASH_REDIS_REST_URL` and
+  `UPSTASH_REDIS_REST_TOKEN` as Vercel Production secrets and redeploy. The code is already
+  wired to use it across serverless instances; without those variables it uses a bounded
+  per-instance fallback. Upstash becomes an additional data processor, so include it in
+  the privacy/vendor register before real customer traffic.
+- Configure custom SMTP for Supabase Auth using a functioning `@getgold.ae` mailbox and
+  test signup confirmation plus password recovery to an inbox you control.

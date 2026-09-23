@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { proofMime } from "@/lib/payments/bank";
-import { rateLimit, ipFromRequest } from "@/lib/security/rate-limit";
+import { distributedRateLimit, ipFromRequest } from "@/lib/security/rate-limit";
 import { notifyUser } from "@/lib/notifications/server";
 import { logAudit } from "@/lib/audit";
 export const runtime = "nodejs";
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   const client = await getServerSupabase(); const { data: auth } = await client.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (!rateLimit(`bank-proof:${auth.user.id}`, 5, 60000).ok) return NextResponse.json({ error: "Please wait before retrying." }, { status: 429 });
+  if (!(await distributedRateLimit(`bank-proof:${auth.user.id}`, 5, 60000)).ok) return NextResponse.json({ error: "Please wait before retrying." }, { status: 429 });
   if (Number(request.headers.get("content-length")) > 5_300_000) return NextResponse.json({ error: "Maximum file size is 5 MB." }, { status: 413 });
   // Bound chunked bodies too; Content-Length can be absent or dishonest.
   const reader = request.body?.getReader(); const buffer = new Uint8Array(5_300_000); let length = 0;

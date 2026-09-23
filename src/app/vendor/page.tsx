@@ -18,7 +18,7 @@ export default async function VendorDashboardPage() {
   const results = await Promise.all([
     admin.from("products").select("id, product_status, quantity, data_quality_status").eq("vendor_id", vendor.id),
     admin.from("reservations").select("status, expires_at, vendor_action_available_at, payment_method").eq("vendor_id", vendor.id).not("status", "in", "(completed,paid,cancelled,expired,refunded,rejected_by_vendor)"),
-    admin.from("vendor_payment_settings").select("aani_enabled, bank_transfer_enabled, cash_enabled, card_enabled").eq("vendor_id", vendor.id).maybeSingle(),
+    admin.from("vendor_payment_settings").select("aani_enabled, bank_transfer_enabled, cash_enabled, card_enabled, destination_verification_status, destination_review_note").eq("vendor_id", vendor.id).maybeSingle(),
     admin.from("vendor_working_hours").select("day_of_week").eq("vendor_id", vendor.id),
     admin.from("vendor_liquidity_summary").select("live_listings, reservations_30d, request_offers_30d, visit_requests_30d").eq("vendor_id", vendor.id).maybeSingle(),
   ]);
@@ -35,7 +35,7 @@ export default async function VendorDashboardPage() {
   const checklist = [
     { done: Boolean(vendor.business_name && vendor.trade_license_number && vendor.phone), title: t("Store details", "بيانات المتجر"), body: t("Your business and contact information.", "معلومات نشاطك التجاري ووسائل التواصل."), href: "/vendor/register" },
     { done: vendor.store_latitude != null && vendor.store_longitude != null, title: t("Store location", "موقع المتجر"), body: t("A precise pin helps customers find you.", "دبوس دقيق ليسهل على العملاء الوصول إليك."), href: "/vendor/register" },
-    { done: Boolean(payments && (payments.aani_enabled || payments.bank_transfer_enabled || payments.cash_enabled || payments.card_enabled)), title: t("Payment options", "خيارات الدفع"), body: t("Choose how customers pay your store.", "اختر طرق دفع العملاء لمتجرك."), href: "/vendor/payments" },
+    { done: Boolean(payments && (payments.cash_enabled || payments.card_enabled || ((payments.aani_enabled || payments.bank_transfer_enabled) && payments.destination_verification_status === "approved"))), title: t("Payment options", "خيارات الدفع"), body: payments?.destination_verification_status === "pending" ? t("Your direct-transfer destination is awaiting admin review.", "وجهة التحويل المباشر بانتظار مراجعة الإدارة.") : payments?.destination_verification_status === "rejected" ? t("Correct your rejected payment destination and resubmit it.", "صحح وجهة الدفع المرفوضة وأعد إرسالها.") : t("Choose how customers pay your store.", "اختر طرق دفع العملاء لمتجرك."), href: "/vendor/payments" },
     { done: hours.length === 7, title: t("Working hours", "مواعيد العمل"), body: t("Set when you can confirm new requests.", "حدد الأوقات المتاحة لتأكيد الطلبات."), href: "/vendor/payments#working-hours" },
     { done: products.length > 0, title: t("First product", "المنتج الأول"), body: t("Add photos, weight and your making charge.", "أضف الصور والوزن والمصنعية الخاصة بك."), href: "/vendor/products/new" },
   ];
@@ -47,6 +47,8 @@ export default async function VendorDashboardPage() {
     </section>
     <VendorNav arabic={ar} />
     {vendor.verification_status !== "approved" && <div className="mb-6 rounded-2xl border border-gold-300 bg-gold-50 p-5 text-sm leading-relaxed"><strong>{vendorStatus(vendor.verification_status, ar)}. </strong>{t("You can prepare product drafts. Your store must be approved before you submit listings or receive orders.", "يمكنك تجهيز مسودات المنتجات. يلزم اعتماد متجرك قبل إرسال المنتجات للمراجعة أو استقبال الطلبات.")}<Link className="ms-2 underline" href="/vendor/documents">{t("Manage documents", "إدارة المستندات")}</Link></div>}
+    {vendor.verification_status === "approved" && payments?.destination_verification_status === "pending" && <div className="mb-6 rounded-2xl border border-gold-300 bg-gold-50 p-5 text-sm leading-relaxed"><strong>{t("Payment destination under review. ", "وجهة الدفع قيد المراجعة. ")}</strong>{t("Cash and card-at-handover still work. Aani and bank transfer will appear after approval.", "يبقى النقد والبطاقة عند التسليم متاحين. سيظهر آني والتحويل البنكي بعد الاعتماد.")}<Link className="ms-2 underline" href="/vendor/payments">{t("Review details", "مراجعة البيانات")}</Link></div>}
+    {vendor.verification_status === "approved" && payments?.destination_verification_status === "rejected" && <div className="mb-6 rounded-2xl border border-signal-err/20 bg-red-50 p-5 text-sm leading-relaxed text-signal-err"><strong>{t("Payment destination needs correction. ", "وجهة الدفع تحتاج إلى تصحيح. ")}</strong>{payments.destination_review_note || t("Open payment settings, correct the destination and save it for a new review.", "افتح إعدادات الدفع وصحح الوجهة ثم احفظها لمراجعة جديدة.")}<Link className="ms-2 underline" href="/vendor/payments">{t("Fix details", "تصحيح البيانات")}</Link></div>}
     <div className="mb-4 flex items-center justify-between gap-3"><h2 className="font-serif text-2xl text-jade-950">{t("Your next actions", "الإجراءات التالية")}</h2><span className="text-xs text-ink-muted">{t("Updated when you open this page", "تُحدّث عند فتح هذه الصفحة")}</span></div>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {[

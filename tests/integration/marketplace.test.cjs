@@ -368,7 +368,13 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       activeClient = fixtures.vendor.client;
       const setup = await route('vendor/payment-settings', { bank_transfer_enabled: true, bank_name: 'Test Bank', beneficiary_name: 'Synthetic store', iban: 'AE070331234567890123456' });
       assert.equal(setup.status, 200, JSON.stringify(setup.body));
+      assert.equal(setup.body.destinationVerificationStatus, 'pending');
       assert.ok((await fixtures.outsider.client.from('vendor_payment_settings').select('*')).error);
+      activeClient = fixtures.customer.client;
+      assert.equal((await route('reservations', payload)).status, 409, 'unreviewed bank destination must not be offered');
+      activeClient = fixtures.admin_test.client;
+      const approved = await route('admin/vendors/payment-destination', { vendorId, decision: 'approve', note: 'Synthetic test approval' });
+      assert.equal(approved.status, 200, JSON.stringify(approved.body));
       activeClient = fixtures.customer.client;
       const created = await route('reservations', payload);
       assert.equal(created.status, 200, JSON.stringify(created.body));
@@ -479,9 +485,15 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       activeClient = fixtures.vendor.client;
       const settings = await route('vendor/payment-settings', { aani_enabled: true, aani_mobile: '050 908 1312', bank_transfer_enabled: false, bank_name: '', beneficiary_name: '', iban: '', cash_enabled: true, card_enabled: true, delivery_mode: 'own_staff', courier_name: '', delivery_fee_aed: 20 });
       assert.equal(settings.status, 200, JSON.stringify(settings.body));
+      assert.equal(settings.body.destinationVerificationStatus, 'pending');
       activeClient = fixtures.customer.client;
       const check = await identity(fixtures.customer, products[0]);
-      const created = await route('reservations', { productId: products[0].id, quantity: 1, identityVerificationId: check.id, paymentMethod: 'aani', fulfilmentMethod: 'collection' });
+      const aaniPayload = { productId: products[0].id, quantity: 1, identityVerificationId: check.id, paymentMethod: 'aani', fulfilmentMethod: 'collection' };
+      assert.equal((await route('reservations', aaniPayload)).status, 409, 'unreviewed Aani destination must not be offered');
+      activeClient = fixtures.admin_test.client;
+      assert.equal((await route('admin/vendors/payment-destination', { vendorId, decision: 'approve' })).status, 200);
+      activeClient = fixtures.customer.client;
+      const created = await route('reservations', aaniPayload);
       assert.equal(created.status, 200, JSON.stringify(created.body));
       const id = created.body.reservation.id; reservations.push(id);
       const snapshot = must(await admin.from('order_price_snapshots').select('total_price_aed').eq('reservation_id', id).single());
@@ -501,6 +513,9 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       }
       row = must(await admin.from('reservations').select('status,payment_confirmed_at,completed_at').eq('id', id).single());
       assert.equal(row.status, 'completed'); assert.ok(row.payment_confirmed_at); assert.ok(row.completed_at);
+      activeClient = fixtures.vendor.client;
+      const changedDestination = await route('vendor/payment-settings', { aani_enabled: true, aani_mobile: '050 908 1313', bank_transfer_enabled: false, bank_name: '', beneficiary_name: '', iban: '', cash_enabled: true, card_enabled: true, delivery_mode: 'own_staff', courier_name: '', delivery_fee_aed: 20 });
+      assert.equal(changedDestination.body.destinationVerificationStatus, 'pending', 'destination changes must revoke the prior approval');
     });
     await t.test('Requests made while closed wait for the next vendor opening and cannot be actioned early', async () => {
       const dubaiDay = new Date(Date.now() + 4 * 3600000).getUTCDay();
