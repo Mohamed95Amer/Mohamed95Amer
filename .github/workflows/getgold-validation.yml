@@ -33,10 +33,6 @@ jobs:
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # setup-cli defaults to GHCR, whose shared runner quota can be exhausted
-    # before validation starts. Supabase publishes the same images to ECR.
-    env:
-      SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -49,6 +45,10 @@ jobs:
           version: 2.117.0
           github-token: ${{ github.token }}
       - name: Start isolated Supabase and apply all migrations
+        # setup-cli writes GHCR into GITHUB_ENV, so a step-level override is
+        # required for every CLI command that may pull a helper image.
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
         run: |
           for attempt in 1 2 3; do
             if supabase start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor; then
@@ -61,10 +61,16 @@ jobs:
             sleep $((attempt * 30))
           done
       - name: Run rollback-only database regression tests
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
         run: supabase test db --local
       - name: Lint database routines and security
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
         run: |
           supabase db lint --local --level warning --fail-on warning
           supabase db advisors --local --type security --level warn --fail-on warn
       - name: Exercise Auth, email, PostgREST and route handlers
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
         run: npm run test:integration
