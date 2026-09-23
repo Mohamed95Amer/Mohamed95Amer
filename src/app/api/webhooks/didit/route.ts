@@ -34,7 +34,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
   }
 
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > 262_144) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
+
   const rawBody = await request.text();
+  if (Buffer.byteLength(rawBody, "utf8") > 262_144) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
   let body: unknown;
   try {
     body = JSON.parse(rawBody);

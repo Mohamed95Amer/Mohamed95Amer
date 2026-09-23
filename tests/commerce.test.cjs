@@ -22,12 +22,18 @@ const { onlinePaymentCheckoutIsOperational } = load(
   "src/lib/payments/readiness.ts",
 );
 const { canTransitionDelivery } = load("src/lib/delivery/transitions.ts");
-const { deliveryStatusSchema, productUpsertSchema } = load(
+const {
+  deliveryCompanyOnboardingSchema,
+  deliveryStatusSchema,
+  productUpsertSchema,
+  vendorOnboardingSchema,
+} = load(
   "src/lib/validation/schemas.ts",
 );
 const { isSecureExternalPaymentUrl, paymentLinkHost } = load(
   "src/lib/order-messages.ts",
 );
+const { serializeJsonLd } = load("src/lib/security/json-ld.ts");
 const base = {
   pricePerGram24kAed: 500,
   karat: 24,
@@ -377,5 +383,59 @@ test("vendor payment links require a public credential-free HTTPS destination", 
   assert.equal(
     paymentLinkHost("https://www.pay.vendor.example/order/123"),
     "pay.vendor.example",
+  );
+});
+test("structured data cannot escape its script element", () => {
+  const malicious = '</script><script>alert("xss")</script>\u2028&';
+  const serialised = serializeJsonLd({ name: malicious });
+  assert.equal(serialised.includes("</script>"), false);
+  assert.equal(serialised.includes("<"), false);
+  assert.equal(JSON.parse(serialised).name, malicious);
+});
+test("business onboarding accepts only safe public websites and Maps pins", () => {
+  const vendor = {
+    business_name: "Test Gold Store",
+    trade_license_number: "TL-12345",
+    license_expiry_date: "2027-09-23",
+    owner_name: "Test Owner",
+    email: "owner@example.ae",
+    phone: "0501234567",
+    emirate: "Dubai",
+    store_address: "Gold Souq, Deira, Dubai",
+    google_maps_link: "https://maps.google.com/?q=25.27,55.30",
+    website_available: true,
+    website_url: "https://store.example.ae",
+  };
+  assert.equal(vendorOnboardingSchema.safeParse(vendor).success, true);
+  for (const website_url of [
+    "javascript:alert(1)",
+    "http://store.example.ae",
+    "https://localhost/store",
+    "https://192.168.1.10/store",
+  ]) {
+    assert.equal(
+      vendorOnboardingSchema.safeParse({ ...vendor, website_url }).success,
+      false,
+    );
+  }
+  assert.equal(
+    vendorOnboardingSchema.safeParse({
+      ...vendor,
+      google_maps_link: "https://evil.example/location",
+    }).success,
+    false,
+  );
+  assert.equal(
+    deliveryCompanyOnboardingSchema.safeParse({
+      company_name: "Safe Courier",
+      trade_license_number: "DL-12345",
+      license_expiry_date: "2027-09-23",
+      contact_name: "Courier Owner",
+      email: "courier@example.ae",
+      phone: "0501234567",
+      emirates_served: ["Dubai"],
+      website: "javascript:alert(1)",
+    }).success,
+    false,
   );
 });

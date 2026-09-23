@@ -41,12 +41,12 @@ begin
   from public.profiles
   where id = '99999999-9999-4999-8999-999999999902';
 
-  if actual_role <> 'vendor'::public.user_role then
-    raise exception 'vendor signup did not retain vendor role';
+  if actual_role <> 'customer'::public.user_role then
+    raise exception 'vendor metadata assigned authorization before trusted onboarding';
   end if;
 end;
 $$;
-select pass('vendor signup preserves the unprivileged vendor role');
+select pass('vendor signup metadata cannot assign a vendor role');
 
 insert into auth.users (id, email, raw_user_meta_data)
 values (
@@ -63,12 +63,12 @@ begin
   from public.profiles
   where id = '99999999-9999-4999-8999-999999999903';
 
-  if actual_role <> 'delivery_company'::public.user_role then
-    raise exception 'delivery-company signup did not retain delivery_company role';
+  if actual_role <> 'customer'::public.user_role then
+    raise exception 'delivery-company metadata assigned authorization before trusted onboarding';
   end if;
 end;
 $$;
-select pass('courier signup preserves the unprivileged delivery-company role');
+select pass('courier signup metadata cannot assign a delivery-company role');
 
 select * from finish();
 rollback;

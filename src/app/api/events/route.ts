@@ -5,6 +5,10 @@ import { ipFromRequest, rateLimit } from "@/lib/security/rate-limit";
 import { trackServerEvent } from "@/lib/analytics/server";
 
 export async function POST(request: Request) {
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > 16_384) {
+    return NextResponse.json({ error: "payload_too_large" }, { status: 413 });
+  }
   const parsed = marketplaceEventSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   const ip = ipFromRequest(request);

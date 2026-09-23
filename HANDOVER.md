@@ -1,5 +1,54 @@
 # Get Gold — handover
 
+**Latest checkpoint — full marketplace security hardening (23 Sep 2026; deployed):**
+The customer/vendor/admin/identity/payment trust chain was reviewed across every API
+mutation, server/service-role use, RLS policy, grant, view, privileged function,
+Realtime table and Storage bucket. Vendor-controlled JSON-LD text can no longer close
+its script element; stored website and map links are restricted to public HTTPS or
+accepted Maps destinations; vendor payment links no longer claim platform certification.
+Cookie-authenticated API mutations now reject missing or cross-site origins (signed
+webhooks and secret cron calls stay exempt). CSP, frame denial, MIME sniff protection,
+strict referrer policy, COOP and two-year HSTS are present in production. Analytics and
+Didit payloads have explicit bounds, and the process-local limiter evicts expired keys
+and cannot grow without limit.
+
+Migration `20260923142931_marketplace_security_hardening.sql` is applied locally and
+recorded in production as `20260923144655_marketplace_security_hardening`. Public signup
+metadata always creates a customer profile; only the validated vendor/courier onboarding
+routes may promote a business role. Anonymous grants were removed from profiles, orders,
+snapshots, private documents and audit rows; participant/admin policies are explicitly
+authenticated and use statement-cached auth lookups. Trigger-only execution is revoked.
+Product uploads are capped at 5 MB and image MIME types; vendor documents are capped at
+10 MB and PDF/JPEG/PNG, with authenticated owner/admin Storage policies and update rules.
+Production readback confirms every limit, grant and policy. The previous three RLS
+performance warnings are gone. The 24 no-policy INFO notices are intentional service-only
+deny-all tables. The remaining advisor warning is an account setting: leaked-password
+protection is disabled.
+
+Evidence: 60/60 app tests, 78/78 pgTAP checks, 23/23 isolated Auth/PostgREST/Storage
+integration tests, schema lint, typecheck, ESLint, local build, Vercel build and npm audit
+(0 known vulnerabilities) pass. Live public routes return 200; a fresh `goldapicom` quote
+still reports separate 10-second refresh and 60-second stale thresholds; same-origin
+analytics returns 204 while missing/cross-site cookie origins return 403. Deployment
+`dpl_4b2Zw3zcVBSo4tJwCkVRMXUoybnB` is Ready and aliased to https://getgold.ae.
+
+GitHub dependency alerts and secret scanning with push protection were enabled for the
+public repository. Secret scanning currently reports zero alerts. GitHub still reports
+49 dependency alerts against the vulnerable `main` snapshot (including Next 14.2.15);
+this branch uses patched Next 15.5.24 and `npm audit` is clean. PR #10 must eventually be
+merged/rebased into the default branch so GitHub can close those alerts. Main is not
+branch-protected; enabling protection was deliberately left to the owner because it
+changes the repository workflow.
+
+Launch controls that still require account/contract decisions: enable Supabase leaked-
+password protection (paid plan), CAPTCHA and strong Auth password/OTP settings; enforce
+MFA on Supabase, GitHub, Vercel and the domain/email provider; configure custom SMTP;
+review SSL enforcement/network restrictions and backup/PITR requirements; replace the
+per-instance application limiter with shared edge/Redis enforcement before meaningful
+traffic; complete Didit live-mode/DPA/legal approval before processing identity data;
+and arrange an independent penetration test before accepting real high-value orders.
+No security audit can guarantee zero risk.
+
 **Latest checkpoint — private order chat and vendor payment links (23 Sep 2026; deployed):**
 Customers and the matching approved vendor now have one private conversation inside
 each order. Customers open it from their order-detail page; vendors use **Vendor →

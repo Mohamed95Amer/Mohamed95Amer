@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { isAcceptedDeliveryMapLink, UAE_EMIRATES } from "@/lib/fulfilment";
-import { isSecureExternalPaymentUrl } from "@/lib/order-messages";
+import {
+  isSecureExternalHttpsUrl,
+  isSecureExternalPaymentUrl,
+} from "@/lib/order-messages";
 
 const optionalTrimmed = (maximum: number) =>
   z.string().trim().max(maximum).optional().nullable();
@@ -15,6 +18,17 @@ const optionalMapLink = z.preprocess(
       isAcceptedDeliveryMapLink,
       "Use a secure Google Maps or Apple Maps link",
     )
+    .optional()
+    .nullable(),
+);
+const optionalSecureWebsite = z.preprocess(
+  (value) => (value === "" ? null : value),
+  z
+    .string()
+    .trim()
+    .url()
+    .max(1000)
+    .refine(isSecureExternalHttpsUrl, "Use a secure public HTTPS website")
     .optional()
     .nullable(),
 );
@@ -124,7 +138,7 @@ export const vendorOnboardingSchema = z
       "Fujairah",
     ]),
     store_address: z.string().min(5).max(500),
-    google_maps_link: z.string().url().optional().nullable(),
+    google_maps_link: optionalMapLink,
     store_latitude: z.number().min(-90).max(90).optional().nullable(),
     store_longitude: z.number().min(-180).max(180).optional().nullable(),
     vat_trn_number: z.string().max(20).optional().nullable(),
@@ -132,7 +146,7 @@ export const vendorOnboardingSchema = z
     delivery_available: z.boolean().default(false),
     online_payment_available: z.boolean().default(false),
     website_available: z.boolean().default(false),
-    website_url: z.string().url().optional().nullable(),
+    website_url: optionalSecureWebsite,
   })
   .superRefine((data, ctx) => {
     if (data.website_available && !data.website_url) {
@@ -265,7 +279,7 @@ export const deliveryCompanyOnboardingSchema = z.object({
     .min(1)
     .max(7),
   service_notes: z.string().trim().max(1000).optional().nullable(),
-  website: z.string().url().optional().nullable(),
+  website: optionalSecureWebsite,
 });
 
 export const profileUpdateSchema = z.object({
@@ -668,6 +682,7 @@ export const marketplaceEventSchema = z.object({
   vendorId: z.string().uuid().optional().nullable(),
   metadata: z
     .record(z.union([z.string().max(120), z.number(), z.boolean(), z.null()]))
+    .refine((value) => Object.keys(value).length <= 20, "Use at most 20 metadata fields")
     .optional()
     .default({}),
 });

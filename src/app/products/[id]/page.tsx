@@ -24,6 +24,7 @@ import { dubaiTodayIso } from "@/lib/time";
 import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { applyEventDeliveryDiscount } from "@/lib/marketing";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
+import { serializeJsonLd } from "@/lib/security/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -143,7 +144,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <div className="container-pro py-8 sm:py-12">
       <TrackPageView eventName="product_view" productId={product.id} vendorId={product.vendor_id} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
         "@context": "https://schema.org",
         "@type": "Product",
         name: product.name,

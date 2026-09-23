@@ -13,6 +13,8 @@ import {
 } from "@/lib/reputation";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
+import { serializeJsonLd } from "@/lib/security/json-ld";
+import { isAcceptedDeliveryMapLink } from "@/lib/fulfilment";
 
 export const dynamic = "force-dynamic";
 
@@ -66,10 +68,16 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
       .limit(50),
   ]);
   const reputation = reputationRow ? normalizeReputation(reputationRow as VendorReputationRow) : null;
+  const safeStoreMapLink =
+    vendor.store_latitude != null && vendor.store_longitude != null
+      ? `https://www.google.com/maps/search/?api=1&query=${vendor.store_latitude},${vendor.store_longitude}`
+      : isAcceptedDeliveryMapLink(vendor.google_maps_link)
+        ? vendor.google_maps_link
+        : null;
 
   return (
     <div className="container-pro py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
         "@context": "https://schema.org",
         "@type": "JewelryStore",
         name: vendor.business_name,
@@ -85,8 +93,8 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
         <p className="text-sm text-ink-muted">{vendor.emirate} · {vendor.store_address}</p>
         <p className="mt-1 text-xs text-signal-ok">Trade licence checked · current through {new Intl.DateTimeFormat("en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
         <div className="mt-3"><StoreRating reputation={reputation} /></div>
-        {(vendor.google_maps_link || (vendor.store_latitude != null && vendor.store_longitude != null)) && (
-          <a className="mt-2 inline-flex text-sm font-semibold text-jade-700 underline" href={vendor.store_latitude != null && vendor.store_longitude != null ? `https://www.google.com/maps/search/?api=1&query=${vendor.store_latitude},${vendor.store_longitude}` : vendor.google_maps_link!} target="_blank" rel="noreferrer">
+        {safeStoreMapLink && (
+          <a className="mt-2 inline-flex text-sm font-semibold text-jade-700 underline" href={safeStoreMapLink} target="_blank" rel="noopener noreferrer">
             Open exact store pin →
           </a>
         )}

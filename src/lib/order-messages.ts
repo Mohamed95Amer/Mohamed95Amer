@@ -9,8 +9,8 @@ export type OrderMessage = {
   created_at: string;
 };
 
-/** Payment links must leave no room for local-network or credential-in-URL tricks. */
-export function isSecureExternalPaymentUrl(value: string): boolean {
+/** External URLs must leave no room for local-network or credential-in-URL tricks. */
+export function isSecureExternalHttpsUrl(value: string): boolean {
   try {
     const url = new URL(value);
     if (url.protocol !== "https:" || url.username || url.password || url.port)
@@ -38,6 +38,8 @@ export function isSecureExternalPaymentUrl(value: string): boolean {
     return false;
   }
 }
+
+export const isSecureExternalPaymentUrl = isSecureExternalHttpsUrl;
 
 export function paymentLinkHost(value: string): string {
   try {

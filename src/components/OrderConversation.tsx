@@ -216,8 +216,8 @@ export function OrderConversation({
                       className={`mt-2 inline-flex min-h-10 items-center rounded-full px-4 py-2 text-xs font-semibold ${mine ? "bg-white text-jade-950" : "bg-jade-900 text-white"}`}
                     >
                       {t(
-                        "Open secure payment link ↗",
-                        "فتح رابط الدفع الآمن ↗",
+                        "Open vendor payment page ↗",
+                        "فتح صفحة الدفع الخاصة بالمتجر ↗",
                       )}
                     </a>
                     <p
