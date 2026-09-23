@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 # A branch push and its pull_request event can point at the same commit. Run
 # only one expensive Docker validation for that SHA instead of pulling the
@@ -43,9 +44,12 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@v2
         with:
           version: 2.117.0
+          github-token: ${{ github.token }}
+      - name: Authenticate Supabase image pulls
+        run: echo "${{ github.token }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
       - name: Start isolated Supabase and apply all migrations
         run: |
           for attempt in 1 2 3; do
