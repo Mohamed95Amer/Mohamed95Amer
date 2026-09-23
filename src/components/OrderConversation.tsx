@@ -224,8 +224,8 @@ export function OrderConversation({
                       className={`mt-2 text-[10px] leading-relaxed ${mine ? "text-white/65" : "text-ink-muted"}`}
                     >
                       {t(
-                        "Payment goes directly to the store. Opening this link does not confirm payment on Get Gold.",
-                        "يذهب الدفع مباشرة إلى المتجر. فتح الرابط لا يؤكد الدفع في Get Gold.",
+                        "Provided by the store, not verified by Get Gold. Check the domain and exact amount. Never share a bank password or OTP. Opening it does not confirm payment.",
+                        "الرابط مقدم من المتجر وغير معتمد من Get Gold. تحقق من النطاق والمبلغ ولا تشارك كلمة مرور البنك أو رمز التحقق. فتحه لا يؤكد الدفع.",
                       )}
                     </p>
                   </div>

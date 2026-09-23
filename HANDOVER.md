@@ -49,6 +49,15 @@ traffic; complete Didit live-mode/DPA/legal approval before processing identity 
 and arrange an independent penetration test before accepting real high-value orders.
 No security audit can guarantee zero risk.
 
+Vendor payment destinations remain a deliberate phase-one operational control: an
+approved seller can edit its Aani/mobile/IBAN settings and may send a vendor-hosted HTTPS
+payment page. Those changes are audit logged and each confirmed order snapshots the
+destination, but Get Gold does not independently verify that the beneficiary still matches
+the licensed business. Before real money, add admin beneficiary verification and re-review
+on every destination change (or a PSP/open-banking confirmation). The customer UI labels
+these pages as vendor-provided, displays the hostname and warns never to share a bank
+password or OTP; HTTPS validation alone is not a trust certification.
+
 **Latest checkpoint — private order chat and vendor payment links (23 Sep 2026; deployed):**
 Customers and the matching approved vendor now have one private conversation inside
 each order. Customers open it from their order-detail page; vendors use **Vendor →
