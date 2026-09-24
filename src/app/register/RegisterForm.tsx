@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import Link from "next/link";
+import { TurnstileField } from "@/components/security/TurnstileField";
 
 type RegistrationRole = "customer" | "vendor" | "delivery_company";
 
@@ -25,6 +26,8 @@ export function RegisterForm({ initialRole = "customer", referralCode }: { initi
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,11 +38,13 @@ export function RegisterForm({ initialRole = "customer", referralCode }: { initi
       email,
       password,
       options: {
+        captchaToken: captchaToken ?? undefined,
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination[role])}`,
         data: { full_name: fullName, phone, role, referral_code: referralCode },
       },
     });
     setBusy(false);
+    setCaptchaResetKey((key) => key + 1);
     if (error) {
       setErr(error.message);
       return;
@@ -92,9 +97,10 @@ export function RegisterForm({ initialRole = "customer", referralCode }: { initi
         <input name="terms" type="checkbox" required className="mt-1 h-4 w-4 rounded border-jade-900/20 text-jade-700" />
         <span>I agree to the <Link href="/terms" className="font-semibold text-jade-700 underline underline-offset-4">Terms</Link> and acknowledge the <Link href="/privacy" className="font-semibold text-jade-700 underline underline-offset-4">Privacy Policy</Link>.</span>
       </label>
+      <TurnstileField onTokenChange={setCaptchaToken} resetKey={captchaResetKey} />
       {err && <p role="alert" className="text-sm text-signal-err">{err}</p>}
       {msg && <p role="status" className="text-sm text-signal-ok">{msg}</p>}
-      <button type="submit" className="btn-primary w-full" disabled={busy}>{busy ? "Creating account…" : role === "vendor" ? "Create vendor account" : role === "delivery_company" ? "Create delivery company account" : "Create customer account"}</button>
+      <button type="submit" className="btn-primary w-full" disabled={busy || (Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) && !captchaToken)}>{busy ? "Creating account…" : role === "vendor" ? "Create vendor account" : role === "delivery_company" ? "Create delivery company account" : "Create customer account"}</button>
     </form>
   );
 }

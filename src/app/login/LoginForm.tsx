@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import { safeInternalRedirect } from "@/lib/auth/redirect";
 import Link from "next/link";
+import { TurnstileField } from "@/components/security/TurnstileField";
 
 export function LoginForm({ next, error: initialError }: { next?: string; error?: string }) {
   const supabase = getBrowserSupabase();
@@ -14,14 +15,17 @@ export function LoginForm({ next, error: initialError }: { next?: string; error?
   const [error, setError] = useState<string | null>(initialError ?? null);
   const [busy, setBusy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
   const needsEmailVerification = Boolean(error && /email\s+not\s+confirmed|confirm\s+your\s+email/i.test(error));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: captchaToken ?? undefined } });
     setBusy(false);
+    setCaptchaResetKey((key) => key + 1);
     if (error) {
       setError(error.message);
       return;
@@ -46,8 +50,9 @@ export function LoginForm({ next, error: initialError }: { next?: string; error?
           <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 min-h-9 -translate-y-[42%] text-xs font-semibold text-jade-700" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
         </div>
       </div>
+      <TurnstileField onTokenChange={setCaptchaToken} resetKey={captchaResetKey} />
       {error && <div id="login-error" role="alert" className="space-y-2 text-sm"><p className="text-signal-err">{error}</p>{needsEmailVerification && <Link href={`/register/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(safeInternalRedirect(next))}`} className="inline-block font-semibold text-jade-700 underline underline-offset-4">Resend confirmation email</Link>}</div>}
-      <button type="submit" className="btn-primary w-full" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+      <button type="submit" className="btn-primary w-full" disabled={busy || (Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) && !captchaToken)}>{busy ? "Signing in…" : "Sign in"}</button>
     </form>
   );
 }
