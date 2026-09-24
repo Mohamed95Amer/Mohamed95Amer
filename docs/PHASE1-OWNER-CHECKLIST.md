@@ -132,9 +132,9 @@ No further Tasjeel website-routing changes are needed. Both apex and www HTTPS w
 
 ## 5. Account security and production-wide abuse controls
 
-- In Supabase Auth, enable CAPTCHA, set password minimum length to at least 12 and keep
-  email/password recovery OTP expiry to one hour or less. The website forms already ask
-  for 12 characters, but the server-side Auth setting is the enforcement boundary.
+- Supabase Auth now enforces a 12-character minimum password, email confirmation remains
+  enabled, and email/password recovery OTP expiry remains one hour. CAPTCHA still needs a
+  Cloudflare Turnstile or hCaptcha site key and secret before it can be enabled.
 - Leaked-password protection is still the only Supabase security-advisor warning and
   requires the relevant paid plan.
 - Enable MFA on Supabase, GitHub, Vercel, Tasjeel and the domain-email administrator.

@@ -24,8 +24,8 @@ It automatically uses Upstash Redis across all Vercel instances when
 `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, with telemetry off and
 a one-second bounded fallback if Redis is unavailable. Production does not yet have those
 two variables, so limits currently use the safe per-instance fallback. Registration and
-password-reset forms now require at least 12 characters; Supabase Auth must still enforce
-the corresponding server-side policy in the dashboard.
+password-reset forms require at least 12 characters, and production Supabase Auth now
+enforces the same 12-character minimum (verified through remote config on 24 Sep 2026).
 
 Local migrations `20260923190510_vendor_payment_destination_approval.sql`,
 `20260923190514_add_missing_foreign_key_indexes.sql` and
