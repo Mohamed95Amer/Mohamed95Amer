@@ -2,61 +2,656 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth/server";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { formatAed } from "@/lib/pricing/calc";
+import { getLatestTick } from "@/lib/gold-price/service";
+import {
+  calculateReservationValue,
+  formatDubaiDate,
+  formatSignedPercent,
+  isActiveLockStatus,
+  isPurchaseStatus,
+  isReservationActive,
+  reservationStatusLabel,
+  type PriceSnapshotForInsight,
+} from "@/lib/gold-insights";
+import { GoldPriceBadge } from "@/components/GoldPriceBadge";
+import { ReviewForm } from "@/components/ReviewForm";
+import { FulfilmentDetails } from "@/components/FulfilmentDetails";
+import Link from "next/link";
+import { statusLabel } from "@/lib/presentation";
+import { BankTransferProof } from "@/components/BankTransferProof";
+import { ConfirmedPriceActions } from "@/components/ConfirmedPriceActions";
+import { OrderConversation } from "@/components/OrderConversation";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
-export default async function ReservationDetailPage({ params }: { params: { id: string } }) {
+export default async function ReservationDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const user = await requireUser();
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
   const admin = getServiceSupabase();
-  const { data: r } = await admin
-    .from("reservations")
-    .select("*, product:products(name, karat, weight_grams), snapshot:order_price_snapshots(*)")
-    .eq("id", params.id)
-    .single();
+  const [{ data: r }, latestTick] = await Promise.all([
+    admin
+      .from("reservations")
+      .select(
+        "*, product:products(name, karat, weight_grams), vendor:vendors(business_name, emirate, email, phone), snapshot:order_price_snapshots(*)",
+      )
+      .eq("id", id)
+      .single(),
+    getLatestTick(),
+  ]);
   if (!r) return notFound();
   if (r.customer_user_id !== user.id) return notFound();
 
-  const product = r.product as unknown as { name: string; karat: number; weight_grams: number } | null;
-  const snapArr = r.snapshot as unknown as Array<Record<string, number | string>> | null;
-  const snap = Array.isArray(snapArr) ? snapArr[0] : (snapArr as unknown as Record<string, number | string> | null);
+  const { data: existingReview } = await admin
+    .from("reviews")
+    .select(
+      "overall_rating, product_rating, communication_rating, fulfilment_rating, packaging_rating, delivery_rating, title, comment, editable_until",
+    )
+    .eq("reservation_id", r.id)
+    .maybeSingle();
+  const { data: deliveryAssignment } =
+    r.fulfilment_method === "delivery"
+      ? await admin
+          .from("delivery_assignments")
+          .select(
+            "status, tracking_code, public_note, accepted_at, picked_up_at, delivered_at, company:delivery_companies(company_name, phone)",
+          )
+          .eq("reservation_id", r.id)
+          .maybeSingle()
+      : { data: null };
+
+  const product = r.product as unknown as {
+    name: string;
+    karat: number;
+    weight_grams: number;
+  } | null;
+  const vendor = r.vendor as unknown as {
+    business_name: string;
+    emirate: string;
+    email: string;
+    phone: string;
+  } | null;
+  const snapArr = r.snapshot as unknown as Array<
+    Record<string, number | string>
+  > | null;
+  const snap = Array.isArray(snapArr)
+    ? snapArr[0]
+    : (snapArr as unknown as Record<string, number | string> | null);
+  const currentRate = Number(latestTick?.price_per_gram_24k_aed ?? 0);
+  const snapshotQuantity = Number(snap?.quantity ?? r.quantity);
+  const insight =
+    snap && currentRate > 0
+      ? calculateReservationValue(
+          snap as unknown as PriceSnapshotForInsight,
+          currentRate,
+        )
+      : null;
+  const active = isReservationActive(r.status, r.expires_at);
+  const lapsedLock = isActiveLockStatus(r.status) && !active;
+  const tracked = isPurchaseStatus(r.status) || active;
+  const difference = insight?.differenceAed ?? 0;
+  const stage = ["completed"].includes(r.status)
+    ? 5
+    : ["delivered"].includes(r.status)
+      ? 4
+      : ["preparing_order", "ready_for_delivery", "out_for_delivery"].includes(
+            r.status,
+          )
+        ? 3
+        : ["paid", "payment_confirmed"].includes(r.status)
+          ? 2
+          : ["payment_pending", "payment_verification"].includes(r.status)
+            ? 1
+            : 0;
+  const confirmedTotal = Number(
+    r.vendor_confirmed_price_aed ?? snap?.total_price_aed ?? 0,
+  );
+  const estimateTotal = Number(snap?.total_price_aed ?? 0);
 
   return (
-    <div className="container-pro py-10 max-w-2xl">
-      <h1 className="font-serif text-3xl">Reservation</h1>
-      <p className="text-sm text-ink-muted">ID: {r.id}</p>
-
-      <div className="card mt-6 p-6 space-y-2">
-        <p><span className="text-ink-muted">Product:</span> {product?.name} · {product?.karat}K · {product?.weight_grams}g</p>
-        <p><span className="text-ink-muted">Status:</span> <span className="pill border-bone-deep bg-bone-soft">{r.status}</span></p>
-        <p><span className="text-ink-muted">Quantity:</span> {r.quantity}</p>
-        <p><span className="text-ink-muted">Locked until:</span> {new Date(r.expires_at).toLocaleString()}</p>
+    <div className="container-pro max-w-4xl py-10 sm:py-14">
+      <Link
+        href="/account"
+        className="text-sm font-semibold text-jade-700 hover:text-jade-500"
+      >
+        ← Back to your history
+      </Link>
+      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="eyebrow text-jade-600">Reservation details</p>
+          <h1 className="mt-2 font-serif text-4xl font-semibold text-jade-950">
+            {product?.name ?? "Gold item"}
+          </h1>
+          <p className="mt-1 text-xs text-ink-muted">Reference {r.id}</p>
+        </div>
+        <GoldPriceBadge compact />
       </div>
 
-      {snap && (
-        <div className="card mt-6 p-6">
-          <h2 className="font-serif text-xl">Locked price (server-snapshotted)</h2>
-          <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm">
-            <dt className="text-ink-muted">Gold value</dt>
-            <dd className="text-right">{formatAed(Number(snap.gold_value_aed))}</dd>
-            <dt className="text-ink-muted">Making</dt>
-            <dd className="text-right">{formatAed(Number(snap.making_charge))}</dd>
-            <dt className="text-ink-muted">Stone</dt>
-            <dd className="text-right">{formatAed(Number(snap.stone_value))}</dd>
-            <dt className="text-ink-muted">Vendor premium</dt>
-            <dd className="text-right">{formatAed(Number(snap.vendor_premium))}</dd>
-            <dt className="text-ink-muted">Platform fee</dt>
-            <dd className="text-right">{formatAed(Number(snap.platform_fee))}</dd>
-            <dt className="text-ink-muted">Delivery</dt>
-            <dd className="text-right">{formatAed(Number(snap.delivery_fee))}</dd>
-            <dt className="font-medium">Total</dt>
-            <dd className="text-right font-medium">{formatAed(Number(snap.total_price_aed))}</dd>
-          </dl>
-          <p className="mt-4 text-xs text-ink-muted">
-            Locked gold price: {formatAed(Number(snap.gold_price_per_gram_24k_aed))}/g 24K ·
-            tick fetched {new Date(snap.gold_price_fetched_at as string).toLocaleString()}
+      <div className="card mt-7 grid gap-4 p-6 text-sm sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <span className="label">Status</span>
+          <span className="pill mt-2 border-jade-900/10 bg-jade-50">
+            {lapsedLock
+              ? "Price lock expired"
+              : reservationStatusLabel(r.status)}
+          </span>
+        </div>
+        <div>
+          <span className="label">Item</span>
+          <p className="mt-2 text-jade-950">
+            {product?.karat}K · {product?.weight_grams}g · quantity {r.quantity}
+          </p>
+        </div>
+        <div>
+          <span className="label">Timing</span>
+          <p className="mt-2 text-jade-950">
+            {r.status === "pending_vendor_confirmation"
+              ? r.submitted_during_working_hours
+                ? "Sent to store"
+                : `Queued until ${formatDubaiDate(r.vendor_action_available_at, true)}`
+              : r.status === "vendor_confirmed"
+                ? `Respond by ${formatDubaiDate(r.expires_at, true)}`
+                : ["payment_pending"].includes(r.status)
+                  ? `${lapsedLock ? "Payment window ended" : `Pay by ${formatDubaiDate(r.expires_at, true)}`}`
+                  : reservationStatusLabel(r.status)}
+          </p>
+        </div>
+        <div>
+          <span className="label">Order identity</span>
+          <p className="mt-2 font-medium text-jade-950">
+            {r.identity_verification_id
+              ? "✓ Verified for this order"
+              : "Legacy order"}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <FulfilmentDetails details={r} />
+        {r.vendor_delivery_snapshot && (
+          <p className="mt-3 text-sm text-ink-muted">
+            Delivery arranged and paid for by the store from the delivery fee
+            you pay it:{" "}
+            {r.vendor_delivery_snapshot.mode === "external_courier"
+              ? r.vendor_delivery_snapshot.courier_name
+              : "the store’s own staff"}
+            . Contact the store for scheduling.
+          </p>
+        )}
+        {["cash", "card"].includes(r.payment_method) && (
+          <p className="mt-3 text-sm">
+            Payment:{" "}
+            {r.payment_method === "cash"
+              ? "cash"
+              : "card using the vendor’s terminal"}{" "}
+            directly to the store at{" "}
+            {r.fulfilment_method === "collection" ? "collection" : "delivery"}.
+            After store acceptance, arrange completion within the displayed
+            24-hour deadline. Contact the store before paying for an expired
+            order.
+          </p>
+        )}
+      </div>
+      <div className="mt-6">
+        <OrderConversation
+          reservationId={r.id}
+          viewerRole="customer"
+          arabic={arabic}
+        />
+      </div>
+      {r.status === "vendor_confirmed" && active && (
+        <section className="card mt-6 border-gold-400/40 bg-gold-50 p-6">
+          <p className="eyebrow text-gold-700">Store confirmed</p>
+          <h2 className="mt-1 font-serif text-2xl">Review the final price</h2>
+          <p className="mt-3 text-sm">
+            The store confirmed the item is available at{" "}
+            <strong>{formatAed(confirmedTotal)}</strong>. The request estimate
+            was {formatAed(estimateTotal)}. No money has been taken and the item
+            is not held until you accept.
+          </p>
+          {r.vendor_response_note && (
+            <p className="mt-3 rounded-xl bg-white p-3 text-sm text-ink-muted">
+              Store note: {r.vendor_response_note}
+            </p>
+          )}
+          <ConfirmedPriceActions reservationId={r.id} />
+        </section>
+      )}
+      {["bank_transfer", "aani"].includes(r.payment_method) && (
+        <section className="card mt-6 p-6">
+          <h2 className="font-serif text-2xl">
+            {r.payment_method === "aani"
+              ? "Aani transfer to the store"
+              : "Bank transfer to the store"}
+          </h2>
+          {r.status === "payment_pending" && active ? (
+            <>
+              <p className="mt-3 text-sm">
+                The item and vendor-confirmed price are reserved for you.
+                Transfer exactly <strong>{formatAed(confirmedTotal)}</strong>{" "}
+                before {formatDubaiDate(r.expires_at, true)}, then click “I have
+                paid”.
+              </p>
+              <dl className="mt-4 space-y-2 text-sm">
+                {r.payment_method === "aani" ? (
+                  <div>
+                    Aani registered mobile:{" "}
+                    <strong>{r.bank_details_snapshot?.aani_mobile}</strong>
+                  </div>
+                ) : (
+                  <>
+                    <div>Bank: {r.bank_details_snapshot?.bank_name}</div>
+                    <div>
+                      Beneficiary: {r.bank_details_snapshot?.beneficiary_name}
+                    </div>
+                    <div className="break-all">
+                      IBAN: {r.bank_details_snapshot?.iban}
+                    </div>
+                  </>
+                )}
+                <div className="break-all">
+                  Amount: <strong>{formatAed(confirmedTotal)}</strong>
+                </div>
+                <div className="break-all">
+                  Get Gold order reference: {r.id}
+                </div>
+              </dl>
+              <p className="mt-3 text-xs text-ink-muted">
+                These bank details were supplied by the vendor. Get Gold does
+                not receive your money. Fulfilment starts only after the vendor
+                checks its bank and confirms receipt.
+              </p>
+              <BankTransferProof
+                reservationId={r.id}
+                submitted={Boolean(r.transfer_proof_path)}
+              />
+            </>
+          ) : (
+            <p className="mt-3 text-sm">
+              {["pending_vendor_confirmation", "vendor_confirmed"].includes(
+                r.status,
+              )
+                ? "Do not transfer yet. Payment details unlock only after you accept the vendor-confirmed price."
+                : r.status === "payment_verification"
+                  ? "You marked the transfer as sent. The store is checking its own account; your screenshot or reference did not automatically confirm payment."
+                  : [
+                        "payment_confirmed",
+                        "preparing_order",
+                        "ready_for_delivery",
+                        "out_for_delivery",
+                        "delivered",
+                        "completed",
+                        "paid",
+                      ].includes(r.status)
+                    ? "The store confirmed receipt of your payment."
+                    : "Do not send money for this inactive order. If you already transferred, contact the store to arrange reconciliation or a refund. Do not pay twice."}
+            </p>
+          )}
+        </section>
+      )}
+
+      {deliveryAssignment &&
+        (() => {
+          const company = Array.isArray(deliveryAssignment.company)
+            ? deliveryAssignment.company[0]
+            : deliveryAssignment.company;
+          return (
+            <section className="card mt-6 border-gold-300/30 p-5 sm:p-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="eyebrow text-jade-600">Delivery tracking</p>
+                  <h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">
+                    {company?.company_name ?? "Assigned delivery partner"}
+                  </h2>
+                  <p className="mt-1 text-xs text-ink-muted">
+                    Tracking {deliveryAssignment.tracking_code}
+                    {company?.phone ? ` · ${company.phone}` : ""}
+                  </p>
+                </div>
+                <span className="pill border-jade-900/10 bg-jade-50">
+                  {statusLabel(deliveryAssignment.status)}
+                </span>
+              </div>
+              {deliveryAssignment.public_note && (
+                <p className="mt-4 rounded-xl bg-jade-50 p-3 text-sm text-ink-muted">
+                  {deliveryAssignment.public_note}
+                </p>
+              )}
+              <ol className="mt-5 grid grid-cols-4 gap-2 text-center text-[10px] text-ink-muted">
+                {[
+                  ["accepted", "Accepted"],
+                  ["collected", "Collected"],
+                  ["out_for_delivery", "On the way"],
+                  ["delivered", "Delivered"],
+                ].map(([key, label], index, all) => {
+                  const current = all.findIndex(
+                    ([state]) => state === deliveryAssignment.status,
+                  );
+                  const complete =
+                    deliveryAssignment.status === "delivered" ||
+                    (current >= 0 && index <= current);
+                  return (
+                    <li key={key}>
+                      <span
+                        className={`mx-auto mb-2 block h-2.5 w-2.5 rounded-full ${complete ? "bg-jade-700" : "bg-bone-deep"}`}
+                      />
+                      {label}
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          );
+        })()}
+
+      <div className="card mt-6 p-5 text-sm">
+        <span className="label">Payment choice</span>
+        <p className="mt-2 font-medium text-jade-950">
+          {r.payment_method === "pay_online"
+            ? "Online checkout requested"
+            : "Pay the seller directly"}
+        </p>
+        <p className="mt-1 text-xs text-ink-muted">
+          {r.payment_method === "pay_online"
+            ? `Payment status: ${reservationStatusLabel(r.payment_status)}`
+            : "Get Gold does not hold the payment for this order."}
+        </p>
+      </div>
+
+      <section className="card mt-6 p-6 sm:p-7">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="eyebrow text-jade-600">Order journey</p>
+            <h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">
+              What happens next
+            </h2>
+          </div>
+          {vendor && (
+            <p className="text-sm text-ink-muted">
+              Seller:{" "}
+              <span className="font-semibold text-jade-950">
+                {vendor.business_name}
+              </span>{" "}
+              · {vendor.emirate}
+            </p>
+          )}
+        </div>
+        <ol className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {[
+            "Store confirmation",
+            "Customer payment",
+            "Payment confirmed",
+            "Preparing",
+            "Delivered",
+            "Completed",
+          ].map((label, index) => (
+            <li
+              key={label}
+              className={`rounded-xl border p-4 text-sm ${index <= stage ? "border-jade-300 bg-jade-50 text-jade-950" : "border-jade-900/10 bg-white text-ink-muted"}`}
+            >
+              <span
+                className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${index < stage ? "bg-jade-700 text-white" : index === stage ? "bg-gold-300 text-jade-950" : "bg-bone text-ink-muted"}`}
+              >
+                {index < stage ? "✓" : index + 1}
+              </span>
+              <span className="mt-3 block font-semibold">{label}</span>
+            </li>
+          ))}
+        </ol>
+        {vendor && (
+          <p className="mt-5 text-sm text-ink-muted">
+            Store contact:{" "}
+            <a
+              href={`mailto:${vendor.email}`}
+              className="font-semibold text-jade-700 underline underline-offset-4"
+            >
+              {vendor.email}
+            </a>
+            {vendor.phone ? ` · ${vendor.phone}` : ""}
+          </p>
+        )}
+      </section>
+
+      {stage >= 0 && stage < 3 && (
+        <div className="mt-6 rounded-2xl border border-gold-400/25 bg-gold-50 p-5 text-sm leading-relaxed text-ink-muted">
+          <strong className="text-jade-950">Before paying:</strong> match the
+          vendor name, item, quantity and locked total shown here. Get Gold will
+          never ask for your OTP, banking password or card details by email.
+        </div>
+      )}
+
+      {insight && tracked && (
+        <div className="mt-6 overflow-hidden rounded-2xl bg-jade-950 p-6 text-white shadow-lift sm:p-8">
+          <p className="eyebrow text-gold-200">Market-linked update</p>
+          <div className="mt-5 grid gap-5 sm:grid-cols-3">
+            <div>
+              <p className="text-xs text-white/50">Locked total</p>
+              <p className="mt-1 font-serif text-2xl tabular-nums">
+                {formatAed(Number(snap?.total_price_aed))}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-white/50">Comparable value now</p>
+              <p className="mt-1 font-serif text-2xl tabular-nums text-gold-200">
+                {formatAed(insight.currentComparableTotalAed)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-white/50">
+                {difference >= 0 ? "Advantage vs today" : "Change vs today"}
+              </p>
+              <p className="mt-1 font-serif text-2xl tabular-nums">
+                {difference > 0 ? "+" : ""}
+                {formatAed(difference)}
+              </p>
+            </div>
+          </div>
+          <p className="mt-5 border-t border-white/10 pt-4 text-sm text-white/60">
+            The 24K reference moved{" "}
+            {formatSignedPercent(insight.goldRateChangePercent)} from your
+            captured rate of{" "}
+            {formatAed(Number(snap?.gold_price_per_gram_24k_aed))}/g to{" "}
+            {formatAed(currentRate)}/g.
           </p>
         </div>
       )}
+
+      {snap && (
+        <div className="card mt-6 p-6">
+          <h2 className="font-serif text-xl">Price breakdown</h2>
+          <p className="mt-1 text-xs text-ink-muted">
+            All amounts below cover {snapshotQuantity}{" "}
+            {snapshotQuantity === 1 ? "item" : "items"}. The store must
+            separately confirm the final payable total.
+          </p>
+          <dl className="mt-4 grid grid-cols-2 gap-y-1 text-sm">
+            <dt className="text-ink-muted">Gold value</dt>
+            <dd className="text-right">
+              {formatAed(Number(snap.gold_value_aed) * snapshotQuantity)}
+            </dd>
+            <dt className="text-ink-muted">Making</dt>
+            <dd className="text-right">
+              {Number(snap.making_charge_discount_percent ?? 0) > 0 && (
+                <span className="mr-2 text-ink-muted line-through">
+                  {formatAed(
+                    Number(snap.original_making_charge ?? snap.making_charge) *
+                      snapshotQuantity,
+                  )}
+                </span>
+              )}
+              {formatAed(Number(snap.making_charge) * snapshotQuantity)}
+            </dd>
+            {Number(snap.certificate_fee ?? 0) > 0 && (
+              <>
+                <dt className="text-ink-muted">Certificate / assay</dt>
+                <dd className="text-right">
+                  {formatAed(Number(snap.certificate_fee) * snapshotQuantity)}
+                </dd>
+              </>
+            )}
+            <dt className="text-ink-muted">Stone</dt>
+            <dd className="text-right">
+              {formatAed(Number(snap.stone_value) * snapshotQuantity)}
+            </dd>
+            {Number(snap.vendor_rate_adjustment_aed ?? 0) > 0 && (
+              <>
+                <dt className="text-ink-muted">
+                  Store rate adjustment (
+                  {formatAed(Number(snap.vendor_rate_adjustment_per_gram ?? 0))}
+                  /g)
+                </dt>
+                <dd className="text-right">
+                  {formatAed(
+                    Number(snap.vendor_rate_adjustment_aed) * snapshotQuantity,
+                  )}
+                </dd>
+              </>
+            )}
+            {snap.assay_fineness != null && (
+              <>
+                <dt className="text-ink-muted">Certified fineness</dt>
+                <dd className="text-right">{snap.assay_fineness}‰</dd>
+              </>
+            )}
+            {Number(snap.vendor_premium) > 0 && (
+              <>
+                <dt className="text-ink-muted">
+                  Vendor premium (historical order)
+                </dt>
+                <dd className="text-right">
+                  {formatAed(Number(snap.vendor_premium) * snapshotQuantity)}
+                </dd>
+              </>
+            )}
+            <dt className="text-ink-muted">
+              Get Gold fee{" "}
+              {Number(snap.customer_fee_discount_percent ?? 0) > 0
+                ? "(50% off)"
+                : ""}
+            </dt>
+            <dd className="text-right">
+              {formatAed(Number(snap.platform_fee) * snapshotQuantity)}
+            </dd>
+            {Number(snap.service_fee_event_discount_percent ?? 0) > 0 && (
+              <>
+                <dt className="text-signal-ok">
+                  {String(snap.marketplace_promotion_title ?? "Seasonal offer")}
+                </dt>
+                <dd className="text-right font-medium text-signal-ok">
+                  {snap.service_fee_event_discount_percent}% extra off fee
+                </dd>
+              </>
+            )}
+            {(Number(snap.customer_fee_discount_percent ?? 0) > 0 ||
+              Number(snap.service_fee_event_discount_percent ?? 0) > 0) && (
+              <>
+                <dt className="text-ink-muted">Standard 1% fee</dt>
+                <dd className="text-right text-ink-muted line-through">
+                  {formatAed(
+                    ((Number(snap.gold_value_aed) +
+                      Number(snap.making_charge) +
+                      Number(snap.certificate_fee ?? 0) +
+                      Number(snap.stone_value) +
+                      Number(snap.vendor_premium) +
+                      Number(snap.vendor_rate_adjustment_aed ?? 0)) *
+                      snapshotQuantity) /
+                      100,
+                  )}
+                </dd>
+              </>
+            )}
+            <dt className="text-ink-muted">
+              Delivery{" "}
+              {snap.delivery_fee_basis === "per_order"
+                ? "(once per order)"
+                : "(original per-item rate)"}
+            </dt>
+            <dd className="text-right">
+              {formatAed(
+                Number(snap.delivery_fee) *
+                  (snap.delivery_fee_basis === "per_order"
+                    ? 1
+                    : snapshotQuantity),
+              )}
+            </dd>
+            {Number(snap.delivery_event_discount_percent ?? 0) > 0 && (
+              <>
+                <dt className="text-signal-ok">Delivery offer</dt>
+                <dd className="text-right font-medium text-signal-ok">
+                  {snap.delivery_event_discount_percent}% off · was{" "}
+                  {formatAed(
+                    Number(snap.delivery_fee_before_event_discount ?? 0),
+                  )}
+                </dd>
+              </>
+            )}
+            <dt className="text-ink-muted">
+              VAT ({Number(snap.vat_rate_bps ?? 0) / 100}%)
+            </dt>
+            <dd className="text-right">
+              {Number(snap.vat_rate_bps ?? 0) === 0 &&
+              Number(snap.vat_aed ?? 0) === 0
+                ? "Not charged"
+                : formatAed(Number(snap.vat_aed))}
+            </dd>
+            {r.vendor_confirmed_price_aed != null &&
+              confirmedTotal !== estimateTotal && (
+                <>
+                  <dt className="text-gold-700">Vendor-confirmed adjustment</dt>
+                  <dd className="text-right text-gold-700">
+                    {confirmedTotal - estimateTotal > 0 ? "+" : ""}
+                    {formatAed(confirmedTotal - estimateTotal)}
+                  </dd>
+                </>
+              )}
+            <dt className="font-medium">
+              {r.vendor_confirmed_price_aed != null
+                ? "Vendor-confirmed total"
+                : "Request estimate"}
+            </dt>
+            <dd className="text-right font-medium">
+              {formatAed(
+                r.vendor_confirmed_price_aed != null
+                  ? confirmedTotal
+                  : estimateTotal,
+              )}
+            </dd>
+          </dl>
+          <p className="mt-4 text-xs text-ink-muted">
+            Locked gold price:{" "}
+            {formatAed(Number(snap.gold_price_per_gram_24k_aed))}/g 24K · tick
+            fetched{" "}
+            {formatDubaiDate(snap.gold_price_fetched_at as string, true)}
+          </p>
+        </div>
+      )}
+      {["paid", "completed"].includes(r.status) && (
+        <section id="review" className="card mt-6 p-6 sm:p-8">
+          <p className="eyebrow text-jade-600">Verified purchase</p>
+          <h2 className="mt-1 font-serif text-2xl font-semibold text-jade-950">
+            {existingReview ? "Your review" : "Rate your store experience"}
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-muted">
+            Your store rating covers the product and seller. Delivery is scored
+            separately so a courier issue does not unfairly reduce the
+            jeweller&apos;s rating.
+          </p>
+          <div className="mt-6">
+            <ReviewForm reservationId={r.id} existing={existingReview} />
+          </div>
+        </section>
+      )}
+      <p className="mt-6 text-xs leading-relaxed text-ink-muted">
+        The current comparison updates only the gold component and holds the
+        captured making, certificate or assay, store rate adjustment, stone and
+        fee amounts constant. It is not an appraisal, resale offer or financial
+        advice.
+      </p>
     </div>
   );
 }

@@ -1,56 +1,86 @@
 import { getServiceSupabase } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/server";
+import { getCommissionData } from "@/lib/admin/data";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { AdminDemoDataControl } from "@/components/AdminDemoDataControl";
 import { GoldPriceBadge } from "@/components/GoldPriceBadge";
+import { cookies } from "next/headers";
 import Link from "next/link";
-
 export const dynamic = "force-dynamic";
-
 export default async function AdminOverviewPage() {
-  const admin = getServiceSupabase();
-  const [
-    pendingVendors, pendingProducts, pendingOrders, failedTicks, recentAudit,
-  ] = await Promise.all([
-    admin.from("vendors").select("id", { count: "exact", head: true }).eq("verification_status", "pending"),
-    admin.from("products").select("id", { count: "exact", head: true }).eq("product_status", "pending_approval"),
-    admin.from("reservations").select("id", { count: "exact", head: true }).eq("status", "pending_vendor_confirmation"),
-    admin.from("gold_price_ticks").select("id", { count: "exact", head: true }).neq("status", "ok"),
-    admin.from("audit_logs").select("id, action, entity_type, entity_id, created_at, actor_role").order("created_at", { ascending: false }).limit(10),
+  const profile = await requireAdmin(),
+    db = getServiceSupabase();
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const [data, vendors, products, delivery, settings] = await Promise.all([
+    getCommissionData(),
+    db
+      .from("vendors")
+      .select("id", { count: "exact", head: true })
+      .eq("verification_status", "pending")
+      .eq("is_demo", false),
+    db
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("product_status", "pending_approval")
+      .eq("is_demo", false),
+    db
+      .from("delivery_companies")
+      .select("id", { count: "exact", head: true })
+      .eq("verification_status", "pending"),
+    db
+      .from("platform_settings")
+      .select("demo_data_visible")
+      .eq("id", true)
+      .single(),
   ]);
-
+  if ([vendors, products, delivery, settings].some((r) => r.error))
+    throw new Error("Could not load administration overview");
+  const actions = [
+    {
+      label: arabic ? "متاجر تنتظر الموافقة" : "Stores awaiting approval",
+      count: vendors.count ?? 0,
+      href: "/admin/vendors?filter=pending",
+    },
+    {
+      label: arabic ? "منتجات للمراجعة" : "Products to review",
+      count: products.count ?? 0,
+      href: "/admin/products?filter=pending_approval",
+    },
+    {
+      label: arabic ? "شركاء توصيل للمراجعة" : "Delivery partners to review",
+      count: delivery.count ?? 0,
+      href: "/admin/delivery-companies?filter=pending",
+    },
+  ];
   return (
-    <div className="grid gap-6">
-      <div className="card p-6">
-        <p className="text-xs uppercase tracking-wide text-ink-muted">Live gold price</p>
-        <div className="mt-3"><GoldPriceBadge /></div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-4">
-        <Stat href="/admin/vendors?filter=pending" label="Pending vendors" count={pendingVendors.count ?? 0} />
-        <Stat href="/admin/products?filter=pending_approval" label="Pending products" count={pendingProducts.count ?? 0} />
-        <Stat href="/admin/orders?filter=pending_vendor_confirmation" label="Pending orders" count={pendingOrders.count ?? 0} />
-        <Stat href="/admin/gold-price" label="Non-ok ticks (24h)" count={failedTicks.count ?? 0} />
-      </div>
-
-      <div className="card p-6">
-        <h2 className="font-serif text-xl">Recent audit events</h2>
-        <ul className="mt-4 divide-y divide-bone-deep text-sm">
-          {(recentAudit.data ?? []).map((e) => (
-            <li key={e.id} className="py-2 flex items-center justify-between">
-              <span><span className="text-ink-muted">{e.actor_role ?? "system"} ·</span> {e.action} <span className="text-ink-muted">on</span> {e.entity_type}/{e.entity_id ?? ""}</span>
-              <span className="text-xs text-ink-muted">{new Date(e.created_at).toLocaleString()}</span>
-            </li>
-          ))}
-          {(recentAudit.data ?? []).length === 0 && <li className="py-3 text-ink-muted">No events yet.</li>}
-        </ul>
-      </div>
+    <div className="space-y-6">
+      <AdminDashboard
+        {...data}
+        adminId={profile.id}
+        arabic={arabic}
+        actions={actions}
+      />
+      <details className="card p-5">
+        <summary className="cursor-pointer font-semibold">
+          {arabic
+            ? "إعدادات العرض وحالة السوق"
+            : "Marketplace controls & health"}
+        </summary>
+        <div className="mt-5 space-y-5">
+          <AdminDemoDataControl
+            initialVisible={settings.data?.demo_data_visible !== false}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <GoldPriceBadge />
+            <Link href="/admin/gold-price" className="btn-ghost">
+              {arabic ? "حالة سعر الذهب" : "Gold price health"}
+            </Link>
+            <Link href="/admin/audit" className="btn-ghost">
+              {arabic ? "سجل التدقيق" : "Audit history"}
+            </Link>
+          </div>
+        </div>
+      </details>
     </div>
-  );
-}
-
-function Stat({ href, label, count }: { href: string; label: string; count: number }) {
-  return (
-    <Link href={href} className="card p-5 hover:border-gold-300">
-      <div className="text-xs uppercase tracking-wide text-ink-muted">{label}</div>
-      <div className="mt-2 font-serif text-3xl">{count}</div>
-    </Link>
   );
 }

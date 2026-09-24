@@ -3,12 +3,13 @@ import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { adminProductDecisionSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit";
 import { ipFromRequest } from "@/lib/security/rate-limit";
+import { productIntegrityIssues } from "@/lib/products/integrity";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -26,10 +27,30 @@ export async function POST(request: Request) {
     parsed.data.decision === "approve" ? "approved" :
     parsed.data.decision === "reject" ? "rejected" : "suspended";
 
-  const { data: prev } = await admin.from("products").select("product_status").eq("id", parsed.data.productId).single();
+  const { data: prev } = await admin.from("products").select("*").eq("id", parsed.data.productId).single();
+  if (!prev) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  if (parsed.data.decision === "approve") {
+    const issues = productIntegrityIssues({
+      ...prev,
+      weight_grams: Number(prev.weight_grams),
+      quantity: Number(prev.quantity),
+      making_charge: Number(prev.making_charge),
+      making_charge_discount_percent: Number(prev.making_charge_discount_percent),
+      certificate_fee: Number(prev.certificate_fee),
+      images: Array.isArray(prev.images) ? prev.images : [],
+    });
+    if (issues.length > 0) {
+      await admin.from("products").update({ data_quality_status: "blocked", data_quality_issues: issues, last_quality_checked_at: new Date().toISOString() }).eq("id", parsed.data.productId);
+      return NextResponse.json({ error: "listing_integrity_failed", issues }, { status: 409 });
+    }
+  }
   const { error } = await admin
     .from("products")
-    .update({ product_status: nextStatus, admin_notes: parsed.data.note ?? null })
+    .update({
+      product_status: nextStatus,
+      admin_notes: parsed.data.note ?? null,
+      ...(nextStatus === "approved" ? { inventory_confirmed_at: new Date().toISOString(), data_quality_status: "valid", data_quality_issues: [] } : {}),
+    })
     .eq("id", parsed.data.productId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

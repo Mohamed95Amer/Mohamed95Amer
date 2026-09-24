@@ -1,0 +1,76 @@
+name: Get Gold validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['src/**', 'tests/**', 'scripts/**', 'supabase/**', 'package*.json', 'next.config.*', 'tsconfig.json', '.github/workflows/getgold-validation.yml']
+
+permissions:
+  contents: read
+
+# A branch push and its pull_request event can point at the same commit. Run
+# only one expensive Docker validation for that SHA instead of pulling the
+# Supabase image set twice in parallel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run typecheck
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v2
+        with:
+          version: 2.117.0
+          github-token: ${{ github.token }}
+      - name: Start isolated Supabase and apply all migrations
+        # setup-cli writes GHCR into GITHUB_ENV, so a step-level override is
+        # required for every CLI command that may pull a helper image.
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
+        run: |
+          for attempt in 1 2 3; do
+            if supabase start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            echo "Supabase image pull failed; retrying on this runner in $((attempt * 30)) seconds."
+            sleep $((attempt * 30))
+          done
+      - name: Run rollback-only database regression tests
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
+        run: supabase test db --local
+      - name: Lint database routines and security
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
+        run: |
+          supabase db lint --local --level warning --fail-on warning
+          supabase db advisors --local --type security --level warn --fail-on warn
+      - name: Exercise Auth, email, PostgREST and route handlers
+        env:
+          SUPABASE_INTERNAL_IMAGE_REGISTRY: public.ecr.aws
+        run: npm run test:integration

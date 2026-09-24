@@ -1,7 +1,12 @@
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { env } from "@/lib/env";
 import { getLatestTick, isFresh } from "@/lib/gold-price/service";
-import { computePrice, type PriceBreakdown } from "./calc";
+import { refreshInBand } from "@/lib/gold-price/refresh-on-read";
+import { applyDeliveryFee, computePrice, computeOrderTotal, type PriceBreakdown } from "./calc";
+import type { FulfilmentMethod } from "@/lib/fulfilment";
+import { listingFreshCutoff } from "@/lib/products/integrity";
+import { dubaiTodayIso } from "@/lib/time";
+import { applyEventDeliveryDiscount, getActiveMarketplacePromotion, type MarketplacePromotion } from "@/lib/marketing";
 
 export interface OfficialPriceResult {
   product: {
@@ -11,8 +16,14 @@ export interface OfficialPriceResult {
     karat: number;
     weight_grams: number;
     making_charge: number;
+    making_charge_discount_percent: number;
+    making_charge_offer_ends_at: string | null;
+    certificate_fee: number;
     stone_value: number;
     vendor_premium: number;
+    vendor_rate_adjustment_per_gram: number;
+    assay_fineness: number | null;
+    vat_rate_bps: number;
     quantity: number;
   };
   tick: {
@@ -21,10 +32,12 @@ export interface OfficialPriceResult {
     fetched_at: string;
     status: "ok" | "degraded" | "failed";
   };
-  settings: { platform_fee_aed: number; delivery_fee_aed: number; stale_price_seconds: number };
+  settings: { platform_fee_bps: number; delivery_fee_aed: number; stale_price_seconds: number; listing_fresh_days: number };
   breakdown: PriceBreakdown;
   totalPriceAed: number;
   isFresh: boolean;
+  marketplacePromotion: MarketplacePromotion | null;
+  deliveryFeeBeforeEventDiscount: number;
 }
 
 /**
@@ -35,48 +48,80 @@ export interface OfficialPriceResult {
 export async function computeOfficialPriceForProduct(
   productId: string,
   quantity: number,
+  fulfilmentMethod: FulfilmentMethod,
 ): Promise<OfficialPriceResult> {
   const supabase = getServiceSupabase();
 
-  const { data: product, error: prodErr } = await supabase
-    .from("products")
-    .select(
-      "id, vendor_id, name, karat, weight_grams, making_charge, stone_value, vendor_premium, quantity, product_status",
-    )
-    .eq("id", productId)
-    .single();
-  if (prodErr || !product) throw new Error("Product not found");
-  if (product.product_status !== "approved") {
-    throw new Error("Product is not available for purchase");
-  }
-  if (quantity < 1 || quantity > product.quantity) {
-    throw new Error("Requested quantity exceeds available stock");
-  }
-
   const { data: settings, error: setErr } = await supabase
     .from("platform_settings")
-    .select("platform_fee_aed, delivery_fee_aed, stale_price_seconds")
+    .select("platform_fee_bps, delivery_fee_aed, stale_price_seconds, listing_fresh_days, demo_data_visible")
     .eq("id", true)
     .single();
   if (setErr || !settings) throw new Error("Platform settings missing");
 
-  const tick = await getLatestTick();
+  let productQuery = supabase
+    .from("products")
+    .select(
+      "id, vendor_id, name, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, quantity, product_status, vendors!inner(verification_status, license_expiry_date)",
+    )
+    .eq("id", productId)
+    .eq("product_status", "approved")
+    .eq("vendors.verification_status", "approved")
+    .gte("vendors.license_expiry_date", dubaiTodayIso())
+    .eq("data_quality_status", "valid")
+    .gt("quantity", 0)
+    .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)));
+  if (settings.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  const { data: product, error: prodErr } = await productQuery.maybeSingle();
+  if (prodErr || !product) throw new Error("Product not found");
+  const [{ data: vendorDelivery }, marketplacePromotion] = await Promise.all([
+    supabase.from("vendor_payment_settings").select("delivery_fee_aed").eq("vendor_id", product.vendor_id).maybeSingle(),
+    getActiveMarketplacePromotion(),
+  ]);
+  if (quantity < 1 || quantity > product.quantity) {
+    throw new Error("Requested quantity exceeds available stock");
+  }
+
+  const staleSeconds = settings.stale_price_seconds ?? env.stalePriceSeconds();
+
+  // Refresh before pricing if the newest tick has aged out. Without this a
+  // reservation attempted after a quiet period would fail the freshness gate
+  // below purely because nothing had polled the price endpoint recently.
+  let tick = await getLatestTick();
+  if (!tick || !isFresh(tick.fetched_at, staleSeconds)) {
+    await refreshInBand();
+    tick = (await getLatestTick()) ?? tick;
+  }
   if (!tick) throw new Error("No live gold price available");
 
-  const fresh = isFresh(tick.fetched_at, settings.stale_price_seconds ?? env.stalePriceSeconds());
+  // A recent fallback/anomalous quote is still not safe to lock for an order.
+  const fresh = tick.status === "ok" && tick.source !== "mock" && isFresh(tick.fetched_at, staleSeconds);
 
-  const breakdown = computePrice({
+  const deliveryFeeBeforeEventDiscount = fulfilmentMethod === "delivery"
+    ? Number(vendorDelivery?.delivery_fee_aed ?? settings.delivery_fee_aed)
+    : 0;
+  let breakdown = computePrice({
     pricePerGram24kAed: Number(tick.price_per_gram_24k_aed),
     karat: product.karat,
     weightGrams: Number(product.weight_grams),
     makingCharge: Number(product.making_charge),
+    makingChargeDiscountPercent: Number(product.making_charge_discount_percent),
+    makingChargeOfferEndsAt: product.making_charge_offer_ends_at,
+    certificateFee: Number(product.certificate_fee),
     stoneValue: Number(product.stone_value),
     vendorPremium: Number(product.vendor_premium),
-    platformFee: Number(settings.platform_fee_aed),
-    deliveryFee: Number(settings.delivery_fee_aed),
+    vendorRateAdjustmentPerGram: Number(product.vendor_rate_adjustment_per_gram ?? 0),
+    assayFineness: product.assay_fineness == null ? null : Number(product.assay_fineness),
+    platformFeeBps: Number(settings.platform_fee_bps),
+    deliveryFee: deliveryFeeBeforeEventDiscount,
+    vatRateBps: Number(product.vat_rate_bps),
   });
+  breakdown = applyDeliveryFee(
+    breakdown,
+    applyEventDeliveryDiscount(deliveryFeeBeforeEventDiscount, marketplacePromotion?.deliveryDiscountPercent ?? 0),
+  );
 
-  const totalPriceAed = Math.round(breakdown.unitPriceAed * quantity * 100) / 100;
+  const totalPriceAed = computeOrderTotal(breakdown, quantity);
 
   return {
     product,
@@ -90,5 +135,7 @@ export async function computeOfficialPriceForProduct(
     breakdown,
     totalPriceAed,
     isFresh: fresh,
+    marketplacePromotion,
+    deliveryFeeBeforeEventDiscount,
   };
 }

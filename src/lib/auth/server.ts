@@ -1,27 +1,35 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 
-export async function requireUser() {
-  const supabase = getServerSupabase();
+const getVerifiedUser = cache(async () => {
+  const supabase = await getServerSupabase();
   const { data } = await supabase.auth.getUser();
-  if (!data.user) redirect("/login");
-  return data.user;
+  return data.user ?? null;
+});
+
+export async function requireUser() {
+  const user = await getVerifiedUser();
+  if (!user) redirect("/login");
+  return user;
 }
 
-export async function getCurrentProfile() {
-  const supabase = getServerSupabase();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) return null;
+export const getCurrentProfile = cache(async () => {
+  const user = await getVerifiedUser();
+  if (!user) return null;
   const admin = getServiceSupabase();
   const { data: profile } = await admin
     .from("profiles")
     .select("id, full_name, phone, role")
-    .eq("id", auth.user.id)
+    .eq("id", user.id)
     .single();
-  return profile ? { ...profile, email: auth.user.email } : null;
-}
+  return profile ? { ...profile, email: user.email } : null;
+});
 
-export async function requireRole(roles: Array<"customer" | "vendor" | "admin" | "super_admin">) {
+export type AccountRole =
+  "customer" | "vendor" | "delivery_company" | "admin" | "super_admin";
+
+export async function requireRole(roles: AccountRole[]) {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login");
   if (!roles.includes(profile.role as (typeof roles)[number])) {
@@ -36,4 +44,8 @@ export async function requireAdmin() {
 
 export async function requireVendor() {
   return requireRole(["vendor", "admin", "super_admin"]);
+}
+
+export async function requireDeliveryCompany() {
+  return requireRole(["delivery_company", "admin", "super_admin"]);
 }

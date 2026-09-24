@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -21,6 +21,12 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const parsed = platformSettingsSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "invalid_input" }, { status: 400 });
+  if (parsed.data.online_payments_enabled) {
+    return NextResponse.json(
+      { error: "Online checkout cannot be enabled until the PSP adapter, verified webhooks and settlement flow are deployed." },
+      { status: 409 },
+    );
+  }
 
   const { data: prev } = await admin.from("platform_settings").select("*").eq("id", true).single();
   const { error } = await admin.from("platform_settings").update(parsed.data).eq("id", true);
