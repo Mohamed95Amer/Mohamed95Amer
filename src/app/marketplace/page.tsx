@@ -101,6 +101,9 @@ export default async function MarketplacePage({ searchParams }: SP) {
           </div>
           <div className="shrink-0">
             <GoldPriceBadge tone="dark" />
+            <Link href="/compare" className="mt-3 flex min-h-11 items-center justify-center rounded-full border border-gold-300/40 px-5 text-xs font-semibold text-gold-100 transition hover:bg-white/10">
+              {arabic ? "قارن الأسعار بين المتاجر ←" : "Compare across stores →"}
+            </Link>
           </div>
         </div>
       </section>

@@ -18,6 +18,7 @@ interface MobileNavProps {
 
 const publicLinks = [
   ["/marketplace", "Marketplace"],
+  ["/compare", "GetGold Compare"],
   ["/requests/new", "Request a piece"],
   ["/vendors", "Verified stores"],
   ["/live-price", "Gold insights"],
@@ -31,7 +32,7 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDelivery
 
   useEffect(() => setOpen(false), [pathname]);
 
-  const localizedPublicLinks = language === "ar" ? [["/marketplace", "السوق"], ["/requests/new", "اطلب قطعة"], ["/vendors", "المتاجر الموثقة"], ["/live-price", "أسعار وتحليلات الذهب"], ["/how-it-works", "كيف يعمل"], ["/trust", "الثقة والتحقق"]] as const : publicLinks;
+  const localizedPublicLinks = language === "ar" ? [["/marketplace", "السوق"], ["/compare", "قارن المتاجر"], ["/requests/new", "اطلب قطعة"], ["/vendors", "المتاجر الموثقة"], ["/live-price", "أسعار وتحليلات الذهب"], ["/how-it-works", "كيف يعمل"], ["/trust", "الثقة والتحقق"]] as const : publicLinks;
   const accountLinks: Array<readonly [string, string]> = signedIn
     ? [
         ["/profile", displayName ? `${displayName}'s profile` : "My profile"],

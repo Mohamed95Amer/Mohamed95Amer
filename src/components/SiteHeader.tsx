@@ -27,6 +27,7 @@ export async function SiteHeader() {
     language === "ar"
       ? {
           market: "السوق",
+          compare: "قارن المتاجر",
           request: "اطلب قطعة",
           vendors: "المتاجر",
           insights: "أسعار الذهب",
@@ -37,6 +38,7 @@ export async function SiteHeader() {
         }
       : {
           market: "Marketplace",
+          compare: "GetGold Compare",
           request: "Request a piece",
           vendors: "Vendors",
           insights: "Gold insights",
@@ -83,6 +85,9 @@ export async function SiteHeader() {
             <span className="ml-1 text-[10px]" aria-hidden="true">
               ⌄
             </span>
+          </Link>
+          <Link href="/compare" className="py-4 hover:text-jade-600">
+            {t.compare}
           </Link>
           <Link href="/live-price" className="py-4 hover:text-jade-600">
             {language === "ar" ? t.insights : "Gold price"}

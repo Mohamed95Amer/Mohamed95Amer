@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SiteHeader />
           <main id="main-content" className="flex-1">{children}</main>
           <SiteFooter />
-          <CompareTray />
+          <CompareTray arabic={language === "ar"} />
         </GoldPriceProvider>
       </body>
     </html>
