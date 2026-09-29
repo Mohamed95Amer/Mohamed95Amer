@@ -119,7 +119,7 @@ doc.paragraphs[-1].add_run(", unless replaced earlier by a full agreement or end
 clause("2.2", "On expiry, clauses 8, 9, 10, 12 and 14 survive for the periods stated in them.")
 
 p("3.  What Get Gold provides", "GG H1")
-clause("3.1", "Listing of your products on the Get Gold platform at no charge during Phase 1 (clause 5).")
+clause("3.1", "Listing of your products on the Get Gold platform at no charge, for life, as a Founding Vendor (clause 5).")
 clause("3.2", "Live gold pricing, so your prices update automatically with the market.")
 clause("3.3", "Transparent display of each price component — gold value, making charge, certificate or "
               "assay fee, stone value, your premium, Get Gold service fee and delivery — shown separately to the customer.")
@@ -142,10 +142,11 @@ clause("4.5", "You hold a valid UAE trade licence permitting you to sell the goo
               "goods are authentic, accurately described, and hallmarked where required.")
 
 p("5.  Commercial terms and customer service fee", "GG H1")
-clause("5.1", "Get Gold charges you no listing fee, subscription fee or commission, including no commission "
-              "on your making charge or Vendor Premium, for six (6) months from signature. No Vendor charge "
-              "begins automatically when that period ends. Any future Vendor fee requires a separate written "
-              "agreement accepted by both parties.", bold_lead="No Vendor commission during Phase 1.  ")
+clause("5.1", "You join Get Gold as a Founding Vendor. For as long as you list on Get Gold, Get Gold will "
+              "charge you no listing fee, subscription fee or commission, including no commission on your "
+              "making charge or Vendor Premium. This founding term continues under any later agreement that "
+              "replaces this MOU, and is not affected by any fee Get Gold may introduce for vendors who join "
+              "after the founding offer closes.", bold_lead="Founding Vendor: free for life.  ")
 clause("5.2", "Get Gold may add a separately disclosed service fee paid by the customer. The Phase 1 standard "
               "rate is one percent (1%) of the merchandise subtotal, excluding delivery. Each new customer "
               "receives fifty percent (50%) off this service fee on their first three qualifying orders, producing "

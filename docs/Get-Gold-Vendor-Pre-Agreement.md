@@ -46,7 +46,7 @@ a full agreement or ended under clause 11.
 
 ### 3. What Get Gold provides
 
-3.1 Listing of your products on the Get Gold platform at no charge during Phase 1 (clause 5).
+3.1 Listing of your products on the Get Gold platform at no charge, for life, as a Founding Vendor (clause 5).
 
 3.2 Live gold pricing so your prices update automatically with the market.
 
@@ -77,10 +77,11 @@ authentic, accurately described, and hallmarked where required.
 
 ### 5. Commercial terms and customer service fee
 
-5.1 **No Vendor commission during Phase 1.** Get Gold charges you no listing fee, subscription fee
-or commission, including no commission on your making charge or Vendor Premium, for six (6) months
-from signature. No Vendor charge begins automatically when that period ends. Any future Vendor fee
-requires a separate written agreement accepted by both parties.
+5.1 **Founding Vendor: free for life.** You join Get Gold as a Founding Vendor. For as long as you
+list on Get Gold, Get Gold will charge you no listing fee, subscription fee or commission, including no
+commission on your making charge or Vendor Premium. This founding term continues under any later
+agreement that replaces this MOU, and is not affected by any fee Get Gold may introduce for vendors
+who join after the founding offer closes.
 
 5.2 **Customer service fee.** Get Gold may add a separately disclosed service fee paid by the
 customer. The Phase 1 standard rate is one percent (1%) of the merchandise subtotal, excluding the
