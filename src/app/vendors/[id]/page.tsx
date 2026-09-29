@@ -15,6 +15,8 @@ import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
 import { serializeJsonLd } from "@/lib/security/json-ld";
 import { isAcceptedDeliveryMapLink } from "@/lib/fulfilment";
+import { cookies } from "next/headers";
+import { localizedCategoryLabel } from "@/lib/localized-category";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function VendorPage({ params }: { params: Promise<{ id: string }> }) {
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const { id } = await params;
   const supabase = getServiceSupabase();
   const vendor = await loadVendor(id);
@@ -86,23 +90,23 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
       }) }} />
       <div className="card p-6">
         <div className="flex flex-wrap gap-2">
-          <span className="pill border-signal-ok/30 bg-signal-ok/10 text-signal-ok">✓ Verified UAE store</span>
-          <StoreBadges reputation={reputation} />
+          <span className="pill border-signal-ok/30 bg-signal-ok/10 text-signal-ok">✓ {t("Verified UAE store", "متجر إماراتي موثّق")}</span>
+          <StoreBadges reputation={reputation} arabic={arabic} />
         </div>
         <h1 className="mt-3 font-serif text-3xl">{vendor.business_name}</h1>
         <p className="text-sm text-ink-muted">{vendor.emirate} · {vendor.store_address}</p>
-        <p className="mt-1 text-xs text-signal-ok">Trade licence checked · current through {new Intl.DateTimeFormat("en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
-        <div className="mt-3"><StoreRating reputation={reputation} /></div>
+        <p className="mt-1 text-xs text-signal-ok">{t("Trade licence checked · current through", "تم التحقق من الرخصة التجارية · سارية حتى")} {new Intl.DateTimeFormat(arabic ? "ar-AE" : "en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
+        <div className="mt-3"><StoreRating reputation={reputation} arabic={arabic} /></div>
         {safeStoreMapLink && (
           <a className="mt-2 inline-flex text-sm font-semibold text-jade-700 underline" href={safeStoreMapLink} target="_blank" rel="noopener noreferrer">
-            Open exact store pin →
+            {t("Open exact store pin", "افتح موقع المتجر على الخريطة")} ←
           </a>
         )}
       </div>
 
-      {reputation && <div className="mt-8"><ReputationOverview reputation={reputation} /></div>}
+      {reputation && <div className="mt-8"><ReputationOverview reputation={reputation} arabic={arabic} /></div>}
 
-      <h2 className="mt-10 font-serif text-2xl">Listings</h2>
+      <h2 className="mt-10 font-serif text-2xl">{t("Listings", "المنتجات")}</h2>
       <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {(products ?? []).map((p) => (
           <Link key={p.id} href={`/products/${p.id}`} className="card group overflow-hidden p-0 transition hover:border-gold-300">
@@ -110,21 +114,21 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
               <ProductImage category={p.category} karat={p.karat} name={p.name} images={p.images} sizes="(max-width: 768px) 100vw, 33vw" className="transition duration-500 group-hover:scale-[1.03]" />
             </div>
             <div className="p-5">
-              <div className="text-xs uppercase tracking-wide text-ink-muted">{p.category} · {p.karat}K</div>
+              <div className="text-xs uppercase tracking-wide text-ink-muted">{localizedCategoryLabel(p.category, arabic)} · {p.karat}K</div>
               <h3 className="mt-1 font-serif text-xl">{p.name}</h3>
               <p className="text-sm text-ink-muted">{p.weight_grams}g</p>
             </div>
           </Link>
         ))}
-        {(products ?? []).length === 0 && <p className="text-ink-muted">No active listings.</p>}
+        {(products ?? []).length === 0 && <p className="text-ink-muted">{t("No active listings.", "لا توجد منتجات نشطة.")}</p>}
       </div>
 
       <section id="reviews" className="mt-12 border-t border-jade-900/10 pt-10">
-        <p className="eyebrow text-jade-600">Verified purchases only</p>
-        <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">Customer reviews</h2>
-        <p className="mt-2 max-w-2xl text-sm text-ink-muted">Stores can respond publicly but cannot delete critical feedback.</p>
+        <p className="eyebrow text-jade-600">{t("Verified purchases only", "مشتريات موثّقة فقط")}</p>
+        <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">{t("Customer reviews", "تقييمات العملاء")}</h2>
+        <p className="mt-2 max-w-2xl text-sm text-ink-muted">{t("Stores can respond publicly but cannot delete critical feedback.", "يمكن للمتاجر الرد علنًا، لكنها لا تستطيع حذف التقييمات الناقدة.")}</p>
         <div className="mt-6">
-          <ReviewList reviews={(reviews ?? []) as PublicReview[]} showProduct />
+          <ReviewList reviews={(reviews ?? []) as PublicReview[]} showProduct arabic={arabic} />
         </div>
       </section>
     </div>

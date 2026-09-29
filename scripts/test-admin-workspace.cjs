@@ -205,7 +205,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright");
     async function api(who, route, data) {
       const r = await actors[who].context.request.post(
         "http://127.0.0.1:3000/api/" + route,
-        { data },
+        { data, headers: { origin: "http://127.0.0.1:3000" } },
       );
       return { status: r.status(), body: await r.json() };
     }

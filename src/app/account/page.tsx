@@ -19,6 +19,7 @@ import { formatAed, round2 } from "@/lib/pricing/calc";
 import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,8 @@ interface AccountEntry {
 
 export default async function AccountPage() {
   const user = await requireUser();
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const [profile, latestTick, feeOffer] = await Promise.all([
     getCurrentProfile(),
     getLatestTick(),
@@ -88,86 +91,86 @@ export default async function AccountPage() {
   const fineGoldGrams = purchases.reduce((sum, entry) => sum + Number(entry.insight?.fineGoldGrams ?? 0), 0);
 
   return (
-    <>
+    <div dir={arabic ? "rtl" : "ltr"}>
       <section className="bg-jade-950 text-white">
         <div className="container-pro py-10 sm:py-14">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="eyebrow text-gold-200">Your Get Gold</p>
+              <p className="eyebrow text-gold-200">{t("Your Get Gold", "حسابك في Get Gold")}</p>
               <h1 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">
-                Welcome back, {profile?.full_name?.trim().split(/\s+/)[0] || "gold buyer"}.
+                {t("Welcome back,", "أهلاً بعودتك،")} {profile?.full_name?.trim().split(/\s+/)[0] || t("gold buyer", "عزيزنا العميل")}.
               </h1>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/60">
-                Your locks, completed purchases and market-linked value changes in one clear view.
+                {t("Your requests, completed purchases and market-linked value changes in one clear view.", "طلباتك ومشترياتك المكتملة وتغير قيمتها مقارنة بالسوق في مكان واحد.")}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <GoldPriceBadge compact tone="dark" />
-              <Link href="/profile" className="btn-ghost border-white/20 bg-white/10 text-white hover:bg-white/15">Edit profile</Link>
-              <SignOutButton />
+              <GoldPriceBadge compact tone="dark" arabic={arabic} />
+              <Link href="/profile" className="btn-ghost border-white/20 bg-white/10 text-white hover:bg-white/15">{t("Edit profile", "تعديل الملف الشخصي")}</Link>
+              <SignOutButton arabic={arabic} />
             </div>
           </div>
         </div>
       </section>
 
       <div className="container-pro py-10 sm:py-14">
-        <div className="mb-6"><ActiveOfferNotice offer={feeOffer} /></div>
-        <nav className="mb-8 flex flex-wrap gap-2" aria-label="Customer account">
-          <Link href="/requests/new" className="btn-primary px-4 py-2 text-xs">Request a piece</Link>
-          <Link href="/account/requests" className="btn-ghost px-4 py-2 text-xs">My gold requests</Link>
-          <Link href="/account/visits" className="btn-ghost px-4 py-2 text-xs">My store visits</Link>
-          <Link href="/account/saved" className="btn-ghost px-4 py-2 text-xs">Saved & alerts</Link>
-          <Link href="/account/notifications" className="btn-ghost px-4 py-2 text-xs">Notifications</Link>
-          <Link href="/account/referrals" className="btn-ghost px-4 py-2 text-xs">Invite friends</Link>
+        <div className="mb-6"><ActiveOfferNotice offer={feeOffer} arabic={arabic} /></div>
+        <nav className="mb-8 flex flex-wrap gap-2" aria-label={t("Customer account", "حساب العميل")}>
+          <Link href="/requests/new" className="btn-primary px-4 py-2 text-xs">{t("Request a piece", "اطلب قطعة")}</Link>
+          <Link href="/account/requests" className="btn-ghost px-4 py-2 text-xs">{t("My gold requests", "طلباتي الخاصة")}</Link>
+          <Link href="/account/visits" className="btn-ghost px-4 py-2 text-xs">{t("My store visits", "زيارات المتاجر")}</Link>
+          <Link href="/account/saved" className="btn-ghost px-4 py-2 text-xs">{t("Saved & alerts", "المحفوظات والتنبيهات")}</Link>
+          <Link href="/account/notifications" className="btn-ghost px-4 py-2 text-xs">{t("Notifications", "الإشعارات")}</Link>
+          <Link href="/account/referrals" className="btn-ghost px-4 py-2 text-xs">{t("Invite friends", "ادعُ أصدقاءك")}</Link>
         </nav>
         {feeOffer.discountPercent > 0 && (
           <section className="mb-6 flex flex-col gap-3 rounded-2xl border border-gold-500/25 bg-gold-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-bold text-gold-700">50% off your Get Gold fee</p>
-              <p className="mt-1 text-xs text-ink-muted">Your introductory rate is 0.5% instead of the standard 1% on {feeOffer.remainingDiscountedOrders} more qualifying {feeOffer.remainingDiscountedOrders === 1 ? "order" : "orders"}, before any active seasonal fee offer. Delivery is excluded.</p>
+              <p className="text-sm font-bold text-gold-700">{t("50% off your Get Gold fee", "خصم 50% على رسوم Get Gold")}</p>
+              <p className="mt-1 text-xs text-ink-muted">{arabic ? `رسومك التمهيدية 0.5% بدلاً من 1% للطلبات المؤهلة التالية وعددها ${feeOffer.remainingDiscountedOrders}، قبل أي عرض موسمي. التوصيل مستثنى.` : `Your introductory rate is 0.5% instead of the standard 1% on ${feeOffer.remainingDiscountedOrders} more qualifying ${feeOffer.remainingDiscountedOrders === 1 ? "order" : "orders"}, before any active seasonal fee offer. Delivery is excluded.`}</p>
             </div>
-            <Link href="/marketplace" className="btn-primary shrink-0 px-4 py-2 text-xs">Use this offer</Link>
+            <Link href="/marketplace" className="btn-primary shrink-0 px-4 py-2 text-xs">{t("Use this offer", "استخدم العرض")}</Link>
           </section>
         )}
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <AccountStat label="Completed purchases" value={String(purchases.length)} detail={fineGoldGrams.toFixed(3) + "g fine-gold equivalent"} />
-          <AccountStat label="Total paid" value={formatAed(paidSpend)} detail="Completed purchases only" />
-          <AccountStat label="Comparable value now" value={formatAed(currentComparable)} detail="Same captured product components" />
+          <AccountStat label={t("Completed purchases", "مشتريات مكتملة")} value={String(purchases.length)} detail={fineGoldGrams.toFixed(3) + t("g fine-gold equivalent", "غ ذهب خالص مكافئ")} />
+          <AccountStat label={t("Total paid", "إجمالي المدفوع")} value={formatAed(paidSpend)} detail={t("Completed purchases only", "للمشتريات المكتملة فقط")} />
+          <AccountStat label={t("Comparable value now", "القيمة المقارنة الآن")} value={formatAed(currentComparable)} detail={t("Same captured product components", "بالمكونات المسجلة نفسها")} />
           <AccountStat
-            label={paidDifference >= 0 ? "Locked-in advantage" : "Market-linked movement"}
+            label={paidDifference >= 0 ? t("Locked-in advantage", "فرق السعر لصالحك") : t("Market-linked movement", "تغير القيمة مقارنة بالسوق")}
             value={(paidDifference > 0 ? "+" : "") + formatAed(paidDifference)}
-            detail={paidDifference >= 0 ? "Compared with buying the same items today" : "Today’s comparable estimate is lower"}
+            detail={paidDifference >= 0 ? t("Compared with buying the same items today", "مقارنة بشراء القطع نفسها اليوم") : t("Today’s comparable estimate is lower", "التقدير المقارن اليوم أقل")}
             tone={paidDifference > 0 ? "positive" : paidDifference < 0 ? "warm" : "default"}
           />
         </section>
 
         {purchases.length === 0 && (
           <section className="mt-6 rounded-2xl border border-jade-900/10 bg-jade-50 px-5 py-5">
-            <h2 className="font-serif text-xl font-semibold text-jade-950">Your purchase insights will appear here</h2>
-            <p className="mt-1 text-sm text-ink-muted">Once an order reaches Purchased, Get Gold will track its captured gold rate against the live market while keeping the original server snapshot intact.</p>
+            <h2 className="font-serif text-xl font-semibold text-jade-950">{t("Your purchase insights will appear here", "ستظهر تحليلات مشترياتك هنا")}</h2>
+            <p className="mt-1 text-sm text-ink-muted">{t("After a purchase is completed, Get Gold compares its recorded gold rate with the live market while retaining the original price snapshot.", "بعد اكتمال الشراء، يقارن Get Gold سعر الذهب المسجل بسعر السوق الحالي مع الاحتفاظ بسجل السعر الأصلي.")}</p>
           </section>
         )}
 
         <section className="mt-10">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="eyebrow text-jade-600">Purchase & reservation history</p>
-              <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">Every price lock, remembered.</h2>
+              <p className="eyebrow text-jade-600">{t("Purchase & request history", "سجل المشتريات والطلبات")}</p>
+              <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">{t("Every order, in one place.", "كل طلباتك في مكان واحد.")}</h2>
             </div>
             <div className="flex items-center gap-3 text-xs text-ink-muted">
-              <span>{activeLocks.length} active {activeLocks.length === 1 ? "lock" : "locks"}</span>
-              <Link href="/marketplace" className="font-semibold text-jade-700 hover:text-jade-500">Browse gold →</Link>
+              <span>{arabic ? `${activeLocks.length} حجوزات مؤقتة نشطة` : `${activeLocks.length} active ${activeLocks.length === 1 ? "lock" : "locks"}`}</span>
+              <Link href="/marketplace" className="font-semibold text-jade-700 hover:text-jade-500">{t("Browse gold →", "تصفح الذهب ←")}</Link>
             </div>
           </div>
 
           <div className="mt-6 space-y-4">
-            {entries.map((entry) => <HistoryCard key={entry.reservation.id} entry={entry} currentRate={currentRate} />)}
+            {entries.map((entry) => <HistoryCard key={entry.reservation.id} entry={entry} currentRate={currentRate} arabic={arabic} />)}
             {entries.length === 0 && (
               <div className="card grid min-h-48 place-items-center p-8 text-center">
                 <div>
-                  <p className="font-serif text-2xl font-semibold text-jade-950">No reservations yet</p>
-                  <p className="mt-2 text-sm text-ink-muted">When you lock a listing, its complete price snapshot and market context will appear here.</p>
-                  <Link href="/marketplace" className="btn-primary mt-5">Explore the marketplace</Link>
+                  <p className="font-serif text-2xl font-semibold text-jade-950">{t("No purchase requests yet", "لا توجد طلبات شراء بعد")}</p>
+                  <p className="mt-2 text-sm text-ink-muted">{t("Your requests and confirmed purchases will appear here.", "ستظهر طلباتك ومشترياتك المؤكدة هنا.")}</p>
+                  <Link href="/marketplace" className="btn-primary mt-5">{t("Explore the marketplace", "استكشف السوق")}</Link>
                 </div>
               </div>
             )}
@@ -175,14 +178,15 @@ export default async function AccountPage() {
         </section>
 
         <p className="mt-8 max-w-3xl text-xs leading-relaxed text-ink-muted">
-          Market-linked estimates hold making, certificate or assay, stone, vendor premium and fees at the captured amount, then update only the gold component. They are not appraisals, resale offers, guaranteed returns or financial advice.
+          {t("Market-linked estimates hold non-gold charges at their captured amount and update only the gold component. They are not appraisals, resale offers, guaranteed returns or financial advice.", "تُبقي التقديرات المرتبطة بالسوق الرسوم غير الذهبية كما سُجلت، وتحدّث قيمة الذهب فقط. وهي ليست تقييماً أو عرض إعادة بيع أو عائداً مضموناً أو نصيحة مالية.")}
         </p>
       </div>
-    </>
+    </div>
   );
 }
 
-function HistoryCard({ entry, currentRate }: { entry: AccountEntry; currentRate: number }) {
+function HistoryCard({ entry, currentRate, arabic }: { entry: AccountEntry; currentRate: number; arabic: boolean }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const { reservation, product, snapshot, insight } = entry;
   const active = isReservationActive(reservation.status, reservation.expires_at);
   const purchased = isPurchaseStatus(reservation.status);
@@ -197,7 +201,7 @@ function HistoryCard({ entry, currentRate }: { entry: AccountEntry; currentRate:
           <ProductImage
             category={product?.category}
             karat={product?.karat}
-            name={product?.name ?? "Gold product"}
+            name={product?.name ?? t("Gold product", "منتج ذهب")}
             images={product?.images}
             sizes="(max-width: 640px) 100vw, 144px"
           />
@@ -206,43 +210,43 @@ function HistoryCard({ entry, currentRate }: { entry: AccountEntry; currentRate:
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <StatusPill status={reservation.status} lapsed={lapsedLock} />
+                <StatusPill status={reservation.status} lapsed={lapsedLock} arabic={arabic} />
                 <span className="text-xs text-ink-muted">{formatDubaiDate(reservation.created_at, true)}</span>
               </div>
-              <h3 className="mt-3 font-serif text-2xl font-semibold text-jade-950">{product?.name ?? "Gold item"}</h3>
+              <h3 className="mt-3 font-serif text-2xl font-semibold text-jade-950">{product?.name ?? t("Gold item", "قطعة ذهب")}</h3>
               <p className="mt-1 text-sm text-ink-muted">
-                {product?.karat}K · {product?.weight_grams}g each · quantity {reservation.quantity}
+                {arabic ? `عيار ${product?.karat} · ${product?.weight_grams} غ للقطعة · الكمية ${reservation.quantity}` : `${product?.karat}K · ${product?.weight_grams}g each · quantity ${reservation.quantity}`}
               </p>
             </div>
-            <div className="lg:text-right">
-              <p className="label">Locked total</p>
+            <div className="lg:text-end">
+              <p className="label">{t("Recorded total", "الإجمالي المسجل")}</p>
               <p className="mt-1 font-serif text-2xl font-semibold tabular-nums text-jade-950">{formatAed(Number(snapshot?.total_price_aed))}</p>
             </div>
           </div>
 
           {insight && !closed ? (
             <div className="mt-5 grid gap-3 border-t border-jade-900/10 pt-5 sm:grid-cols-3">
-              <HistoryMetric label="Comparable value now" value={formatAed(insight.currentComparableTotalAed)} />
+              <HistoryMetric label={t("Comparable value now", "القيمة المقارنة الآن")} value={formatAed(insight.currentComparableTotalAed)} />
               <HistoryMetric
-                label={difference >= 0 ? "Advantage vs today" : "Change vs today"}
+                label={difference >= 0 ? t("Advantage vs today", "فرق السعر لصالحك") : t("Change vs today", "التغير مقارنة باليوم")}
                 value={(difference > 0 ? "+" : "") + formatAed(difference)}
                 tone={difference > 0 ? "positive" : difference < 0 ? "warm" : "default"}
               />
-              <HistoryMetric label="24K rate movement" value={formatSignedPercent(insight.goldRateChangePercent)} />
+              <HistoryMetric label={t("24K rate movement", "تغير سعر عيار 24")} value={formatSignedPercent(insight.goldRateChangePercent)} />
             </div>
           ) : (
             <p className="mt-5 border-t border-jade-900/10 pt-4 text-xs text-ink-muted">
-              {closed ? "Closed reservations stay in your history but are excluded from holdings and value insights." : "Live comparison is temporarily unavailable."}
+              {closed ? t("Closed requests stay in your history but are excluded from value insights.", "تبقى الطلبات المغلقة في سجلك، لكنها لا تدخل في تحليلات القيمة.") : t("Live comparison is temporarily unavailable.", "المقارنة المباشرة غير متاحة مؤقتاً.")}
             </p>
           )}
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-ink-muted">
-              {active ? "Price lock expires " + formatDubaiDate(reservation.expires_at, true) : purchased ? "Captured at " + formatAed(Number(snapshot?.gold_price_per_gram_24k_aed)) + "/g 24K" : lapsedLock ? "Price lock ended " + formatDubaiDate(reservation.expires_at, true) : "Reservation " + reservationStatusLabel(reservation.status).toLowerCase()}
-              {currentRate > 0 && !closed ? " · live reference " + formatAed(currentRate) + "/g" : ""}
+              {active ? t("Price lock expires ", "ينتهي تثبيت السعر ") + formatDubaiDate(reservation.expires_at, true) : purchased ? t("Captured at ", "سُجل بسعر ") + formatAed(Number(snapshot?.gold_price_per_gram_24k_aed)) + t("/g 24K", "/غ عيار 24") : lapsedLock ? t("Price lock ended ", "انتهى تثبيت السعر ") + formatDubaiDate(reservation.expires_at, true) : t("Request ", "الطلب: ") + (arabic ? arabicReservationStatus(reservation.status) : reservationStatusLabel(reservation.status).toLowerCase())}
+              {currentRate > 0 && !closed ? t(" · live reference ", " · السعر المرجعي الحالي ") + formatAed(currentRate) + t("/g", "/غ") : ""}
             </p>
             <Link href={"/account/reservations/" + reservation.id + (purchased ? "#review" : "")} className="text-sm font-semibold text-jade-700 hover:text-jade-500">
-              {purchased ? "Review purchase →" : "View details →"}
+              {purchased ? t("Review purchase →", "راجع مشترياتك ←") : t("View details →", "عرض التفاصيل ←")}
             </Link>
           </div>
         </div>
@@ -272,13 +276,33 @@ function HistoryMetric({ label, value, tone = "default" }: { label: string; valu
   );
 }
 
-function StatusPill({ status, lapsed = false }: { status: string; lapsed?: boolean }) {
+function StatusPill({ status, lapsed = false, arabic = false }: { status: string; lapsed?: boolean; arabic?: boolean }) {
   const style = isPurchaseStatus(status)
     ? "border-signal-ok/25 bg-signal-ok/10 text-signal-ok"
     : isActiveLockStatus(status) && !lapsed
       ? "border-gold-400/25 bg-gold-50 text-gold-600"
       : "border-jade-900/10 bg-bone-soft text-ink-muted";
-  return <span className={["pill", style].join(" ")}>{lapsed ? "Price lock expired" : reservationStatusLabel(status)}</span>;
+  return <span className={["pill", style].join(" ")}>{lapsed ? arabic ? "انتهى تثبيت السعر" : "Price lock expired" : arabic ? arabicReservationStatus(status) : reservationStatusLabel(status)}</span>;
+}
+
+function arabicReservationStatus(status: string): string {
+  const labels: Record<string, string> = {
+    pending_vendor_confirmation: "بانتظار تأكيد المتجر",
+    pending_customer_acceptance: "بانتظار موافقتك على السعر",
+    awaiting_payment: "بانتظار الدفع",
+    payment_verification: "مراجعة الدفع",
+    payment_confirmed: "تم تأكيد الدفع",
+    preparing_order: "جارٍ تجهيز الطلب",
+    ready_for_delivery: "جاهز للتوصيل",
+    out_for_delivery: "خرج للتوصيل",
+    delivered: "تم التوصيل",
+    completed: "مكتمل",
+    purchased: "تم الشراء",
+    expired: "منتهي",
+    cancelled: "ملغى",
+    rejected: "مرفوض",
+  };
+  return labels[status] ?? reservationStatusLabel(status);
 }
 
 function one<T>(value: T | T[] | null): T | null {

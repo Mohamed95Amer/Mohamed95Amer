@@ -16,9 +16,11 @@ import { quoteRecency, secondsUntilNextRefresh } from "@/lib/time";
 export function GoldPriceBadge({
   compact = false,
   tone = "light",
+  arabic = false,
 }: {
   compact?: boolean;
   tone?: "light" | "dark";
+  arabic?: boolean;
 }) {
   const { tick, isFresh, staleAfterSeconds, refreshIntervalSeconds, loading } =
     useLiveGoldPrice();
@@ -37,7 +39,7 @@ export function GoldPriceBadge({
         <span
           className={`h-2 w-2 animate-pulse rounded-full ${tone === "dark" ? "bg-white/50" : "bg-jade-200"}`}
         />
-        Loading gold price…
+        {arabic ? "جارٍ تحميل سعر الذهب…" : "Loading gold price…"}
       </div>
     );
   }
@@ -46,7 +48,7 @@ export function GoldPriceBadge({
     return (
       <div className="inline-flex items-center gap-2 rounded-full border border-signal-err/30 bg-signal-err/10 px-3 py-1.5 text-xs text-signal-err">
         <span className="h-2 w-2 rounded-full bg-signal-err" />
-        Gold price unavailable
+        {arabic ? "سعر الذهب غير متاح" : "Gold price unavailable"}
       </div>
     );
   }
@@ -54,7 +56,7 @@ export function GoldPriceBadge({
   const stale = !isFresh;
   // Seconds until the next refresh lands, floored at 0 while one is in flight.
   const nextIn = secondsUntilNextRefresh(ageSeconds, refreshIntervalSeconds);
-  const recency = quoteRecency(ageSeconds);
+  const recency = arabic ? arabicRecency(ageSeconds) : quoteRecency(ageSeconds);
   const shell = stale
     ? "border-gold-300/35 bg-gold-50 text-gold-600"
     : tone === "dark"
@@ -69,8 +71,12 @@ export function GoldPriceBadge({
       className={`inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border px-3 py-1.5 text-xs ${shell}`}
       title={
         stale
-          ? `Last quote was updated ${recency}; this is beyond the ${staleAfterSeconds}s pricing limit.`
-          : `Source: ${tick.source} · refreshed every ${refreshIntervalSeconds}s · updated ${recency}`
+          ? arabic
+            ? `آخر تحديث ${recency}؛ تجاوز السعر حد الصلاحية البالغ ${staleAfterSeconds} ثانية.`
+            : `Last quote was updated ${recency}; this is beyond the ${staleAfterSeconds}s pricing limit.`
+          : arabic
+            ? `المصدر: ${tick.source} · يُحدّث كل ${refreshIntervalSeconds} ثوانٍ · آخر تحديث ${recency}`
+            : `Source: ${tick.source} · refreshed every ${refreshIntervalSeconds}s · updated ${recency}`
       }
     >
       <span className="relative flex h-2 w-2" aria-hidden="true">
@@ -93,20 +99,33 @@ export function GoldPriceBadge({
       </span>
 
       <span className="font-semibold tabular-nums">
-        24K {formatAed(Number(tick.price_per_gram_24k_aed))}/g
+        {arabic ? "عيار 24" : "24K"} {formatAed(Number(tick.price_per_gram_24k_aed))}/{arabic ? "غ" : "g"}
       </span>
 
       {!compact && (
         <span className={secondary}>
           {stale ? (
-            <>Refreshing quote · last update {recency}</>
+            <>{arabic ? `جارٍ تحديث السعر · آخر تحديث ${recency}` : `Refreshing quote · last update ${recency}`}</>
           ) : (
             <>
-              Live · refresh in <span className="tabular-nums">{nextIn}s</span>
+              {arabic ? "مباشر · التحديث خلال " : "Live · refresh in "}<span className="tabular-nums">{nextIn}{arabic ? " ث" : "s"}</span>
             </>
           )}
         </span>
       )}
     </div>
   );
+}
+
+function arabicRecency(ageSeconds: number): string {
+  const seconds = Number.isFinite(ageSeconds) ? Math.max(0, Math.floor(ageSeconds)) : 0;
+  if (seconds < 5) return "الآن";
+  if (seconds < 60) return `قبل ${seconds} ثانية`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `قبل ${minutes} دقيقة`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `قبل ${hours} ساعة`;
+  const days = Math.floor(hours / 24);
+  if (days < 365) return `قبل ${days} يوم`;
+  return `قبل ${Math.floor(days / 365)} سنة`;
 }

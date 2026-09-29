@@ -69,9 +69,10 @@ export default async function AdminOverviewPage() {
         <div className="mt-5 space-y-5">
           <AdminDemoDataControl
             initialVisible={settings.data?.demo_data_visible !== false}
+            arabic={arabic}
           />
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <GoldPriceBadge />
+            <GoldPriceBadge arabic={arabic} />
             <Link href="/admin/gold-price" className="btn-ghost">
               {arabic ? "حالة سعر الذهب" : "Gold price health"}
             </Link>

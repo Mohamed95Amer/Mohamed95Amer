@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function StoreVisitActions({ visitId, status }: { visitId: string; status: string }) {
+export function StoreVisitActions({ visitId, status, arabic = false }: { visitId: string; status: string; arabic?: boolean }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -12,8 +12,8 @@ export function StoreVisitActions({ visitId, status }: { visitId: string; status
     const response = await fetch("/api/vendor/store-visits/respond", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ visitId, decision }) });
     const json = await response.json().catch(() => ({}));
     setBusy(false);
-    if (!response.ok) { setError(json.error ?? "Could not update visit"); return; }
+    if (!response.ok) { setError(arabic ? "تعذر تحديث طلب الزيارة. حاول مجدداً." : json.error ?? "Could not update visit"); return; }
     router.refresh();
   }
-  return <div><div className="flex flex-wrap gap-2">{status === "requested" && <><button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => act("confirm")}>Confirm visit</button><button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy} onClick={() => act("decline")}>Decline</button></>}{status === "confirmed" && <button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => act("complete")}>Mark completed</button>}</div>{error && <p role="alert" className="mt-2 text-xs text-signal-err">{error}</p>}</div>;
+  return <div><div className="flex flex-wrap gap-2">{status === "requested" && <><button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => act("confirm")}>{arabic ? "تأكيد الزيارة" : "Confirm visit"}</button><button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy} onClick={() => act("decline")}>{arabic ? "رفض" : "Decline"}</button></>}{status === "confirmed" && <button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => act("complete")}>{arabic ? "تمت الزيارة" : "Mark completed"}</button>}</div>{error && <p role="alert" className="mt-2 text-xs text-signal-err">{error}</p>}</div>;
 }

@@ -312,7 +312,7 @@ export default async function VendorOrdersPage({
                         )}
                       </summary>
                       <div className="mt-3">
-                        <FulfilmentDetails details={o} compact />
+                        <FulfilmentDetails details={o} compact arabic={ar} />
                         {o.fulfilment_method === "delivery" &&
                           [
                             "payment_confirmed",
@@ -328,6 +328,7 @@ export default async function VendorOrdersPage({
                                 reservationId={o.id}
                                 emirate={o.delivery_emirate}
                                 companies={companies ?? []}
+                                arabic={ar}
                                 assignment={
                                   assignmentByReservation.get(o.id) as any
                                 }
@@ -469,7 +470,7 @@ export default async function VendorOrdersPage({
               </p>
               {visit.note && <p className="mt-2 text-sm">{visit.note}</p>}
               <div className="mt-3">
-                <StoreVisitActions visitId={visit.id} status={visit.status} />
+                <StoreVisitActions visitId={visit.id} status={visit.status} arabic={ar} />
               </div>
             </article>
           ))}

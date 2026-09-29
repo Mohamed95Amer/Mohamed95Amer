@@ -25,6 +25,8 @@ import { getCustomerFeeOffer } from "@/lib/pricing/customer-fee";
 import { applyEventDeliveryDiscount } from "@/lib/marketing";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 import { serializeJsonLd } from "@/lib/security/json-ld";
+import { cookies } from "next/headers";
+import { localizedCategoryLabel } from "@/lib/localized-category";
 
 export const dynamic = "force-dynamic";
 
@@ -84,6 +86,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const { id } = await params;
   const supabase = getServiceSupabase();
   const { product, settings } = await loadProduct(id);
@@ -133,13 +137,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const soldOut = available <= 0;
 
   const specs: Array<[string, string]> = [
-    ["Category", String(product.category)],
-    ["Purity", `${product.karat}K`],
-    ["Weight", `${product.weight_grams} g`],
+    [t("Category", "الفئة"), localizedCategoryLabel(String(product.category), arabic)],
+    [t("Purity", "العيار"), `${product.karat}K`],
+    [t("Weight", "الوزن"), `${product.weight_grams} g`],
   ];
-  if (product.hallmark_info) specs.push(["Hallmark", product.hallmark_info]);
-  if (product.certificate_number) specs.push(["Certificate", product.certificate_number]);
-  if (product.assay_fineness) specs.push(["Certified fineness", `${product.assay_fineness}‰`]);
+  if (product.hallmark_info) specs.push([t("Hallmark", "الدمغة"), product.hallmark_info]);
+  if (product.certificate_number) specs.push([t("Certificate", "الشهادة"), product.certificate_number]);
+  if (product.assay_fineness) specs.push([t("Certified fineness", "النقاوة المعتمدة"), `${product.assay_fineness}‰`]);
 
   return (
     <div className="container-pro py-8 sm:py-12">
@@ -157,12 +161,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         ...(reputation?.averageRating && reputation.reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reputation.averageRating, reviewCount: reputation.reviewCount, bestRating: 5 } } : {}),
       }) }} />
       <nav className="mb-7 flex flex-wrap items-center gap-1.5 text-xs font-medium text-ink-muted">
-        <Link href="/" className="hover:text-jade-700">Home</Link>
+        <Link href="/" className="hover:text-jade-700">{t("Home", "الرئيسية")}</Link>
         <span aria-hidden="true">/</span>
-        <Link href="/marketplace" className="hover:text-jade-700">Marketplace</Link>
+        <Link href="/marketplace" className="hover:text-jade-700">{t("Marketplace", "السوق")}</Link>
         <span aria-hidden="true">/</span>
         <Link href={`/marketplace?category=${product.category}`} className="capitalize hover:text-jade-700">
-          {product.category}
+          {localizedCategoryLabel(product.category, arabic)}
         </Link>
         <span aria-hidden="true">/</span>
         <span className="text-ink">{product.name}</span>
@@ -184,19 +188,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             </span>
             {soldOut && (
               <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-semibold text-bone backdrop-blur">
-                Sold out
+                {t("Sold out", "نفد المخزون")}
               </span>
             )}
           </div>
 
-          <p className="eyebrow mt-8 text-jade-600">{product.category} · {product.weight_grams}g</p>
+          <p className="eyebrow mt-8 text-jade-600">{localizedCategoryLabel(product.category, arabic)} · {product.weight_grams}g</p>
           <h1 className="mt-2 font-serif text-4xl font-semibold leading-tight tracking-tight text-jade-950">{product.name}</h1>
           {product.description && (
             <p className="mt-4 max-w-prose leading-relaxed text-ink-muted">{product.description}</p>
           )}
-          <ProductActions productId={product.id} name={product.name} signedIn={Boolean(profile)} initiallyFavourite={Boolean(favourite)} initialAlert={priceAlert} />
+          <ProductActions productId={product.id} name={product.name} signedIn={Boolean(profile)} initiallyFavourite={Boolean(favourite)} initialAlert={priceAlert} arabic={arabic} />
 
-          <h2 className="mt-10 font-serif text-2xl font-semibold text-jade-950">Specifications</h2>
+          <h2 className="mt-10 font-serif text-2xl font-semibold text-jade-950">{t("Specifications", "المواصفات")}</h2>
           <dl className="mt-4 overflow-hidden rounded-2xl border border-jade-900/10 bg-white">
             {specs.map(([k, v], i) => (
               <div
@@ -214,7 +218,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
         <aside className="space-y-4 lg:sticky lg:top-40 lg:col-span-2 lg:self-start">
           <div className="card p-6 sm:p-7">
-            <div className="mb-5"><ActiveOfferNotice offer={customerFeeOffer} /></div>
+            <div className="mb-5"><ActiveOfferNotice offer={customerFeeOffer} arabic={arabic} /></div>
             {vendor && (
               <div className="mb-6 border-b border-jade-900/10 pb-5">
                 <div className="flex items-start justify-between gap-3">
@@ -224,13 +228,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   </Link>
                   {vendor.verification_status === "approved" && (
                     <span className="pill shrink-0 border-signal-ok/30 bg-signal-ok/10 text-signal-ok">
-                      ✓ Verified
+                      ✓ {t("Verified", "موثّق")}
                     </span>
                   )}
                 </div>
-                <div className="mt-3"><StoreRating reputation={reputation} compact /></div>
-                <div className="mt-2"><StoreBadges reputation={reputation} compact /></div>
-                <p className="mt-2 text-[11px] text-ink-muted">Trade licence current through {new Intl.DateTimeFormat("en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
+                <div className="mt-3"><StoreRating reputation={reputation} compact arabic={arabic} /></div>
+                <div className="mt-2"><StoreBadges reputation={reputation} compact arabic={arabic} /></div>
+                <p className="mt-2 text-[11px] text-ink-muted">{t("Trade licence current through", "الرخصة التجارية سارية حتى")} {new Intl.DateTimeFormat(arabic ? "ar-AE" : "en-AE", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${vendor.license_expiry_date}T12:00:00Z`))}</p>
               </div>
             )}
 
@@ -255,21 +259,22 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               deliveryFeeBeforeEventDiscount={deliveryFeeBeforeEventDiscount}
               deliveryFee={displayedDeliveryFee}
               showBreakdown
+              arabic={arabic}
             />
 
             <p className="mt-4 text-xs text-ink-muted">
               {!availabilityKnown ? (
                 <span className="font-medium text-signal-warn">
-                  Stock check temporarily unavailable. Please reload before reserving.
+                  {t("Stock check temporarily unavailable. Please reload before reserving.", "تعذر التحقق من المخزون مؤقتًا. أعد تحميل الصفحة قبل الطلب.")}
                 </span>
               ) : soldOut ? (
                 <span className="font-medium text-signal-warn">
-                  Every unit is currently reserved.
+                  {t("Every unit is currently reserved.", "جميع الوحدات محجوزة حاليًا.")}
                 </span>
               ) : (
                 <>
                   <span className="font-medium text-signal-ok">{available}</span>{" "}
-                  {available === 1 ? "unit" : "units"} available
+                  {t(available === 1 ? "unit available" : "units available", available === 1 ? "وحدة متاحة" : "وحدات متاحة")}
                 </>
               )}
             </p>
@@ -306,16 +311,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                   platformFeeBps: customerFeeOffer.effectiveBps,
                   deliveryFee: displayedDeliveryFee,
                 }}
+                arabic={arabic}
               />}
             </div>
-            {!soldOut && <div className="mt-4 border-t border-jade-900/10 pt-4"><StoreVisitForm productId={product.id} defaultPhone={profile?.phone ?? ""} /></div>}
+            {!soldOut && <div className="mt-4 border-t border-jade-900/10 pt-4"><StoreVisitForm productId={product.id} defaultPhone={profile?.phone ?? ""} arabic={arabic} /></div>}
           </div>
 
           <div className="rounded-2xl bg-jade-950 p-5 text-sm leading-relaxed text-white/65 shadow-card">
             <p>
-              <span className="font-semibold text-gold-200">The price is recomputed server-side</span> the
-              moment you reserve, so what you pay matches the market at that instant — not what was
-              on screen. Get Gold is a marketplace; the vendor remains the seller of record.
+              {t("The price shown is indicative. The store confirms availability and its final current price before you decide whether to pay. Get Gold is a marketplace; the store remains the seller of record.", "السعر المعروض استرشادي. يؤكد المتجر التوفر والسعر النهائي الحالي قبل أن تقرر الدفع. Get Gold سوق إلكتروني، ويبقى المتجر هو البائع المسؤول.")}
             </p>
           </div>
         </aside>
@@ -324,19 +328,20 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       <section id="reviews" className="mt-14 border-t border-jade-900/10 pt-10 sm:mt-20">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="eyebrow text-jade-600">Verified experiences</p>
-            <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">Reviews for this product</h2>
+            <p className="eyebrow text-jade-600">{t("Verified experiences", "تجارب موثّقة")}</p>
+            <h2 className="mt-1 font-serif text-3xl font-semibold text-jade-950">{t("Reviews for this product", "تقييمات هذا المنتج")}</h2>
           </div>
           {vendor && (
             <Link href={`/vendors/${vendor.id}#reviews`} className="text-sm font-semibold text-jade-700 hover:text-jade-500">
-              See all store reviews →
+              {t("See all store reviews", "عرض جميع تقييمات المتجر")} ←
             </Link>
           )}
         </div>
         <div className="mt-6">
           <ReviewList
             reviews={(reviews ?? []) as PublicReview[]}
-            emptyMessage="Only customers with a completed purchase can leave feedback."
+            emptyMessage={t("Only customers with a completed purchase can leave feedback.", "يمكن فقط للعملاء الذين أكملوا عملية شراء ترك تقييم.")}
+            arabic={arabic}
           />
         </div>
       </section>

@@ -44,7 +44,7 @@ export default async function VendorReviewsPage() {
       </p>
       <VendorNav arabic={ar} />
 
-      {reputation && <div className="mt-7"><ReputationOverview reputation={reputation} /></div>}
+      {reputation && <div className="mt-7"><ReputationOverview reputation={reputation} arabic={ar} /></div>}
 
       <section className="mt-10">
         <h2 className="font-serif text-2xl font-semibold text-jade-950">{t("Verified buyer feedback", "آراء المشترين الموثّقة")}</h2>
@@ -60,7 +60,7 @@ export default async function VendorReviewsPage() {
                     </p>
                     <p className="mt-1 text-sm font-semibold text-jade-950">{review.customer_display_name} · {t("verified purchase", "شراء موثّق")}</p>
                   </div>
-                  <span className="text-xs text-ink-muted">{product?.name ?? "Gold product"}</span>
+                  <span className="text-xs text-ink-muted">{product?.name ?? t("Gold product", "منتج ذهب")}</span>
                 </div>
                 {review.title && <h3 className="mt-4 font-serif text-xl font-semibold text-jade-950">{review.title}</h3>}
                 {review.comment && <p className="mt-2 text-sm leading-relaxed text-ink-muted">{review.comment}</p>}

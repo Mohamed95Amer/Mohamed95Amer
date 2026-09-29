@@ -72,12 +72,12 @@ export async function SiteHeader() {
         <Link
           href="/"
           className="shrink-0 font-serif text-[27px] tracking-[-0.035em] text-[#171c18] sm:text-[30px]"
-          aria-label="Get Gold home"
+          aria-label={language === "ar" ? "الصفحة الرئيسية لـ Get Gold" : "Get Gold home"}
         >
           GET GOLD
         </Link>
         <nav
-          aria-label="Main navigation"
+          aria-label={language === "ar" ? "القائمة الرئيسية" : "Main navigation"}
           className="hidden items-center gap-6 text-xs text-ink lg:flex xl:gap-8"
         >
           <Link href="/marketplace" className="py-4 hover:text-jade-600">
@@ -101,9 +101,9 @@ export async function SiteHeader() {
         </nav>
         <div className="hidden border-l border-bone-deep/70 pl-5 xl:block">
           <p className="mb-1 text-[8px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-            24K gold · market reference
+            {language === "ar" ? "ذهب عيار 24 · سعر السوق المرجعي" : "24K gold · market reference"}
           </p>
-          <GoldPriceBadge compact />
+          <GoldPriceBadge compact arabic={language === "ar"} />
         </div>
         <div className="hidden items-center gap-2 lg:flex">
           <LanguageSwitcher language={language} />
@@ -114,7 +114,7 @@ export async function SiteHeader() {
                   href="/admin"
                   className="px-2 py-3 text-xs hover:text-jade-600"
                 >
-                  Admin
+                  {language === "ar" ? "الإدارة" : "Admin"}
                 </Link>
               )}
               {isVendor && (
@@ -122,7 +122,7 @@ export async function SiteHeader() {
                   href="/vendor"
                   className="px-2 py-3 text-xs hover:text-jade-600"
                 >
-                  Vendor
+                  {language === "ar" ? "المتجر" : "Vendor"}
                 </Link>
               )}
               {isDeliveryCompany && (
@@ -130,13 +130,13 @@ export async function SiteHeader() {
                   href="/delivery"
                   className="px-2 py-3 text-xs hover:text-jade-600"
                 >
-                  Delivery
+                  {language === "ar" ? "التوصيل" : "Delivery"}
                 </Link>
               )}
               <Link
                 href="/profile"
                 className="grid h-11 w-11 place-items-center"
-                aria-label={`Profile: ${firstName(profile.full_name) ?? "My profile"}`}
+                aria-label={`${language === "ar" ? "الملف الشخصي" : "Profile"}: ${firstName(profile.full_name) ?? (language === "ar" ? "ملفي" : "My profile")}`}
               >
                 <AccountIcon />
               </Link>
@@ -144,13 +144,13 @@ export async function SiteHeader() {
                 count={unreadCount}
                 arabic={language === "ar"}
               />
-              <SignOutButton />
+              <SignOutButton arabic={language === "ar"} />
             </>
           ) : (
             <Link
               href="/login"
               className="grid h-11 w-11 place-items-center"
-              aria-label="Sign in to your account"
+              aria-label={language === "ar" ? "تسجيل الدخول إلى حسابك" : "Sign in to your account"}
             >
               <AccountIcon />
             </Link>
@@ -158,7 +158,7 @@ export async function SiteHeader() {
           <Link
             href={profile ? "/account" : "/login?next=/account"}
             className="grid h-11 w-11 place-items-center"
-            aria-label="My orders"
+            aria-label={language === "ar" ? "طلباتي" : "My orders"}
           >
             <svg
               width="23"
@@ -191,7 +191,7 @@ export async function SiteHeader() {
         </div>
       </div>
       <div className="flex min-h-10 justify-center border-t border-bone-deep/40 bg-bone-soft py-1 xl:hidden">
-        <GoldPriceBadge compact />
+        <GoldPriceBadge compact arabic={language === "ar"} />
       </div>
     </header>
   );

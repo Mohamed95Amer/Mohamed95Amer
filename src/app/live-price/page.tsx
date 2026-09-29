@@ -6,6 +6,7 @@ import { formatDubaiDate, formatSignedPercent } from "@/lib/gold-insights";
 import { formatAed } from "@/lib/pricing/calc";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -25,6 +26,8 @@ interface DailyHistoryRow {
 }
 
 export default async function LivePricePage() {
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const supabase = getServiceSupabase();
   const [{ data: dailyRows }, latestTick] = await Promise.all([
     supabase
@@ -55,47 +58,47 @@ export default async function LivePricePage() {
   const staleSeconds = env.stalePriceSeconds();
 
   return (
-    <>
+    <div dir={arabic ? "rtl" : "ltr"}>
       <section className="relative overflow-hidden bg-jade-950 text-white">
         <div className="absolute -right-24 -top-32 h-96 w-96 rounded-full border border-gold-300/20" />
         <div className="absolute bottom-0 left-1/4 h-48 w-96 rounded-full bg-jade-500/15 blur-3xl" />
         <div className="container-pro relative py-14 sm:py-20">
           <div className="max-w-3xl">
-            <p className="eyebrow text-gold-200">Gold market intelligence</p>
+            <p className="eyebrow text-gold-200">{t("Gold market intelligence", "رؤية أسعار الذهب")}</p>
             <h1 className="mt-4 font-serif text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
-              See what gold did.<br /><span className="text-gold-200">Explore what it means for you.</span>
+              {t("See what gold did.", "تابع تغير أسعار الذهب.")}<br /><span className="text-gold-200">{t("Explore what it means for you.", "واكتشف ما يعنيه ذلك لك.")}</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/65">
-              Follow Get Gold’s recorded UAE reference rate, compare purity values, and test a historical purchase against today’s live market.
+              {t("Follow Get Gold’s recorded UAE reference rate, compare purity values, and test a historical purchase against today’s live market.", "تابع السعر المرجعي المسجل لدى Get Gold في الإمارات، وقارن العيارات، واختبر قيمة شراء افتراضي سابق وفق سعر السوق اليوم.")}
             </p>
-            <div className="mt-7"><GoldPriceBadge tone="dark" /></div>
+            <div className="mt-7"><GoldPriceBadge tone="dark" arabic={arabic} /></div>
           </div>
         </div>
       </section>
 
       <div className="container-pro py-10 sm:py-14">
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <InsightStat label="Live 24K reference" value={`${formatAed(currentRate)}/g`} detail={`Rechecked every ${refreshSeconds}s`} />
+          <InsightStat label={t("Live 24K reference", "السعر المرجعي المباشر لعيار 24")} value={`${formatAed(currentRate)}${t("/g", "/غ")}`} detail={t(`Rechecked every ${refreshSeconds}s`, `يُعاد التحقق كل ${refreshSeconds} ثوانٍ`)} />
           <InsightStat
-            label="Since first recorded day"
+            label={t("Since first recorded day", "منذ أول يوم مسجل")}
             value={formatSignedPercent(changeSinceFirst)}
-            detail={firstDate ? `From ${formatDubaiDate(firstDate)}` : "History begins with the next quote"}
+            detail={firstDate ? `${t("From", "منذ")} ${formatDubaiDate(firstDate)}` : t("History begins with the next quote", "يبدأ السجل مع السعر التالي")}
             tone={changeSinceFirst >= 0 ? "positive" : "warm"}
           />
-          <InsightStat label="Recorded range" value={`${formatAed(low)} – ${formatAed(high)}`} detail="Lowest to highest 24K rate" />
-          <InsightStat label="Coverage" value={`${history.length} recorded ${history.length === 1 ? "day" : "days"}`} detail={`${quoteCount.toLocaleString("en-AE")} usable market quotes`} />
+          <InsightStat label={t("Recorded range", "النطاق المسجل")} value={`${formatAed(low)} – ${formatAed(high)}`} detail={t("Lowest to highest 24K rate", "من أدنى إلى أعلى سعر لعيار 24")} />
+          <InsightStat label={t("Coverage", "التغطية")} value={arabic ? `${history.length} أيام مسجلة` : `${history.length} recorded ${history.length === 1 ? "day" : "days"}`} detail={arabic ? `${quoteCount.toLocaleString("ar-AE")} أسعار سوق صالحة` : `${quoteCount.toLocaleString("en-AE")} usable market quotes`} />
         </section>
 
         <div className="mt-6 rounded-2xl border border-jade-900/10 bg-jade-50 px-5 py-4 text-sm leading-relaxed text-ink-muted">
-          <strong className="font-semibold text-jade-900">Fresh-price protection:</strong>{" "}
-          Get Gold rechecks every {refreshSeconds} seconds. If the latest quote reaches {staleSeconds} seconds old, reservations pause until a fresh rate arrives. History below contains only usable quotes recorded by Get Gold; gaps mean the service was not recording, not that the market was unchanged.
+          <strong className="font-semibold text-jade-900">{t("Fresh-price protection:", "حماية السعر الحديث:")}</strong>{" "}
+          {arabic ? `يعيد Get Gold التحقق كل ${refreshSeconds} ثوانٍ. إذا بلغ عمر السعر الأخير ${staleSeconds} ثانية، تتوقف طلبات الشراء حتى يصل سعر حديث. يتضمن السجل أدناه الأسعار الصالحة التي سجلها Get Gold فقط؛ والفجوات تعني عدم تسجيل الخدمة للبيانات، لا ثبات السوق.` : `Get Gold rechecks every ${refreshSeconds} seconds. If the latest quote reaches ${staleSeconds} seconds old, purchase requests pause until a fresh rate arrives. History below contains only usable quotes recorded by Get Gold; gaps mean the service was not recording, not that the market was unchanged.`}
         </div>
 
         <div className="mt-8">
-          <GoldHistoryExperience history={history} fallbackCurrentRate={currentRate} />
+          <GoldHistoryExperience history={history} fallbackCurrentRate={currentRate} arabic={arabic} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

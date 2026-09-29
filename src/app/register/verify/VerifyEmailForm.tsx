@@ -6,7 +6,8 @@ import { getBrowserSupabase } from "@/lib/supabase/browser";
 import { safeInternalRedirect } from "@/lib/auth/redirect";
 import { TurnstileField } from "@/components/security/TurnstileField";
 
-export function VerifyEmailForm({ email: initialEmail, next: initialNext }: { email: string; next: string }) {
+export function VerifyEmailForm({ email: initialEmail, next: initialNext, arabic = false }: { email: string; next: string; arabic?: boolean }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const supabase = getBrowserSupabase();
   const [email, setEmail] = useState(initialEmail);
   const [message, setMessage] = useState<string | null>(null);
@@ -32,26 +33,26 @@ export function VerifyEmailForm({ email: initialEmail, next: initialNext }: { em
       setError(resendError.message);
       return;
     }
-    setMessage("A fresh confirmation link is on its way. Check your inbox and spam folder.");
+    setMessage(t("A fresh confirmation link is on its way. Check your inbox and spam folder.", "أرسلنا رابط تأكيد جديدًا. تحقق من بريدك الوارد ومجلد الرسائل غير المرغوب فيها."));
   }
 
   return (
     <form onSubmit={resend} className="space-y-5">
       <div>
-        <p className="eyebrow text-jade-600">Email confirmation</p>
-        <h2 className="mt-2 font-serif text-3xl font-semibold text-jade-950">Check your inbox.</h2>
-        <p className="mt-2 text-sm leading-relaxed text-ink-muted">We sent a confirmation link to the address below. You must confirm it before signing in.</p>
+        <p className="eyebrow text-jade-600">{t("Email confirmation", "تأكيد البريد الإلكتروني")}</p>
+        <h2 className="mt-2 font-serif text-3xl font-semibold text-jade-950">{t("Check your inbox.", "تحقق من بريدك الوارد.")}</h2>
+        <p className="mt-2 text-sm leading-relaxed text-ink-muted">{t("We sent a confirmation link to the address below. You must confirm it before signing in.", "أرسلنا رابط تأكيد إلى العنوان أدناه. يجب تأكيده قبل تسجيل الدخول.")}</p>
       </div>
       <div>
-        <label className="label" htmlFor="verify-email">Email address</label>
+        <label className="label" htmlFor="verify-email">{t("Email address", "البريد الإلكتروني")}</label>
         <input id="verify-email" name="email" className="input" type="email" required autoComplete="email" inputMode="email" value={email} onChange={(event) => setEmail(event.target.value)} />
       </div>
       <TurnstileField onTokenChange={setCaptchaToken} resetKey={captchaResetKey} />
       {error && <p role="alert" className="text-sm text-signal-err">{error}</p>}
       {message && <p role="status" className="text-sm text-signal-ok">{message}</p>}
-      <button type="submit" className="btn-primary w-full" disabled={busy || (Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) && !captchaToken)}>{busy ? "Sending link…" : "Resend confirmation email"}</button>
-      <p className="text-xs leading-relaxed text-ink-muted">If you do not see it within a few minutes, check spam or use a different address. Confirmation links expire for security.</p>
-      <Link href="/login" className="block text-center text-sm font-semibold text-jade-700 underline underline-offset-4">Return to sign in</Link>
+      <button type="submit" className="btn-primary w-full" disabled={busy || (Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) && !captchaToken)}>{busy ? t("Sending link…", "جارٍ إرسال الرابط…") : t("Resend confirmation email", "إعادة إرسال رسالة التأكيد")}</button>
+      <p className="text-xs leading-relaxed text-ink-muted">{t("If you do not see it within a few minutes, check spam or use a different address. Confirmation links expire for security.", "إذا لم تجد الرسالة خلال دقائق، تحقق من مجلد الرسائل غير المرغوب فيها أو استخدم عنوانًا آخر. تنتهي صلاحية الروابط لحماية حسابك.")}</p>
+      <Link href="/login" className="block text-center text-sm font-semibold text-jade-700 underline underline-offset-4">{t("Return to sign in", "العودة إلى تسجيل الدخول")}</Link>
     </form>
   );
 }

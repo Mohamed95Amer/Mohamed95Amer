@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 
-export function SignOutButton() {
+export function SignOutButton({ arabic = false }: { arabic?: boolean }) {
   const router = useRouter();
   async function onClick() {
     await getBrowserSupabase().auth.signOut();
@@ -11,6 +11,6 @@ export function SignOutButton() {
     router.refresh();
   }
   return (
-    <button onClick={onClick} className="btn-ghost text-xs">Sign out</button>
+    <button onClick={onClick} className="btn-ghost text-xs">{arabic ? "تسجيل الخروج" : "Sign out"}</button>
   );
 }

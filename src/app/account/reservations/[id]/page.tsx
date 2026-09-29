@@ -129,7 +129,7 @@ export default async function ReservationDetailPage({
           </h1>
           <p className="mt-1 text-xs text-ink-muted">Reference {r.id}</p>
         </div>
-        <GoldPriceBadge compact />
+        <GoldPriceBadge compact arabic={arabic} />
       </div>
 
       <div className="card mt-7 grid gap-4 p-6 text-sm sm:grid-cols-2 lg:grid-cols-4">
@@ -172,7 +172,7 @@ export default async function ReservationDetailPage({
       </div>
 
       <div className="mt-6">
-        <FulfilmentDetails details={r} />
+        <FulfilmentDetails details={r} arabic={arabic} />
         {r.vendor_delivery_snapshot && (
           <p className="mt-3 text-sm text-ink-muted">
             Delivery arranged and paid for by the store from the delivery fee
@@ -219,7 +219,7 @@ export default async function ReservationDetailPage({
               Store note: {r.vendor_response_note}
             </p>
           )}
-          <ConfirmedPriceActions reservationId={r.id} />
+          <ConfirmedPriceActions reservationId={r.id} arabic={arabic} />
         </section>
       )}
       {["bank_transfer", "aani"].includes(r.payment_method) && (
@@ -267,6 +267,7 @@ export default async function ReservationDetailPage({
                 checks its bank and confirms receipt.
               </p>
               <BankTransferProof
+                arabic={arabic}
                 reservationId={r.id}
                 submitted={Boolean(r.transfer_proof_path)}
               />
@@ -642,7 +643,7 @@ export default async function ReservationDetailPage({
             jeweller&apos;s rating.
           </p>
           <div className="mt-6">
-            <ReviewForm reservationId={r.id} existing={existingReview} />
+            <ReviewForm reservationId={r.id} existing={existingReview} arabic={arabic} />
           </div>
         </section>
       )}

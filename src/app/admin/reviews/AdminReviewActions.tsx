@@ -11,7 +11,8 @@ type Action =
   | "dismiss_report"
   | "action_report";
 
-export function AdminReviewActions({ reviewId, reportId }: { reviewId: string; reportId?: string }) {
+export function AdminReviewActions({ reviewId, reportId, arabic = false }: { reviewId: string; reportId?: string; arabic?: boolean }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const router = useRouter();
   const [busy, setBusy] = useState<Action | null>(null);
   const [note, setNote] = useState("");
@@ -27,7 +28,7 @@ export function AdminReviewActions({ reviewId, reportId }: { reviewId: string; r
     });
     setBusy(null);
     if (!response.ok) {
-      setError("Moderation action failed.");
+      setError(t("Moderation action failed.", "تعذر تنفيذ إجراء المراجعة."));
       return;
     }
     router.refresh();
@@ -35,20 +36,20 @@ export function AdminReviewActions({ reviewId, reportId }: { reviewId: string; r
 
   return (
     <div className="mt-3">
-      <label htmlFor={`moderation-note-${reviewId}`} className="sr-only">Optional moderation note</label>
-      <input id={`moderation-note-${reviewId}`} name="moderation_note" className="input" maxLength={500} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Optional moderation note" />
+      <label htmlFor={`moderation-note-${reviewId}`} className="sr-only">{t("Optional moderation note", "ملاحظة مراجعة اختيارية")}</label>
+      <input id={`moderation-note-${reviewId}`} name="moderation_note" className="input" maxLength={500} value={note} onChange={(event) => setNote(event.target.value)} placeholder={t("Optional moderation note", "ملاحظة مراجعة اختيارية")} />
       <div className="mt-2 flex flex-wrap gap-2">
         {reportId ? (
           <>
-            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("dismiss_report")}>Dismiss report</button>
-            <button className="rounded-full bg-signal-err px-3 py-1.5 text-xs font-semibold text-white" disabled={busy !== null} onClick={() => act("action_report")}>Uphold & hide review</button>
+            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("dismiss_report")}>{t("Dismiss report", "رفض البلاغ")}</button>
+            <button className="rounded-full bg-signal-err px-3 py-1.5 text-xs font-semibold text-white" disabled={busy !== null} onClick={() => act("action_report")}>{t("Uphold & hide review", "اعتماد البلاغ وإخفاء التقييم")}</button>
           </>
         ) : (
           <>
-            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("publish_review")}>Publish review</button>
-            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("hide_review")}>Hide review</button>
-            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("publish_reply")}>Publish reply</button>
-            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("hide_reply")}>Hide reply</button>
+            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("publish_review")}>{t("Publish review", "نشر التقييم")}</button>
+            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("hide_review")}>{t("Hide review", "إخفاء التقييم")}</button>
+            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("publish_reply")}>{t("Publish reply", "نشر الرد")}</button>
+            <button className="btn-ghost px-3 py-1.5 text-xs" disabled={busy !== null} onClick={() => act("hide_reply")}>{t("Hide reply", "إخفاء الرد")}</button>
           </>
         )}
       </div>

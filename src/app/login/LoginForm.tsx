@@ -7,7 +7,8 @@ import { safeInternalRedirect } from "@/lib/auth/redirect";
 import Link from "next/link";
 import { TurnstileField } from "@/components/security/TurnstileField";
 
-export function LoginForm({ next, error: initialError }: { next?: string; error?: string }) {
+export function LoginForm({ next, error: initialError, arabic = false }: { next?: string; error?: string; arabic?: boolean }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const supabase = getBrowserSupabase();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -37,22 +38,22 @@ export function LoginForm({ next, error: initialError }: { next?: string; error?
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="label" htmlFor="login-email">Email address</label>
-        <input id="login-email" name="email" className="input" type="email" required autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <label className="label" htmlFor="login-email">{t("Email address", "البريد الإلكتروني")}</label>
+        <input id="login-email" name="email" className="input" dir="ltr" type="email" required autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div>
         <div className="flex items-center justify-between gap-3">
-          <label className="label" htmlFor="login-password">Password</label>
-          <Link href="/forgot-password" className="text-xs font-semibold text-jade-700 hover:text-jade-500">Forgot password?</Link>
+          <label className="label" htmlFor="login-password">{t("Password", "كلمة المرور")}</label>
+          <Link href="/forgot-password" className="text-xs font-semibold text-jade-700 hover:text-jade-500" dir={arabic ? "rtl" : "ltr"}>{t("Forgot password?", "نسيت كلمة المرور؟")}</Link>
         </div>
         <div className="relative">
-          <input id="login-password" name="password" className="input pr-16" type={showPassword ? "text" : "password"} required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} aria-invalid={Boolean(error)} aria-describedby={error ? "login-error" : undefined} />
-          <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 min-h-9 -translate-y-[42%] text-xs font-semibold text-jade-700" aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
+          <input id="login-password" name="password" className="input pe-16" type={showPassword ? "text" : "password"} required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} aria-invalid={Boolean(error)} aria-describedby={error ? "login-error" : undefined} />
+          <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute end-3 top-1/2 min-h-9 -translate-y-[42%] text-xs font-semibold text-jade-700" aria-label={showPassword ? t("Hide password", "إخفاء كلمة المرور") : t("Show password", "إظهار كلمة المرور")}>{showPassword ? t("Hide", "إخفاء") : t("Show", "إظهار")}</button>
         </div>
       </div>
       <TurnstileField onTokenChange={setCaptchaToken} resetKey={captchaResetKey} />
-      {error && <div id="login-error" role="alert" className="space-y-2 text-sm"><p className="text-signal-err">{error}</p>{needsEmailVerification && <Link href={`/register/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(safeInternalRedirect(next))}`} className="inline-block font-semibold text-jade-700 underline underline-offset-4">Resend confirmation email</Link>}</div>}
-      <button type="submit" className="btn-primary w-full" disabled={busy || (Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) && !captchaToken)}>{busy ? "Signing in…" : "Sign in"}</button>
+      {error && <div id="login-error" role="alert" className="space-y-2 text-sm"><p className="text-signal-err">{arabic ? /email\s+not\s+confirmed|confirm\s+your\s+email/i.test(error) ? "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول." : /invalid login credentials/i.test(error) ? "البريد الإلكتروني أو كلمة المرور غير صحيحة." : "تعذر تسجيل الدخول. تحقق من بياناتك وحاول مجدداً." : error}</p>{needsEmailVerification && <Link href={`/register/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(safeInternalRedirect(next))}`} className="inline-block font-semibold text-jade-700 underline underline-offset-4">{t("Resend confirmation email", "إعادة إرسال رسالة تأكيد البريد")}</Link>}</div>}
+      <button type="submit" className="btn-primary w-full" disabled={busy || (Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) && !captchaToken)}>{busy ? t("Signing in…", "جارٍ تسجيل الدخول…") : t("Sign in", "تسجيل الدخول")}</button>
     </form>
   );
 }

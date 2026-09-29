@@ -29,10 +29,13 @@ interface FormState {
 export function ReviewForm({
   reservationId,
   existing,
+  arabic = false,
 }: {
   reservationId: string;
   existing?: ExistingReview | null;
+  arabic?: boolean;
 }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const router = useRouter();
   const editable = !existing || Date.parse(existing.editable_until) > Date.now();
   const [form, setForm] = useState<FormState>({
@@ -71,47 +74,47 @@ export function ReviewForm({
 
     if (!response.ok) {
       const labels: Record<string, string> = {
-        not_a_completed_purchase: "Only completed purchases can be reviewed.",
-        review_window_closed: "The 14-day editing window has closed.",
-        review_already_exists: "This purchase has already been reviewed.",
+        not_a_completed_purchase: t("Only completed purchases can be reviewed.", "يمكن تقييم المشتريات المكتملة فقط."),
+        review_window_closed: t("The 14-day editing window has closed.", "انتهت مهلة تعديل التقييم البالغة 14 يومًا."),
+        review_already_exists: t("This purchase has already been reviewed.", "تم تقييم هذا الشراء بالفعل."),
       };
-      setMessage(labels[body.error] ?? "Could not save your review. Please check the fields and try again.");
+      setMessage(labels[body.error] ?? t("Could not save your review. Please check the fields and try again.", "تعذر حفظ تقييمك. راجع البيانات وحاول مجددًا."));
       return;
     }
 
-    setMessage(existing ? "Review updated." : "Thank you—your verified review is now published.");
+    setMessage(existing ? t("Review updated.", "تم تحديث التقييم.") : t("Thank you—your verified review is now published.", "شكرًا لك — نُشر تقييمك الموثّق."));
     router.refresh();
   }
 
   if (!editable) {
     return (
       <div className="rounded-xl bg-jade-50 p-4 text-sm text-ink-muted">
-        Your verified review is published. The 14-day editing window has ended.
+        {t("Your verified review is published. The 14-day editing window has ended.", "تقييمك الموثّق منشور. انتهت مهلة التعديل البالغة 14 يومًا.")}
       </div>
     );
   }
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      <RatingField label="Overall store experience (delivery excluded)" value={form.overallRating} onChange={(value) => value && set("overallRating", value)} />
+      <RatingField label={t("Overall store experience (delivery excluded)", "تجربة المتجر إجمالًا (باستثناء التوصيل)")} value={form.overallRating} onChange={(value) => value && set("overallRating", value)} arabic={arabic} />
       <div className="grid gap-4 sm:grid-cols-2">
-        <RatingField label="Product as described" value={form.productRating} onChange={(value) => value && set("productRating", value)} compact />
-        <RatingField label="Seller communication" value={form.communicationRating} onChange={(value) => value && set("communicationRating", value)} compact />
-        <RatingField label="Fulfilment speed" value={form.fulfilmentRating} onChange={(value) => value && set("fulfilmentRating", value)} compact />
-        <RatingField label="Packaging & presentation" value={form.packagingRating} onChange={(value) => value && set("packagingRating", value)} compact />
-        <RatingField label="Delivery company (optional)" value={form.deliveryRating} onChange={(value) => set("deliveryRating", value)} compact optional />
+        <RatingField label={t("Product as described", "مطابقة المنتج للوصف")} value={form.productRating} onChange={(value) => value && set("productRating", value)} compact arabic={arabic} />
+        <RatingField label={t("Seller communication", "تواصل البائع")} value={form.communicationRating} onChange={(value) => value && set("communicationRating", value)} compact arabic={arabic} />
+        <RatingField label={t("Fulfilment speed", "سرعة تنفيذ الطلب")} value={form.fulfilmentRating} onChange={(value) => value && set("fulfilmentRating", value)} compact arabic={arabic} />
+        <RatingField label={t("Packaging & presentation", "التغليف والتقديم")} value={form.packagingRating} onChange={(value) => value && set("packagingRating", value)} compact arabic={arabic} />
+        <RatingField label={t("Delivery company (optional)", "شركة التوصيل (اختياري)")} value={form.deliveryRating} onChange={(value) => set("deliveryRating", value)} compact optional arabic={arabic} />
       </div>
       <div>
-        <label className="label" htmlFor="review-title">Review title (optional)</label>
-        <input id="review-title" className="input mt-1" maxLength={120} value={form.title} onChange={(event) => set("title", event.target.value)} placeholder="A clear summary of your experience" />
+        <label className="label" htmlFor="review-title">{t("Review title (optional)", "عنوان التقييم (اختياري)")}</label>
+        <input id="review-title" className="input mt-1" maxLength={120} value={form.title} onChange={(event) => set("title", event.target.value)} placeholder={t("A clear summary of your experience", "ملخص واضح لتجربتك")} />
       </div>
       <div>
-        <label className="label" htmlFor="review-comment">Your review (optional)</label>
-        <textarea id="review-comment" className="input mt-1 min-h-32" minLength={10} maxLength={2000} value={form.comment} onChange={(event) => set("comment", event.target.value)} placeholder="What went well, and what should the store improve?" />
-        <p className="mt-1 text-[11px] text-ink-muted">Do not include phone numbers, addresses or payment information.</p>
+        <label className="label" htmlFor="review-comment">{t("Your review (optional)", "تقييمك (اختياري)")}</label>
+        <textarea id="review-comment" className="input mt-1 min-h-32" minLength={10} maxLength={2000} value={form.comment} onChange={(event) => set("comment", event.target.value)} placeholder={t("What went well, and what should the store improve?", "ما الذي أعجبك، وما الذي يمكن للمتجر تحسينه؟")} />
+        <p className="mt-1 text-[11px] text-ink-muted">{t("Do not include phone numbers, addresses or payment information.", "لا تذكر أرقام الهواتف أو العناوين أو معلومات الدفع.")}</p>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <button className="btn-primary" disabled={busy}>{busy ? "Saving…" : existing ? "Update review" : "Publish verified review"}</button>
+        <button className="btn-primary" disabled={busy}>{busy ? t("Saving…", "جارٍ الحفظ…") : existing ? t("Update review", "تحديث التقييم") : t("Publish verified review", "نشر التقييم الموثّق")}</button>
         {message && <p className="text-xs text-ink-muted" role="status">{message}</p>}
       </div>
     </form>
@@ -124,12 +127,14 @@ function RatingField({
   onChange,
   compact = false,
   optional = false,
+  arabic = false,
 }: {
   label: string;
   value: number | null;
   onChange: (value: number | null) => void;
   compact?: boolean;
   optional?: boolean;
+  arabic?: boolean;
 }) {
   return (
     <fieldset>
@@ -140,7 +145,7 @@ function RatingField({
             key={rating}
             type="button"
             className={`text-2xl leading-none transition hover:scale-110 ${rating <= (value ?? 0) ? "text-gold-400" : "text-jade-900/15"}`}
-            aria-label={`${rating} out of 5`}
+            aria-label={arabic ? `${rating} من 5` : `${rating} out of 5`}
             aria-pressed={value === rating}
             onClick={() => onChange(rating)}
           >
@@ -148,7 +153,7 @@ function RatingField({
           </button>
         ))}
         {optional && value !== null && (
-          <button type="button" className="ml-2 text-[11px] text-ink-muted underline" onClick={() => onChange(null)}>Clear</button>
+          <button type="button" className="ml-2 text-[11px] text-ink-muted underline" onClick={() => onChange(null)}>{arabic ? "مسح" : "Clear"}</button>
         )}
       </div>
     </fieldset>

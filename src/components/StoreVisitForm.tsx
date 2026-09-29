@@ -3,7 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-export function StoreVisitForm({ productId, defaultPhone = "" }: { productId: string; defaultPhone?: string }) {
+export function StoreVisitForm({ productId, defaultPhone = "", arabic = false }: { productId: string; defaultPhone?: string; arabic?: boolean }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -16,12 +17,12 @@ export function StoreVisitForm({ productId, defaultPhone = "" }: { productId: st
     const response = await fetch("/api/store-visits", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ productId, preferredAt: date.toISOString(), phone: form.get("phone"), note: form.get("note") || null }) });
     const json = await response.json().catch(() => ({})); setBusy(false);
     if (response.status === 401) { router.push(`/login?next=/products/${productId}`); return; }
-    if (!response.ok) { setMessage(json.error ?? "Could not request visit"); return; }
-    setMessage("Visit requested. The store will confirm the time."); setOpen(false); router.refresh();
+    if (!response.ok) { setMessage(json.error ?? t("Could not request visit", "تعذر طلب الزيارة")); return; }
+    setMessage(t("Visit requested. The store will confirm the time.", "تم طلب الزيارة. سيؤكد المتجر الموعد.")); setOpen(false); router.refresh();
   }
 
-  if (!open) return <div><button type="button" className="btn-ghost w-full" onClick={() => setOpen(true)}>Request a store visit</button>{message && <p className="mt-2 text-xs text-signal-ok" role="status">{message}</p>}<p className="mt-2 text-xs leading-relaxed text-ink-muted">No identity check, payment, stock hold or price lock. This only asks the store to confirm a visit.</p></div>;
-  return <form className="grid gap-3 rounded-2xl border border-jade-900/10 bg-jade-50 p-4" onSubmit={submit}><p className="text-sm font-semibold text-jade-950">Request a store visit</p><div><label className="label" htmlFor="visit-time">Preferred date and time</label><input id="visit-time" name="preferredAt" className="input" type="datetime-local" min={minimumTime()} required /></div><div><label className="label" htmlFor="visit-phone">Mobile number</label><input id="visit-phone" name="phone" className="input" type="tel" minLength={7} maxLength={20} defaultValue={defaultPhone} required /></div><div><label className="label" htmlFor="visit-note">Note (optional)</label><textarea id="visit-note" name="note" className="input min-h-20" maxLength={500} /></div>{message && <p className="text-xs text-signal-err" role="alert">{message}</p>}<div className="flex gap-2"><button className="btn-primary px-4 py-2 text-xs" disabled={busy}>{busy ? "Sending…" : "Send visit request"}</button><button type="button" className="btn-ghost px-4 py-2 text-xs" onClick={() => setOpen(false)}>Cancel</button></div></form>;
+  if (!open) return <div><button type="button" className="btn-ghost w-full" onClick={() => setOpen(true)}>{t("Request a store visit", "طلب زيارة للمتجر")}</button>{message && <p className="mt-2 text-xs text-signal-ok" role="status">{message}</p>}<p className="mt-2 text-xs leading-relaxed text-ink-muted">{t("No identity check, payment, stock hold or price lock. This only asks the store to confirm a visit.", "لا يتطلب ذلك تحققًا من الهوية أو دفعًا أو حجزًا للمخزون أو تثبيتًا للسعر. إنه طلب للمتجر لتأكيد موعد الزيارة فقط.")}</p></div>;
+  return <form className="grid gap-3 rounded-2xl border border-jade-900/10 bg-jade-50 p-4" onSubmit={submit}><p className="text-sm font-semibold text-jade-950">{t("Request a store visit", "طلب زيارة للمتجر")}</p><div><label className="label" htmlFor="visit-time">{t("Preferred date and time", "التاريخ والوقت المفضلان")}</label><input id="visit-time" name="preferredAt" className="input" type="datetime-local" min={minimumTime()} required /></div><div><label className="label" htmlFor="visit-phone">{t("Mobile number", "رقم الهاتف")}</label><input id="visit-phone" name="phone" className="input" type="tel" minLength={7} maxLength={20} defaultValue={defaultPhone} required /></div><div><label className="label" htmlFor="visit-note">{t("Note (optional)", "ملاحظة (اختياري)")}</label><textarea id="visit-note" name="note" className="input min-h-20" maxLength={500} /></div>{message && <p className="text-xs text-signal-err" role="alert">{message}</p>}<div className="flex gap-2"><button className="btn-primary px-4 py-2 text-xs" disabled={busy}>{busy ? t("Sending…", "جارٍ الإرسال…") : t("Send visit request", "إرسال طلب الزيارة")}</button><button type="button" className="btn-ghost px-4 py-2 text-xs" onClick={() => setOpen(false)}>{t("Cancel", "إلغاء")}</button></div></form>;
 }
 
 function minimumTime() {

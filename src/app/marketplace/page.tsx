@@ -16,6 +16,7 @@ import { applyEventDeliveryDiscount, getActiveSiteBanners } from "@/lib/marketin
 import { SiteBannerStack } from "@/components/SiteBanner";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 import { cookies } from "next/headers";
+import { localizedCategoryLabel } from "@/lib/localized-category";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -100,7 +101,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
             </p>
           </div>
           <div className="shrink-0">
-            <GoldPriceBadge tone="dark" />
+            <GoldPriceBadge tone="dark" arabic={arabic} />
             <Link href="/compare" className="mt-3 flex min-h-11 items-center justify-center rounded-full border border-gold-300/40 px-5 text-xs font-semibold text-gold-100 transition hover:bg-white/10">
               {arabic ? "قارن الأسعار بين المتاجر ←" : "Compare across stores →"}
             </Link>
@@ -113,42 +114,42 @@ export default async function MarketplacePage({ searchParams }: SP) {
         <form className="card grid gap-4 p-5 md:grid-cols-2 lg:grid-cols-4 lg:items-end">
           <div>
             <label className="label" htmlFor="marketplace-search">{t.search}</label>
-            <input id="marketplace-search" className="input" name="q" type="search" defaultValue={filters.q ?? ""} placeholder="Try ‘bangle’ or ‘gold bar’" />
+            <input id="marketplace-search" className="input" name="q" type="search" defaultValue={filters.q ?? ""} placeholder={arabic ? "جرّب «إسوارة» أو «سبيكة ذهب»" : "Try ‘bangle’ or ‘gold bar’"} />
           </div>
           <div>
             <label className="label" htmlFor="marketplace-category">{t.category}</label>
             <select id="marketplace-category" className="input capitalize" name="category" defaultValue={filters.category ?? ""}>
-              <option value="">All categories</option>
+              <option value="">{arabic ? "كل الفئات" : "All categories"}</option>
               {["ring","necklace","bracelet","earring","bangle","chain","pendant","bar","coin","other"].map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>{localizedCategoryLabel(c, arabic)}</option>
               ))}
             </select>
           </div>
           <div>
             <label className="label" htmlFor="marketplace-karat">{t.purity}</label>
             <select id="marketplace-karat" className="input" name="karat" defaultValue={filters.karat ?? ""}>
-              <option value="">All karats</option>
+              <option value="">{arabic ? "كل العيارات" : "All karats"}</option>
               {[24, 22, 21, 18, 16, 14, 12].map((k) => <option key={k} value={k}>{k}K</option>)}
             </select>
           </div>
           <div>
             <label className="label" htmlFor="marketplace-sort">{t.sort}</label>
             <select id="marketplace-sort" className="input" name="sort" defaultValue={filters.sort ?? "newest"}>
-              <option value="newest">Newest</option>
-              <option value="value">Best Value Score</option>
-              <option value="price_low">Lowest total</option>
-              <option value="price_high">Highest total</option>
-              <option value="rating">Store rating</option>
+              <option value="newest">{arabic ? "الأحدث" : "Newest"}</option>
+              <option value="value">{arabic ? "أفضل درجة قيمة" : "Best Value Score"}</option>
+              <option value="price_low">{arabic ? "الأقل سعرًا إجماليًا" : "Lowest total"}</option>
+              <option value="price_high">{arabic ? "الأعلى سعرًا إجماليًا" : "Highest total"}</option>
+              <option value="rating">{arabic ? "تقييم المتجر" : "Store rating"}</option>
             </select>
           </div>
           <details className="rounded-lg border border-jade-900/10 bg-bone-soft p-3 md:col-span-2 lg:col-span-4" open={Boolean(filters.emirate || filters.minWeight || filters.maxWeight || filters.maxTotal || filters.certified)}>
           <summary className="cursor-pointer py-1.5 text-sm font-semibold text-jade-900">{t.more} <span className="ml-1 text-xs font-normal text-ink-muted">{arabic ? "الإمارة والوزن والميزانية والشهادات" : "Emirate, weight, budget & certificates"}</span></summary>
             <div className="mt-3 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <div><label className="label" htmlFor="marketplace-emirate">Store emirate</label><select id="marketplace-emirate" className="input" name="emirate" defaultValue={filters.emirate ?? ""}><option value="">All Emirates</option>{["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
-          <div><label className="label" htmlFor="marketplace-min-weight">Minimum weight (g)</label><input id="marketplace-min-weight" className="input" name="minWeight" type="number" min="0" step="0.1" defaultValue={filters.minWeight ?? ""} placeholder="Any" /></div>
-          <div><label className="label" htmlFor="marketplace-max-weight">Maximum weight (g)</label><input id="marketplace-max-weight" className="input" name="maxWeight" type="number" min="0" step="0.1" defaultValue={filters.maxWeight ?? ""} placeholder="Any" /></div>
-          <div><label className="label" htmlFor="marketplace-max-total">Maximum live total (AED)</label><input id="marketplace-max-total" className="input" name="maxTotal" type="number" min="1" step="1" defaultValue={filters.maxTotal ?? ""} placeholder="Any" /></div>
-          <div><label className="label" htmlFor="marketplace-certified">Certificate / assay</label><select id="marketplace-certified" className="input" name="certified" defaultValue={filters.certified ?? ""}><option value="">Any</option><option value="yes">Certificate reference listed</option></select></div>
+          <div><label className="label" htmlFor="marketplace-emirate">{arabic ? "إمارة المتجر" : "Store emirate"}</label><select id="marketplace-emirate" className="input" name="emirate" defaultValue={filters.emirate ?? ""}><option value="">{arabic ? "كل الإمارات" : "All Emirates"}</option>{["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"].map((value) => <option key={value} value={value}>{value}</option>)}</select></div>
+          <div><label className="label" htmlFor="marketplace-min-weight">{arabic ? "أقل وزن (غرام)" : "Minimum weight (g)"}</label><input id="marketplace-min-weight" className="input" name="minWeight" type="number" min="0" step="0.1" defaultValue={filters.minWeight ?? ""} placeholder={arabic ? "أي وزن" : "Any"} /></div>
+          <div><label className="label" htmlFor="marketplace-max-weight">{arabic ? "أعلى وزن (غرام)" : "Maximum weight (g)"}</label><input id="marketplace-max-weight" className="input" name="maxWeight" type="number" min="0" step="0.1" defaultValue={filters.maxWeight ?? ""} placeholder={arabic ? "أي وزن" : "Any"} /></div>
+          <div><label className="label" htmlFor="marketplace-max-total">{arabic ? "أعلى إجمالي مباشر (درهم)" : "Maximum live total (AED)"}</label><input id="marketplace-max-total" className="input" name="maxTotal" type="number" min="1" step="1" defaultValue={filters.maxTotal ?? ""} placeholder={arabic ? "أي مبلغ" : "Any"} /></div>
+          <div><label className="label" htmlFor="marketplace-certified">{arabic ? "الشهادة / الفحص" : "Certificate / assay"}</label><select id="marketplace-certified" className="input" name="certified" defaultValue={filters.certified ?? ""}><option value="">{arabic ? "الكل" : "Any"}</option><option value="yes">{arabic ? "مذكور رقم شهادة" : "Certificate reference listed"}</option></select></div>
             </div>
           </details>
           <button className="btn-primary min-w-28 lg:col-span-4">{t.apply}</button>
@@ -156,17 +157,17 @@ export default async function MarketplacePage({ searchParams }: SP) {
 
         {(filters.category || filters.karat || filters.q || filters.emirate || filters.minWeight || filters.maxWeight || filters.maxTotal || filters.certified || (filters.sort && filters.sort !== "newest")) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-semibold text-ink-muted">Applied:</span>
-            {filters.q && <span className="pill border-jade-900/10 bg-white">Search “{filters.q}”</span>}
-            {filters.category && <span className="pill border-jade-900/10 bg-white capitalize">{filters.category}</span>}
+            <span className="font-semibold text-ink-muted">{arabic ? "الفلاتر المطبقة:" : "Applied:"}</span>
+            {filters.q && <span className="pill border-jade-900/10 bg-white">{arabic ? "بحث" : "Search"} “{filters.q}”</span>}
+            {filters.category && <span className="pill border-jade-900/10 bg-white capitalize">{localizedCategoryLabel(filters.category, arabic)}</span>}
             {filters.karat && <span className="pill border-jade-900/10 bg-white">{filters.karat}K</span>}
             {filters.emirate && <span className="pill border-jade-900/10 bg-white">{filters.emirate}</span>}
-            {filters.minWeight && <span className="pill border-jade-900/10 bg-white">From {filters.minWeight}g</span>}
-            {filters.maxWeight && <span className="pill border-jade-900/10 bg-white">Up to {filters.maxWeight}g</span>}
-            {filters.maxTotal && <span className="pill border-jade-900/10 bg-white">Up to AED {filters.maxTotal}</span>}
-            {filters.certified && <span className="pill border-jade-900/10 bg-white">Certificate listed</span>}
-            {filters.sort && filters.sort !== "newest" && <span className="pill border-jade-900/10 bg-white">Sorted: {filters.sort.replaceAll("_", " ")}</span>}
-            <Link href="/marketplace" className="ml-1 font-semibold text-jade-700 underline underline-offset-4">Clear all</Link>
+            {filters.minWeight && <span className="pill border-jade-900/10 bg-white">{arabic ? "من" : "From"} {filters.minWeight}g</span>}
+            {filters.maxWeight && <span className="pill border-jade-900/10 bg-white">{arabic ? "حتى" : "Up to"} {filters.maxWeight}g</span>}
+            {filters.maxTotal && <span className="pill border-jade-900/10 bg-white">{arabic ? "حتى" : "Up to"} AED {filters.maxTotal}</span>}
+            {filters.certified && <span className="pill border-jade-900/10 bg-white">{arabic ? "الشهادة مذكورة" : "Certificate listed"}</span>}
+            {filters.sort && filters.sort !== "newest" && <span className="pill border-jade-900/10 bg-white">{arabic ? "الترتيب:" : "Sorted:"} {filters.sort.replaceAll("_", " ")}</span>}
+            <Link href="/marketplace" className="ml-1 font-semibold text-jade-700 underline underline-offset-4">{arabic ? "مسح الكل" : "Clear all"}</Link>
           </div>
         )}
 
@@ -199,6 +200,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
                 eventPromotionTitle={feeOffer.eventPromotionTitle}
                 deliveryFee={deliveryFee}
                 priority={index === 0}
+                arabic={arabic}
               />
             );
           })}

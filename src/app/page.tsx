@@ -204,7 +204,7 @@ export default async function HomePage() {
             const vendor = product.vendors as unknown as { id: string; business_name: string; emirate: string; verification_status: string } | null;
             return <ProductCard key={product.id} variant="heritage" p={{ ...product, vendor: vendor ? { ...vendor, reputation: reputations.get(vendor.id) ?? null } : null }}
               platformFeeBps={platformFeeBps} customerFeeDiscountPercent={feeOffer.discountPercent}
-              eventFeeDiscountPercent={feeOffer.eventDiscountPercent} eventPromotionTitle={feeOffer.eventPromotionTitle} deliveryFee={deliveryFee} />;
+              eventFeeDiscountPercent={feeOffer.eventDiscountPercent} eventPromotionTitle={feeOffer.eventPromotionTitle} deliveryFee={deliveryFee} arabic={arabic} />;
           })}
         </div>
         {(products ?? []).length === 0 && <p className="py-6 text-sm text-ink-muted">No available listings just yet. <Link href="/requests/new" className="underline">Request a piece</Link>.</p>}

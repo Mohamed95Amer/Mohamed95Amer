@@ -29,23 +29,24 @@ const publicLinks = [
 export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDeliveryCompany, isCustomer, language, unreadCount }: MobileNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const ar = language === "ar";
 
   useEffect(() => setOpen(false), [pathname]);
 
   const localizedPublicLinks = language === "ar" ? [["/marketplace", "السوق"], ["/compare", "قارن المتاجر"], ["/requests/new", "اطلب قطعة"], ["/vendors", "المتاجر الموثقة"], ["/live-price", "أسعار وتحليلات الذهب"], ["/how-it-works", "كيف يعمل"], ["/trust", "الثقة والتحقق"]] as const : publicLinks;
   const accountLinks: Array<readonly [string, string]> = signedIn
     ? [
-        ["/profile", displayName ? `${displayName}'s profile` : "My profile"],
-        ...(isCustomer ? [["/account", "Purchase history"], ["/account/requests", "My gold requests"], ["/account/visits", "My store visits"]] as const : []),
+        ["/profile", displayName ? (ar ? `ملف ${displayName}` : `${displayName}'s profile`) : ar ? "ملفي الشخصي" : "My profile"],
+        ...(isCustomer ? [["/account", ar ? "سجل المشتريات" : "Purchase history"], ["/account/requests", ar ? "طلباتي للذهب" : "My gold requests"], ["/account/visits", ar ? "زيارات المتاجر" : "My store visits"]] as const : []),
         ["/account/saved", language === "ar" ? "المحفوظات والتنبيهات" : "Saved & alerts"],
         ["/account/notifications", `${language === "ar" ? "الإشعارات" : "Notifications"}${unreadCount ? ` (${unreadCount})` : ""}`],
-        ...(isVendor ? [["/vendor", "Vendor dashboard"]] as const : []),
-        ...(isDeliveryCompany ? [["/delivery", "Delivery dashboard"]] as const : []),
-        ...(isAdmin ? [["/admin", "Admin dashboard"]] as const : []),
+        ...(isVendor ? [["/vendor", ar ? "لوحة المتجر" : "Vendor dashboard"]] as const : []),
+        ...(isDeliveryCompany ? [["/delivery", ar ? "لوحة التوصيل" : "Delivery dashboard"]] as const : []),
+        ...(isAdmin ? [["/admin", ar ? "لوحة الإدارة" : "Admin dashboard"]] as const : []),
       ]
     : [
-        ["/login", "Sign in"],
-        ["/register", "Create an account"],
+        ["/login", ar ? "تسجيل الدخول" : "Sign in"],
+        ["/register", ar ? "إنشاء حساب" : "Create an account"],
       ];
 
   return (
@@ -54,11 +55,11 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDelivery
         type="button"
         aria-expanded={open}
         aria-controls="mobile-site-menu"
-        aria-label={open ? "Close navigation" : "Open navigation"}
+        aria-label={open ? (ar ? "إغلاق القائمة" : "Close navigation") : (ar ? "فتح القائمة" : "Open navigation")}
         onClick={() => setOpen((value) => !value)}
         className="grid h-11 w-11 place-items-center rounded-full border border-jade-900/15 bg-white text-jade-950 shadow-sm"
       >
-        <span className="sr-only">Menu</span>
+        <span className="sr-only">{ar ? "القائمة" : "Menu"}</span>
         <span className="grid gap-1.5" aria-hidden="true">
           <span className={`h-0.5 w-5 bg-current transition ${open ? "translate-y-2 rotate-45" : ""}`} />
           <span className={`h-0.5 w-5 bg-current transition ${open ? "opacity-0" : ""}`} />
@@ -68,7 +69,7 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDelivery
 
       {open && (
         <div id="mobile-site-menu" className="absolute inset-x-0 top-full border-t border-jade-900/10 bg-white shadow-lift">
-          <nav className="container-pro grid gap-1 py-4" aria-label="Mobile navigation">
+          <nav className="container-pro grid gap-1 py-4" aria-label={ar ? "القائمة على الهاتف" : "Mobile navigation"}>
             {localizedPublicLinks.map(([href, label]) => (
               <NavLink key={href} href={href} label={label} active={pathname === href || pathname.startsWith(`${href}/`)} />
             ))}
@@ -76,7 +77,7 @@ export function MobileNav({ signedIn, displayName, isVendor, isAdmin, isDelivery
             {accountLinks.map(([href, label]) => (
               <NavLink key={href} href={href} label={label} active={pathname === href || pathname.startsWith(`${href}/`)} />
             ))}
-            {signedIn && <div className="mt-2 [&_button]:w-full"><SignOutButton /></div>}
+            {signedIn && <div className="mt-2 [&_button]:w-full"><SignOutButton arabic={ar} /></div>}
           </nav>
         </div>
       )}

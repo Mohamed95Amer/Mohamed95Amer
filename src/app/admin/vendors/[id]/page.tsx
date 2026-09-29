@@ -65,7 +65,7 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
                 <div className="font-medium">{d.original_filename ?? d.storage_path}</div>
                 <div className="text-xs text-ink-muted">{d.doc_type} · {d.mime_type} · {d.size_bytes ? Math.round(d.size_bytes/1024) : 0} KB</div>
               </div>
-              <AdminDocViewerClient path={d.storage_path} />
+              <AdminDocViewerClient path={d.storage_path} arabic={arabic} />
             </li>
           ))}
           {(docs ?? []).length === 0 && <li className="py-3 text-ink-muted">{arabic ? "لم تُرفع مستندات." : "No documents uploaded."}</li>}
@@ -82,14 +82,14 @@ export default async function AdminVendorDetail({ params }: { params: Promise<{ 
         <h3 className="font-serif text-xl">{arabic ? "القرار" : "Decision"}</h3>
         <p className="text-sm text-ink-muted mt-1">{arabic ? "اعتمد المتجر أو ارفضه أو أوقفه. الاعتماد مطلوب قبل نشر المنتجات." : "Approve, reject or suspend this vendor. Approval is required before they can publish products."}</p>
         <div className="mt-4">
-          <AdminVendorActions vendorId={vendor.id} currentStatus={vendor.verification_status} />
+          <AdminVendorActions vendorId={vendor.id} currentStatus={vendor.verification_status} arabic={arabic} />
         </div>
       </div>
 
       <div className="card p-6">
         <h3 className="font-serif text-xl">{arabic ? "ظهور المتجر المميز" : "Premium vendor placement"}</h3>
         <p className="mt-1 text-sm text-ink-muted">{arabic ? "امنح المتجر ظهوراً محدد المدة أعلى المتاجر العادية. يظهر للعميل دائماً وسم إعلان صغير." : "Reward this store with a time-limited position above organic vendors. Customers always see a small “Ad” disclosure."}</p>
-        <div className="mt-5"><AdminVendorPromotionControl vendorId={vendor.id} promotions={promotions ?? []} /></div>
+        <div className="mt-5"><AdminVendorPromotionControl vendorId={vendor.id} promotions={promotions ?? []} arabic={arabic} /></div>
       </div>
     </div>
   );

@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { localizedStatusLabel } from "@/lib/localized-status";
 
 export function AdminVendorActions({
   vendorId,
   currentStatus,
+  arabic = false,
 }: {
   vendorId: string;
   currentStatus: string;
+  arabic?: boolean;
 }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const router = useRouter();
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState<"approve" | "reject" | "suspend" | null>(null);
@@ -26,7 +30,7 @@ export function AdminVendorActions({
     setBusy(null);
     if (!res.ok) {
       const j = await res.json().catch(() => ({}));
-      setErr(typeof j.error === "string" ? j.error : "Failed");
+      setErr(typeof j.error === "string" ? j.error : t("Failed", "تعذر تنفيذ الإجراء"));
       return;
     }
     router.refresh();
@@ -35,20 +39,20 @@ export function AdminVendorActions({
   return (
     <div className="space-y-3">
       <div>
-        <label className="label" htmlFor="vendor-admin-note">Admin note (optional)</label>
+        <label className="label" htmlFor="vendor-admin-note">{t("Admin note (optional)", "ملاحظة إدارية (اختياري)")}</label>
         <textarea id="vendor-admin-note" name="admin_note" className="input min-h-[80px]" value={note} onChange={(e) => setNote(e.target.value)} />
       </div>
       <div className="flex flex-wrap gap-2">
         <button className="btn-primary" disabled={busy !== null} onClick={() => act("approve")}>
-          {busy === "approve" ? "…" : "Approve"}
+          {busy === "approve" ? "…" : t("Approve", "اعتماد")}
         </button>
         <button className="btn-ghost" disabled={busy !== null} onClick={() => act("reject")}>
-          {busy === "reject" ? "…" : "Reject"}
+          {busy === "reject" ? "…" : t("Reject", "رفض")}
         </button>
         <button className="btn-ghost" disabled={busy !== null} onClick={() => act("suspend")}>
-          {busy === "suspend" ? "…" : "Suspend"}
+          {busy === "suspend" ? "…" : t("Suspend", "إيقاف")}
         </button>
-        <span className="self-center text-xs text-ink-muted">Current: {currentStatus}</span>
+        <span className="self-center text-xs text-ink-muted">{t("Current", "الحالة الحالية")}: {localizedStatusLabel(currentStatus, arabic)}</span>
       </div>
       {err && <p role="alert" className="text-sm text-signal-err">{err}</p>}
     </div>
