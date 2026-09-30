@@ -84,11 +84,14 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
         trade_license_number: `TEST-ONBOARD-${randomUUID()}`,
         license_expiry_date: '2099-01-01',
         owner_name: 'Synthetic new vendor owner',
+        contact_title: 'Owner',
         email,
         phone: '+971500000002',
         emirate: 'Dubai',
         store_address: 'Gold Souq, Deira, Dubai',
         google_maps_link: null,
+        store_latitude: 25.27,
+        store_longitude: 55.30,
         vat_trn_number: null,
       };
       const created = await route('vendor/onboard', payload);
@@ -102,6 +105,8 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
 
       const invalid = await route('vendor/onboard', { ...payload, trade_license_number: 'x' });
       assert.equal(invalid.status, 400, JSON.stringify(invalid.body));
+      assert.equal((await route('vendor/onboard', { ...payload, contact_title: '' })).status, 400);
+      assert.equal((await route('vendor/onboard', { ...payload, store_latitude: null })).status, 400);
       const revised = await route('vendor/onboard', { ...payload, business_name: 'Synthetic New Souq Jewellers Revised' });
       assert.equal(revised.status, 200, JSON.stringify(revised.body));
       assert.equal(revised.body.vendorId, onboardingVendorId);
