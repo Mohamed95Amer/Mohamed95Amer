@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forecast Check</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3v18h18"/>
+            <path d="M7 14l4-4 3 3 5-6"/>
+          </svg>
+        </div>
+        <span>Forecast Check</span>
+      </div>
+      <div id="header-actions"></div>
+    </header>
+
+    <!-- Phase bar kept for layout compatibility; unused by Forecast Check -->
+    <nav id="phase-bar" aria-label="Workflow progress" hidden>
+      <div class="phase" data-phase="extract"><span class="phase-dot"></span></div>
+    </nav>
+
+    <!-- Main content area -->
+    <main id="content" aria-live="polite"></main>
+
+  </div>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
