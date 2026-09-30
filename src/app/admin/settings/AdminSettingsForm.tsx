@@ -4,19 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface Settings {
-  platform_fee_aed: number;
+  platform_fee_bps: number;
   delivery_fee_aed: number;
   reservation_lock_minutes: number;
   stale_price_seconds: number;
+  listing_fresh_days: number;
+  demo_data_visible: boolean;
+  online_payments_enabled: boolean;
+  online_payment_provider: string | null;
 }
 
-export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
+export function AdminSettingsForm({ initial, arabic = false }: { initial: Settings | null; arabic?: boolean }) {
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const router = useRouter();
   const [form, setForm] = useState<Settings>({
-    platform_fee_aed: initial?.platform_fee_aed ?? 0,
+    platform_fee_bps: initial?.platform_fee_bps ?? 100,
     delivery_fee_aed: initial?.delivery_fee_aed ?? 0,
     reservation_lock_minutes: initial?.reservation_lock_minutes ?? 10,
     stale_price_seconds: initial?.stale_price_seconds ?? 60,
+    listing_fresh_days: initial?.listing_fresh_days ?? 45,
+    demo_data_visible: initial?.demo_data_visible ?? false,
+    online_payments_enabled: false,
+    online_payment_provider: null,
   });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -29,14 +38,18 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        platform_fee_aed: Number(form.platform_fee_aed),
+        platform_fee_bps: Number(form.platform_fee_bps),
         delivery_fee_aed: Number(form.delivery_fee_aed),
         reservation_lock_minutes: Number(form.reservation_lock_minutes),
         stale_price_seconds: Number(form.stale_price_seconds),
+        listing_fresh_days: Number(form.listing_fresh_days),
+        demo_data_visible: Boolean(form.demo_data_visible),
+        online_payments_enabled: Boolean(form.online_payments_enabled),
+        online_payment_provider: form.online_payment_provider || null,
       }),
     });
     setBusy(false);
-    if (!res.ok) { const j = await res.json().catch(()=>({})); setErr(typeof j.error === "string" ? j.error : "Failed"); return; }
+    if (!res.ok) { const j = await res.json().catch(()=>({})); setErr(arabic ? "تعذر حفظ الإعدادات. راجع البيانات وحاول مجدداً." : typeof j.error === "string" ? j.error : "Failed"); return; }
     setOk(true);
     router.refresh();
   }
@@ -48,29 +61,51 @@ export function AdminSettingsForm({ initial }: { initial: Settings | null }) {
   return (
     <form className="grid gap-4" onSubmit={save}>
       <div>
-        <label className="label">Platform fee (AED)</label>
-        <input className="input" type="number" min="0" step="0.01" value={form.platform_fee_aed}
-          onChange={(e) => set("platform_fee_aed", Number(e.target.value))} />
+        <label className="label" htmlFor="setting-commission">{t("Phase 1 fee model", "رسوم المرحلة الأولى")}</label>
+        <input id="setting-commission" className="input" value={t("1% customer fee · first 3 orders at 0.5%", "رسوم العميل 1% · أول 3 طلبات بنسبة 0.5%")} readOnly />
+        <p className="mt-1 text-xs text-ink-muted">
+          {t("The first three active or completed orders reserve a 50%-off fee slot. Rejected, cancelled and expired orders release their slots. Vendor making-charge commission is paused.", "تحجز أول ثلاثة طلبات نشطة أو مكتملة خصم 50% على الرسوم. الطلبات المرفوضة أو الملغاة أو المنتهية تُعيد الخصم للاستخدام. عمولة مصنعية المتجر معلقة.")}
+        </p>
       </div>
       <div>
-        <label className="label">Delivery fee (AED)</label>
-        <input className="input" type="number" min="0" step="0.01" value={form.delivery_fee_aed}
+        <label className="label" htmlFor="setting-delivery">{t("Delivery fee per order (AED)", "رسوم التوصيل لكل طلب (درهم)")}</label>
+        <input id="setting-delivery" name="delivery_fee_aed" className="input" type="number" inputMode="decimal" min="0" step="0.01" value={form.delivery_fee_aed}
           onChange={(e) => set("delivery_fee_aed", Number(e.target.value))} />
       </div>
       <div>
-        <label className="label">Reservation lock (minutes)</label>
-        <input className="input" type="number" min="1" max="60" step="1" value={form.reservation_lock_minutes}
+        <label className="label" htmlFor="setting-lock">{t("Reservation lock (minutes)", "مدة تثبيت السعر والحجز (دقائق)")}</label>
+        <input id="setting-lock" name="reservation_lock_minutes" className="input" type="number" inputMode="numeric" min="1" max="60" step="1" value={form.reservation_lock_minutes}
           onChange={(e) => set("reservation_lock_minutes", Number(e.target.value))} />
       </div>
       <div>
-        <label className="label">Stale price threshold (seconds)</label>
-        <input className="input" type="number" min="15" max="600" step="1" value={form.stale_price_seconds}
+        <label className="label" htmlFor="setting-stale">{t("Stale price threshold (seconds)", "حد صلاحية السعر (ثوانٍ)")}</label>
+        <input id="setting-stale" name="stale_price_seconds" className="input" type="number" inputMode="numeric" min="15" max="600" step="1" value={form.stale_price_seconds}
           onChange={(e) => set("stale_price_seconds", Number(e.target.value))} />
-        <p className="text-xs text-ink-muted mt-1">If the latest tick is older than this, reservation is disabled marketplace-wide.</p>
+        <p className="text-xs text-ink-muted mt-1">{t("If the latest tick is older than this, purchase requests are disabled marketplace-wide.", "إذا كان أحدث سعر أقدم من هذا الحد، تتوقف طلبات الشراء في السوق حتى يتوفر سعر حديث.")}</p>
       </div>
-      {err && <p className="text-sm text-signal-err">{err}</p>}
-      {ok && <p className="text-sm text-signal-ok">Saved.</p>}
-      <div><button className="btn-primary" disabled={busy}>{busy ? "Saving…" : "Save settings"}</button></div>
+      <div>
+        <label className="label" htmlFor="setting-listing-freshness">{t("Hide listings after (days without stock confirmation)", "إخفاء المنتجات بعد (أيام دون تأكيد المخزون)")}</label>
+        <input id="setting-listing-freshness" className="input" type="number" min="7" max="180" step="1" value={form.listing_fresh_days} onChange={(e) => set("listing_fresh_days", Number(e.target.value))} />
+      </div>
+      <div className="rounded-xl border border-gold-300/50 bg-gold-50/50 p-4">
+        <label className="flex items-start gap-3 text-sm font-semibold text-jade-950" htmlFor="setting-demo-data">
+          <input id="setting-demo-data" type="checkbox" className="mt-1" checked={form.demo_data_visible} onChange={(e) => set("demo_data_visible", e.target.checked)} />
+          {t("Show demo data on the public site", "إظهار البيانات التجريبية على الموقع العام")}
+        </label>
+        <p className="mt-1 text-xs text-ink-muted">{t("Turn this off before launch to hide seeded demo stores, listings, orders and reviews. You can turn it back on for testing; real vendor data is not affected.", "عطّل هذا الخيار قبل الإطلاق لإخفاء المتاجر والمنتجات والطلبات والتقييمات التجريبية. يمكنك إعادة تفعيله للاختبار دون التأثير على بيانات المتاجر الحقيقية.")}</p>
+      </div>
+      <div className="rounded-xl border border-jade-900/10 bg-jade-50 p-4">
+        <label className="flex items-start gap-3 text-sm font-semibold text-jade-950">
+          <input type="checkbox" className="mt-1" checked={false} disabled />
+          {t("Online checkout — provider connection required", "الدفع الإلكتروني — يتطلب ربط مزود دفع")}
+        </label>
+        <p className="mt-1 text-xs text-ink-muted">{t("The choice remains visible to customers as coming soon. Activation stays locked until a contracted provider, signed webhooks, refunds and marketplace settlement are deployed and tested.", "يظهر الخيار للعملاء على أنه قادم قريباً. يبقى تفعيله مقفلاً حتى التعاقد مع مزود دفع واختبار إشعارات الدفع الموقعة والاستردادات والتسوية.")}</p>
+        <label className="label mt-3" htmlFor="setting-payment-provider">{t("Provider name", "اسم مزود الدفع")}</label>
+        <input id="setting-payment-provider" className="input" maxLength={80} placeholder={t("Not connected", "غير متصل")} value="" disabled />
+      </div>
+      {err && <p role="alert" className="text-sm text-signal-err">{err}</p>}
+      {ok && <p role="status" className="text-sm text-signal-ok">{t("Saved.", "تم الحفظ.")}</p>}
+      <div><button className="btn-primary" disabled={busy}>{busy ? t("Saving…", "جارٍ الحفظ…") : t("Save settings", "حفظ الإعدادات")}</button></div>
     </form>
   );
 }

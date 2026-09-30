@@ -1,0 +1,5 @@
+"use client";
+
+import { useState } from "react";
+
+export function ReferralShare({ url, arabic = false }: { url: string; arabic?: boolean }) { const [copied, setCopied] = useState(false); async function share() { void fetch("/api/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ eventName: "referral_shared" }) }); if (navigator.share) { await navigator.share({ title: "Get Gold", text: arabic ? "قارن أسعار الذهب المباشرة من متاجر إماراتية موثّقة." : "Compare transparent live-priced gold from verified UAE stores.", url }).catch(() => undefined); return; } await navigator.clipboard.writeText(url); setCopied(true); } return <div className="mt-5 flex flex-col gap-3 sm:flex-row"><input className="input flex-1" dir="ltr" readOnly value={url} aria-label={arabic ? "رابط الدعوة" : "Referral link"} /><button type="button" className="btn-primary whitespace-nowrap" onClick={share}>{copied ? arabic ? "تم النسخ" : "Copied" : arabic ? "شارك Get Gold" : "Share Get Gold"}</button></div>; }

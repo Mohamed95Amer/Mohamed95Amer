@@ -135,6 +135,57 @@ export const metalsDevProvider: GoldPriceProvider = {
 };
 
 /**
+ * Candidate field names for a spot price, most specific first. Providers vary
+ * and some change shape between versions, so we probe rather than hard-code.
+ */
+const PRICE_KEYS = [
+  "price", "price_usd", "priceUsd", "rate", "value",
+  "spot", "ask", "last", "close",
+];
+
+/**
+ * Pull a USD-per-troy-ounce figure out of a loosely-typed provider response.
+ *
+ * Units are auto-detected instead of assumed: a per-gram quote is ~1/31 of a
+ * per-ounce quote, so anything below the plausible per-ounce floor is treated
+ * as per-gram and scaled up. A response we cannot read throws, which lets the
+ * service fall back to the backup provider rather than persist garbage.
+ */
+function extractUsdPerOunce(json: unknown, provider: string): number {
+  if (!json || typeof json !== "object") {
+    throw new GoldPriceFetchError(`Expected an object, got ${typeof json}`, provider);
+  }
+  const obj = json as Record<string, unknown>;
+  for (const key of PRICE_KEYS) {
+    const raw = obj[key];
+    const n = typeof raw === "number" ? raw : typeof raw === "string" ? Number(raw) : NaN;
+    if (Number.isFinite(n) && n > 0) {
+      return n < XAU_USD_MIN ? n * GRAMS_PER_TROY_OUNCE : n;
+    }
+  }
+  throw new GoldPriceFetchError(
+    `No usable price field. Got keys: ${Object.keys(obj).join(", ") || "(none)"}`,
+    provider,
+  );
+}
+
+/**
+ * gold-api.com — free, keyless, no signup, no rate-limit registration.
+ * Returns live spot gold as `price` in USD per troy ounce.
+ *
+ * This is the default primary because it is the only source that works on a
+ * fresh deploy with no credentials. The paid providers above stay available
+ * for anyone who wants a contractual feed.
+ */
+export const goldApiComProvider: GoldPriceProvider = {
+  id: "goldapicom",
+  async fetch({ usdAed }) {
+    const json = await fetchJson("https://api.gold-api.com/price/XAU");
+    return buildQuote(this.id, extractUsdPerOunce(json, this.id), usdAed);
+  },
+};
+
+/**
  * Mock provider for local dev. Emits a slowly varying value so the UI can
  * be exercised without an API key. NEVER use as primary in production —
  * it does not reflect real market data.
@@ -151,6 +202,7 @@ export const mockProvider: GoldPriceProvider = {
 };
 
 const PROVIDERS: Record<string, GoldPriceProvider> = {
+  goldapicom: goldApiComProvider,
   goldapi: goldApiProvider,
   metalpriceapi: metalPriceApiProvider,
   metalsdev: metalsDevProvider,

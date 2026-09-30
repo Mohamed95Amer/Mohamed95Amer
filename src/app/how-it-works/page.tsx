@@ -1,46 +1,32 @@
-export default function HowItWorksPage() {
+import type { Metadata } from "next";
+import Link from "next/link";
+import { cookies } from "next/headers";
+
+export const metadata: Metadata = {
+  title: "How Get Gold works",
+  description: "Compare UAE gold shops, request an item, accept the store-confirmed price and pay the seller directly.",
+  alternates: { canonical: "/how-it-works" },
+};
+
+export default async function HowItWorksPage() {
+  const arabic = (await cookies()).get("gg_lang")?.value === "ar";
+  const t = (en: string, ar: string) => arabic ? ar : en;
   const steps = [
-    [
-      "Vendors verify",
-      "Every gold shop submits trade license, owner ID, and store details. Admins manually approve before the shop can list products.",
-    ],
-    [
-      "Products are reviewed",
-      "Each listing is reviewed for weight, karat, hallmark, and certificate information before going live.",
-    ],
-    [
-      "Prices update live",
-      "We fetch the 24K spot price every 15–30 seconds, convert to AED per gram, and recompute product prices using the configured formula.",
-    ],
-    [
-      "Reserve at the live price",
-      "When you reserve, the server recomputes the official price and snapshots every component. The price is locked for 10 minutes.",
-    ],
-    [
-      "Vendor confirms",
-      "The vendor confirms availability. You receive a payment link from the vendor or pick up at the shop.",
-    ],
+    [t("Discover", "اكتشف"), t("Find the piece you want", "اعثر على القطعة التي تريدها"), t("Browse jewellery and bullion from listed UAE stores, or search by type, karat, weight and budget in GetGold Compare.", "تصفح المجوهرات والسبائك من المتاجر المدرجة في الإمارات، أو ابحث حسب النوع والعيار والوزن والميزانية عبر GetGold Compare.")],
+    [t("Compare", "قارن"), t("See the charges clearly", "اطّلع على الرسوم بوضوح"), t("Compare estimated totals and making charges. Gold value, certificate fees, VAT and delivery are shown separately when applicable.", "قارن الإجماليات التقديرية ورسوم المصنعية. تظهر قيمة الذهب ورسوم الشهادة والضريبة والتوصيل بشكل منفصل عند انطباقها.")],
+    [t("Request", "اطلب"), t("Send a purchase request", "أرسل طلب شراء"), t("Choose delivery or store collection where offered, enter your details and complete the required hosted identity check. You do not pay at this stage.", "اختر التوصيل أو الاستلام من المتجر حسب المتاح، وأدخل بياناتك وأكمل التحقق المطلوب من الهوية لدى مزود الخدمة. لا تدفع في هذه المرحلة.")],
+    [t("Confirm", "تأكيد المتجر"), t("The store checks the item and price", "يتحقق المتجر من القطعة والسعر"), t("The store confirms availability and the final current price. Requests sent outside its working hours wait until the store opens. You may accept that price or cancel.", "يؤكد المتجر توفر القطعة وسعرها النهائي الحالي. تنتظر الطلبات المرسلة خارج ساعات العمل حتى يفتح المتجر. يمكنك قبول السعر أو إلغاء الطلب.")],
+    [t("Pay", "ادفع"), t("Pay the store after accepting", "ادفع للمتجر بعد الموافقة"), t("Accepting starts a limited payment window and reserves the item. Pay the seller directly using an available method. A transfer reference or screenshot does not prove that the store received the money.", "بعد قبولك يبدأ وقت محدد للدفع وتُحجز القطعة مؤقتاً. ادفع للبائع مباشرة بإحدى الطرق المتاحة. لا يثبت مرجع التحويل أو صورته أن المتجر استلم المبلغ.")],
+    [t("Receive", "استلم"), t("Follow your order", "تابع طلبك"), t("The store checks its own account and confirms receipt before preparing the order. Track delivery or arrange collection with the store, according to the option chosen.", "يتحقق المتجر من حسابه ويؤكد استلام المبلغ قبل تجهيز الطلب. تابع التوصيل أو رتّب الاستلام من المتجر حسب الخيار الذي اخترته.")],
   ];
-  return (
-    <div className="container-pro py-12">
-      <h1 className="font-serif text-4xl">How it works</h1>
-      <p className="text-ink-muted mt-2 max-w-2xl">
-        GoldHub is a marketplace, not a seller. Verified vendors own the inventory and remain
-        the seller of record. Here is what happens behind the scenes.
-      </p>
-      <ol className="mt-10 space-y-6">
-        {steps.map(([title, body], i) => (
-          <li key={title} className="card p-6">
-            <div className="flex items-start gap-4">
-              <span className="font-serif text-2xl text-gold-500">{i + 1}</span>
-              <div>
-                <h2 className="font-serif text-xl">{title}</h2>
-                <p className="mt-1 text-ink-muted">{body}</p>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ol>
+
+  return <div dir={arabic ? "rtl" : "ltr"}>
+    <section className="bg-jade-950 text-white"><div className="container-pro py-14 text-center sm:py-20"><p className="eyebrow text-gold-200">{t("Six clear steps", "ست خطوات واضحة")}</p><h1 className="mx-auto mt-3 max-w-3xl font-serif text-4xl font-semibold tracking-tight sm:text-6xl">{t("From browsing to gold in your hands.", "من البحث إلى استلام الذهب.")}</h1><p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">{t("Get Gold helps you compare and request. The listed shop owns the item, confirms its final price and remains the seller.", "يساعدك Get Gold على المقارنة وتقديم الطلب. يملك المتجر المدرج القطعة ويؤكد سعرها النهائي ويظل البائع المسؤول عنها.")}</p></div></section>
+    <div className="container-pro py-12 sm:py-16">
+      <ol className="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3">{steps.map(([eyebrow, title, body], index) => <li key={eyebrow} className="card relative p-6"><div className="flex items-center justify-between"><span className="eyebrow text-jade-600">{eyebrow}</span><span className="grid h-8 w-8 place-items-center rounded-full bg-gold-100 font-serif text-gold-600">{index + 1}</span></div><h2 className="mt-6 font-serif text-xl font-semibold text-jade-950">{title}</h2><p className="mt-2 text-sm leading-relaxed text-ink-muted">{body}</p></li>)}</ol>
+      <section className="mt-10 grid gap-4 md:grid-cols-2"><div className="card p-6"><p className="eyebrow text-jade-600">{t("Can’t find the piece?", "لم تجد القطعة المناسبة؟")}</p><h2 className="mt-2 font-serif text-2xl text-jade-950">{t("Send one request to verified stores.", "أرسل طلباً واحداً إلى المتاجر الموثقة.")}</h2><p className="mt-2 text-sm leading-relaxed text-ink-muted">{t("Share a reference image, purity, budget and deadline. Stores can return item-specific offers with making and certificate fees.", "شارك صورة مرجعية والعيار والميزانية والموعد المطلوب. يمكن للمتاجر إرسال عروض محددة تتضمن المصنعية ورسوم الشهادة.")}</p><Link href="/requests/new" className="mt-5 inline-block text-sm font-semibold text-jade-700 underline">{t("Create a Get Gold Request", "قدّم طلباً عبر Get Gold")}</Link></div><div className="card p-6"><p className="eyebrow text-jade-600">{t("Prefer to inspect it?", "تفضل معاينتها بنفسك؟")}</p><h2 className="mt-2 font-serif text-2xl text-jade-950">{t("Ask the store for a visit.", "اطلب زيارة المتجر.")}</h2><p className="mt-2 text-sm leading-relaxed text-ink-muted">{t("Request a visit from a product page. A visit request does not reserve stock or lock a price.", "اطلب زيارة من صفحة المنتج. طلب الزيارة لا يحجز القطعة ولا يثبت السعر.")}</p><Link href="/marketplace" className="mt-5 inline-block text-sm font-semibold text-jade-700 underline">{t("Browse pieces", "تصفح المنتجات")}</Link></div></section>
+      <section className="mt-10 rounded-[2rem] border border-gold-300/30 bg-gold-50 p-6 sm:p-8"><p className="eyebrow text-gold-600">{t("Payment-link safety", "أمان روابط الدفع")}</p><h2 className="mt-2 font-serif text-2xl font-semibold text-jade-950">{t("Check before you pay.", "تحقق قبل الدفع.")}</h2><ul className="mt-4 grid gap-3 text-sm text-ink-muted sm:grid-cols-3"><li>{t("Match the store name, amount and order reference.", "طابق اسم المتجر والمبلغ ورقم الطلب.")}</li><li>{t("Never share a bank password or one-time code.", "لا تشارك كلمة مرور البنك أو رمز التحقق لمرة واحدة.")}</li><li>{t("Contact Get Gold if the payment destination looks different.", "تواصل مع Get Gold إذا بدت وجهة الدفع مختلفة.")}</li></ul></section>
+      <div className="mt-10 text-center"><Link href="/marketplace" className="btn-primary">{t("Explore the marketplace", "استكشف السوق")}</Link></div>
     </div>
-  );
+  </div>;
 }

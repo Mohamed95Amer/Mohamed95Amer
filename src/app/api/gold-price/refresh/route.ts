@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
  * and to have the admin or super_admin role.
  */
 export async function POST(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 

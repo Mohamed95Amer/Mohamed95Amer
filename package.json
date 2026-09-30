@@ -1,18 +1,25 @@
 {
-  "name": "goldhub",
+  "name": "get-gold",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "db:start": "npx --yes supabase@2.117.0 start -x studio,imgproxy,postgres-meta,edge-runtime,logflare,vector,supavisor",
+    "test:db": "npx --yes supabase@2.117.0 test db --local",
+    "test:integration": "node --test tests/integration/*.test.cjs",
+    "dev:local": "node scripts/local-runtime.cjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.4",
-    "next": "14.2.15",
+    "@upstash/ratelimit": "2.2.0",
+    "@upstash/redis": "1.39.0",
+    "next": "15.5.24",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "zod": "^3.23.8"
@@ -23,9 +30,13 @@
     "@types/react-dom": "18.3.0",
     "autoprefixer": "10.4.20",
     "eslint": "8.57.1",
-    "eslint-config-next": "14.2.15",
-    "postcss": "8.4.41",
+    "eslint-config-next": "15.5.24",
+    "postcss": "8.5.28",
     "tailwindcss": "3.4.10",
     "typescript": "5.5.4"
+  },
+  "overrides": {
+    "nanoid": "3.3.19",
+    "postcss": "8.5.28"
   }
 }

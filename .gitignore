@@ -2,6 +2,7 @@ node_modules
 .next
 tsconfig.tsbuildinfo
 .vercel
+supabase/.temp/
 out
 dist
 .env
@@ -12,3 +13,5 @@ dist
 .turbo
 .eslintcache
 coverage
+
+.vercel

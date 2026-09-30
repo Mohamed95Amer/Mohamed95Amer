@@ -1,0 +1,14 @@
+.git
+.next
+node_modules
+.vercel
+.env
+.env.*
+!.env.example
+supabase/.temp/
+.codex-qa/
+output/
+tmp/
+coverage/
+*.log
+tsconfig.tsbuildinfo
