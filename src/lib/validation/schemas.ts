@@ -125,7 +125,7 @@ export const vendorOnboardingSchema = z
     owner_name: z.string().min(2).max(120),
     contact_first_name: z.string().trim().min(2).max(80).optional(),
     contact_last_name: z.string().trim().min(2).max(80).optional(),
-    contact_title: z.string().trim().min(2).max(100).optional(),
+    contact_title: z.string().trim().min(2).max(100),
     email: z.string().email(),
     phone: z.string().min(7).max(20),
     emirate: z.enum([
@@ -149,6 +149,9 @@ export const vendorOnboardingSchema = z
     website_url: optionalSecureWebsite,
   })
   .superRefine((data, ctx) => {
+    if (data.store_latitude == null || data.store_longitude == null) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["store_latitude"], message: "Add an exact store pin using your location or a Maps link with coordinates" });
+    }
     if (data.website_available && !data.website_url) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

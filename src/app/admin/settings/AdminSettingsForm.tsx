@@ -23,7 +23,7 @@ export function AdminSettingsForm({ initial, arabic = false }: { initial: Settin
     reservation_lock_minutes: initial?.reservation_lock_minutes ?? 10,
     stale_price_seconds: initial?.stale_price_seconds ?? 60,
     listing_fresh_days: initial?.listing_fresh_days ?? 45,
-    demo_data_visible: initial?.demo_data_visible ?? true,
+    demo_data_visible: initial?.demo_data_visible ?? false,
     online_payments_enabled: false,
     online_payment_provider: null,
   });

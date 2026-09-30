@@ -103,6 +103,11 @@ export function VendorOnboardingForm({ initial, language = "en" }: { initial: In
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (form.store_latitude == null || form.store_longitude == null) {
+      setErr(arabic ? "أضف دبوس موقع المتجر الدقيق قبل إرسال الطلب." : "Add the exact store location pin before submitting.");
+      document.getElementById("vendor-map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     if (initial && !window.confirm(arabic ? "إعادة الإرسال تعيد المتجر إلى المراجعة. هل تريد المتابعة؟" : "Resubmitting returns your store to review and pauses its public visibility. Continue?")) return;
     setBusy(true);
     setErr(null);
@@ -186,7 +191,7 @@ export function VendorOnboardingForm({ initial, language = "en" }: { initial: In
             </div>
             {form.store_latitude != null && form.store_longitude != null ? <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-signal-ok/20 bg-white px-3 py-2 text-xs"><span className="font-semibold text-signal-ok">✓ {arabic ? "تم حفظ الدبوس:" : "Pin saved:"} {form.store_latitude.toFixed(6)}, {form.store_longitude.toFixed(6)}</span><a className="font-semibold text-jade-700 underline" href={`https://www.google.com/maps/search/?api=1&query=${form.store_latitude},${form.store_longitude}`} target="_blank" rel="noreferrer">{arabic ? "معاينة الخريطة" : "Preview map"}</a></div> : <p className="mt-3 text-xs text-ink-muted">{arabic ? "لم يُحفظ دبوس بعد." : "No pin saved yet."}</p>}
           </div>
-          <Field label={arabic ? "رابط الخريطة (احتياطي)" : "Store map link (backup)"} id="vendor-map" hint={arabic ? "اختياري — الصق رابط Google Maps أو Apple Maps وسيتم استخراج الدبوس إن أمكن" : "Optional — paste a Google Maps or Apple Maps link and we will extract the pin when possible"}><input id="vendor-map" name="google_maps_link" className="input" type="url" inputMode="url" placeholder="https://maps.google.com/..." value={form.google_maps_link} onChange={(event) => { const value = event.target.value; set("google_maps_link", value); const point = coordinatesFromDeliveryMapLink(value); if (point) { set("store_latitude", point.latitude); set("store_longitude", point.longitude); } }} /></Field>
+          <Field label={arabic ? "رابط الخريطة (احتياطي)" : "Store map link (backup)"} id="vendor-map" hint={arabic ? "الصق رابطاً يحتوي إحداثيات دقيقة، أو استخدم زر موقعي الحالي أعلاه" : "Paste a link with exact coordinates, or use the current-location button above"}><input id="vendor-map" name="google_maps_link" className="input" type="url" inputMode="url" placeholder="https://maps.google.com/..." value={form.google_maps_link} onChange={(event) => { const value = event.target.value; set("google_maps_link", value); const point = coordinatesFromDeliveryMapLink(value); if (point) { set("store_latitude", point.latitude); set("store_longitude", point.longitude); } else if (value) { set("store_latitude", null); set("store_longitude", null); } }} /></Field>
           <Field label={arabic ? "رقم ضريبة القيمة المضافة / TRN" : "VAT / TRN number"} id="vendor-trn" hint={arabic ? "اختياري حالياً" : "Optional at this stage"}><input id="vendor-trn" name="vat_trn_number" className="input" value={form.vat_trn_number} onChange={(event) => set("vat_trn_number", event.target.value)} /></Field>
         </div>
       </section>

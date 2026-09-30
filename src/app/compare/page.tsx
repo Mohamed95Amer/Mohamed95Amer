@@ -60,7 +60,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     category: "نوع القطعة", karat: "العيار", min: "أقل وزن (غرام)", max: "أعلى وزن (غرام)",
     budget: "أقصى ميزانية (درهم)", sort: "الترتيب", fulfilment: "طريقة الاستلام",
     delivery: "توصيل - مع الرسوم", pickup: "استلام من المتجر - بدون توصيل",
-    total: "السعر النهائي الأقل", making: "المصنعية الأقل", action: "قارن الآن", example: "جرّب مثال: أساور 18K، 5–7 غرام، 2,500 درهم",
+    total: "السعر النهائي الأقل", making: "المصنعية الأقل", action: "قارن الآن", example: "جرّب مثالاً متاحاً: سبائك 24K، 1–20 غرام، 6,000 درهم",
     selected: "مقارنة القطع التي اخترتها", selectedHint: "هذه القطع اختَرتها بنفسك من صفحات المنتجات.",
     how: "كيف نحسب المقارنة؟", howText: "نحسب الذهب بسعر السوق الحالي، ثم نضيف مصنعية كل قطعة بعد الخصم والرسوم والضريبة. رسوم التوصيل حسب المتجر إذا اخترت التوصيل. السعر المعروض تقديري؛ المتجر يؤكد التوفر والسعر النهائي قبل الدفع.",
   } : {
@@ -69,7 +69,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     category: "Piece type", karat: "Karat", min: "Minimum weight (g)", max: "Maximum weight (g)",
     budget: "Maximum budget (AED)", sort: "Sort by", fulfilment: "Fulfilment",
     delivery: "Delivery - fees included", pickup: "Store pickup - no delivery fee",
-    total: "Lowest final total", making: "Lowest making charge", action: "Compare now", example: "Try: bracelets, 18K, 5–7g, AED 2,500",
+    total: "Lowest final total", making: "Lowest making charge", action: "Compare now", example: "Try: 24K bars, 1–20g, AED 6,000",
     selected: "Your selected comparison", selectedHint: "These are the pieces you chose from product pages.",
     how: "How is this compared?", howText: "We use the current gold reference, then add each piece's discounted making charge, other fees and VAT. Delivery reflects the store's fee when selected. This is an estimate; the shop confirms availability and its final price before payment.",
   };
@@ -77,6 +77,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
   let listings: CompareListing[] = [];
   let feeBps = 100;
   let truncated = false;
+  let showSampleLink = false;
   if ((manual && ids.length) || criteria) {
     const supabase = getServiceSupabase();
     const profile = await getCurrentProfile();
@@ -88,6 +89,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     if (settingsError || !settings) {
       error = arabic ? "تعذّر تحميل إعدادات الأسعار حاليًا. حاول مرة أخرى." : "Pricing settings are temporarily unavailable. Please try again.";
     } else {
+      showSampleLink = settings.demo_data_visible === true;
       let query = supabase.from("products").select(selectColumns)
         .eq("product_status", "approved")
         .eq("data_quality_status", "valid")
@@ -95,7 +97,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
         .gte("vendors.license_expiry_date", dubaiTodayIso())
         .gt("quantity", 0)
         .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings.listing_fresh_days ?? 45)));
-      if (settings.demo_data_visible === false) query = query.eq("is_demo", false).eq("vendors.is_demo", false);
+      if (settings.demo_data_visible !== true) query = query.eq("is_demo", false).eq("vendors.is_demo", false);
       if (manual) {
         query = query.in("id", ids).limit(4);
       } else if (criteria) {
@@ -142,6 +144,15 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     }
   }
 
+  if (!manual && !criteria) {
+    const { data: visibility } = await getServiceSupabase()
+      .from("platform_settings")
+      .select("demo_data_visible")
+      .eq("id", true)
+      .maybeSingle();
+    showSampleLink = visibility?.demo_data_visible === true;
+  }
+
   return <main className="container-pro py-10 sm:py-14" dir={arabic ? "rtl" : "ltr"}>
     <section className="relative overflow-hidden rounded-[1.5rem] bg-jade-950 px-6 py-9 text-white sm:px-10 sm:py-12">
       <div className="absolute -right-14 -top-24 h-72 w-72 rounded-full border border-gold-300/20" aria-hidden="true" />
@@ -157,7 +168,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
       <div><label className="label" htmlFor="compare-sort">{t.sort}</label><select id="compare-sort" name="sort" className="input" defaultValue={one(raw.sort) === "making" ? "making" : "total"}><option value="total">{t.total}</option><option value="making">{t.making}</option></select></div>
       <div className="md:col-span-2 lg:col-span-2"><label className="label" htmlFor="compare-fulfilment">{t.fulfilment}</label><select id="compare-fulfilment" name="fulfilment" className="input" defaultValue={one(raw.fulfilment) === "pickup" ? "pickup" : "delivery"}><option value="delivery">{t.delivery}</option><option value="pickup">{t.pickup}</option></select></div>
       <div className="flex items-end"><button className="btn-primary w-full">{t.action}</button></div>
-      <Link href="/compare?category=bracelet&karat=18&minWeight=5&maxWeight=7&budget=2500&sort=total&fulfilment=delivery" className="text-xs font-semibold text-jade-700 underline underline-offset-4 md:col-span-2 lg:col-span-3">{t.example}</Link>
+      {showSampleLink && <Link href="/compare?category=bar&karat=24&minWeight=1&maxWeight=20&budget=6000&sort=total&fulfilment=pickup" className="text-xs font-semibold text-jade-700 underline underline-offset-4 md:col-span-2 lg:col-span-3">{t.example}</Link>}
     </form>
 
     {error && <div role="alert" className="mt-6 rounded-xl border border-signal-err/25 bg-signal-err/5 p-5 text-sm text-signal-err">{error}</div>}

@@ -25,8 +25,20 @@ const STATUS_LABELS: Record<string, string> = {
   hidden: "Hidden",
 };
 
-export function statusLabel(value: string | null | undefined): string {
-  if (!value) return "Unknown";
+const STATUS_LABELS_AR: Record<string, string> = {
+  pending: "قيد المراجعة", approved: "معتمد", rejected: "مرفوض", suspended: "موقوف",
+  draft: "مسودة", pending_approval: "بانتظار الموافقة", pending_vendor_confirmation: "بانتظار تأكيد المتجر",
+  vendor_confirmed: "بانتظار قبولك", payment_link_pending: "بانتظار رابط الدفع",
+  payment_pending: "بانتظار الدفع", payment_verification: "التحقق من الدفع", payment_confirmed: "تم تأكيد الدفع",
+  preparing_order: "تجهيز الطلب", ready_for_delivery: "جاهز للتوصيل", out_for_delivery: "خرج للتوصيل",
+  delivered: "تم التوصيل", completed: "مكتمل", paid: "تم الشراء", cancelled: "ملغى",
+  expired: "منتهي الصلاحية", refunded: "تم رد المبلغ", rejected_by_vendor: "رفض المتجر الطلب",
+  published: "منشور", hidden: "مخفي",
+};
+
+export function statusLabel(value: string | null | undefined, arabic = false): string {
+  if (!value) return arabic ? "غير معروف" : "Unknown";
+  if (arabic) return STATUS_LABELS_AR[value] ?? "حالة غير معروفة";
   return STATUS_LABELS[value] ?? value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 

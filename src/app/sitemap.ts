@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter);
-    if (settings?.demo_data_visible === false) {
+    if (settings?.demo_data_visible !== true) {
       productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
     }
     const { data: products } = await productsQuery;

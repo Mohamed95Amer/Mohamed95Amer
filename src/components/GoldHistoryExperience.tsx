@@ -29,14 +29,14 @@ export function GoldHistoryExperience({
   const currentRate = Number(tick?.price_per_gram_24k_aed ?? fallbackCurrentRate);
   const [grams, setGrams] = useState(10);
   const [karat, setKarat] = useState(24);
-  const [selectedDate, setSelectedDate] = useState(history[0]?.recordedOn ?? "");
+  const [selectedDate, setSelectedDate] = useState(history.find((point) => !point.sources.toLowerCase().includes("manual"))?.recordedOn ?? history[0]?.recordedOn ?? "");
 
   const selected = history.find((point) => point.recordedOn === selectedDate) ?? history[0];
   const scenario = useMemo(
     () => calculateGoldScenario(selected?.rate ?? currentRate, currentRate, grams, KARAT_PURITY[karat] ?? 1),
     [selected, currentRate, grams, karat],
   );
-  const wentUp = scenario.differenceAed >= 0;
+  const wentUp = scenario.differenceAed > 0;
 
   return (
     <div className="space-y-6">
@@ -89,7 +89,7 @@ export function GoldHistoryExperience({
                   max="10000"
                   step="0.1"
                   value={grams}
-                  onChange={(event) => setGrams(Math.max(0, Number(event.target.value)))}
+                  onChange={(event) => setGrams(Math.min(10000, Math.max(0, Number(event.target.value))))}
                 />
                 <span className="pointer-events-none absolute end-3 top-4 text-xs text-ink-muted">{t("g", "غ")}</span>
               </div>
@@ -122,7 +122,7 @@ export function GoldHistoryExperience({
               {scenario.differenceAed > 0 ? "+" : ""}{formatAed(scenario.differenceAed)}
             </p>
             <p className="mt-1 text-sm text-white/65">
-              {formatSignedPercent(scenario.changePercent)} · {wentUp ? t("higher than the recorded value", "أعلى من القيمة المسجلة") : t("lower than the recorded value", "أقل من القيمة المسجلة")}
+              {grams <= 0 ? t("Enter a weight above zero", "أدخل وزناً أكبر من الصفر") : `${formatSignedPercent(scenario.changePercent)} · ${scenario.differenceAed === 0 ? t("unchanged from the recorded value", "دون تغير عن القيمة المسجلة") : wentUp ? t("higher than the recorded value", "أعلى من القيمة المسجلة") : t("lower than the recorded value", "أقل من القيمة المسجلة")}`}
             </p>
           </div>
           <p className="relative mt-5 text-[11px] leading-relaxed text-white/45">

@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
     .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)));
-  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  if (settings?.demo_data_visible !== true) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
   const { data: product } = await productQuery.maybeSingle();
   if (!product) return NextResponse.json({ error: "product_unavailable" }, { status: 400 });
 

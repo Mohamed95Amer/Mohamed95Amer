@@ -398,15 +398,20 @@ test("business onboarding accepts only safe public websites and Maps pins", () =
     trade_license_number: "TL-12345",
     license_expiry_date: "2027-09-23",
     owner_name: "Test Owner",
+    contact_title: "Owner",
     email: "owner@example.ae",
     phone: "0501234567",
     emirate: "Dubai",
     store_address: "Gold Souq, Deira, Dubai",
     google_maps_link: "https://maps.google.com/?q=25.27,55.30",
+    store_latitude: 25.27,
+    store_longitude: 55.30,
     website_available: true,
     website_url: "https://store.example.ae",
   };
   assert.equal(vendorOnboardingSchema.safeParse(vendor).success, true);
+  assert.equal(vendorOnboardingSchema.safeParse({ ...vendor, contact_title: "" }).success, false);
+  assert.equal(vendorOnboardingSchema.safeParse({ ...vendor, store_latitude: null }).success, false);
   for (const website_url of [
     "javascript:alert(1)",
     "http://store.example.ae",

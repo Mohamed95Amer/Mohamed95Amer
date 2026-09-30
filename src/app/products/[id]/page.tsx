@@ -58,7 +58,7 @@ async function loadProduct(id: string) {
     .eq("data_quality_status", "valid")
     .gt("quantity", 0)
     .gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45)));
-  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  if (settings?.demo_data_visible !== true) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
   const { data: product } = await productQuery.maybeSingle();
   return { product, settings };
 }
@@ -105,13 +105,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       .select("*")
       .eq("vendor_id", product.vendor_id)
       .maybeSingle(),
-    supabase
-      .from("reviews")
-      .select(PUBLIC_REVIEW_SELECT)
-      .eq("product_id", product.id)
-      .eq("moderation_status", "published")
-      .order("created_at", { ascending: false })
-      .limit(5),
+    (() => {
+      let query = supabase.from("reviews").select(PUBLIC_REVIEW_SELECT)
+        .eq("product_id", product.id).eq("moderation_status", "published")
+        .order("created_at", { ascending: false }).limit(5);
+      if (settings?.demo_data_visible !== true) query = query.eq("is_demo", false);
+      return query;
+    })(),
     getCurrentProfile(),
   ]);
   const reputation = reputationRow

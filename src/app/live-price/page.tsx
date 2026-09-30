@@ -46,14 +46,15 @@ export default async function LivePricePage() {
     low: Number(row.low_price_aed),
     tickCount: Number(row.tick_count),
     sources: row.sources,
-  }));
+  })).filter((point) => !point.sources.toLowerCase().includes("manual"));
   const currentRate = Number(latestTick?.price_per_gram_24k_aed ?? history.at(-1)?.rate ?? 0);
-  const firstRate = history[0]?.rate ?? currentRate;
+  const firstVerifiedPoint = history[0];
+  const firstRate = firstVerifiedPoint?.rate ?? currentRate;
   const changeSinceFirst = firstRate > 0 ? ((currentRate / firstRate) - 1) * 100 : 0;
   const low = history.length ? Math.min(...history.map((point) => point.low)) : currentRate;
   const high = history.length ? Math.max(...history.map((point) => point.high)) : currentRate;
   const quoteCount = history.reduce((sum, point) => sum + point.tickCount, 0);
-  const firstDate = history[0]?.fetchedAt;
+  const firstDate = firstVerifiedPoint?.fetchedAt;
   const refreshSeconds = env.refreshIntervalSeconds();
   const staleSeconds = env.stalePriceSeconds();
 
@@ -80,7 +81,7 @@ export default async function LivePricePage() {
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <InsightStat label={t("Live 24K reference", "السعر المرجعي المباشر لعيار 24")} value={`${formatAed(currentRate)}${t("/g", "/غ")}`} detail={t(`Rechecked every ${refreshSeconds}s`, `يُعاد التحقق كل ${refreshSeconds} ثوانٍ`)} />
           <InsightStat
-            label={t("Since first recorded day", "منذ أول يوم مسجل")}
+            label={t("Since first provider quote", "منذ أول سعر من مزود البيانات")}
             value={formatSignedPercent(changeSinceFirst)}
             detail={firstDate ? `${t("From", "منذ")} ${formatDubaiDate(firstDate)}` : t("History begins with the next quote", "يبدأ السجل مع السعر التالي")}
             tone={changeSinceFirst >= 0 ? "positive" : "warm"}
@@ -91,7 +92,7 @@ export default async function LivePricePage() {
 
         <div className="mt-6 rounded-2xl border border-jade-900/10 bg-jade-50 px-5 py-4 text-sm leading-relaxed text-ink-muted">
           <strong className="font-semibold text-jade-900">{t("Fresh-price protection:", "حماية السعر الحديث:")}</strong>{" "}
-          {arabic ? `يعيد Get Gold التحقق كل ${refreshSeconds} ثوانٍ. إذا بلغ عمر السعر الأخير ${staleSeconds} ثانية، تتوقف طلبات الشراء حتى يصل سعر حديث. يتضمن السجل أدناه الأسعار الصالحة التي سجلها Get Gold فقط؛ والفجوات تعني عدم تسجيل الخدمة للبيانات، لا ثبات السوق.` : `Get Gold rechecks every ${refreshSeconds} seconds. If the latest quote reaches ${staleSeconds} seconds old, purchase requests pause until a fresh rate arrives. History below contains only usable quotes recorded by Get Gold; gaps mean the service was not recording, not that the market was unchanged.`}
+          {arabic ? `يعيد Get Gold التحقق كل ${refreshSeconds} ثوانٍ. إذا بلغ عمر السعر الأخير ${staleSeconds} ثانية، تتوقف طلبات الشراء حتى يصل سعر حديث. يعرض السجل أسعار مزود البيانات فقط ويستبعد الإدخالات اليدوية؛ والفجوات تعني عدم تسجيل الخدمة للبيانات، لا ثبات السوق.` : `Get Gold rechecks every ${refreshSeconds} seconds. If the latest quote reaches ${staleSeconds} seconds old, purchase requests pause until a fresh rate arrives. History shows provider quotes only and omits manual entries; gaps mean the service was not recording, not that the market was unchanged.`}
         </div>
 
         <div className="mt-8">

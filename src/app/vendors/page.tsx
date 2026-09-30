@@ -40,7 +40,7 @@ export default async function VendorsListPage() {
       .eq("data_quality_status", "valid")
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter);
-  if (settings?.demo_data_visible === false) {
+  if (settings?.demo_data_visible !== true) {
     vendorsQuery = vendorsQuery.eq("is_demo", false);
     listingsQuery = listingsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
   }

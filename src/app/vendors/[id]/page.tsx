@@ -24,7 +24,7 @@ async function loadVendor(id: string) {
   const supabase = getServiceSupabase();
   const { data: settings } = await supabase.from("platform_settings").select("demo_data_visible").eq("id", true).maybeSingle();
   let vendorQuery = supabase.from("vendors").select("id, business_name, emirate, store_address, google_maps_link, store_latitude, store_longitude, verification_status, license_expiry_date").eq("id", id);
-  if (settings?.demo_data_visible === false) vendorQuery = vendorQuery.eq("is_demo", false);
+  if (settings?.demo_data_visible !== true) vendorQuery = vendorQuery.eq("is_demo", false);
   const { data } = await vendorQuery.single();
   return data;
 }
@@ -59,17 +59,17 @@ export default async function VendorPage({ params }: { params: Promise<{ id: str
       .gt("quantity", 0)
       .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false });
-  if (settings?.demo_data_visible === false) productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  if (settings?.demo_data_visible !== true) productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
   const [{ data: products }, { data: reputationRow }, { data: reviews }] = await Promise.all([
     productsQuery,
     supabase.from("vendor_reputation_summary").select("*").eq("vendor_id", id).maybeSingle(),
-    supabase
-      .from("reviews")
-      .select(PUBLIC_REVIEW_SELECT)
-      .eq("vendor_id", id)
-      .eq("moderation_status", "published")
-      .order("created_at", { ascending: false })
-      .limit(50),
+    (() => {
+      let query = supabase.from("reviews").select(PUBLIC_REVIEW_SELECT)
+        .eq("vendor_id", id).eq("moderation_status", "published")
+        .order("created_at", { ascending: false }).limit(50);
+      if (settings?.demo_data_visible !== true) query = query.eq("is_demo", false);
+      return query;
+    })(),
   ]);
   const reputation = reputationRow ? normalizeReputation(reputationRow as VendorReputationRow) : null;
   const safeStoreMapLink =

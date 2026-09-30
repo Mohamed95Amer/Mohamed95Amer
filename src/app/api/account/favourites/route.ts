@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const admin = getServiceSupabase();
   const { data: settings } = await admin.from("platform_settings").select("demo_data_visible").eq("id", true).maybeSingle();
   let productQuery = admin.from("products").select("id, vendor_id, product_status, vendors!inner(is_demo)").eq("id", parsed.data.productId);
-  if (settings?.demo_data_visible === false) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  if (settings?.demo_data_visible !== true) productQuery = productQuery.eq("is_demo", false).eq("vendors.is_demo", false);
   const { data: product } = await productQuery.maybeSingle();
   if (!product || product.product_status !== "approved") return NextResponse.json({ error: "product_not_found" }, { status: 404 });
   const result = parsed.data.favourite

@@ -25,7 +25,7 @@ export default async function SavedPage() {
     admin.from("vendor_reputation_summary").select("*"),
   ]);
   const ids = (favourites ?? []).map((row) => row.product_id); let productsQuery = ids.length ? admin.from("products").select("id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_premium, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, quantity, images, vendor_id, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date, is_demo)").in("id", ids).eq("product_status", "approved").eq("data_quality_status", "valid").eq("vendors.verification_status", "approved").gte("vendors.license_expiry_date", dubaiTodayIso()).gt("quantity", 0).gte("inventory_confirmed_at", listingFreshCutoff(Number(settings?.listing_fresh_days ?? 45))) : null;
-  if (productsQuery && settings?.demo_data_visible === false) productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
+  if (productsQuery && settings?.demo_data_visible !== true) productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
   const { data: products } = productsQuery ? await productsQuery : { data: [] };
   const alertMap = new Map((alerts ?? []).map((alert) => [alert.product_id, alert])); const reputations = reputationMap(reputationRows as VendorReputationRow[] | null);
   return <main className="container-pro py-10 sm:py-14" dir={arabic ? "rtl" : "ltr"}>

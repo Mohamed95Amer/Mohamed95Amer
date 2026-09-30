@@ -6,6 +6,13 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
  * server components see a valid session.
  */
 export async function middleware(request: NextRequest) {
+  // Keep authentication on one host: host-only Supabase cookies otherwise
+  // create apparently different sessions on www and the apex domain.
+  if (request.nextUrl.hostname === "www.getgold.ae" && ["GET", "HEAD"].includes(request.method.toUpperCase())) {
+    const destination = request.nextUrl.clone();
+    destination.hostname = "getgold.ae";
+    return NextResponse.redirect(destination, 308);
+  }
   const method = request.method.toUpperCase();
   const isUnsafeApiMutation =
     request.nextUrl.pathname.startsWith("/api/") &&

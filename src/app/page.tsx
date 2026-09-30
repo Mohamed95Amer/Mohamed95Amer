@@ -72,7 +72,7 @@ export default async function HomePage() {
       .gte("inventory_confirmed_at", freshAfter)
       .order("created_at", { ascending: false })
       .limit(60);
-  if (settings?.demo_data_visible === false) {
+  if (settings?.demo_data_visible !== true) {
     productsQuery = productsQuery.eq("is_demo", false).eq("vendors.is_demo", false);
     vendorsQuery = vendorsQuery.eq("is_demo", false);
     categoryProductsQuery = categoryProductsQuery.eq("is_demo", false).eq("vendors.is_demo", false);

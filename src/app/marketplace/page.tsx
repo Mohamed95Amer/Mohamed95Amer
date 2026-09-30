@@ -63,7 +63,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
   if (Number(filters.minWeight) > 0) query = query.gte("weight_grams", Number(filters.minWeight));
   if (Number(filters.maxWeight) > 0) query = query.lte("weight_grams", Number(filters.maxWeight));
   if (filters.certified === "yes") query = query.not("certificate_number", "is", null);
-  if (settings?.demo_data_visible === false) query = query.eq("is_demo", false).eq("vendors.is_demo", false);
+  if (settings?.demo_data_visible !== true) query = query.eq("is_demo", false).eq("vendors.is_demo", false);
 
   const [{ data }, { data: reputationRows }, latestTick, banners] = await Promise.all([
     query,
