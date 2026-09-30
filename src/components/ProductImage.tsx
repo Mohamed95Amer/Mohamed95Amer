@@ -111,7 +111,13 @@ export function ProductImage({
  * column is jsonb and has held both shapes.
  */
 export function firstProductPhoto(images: unknown): string | null {
-  if (!Array.isArray(images)) return null;
+  return productPhotos(images)[0] ?? null;
+}
+
+/** Resolve every usable product photo in its stored display order. */
+export function productPhotos(images: unknown): string[] {
+  if (!Array.isArray(images)) return [];
+  const resolvedPhotos: string[] = [];
   for (const entry of images) {
     let raw: string | null = null;
     if (typeof entry === "string") {
@@ -123,9 +129,9 @@ export function firstProductPhoto(images: unknown): string | null {
     }
     if (!raw?.trim()) continue;
     const resolved = publicStorageUrl(raw);
-    if (resolved) return resolved;
+    if (resolved && !resolvedPhotos.includes(resolved)) resolvedPhotos.push(resolved);
   }
-  return null;
+  return resolvedPhotos;
 }
 
 function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stroke: string }) {

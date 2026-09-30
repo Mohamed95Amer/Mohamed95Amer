@@ -8,15 +8,17 @@
 export const SUPPORTED_KARATS = [24, 22, 21, 18, 16, 14, 12] as const;
 export const KARAT_PURITY: Record<number, number> = {
   24: 1.0,
-  22: 0.916,
-  21: 0.875,
+  // Upper ends of the vendor-reported fineness ranges below are used for
+  // indicative live-price estimates; the vendor confirms the final price.
+  22: 0.920,
+  21: 0.880,
   18: 0.75,
   16: 0.666,
   14: 0.583,
   12: 0.5,
 };
 
-/** UAE statutory fineness marks (parts per thousand) for common jewellery karats. */
+/** UAE statutory hallmark fineness marks (parts per thousand). */
 export const KARAT_FINENESS: Record<number, number> = {
   24: 999,
   22: 916,
@@ -25,6 +27,12 @@ export const KARAT_FINENESS: Record<number, number> = {
   16: 666,
   14: 583,
   12: 500,
+};
+
+/** Vendor-reported working fineness ranges (parts per thousand). */
+export const KARAT_FINENESS_RANGE: Record<number, readonly [number, number]> = {
+  22: [916, 920],
+  21: [875, 880],
 };
 
 export function karatPurityFactor(karat: number): number {

@@ -91,7 +91,7 @@ test("first three orders receive a 0.5% customer service fee", () => {
   assert.equal(price.platformFee, 3);
   assert.equal(price.vatAed, 31.15);
   assert.equal(price.unitPriceAed, 654.15);
-  assert.equal(goldRateForKarat(500, 22), 458);
+  assert.equal(goldRateForKarat(500, 22), 460);
 });
 test("customer service fee becomes 1% after the introductory orders", () => {
   const introductory = computePrice(base);
@@ -155,11 +155,11 @@ test("store rate adjustment is transparent and included before fee and VAT", () 
   assert.equal(price.platformFee, 9.16);
   assert.equal(price.vatAed, 93.08);
 });
-test("UAE common karats map to statutory fineness factors", () => {
+test("common karats map to configured price fineness factors", () => {
   for (const [karat, factor] of [
     [24, 1],
-    [22, 0.916],
-    [21, 0.875],
+    [22, 0.92],
+    [21, 0.88],
     [18, 0.75],
     [16, 0.666],
     [14, 0.583],

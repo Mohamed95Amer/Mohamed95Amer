@@ -101,7 +101,7 @@ export function ProductImageUploader({
     <div>
       <label htmlFor="product-photos" className="label">{arabic ? "صور المنتج" : "Product photos"}</label>
       <p className="mb-2 text-xs text-ink-muted">
-        {arabic ? "الصورة الأولى هي الرئيسية. حتى ٨ صور، ٥ ميغابايت لكل صورة. أضف صورة فعلية واحدة على الأقل لإرسال المنتج للمراجعة." : "The first photo is the cover. Up to 8 photos, 5 MB each. Add at least one actual product photo before submitting for review."}
+        {arabic ? `يمكنك إضافة حتى ٨ صور للقطعة نفسها (${value.length}/٨). اختر عدة صور دفعة واحدة أو أضف المزيد لاحقاً؛ الصورة الأولى هي الرئيسية ويمكنك تغيير ترتيبها.` : `Add up to 8 photos of this product (${value.length}/8). Select several at once or add more later; the first photo is the cover and you can reorder them.`}
       </p>
 
       {value.length > 0 && (
@@ -145,8 +145,12 @@ export function ProductImageUploader({
         multiple
         disabled={busy || value.length >= MAX_FILES}
         onChange={(e) => handleFiles(e.target.files)}
-        className="block w-full text-sm text-ink-muted file:mr-3 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-medium file:text-bone hover:file:bg-ink-soft disabled:opacity-50"
+        className="sr-only"
       />
+      <button type="button" onClick={() => inputRef.current?.click()} disabled={busy || value.length >= MAX_FILES}
+        className="inline-flex min-h-11 items-center justify-center rounded-lg border border-jade-900/20 bg-white px-4 py-2 text-sm font-semibold text-jade-900 hover:border-jade-600 hover:bg-jade-50 disabled:cursor-not-allowed disabled:opacity-50">
+        {busy ? (arabic ? "جارٍ الرفع…" : "Uploading…") : value.length ? (arabic ? "＋ إضافة صور أخرى" : "＋ Add more photos") : (arabic ? "＋ إضافة صور المنتج" : "＋ Add product photos")}
+      </button>
       {busy && <p role="status" className="mt-2 text-xs text-ink-muted">{arabic ? "جارٍ رفع الصور…" : "Uploading photos…"}</p>}
       {err && <p role="alert" className="mt-2 text-xs text-signal-err">{err}</p>}
     </div>

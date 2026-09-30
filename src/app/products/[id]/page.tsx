@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { LiveProductPrice } from "@/components/LiveProductPrice";
 import { ReserveButton } from "@/components/ReserveButton";
-import { firstProductPhoto, ProductImage } from "@/components/ProductImage";
+import { firstProductPhoto } from "@/components/ProductImage";
+import { ProductGallery } from "@/components/ProductGallery";
 import { ReviewList } from "@/components/ReviewList";
 import { StoreBadges, StoreRating } from "@/components/StoreReputation";
 import { ProductActions } from "@/components/ProductActions";
@@ -174,20 +175,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
       <div className="grid gap-10 lg:grid-cols-5 lg:gap-14">
         <div className="lg:col-span-3">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] border border-jade-900/10 bg-jade-50 shadow-card">
-            <ProductImage
+          <div className="relative">
+            <ProductGallery
               category={product.category}
-              karat={product.karat}
+              karat={Number(product.karat)}
               name={product.name}
               images={product.images}
-              sizes="(max-width: 1024px) 100vw, 60vw"
-              priority
+              arabic={arabic}
             />
-            <span className="absolute left-4 top-4 rounded-full border border-white/25 bg-white/90 px-3 py-1.5 text-[10px] font-bold tracking-[0.14em] text-jade-950 shadow-sm backdrop-blur">
-              {product.karat}K
-            </span>
             {soldOut && (
-              <span className="absolute right-3 top-3 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-semibold text-bone backdrop-blur">
+              <span className="pointer-events-none absolute right-3 top-3 z-20 rounded-full bg-ink/80 px-2.5 py-1 text-[11px] font-semibold text-bone backdrop-blur">
                 {t("Sold out", "نفد المخزون")}
               </span>
             )}

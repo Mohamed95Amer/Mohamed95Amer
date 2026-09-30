@@ -2,7 +2,7 @@
 
 import { useLiveGoldPrice, useQuoteAge } from "@/hooks/useLiveGoldPrice";
 import { GoldHubValueScore } from "@/components/GoldHubValueScore";
-import { computePrice, formatAed, goldRateForKarat } from "@/lib/pricing/calc";
+import { computePrice, formatAed, goldRateForKarat, KARAT_FINENESS_RANGE } from "@/lib/pricing/calc";
 import { computeGoldHubValueScore } from "@/lib/pricing/value-score";
 import { quoteRecency } from "@/lib/time";
 
@@ -110,6 +110,13 @@ export function LiveProductPrice(props: Props) {
               </p>
             </div>
           </div>
+          {KARAT_FINENESS_RANGE[props.karat] && (
+            <p className="mt-2 text-[11px] leading-relaxed text-ink-muted">
+              {props.karat === 21
+                ? t("Vendor-reported 21K fineness range: 875–880‰; estimate uses 880‰. The store confirms the final price before payment.", "نطاق النقاوة المبلّغ به من المتجر لعيار 21: من 875 إلى 880 بالألف؛ يعتمد التقدير 880. يؤكد المتجر السعر النهائي قبل الدفع.")
+                : t("Vendor-reported 22K fineness range: 916–920‰; estimate uses 920‰. The store confirms the final price before payment.", "نطاق النقاوة المبلّغ به من المتجر لعيار 22: من 916 إلى 920 بالألف؛ يعتمد التقدير 920. يؤكد المتجر السعر النهائي قبل الدفع.")}
+            </p>
+          )}
 
           <div className="mt-5 flex items-center justify-between gap-3">
             <h2 className="font-serif text-lg font-semibold text-jade-950">
