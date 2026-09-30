@@ -21,7 +21,7 @@ export default async function NewProductPage() {
   return (
     <div className="container-pro py-8 sm:py-10">
       <h1 className="font-serif text-3xl">{arabic ? "إضافة منتج" : "Add a product"}</h1>
-      <p className="text-sm text-ink-muted mt-1">{arabic ? "أضف تفاصيل المنتج وصوره ورسومه، ثم راجعه قبل الإرسال." : "Add the details, photos and charges, then review before submitting."}</p>
+      <p className="text-sm text-ink-muted mt-1">{vendor.verification_status === "approved" ? (arabic ? "أضف تفاصيل المنتج وصوره ورسومه؛ تُنشر المنتجات المستوفية للمتطلبات مباشرةً." : "Add the product details, photos and charges. Listings that pass the checks publish immediately.") : (arabic ? "أضف تفاصيل المنتج واحفظه كمسودة. ستتمكن من النشر بعد اعتماد المتجر." : "Add product details and save a draft. You can publish once your store is approved.")}</p>
       <VendorNav arabic={arabic} />
       <div className="mt-6">
         <ProductForm vendorId={vendor.id} arabic={arabic} canSubmit={vendor.verification_status === "approved"} />

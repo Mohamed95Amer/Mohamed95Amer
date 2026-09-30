@@ -38,8 +38,8 @@ async function upsert(request: Request) {
   const { id, submit_for_approval, vat_choice_confirmed, ...rest } = parsed.data;
   const integrityIssues = productIntegrityIssues(rest);
 
-  // Vendors cannot submit for approval unless their account is approved.
-  let status: "draft" | "pending_approval" = "draft";
+  // Vendors can publish products only after their store is approved.
+  let status: "draft" | "approved" = "draft";
   if (submit_for_approval) {
     if (vendor.verification_status !== "approved") {
       return NextResponse.json({ error: "vendor_not_approved" }, { status: 403 });
@@ -47,7 +47,9 @@ async function upsert(request: Request) {
     if (integrityIssues.length > 0) {
       return NextResponse.json({ error: "listing_integrity_failed", issues: integrityIssues }, { status: 400 });
     }
-    status = "pending_approval";
+    // Valid listings from approved stores go live directly. Get Gold retains
+    // the ability to suspend or remove a listing when marketplace rules are breached.
+    status = "approved";
   }
 
   if (id) {
@@ -60,11 +62,10 @@ async function upsert(request: Request) {
     if (!existing || existing.vendor_id !== vendor.id) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
-    // A tax change must be reviewed again before a previously approved item is sold.
-    // Suspended listings must never be reactivated by a vendor edit.
-    const taxChanged = Number(existing.vat_rate_bps) !== rest.vat_rate_bps;
+    // A suspended listing is an admin hold and cannot be reactivated by vendor edits.
+    // Valid edits to an approved store's products publish directly.
     const newStatus =
-      existing.product_status === "suspended" || (existing.product_status === "approved" && !taxChanged)
+      existing.product_status === "suspended" || (existing.product_status === "approved" && !submit_for_approval)
         ? existing.product_status
         : status;
     if (newStatus === "approved" && integrityIssues.length > 0) {

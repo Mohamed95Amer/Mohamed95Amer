@@ -134,25 +134,24 @@ test('isolated marketplace integration', { timeout: 120000 }, async t => {
       usd_aed: 3.6725, price_per_gram_24k_aed: 500, status: 'ok', fetched_at: new Date().toISOString(),
     }).select().single()); ticks.push(tick.id);
 
-    await t.test('Vendor VAT survives create/edit round trips; tax changes require review and reject premium', async () => {
+    await t.test('Approved vendors can self-publish valid products and manage product VAT', async () => {
       activeClient = fixtures.vendor.client;
       const payload = { name: 'Synthetic 24K Gold Bar', description: 'Synthetic integration fixture only, not a real product.', category: 'bar', karat: 24,
         weight_grams: 10, making_charge: 0, making_charge_discount_percent: 0, making_charge_offer_ends_at: null,
         certificate_fee: 25, certificate_number: 'SYNTHETIC-ASSAY', stone_value: 0, quantity: 2, vat_rate_bps: 0, vat_choice_confirmed: true,
-        images: ['test-only/bar.jpg'], hallmark_info: 'Synthetic 24K hallmark', submit_for_approval: false };
+        images: ['test-only/bar.jpg'], hallmark_info: 'Synthetic 24K hallmark', submit_for_approval: true };
       const created = await route('vendor/products', payload);
       assert.equal(created.status, 200, JSON.stringify(created.body));
       const item = must(await admin.from('products').select('*').eq('id', created.body.id).single());
       products.push(item);
-      assert.equal(item.vat_rate_bps, 0); assert.equal(item.vendor_premium, 0);
-      must(await admin.from('products').update({ product_status: 'approved' }).eq('id', item.id));
+      assert.equal(item.vat_rate_bps, 0); assert.equal(item.vendor_premium, 0); assert.equal(item.product_status, 'approved');
       const official = await load('src/lib/pricing/server.ts').computeOfficialPriceForProduct(item.id, 2, 'collection');
       assert.equal(official.breakdown.vatRateBps, 0); assert.equal(official.breakdown.vatAed, 0);
       assert.equal(official.totalPriceAed, 10150.5);
       const changed = await route('vendor/products', { ...payload, id: item.id, vat_rate_bps: 500, submit_for_approval: true }, 'PUT');
       assert.equal(changed.status, 200, JSON.stringify(changed.body));
       const updated = must(await admin.from('products').select('*').eq('id', item.id).single());
-      assert.equal(updated.vat_rate_bps, 500); assert.equal(updated.product_status, 'pending_approval');
+      assert.equal(updated.vat_rate_bps, 500); assert.equal(updated.product_status, 'approved');
       assert.equal((await route('vendor/products', { ...payload, id: item.id, vendor_premium: 25 }, 'PUT')).status, 400);
       assert.equal((await route('vendor/products', { ...payload, id: item.id, vat_choice_confirmed: false }, 'PUT')).status, 400);
       activeClient = fixtures.outsider.client;
