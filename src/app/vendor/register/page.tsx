@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth/server";
-import { getServiceSupabase } from "@/lib/supabase/server";
+import { getServerSupabase, getServiceSupabase } from "@/lib/supabase/server";
 import { VendorOnboardingForm } from "./VendorOnboardingForm";
 import { VendorNav } from "@/components/VendorNav";
 import { cookies } from "next/headers";
@@ -8,7 +7,10 @@ import { cookies } from "next/headers";
 export const dynamic = "force-dynamic";
 
 export default async function VendorRegisterPage() {
-  const user = await requireUser();
+  const authClient = await getServerSupabase();
+  const { data: auth } = await authClient.auth.getUser();
+  if (!auth.user) redirect("/register?role=vendor");
+  const user = auth.user;
   const arabic = (await cookies()).get("gg_lang")?.value === "ar";
   const admin = getServiceSupabase();
   const [{ data: profile }, { data: existing }] = await Promise.all([
