@@ -149,8 +149,8 @@ export const vendorOnboardingSchema = z
     website_url: optionalSecureWebsite,
   })
   .superRefine((data, ctx) => {
-    if (data.store_latitude == null || data.store_longitude == null) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["store_latitude"], message: "Add an exact store pin using your location or a Maps link with coordinates" });
+    if ((data.store_latitude == null) !== (data.store_longitude == null)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["store_latitude"], message: "Store coordinates must include both latitude and longitude" });
     }
     if (data.website_available && !data.website_url) {
       ctx.addIssue({

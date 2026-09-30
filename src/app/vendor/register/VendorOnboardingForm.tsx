@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
-import { coordinatesFromDeliveryMapLink } from "@/lib/fulfilment";
 
 const EMIRATES = [
   "Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah",
@@ -103,11 +102,6 @@ export function VendorOnboardingForm({ initial, language = "en" }: { initial: In
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (form.store_latitude == null || form.store_longitude == null) {
-      setErr(arabic ? "أضف دبوس موقع المتجر الدقيق قبل إرسال الطلب." : "Add the exact store location pin before submitting.");
-      document.getElementById("vendor-map")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
     if (initial && !window.confirm(arabic ? "إعادة الإرسال تعيد المتجر إلى المراجعة. هل تريد المتابعة؟" : "Resubmitting returns your store to review and pauses its public visibility. Continue?")) return;
     setBusy(true);
     setErr(null);
@@ -177,21 +171,7 @@ export function VendorOnboardingForm({ initial, language = "en" }: { initial: In
           <Field label={arabic ? "عدد المتاجر" : "Number of stores"} id="vendor-store-count" required><input id="vendor-store-count" name="number_of_stores" className="input" type="number" min={1} max={1000} required value={form.number_of_stores} onChange={(event) => set("number_of_stores", Number(event.target.value))} /></Field>
           <Field label={arabic ? "الإمارة" : "Emirate"} id="vendor-emirate" required><select id="vendor-emirate" name="emirate" className="input" value={form.emirate} onChange={(event) => set("emirate", event.target.value)}>{EMIRATES.map((emirate) => <option key={emirate} value={emirate}>{emirate}</option>)}</select></Field>
           <div className="sm:col-span-2"><Field label={arabic ? "عنوان المتجر الرئيسي" : "Main store address"} id="vendor-address" required><textarea id="vendor-address" name="store_address" className="input min-h-[80px]" required autoComplete="street-address" value={form.store_address} onChange={(event) => set("store_address", event.target.value)} /></Field></div>
-          <div className="sm:col-span-2 rounded-2xl border border-jade-900/10 bg-jade-50/70 p-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div><p className="label">{arabic ? "الموقع الدقيق للمتجر" : "Exact store location"}</p><p className="mt-1 text-xs leading-relaxed text-ink-muted">{arabic ? "يساعد الدبوس الدقيق العملاء وشركات التوصيل على الوصول إلى المدخل الصحيح. يبقى العنوان مطلوباً." : "A precise pin helps customers and delivery partners find the right entrance. Your address is still required."}</p></div>
-              <button type="button" className="btn-ghost min-h-10 px-3 text-xs" onClick={() => {
-                if (!navigator.geolocation) { setErr("Location is not available in this browser. You can paste a Maps link instead."); return; }
-                navigator.geolocation.getCurrentPosition(
-                  (position) => { set("store_latitude", Number(position.coords.latitude.toFixed(6))); set("store_longitude", Number(position.coords.longitude.toFixed(6))); setErr(null); },
-                  () => setErr("We could not access your location. Allow location access or paste a Maps link instead."),
-                  { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
-                );
-              }}>{arabic ? "استخدم موقعي الحالي" : "Use my current location"}</button>
-            </div>
-            {form.store_latitude != null && form.store_longitude != null ? <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-signal-ok/20 bg-white px-3 py-2 text-xs"><span className="font-semibold text-signal-ok">✓ {arabic ? "تم حفظ الدبوس:" : "Pin saved:"} {form.store_latitude.toFixed(6)}, {form.store_longitude.toFixed(6)}</span><a className="font-semibold text-jade-700 underline" href={`https://www.google.com/maps/search/?api=1&query=${form.store_latitude},${form.store_longitude}`} target="_blank" rel="noreferrer">{arabic ? "معاينة الخريطة" : "Preview map"}</a></div> : <p className="mt-3 text-xs text-ink-muted">{arabic ? "لم يُحفظ دبوس بعد." : "No pin saved yet."}</p>}
-          </div>
-          <Field label={arabic ? "رابط الخريطة (احتياطي)" : "Store map link (backup)"} id="vendor-map" hint={arabic ? "الصق رابطاً يحتوي إحداثيات دقيقة، أو استخدم زر موقعي الحالي أعلاه" : "Paste a link with exact coordinates, or use the current-location button above"}><input id="vendor-map" name="google_maps_link" className="input" type="url" inputMode="url" placeholder="https://maps.google.com/..." value={form.google_maps_link} onChange={(event) => { const value = event.target.value; set("google_maps_link", value); const point = coordinatesFromDeliveryMapLink(value); if (point) { set("store_latitude", point.latitude); set("store_longitude", point.longitude); } else if (value) { set("store_latitude", null); set("store_longitude", null); } }} /></Field>
+          <p className="sm:col-span-2 text-xs text-ink-muted">{arabic ? "يكفي عنوان المتجر حالياً؛ تم إيقاف طلب دبوس الموقع مؤقتاً." : "Your store address is enough for now; the location-pin step is temporarily paused."}</p>
           <Field label={arabic ? "رقم ضريبة القيمة المضافة / TRN" : "VAT / TRN number"} id="vendor-trn" hint={arabic ? "اختياري حالياً" : "Optional at this stage"}><input id="vendor-trn" name="vat_trn_number" className="input" value={form.vat_trn_number} onChange={(event) => set("vat_trn_number", event.target.value)} /></Field>
         </div>
       </section>

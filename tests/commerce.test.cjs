@@ -392,7 +392,7 @@ test("structured data cannot escape its script element", () => {
   assert.equal(serialised.includes("<"), false);
   assert.equal(JSON.parse(serialised).name, malicious);
 });
-test("business onboarding accepts only safe public websites and Maps pins", () => {
+test("business onboarding accepts no store pin and only safe public websites", () => {
   const vendor = {
     business_name: "Test Gold Store",
     trade_license_number: "TL-12345",
@@ -411,6 +411,7 @@ test("business onboarding accepts only safe public websites and Maps pins", () =
   };
   assert.equal(vendorOnboardingSchema.safeParse(vendor).success, true);
   assert.equal(vendorOnboardingSchema.safeParse({ ...vendor, contact_title: "" }).success, false);
+  assert.equal(vendorOnboardingSchema.safeParse({ ...vendor, store_latitude: null, store_longitude: null, google_maps_link: null }).success, true);
   assert.equal(vendorOnboardingSchema.safeParse({ ...vendor, store_latitude: null }).success, false);
   for (const website_url of [
     "javascript:alert(1)",
