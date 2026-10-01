@@ -47,6 +47,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Language-specific public URLs (e.g. /ar/gold-rate/22k) must render in their
+  // own language regardless of the visitor's saved preference, so crawlers and
+  // shared links always see one language per URL. The override applies to this
+  // request only and does not change the saved gg_lang cookie.
+  const pathLanguage = languageForPath(request.nextUrl.pathname);
+  if (pathLanguage) request.cookies.set("gg_lang", pathLanguage);
+
   let response = NextResponse.next({ request: { headers: request.headers } });
 
   const supabase = createServerClient(
@@ -73,6 +80,12 @@ export async function middleware(request: NextRequest) {
 
   await supabase.auth.getUser();
   return response;
+}
+
+function languageForPath(pathname: string): "en" | "ar" | null {
+  if (pathname === "/ar" || pathname.startsWith("/ar/")) return "ar";
+  if (pathname === "/gold-rate" || pathname.startsWith("/gold-rate/")) return "en";
+  return null;
 }
 
 export const config = {

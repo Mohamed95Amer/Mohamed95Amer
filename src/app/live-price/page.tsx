@@ -7,6 +7,8 @@ import { formatAed } from "@/lib/pricing/calc";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import Link from "next/link";
+import { RATE_KARATS, ratePath } from "@/lib/gold-rate/core";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -94,6 +96,15 @@ export default async function LivePricePage() {
           <strong className="font-semibold text-jade-900">{t("Fresh-price protection:", "حماية السعر الحديث:")}</strong>{" "}
           {arabic ? `يعيد Get Gold التحقق كل ${refreshSeconds} ثوانٍ. إذا بلغ عمر السعر الأخير ${staleSeconds} ثانية، تتوقف طلبات الشراء حتى يصل سعر حديث. يعرض السجل أسعار مزود البيانات فقط ويستبعد الإدخالات اليدوية؛ والفجوات تعني عدم تسجيل الخدمة للبيانات، لا ثبات السوق.` : `Get Gold rechecks every ${refreshSeconds} seconds. If the latest quote reaches ${staleSeconds} seconds old, purchase requests pause until a fresh rate arrives. History shows provider quotes only and omits manual entries; gaps mean the service was not recording, not that the market was unchanged.`}
         </div>
+
+        <nav aria-label={t("Gold rate by karat", "سعر الذهب حسب العيار")} className="mt-6 flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-semibold text-jade-950">{t("Today's rate by karat:", "سعر اليوم حسب العيار:")}</span>
+          {RATE_KARATS.map((item) => (
+            <Link key={item.slug} href={ratePath(arabic ? "ar" : "en", item.slug)} className="pill border-jade-900/10 bg-white transition hover:border-gold-300">
+              {arabic ? `عيار ${item.karat}` : `${item.karat}K gold rate`}
+            </Link>
+          ))}
+        </nav>
 
         <div className="mt-8">
           <GoldHistoryExperience history={history} fallbackCurrentRate={currentRate} arabic={arabic} />

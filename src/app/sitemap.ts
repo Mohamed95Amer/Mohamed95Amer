@@ -3,13 +3,25 @@ import { env } from "@/lib/env";
 import { getServiceSupabase } from "@/lib/supabase/server";
 import { listingFreshCutoff } from "@/lib/products/integrity";
 import { dubaiTodayIso } from "@/lib/time";
+import { RATE_KARATS, ratePath } from "@/lib/gold-rate/core";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = env.siteUrl();
   const routes = ["", "/marketplace", "/vendors", "/requests/new", "/live-price", "/how-it-works", "/trust", "/contact", "/terms", "/privacy", "/delivery-and-collection", "/cancellations-and-refunds"];
-  const staticEntries: MetadataRoute.Sitemap = routes.map((route) => ({ url: `${base}${route}`, changeFrequency: route === "/marketplace" || route === "/live-price" ? "daily" : "monthly", priority: route === "" ? 1 : route === "/marketplace" ? 0.9 : 0.65 }));
+  const rateSlugs = [undefined, ...RATE_KARATS.map((item) => item.slug)];
+  const rateEntries: MetadataRoute.Sitemap = rateSlugs.flatMap((slug) => (["en", "ar"] as const).map((locale) => ({
+    url: `${base}${ratePath(locale, slug)}`,
+    lastModified: new Date(),
+    changeFrequency: "hourly" as const,
+    priority: slug ? 0.85 : 0.9,
+    alternates: { languages: { en: `${base}${ratePath("en", slug)}`, ar: `${base}${ratePath("ar", slug)}` } },
+  })));
+  const staticEntries: MetadataRoute.Sitemap = [
+    ...routes.map((route) => ({ url: `${base}${route}`, changeFrequency: route === "/marketplace" || route === "/live-price" ? "daily" as const : "monthly" as const, priority: route === "" ? 1 : route === "/marketplace" ? 0.9 : 0.65 })),
+    ...rateEntries,
+  ];
 
   try {
     const supabase = getServiceSupabase();

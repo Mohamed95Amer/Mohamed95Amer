@@ -16,8 +16,12 @@ import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 import { HomeMediaCarousel, type HomeShowcaseSlide } from "@/components/HomeMediaCarousel";
 import { cookies } from "next/headers";
 import { localizedCategoryLabel } from "@/lib/localized-category";
+import type { Metadata } from "next";
+import { env } from "@/lib/env";
+import { serializeJsonLd } from "@/lib/security/json-ld";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const categories = [
   { slug: "ring", label: "Rings", detail: "Bands & solitaires" },
@@ -121,8 +125,39 @@ export default async function HomePage() {
   const categoryOrder = ["bangle", "necklace", "ring", "earring", "bracelet", "cuff", "set", "bar", "coin", "chain", "pendant"];
   categoryTiles.sort((a, b) => categoryOrder.indexOf(a.slug) - categoryOrder.indexOf(b.slug));
 
+  const siteUrl = env.siteUrl();
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        name: "Get Gold",
+        url: siteUrl,
+        logo: `${siteUrl}/icon`,
+        email: "partnership@getgold.ae",
+        areaServed: { "@type": "Country", name: "United Arab Emirates" },
+        sameAs: ["https://www.instagram.com/getgold.ae/"],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        name: "Get Gold",
+        url: siteUrl,
+        inLanguage: ["en", "ar"],
+        publisher: { "@id": `${siteUrl}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}/marketplace?q={search_term_string}` },
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  };
+
   return (
     <div className="heritage-home">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }} />
       <section className="heritage-hero">
         <div className="heritage-hero-art"><Image src="/images/uae-heritage-hero.webp" alt="" fill priority sizes="(max-width: 767px) 100vw, 75vw" className="object-cover" /></div>
         <div className="heritage-hero-wash" />

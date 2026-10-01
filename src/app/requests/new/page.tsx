@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BuyerRequestForm } from "@/components/BuyerRequestForm";
 import { cookies } from "next/headers";
 
-export const metadata: Metadata = { title: "Request a gold piece", description: "Tell verified UAE gold stores what you want and compare their offers." };
+export const metadata: Metadata = { title: "Request a gold piece", description: "Tell verified UAE gold stores what you want and compare their offers.", alternates: { canonical: "/requests/new" } };
 
 export default async function NewBuyerRequestPage() {
   const arabic = (await cookies()).get("gg_lang")?.value === "ar";

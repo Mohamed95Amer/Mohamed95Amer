@@ -17,6 +17,7 @@ export function AdminNav({ arabic = false }: { arabic?: boolean }) {
     ["/admin/catalogue-support", "Catalogue support", "دعم الكتالوج"],
     ["/admin/liquidity", "Marketplace health", "صحة السوق"],
     ["/admin/growth", "Growth funnel", "مسار النمو"],
+    ["/admin/leads", "Rate-alert leads", "عملاء تنبيهات السعر"],
     ["/admin/reviews", "Reviews", "التقييمات"],
     ["/admin/gold-price", "Gold price", "سعر الذهب"],
     ["/admin/audit", "Audit logs", "سجل التدقيق"],

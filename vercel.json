@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/expire-reservations",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/rate-alerts",
+      "schedule": "0 5 * * *"
     }
   ]
 }

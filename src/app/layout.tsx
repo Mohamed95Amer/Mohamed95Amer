@@ -16,14 +16,12 @@ export const metadata: Metadata = {
   description:
     "Get Gold is a UAE marketplace for verified gold and jewellery shops. See the live price, understand every charge and get the gold from the listed vendor.",
   metadataBase: new URL(env.siteUrl()),
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_AE",
     siteName: "Get Gold",
     title: "Get Gold — Buy gold from verified UAE jewellers",
     description: "Compare transparently priced gold and jewellery from verified UAE shops.",
-    url: "/",
   },
   twitter: { card: "summary_large_image" },
 };
