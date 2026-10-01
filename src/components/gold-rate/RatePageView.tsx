@@ -120,9 +120,9 @@ function Breadcrumbs({ locale, karat }: { locale: RateLocale; karat: RateKarat |
 function Stat({ label, value, detail, tone = "default" }: { label: string; value: string; detail?: string; tone?: "default" | "up" | "down" }) {
   const color = tone === "up" ? "text-signal-ok" : tone === "down" ? "text-gold-600" : "text-jade-950";
   return (
-    <div className="card p-5">
+    <div className="card p-4 sm:p-5">
       <p className="label">{label}</p>
-      <p className={`mt-2 font-serif text-2xl font-semibold tabular-nums ${color}`}>{value}</p>
+      <p className={`mt-2 break-words font-serif text-lg font-semibold tabular-nums sm:text-2xl ${color}`}>{value}</p>
       {detail && <p className="mt-1 text-xs text-ink-muted">{detail}</p>}
     </div>
   );
@@ -163,7 +163,7 @@ function OtherKarats({ locale, price24k, current }: { locale: RateLocale; price2
             className={`card block p-5 transition hover:border-gold-300 ${current?.slug === item.slug ? "ring-2 ring-gold-300" : ""}`}
           >
             <p className="label">{t(`${item.karat}K gold · ${item.fineness}`, `ذهب عيار ${item.karat} · ${item.fineness}`)}</p>
-            <p className="mt-2 font-serif text-2xl font-semibold tabular-nums text-jade-950">{formatRateAed(karatRatePerGram(price24k, item), locale)}</p>
+            <p className="mt-2 font-serif text-2xl font-semibold tabular-nums text-jade-950">{price24k > 0 ? formatRateAed(karatRatePerGram(price24k, item), locale) : "—"}</p>
             <p className="mt-1 text-xs text-ink-muted">{t("per gram · view details →", "للغرام · التفاصيل ←")}</p>
           </Link>
         ))}
@@ -224,7 +224,7 @@ export function KaratRateView({ locale, karat, snapshot }: { locale: RateLocale;
           <p className="mt-3 text-base leading-relaxed text-ink">{available ? dailySummaryText(summary, karat, locale, dateLabel) : t("The rate is updating. Please check back in a moment.", "يتم تحديث السعر، يرجى المحاولة بعد قليل.")}</p>
         </section>
 
-        <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Stat label={t("Yesterday's close", "إغلاق الأمس")} value={summary.previousClose != null ? formatRateAed(summary.previousClose, locale) : "—"} detail={t("per gram", "للغرام")} />
           <Stat label={t("Change today", "التغير اليوم")} value={summary.change != null ? `${summary.change > 0 ? "+" : summary.change < 0 ? "−" : ""}${formatRateAed(Math.abs(summary.change), locale)}` : "—"} detail={formatSignedPct(summary.changePercent, locale)} tone={trend} />
           <Stat label={t("7-day change", "التغير خلال 7 أيام")} value={formatSignedPct(summary.weekChangePercent, locale)} tone={summary.weekChangePercent == null ? "default" : summary.weekChangePercent >= 0 ? "up" : "down"} />
