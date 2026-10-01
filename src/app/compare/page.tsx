@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/compare" },
 };
 
-const categories = ["bracelet", "bangle", "ring", "necklace", "earring", "chain", "pendant", "bar", "coin", "other"] as const;
+const categories = ["bracelet", "cuff", "bangle", "ring", "necklace", "earring", "set", "chain", "pendant", "bar", "coin", "other"] as const;
 const karats = [24, 22, 21, 18, 16, 14, 12] as const;
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const selectColumns = "id, vendor_id, name, category, karat, weight_grams, making_charge, making_charge_discount_percent, making_charge_offer_ends_at, certificate_fee, stone_value, vendor_rate_adjustment_per_gram, assay_fineness, vat_rate_bps, images, vendors!inner(id, business_name, emirate, verification_status, license_expiry_date, is_demo)";
@@ -181,9 +181,9 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
 
 function categoryLabel(category: string, arabic: boolean): string {
   const labels: Record<string, [string, string]> = {
-    bracelet: ["Bracelets", "أساور"], bangle: ["Bangles", "أساور صلبة"], ring: ["Rings", "خواتم"],
-    necklace: ["Necklaces", "قلائد"], earring: ["Earrings", "أقراط"], chain: ["Chains", "سلاسل"],
-    pendant: ["Pendants", "دلايات"], bar: ["Gold bars", "سبائك"], coin: ["Gold coins", "عملات ذهبية"], other: ["Other", "أخرى"],
+    bracelet: ["Bracelets", "أساور"], cuff: ["Cuffs", "كف"], bangle: ["Bangles", "أساور صلبة"], ring: ["Rings", "خواتم"],
+    necklace: ["Necklaces", "قلائد"], earring: ["Earrings", "أقراط"], set: ["Jewellery sets", "طقم"], chain: ["Chains", "سلاسل"],
+    pendant: ["Pendants", "دلايات"], bar: ["Gold bars / ingots", "سبائك الذهب (Ingots)"], coin: ["Gold coins", "عملات ذهبية"], other: ["Other", "أخرى"],
   };
   return labels[category]?.[arabic ? 1 : 0] ?? category;
 }

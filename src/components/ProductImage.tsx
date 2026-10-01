@@ -14,8 +14,10 @@ export type ProductCategory =
   | "ring"
   | "necklace"
   | "bracelet"
+  | "cuff"
   | "earring"
   | "bangle"
+  | "set"
   | "chain"
   | "pendant"
   | "bar"
@@ -23,7 +25,7 @@ export type ProductCategory =
   | "other";
 
 const CATEGORIES: ProductCategory[] = [
-  "ring", "necklace", "bracelet", "earring", "bangle",
+  "ring", "necklace", "bracelet", "cuff", "earring", "bangle", "set",
   "chain", "pendant", "bar", "coin", "other",
 ];
 
@@ -159,6 +161,24 @@ function Art({ kind, fill, stroke }: { kind: ProductCategory; fill: string; stro
           <circle cx="200" cy="150" r="86" fill={fill} />
           <circle cx="200" cy="150" r="62" fill="#FCFAF5" />
           <circle cx="200" cy="150" r="74" {...s} strokeWidth="1.5" opacity="0.55" />
+        </g>
+      );
+
+    case "cuff":
+      return (
+        <g>
+          <path d="M115 95 C 65 130, 78 215, 145 235 M285 95 C 335 130, 322 215, 255 235" fill="none" stroke={fill} strokeWidth="24" strokeLinecap="round" />
+          <path d="M115 95 C 65 130, 78 215, 145 235 M285 95 C 335 130, 322 215, 255 235" fill="none" stroke={stroke} strokeWidth="2" strokeLinecap="round" />
+          <path d="M140 88 l-20 18 M260 88 l20 18" stroke={stroke} strokeWidth="5" strokeLinecap="round" />
+        </g>
+      );
+
+    case "set":
+      return (
+        <g>
+          <path d="M90 70 C 90 150, 190 150, 190 70" {...s} strokeWidth="6" />
+          <path d="M140 150 l-18 20 18 30 18 -30 z" fill={fill} stroke={stroke} strokeWidth="2" />
+          {[235, 300].map((cx) => <g key={cx}><circle cx={cx} cy="105" r="10" fill={fill} stroke={stroke} strokeWidth="2" /><path d={`M${cx} 115 v18 M${cx} 133 l-14 18 14 28 14 -28 z`} fill={fill} stroke={stroke} strokeWidth="2" /></g>)}
         </g>
       );
 

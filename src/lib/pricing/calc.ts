@@ -135,7 +135,7 @@ export function computePrice(inputs: PriceInputs): PriceBreakdown {
   const stoneValue = round2(inputs.stoneValue);
   const vendorRateAdjustmentPerGram = round2(inputs.vendorRateAdjustmentPerGram ?? 0);
   if (!Number.isFinite(vendorRateAdjustmentPerGram) || vendorRateAdjustmentPerGram < 0 || vendorRateAdjustmentPerGram > 1000) {
-    throw new Error("Store rate adjustment must be between AED 0 and AED 1,000 per gram");
+    throw new Error("Vendor margin must be between AED 0 and AED 1,000 per gram");
   }
   const vendorRateAdjustmentAed = round2(vendorRateAdjustmentPerGram * inputs.weightGrams);
   // Retained in the shape for historical snapshots only. New quotes never charge

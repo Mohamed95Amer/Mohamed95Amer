@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { UAE_EMIRATES } from "@/lib/fulfilment";
 import { SUPPORTED_KARATS } from "@/lib/pricing/calc";
 
-const CATEGORIES = ["ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other"];
+const CATEGORIES = ["ring", "necklace", "bracelet", "cuff", "earring", "bangle", "set", "chain", "pendant", "bar", "coin", "other"];
 
 export function BuyerRequestForm({ arabic = false }: { arabic?: boolean }) {
   const t = (en: string, ar: string) => arabic ? ar : en;
-  const categoryAr: Record<string, string> = { ring: "خاتم", necklace: "قلادة", bracelet: "سوار", earring: "قرط", bangle: "إسوارة", chain: "سلسلة", pendant: "تعليقة", bar: "سبيكة", coin: "عملة ذهبية", other: "أخرى" };
+  const categoryAr: Record<string, string> = { ring: "خاتم", necklace: "قلادة", bracelet: "سوار", cuff: "كف", earring: "قرط", bangle: "إسوارة", set: "طقم", chain: "سلسلة", pendant: "تعليقة", bar: "سبائك الذهب (Ingots)", coin: "عملة ذهبية", other: "أخرى" };
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);

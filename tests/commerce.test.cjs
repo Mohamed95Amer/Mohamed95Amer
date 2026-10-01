@@ -25,6 +25,7 @@ const { canTransitionDelivery } = load("src/lib/delivery/transitions.ts");
 const {
   deliveryCompanyOnboardingSchema,
   deliveryStatusSchema,
+  buyerRequestCreateSchema,
   productUpsertSchema,
   vendorOnboardingSchema,
 } = load(
@@ -141,7 +142,7 @@ test("delivery is charged once for a multi-item order; collection is free", () =
   for (const quantity of [0, -1, 1.5, 51, NaN])
     assert.throws(() => computeOrderTotal(computePrice(base), quantity));
 });
-test("store rate adjustment is transparent and included before fee and VAT", () => {
+test("vendor margin is transparent and included before fee and VAT", () => {
   const price = computePrice({
     ...base,
     karat: 18,
@@ -243,6 +244,28 @@ test("vendor VAT choices are explicit, restricted and require a no-VAT declarati
     }).success,
     false,
   );
+});
+
+test("vendor products and customer requests accept the cuff and jewellery-set categories", () => {
+  const product = {
+    name: "Gold cuff",
+    category: "cuff",
+    karat: 22,
+    weight_grams: 2,
+    making_charge: 100,
+    making_charge_discount_percent: 0,
+    making_charge_offer_ends_at: null,
+    certificate_fee: 0,
+    stone_value: 0,
+    quantity: 1,
+    vat_rate_bps: 500,
+  };
+  assert.equal(productUpsertSchema.safeParse(product).success, true);
+  assert.equal(productUpsertSchema.safeParse({ ...product, category: "set" }).success, true);
+  assert.equal(productUpsertSchema.safeParse({ ...product, category: "ingot" }).success, false);
+  const request = { category: "cuff", karat: 22, budgetMinAed: 100, budgetMaxAed: 5000, emirate: "Dubai", description: "Looking for a lightweight open gold cuff bracelet." };
+  assert.equal(buyerRequestCreateSchema.safeParse(request).success, true);
+  assert.equal(buyerRequestCreateSchema.safeParse({ ...request, category: "set" }).success, true);
 });
 test("delivery pins accept only Google or Apple Maps links and extract visible coordinates", () => {
   for (const link of [

@@ -489,7 +489,7 @@ export default async function ReservationDetailPage({
             {Number(snap.vendor_rate_adjustment_aed ?? 0) > 0 && (
               <>
                 <dt className="text-ink-muted">
-                  {t("Store rate adjustment", "تعديل سعر المتجر")} (
+                  {t("Vendor margin", "هامش التاجر")} (
                   {formatAed(Number(snap.vendor_rate_adjustment_per_gram ?? 0))}
                   /g)
                 </dt>
@@ -632,7 +632,7 @@ export default async function ReservationDetailPage({
         </section>
       )}
       <p className="mt-6 text-xs leading-relaxed text-ink-muted">
-        {t("The current comparison updates only the gold component and holds the captured making, certificate or assay, store rate adjustment, stone and fee amounts constant. It is not an appraisal, resale offer or financial advice.", "تحدّث المقارنة الحالية قيمة الذهب فقط، مع إبقاء المصنعية والشهادة أو الفحص وتعديل سعر المتجر والأحجار والرسوم المسجلة ثابتة. وليست تقييماً للقطعة أو عرض إعادة بيع أو نصيحة مالية.")}
+        {t("The current comparison updates only the gold component and holds the captured making, certificate or assay, vendor margin, stone and fee amounts constant. It is not an appraisal, resale offer or financial advice.", "تحدّث المقارنة الحالية قيمة الذهب فقط، مع إبقاء المصنعية والشهادة أو الفحص وهامش التاجر والأحجار والرسوم المسجلة ثابتة. وليست تقييماً للقطعة أو عرض إعادة بيع أو نصيحة مالية.")}
       </p>
     </div>
   );

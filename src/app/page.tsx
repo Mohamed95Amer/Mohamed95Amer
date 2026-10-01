@@ -15,6 +15,7 @@ import { SiteBannerStack } from "@/components/SiteBanner";
 import { ActiveOfferNotice } from "@/components/ActiveOfferNotice";
 import { HomeMediaCarousel, type HomeShowcaseSlide } from "@/components/HomeMediaCarousel";
 import { cookies } from "next/headers";
+import { localizedCategoryLabel } from "@/lib/localized-category";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,9 @@ const categories = [
   { slug: "ring", label: "Rings", detail: "Bands & solitaires" },
   { slug: "necklace", label: "Necklaces", detail: "Statement & bridal" },
   { slug: "bracelet", label: "Bracelets", detail: "Classic & gemstone" },
+  { slug: "cuff", label: "Cuffs", detail: "Open cuff bracelets" },
   { slug: "bangle", label: "Bangles", detail: "Everyday & occasion" },
+  { slug: "set", label: "Jewellery sets", detail: "Coordinated pieces" },
   { slug: "chain", label: "Chains", detail: "Essential gold chains" },
   { slug: "pendant", label: "Pendants", detail: "Detailed focal pieces" },
   { slug: "earring", label: "Earrings", detail: "Studs & drops" },
@@ -115,7 +118,7 @@ export default async function HomePage() {
     const photo = matches.find((item) => firstProductPhoto(item.images));
     return photo ? [{ ...category, photo }] : [];
   });
-  const categoryOrder = ["bangle", "necklace", "ring", "earring", "bracelet", "bar", "coin", "chain", "pendant"];
+  const categoryOrder = ["bangle", "necklace", "ring", "earring", "bracelet", "cuff", "set", "bar", "coin", "chain", "pendant"];
   categoryTiles.sort((a, b) => categoryOrder.indexOf(a.slug) - categoryOrder.indexOf(b.slug));
 
   return (
@@ -165,7 +168,7 @@ export default async function HomePage() {
           {categoryTiles.slice(0, 6).map((category) => (
             <Link key={category.slug} href={`/marketplace?category=${category.slug}`} className="heritage-category group">
               <div className="relative aspect-[1.12] overflow-hidden bg-bone"><ProductImage category={category.slug} karat={category.photo.karat} name={category.label} images={category.photo.images} sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 16vw" className="transition duration-500 group-hover:scale-105" /></div>
-              <div className="flex items-center justify-between gap-2 px-3 py-3.5"><span>{category.label}</span><span aria-hidden="true">→</span></div>
+              <div className="flex items-center justify-between gap-2 px-3 py-3.5"><span>{localizedCategoryLabel(category.slug, arabic)}</span><span aria-hidden="true">→</span></div>
             </Link>
           ))}
         </div>

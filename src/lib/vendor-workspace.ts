@@ -25,5 +25,5 @@ export function vendorDate(value: string | null | undefined, arabic = false): st
   return new Intl.DateTimeFormat(arabic ? "ar-AE" : "en-AE", { timeZone: "Asia/Dubai", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(value));
 }
 export const vendorCategories = [
-  ["ring", "Rings", "خواتم"], ["necklace", "Necklaces", "قلائد"], ["bracelet", "Bracelets", "أساور"], ["earring", "Earrings", "أقراط"], ["bangle", "Bangles", "أساور صلبة"], ["chain", "Chains", "سلاسل"], ["pendant", "Pendants", "تعليقات"], ["bar", "Gold bars", "سبائك"], ["coin", "Gold coins", "عملات ذهبية"], ["other", "Other", "أخرى"],
+  ["ring", "Rings", "خواتم"], ["necklace", "Necklaces", "قلائد"], ["bracelet", "Bracelets", "أساور"], ["cuff", "Cuffs", "كف"], ["bangle", "Bangles", "أساور صلبة"], ["earring", "Earrings", "أقراط"], ["set", "Jewellery sets", "طقم"], ["chain", "Chains", "سلاسل"], ["pendant", "Pendants", "تعليقات"], ["bar", "Gold bars / ingots", "سبائك الذهب (Ingots)"], ["coin", "Gold coins", "عملات ذهبية"], ["other", "Other", "أخرى"],
 ] as const;

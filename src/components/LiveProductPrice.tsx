@@ -199,7 +199,7 @@ export function LiveProductPrice(props: Props) {
             {breakdown.vendorRateAdjustmentAed > 0 && (
               <>
                 <dt>
-                  {t("Store rate adjustment", "تعديل سعر المتجر")} (
+                  {t("Vendor margin", "هامش التاجر")} (
                   {formatAed(breakdown.vendorRateAdjustmentPerGram)}/g)
                 </dt>
                 <dd className="text-right tabular-nums text-ink">

@@ -120,7 +120,7 @@ export default async function MarketplacePage({ searchParams }: SP) {
             <label className="label" htmlFor="marketplace-category">{t.category}</label>
             <select id="marketplace-category" className="input capitalize" name="category" defaultValue={filters.category ?? ""}>
               <option value="">{arabic ? "كل الفئات" : "All categories"}</option>
-              {["ring","necklace","bracelet","earring","bangle","chain","pendant","bar","coin","other"].map((c) => (
+              {["ring","necklace","bracelet","cuff","earring","bangle","set","chain","pendant","bar","coin","other"].map((c) => (
                 <option key={c} value={c}>{localizedCategoryLabel(c, arabic)}</option>
               ))}
             </select>

@@ -39,7 +39,7 @@ export default async function AdminProductDetail({ params }: { params: Promise<{
           <dt className="text-ink-muted">{t("Offer ends", "ينتهي العرض")}</dt><dd>{p.making_charge_offer_ends_at ? new Date(p.making_charge_offer_ends_at).toLocaleString(ar ? "ar-AE" : "en-AE", { timeZone: "Asia/Dubai" }) : "—"}</dd>
           <dt className="text-ink-muted">{t("Certificate / assay fee", "رسوم الشهادة / الفحص")}</dt><dd>{p.certificate_fee}</dd>
           <dt className="text-ink-muted">{t("Stone", "الأحجار")}</dt><dd>{p.stone_value}</dd>
-          <dt className="text-ink-muted">{t("Store rate adjustment", "تعديل سعر المتجر")}</dt><dd>{p.vendor_rate_adjustment_per_gram ?? 0} {t("AED/g", "درهم/غ")}</dd>
+          <dt className="text-ink-muted">{t("Vendor margin", "هامش التاجر")}</dt><dd>{p.vendor_rate_adjustment_per_gram ?? 0} {t("AED/g", "درهم/غ")}</dd>
           <dt className="text-ink-muted">{t("Certified fineness", "النقاء المعتمد")}</dt><dd>{p.assay_fineness ? `${p.assay_fineness}‰` : "—"}</dd>
           <dt className="text-ink-muted">{t("Vendor VAT selection", "اختيار المتجر للضريبة")}</dt><dd>{Number(p.vat_rate_bps) === 0 ? t("No VAT charged — verify tax treatment before approval", "دون ضريبة — تحقق من المعاملة الضريبية قبل الاعتماد") : t("5% VAT", "ضريبة 5%")}</dd>
           <dt className="text-ink-muted">{t("Certificate", "الشهادة")}</dt><dd>{p.certificate_number ?? "—"}</dd>

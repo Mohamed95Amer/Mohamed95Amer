@@ -35,7 +35,7 @@ export function CompareResults(props: Props) {
     stale: "ننتظر سعر ذهب حديثًا قبل عرض ترتيب الأسعار. حاول مرة أخرى بعد لحظات.",
     updating: "جارٍ تحديث سعر الذهب والمقارنة…", limited: "تتضمن المقارنة أحدث 500 قطعة مطابقة فقط. ضيّق المواصفات لضمان ترتيب أدق.",
     firstTotal: "أقل سعر نهائي", firstMaking: "أقل مصنعية", final: "السعر النهائي التقريبي", making: "المصنعية بعد الخصم",
-    perGram: "للغرام", gold: "قيمة الذهب", adjustment: "تعديل سعر المتجر", certificate: "شهادة / فحص",
+    perGram: "للغرام", gold: "قيمة الذهب", adjustment: "هامش التاجر", certificate: "شهادة / فحص",
     stones: "الأحجار", service: "رسوم Get Gold", delivery: "التوصيل", vat: "ضريبة القيمة المضافة",
     pickup: "استلام من المتجر", view: "عرض القطعة", different: "القطع تختلف في التصميم والوزن والشهادة؛ أقل سعر لا يعني دائمًا أفضل قيمة. المتجر يؤكد التوفر والسعر النهائي قبل الدفع.",
     stores: "متاجر", under: "ضمن الميزانية", add: "تصفح المنتجات", request: "اطلب قطعة",
@@ -46,7 +46,7 @@ export function CompareResults(props: Props) {
     stale: "Waiting for a fresh gold quote before ranking prices. Please try again shortly.",
     updating: "Updating the gold quote and comparison…", limited: "Comparison covers the latest 500 matching listings. Narrow your filters for a more complete ranking.",
     firstTotal: "Lowest final total", firstMaking: "Lowest making charge", final: "Estimated final total", making: "Making after discount",
-    perGram: "per gram", gold: "Gold value", adjustment: "Store rate adjustment", certificate: "Certificate / assay",
+    perGram: "per gram", gold: "Gold value", adjustment: "Vendor margin", certificate: "Certificate / assay",
     stones: "Stones", service: "Get Gold fee", delivery: "Delivery", vat: "VAT",
     pickup: "Store pickup", view: "View piece", different: "Pieces differ in design, weight and certification; the lowest price is not always the best value. The shop confirms availability and final price before payment.",
     stores: "stores", under: "within budget", add: "Browse pieces", request: "Request a piece",
@@ -74,9 +74,9 @@ export function CompareResults(props: Props) {
 
 function labelsForCard(arabic: boolean) {
   return arabic ? {
-    firstTotal: "أقل سعر نهائي", firstMaking: "أقل مصنعية", final: "السعر النهائي التقريبي", making: "المصنعية بعد الخصم", perGram: "للغرام", gold: "قيمة الذهب", adjustment: "تعديل سعر المتجر", certificate: "شهادة / فحص", stones: "الأحجار", service: "رسوم Get Gold", delivery: "التوصيل", vat: "ضريبة القيمة المضافة", pickup: "استلام من المتجر", view: "عرض القطعة",
+    firstTotal: "أقل سعر نهائي", firstMaking: "أقل مصنعية", final: "السعر النهائي التقريبي", making: "المصنعية بعد الخصم", perGram: "للغرام", gold: "قيمة الذهب", adjustment: "هامش التاجر", certificate: "شهادة / فحص", stones: "الأحجار", service: "رسوم Get Gold", delivery: "التوصيل", vat: "ضريبة القيمة المضافة", pickup: "استلام من المتجر", view: "عرض القطعة",
   } : {
-    firstTotal: "Lowest final total", firstMaking: "Lowest making charge", final: "Estimated final total", making: "Making after discount", perGram: "per gram", gold: "Gold value", adjustment: "Store rate adjustment", certificate: "Certificate / assay", stones: "Stones", service: "Get Gold fee", delivery: "Delivery", vat: "VAT", pickup: "Store pickup", view: "View piece",
+    firstTotal: "Lowest final total", firstMaking: "Lowest making charge", final: "Estimated final total", making: "Making after discount", perGram: "per gram", gold: "Gold value", adjustment: "Vendor margin", certificate: "Certificate / assay", stones: "Stones", service: "Get Gold fee", delivery: "Delivery", vat: "VAT", pickup: "Store pickup", view: "View piece",
   };
 }
 
