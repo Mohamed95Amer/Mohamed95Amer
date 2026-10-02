@@ -1,0 +1,6 @@
+node_modules/
+dist/
+build/
+qa/still-*.png
+qa/trio.jpg
+qa/qa-output.txt

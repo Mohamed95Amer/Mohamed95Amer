@@ -1,0 +1,42 @@
+{
+  "checkedFrames": 721,
+  "slots": {
+    "logo": false,
+    "ring": false,
+    "screenshot": false
+  },
+  "placeholders": [
+    "logo",
+    "ring",
+    "screenshot"
+  ],
+  "warnings": [],
+  "consoleErrors": [],
+  "headlineWindows": {
+    "Your next gold piece?": [
+      0.26666666666666666,
+      2.9
+    ],
+    "Discover your style.": [
+      3.3666666666666667,
+      6.8
+    ],
+    "UAE jewellers. One marketplace.": [
+      7.333333333333333,
+      11.7
+    ],
+    "Explore the collection.": [
+      12.233333333333333,
+      14.333333333333334
+    ],
+    "Find your next piece.": [
+      14.633333333333333,
+      16.8
+    ]
+  },
+  "endCopyFirstSeen": {
+    "getgold.ae": 17.766666666666666,
+    "Explore now": 17.966666666666665
+  },
+  "failures": []
+}
