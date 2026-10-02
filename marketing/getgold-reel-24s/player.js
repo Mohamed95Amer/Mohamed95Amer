@@ -220,31 +220,23 @@
 
   function refreshStatus() {
     const slots = REEL.state.slots;
-    const label = (k, inConfig) =>
-      preview[k] ? ["info", "Preview file"] : slots[k] ? ["ok", inConfig ? "In use" : "In use"] : ["warn", "Missing"];
-    pill("#st-ring", ...label("ring", true));
-    pill("#st-screenshot", ...label("screenshot", true));
-    if (slots.logo || preview.logo) pill("#st-logo", ...label("logo", true));
-    else pill("#st-logo", "warn", "Interim wordmark");
+    const label = (k, absent) => (preview[k] ? ["info", "Preview file"] : slots[k] ? ["ok", "In use"] : ["warn", absent]);
+    pill("#st-ring", ...label("ring", "Not supplied"));
+    pill("#st-screenshot", ...label("screenshot", "Not supplied"));
+    pill("#st-logo", ...label("logo", "Interim wordmark"));
     $("#logoNote").textContent = slots.logo
       ? "Shown top-left from frame one and in the end lockup."
       : "Until the official file arrives, the reel sets “GET GOLD” in a serif as the website header does. Shown top-left from frame one and in the end lockup.";
 
-    const missing = [];
-    if (!slots.ring) missing.push("ring photo");
-    if (!slots.screenshot) missing.push("marketplace screenshot");
+    const left = [];
+    if (!slots.ring) left.push("ring photo (the bangle opens instead)");
+    if (!slots.screenshot) left.push("marketplace screenshot (scene 3 shows the jewellery photograph)");
+    if (!slots.logo) left.push("official logo (the wordmark stands in)");
     const status = $("#status");
-    if (missing.length || !slots.logo) {
-      status.className = "status";
-      const parts = [];
-      if (missing.length) parts.push(`the ${missing.join(" and ")} ${missing.length > 1 ? "are" : "is"} missing and shown as labelled placeholders`);
-      if (!slots.logo) parts.push("the logo is an interim wordmark");
-      const sentence = parts.join("; ");
-      status.innerHTML = `<strong>Draft, not the finished ad.</strong> ${sentence.charAt(0).toUpperCase() + sentence.slice(1)}.`;
-    } else {
-      status.className = "status ok";
-      status.innerHTML = "<strong>All visual assets in place.</strong> Timing, copy and layout are final.";
-    }
+    status.className = "status ok";
+    status.innerHTML = left.length
+      ? `<strong>Finished with the assets available.</strong> Left out for now: ${left.join("; ")}.`
+      : "<strong>All assets in place.</strong> Timing, copy and layout are final.";
     const w = REEL.state.warnings;
     const box = $("#warnings");
     box.hidden = !w.length;

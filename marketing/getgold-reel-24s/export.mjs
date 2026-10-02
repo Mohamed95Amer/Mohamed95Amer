@@ -95,7 +95,7 @@ const report = {
   truePeak: peakLine ? peakLine.replace(/^Peak:\s+/, "") : "unknown",
   soundtrack: meta.generatedMusic ? "generated instrumental" : "supplied music",
   voiceover: meta.voiceover ? `from ${meta.voiceover.start}s to ${meta.voiceover.end.toFixed(2)}s` : "none",
-  placeholders: Object.entries(meta.slots).filter(([, ok]) => !ok).map(([k]) => k),
+  notSupplied: Object.entries(meta.slots).filter(([, ok]) => !ok).map(([k]) => k),
   pageErrors,
 };
 fs.writeFileSync(OUT.replace(/\.mp4$/i, "") + "-report.json", JSON.stringify(report, null, 2));

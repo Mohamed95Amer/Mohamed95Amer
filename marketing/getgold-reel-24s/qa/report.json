@@ -5,7 +5,7 @@
     "ring": false,
     "screenshot": false
   },
-  "placeholders": [
+  "notSupplied": [
     "logo",
     "ring",
     "screenshot"

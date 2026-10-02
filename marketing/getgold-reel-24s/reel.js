@@ -30,8 +30,15 @@
   // aspect ratio, so the photo is never stretched.
   const HERO = { src: "assets/brand/uae-heritage-hero.webp", w: 1536, h: 1024 };
   const CROPS = {
+    // Scene 2 grid when a ring photo is supplied.
     bangleTall: [773, 0, 377], // 400 x 700 card
     necklaceSquare: [1150, 400, 386], // 330 x 330 card
+    // Without a ring photo: the bangle opens, the necklace and earrings join.
+    hookBangle: [620, 0, 565], // 756 x 756 card
+    necklaceTall: [1150, 80, 386], // 400 x 700 card
+    earringsSquare: [800, 600, 380], // 330 x 330 card
+    // Scene 3 without a marketplace screenshot: the whole photograph.
+    scene: [700, 0, 790], // 700 x 907 card
     earrings: [760, 492, 425], // 4:5 cards
     bangle: [748, 0, 425],
     necklace: [1150, 330, 386],
@@ -98,14 +105,6 @@
     return { x: r.x - (r.w * (k - 1)) / 2, y: r.y - (h * (k - 1)) / 2, w: r.w * k };
   }
 
-  function placeholder(parent, title, note) {
-    const ph = div("ph", parent);
-    const inner = div("ph-in", ph);
-    div("ph-k", inner).textContent = title;
-    div("ph-v", inner).textContent = note;
-    return ph;
-  }
-
   function loadImage(src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -118,17 +117,22 @@
     });
   }
 
-  function cropCard(id, w0, h0, crop, heroImg, extraCls) {
-    const el = div("el card" + (extraCls ? " " + extraCls : ""), stage, w0, h0);
+  function card(id, w0, h0) {
+    const el = div("el card", stage, w0, h0);
     el.id = id;
     const media = div("media", el);
+    return { el, media, img: null, w0, h0, aspect: h0 / w0 };
+  }
+
+  // Show a crop of the brand photograph in a card (uniform scale, never stretched).
+  function setCrop(c, crop) {
     const [cx, cy, cw] = crop;
-    const k = w0 / cw;
-    const ch = (cw * h0) / w0;
+    const k = c.w0 / cw;
+    const ch = (cw * c.h0) / c.w0;
     if (cx < 0 || cy < 0 || cx + cw > HERO.w + 0.5 || cy + ch > HERO.h + 0.5) {
-      state.warnings.push(`Crop for ${id} leaves the source photo`);
+      state.warnings.push(`Crop for ${c.el.id} leaves the source photo`);
     }
-    const img = heroImg.cloneNode();
+    const img = state.hero.cloneNode();
     img.alt = "";
     Object.assign(img.style, {
       position: "absolute",
@@ -138,23 +142,37 @@
       height: HERO.h * k + "px",
       transformOrigin: `${(cx + cw / 2) * k}px ${(cy + ch / 2) * k}px`,
     });
-    media.appendChild(img);
-    return { el, media, img, w0, h0, aspect: h0 / w0 };
+    c.media.innerHTML = "";
+    c.el.classList.remove("cutout");
+    c.media.appendChild(img);
+    c.img = img;
+  }
+
+  function cropCard(id, w0, h0, crop) {
+    const c = card(id, w0, h0);
+    setCrop(c, crop);
+    return c;
   }
 
   /* ---------- slots (supplied assets) ---------- */
 
-  function fillRing(c, img) {
-    c.media.innerHTML = "";
-    c.el.classList.toggle("cutout", !!img && CFG.ringFit === "contain");
+  // With a ring photo: the ring opens, then sits beside the bangle and necklace.
+  // Without one: the bangle opens, then sits beside the necklace and earrings.
+  function applyRingLayout(img) {
+    const c = els.hook;
     if (img) {
+      c.media.innerHTML = "";
+      c.el.classList.toggle("cutout", CFG.ringFit === "contain");
       img.alt = "";
       img.className = "slot-img " + (CFG.ringFit === "contain" ? "fit-contain" : "fit-cover");
       c.media.appendChild(img);
       c.img = img;
+      setCrop(els.gridTall, CROPS.bangleTall);
+      setCrop(els.gridSquare, CROPS.necklaceSquare);
     } else {
-      placeholder(c.media, "Ring photo", "Awaiting asset");
-      c.img = null;
+      setCrop(c, CROPS.hookBangle);
+      setCrop(els.gridTall, CROPS.necklaceTall);
+      setCrop(els.gridSquare, CROPS.earringsSquare);
     }
   }
 
@@ -173,7 +191,6 @@
       state.scrollMax = Math.min(overflow, 560);
       els.shot = img;
     } else {
-      placeholder(screen, "Marketplace screenshot", "Awaiting asset");
       els.shot = null;
     }
   }
@@ -220,7 +237,7 @@
     try {
       return await loadImage(path);
     } catch (e) {
-      state.warnings.push(`${key}: ${e.message}. Showing the placeholder.`);
+      state.warnings.push(`${key}: ${e.message}. Left out.`);
       return null;
     }
   }
@@ -248,14 +265,15 @@
     stage.innerHTML = "";
     div("bg", stage);
 
-    const hero = await loadImage(HERO.src);
+    state.hero = await loadImage(HERO.src);
 
-    // Scene 2 grid (left tall, right column) and the ring that carries over from scene 1.
-    els.bangleTall = cropCard("bangleTall", 400, 700, CROPS.bangleTall, hero);
-    els.necklaceSq = cropCard("necklaceSq", 330, 330, CROPS.necklaceSquare, hero);
-    els.ring = { el: div("el card", stage, 756, 756), w0: 756, h0: 756, aspect: 1 };
-    els.ring.el.id = "ring";
-    els.ring.media = div("media", els.ring.el);
+    // Scene 2 grid (left tall, right column) and the opening piece that carries over from scene 1.
+    els.gridTall = card("gridTall", 400, 700);
+    els.gridSquare = card("gridSquare", 330, 330);
+    els.hook = card("hook", 756, 756);
+
+    // Scene 3: the photograph, or the phone once a screenshot is supplied.
+    els.scene = cropCard("scenePhoto", 700, 907, CROPS.scene);
 
     // Scene 3 phone.
     const phone = div("el phone", stage, 470, 980);
@@ -267,9 +285,9 @@
     els.phone = { el: phone, w0: 470, h0: 980 };
 
     // Scene 4 carousel; the same cards form the end composition.
-    els.carEarrings = cropCard("carEarrings", 560, 700, CROPS.earrings, hero);
-    els.carBangle = cropCard("carBangle", 560, 700, CROPS.bangle, hero);
-    els.carNecklace = cropCard("carNecklace", 560, 700, CROPS.necklace, hero);
+    els.carEarrings = cropCard("carEarrings", 560, 700, CROPS.earrings);
+    els.carBangle = cropCard("carBangle", 560, 700, CROPS.bangle);
+    els.carNecklace = cropCard("carNecklace", 560, 700, CROPS.necklace);
 
     els.headlines = HEADLINES.map(buildHeadline);
 
@@ -294,7 +312,7 @@
       trySlot("screenshot", CFG.screenshot),
     ]);
     state.slots = { logo: !!logoImg, ring: !!ringImg, screenshot: !!shotImg };
-    fillRing(els.ring, ringImg);
+    applyRingLayout(ringImg);
     fillScreen(shotImg);
     fillLogo(logoImg);
 
@@ -324,9 +342,9 @@
       }
     }
 
-    // Scene 1 to 2: the ring pushes in gently, then settles into the grid.
+    // Scene 1 to 2: the opening piece pushes in gently, then settles into the grid.
     {
-      const c = els.ring;
+      const c = els.hook;
       const R1 = { x: 162, y: 380, w: 756 };
       const R2 = { x: 588, y: 400, w: 330 };
       const push = (u) => 1 + 0.055 * (1 - Math.pow(1 - clamp(u / 3.0), 2));
@@ -339,31 +357,38 @@
       if (c.img) c.img.style.transform = `scale(${1 + 0.035 * prog(t, 3.6, 7.0, E.sine)})`;
     }
 
-    // Scene 2: bangle and necklace join 0.2 s apart.
+    // Scene 2: two more pieces join 0.2 s apart.
     {
-      const c = els.bangleTall;
+      const c = els.gridTall;
       const kin = prog(t, 3.2, 3.8, E.out);
       const out = prog(t, 6.7, 7.15);
       placeRect(c, { x: 162 - 80 * (1 - kin), y: 400 - 40 * out, w: 400 }, kin * (1 - out));
       c.img.style.transform = `scale(${1 + 0.035 * prog(t, 3.8, 7.0, E.sine)})`;
     }
     {
-      const c = els.necklaceSq;
+      const c = els.gridSquare;
       const kin = prog(t, 3.4, 4.0, E.out);
       const out = prog(t, 6.66, 7.12);
       placeRect(c, { x: 588, y: 770 + 80 * (1 - kin) - 40 * out, w: 330 }, kin * (1 - out));
       c.img.style.transform = `scale(${1 + 0.035 * prog(t, 4.0, 7.0, E.sine)})`;
     }
 
-    // Scene 3: upright, front-facing phone; one short scroll if the capture allows.
+    // Scene 3: with a screenshot, an upright, front-facing phone (one short
+    // scroll if the capture allows); without one, the whole photograph.
     {
       const kin = prog(t, 6.85, 7.5, E.out);
       const out = prog(t, 11.7, 12.15);
-      const drift = state.scrollMax > 0 ? 0 : 14 * prog(t, 7.6, 11.75, E.sine);
-      place(els.phone.el, 305 - 380 * out, 680 + 180 * (1 - kin) - drift, 1, kin * (1 - out));
+      const o = kin * (1 - out);
       if (els.shot) {
+        const drift = state.scrollMax > 0 ? 0 : 14 * prog(t, 7.6, 11.75, E.sine);
+        place(els.phone.el, 305 - 380 * out, 680 + 180 * (1 - kin) - drift, 1, o);
         const s = state.scrollMax * prog(t, 8.7, 10.6);
         els.shot.style.transform = `translateY(${-s.toFixed(2)}px)`;
+        place(els.scene.el, 190, 680, 1, 0);
+      } else {
+        placeRect(els.scene, { x: 190 - 380 * out, y: 680 + 180 * (1 - kin), w: 700 }, o);
+        els.scene.img.style.transform = `scale(${1 + 0.04 * prog(t, 7.5, 11.75, E.sine)})`;
+        place(els.phone.el, 305, 680, 1, 0);
       }
     }
 
@@ -541,7 +566,7 @@
     },
     async setSlotImage(key, url) {
       const img = await loadImage(url);
-      if (key === "ring") fillRing(els.ring, img);
+      if (key === "ring") applyRingLayout(img);
       else if (key === "screenshot") fillScreen(img);
       else if (key === "logo") fillLogo(img);
       state.slots[key] = true;

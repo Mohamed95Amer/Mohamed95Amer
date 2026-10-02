@@ -151,7 +151,7 @@ execFileSync("ffmpeg", args);
 const report = {
   checkedFrames: samples.length,
   slots: meta.slots,
-  placeholders: Object.entries(meta.slots).filter(([, v]) => !v).map(([k]) => k),
+  notSupplied: Object.entries(meta.slots).filter(([, v]) => !v).map(([k]) => k),
   warnings: meta.warnings,
   consoleErrors: reel.errors,
   headlineWindows: Object.fromEntries(Object.keys(EXPECTED).map((c) => [c, [firstSeen[c], lastSeen[c]]])),

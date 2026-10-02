@@ -9,19 +9,20 @@ Central message: **UAE jewellers. One marketplace.**
 
 ## Status
 
-**Draft.** The framework, timing, copy, layout, soundtrack and export are done.
-Three supplied assets are still missing. The first two appear as labelled
-placeholders in the preview and in any exported MP4:
+**Finished with the assets available.** Timing, copy, layout, soundtrack and
+export are done. Three supplied assets have not arrived yet. The reel leaves
+them out instead of showing empty placeholders, and switches back to the
+briefed layout as soon as each one is added to `config.js`:
 
-| Slot | Used in | Now |
+| Asset | Briefed use | Until it is supplied |
 | --- | --- | --- |
-| Gold ring product photo | Scenes 1–2 | Placeholder |
-| GetGold marketplace screenshot (mobile, portrait) | Scene 3 | Placeholder |
-| Official logo file (SVG or transparent PNG) | Every scene, discreet top-left, then the end lockup | Interim: the "GET GOLD" wordmark set in a serif (Gelasio), as the website header renders it |
+| Gold ring product photo | Opens the ad (scenes 1–2) | The bangle opens; the necklace and earrings join it in scene 2 |
+| GetGold marketplace screenshot (mobile, portrait) | Upright phone in scene 3 | Scene 3 shows the full jewellery photograph under "UAE jewellers. One marketplace." |
+| Official logo file (SVG or transparent PNG) | Top-left throughout, then the end lockup | The "GET GOLD" wordmark set in a serif (Gelasio), as the website header renders it |
 
-In use now: the bangle, necklace and earrings from the getgold.ae homepage
-photograph (`public/images/uae-heritage-hero.webp`). They are cropped for each
-card but not otherwise altered.
+All jewellery comes from the getgold.ae homepage photograph
+(`public/images/uae-heritage-hero.webp`). It is cropped for each card but not
+otherwise altered.
 
 Not used: the earlier October motion pieces in `public/social/2026-10/`. They
 show illustrated jewellery with store names and prices, which this brief rules
@@ -74,9 +75,9 @@ server, not as a `file://` URL.
 
 | Time | Scene | On screen | Copy |
 | --- | --- | --- | --- |
-| 0.0–3.0 | 1 The hook | Large ring photo, gentle 5.5% push-in; logo top-left from frame one | "Your next gold piece?" (in 0.25 s, out by 2.95 s) |
-| 3.0–7.0 | 2 Discovery | Ring settles into a grid; bangle (3.2 s) and necklace (3.4 s) join; settled by 4.0 s | "Discover your style." (3.35–6.85 s) |
-| 7.0–12.0 | 3 The marketplace | Upright phone with the marketplace screenshot; one short scroll if the capture allows | "UAE jewellers. / One marketplace." (7.3–11.75 s) |
+| 0.0–3.0 | 1 The hook | Large ring photo (bangle until supplied), gentle 5.5% push-in; logo top-left from frame one | "Your next gold piece?" (in 0.25 s, out by 2.95 s) |
+| 3.0–7.0 | 2 Discovery | Opening piece settles into a grid; two more pieces join at 3.2 s and 3.4 s; settled by 4.0 s | "Discover your style." (3.35–6.85 s) |
+| 7.0–12.0 | 3 The marketplace | Upright phone with the marketplace screenshot (one short scroll if the capture allows); the full photograph until supplied | "UAE jewellers. / One marketplace." (7.3–11.75 s) |
 | 12.0–17.0 | 4 Exploration | Horizontal browse: earrings → bangle → necklace | "Explore the collection." (12.2–14.4 s), then "Find your next piece." (14.6–16.85 s) |
 | 17.0–24.0 | 5 Brand and action | Three jewellery images, logo, "getgold.ae", charcoal "Explore now" button; settled by 18.45 s, held still to 24.0 s, no fade | "getgold.ae" · "Explore now" |
 

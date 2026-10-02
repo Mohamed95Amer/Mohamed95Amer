@@ -56,16 +56,10 @@
   #stage .card.cutout .media { background: transparent; box-shadow: none; overflow: visible; }
   #stage .card.cutout .slot-img { filter: drop-shadow(0 28px 34px rgba(74, 56, 26, 0.2)); }
 
-  #stage .ph { position: absolute; inset: 0; background: #ebe2d2; }
-  #stage .ph-in { position: absolute; inset: 22px; border: 3px dashed #c3aa7b; border-radius: 18px; display: grid; place-content: center; gap: 12px; text-align: center; padding: 24px; }
-  #stage .ph-k { font: 600 34px/1.15 "GG Sans", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #7d6538; }
-  #stage .ph-v { font: 400 28px/1.3 "GG Sans", sans-serif; color: #6f6656; }
 
   #stage .phone { border-radius: 70px; background: #1b1f1c; padding: 16px; box-shadow: 0 3px 8px rgba(40, 30, 14, 0.12), 0 40px 90px rgba(40, 30, 14, 0.24), inset 0 0 0 2px #3a3f3b; }
   #stage .phone .screen { position: relative; width: 438px; height: 948px; border-radius: 54px; overflow: hidden; background: #f4eee3; }
   #stage .phone .screen .shot { width: 438px; height: auto; }
-  #stage .phone .screen .ph { border-radius: 54px; }
-  #stage .phone .screen .ph-in { border-radius: 40px; }
   #stage .phone .side { position: absolute; width: 6px; border-radius: 3px; background: #2a2f2b; }
   #stage .phone .side-a { left: -5px; top: 210px; height: 70px; }
   #stage .phone .side-b { left: -5px; top: 300px; height: 120px; }
@@ -180,8 +174,8 @@
       <button type="button" role="tab" id="tabLive" aria-selected="true" aria-controls="livePane">Live preview</button>
     </div>
     <div class="pane" id="videoPane" role="tabpanel" aria-labelledby="tabVideo" hidden>
-      <video id="mp4" class="video" controls playsinline preload="metadata" poster="downloads/poster.jpg" data-mp4="downloads/getgold-reel-24s-DRAFT.mp4" data-webm="downloads/getgold-reel-24s-DRAFT.webm"></video>
-      <p class="small" id="videoMsg">Draft export: 24.0 s, 1080 × 1920, with sound. The ring photo, screenshot and logo are still placeholders.</p>
+      <video id="mp4" class="video" controls playsinline preload="metadata" poster="downloads/poster.jpg" data-mp4="downloads/getgold-reel-24s.mp4" data-webm="downloads/getgold-reel-24s.webm"></video>
+      <p class="small" id="videoMsg">24.0 s, 1080 × 1920, 30 fps, with sound.</p>
     </div>
     <div class="pane" id="livePane" role="tabpanel" aria-labelledby="tabLive">
     <div class="frame" id="frame">
@@ -237,12 +231,12 @@
       <div class="rows">
         <div class="row">
           <span class="name">Gold ring photo</span><span class="pill" id="st-ring">…</span>
-          <span class="note">Scenes 1 and 2. Square crop works best; a transparent cut-out also works (set <code>ringFit: "contain"</code>).</span>
+          <span class="note">Opens the ad (scenes 1 and 2). Until one is supplied, the bangle opens and the necklace and earrings join it. Square crop works best; a transparent cut-out also works (set <code>ringFit: "contain"</code>).</span>
           <div class="actions"><label class="file">Try a file in this preview<input type="file" id="up-ring" accept="image/*"></label></div>
         </div>
         <div class="row">
           <span class="name">Marketplace screenshot</span><span class="pill" id="st-screenshot">…</span>
-          <span class="note">Scene 3, inside the phone. Portrait mobile capture; a tall capture scrolls once.</span>
+          <span class="note">Scene 3, inside an upright phone. Until one is supplied, scene 3 shows the full jewellery photograph instead. Portrait mobile capture; a tall capture scrolls once.</span>
           <div class="actions"><label class="file">Try a file in this preview<input type="file" id="up-screenshot" accept="image/*"></label></div>
         </div>
         <div class="row">
@@ -288,11 +282,11 @@
       <h2 id="exportTitle">Download</h2>
       <div class="buttons">
         <span class="dl" id="downloads" hidden>
-          <button class="btn primary" type="button" data-file="downloads/getgold-reel-24s-DRAFT.mp4" data-name="getgold-reel-24s-DRAFT.mp4">Download draft MP4</button>
+          <button class="btn primary" type="button" data-file="downloads/getgold-reel-24s.mp4" data-name="getgold-reel-24s.mp4">Download MP4</button>
         </span>
         <a class="btn" href="https://github.com/Mohamed95Amer/Mohamed95Amer/tree/claude/getgold-reel-24s/marketing/getgold-reel-24s" target="_blank" rel="noopener">Source files on GitHub</a>
       </div>
-      <p class="small" id="dlMsg" role="status" aria-live="polite">The MP4 is a draft: the ring photo, marketplace screenshot and logo are placeholders.</p>
+      <p class="small" id="dlMsg" role="status" aria-live="polite">Built from the assets available now. Add the ring photo, screenshot or logo and export again to include them.</p>
       <p class="small" id="dlNote" hidden>The MP4 download works when this page is opened on claude.ai.</p>
       <p class="small">The MP4 is rendered from the source folder with <code>node export.mjs</code>: Chromium captures all 720 frames from this same timeline, then ffmpeg encodes H.264 and AAC at 1080 × 1920, 30 fps.</p>
     </section>
