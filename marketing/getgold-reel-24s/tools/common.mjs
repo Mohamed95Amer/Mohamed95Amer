@@ -30,6 +30,7 @@ const TYPES = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".woff2": "font/woff2",
+  ".mp4": "video/mp4",
   ".mp3": "audio/mpeg",
   ".wav": "audio/wav",
   ".m4a": "audio/mp4",
@@ -41,7 +42,10 @@ export function serve(port = 0) {
     const url = new URL(req.url, "http://localhost");
     let rel = decodeURIComponent(url.pathname);
     if (rel === "/") rel = "/index.html";
-    const file = path.join(ROOT, rel);
+    // The published page carries the export under downloads/; locally it is in dist/.
+    const file = rel.startsWith("/downloads/")
+      ? path.join(ROOT, "dist", rel.slice("/downloads/".length))
+      : path.join(ROOT, rel);
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
       res.writeHead(404);
       res.end("Not found");

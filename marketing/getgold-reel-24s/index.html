@@ -89,6 +89,15 @@
   .safe .box { position: absolute; left: 15%; right: 15%; top: 15%; bottom: 22%; outline: 1.5px dashed rgba(176, 54, 54, 0.75); }
   .safe .tag { position: absolute; left: 6px; top: 6px; font: 600 11px/1.2 var(--font); color: #fff; background: rgba(150, 40, 40, 0.85); padding: 3px 6px; border-radius: 4px; }
 
+  /* ---------- view switch: exported MP4 or live preview ---------- */
+  .seg { display: inline-flex; justify-self: start; gap: 2px; padding: 3px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+  .seg button { all: unset; font: 600 13.5px/1 var(--font); padding: 9px 14px; border-radius: 9px; color: var(--muted); cursor: pointer; }
+  .seg button[aria-selected="true"] { background: var(--btn); color: var(--btn-ink); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .pane { display: grid; gap: 14px; min-width: 0; }
+  .pane .small { margin: 0; }
+  .video { display: block; width: 100%; aspect-ratio: 9 / 16; max-width: 100%; background: #000; box-shadow: var(--frame-shadow); }
+
   /* ---------- transport ---------- */
   .transport { display: grid; gap: 10px; }
   .buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -160,11 +169,21 @@
   html.render .app { display: block; max-width: none; }
   html.render .viewer { position: fixed; left: 0; top: 0; width: 1080px; min-width: 0; display: block; }
   html.render .frame { width: 1080px; height: 1920px; box-shadow: none; }
-  html.render .transport, html.render .panel, html.render .safe { display: none !important; }
+  html.render .transport, html.render .panel, html.render .safe, html.render .seg, html.render #videoPane { display: none !important; }
+  html.render .pane { display: block; }
 </style>
 
 <main class="app">
   <section class="viewer" aria-label="Advertisement preview">
+    <div class="seg" role="tablist" aria-label="How to view the ad">
+      <button type="button" role="tab" id="tabVideo" aria-selected="false" aria-controls="videoPane">MP4 video</button>
+      <button type="button" role="tab" id="tabLive" aria-selected="true" aria-controls="livePane">Live preview</button>
+    </div>
+    <div class="pane" id="videoPane" role="tabpanel" aria-labelledby="tabVideo" hidden>
+      <video id="mp4" class="video" controls playsinline preload="metadata" poster="downloads/poster.jpg" data-mp4="downloads/getgold-reel-24s-DRAFT.mp4" data-webm="downloads/getgold-reel-24s-DRAFT.webm"></video>
+      <p class="small" id="videoMsg">Draft export: 24.0 s, 1080 × 1920, with sound. The ring photo, screenshot and logo are still placeholders.</p>
+    </div>
+    <div class="pane" id="livePane" role="tabpanel" aria-labelledby="tabLive">
     <div class="frame" id="frame">
       <div id="stage" role="img" aria-label="GetGold.ae 24-second vertical advertisement"></div>
       <div class="safe" id="safe" hidden>
@@ -193,6 +212,7 @@
         <div class="ticks" id="ticks"></div>
       </div>
       <label class="guides"><input type="checkbox" id="guides"> Show safe areas</label>
+    </div>
     </div>
   </section>
 

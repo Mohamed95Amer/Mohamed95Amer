@@ -161,7 +161,7 @@
 
   document.addEventListener("keydown", (e) => {
     const tag = (e.target && e.target.tagName) || "";
-    if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(tag) || playBtn.disabled) return;
+    if (/INPUT|TEXTAREA|SELECT|BUTTON|VIDEO/.test(tag) || playBtn.disabled || $("#livePane").hidden) return;
     if (e.code === "Space") {
       e.preventDefault();
       playing ? pause() : play();
@@ -301,6 +301,58 @@
     await REEL.setVoiceoverStart(v);
     await afterAudioChange();
   });
+
+  /* ---------- view switch: exported MP4 or live preview ---------- */
+
+  // The MP4 view plays the exported file in the browser's own player, which
+  // suits phones (fullscreen, native controls). Phones open on it by default.
+  const video = $("#mp4");
+  const videoMsg = $("#videoMsg");
+  let videoRequested = false;
+
+  function loadVideo() {
+    if (videoRequested) return;
+    videoRequested = true;
+    // H.264 MP4 first (phones), VP9 WebM where H.264 is missing.
+    const mp4 = video.canPlayType('video/mp4; codecs="avc1.640029, mp4a.40.2"');
+    const webm = video.canPlayType('video/webm; codecs="vp9, opus"');
+    const url = !mp4 && webm ? video.dataset.webm : video.dataset.mp4;
+    let triedBlob = false;
+    video.addEventListener("error", async () => {
+      if (triedBlob) {
+        videoMsg.textContent = "This view could not play the MP4. Use Live preview, or download it below.";
+        return;
+      }
+      // Some mobile browsers need byte ranges to stream; a blob plays without them.
+      triedBlob = true;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(String(res.status));
+        video.src = URL.createObjectURL(await res.blob());
+      } catch (e) {
+        videoMsg.textContent = "The MP4 is not available in this view. Use Live preview.";
+      }
+    });
+    video.src = url;
+  }
+
+  function showView(which) {
+    const isVideo = which === "video";
+    $("#tabVideo").setAttribute("aria-selected", String(isVideo));
+    $("#tabLive").setAttribute("aria-selected", String(!isVideo));
+    $("#videoPane").hidden = !isVideo;
+    $("#livePane").hidden = isVideo;
+    if (isVideo) {
+      if (playing) pause();
+      loadVideo();
+    } else {
+      video.pause();
+      fit();
+    }
+  }
+  $("#tabVideo").addEventListener("click", () => showView("video"));
+  $("#tabLive").addEventListener("click", () => showView("live"));
+  if (!isRender && window.matchMedia && window.matchMedia("(max-width: 860px)").matches) showView("video");
 
   /* ---------- downloads (published page only) ---------- */
 

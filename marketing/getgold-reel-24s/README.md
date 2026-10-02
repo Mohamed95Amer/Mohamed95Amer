@@ -60,6 +60,11 @@ npm run export       # dist/getgold-reel-24s.mp4 (+ soundtrack WAV and report)
 
 To use an existing Chromium, set `CHROMIUM_PATH=/path/to/chrome`.
 
+`export.mjs` also writes a WebM copy and `poster.jpg` for the preview page's
+"MP4 video" view. On phones the page opens on that view, which plays the
+exported file in the browser's own player. The page reads these files from
+`downloads/` (served from `dist/` locally).
+
 `index.html` is written as page content, without `<html>`/`<head>`/`<body>`,
 because the published artifact adds that skeleton. The local server
 (`tools/common.mjs`) adds the same skeleton. Open the page through the

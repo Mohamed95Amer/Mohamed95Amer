@@ -110,3 +110,12 @@ if (problems.length) {
   console.error("Export check failed: " + problems.join("; "));
   process.exit(1);
 }
+
+// Companions for the published preview's video view: a VP9/Opus WebM for
+// browsers without H.264, and a poster frame (13.0 s).
+const base = OUT.replace(/\.mp4$/i, "");
+execFileSync("ffmpeg", ["-v", "error", "-y", "-i", OUT, "-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "32", "-deadline", "good",
+  "-cpu-used", "4", "-row-mt", "1", "-pix_fmt", "yuv420p", "-c:a", "libopus", "-b:a", "128k", base + ".webm"]);
+execFileSync("ffmpeg", ["-v", "error", "-y", "-ss", "13.0", "-i", OUT, "-frames:v", "1", "-vf", "scale=540:960", "-q:v", "3",
+  path.join(path.dirname(OUT), "poster.jpg")]);
+console.log("Also wrote " + path.basename(base) + ".webm and poster.jpg");
