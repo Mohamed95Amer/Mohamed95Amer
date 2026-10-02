@@ -93,6 +93,7 @@
   .transport { display: grid; gap: 10px; }
   .buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
   .btn { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 600 14px/1 var(--font); height: 38px; padding: 0 14px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  a.btn { text-decoration: none; }
   .btn svg { width: 14px; height: 14px; fill: currentColor; flex: none; }
   .btn.primary { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); min-width: 92px; }
   .btn:disabled { opacity: 0.5; cursor: progress; }
@@ -264,8 +265,16 @@
     </section>
 
     <section aria-labelledby="exportTitle">
-      <h2 id="exportTitle">Export</h2>
-      <p class="small" style="margin-top:0">The MP4 is rendered from the source folder with <code>node export.mjs</code>: Chromium captures all 720 frames from this same timeline, then ffmpeg encodes H.264 and AAC at 1080 × 1920, 30 fps. This page has no download button.</p>
+      <h2 id="exportTitle">Download</h2>
+      <div class="buttons">
+        <span class="dl" id="downloads" hidden>
+          <button class="btn primary" type="button" data-file="downloads/getgold-reel-24s-DRAFT.mp4" data-name="getgold-reel-24s-DRAFT.mp4">Download draft MP4</button>
+        </span>
+        <a class="btn" href="https://github.com/Mohamed95Amer/Mohamed95Amer/tree/claude/getgold-reel-24s/marketing/getgold-reel-24s" target="_blank" rel="noopener">Source files on GitHub</a>
+      </div>
+      <p class="small" id="dlMsg" role="status" aria-live="polite">The MP4 is a draft: the ring photo, marketplace screenshot and logo are placeholders.</p>
+      <p class="small" id="dlNote" hidden>The MP4 download works when this page is opened on claude.ai.</p>
+      <p class="small">The MP4 is rendered from the source folder with <code>node export.mjs</code>: Chromium captures all 720 frames from this same timeline, then ffmpeg encodes H.264 and AAC at 1080 × 1920, 30 fps.</p>
     </section>
   </aside>
 </main>

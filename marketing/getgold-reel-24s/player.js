@@ -302,6 +302,53 @@
     await afterAudioChange();
   });
 
+  /* ---------- downloads (published page only) ---------- */
+
+  // The viewer's `downloads` capability hands a file to the browser after a
+  // confirmation. Without it (local preview, a saved copy) the buttons stay
+  // hidden, so the page never shows a download that cannot work.
+  (async function setupDownloads() {
+    const box = $("#downloads");
+    const note = $("#dlNote");
+    const msg = $("#dlMsg");
+    let dl = null;
+    try {
+      dl = window.claude && typeof window.claude.use === "function" ? await window.claude.use("downloads") : null;
+    } catch (e) {
+      dl = null;
+    }
+    if (!dl) {
+      note.hidden = false;
+      return;
+    }
+    box.hidden = false;
+    box.querySelectorAll("button[data-file]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const name = btn.dataset.name;
+        btn.disabled = true;
+        msg.textContent = `Preparing ${name}…`;
+        try {
+          const res = await fetch(btn.dataset.file);
+          if (!res.ok) throw { code: "missing" };
+          const blob = await res.blob();
+          await dl.save({ filename: name, data: blob });
+          msg.textContent = `${name} sent to your downloads.`;
+        } catch (err) {
+          const code = err && err.code;
+          if (code === "declined") msg.textContent = "Download cancelled.";
+          else if (code === "rate_limited") msg.textContent = "A save prompt is already open. Try again in a moment.";
+          else if (code === "missing") msg.textContent = `${name} is not published with this page.`;
+          else {
+            msg.textContent = "This view cannot save files.";
+            box.querySelectorAll("button").forEach((b) => (b.hidden = true));
+          }
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+  })();
+
   /* ---------- boot ---------- */
 
   REEL.init(stage)
