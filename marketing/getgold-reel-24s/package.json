@@ -1,0 +1,15 @@
+{
+  "name": "getgold-reel-24s",
+  "private": true,
+  "version": "1.0.0",
+  "description": "GetGold.ae 24-second vertical reel: preview, QA and MP4 export",
+  "type": "module",
+  "scripts": {
+    "preview": "node preview.mjs",
+    "qa": "node qa.mjs",
+    "export": "node export.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
