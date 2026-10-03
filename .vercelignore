@@ -12,3 +12,5 @@ tmp/
 coverage/
 *.log
 tsconfig.tsbuildinfo
+.claude/
+brag-output*/
