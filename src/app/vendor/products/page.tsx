@@ -25,7 +25,10 @@ export default async function VendorProductsPage() {
     <div className="container-pro py-10">
       <div className="flex items-center justify-between">
         <h1 className="font-serif text-3xl">My products</h1>
-        <Link href="/vendor/products/new" className="btn-primary">+ Add product</Link>
+        <div className="flex gap-3">
+          <Link href="/vendor/products/bulk" className="btn-ghost">Bulk upload (CSV)</Link>
+          <Link href="/vendor/products/new" className="btn-primary">+ Add product</Link>
+        </div>
       </div>
       <div className="card mt-6 overflow-hidden">
         <table className="w-full text-sm">
@@ -57,7 +60,12 @@ export default async function VendorProductsPage() {
               </tr>
             ))}
             {(products ?? []).length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-6 text-center text-ink-muted">No products yet.</td></tr>
+              <tr>
+                <td colSpan={7} className="px-4 py-6 text-center text-ink-muted">
+                  No products yet. Add one at a time, or{" "}
+                  <Link href="/vendor/products/bulk" className="underline">upload a CSV</Link>.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

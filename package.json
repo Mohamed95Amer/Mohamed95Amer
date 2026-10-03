@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:csv && npm run test:bulk && npm run test:route",
+    "test:csv": "node --experimental-strip-types --no-warnings --import ./scripts/register-alias.mjs scripts/csv.test.ts",
+    "test:bulk": "node --experimental-strip-types --no-warnings --import ./scripts/register-alias.mjs scripts/bulk.test.ts",
+    "test:route": "node --experimental-strip-types --no-warnings --import ./scripts/register-stubs.mjs scripts/route.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

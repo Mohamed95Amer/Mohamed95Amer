@@ -45,6 +45,29 @@ export const productUpsertSchema = z.object({
   submit_for_approval: z.boolean().optional().default(false),
 });
 
+/**
+ * One row of a bulk CSV import. Deliberately derived from productUpsertSchema
+ * so the bounds are stated once: a limit that disagrees between the form and
+ * the importer is a limit the database will reject at insert time, after the
+ * vendor has been told the file is fine.
+ *
+ * `id`, `images` and `submit_for_approval` are dropped — a CSV only creates
+ * products, photos are added per product afterwards, and approval is a choice
+ * made once for the whole file rather than per row.
+ */
+export const bulkProductRowSchema = productUpsertSchema.omit({
+  id: true,
+  images: true,
+  submit_for_approval: true,
+});
+
+export const bulkProductUploadSchema = z.object({
+  csv: z.string().min(1).max(1_000_000),
+  // A dry run reports what would happen and writes nothing.
+  commit: z.boolean().optional().default(false),
+  submit_for_approval: z.boolean().optional().default(false),
+});
+
 export const vendorResponseSchema = z.object({
   reservationId: z.string().uuid(),
   decision: z.enum(["confirm", "reject"]),
