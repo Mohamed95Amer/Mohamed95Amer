@@ -1,0 +1,317 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid ""
+"% certified,\n"
+"                        forecast margin"
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+msgid "%s days"
+msgstr "%s أيام "
+
+#. modules: construction_bim, construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_bim/static/src/viewer/bim_viewer.xml:0
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "All"
+msgstr "الكل"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "All metrics"
+msgstr "كل المؤشرات"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+msgid "Behind baseline"
+msgstr "متأخر عن الخط الأساسي"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Behind programme"
+msgstr "متأخر عن البرنامج"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Budget cost"
+msgstr "تكلفة الموازنة"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_certified_value
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Certified"
+msgstr "المعتمد"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Certified against contract"
+msgstr "المعتمد مقابل العقد"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+msgid "Certified to date"
+msgstr "المعتمد حتى الآن"
+
+#. modules: construction_dashboard, construction_report
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:construction_report.field_construction_boq_section__cvr_committed_cost
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Committed"
+msgstr "الملتزم به"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Compare"
+msgstr "المقارنة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Compare projects"
+msgstr "مقارنة المشاريع"
+
+#. module: construction_dashboard
+#: model:ir.model,name:construction_dashboard.model_construction_dashboard
+msgid "Construction Dashboard Data"
+msgstr "الإنشاءات Dashboard Data"
+
+#. modules: construction_dashboard, construction_report, facility_contract,
+#. facility_inventory
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model,name:facility_inventory.model_contract_contract
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_maintenance_request_form_contract
+msgid "Contract"
+msgstr "العقد"
+
+#. module: construction_dashboard
+#: model:ir.actions.client,name:construction_dashboard.action_construction_dashboard
+#: model:ir.ui.menu,name:construction_dashboard.menu_construction_dashboard
+msgid "Executive Dashboard"
+msgstr "لوحة الإدارة التنفيذية"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+msgid "High-severity defects"
+msgstr "عيوب عالية الخطورة"
+
+#. modules: construction_dashboard, construction_hse
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model.fields,field_description:construction_hse.field_project_project__hse_ltifr
+#: model_terms:ir.ui.view,arch_db:construction_hse.view_project_safety_list
+msgid "LTIFR"
+msgstr "معدل تكرار الإصابات المفقودة الوقت"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Loading portfolio…"
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Lost time injuries"
+msgstr "إصابات مفقودة الوقت"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Margin eroding"
+msgstr "تآكل الهامش"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Material waste"
+msgstr "هدر المواد"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+msgid "Materials over budget"
+msgstr "مواد تجاوزت الموازنة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Metric"
+msgstr "المؤشر"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Needs attention"
+msgstr "يحتاج متابعة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "No construction projects yet."
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "None"
+msgstr "لا شيء"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Nothing flagged across the selected projects."
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Open defects"
+msgstr "العيوب المفتوحة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.js:0
+msgid "Overdue RFIs"
+msgstr "طلبات معلومات متأخرة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "PORTFOLIO"
+msgstr "المحفظة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Pick at least one project to compare."
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid ""
+"Scaled against the largest value in the selection.\n"
+"                            Colour follows meaning, not series order."
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "The dashboard could not be loaded."
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Value against cost"
+msgstr "القيمة مقابل التكلفة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "Worst slip"
+msgstr "أكبر انحراف"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "contract"
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "d"
+msgstr ""
+
+#. module: construction_dashboard
+#. odoo-python
+#: code:addons/construction_dashboard/models/dashboard.py:0
+msgid "label"
+msgstr "بطاقة "
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "lost"
+msgstr "ضائع "
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "manhours"
+msgstr "ساعات العمل"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "of"
+msgstr "من"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "over-committed"
+msgstr "التزام يتجاوز الموازنة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "overdue RFIs"
+msgstr "طلبات معلومات متأخرة"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "projects behind baseline"
+msgstr "مشاريع متأخرة عن الخط الأساسي"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "projects ·"
+msgstr "مشاريع ·"
+
+#. module: construction_dashboard
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+msgid "under contract"
+msgstr "تحت التعاقد"

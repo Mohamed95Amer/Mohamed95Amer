@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_defect" model="ir.actions.report">
+        <field name="name">Punch List / Defect Report</field>
+        <field name="model">construction.defect</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_defect.report_defect_document</field>
+        <field name="report_file">construction_defect.report_defect_document</field>
+        <field name="binding_model_id" ref="model_construction_defect"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_defect_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Defect / Punch List Report</h2>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Ref</th>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Severity</th>
+                                <th>Responsible</th>
+                                <th>Status</th>
+                                <th>Photos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="defect">
+                                <td><span t-field="defect.reference"/></td>
+                                <td>
+                                    <strong t-field="defect.name"/>
+                                    <div class="text-muted">
+                                        <span t-field="defect.description"/>
+                                    </div>
+                                </td>
+                                <td><span t-field="defect.location"/></td>
+                                <td><span t-field="defect.severity"/></td>
+                                <td>
+                                    <span t-field="defect.responsible_subcontractor_id"/>
+                                </td>
+                                <td><span t-field="defect.state"/></td>
+                                <td>
+                                    <img t-if="defect.photo_before"
+                                         t-att-src="image_data_uri(defect.photo_before)"
+                                         style="max-height:70px; margin-right:4px;"/>
+                                    <img t-if="defect.photo_after"
+                                         t-att-src="image_data_uri(defect.photo_after)"
+                                         style="max-height:70px;"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

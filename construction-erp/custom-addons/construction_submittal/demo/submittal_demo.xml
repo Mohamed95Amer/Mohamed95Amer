@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="submittal_demo_marble" model="construction.submittal">
+        <field name="name">Crema Marfil marble — lobby flooring</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="submittal_type">material</field>
+        <field name="spec_section">09 63 40 Stone Flooring</field>
+    </record>
+
+    <record id="submittal_demo_hvac_shop" model="construction.submittal">
+        <field name="name">HVAC ductwork shop drawings — Level 3</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="submittal_type">shop_drawing</field>
+        <field name="spec_section">23 31 00 HVAC Ducts</field>
+        <field name="subcontractor_id" ref="construction_base.partner_demo_subcontractor"/>
+    </record>
+
+    <record id="submittal_demo_method" model="construction.submittal">
+        <field name="name">Method statement — post-tensioned slab stressing</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="submittal_type">method</field>
+        <field name="spec_section">03 38 00 Post-Tensioned Concrete</field>
+    </record>
+</odoo>

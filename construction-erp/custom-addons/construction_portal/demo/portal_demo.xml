@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A free portal login for the demo subcontractor so the self-service
+         RFIs / defects / subcontracts can be demoed immediately. -->
+    <record id="user_demo_subcontractor" model="res.users">
+        <field name="name">Al Waha Subcontractor (Portal)</field>
+        <field name="login">subcontractor@demo.construction</field>
+        <field name="partner_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
+    </record>
+</odoo>

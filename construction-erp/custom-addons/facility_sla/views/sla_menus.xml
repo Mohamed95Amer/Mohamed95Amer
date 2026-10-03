@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_facility_sla_breaches"
+              name="SLA Breaches"
+              parent="facility_asset.menu_facility_root"
+              action="action_sla_breaches"
+              sequence="35"/>
+
+    <menuitem id="menu_facility_sla_policies"
+              name="SLA Policies"
+              parent="facility_asset.menu_facility_config"
+              action="action_sla_policy"
+              sequence="50"/>
+</odoo>

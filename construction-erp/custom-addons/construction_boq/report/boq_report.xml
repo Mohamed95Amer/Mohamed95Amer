@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_boq" model="ir.actions.report">
+        <field name="name">Priced BOQ</field>
+        <field name="model">construction.boq</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_boq.report_boq_document</field>
+        <field name="report_file">construction_boq.report_boq_document</field>
+        <field name="binding_model_id" ref="model_construction_boq"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_boq_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="boq">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            <span t-esc="boq.name"/>
+                            <small class="text-muted">
+                                — v<span t-esc="boq.version"/>
+                            </small>
+                        </h2>
+                        <p>
+                            <strong>Project:</strong>
+                            <span t-esc="boq.project_id.display_name"/>
+                            <t t-if="boq.project_id.client_id">
+                                &amp;nbsp;|&amp;nbsp;
+                                <strong>Client:</strong>
+                                <span t-esc="boq.project_id.client_id.name"/>
+                            </t>
+                        </p>
+                        <t t-set="no_section_lines"
+                           t-value="boq.line_ids.filtered(lambda l: not l.section_id)"/>
+                        <t t-set="section_groups"
+                           t-value="[(s, s.line_ids) for s in boq.section_ids] + ([(False, no_section_lines)] if no_section_lines else [])"/>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Description</th>
+                                    <th class="text-end">Unit</th>
+                                    <th class="text-end">Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="section_groups" t-as="group">
+                                    <t t-set="section" t-value="group[0]"/>
+                                    <t t-set="lines" t-value="group[1]"/>
+                                    <tr class="table-active">
+                                        <td colspan="5">
+                                            <strong>
+                                                <t t-if="section">
+                                                    <span t-esc="section.code"/> —
+                                                    <span t-esc="section.name"/>
+                                                </t>
+                                                <t t-else="">Unsectioned Items</t>
+                                            </strong>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong>
+                                                <span t-esc="sum(lines.mapped('amount_sell'))"
+                                                      t-options="{'widget': 'monetary', 'display_currency': boq.currency_id}"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr t-foreach="lines" t-as="line">
+                                        <td><span t-esc="line.item_code or ''"/></td>
+                                        <td><span t-esc="line.name"/></td>
+                                        <td class="text-end">
+                                            <span t-esc="line.uom_id.name or ''"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="line.quantity"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="line.unit_rate"
+                                                  t-options="{'widget': 'monetary', 'display_currency': boq.currency_id}"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-esc="line.amount_sell"
+                                                  t-options="{'widget': 'monetary', 'display_currency': boq.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-end">
+                                        <strong>Contract Total</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong>
+                                            <span t-esc="boq.amount_sell_total"
+                                                  t-options="{'widget': 'monetary', 'display_currency': boq.currency_id}"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,398 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+msgid "Acknowledge"
+msgstr "إقرار الاستلام"
+
+#. modules: construction_whatsapp, facility_sla
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_account__active
+#: model:ir.model.fields,field_description:construction_whatsapp.field_whatsapp_template__active
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: facility_sla
+#: model_terms:ir.actions.act_window,help:facility_sla.action_sla_policy
+msgid ""
+"An SLA policy sets the response and resolution allowance for a\n"
+"               class of work orders, measured on a business calendar. The first\n"
+"               policy whose criteria match a work order is the one applied."
+msgstr ""
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+msgid "Applies to (empty = any)"
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__criticality
+msgid "Asset Criticality"
+msgstr "أهمية الأصل"
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_resolution_state__at_risk
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_response_state__at_risk
+msgid "At Risk"
+msgstr "معرّض للخطر"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__at_risk_ratio
+msgid "At-Risk Threshold"
+msgstr "حد الخطر"
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_resolution_state__breached
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_response_state__breached
+msgid "Breached"
+msgstr "متجاوز"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__calendar_id
+msgid "Business Calendar"
+msgstr "تقويم العمل"
+
+#. modules: facility_contract, facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+msgid "Commitment"
+msgstr "الالتزام"
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__maintenance_type__corrective
+msgid "Corrective"
+msgstr "تصحيحي"
+
+#. modules: construction_hse, facility_sla
+#: model:ir.model.fields.selection,name:construction_hse.selection__construction_incident__severity__critical
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__criticality__critical
+msgid "Critical"
+msgstr "حرج"
+
+#. module: facility_sla
+#: model_terms:ir.actions.act_window,help:facility_sla.action_sla_policy
+msgid "Define your first SLA"
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_maintenance_request__sla_breached
+msgid ""
+"Either clock was missed. Stored so it can be filtered and grouped in "
+"reporting."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__category_id
+msgid "Equipment Category"
+msgstr "فئة المعدات"
+
+#. module: facility_sla
+#: model:ir.actions.server,name:facility_sla.cron_facility_sla_check_ir_actions_server
+msgid "Facilities: check SLA deadlines"
+msgstr "إدارة المرافق: check SLA deadlines"
+
+#. module: facility_sla
+#: model:ir.model,name:facility_sla.model_facility_sla_policy
+msgid "Facility SLA Policy"
+msgstr "سياسة مستوى خدمة المرفق"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_responded_on
+msgid "First Response"
+msgstr "أول استجابة"
+
+#. modules: construction_hse, facility_sla
+#: model:ir.model.fields.selection,name:construction_hse.selection__construction_incident__severity__high
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__criticality__high
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__priority__3
+msgid "High"
+msgstr "مرتفع"
+
+#. modules: construction_hse, facility_sla
+#: model:ir.model.fields.selection,name:construction_hse.selection__construction_incident__severity__low
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__criticality__low
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__priority__1
+msgid "Low"
+msgstr "منخفض"
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_facility_sla_policy__sequence
+msgid ""
+"Lower numbers are evaluated first. Put the most specific policies at the top"
+" and the catch-all at the bottom."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model,name:facility_sla.model_maintenance_request
+msgid "Maintenance Request"
+msgstr "طلب الصيانة"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__maintenance_type
+msgid "Maintenance Type"
+msgstr "نوع الصيانة"
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_maintenance_request__sla_policy_id
+msgid ""
+"Matched automatically from the work order's priority, type and the asset's "
+"category and criticality."
+msgstr ""
+
+#. modules: construction_hse, facility_sla
+#: model:ir.model.fields.selection,name:construction_hse.selection__construction_incident__severity__medium
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__criticality__medium
+msgid "Medium"
+msgstr "متوسط"
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_resolution_state__met
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_response_state__met
+msgid "Met"
+msgstr "مُحقق"
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_resolution_state__none
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_response_state__none
+msgid "No SLA"
+msgstr "بلا مستوى خدمة"
+
+#. module: facility_sla
+#: model_terms:ir.actions.act_window,help:facility_sla.action_sla_breaches
+msgid "No SLA breaches"
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__priority__2
+msgid "Normal"
+msgstr "عادي"
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_resolution_state__on_track
+#: model:ir.model.fields.selection,name:facility_sla.selection__maintenance_request__sla_response_state__on_track
+msgid "On Track"
+msgstr "على المسار"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+msgid ""
+"Policies are evaluated in sequence order and the first\n"
+"                        match wins, so keep the catch-all last."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__maintenance_type__preventive
+msgid "Preventive"
+msgstr "وقائي"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+msgid "Record the first response without moving the stage."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__request_count
+msgid "Request Count"
+msgstr "عدد الطلبات"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+msgid "Resolution"
+msgstr "الحل"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__resolution_hours
+msgid "Resolution (h)"
+msgstr "الحل (ساعة)"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_resolution_state
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_search_sla
+msgid "Resolution SLA"
+msgstr "مستوى خدمة الحل"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_resolution_deadline
+msgid "Resolve By"
+msgstr "الحل قبل"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_resolved_on
+msgid "Resolved On"
+msgstr "تم الحل في"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_response_deadline
+msgid "Respond By"
+msgstr "الرد قبل"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+msgid "Response"
+msgstr "الرد"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__response_hours
+msgid "Response (h)"
+msgstr "الاستجابة (ساعة)"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_response_state
+msgid "Response SLA"
+msgstr "مستوى خدمة الاستجابة"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_policy_id
+msgid "SLA"
+msgstr "مستوى الخدمة"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_search_sla
+msgid "SLA At Risk"
+msgstr "مستوى الخدمة معرّض للخطر"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_search_sla
+msgid "SLA Breached"
+msgstr "تم تجاوز مستوى الخدمة"
+
+#. module: facility_sla
+#: model:ir.actions.act_window,name:facility_sla.action_sla_breaches
+#: model:ir.ui.menu,name:facility_sla.menu_facility_sla_breaches
+msgid "SLA Breaches"
+msgstr "مخالفات مستوى الخدمة"
+
+#. module: facility_sla
+#: model:ir.actions.act_window,name:facility_sla.action_sla_policy
+#: model:ir.ui.menu,name:facility_sla.menu_facility_sla_policies
+msgid "SLA Policies"
+msgstr "سياسات مستوى الخدمة"
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_search_sla
+msgid "SLA Policy"
+msgstr "سياسة مستوى الخدمة"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_start
+msgid "SLA Started"
+msgstr "بدء مستوى الخدمة"
+
+#. module: facility_sla
+#. odoo-python
+#: code:addons/facility_sla/models/maintenance_request.py:0
+msgid ""
+"SLA update on %(policy)s — response: %(response)s, resolution: "
+"%(resolution)s."
+msgstr ""
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+msgid "Service Level"
+msgstr "مستوى الخدمة"
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_facility_sla_policy__at_risk_ratio
+msgid ""
+"Share of the allowance after which a work order is flagged at-risk, so it "
+"can be chased before it breaches. 0.8 = 80%."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_breached
+msgid "Sla Breached"
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.constraint,message:facility_sla.constraint_facility_sla_policy_at_risk_ratio_range
+msgid "The at-risk threshold must be between 0 and 1."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.constraint,message:facility_sla.constraint_facility_sla_policy_resolution_positive
+msgid "The resolution allowance must be greater than zero."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.constraint,message:facility_sla.constraint_facility_sla_policy_response_positive
+msgid "The response allowance must be greater than zero."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields.selection,name:facility_sla.selection__facility_sla_policy__priority__0
+msgid "Very Low"
+msgstr "منخفض جدًا"
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_facility_sla_policy__priority
+msgid "Work Order Priority"
+msgstr "أولوية أمر العمل"
+
+#. modules: facility_contract, facility_sla
+#. odoo-python
+#: code:addons/facility_contract/models/facility_contract.py:0
+#: code:addons/facility_sla/models/sla_policy.py:0
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__request_count
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__request_ids
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_list
+msgid "Work Orders"
+msgstr "أوامر العمل"
+
+#. module: facility_sla
+#: model_terms:ir.actions.act_window,help:facility_sla.action_sla_breaches
+msgid ""
+"Work orders that missed their response or resolution allowance\n"
+"               appear here."
+msgstr ""
+"أوامر العمل that missed their response or resolution allowance\n"
+"               appear here."
+
+#. module: facility_sla
+#: model:ir.model.fields,field_description:facility_sla.field_maintenance_request__sla_resolution_hours_used
+msgid "Working Hours Used"
+msgstr "ساعات العمل المستهلكة"
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_facility_sla_policy__resolution_hours
+msgid "Working hours allowed between raising the request and closing it."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_facility_sla_policy__response_hours
+msgid ""
+"Working hours allowed between raising the request and the first recorded "
+"response."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_maintenance_request__sla_resolution_hours_used
+msgid "Working hours consumed between raising and resolving."
+msgstr ""
+
+#. module: facility_sla
+#: model:ir.model.fields,help:facility_sla.field_facility_sla_policy__calendar_id
+msgid ""
+"Working hours the clocks run against. Leave empty to use the company "
+"calendar; set a 24/7 calendar for round-the-clock cover."
+msgstr ""
+
+#. module: facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+msgid "e.g. Critical assets — 1h response"
+msgstr ""

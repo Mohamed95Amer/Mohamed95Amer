@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dlog_user,daily.log user,model_construction_daily_log,construction_base.group_construction_user,1,1,1,0
+access_dlog_eng,daily.log engineer,model_construction_daily_log,construction_base.group_construction_site_engineer,1,1,1,1
+access_dlog_mp_user,dlog manpower user,model_construction_daily_log_manpower,construction_base.group_construction_user,1,1,1,1
+access_dlog_eq_user,dlog equipment user,model_construction_daily_log_equipment,construction_base.group_construction_user,1,1,1,1
+access_dlog_act_user,dlog activity user,model_construction_daily_log_activity,construction_base.group_construction_user,1,1,1,1
+access_dlog_delay_user,dlog delay user,model_construction_daily_log_delay,construction_base.group_construction_user,1,1,1,1

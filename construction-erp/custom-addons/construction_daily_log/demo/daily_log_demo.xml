@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="daily_log_demo" model="construction.daily.log">
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="log_date" eval="(DateTime.today())"/>
+        <field name="weather">hot</field>
+        <field name="temperature">41</field>
+        <field name="notes">Concrete pour to raft section B completed. Crane
+            down 2 hrs for inspection.</field>
+    </record>
+
+    <record id="dlog_mp_1" model="construction.daily.log.manpower">
+        <field name="log_id" ref="daily_log_demo"/>
+        <field name="trade">Steel fixers</field>
+        <field name="contractor_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="headcount">18</field>
+        <field name="hours">9</field>
+    </record>
+    <record id="dlog_mp_2" model="construction.daily.log.manpower">
+        <field name="log_id" ref="daily_log_demo"/>
+        <field name="trade">Concrete gang</field>
+        <field name="headcount">24</field>
+        <field name="hours">10</field>
+    </record>
+
+    <record id="dlog_eq_1" model="construction.daily.log.equipment">
+        <field name="log_id" ref="daily_log_demo"/>
+        <field name="name">Tower crane TC-1</field>
+        <field name="quantity">1</field>
+        <field name="hours">6</field>
+    </record>
+
+    <record id="dlog_act_1" model="construction.daily.log.activity">
+        <field name="log_id" ref="daily_log_demo"/>
+        <field name="description">Raft foundation pour — section B</field>
+        <field name="location">Grid B, substructure</field>
+    </record>
+
+    <record id="dlog_delay_1" model="construction.daily.log.delay">
+        <field name="log_id" ref="daily_log_demo"/>
+        <field name="cause">Tower crane statutory inspection</field>
+        <field name="category">other</field>
+        <field name="hours_lost">2</field>
+    </record>
+</odoo>

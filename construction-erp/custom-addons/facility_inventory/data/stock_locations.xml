@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Facility stores hang under one view location so the warehouse tree
+         stays readable as buildings come and go. -->
+    <record id="location_facility_stores" model="stock.location">
+        <field name="name">Facility Stores</field>
+        <field name="usage">view</field>
+        <field name="location_id" ref="stock.stock_location_locations"/>
+    </record>
+
+    <!-- A part fitted to an asset is gone: a production usage location
+         consumes it rather than parking it where it could be counted as
+         still available. -->
+    <record id="location_facility_consumption" model="stock.location">
+        <field name="name">Fitted to Assets</field>
+        <field name="usage">production</field>
+        <field name="location_id" ref="stock.stock_location_locations_virtual"/>
+    </record>
+</odoo>

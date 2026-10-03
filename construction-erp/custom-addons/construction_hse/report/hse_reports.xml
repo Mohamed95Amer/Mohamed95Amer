@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_permit" model="ir.actions.report">
+        <field name="name">Permit to Work</field>
+        <field name="model">construction.permit</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_hse.report_permit_document</field>
+        <field name="report_file">construction_hse.report_permit_document</field>
+        <field name="binding_model_id" ref="model_construction_permit"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_permit_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="permit">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Permit to Work</h2>
+                        <h4 class="text-muted">
+                            <span t-field="permit.reference"/> —
+                            <span t-field="permit.name"/>
+                        </h4>
+                        <table class="table table-sm mt-3">
+                            <tr>
+                                <td width="30%"><strong>Type</strong></td>
+                                <td><span t-field="permit.permit_type"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Project</strong></td>
+                                <td><span t-field="permit.project_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Location</strong></td>
+                                <td><span t-field="permit.location"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Contractor</strong></td>
+                                <td><span t-field="permit.contractor_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Valid</strong></td>
+                                <td>
+                                    <span t-field="permit.valid_from"/> to
+                                    <span t-field="permit.valid_to"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Workers covered</strong></td>
+                                <td><span t-field="permit.workers_count"/></td>
+                            </tr>
+                        </table>
+                        <h5>Scope of work</h5>
+                        <p t-field="permit.description"/>
+                        <h5>Precautions</h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Precaution</th>
+                                    <th>Mandatory</th>
+                                    <th>Confirmed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="permit.precaution_ids" t-as="p">
+                                    <td><span t-field="p.name"/></td>
+                                    <td><span t-esc="'Yes' if p.mandatory else 'No'"/></td>
+                                    <td><span t-esc="'Yes' if p.checked else 'No'"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Approved by:</strong>
+                                <span t-field="permit.approved_by_id"/><br/>
+                                <span t-field="permit.approved_date"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Closed by:</strong>
+                                <span t-field="permit.closed_by_id"/><br/>
+                                <span t-field="permit.closed_date"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

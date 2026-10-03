@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_facility_parts" name="Parts &amp; Stores"
+              parent="facility_asset.menu_facility_root"
+              action="action_parts_summary" sequence="47"/>
+</odoo>

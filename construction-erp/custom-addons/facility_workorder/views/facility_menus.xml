@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_facility_pm_plans"
+              name="PM Plans"
+              parent="facility_asset.menu_facility_root"
+              action="action_pm_plan"
+              sequence="25"/>
+
+    <menuitem id="menu_facility_job_plans"
+              name="Job Plans"
+              parent="facility_asset.menu_facility_config"
+              action="action_job_plan"
+              sequence="15"/>
+</odoo>

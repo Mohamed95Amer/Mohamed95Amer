@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tender_form" model="ir.ui.view">
+        <field name="name">construction.tender.form</field>
+        <field name="model">construction.tender</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_issue" type="object" string="Issue to Bidders"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start_leveling" type="object"
+                            string="Start Leveling" class="btn-primary"
+                            invisible="state != 'issued'"/>
+                    <button name="action_pull_boq_lines" type="object"
+                            string="Pull BOQ Lines" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('awarded', 'cancelled')"/>
+                    <button name="action_reset" type="object" string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,issued,leveling,awarded"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_bids" type="object"
+                                class="oe_stat_button" icon="fa-gavel">
+                            <field name="bid_count" widget="statinfo" string="Bids"/>
+                        </button>
+                        <button name="action_view_subcontract" type="object"
+                                class="oe_stat_button" icon="fa-handshake-o"
+                                invisible="not subcontract_id">
+                            <span class="o_stat_text">Subcontract</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Awarded" bg_color="text-bg-success"
+                            invisible="state != 'awarded'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. HVAC package"/></h1>
+                        <h3 class="text-muted"><field name="reference" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="trade"/>
+                            <field name="boq_id"/>
+                            <field name="closing_date"/>
+                            <field name="date_required" string="Award Target"/>
+                        </group>
+                        <group>
+                            <field name="budget_cost"/>
+                            <field name="submitted_bid_count" string="Bids Received"/>
+                            <field name="lowest_bid" invisible="not submitted_bid_count"/>
+                            <field name="highest_bid" invisible="not submitted_bid_count"/>
+                            <field name="awarded_bid_id" invisible="state != 'awarded'"/>
+                            <field name="award_saving" invisible="state != 'awarded'"
+                                   decoration-danger="award_saving &lt; 0"
+                                   decoration-success="award_saving &gt; 0"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="subcontract_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Scope of works..."/>
+                    <notebook>
+                        <page string="Scope" name="scope">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="boq_line_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="budget_cost" sum="Budget"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Bid Comparison" name="comparison"
+                              invisible="not submitted_bid_count">
+                            <field name="bid_ids" readonly="1">
+                                <list decoration-success="state == 'awarded'"
+                                      decoration-muted="state == 'rejected'"
+                                      decoration-warning="not is_complete or is_late">
+                                    <field name="bidder_id"/>
+                                    <field name="amount_total" sum="Total"/>
+                                    <field name="variance_vs_budget"
+                                           decoration-danger="variance_vs_budget &gt; 0"
+                                           decoration-success="variance_vs_budget &lt; 0"/>
+                                    <field name="unpriced_line_count" string="Unpriced"/>
+                                    <field name="is_complete" string="Complete"/>
+                                    <field name="is_late" string="Late"/>
+                                    <field name="lead_time_days"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'awarded'"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                A bid with unpriced lines has not offered the
+                                whole scope — compare the line prices before
+                                the totals.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tender_list" model="ir.ui.view">
+        <field name="name">construction.tender.list</field>
+        <field name="model">construction.tender</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'awarded'">
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="trade"/>
+                <field name="closing_date"/>
+                <field name="budget_cost" sum="Budget"/>
+                <field name="bid_count" string="Bids"/>
+                <field name="lowest_bid"/>
+                <field name="award_saving" sum="Saving"
+                       decoration-danger="award_saving &lt; 0"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'awarded'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tender_search" model="ir.ui.view">
+        <field name="name">construction.tender.search</field>
+        <field name="model">construction.tender</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="trade"/>
+                <filter name="open" string="Open Packages"
+                        domain="[('state', 'in', ['draft', 'issued', 'leveling'])]"/>
+                <filter name="leveling" string="In Leveling"
+                        domain="[('state', '=', 'leveling')]"/>
+                <filter name="awarded" string="Awarded"
+                        domain="[('state', '=', 'awarded')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tender" model="ir.actions.act_window">
+        <field name="name">Tender Packages</field>
+        <field name="res_model">construction.tender</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first package</p>
+            <p>A tender package is a scope several subcontractors price against
+               identical lines, so the bids can be compared line by line and
+               awarded straight into a subcontract.</p>
+        </field>
+    </record>
+</odoo>

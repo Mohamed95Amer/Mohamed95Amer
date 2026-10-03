@@ -1,0 +1,1760 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__percent_complete
+msgid "% Certified"
+msgstr "% المعتمد"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "%(count)s lines imported into %(boq)s."
+msgstr "تم استيراد %(count)s بنود إلى %(boq)s."
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+msgid ""
+"&amp;nbsp;|&amp;nbsp;\n"
+"                                <strong>Client:</strong>"
+msgstr ""
+"&amp;nbsp;|&amp;nbsp;\n"
+"                                <strong>العميل:</strong>"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+msgid "<span class=\"o_stat_text\">Certified</span>"
+msgstr "<span class=\"o_stat_text\">معتَمَد</span> "
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+msgid "<strong>Contract Total</strong>"
+msgstr "<strong>إجمالي العقد</strong>"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_form, construction_progress_billing
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+#: model_terms:ir.ui.view,arch_db:construction_change_order.report_co_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+msgid "<strong>Project:</strong>"
+msgstr "<strong>المشروع:</strong>"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_needaction
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_needaction
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_needaction
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_needaction
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_needaction
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_needaction
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_needaction
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_needaction
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_needaction
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_needaction
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_needaction
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_needaction
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_needaction
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_needaction
+msgid "Action Needed"
+msgstr "إجراء مطلوب"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_form,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_ids
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_ids
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_ids
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_ids
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_exception_decoration
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "زخرفة استثناء النشاط"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_state
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_state
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_state
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_state
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_state
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_state
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_state
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_state
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_state
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_type_icon
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_type_icon
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_type_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_type_icon
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_type_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_type_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_type_icon
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_type_icon
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_type_icon
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "أيقونة نوع النشاط"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_subcontractor, construction_ui
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__amount
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__amount
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__amount
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+#: model_terms:ir.ui.view,arch_db:construction_change_order.report_co_document
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__amount_certified
+msgid "Amount Certified"
+msgstr "المبلغ المعتمد"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__amount_claimed
+msgid "Amount Claimed"
+msgstr "المبلغ المطالب به"
+
+#. modules: construction_boq, construction_change_order
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__amount_cost
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__amount_cost
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__amount_cost
+msgid "Amount Cost"
+msgstr "قيمة التكلفة"
+
+#. modules: construction_boq, construction_change_order
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__amount_sell
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__amount_sell
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__amount_sell
+msgid "Amount Sell"
+msgstr "قيمة البيع"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+msgid "Analysis"
+msgstr "التحليل"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__analytic_account_id
+msgid "Analytic Account"
+msgstr "الحساب التحليلي"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_form, construction_submittal,
+#. construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_order_form
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_submittal.view_submittal_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_form, construction_submittal,
+#. construction_ui
+#: model:ir.model.fields.selection,name:construction_boq.selection__construction_boq__state__approved
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_order__state__approved
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__state__approved
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__approved
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__approved
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__approved
+msgid "Approved"
+msgstr "معتمد"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_attachment_count
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_attachment_count
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_attachment_count
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_attachment_count
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_attachment_count
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_attachment_count
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_attachment_count
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_attachment_count
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_attachment_count
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_attachment_count
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_attachment_count
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_attachment_count
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_attachment_count
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+msgid "BOQ"
+msgstr "جدول الكميات"
+
+#. module: construction_boq
+#: model:ir.actions.act_window,name:construction_boq.action_boq_line_analysis
+#: model:ir.ui.menu,name:construction_boq.menu_boq_line_analysis
+msgid "BOQ Analysis"
+msgstr "تحليل جدول الكميات"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/models/boq.py:0
+msgid "BOQ Analysis — %s"
+msgstr "تحليل جدول الكميات — %s"
+
+#. module: construction_boq
+#: model:ir.model,name:construction_boq.model_construction_boq_line
+msgid "BOQ Line"
+msgstr "بند جدول الكميات"
+
+#. module: construction_boq
+#: model:ir.model,name:construction_boq.model_construction_boq_section
+msgid "BOQ Section"
+msgstr "قسم جدول الكميات"
+
+#. module: construction_boq
+#: model:ir.model,name:construction_boq.model_construction_boq_import
+msgid "BOQ XLSX Import"
+msgstr "استيراد جدول الكميات من XLSX"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "BOQ import complete"
+msgstr "اكتمل استيراد جدول الكميات"
+
+#. modules: construction_boq, construction_ui
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_ui.action_workspace_boq
+#: model:ir.model,name:construction_boq.model_construction_boq
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Bill of Quantities"
+msgstr "جدول الكميات"
+
+#. module: construction_boq
+#: model:ir.actions.act_window,name:construction_boq.action_construction_boq
+#: model:ir.ui.menu,name:construction_boq.menu_construction_boq
+msgid "Bills of Quantities"
+msgstr "جداول الكميات"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_progress_billing, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__boq_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__boq_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__boq_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__boq_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__boq_id
+#: model:ir.model.fields,field_description:construction_ui.field_project_project__boq_ids
+msgid "Boq"
+msgstr "جدول الكميات"
+
+#. modules: construction_boq, construction_ui
+#. odoo-javascript
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__amount_cost_total
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Budget Cost"
+msgstr "التكلفة التقديرية"
+
+#. modules: construction_boq, construction_drawing, construction_pin
+#. odoo-javascript
+#: code:addons/construction_pin/static/src/plan_viewer/plan_viewer.xml:0
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__percent_complete
+msgid "Certified value as a percentage of the contract amount."
+msgstr "القيمة المعتمدة كنسبة من قيمة العقد."
+
+#. modules: construction_boq, construction_form, facility_asset
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__code
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__code
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__code
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__code
+msgid "Code"
+msgstr "الرمز"
+
+#. modules: construction_base, construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_form,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__company_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__company_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__company_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__company_id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__company_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__company_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__company_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__company_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__company_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__company_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__company_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__company_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__company_id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__company_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. modules: construction_boq, construction_progress_billing, construction_ui
+#. odoo-javascript
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__amount_sell_total
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__amount_contract
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Contract Amount"
+msgstr "قيمة العقد"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "Could not read the file. Upload an .xlsx workbook."
+msgstr "تعذرت قراءة الملف. ارفع مصنف XLSX."
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__create_uid
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__create_uid
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__create_uid
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__create_uid
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__create_uid
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__create_uid
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__create_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__create_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__create_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__create_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__create_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__create_uid
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__create_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__create_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__create_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__create_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__create_uid
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__create_uid
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__create_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__create_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__create_uid
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__create_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__create_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__create_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__create_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__create_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__create_uid
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__create_uid
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__create_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__create_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__create_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__create_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__create_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__create_uid
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__create_uid
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__create_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__create_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__create_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__create_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__create_uid
+msgid "Created by"
+msgstr "أنشئ بواسطة"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__create_date
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__create_date
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__create_date
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__create_date
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__create_date
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__create_date
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__create_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__create_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__create_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__create_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__create_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__create_date
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__create_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__create_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__create_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__create_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__create_date
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__create_date
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__create_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__create_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__create_date
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__create_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__create_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__create_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__create_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__create_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__create_date
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__create_date
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__create_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__create_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__create_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__create_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__create_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__create_date
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__create_date
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__create_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__create_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__create_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__create_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__create_date
+msgid "Created on"
+msgstr "أنشئ في"
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_line__amount_certified
+msgid "Cumulative certified value (certified qty × unit rate)."
+msgstr "القيمة التراكمية المعتمدة (الكمية المعتمدة × سعر الوحدة)."
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_line__amount_claimed
+msgid "Cumulative claimed value (claimed qty × unit rate)."
+msgstr "القيمة التراكمية المطالب بها (الكمية المطالب بها × سعر الوحدة)."
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_line__qty_certified
+msgid "Cumulative quantity certified by the consultant."
+msgstr "الكمية التراكمية المعتمدة من الاستشاري."
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_line__qty_claimed
+msgid ""
+"Cumulative quantity claimed in progress claims (filled by "
+"construction_progress_billing)."
+msgstr "الكمية التراكمية المطالب بها في مطالبات الدفعات."
+
+#. modules: construction_boq, construction_change_order,
+#. construction_progress_billing, construction_subcontractor, construction_ui,
+#. facility_asset, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__currency_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__currency_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__currency_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__currency_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__currency_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__currency_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__currency_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__currency_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__currency_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__currency_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__currency_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__currency_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__currency_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__currency_id
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__currency_id
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_form,
+#. construction_progress_billing, construction_subcontractor, construction_ui,
+#. facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__name
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__description
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__description
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__description
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__description
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__description
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__name
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__description
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__description
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+#: model_terms:ir.ui.view,arch_db:construction_change_order.report_co_document
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_job_plan_form
+msgid "Description"
+msgstr "الوصف"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__display_name
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__display_name
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__display_name
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__display_name
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__display_name
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__display_name
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__display_name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__display_name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__display_name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__display_name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__display_name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__display_name
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__display_name
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__display_name
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__display_name
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__display_name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__display_name
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__display_name
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__display_name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__display_name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__display_name
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__display_name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__display_name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__display_name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__display_name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__display_name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__display_name
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__display_name
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__display_name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__display_name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__display_name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__display_name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__display_name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__display_name
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__display_name
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__display_name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__display_name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__display_name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__display_name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__display_name
+msgid "Display Name"
+msgstr "اسم العرض "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_form, construction_progress_billing,
+#. construction_rfi, construction_subcontractor, construction_submittal,
+#. construction_ui
+#: model:ir.model.fields.selection,name:construction_boq.selection__construction_boq__state__draft
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_order__state__draft
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__state__draft
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__draft
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__draft
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__state__draft
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract__state__draft
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__draft
+#: model:ir.model.fields.selection,name:construction_submittal.selection__construction_submittal__state__draft
+#: model:ir.model.fields.selection,name:construction_ui.selection__construction_drawing_revision__approval_state__draft
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__cost_equipment
+msgid "Equipment Cost/Unit"
+msgstr "تكلفة المعدات / الوحدة"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+msgid ""
+"Expected columns (first row as headers):\n"
+"                    <code>Section Code | Section Name | Item Code | Description |\n"
+"                    Unit | Quantity | Unit Rate | Material | Labour | Equipment |\n"
+"                    Subcontract | Overhead</code>"
+msgstr ""
+"الأعمدة المتوقعة (الصف الأول عناوين):\n"
+"                    <code>رمز القسم | اسم القسم | رمز البند | الوصف |\n"
+"                    الوحدة | الكمية | سعر الوحدة | المواد | العمالة | المعدات |\n"
+"                    المقاول الباطن | التكاليف غير المباشرة</code>"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__filename
+msgid "Filename"
+msgstr "اسم الملف"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_follower_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_follower_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_follower_ids
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_follower_ids
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_follower_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_follower_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_follower_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_follower_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_follower_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_follower_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_follower_ids
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_follower_ids
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_follower_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_follower_ids
+msgid "Followers"
+msgstr "المتابعين"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_partner_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_partner_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_partner_ids
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_partner_ids
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_partner_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_partner_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_partner_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_partner_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_partner_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_partner_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_partner_ids
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_partner_ids
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_partner_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعين (الشركاء) "
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_type_icon
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_type_icon
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_type_icon
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_type_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_type_icon
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_type_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_type_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_type_icon
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_type_icon
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_type_icon
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة من Font awesome مثال: fa-tasks "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__has_message
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__has_message
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__has_message
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__has_message
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__has_message
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__has_message
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__has_message
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__has_message
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__has_message
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__has_message
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__has_message
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__has_message
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__has_message
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__id
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__id
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_exception_icon
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_exception_icon
+msgid "Icon"
+msgstr "الأيقونة"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_exception_icon
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_exception_icon
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_exception_icon
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_icon
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_exception_icon
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_exception_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_exception_icon
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_exception_icon
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_exception_icon
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_exception_icon
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "الأيقونة للإشارة إلى النشاط المستثنى. "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__message_needaction
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__message_needaction
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__message_needaction
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log__message_needaction
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__message_needaction
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_needaction
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_needaction
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_needaction
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__message_needaction
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__message_needaction
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__message_needaction
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__message_needaction
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_needaction
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا كان محددًا، فهناك رسائل جديدة عليك رؤيتها. "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__message_has_error
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__message_has_sms_error
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__message_has_error
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__message_has_sms_error
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__message_has_error
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__message_has_sms_error
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log__message_has_error
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log__message_has_sms_error
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__message_has_error
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__message_has_sms_error
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_has_error
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_sms_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_error
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_sms_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_has_error
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_has_sms_error
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__message_has_error
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__message_has_sms_error
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__message_has_error
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__message_has_sms_error
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__message_has_error
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__message_has_sms_error
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__message_has_error
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__message_has_sms_error
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_has_error
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_has_sms_error
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_has_error
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا كان محددًا، فقد حدث خطأ في تسليم بعض الرسائل."
+
+#. modules: construction_boq, construction_drawing
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_import_form
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_upload_form
+msgid "Import"
+msgstr "استيراد"
+
+#. module: construction_boq
+#: model:ir.actions.act_window,name:construction_boq.action_boq_import
+msgid "Import BOQ Lines"
+msgstr "استيراد بنود جدول الكميات"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+msgid "Import Lines (XLSX)"
+msgstr "استيراد البنود (XLSX)"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_is_follower
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_is_follower
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_is_follower
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_is_follower
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_is_follower
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_is_follower
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_is_follower
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_is_follower
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_is_follower
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_is_follower
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_is_follower
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_is_follower
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_is_follower
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__is_variation
+msgid "Is Variation"
+msgstr "بند تغيير"
+
+#. modules: construction_boq, construction_change_order
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+#: model_terms:ir.ui.view,arch_db:construction_change_order.report_co_document
+msgid "Item"
+msgstr "العنصر "
+
+#. modules: construction_boq, construction_change_order
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__item_code
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__item_code
+msgid "Item Code"
+msgstr "رمز البند"
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_line__analytic_account_id
+msgid ""
+"Job-costing bucket: actual costs (bills, timesheets, stock moves) booked on "
+"this analytic account are compared against this line's budget."
+msgstr ""
+"حساب تكلفة المشروع الذي تُقارن فيه التكاليف الفعلية من الفواتير وسجلات الوقت"
+" وحركات المخزون بميزانية هذا البند."
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__cost_labour
+msgid "Labour Cost/Unit"
+msgstr "تكلفة العمالة / الوحدة"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__write_uid
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__write_uid
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__write_uid
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__write_uid
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__write_uid
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__write_uid
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__write_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__write_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__write_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__write_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__write_uid
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__write_uid
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__write_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__write_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__write_uid
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__write_uid
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__write_uid
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__write_uid
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__write_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__write_uid
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__write_uid
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__write_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__write_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__write_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__write_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__write_uid
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__write_uid
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__write_uid
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__write_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__write_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__write_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__write_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__write_uid
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__write_uid
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__write_uid
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__write_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__write_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__write_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__write_uid
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__write_date
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__write_date
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__write_date
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__write_date
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__write_date
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__write_date
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__write_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__write_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__write_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__write_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__write_date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__write_date
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__write_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__write_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__write_date
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_answer__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__write_date
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__write_date
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__write_date
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__write_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__write_date
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__write_date
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__write_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__write_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_backcharge__write_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__write_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__write_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__write_date
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__write_date
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__write_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__write_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__write_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__write_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__write_date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__write_date
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__write_date
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__write_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__write_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__write_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__write_date
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_progress_billing, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__line_ids
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__line_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__line_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__line_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__line_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__line_ids
+msgid "Line"
+msgstr "البند "
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__line_count
+msgid "Line Count"
+msgstr "عدد البنود"
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_line__is_variation
+msgid ""
+"Line added by an approved variation/change order rather than the original "
+"contract."
+msgstr "بند مضاف عبر تغيير أو أمر تغيير معتمد وليس ضمن العقد الأصلي."
+
+#. modules: construction_boq, construction_change_order
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_order_form
+msgid "Lines"
+msgstr "البنود"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+msgid "Lock"
+msgstr "قفل "
+
+#. module: construction_boq
+#: model:ir.model.fields.selection,name:construction_boq.selection__construction_boq__state__locked
+msgid "Locked"
+msgstr "مقفل"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/models/boq.py:0
+msgid "Locked BOQs cannot be modified. Create a new revision."
+msgstr "لا يمكن تعديل جداول الكميات المقفلة. أنشئ مراجعة جديدة."
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_list
+msgid "Margin %"
+msgstr "نسبة الهامش"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__margin_amount
+msgid "Margin Amount"
+msgstr "قيمة الهامش"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__margin_percent
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__margin_percent
+msgid "Margin Percent"
+msgstr "نسبة الهامش"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__cost_material
+msgid "Material Cost/Unit"
+msgstr "تكلفة المواد / الوحدة"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_has_error
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_has_error
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_has_error
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_has_error
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_has_error
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_error
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_has_error
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_has_error
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_has_error
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_has_error
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_has_error
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_has_error
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسائل"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_ids
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_ids
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_ids
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_ids
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__my_activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطاتي "
+
+#. modules: construction_base, construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_form,
+#. construction_pin, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui,
+#. facility_asset, facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__name
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__name
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__name
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__name
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__name
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__name
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__name
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__name
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__name
+#: model:ir.model.fields,field_description:construction_pin.field_plan_pin_mixin__name
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__name
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__name
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__name
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__name
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_failure_code__name
+#: model:ir.model.fields,field_description:facility_asset.field_facility_location__name
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__name
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+msgid "New Revision"
+msgstr "مراجعة جديدة"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_date_deadline
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_summary
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_summary
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_summary
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_summary
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_summary
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_summary
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_summary
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_summary
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_summary
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_summary
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_type_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_type_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_type_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_type_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_type_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_type_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_type_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_type_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_type_id
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_type_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_needaction_counter
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_has_error_counter
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__message_needaction_counter
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__message_needaction_counter
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__message_needaction_counter
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log__message_needaction_counter
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__message_needaction_counter
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_needaction_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_needaction_counter
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_needaction_counter
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__message_needaction_counter
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__message_needaction_counter
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__message_needaction_counter
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__message_needaction_counter
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_needaction_counter
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب اتخاذ إجراء"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__message_has_error_counter
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__message_has_error_counter
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__message_has_error_counter
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log__message_has_error_counter
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__message_has_error_counter
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__message_has_error_counter
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__message_has_error_counter
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__message_has_error_counter
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__message_has_error_counter
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__message_has_error_counter
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__message_has_error_counter
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__message_has_error_counter
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__message_has_error_counter
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل الحادث بها خطأ في التسليم"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/models/boq.py:0
+msgid "Only draft BOQs can be approved."
+msgstr "يمكن اعتماد جداول الكميات المسودة فقط."
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+msgid "Original Scope"
+msgstr "النطاق الأصلي"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__cost_overhead
+msgid "Overhead Cost/Unit"
+msgstr "التكاليف غير المباشرة / الوحدة"
+
+#. modules: construction_boq, facility_asset
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__parent_id
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_search
+msgid "Parent"
+msgstr "الأصل"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__percent_complete
+msgid "Percent Complete"
+msgstr "نسبة الإنجاز"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__previous_version_id
+msgid "Previous Version"
+msgstr "الإصدار السابق"
+
+#. module: construction_boq
+#: model:ir.actions.report,name:construction_boq.action_report_boq
+msgid "Priced BOQ"
+msgstr "جدول كميات مسعّر"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__product_id
+msgid "Product"
+msgstr "المنتج"
+
+#. modules: construction_base, construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_pin, construction_planning,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model,name:construction_ui.model_project_project
+#: model:ir.model.fields,field_description:construction_base.field_construction_document_mixin__project_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__project_id
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__project_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__project_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__project_id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__project_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__project_id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__project_id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_revision__project_id
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing_upload__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__project_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__project_id
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__project_id
+#: model:ir.model.fields,field_description:construction_planning.field_construction_task_link__project_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__project_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__project_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__project_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__project_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__project_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__project_id
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_search
+#: model_terms:ir.ui.view,arch_db:construction_defect.view_defect_search
+#: model_terms:ir.ui.view,arch_db:construction_drawing.view_drawing_search
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_search
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_search_planning
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_search
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_search
+msgid "Project"
+msgstr "المشروع"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+#: model_terms:ir.ui.view,arch_db:construction_change_order.report_co_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Qty"
+msgstr "الكمية"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__qty_certified
+msgid "Qty Certified"
+msgstr "الكمية المعتمدة"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__qty_claimed
+msgid "Qty Claimed"
+msgstr "الكمية المطالب بها"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_subcontractor
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__quantity
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__quantity
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__quantity
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__quantity
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment_line__qty_contract
+msgid "Quantity"
+msgstr "الكمية"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_progress_billing, construction_subcontractor
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+#: model_terms:ir.ui.view,arch_db:construction_change_order.report_co_document
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.report_claim_document
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.report_sc_payment_document
+msgid "Rate"
+msgstr "المعدل "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__rating_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__rating_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__rating_ids
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__rating_ids
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__rating_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__rating_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__rating_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__rating_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__rating_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__rating_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__rating_ids
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__rating_ids
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__rating_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__rating_ids
+msgid "Ratings"
+msgstr "التقييمات "
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__activity_user_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__activity_user_id
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__activity_user_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__activity_user_id
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__activity_user_id
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__activity_user_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__activity_user_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__activity_user_id
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__activity_user_id
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__activity_user_id
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "Row %(row)s contains a non-numeric value: %(val)r"
+msgstr "يحتوي الصف %(row)s على قيمة غير رقمية: %(val)r"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__message_has_sms_error
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل النصية القصيرة "
+
+#. modules: construction_boq, construction_form, construction_progress_billing
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__section_ids
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__section_id
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__section
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__section_id
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+msgid "Section"
+msgstr "القسم"
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq_section__code
+msgid "Section number, e.g. 03 or 03.100 (CSI-style)."
+msgstr "رقم القسم، مثال 03 أو 03.100."
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+msgid "Sections"
+msgstr "الأقسام "
+
+#. modules: construction_boq, construction_change_order, construction_form,
+#. construction_progress_billing, construction_subcontractor,
+#. facility_floorplan, facility_workorder
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__sequence
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_section__sequence
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__sequence
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_question__sequence
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__sequence
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__sequence
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__sequence
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__sequence
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_form,
+#. construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__state
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__state
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__state
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__state
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__state
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__state
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__state
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__state
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__state
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__state
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__state
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__state
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__state
+msgid "State"
+msgstr "الحالة"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_state
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_state
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_state
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_state
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_state
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_state
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_state
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_state
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_state
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_state
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الأنشطة المعتمدة على الحالة\n"
+"المتأخرة: تاريخ الاستحقاق مر\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"المخطط: الأنشطة المستقبلية."
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__cost_subcontract
+msgid "Subcontract Cost/Unit"
+msgstr "تكلفة المقاول الباطن / الوحدة"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "The workbook is empty."
+msgstr "مصنف XLSX فارغ."
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "This BOQ is locked. Create a new revision first."
+msgstr "جدول الكميات مقفل. أنشئ مراجعة جديدة أولاً."
+
+#. modules: construction_boq, construction_change_order,
+#. construction_subcontractor, construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_form
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_list
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_order_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_list
+msgid "Total"
+msgstr "الإجمالي"
+
+#. modules: construction_boq, construction_change_order, construction_defect,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__activity_exception_decoration
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__activity_exception_decoration
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__activity_exception_decoration
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__activity_exception_decoration
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__activity_exception_decoration
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__activity_exception_decoration
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__activity_exception_decoration
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__activity_exception_decoration
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__activity_exception_decoration
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__activity_exception_decoration
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط المستثنى في السجل. "
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "Unexpected header row. Expected columns: %s"
+msgstr "صف العناوين غير متوقع. الأعمدة المطلوبة: %s"
+
+#. modules: construction_boq, facility_asset
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__uom
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+msgid "Unit"
+msgstr "الوحدة"
+
+#. modules: construction_boq, construction_change_order
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__unit_cost
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__unit_cost
+msgid "Unit Cost"
+msgstr "تكلفة الوحدة"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_progress_billing
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__unit_rate
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__unit_rate
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim_line__unit_rate
+msgid "Unit Rate (Sell)"
+msgstr "سعر الوحدة (بيع)"
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+msgid "Unsectioned Items"
+msgstr "بنود دون قسم"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_subcontractor
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_line__uom_id
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order_line__uom_id
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_line__uom_id
+msgid "UoM"
+msgstr "وحدة القياس"
+
+#. module: construction_boq
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__amount_variation_total
+msgid "Value of lines added by approved variations/change orders."
+msgstr "قيمة البنود المضافة عبر التغييرات أو أوامر التغيير المعتمدة."
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__amount_variation_total
+#: model_terms:ir.ui.view,arch_db:construction_boq.view_boq_line_search
+msgid "Variations"
+msgstr "التغييرات"
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__version
+msgid "Version"
+msgstr "الإصدار"
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq__website_message_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__website_message_ids
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_order__website_message_ids
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__website_message_ids
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__website_message_ids
+#: model:ir.model.fields,field_description:construction_drawing.field_construction_drawing__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__website_message_ids
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_template__website_message_ids
+#: model:ir.model.fields,field_description:construction_progress_billing.field_construction_progress_claim__website_message_ids
+#: model:ir.model.fields,field_description:construction_rfi.field_construction_rfi__website_message_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__website_message_ids
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__website_message_ids
+#: model:ir.model.fields,field_description:construction_submittal.field_construction_submittal__website_message_ids
+#: model:ir.model.fields,field_description:construction_ui.field_construction_drawing_revision__website_message_ids
+#: model:ir.model.fields,field_description:construction_ui.field_majal_project_document__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع الإلكتروني "
+
+#. modules: construction_boq, construction_change_order,
+#. construction_daily_log, construction_defect, construction_drawing,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_submittal, construction_ui
+#: model:ir.model.fields,help:construction_boq.field_construction_boq__website_message_ids
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_event__website_message_ids
+#: model:ir.model.fields,help:construction_change_order.field_construction_change_order__website_message_ids
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log__website_message_ids
+#: model:ir.model.fields,help:construction_defect.field_construction_defect__website_message_ids
+#: model:ir.model.fields,help:construction_drawing.field_construction_drawing__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_form_inspection__website_message_ids
+#: model:ir.model.fields,help:construction_form.field_construction_form_template__website_message_ids
+#: model:ir.model.fields,help:construction_progress_billing.field_construction_progress_claim__website_message_ids
+#: model:ir.model.fields,help:construction_rfi.field_construction_rfi__website_message_ids
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract__website_message_ids
+#: model:ir.model.fields,help:construction_subcontractor.field_construction_subcontract_payment__website_message_ids
+#: model:ir.model.fields,help:construction_submittal.field_construction_submittal__website_message_ids
+#: model:ir.model.fields,help:construction_ui.field_construction_drawing_revision__website_message_ids
+#: model:ir.model.fields,help:construction_ui.field_majal_project_document__website_message_ids
+msgid "Website communication history"
+msgstr "سجل تواصل الموقع الإلكتروني "
+
+#. module: construction_boq
+#: model:ir.model.fields,field_description:construction_boq.field_construction_boq_import__file
+msgid "XLSX File"
+msgstr "ملف XLSX"
+
+#. module: construction_boq
+#. odoo-python
+#: code:addons/construction_boq/wizard/boq_import.py:0
+msgid "openpyxl is not installed on the server."
+msgstr "مكتبة openpyxl غير مثبتة على الخادم."
+
+#. module: construction_boq
+#: model_terms:ir.ui.view,arch_db:construction_boq.report_boq_document
+msgid "— v"
+msgstr "— إصدار"

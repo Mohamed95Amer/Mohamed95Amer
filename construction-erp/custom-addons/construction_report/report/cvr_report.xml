@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_cvr" model="ir.actions.report">
+        <field name="name">Cost Value Reconciliation</field>
+        <field name="model">project.project</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_report.report_cvr_document</field>
+        <field name="report_file">construction_report.report_cvr_document</field>
+        <field name="binding_model_id" ref="project.model_project_project"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_cvr_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="project">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Cost Value Reconciliation</h2>
+                        <h4 class="text-muted"><span t-field="project.name"/></h4>
+                        <p t-if="project.cvr_boq_id">
+                            <strong>Baseline:</strong>
+                            <span t-field="project.cvr_boq_id.display_name"/>
+                        </p>
+
+                        <h5 class="mt-4">Value</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Contract value (incl. variations)</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_contract_value"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Certified to date</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_certified_value"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Percentage certified</td>
+                                <td class="text-end">
+                                    <span t-esc="'%.1f%%' % project.cvr_percent_complete"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h5>Cost</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Budget cost</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_budget_cost"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Committed cost (awarded subcontracts)</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_committed_cost"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Cost to date (certified to subcontractors)</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_cost_to_date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Uncommitted budget</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_uncommitted_budget"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <h5>Margin</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Earned margin to date</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_earned_margin"/>
+                                    (<span t-esc="'%.1f%%' % project.cvr_earned_margin_percent"/>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Forecast final margin</td>
+                                <td class="text-end">
+                                    <span t-field="project.cvr_forecast_margin"/>
+                                    (<span t-esc="'%.1f%%' % project.cvr_forecast_margin_percent"/>)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Movement against tendered margin</strong></td>
+                                <td class="text-end">
+                                    <strong t-field="project.cvr_margin_variance"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_material_issue" model="ir.actions.report">
+        <field name="name">Material Issue Docket</field>
+        <field name="model">construction.material.issue</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_material.report_issue_document</field>
+        <field name="report_file">construction_material.report_issue_document</field>
+        <field name="binding_model_id" ref="model_construction_material_issue"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_issue_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="issue">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Material Issue Docket</h2>
+                        <h4 class="text-muted">
+                            <span t-field="issue.reference"/> —
+                            <span t-field="issue.name"/>
+                        </h4>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="issue.project_id.name"/><br/>
+                                <strong>Activity:</strong>
+                                <span t-field="issue.task_id.name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong>
+                                <span t-field="issue.issue_date"/><br/>
+                                <strong>Issued to:</strong>
+                                <span t-field="issue.issued_to_id.name"/><br/>
+                                <strong>Storekeeper:</strong>
+                                <span t-field="issue.requested_by_id"/>
+                            </div>
+                        </div>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>BOQ item</th>
+                                    <th class="text-end">Qty</th>
+                                    <th>UoM</th>
+                                    <th class="text-end">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="issue.line_ids" t-as="line">
+                                    <td><span t-field="line.product_id"/></td>
+                                    <td><span t-field="line.boq_line_id.name"/></td>
+                                    <td class="text-end"><span t-field="line.quantity"/></td>
+                                    <td><span t-field="line.uom_id"/></td>
+                                    <td class="text-end"><span t-field="line.value"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-end"><strong>Total: </strong>
+                            <span t-field="issue.total_value"/></p>
+                        <p t-if="issue.note"><em t-field="issue.note"/></p>
+                        <div class="row mt-5">
+                            <div class="col-6">Received by: ______________________</div>
+                            <div class="col-6">Issued by: ______________________</div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

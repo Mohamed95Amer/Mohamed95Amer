@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sc_user,subcontract user,model_construction_subcontract,construction_base.group_construction_user,1,0,0,0
+access_sc_comm,subcontract commercial,model_construction_subcontract,construction_base.group_construction_commercial,1,1,1,1
+access_sc_line_user,subcontract line user,model_construction_subcontract_line,construction_base.group_construction_user,1,0,0,0
+access_sc_line_comm,subcontract line commercial,model_construction_subcontract_line,construction_base.group_construction_commercial,1,1,1,1
+access_scp_user,sc payment user,model_construction_subcontract_payment,construction_base.group_construction_user,1,0,0,0
+access_scp_comm,sc payment commercial,model_construction_subcontract_payment,construction_base.group_construction_commercial,1,1,1,1
+access_scpl_user,sc payment line user,model_construction_subcontract_payment_line,construction_base.group_construction_user,1,0,0,0
+access_scpl_comm,sc payment line commercial,model_construction_subcontract_payment_line,construction_base.group_construction_commercial,1,1,1,1
+access_scbc_user,sc backcharge user,model_construction_subcontract_backcharge,construction_base.group_construction_user,1,0,0,0
+access_scbc_comm,sc backcharge commercial,model_construction_subcontract_backcharge,construction_base.group_construction_commercial,1,1,1,1

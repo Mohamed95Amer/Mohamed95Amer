@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="construction_planning.ProgrammeGantt">
+    <div class="o_prog_gantt">
+        <div class="o_prog_toolbar">
+            <div class="o_prog_toolbar_left">
+                <select class="form-select form-select-sm o_prog_project"
+                        t-on-change="onProjectChange">
+                    <option t-foreach="state.projects" t-as="project" t-key="project.id"
+                            t-att-value="project.id"
+                            t-att-selected="project.id === state.projectId">
+                        <t t-esc="project.name"/>
+                    </option>
+                </select>
+                <div class="btn-group btn-group-sm" role="group" aria-label="Zoom">
+                    <button t-foreach="zoomOptions" t-as="zoom" t-key="zoom.key"
+                            type="button" class="btn btn-outline-secondary"
+                            t-att-class="{ active: state.zoom === zoom.key }"
+                            t-on-click="() => this.setZoom(zoom.key)">
+                        <t t-esc="zoom.label"/>
+                    </button>
+                </div>
+            </div>
+            <div class="o_prog_toolbar_right">
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        t-att-class="{ active: state.showBaseline }"
+                        t-on-click="toggleBaseline">
+                    <i class="fa fa-clone me-1"/>Baseline
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        t-att-class="{ active: state.criticalOnly }"
+                        t-on-click="toggleCriticalOnly">
+                    <i class="fa fa-bolt me-1"/>Critical only
+                </button>
+            </div>
+        </div>
+
+        <div class="o_prog_summary" t-if="!state.loading and state.tasks.length">
+            <div class="o_prog_stat">
+                <strong t-esc="summary.total"/><small>Activities</small>
+            </div>
+            <div class="o_prog_stat o_tone_critical">
+                <strong t-esc="summary.critical"/><small>On critical path</small>
+            </div>
+            <div class="o_prog_stat" t-att-class="{ o_tone_alert: summary.slipping }">
+                <strong t-esc="summary.slipping"/><small>Behind baseline</small>
+            </div>
+            <div class="o_prog_stat" t-att-class="{ o_tone_alert: summary.worst }">
+                <strong><t t-esc="summary.worst"/>d</strong><small>Worst slip</small>
+            </div>
+            <div class="o_prog_stat">
+                <strong t-esc="summary.milestones"/><small>Milestones</small>
+            </div>
+            <div class="o_prog_stat">
+                <strong t-esc="summary.complete"/><small>Complete</small>
+            </div>
+        </div>
+
+        <div t-if="state.loading" class="o_prog_placeholder">Loading programme…</div>
+        <div t-elif="state.error" class="o_prog_placeholder o_tone_alert">
+            The programme could not be loaded.
+        </div>
+        <div t-elif="!state.tasks.length" class="o_prog_placeholder">
+            No scheduled activities. Set planned start and finish dates on the
+            project's tasks, then run the schedule to compute the critical path.
+        </div>
+
+        <div t-else="" class="o_prog_body">
+            <div class="o_prog_names">
+                <div class="o_prog_names_head">Activity</div>
+                <div t-foreach="rows" t-as="row" t-key="row.id"
+                     class="o_prog_name_row"
+                     t-att-class="{ o_critical: row.isCritical }"
+                     t-on-click="() => this.openTask(row.id)"
+                     t-att-title="row.tooltip">
+                    <span class="o_prog_wbs" t-if="row.wbs" t-esc="row.wbs"/>
+                    <span class="o_prog_label" t-esc="row.name"/>
+                    <span class="o_prog_slip" t-if="row.slipping">+<t t-esc="row.variance"/>d</span>
+                </div>
+            </div>
+
+            <div class="o_prog_scroller" t-ref="scroller">
+                <div class="o_prog_canvas" t-att-style="'width:' + chartWidth + 'px'">
+                    <div class="o_prog_ticks">
+                        <div t-foreach="ticks" t-as="tick" t-key="tick.key"
+                             class="o_prog_tick" t-att-style="'left:' + tick.offset + 'px'">
+                            <span t-esc="tick.label"/>
+                        </div>
+                    </div>
+
+                    <div class="o_prog_grid">
+                        <div t-foreach="ticks" t-as="tick" t-key="tick.key"
+                             class="o_prog_gridline"
+                             t-att-style="'left:' + tick.offset + 'px'"/>
+                        <div class="o_prog_today" t-if="todayOffset !== null"
+                             t-att-style="'left:' + todayOffset + 'px'"
+                             title="Today"/>
+
+                        <div t-foreach="rows" t-as="row" t-key="row.id" class="o_prog_row"
+                             t-on-click="() => this.openTask(row.id)"
+                             t-att-title="row.tooltip">
+                            <!-- Baseline shadow: the offset between this and the
+                                 bar above it is the slip, read at a glance. -->
+                            <div t-if="state.showBaseline and row.hasBaseline"
+                                 class="o_prog_baseline"
+                                 t-att-style="'left:' + row.baselineLeft + 'px;width:' + row.baselineWidth + 'px'"/>
+
+                            <t t-if="row.isMilestone">
+                                <div class="o_prog_milestone"
+                                     t-att-style="'left:' + row.left + 'px'"/>
+                            </t>
+                            <t t-else="">
+                                <div class="o_prog_bar"
+                                     t-att-class="{
+                                        o_critical: row.isCritical,
+                                        o_slipping: row.slipping,
+                                     }"
+                                     t-att-style="'left:' + row.left + 'px;width:' + row.width + 'px'">
+                                    <div class="o_prog_progress"
+                                         t-att-style="'width:' + row.progress + '%'"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="o_prog_legend" t-if="!state.loading and state.tasks.length">
+            <span><i class="o_swatch o_swatch_normal"/>On programme</span>
+            <span><i class="o_swatch o_swatch_critical"/>Critical path</span>
+            <span><i class="o_swatch o_swatch_slip"/>Behind baseline</span>
+            <span><i class="o_swatch o_swatch_baseline"/>Baseline</span>
+            <span><i class="o_swatch o_swatch_milestone"/>Milestone</span>
+        </div>
+    </div>
+</t>
+
+</templates>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_construction_planning_root"
+              name="Planning"
+              parent="construction_base.menu_construction_root"
+              sequence="25"/>
+
+    <menuitem id="menu_construction_programme"
+              name="Programme"
+              parent="menu_construction_planning_root"
+              action="action_construction_planning"
+              sequence="10"/>
+
+    <menuitem id="menu_construction_dependencies"
+              name="Dependencies"
+              parent="menu_construction_planning_root"
+              action="action_task_links"
+              sequence="20"/>
+</odoo>

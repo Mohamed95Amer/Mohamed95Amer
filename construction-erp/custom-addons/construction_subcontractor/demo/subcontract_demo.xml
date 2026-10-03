@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="subcontract_mep" model="construction.subcontract">
+        <field name="name">HVAC installation — main contract</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="subcontractor_id" ref="construction_base.partner_demo_subcontractor"/>
+        <field name="trade">HVAC / MEP</field>
+        <field name="retention_percent">10</field>
+        <field name="retention_cap_percent">5</field>
+        <field name="line_ids" eval="[
+            (0, 0, {'name': 'Supply &amp; install AHUs and ductwork', 'quantity': 1, 'unit_rate': 1800000}),
+            (0, 0, {'name': 'FCUs and controls', 'quantity': 1, 'unit_rate': 450000}),
+        ]"/>
+    </record>
+
+    <function model="construction.subcontract" name="action_confirm">
+        <value eval="[ref('subcontract_mep')]"/>
+    </function>
+
+    <!-- Awarded above the bill's cost allowance: this is what makes Marina's
+         forecast margin erode, and gives the CVR and the dashboard watchlist
+         something real to flag. -->
+    <record id="subcontract_marina_piling" model="construction.subcontract">
+        <field name="name">Piling package</field>
+        <field name="project_id" ref="construction_base.project_demo_marina"/>
+        <field name="subcontractor_id" ref="construction_base.partner_demo_sub_piling"/>
+        <field name="trade">Piling</field>
+        <field name="retention_percent">10</field>
+    </record>
+    <record id="subcontract_marina_line" model="construction.subcontract.line">
+        <field name="subcontract_id" ref="subcontract_marina_piling"/>
+        <field name="boq_line_id" ref="construction_boq.boq_line_marina_piling"/>
+        <field name="name">Bored piling works, all-in</field>
+        <field name="quantity">1200</field>
+        <field name="unit_rate">1290</field>
+    </record>
+    <function model="construction.subcontract" name="action_confirm">
+        <value eval="[ref('subcontract_marina_piling')]"/>
+    </function>
+</odoo>

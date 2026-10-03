@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_submittal_user,construction.submittal user,model_construction_submittal,construction_base.group_construction_user,1,1,1,0
+access_submittal_pm,construction.submittal pm,model_construction_submittal,construction_base.group_construction_pm,1,1,1,1

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A delegation of authority somebody would recognise. The bands are the
+         point: the same document takes one signature or three depending only
+         on what it is worth, and nobody had to write code to say so. -->
+
+    <record id="approval_rule_vo_small" model="construction.approval.rule">
+        <field name="name">Variations up to 50,000</field>
+        <field name="model_id" ref="construction_change_order.model_construction_change_order"/>
+        <field name="amount_from">0</field>
+        <field name="amount_to">50000</field>
+        <field name="sequence">10</field>
+        <field name="step_ids" eval="[(0, 0, {
+            'sequence': 10,
+            'name': 'Project manager',
+            'group_id': ref('construction_base.group_construction_pm'),
+        })]"/>
+    </record>
+
+    <record id="approval_rule_vo_medium" model="construction.approval.rule">
+        <field name="name">Variations 50,000 – 250,000</field>
+        <field name="model_id" ref="construction_change_order.model_construction_change_order"/>
+        <field name="amount_from">50000</field>
+        <field name="amount_to">250000</field>
+        <field name="sequence">20</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Project manager',
+                'group_id': ref('construction_base.group_construction_pm'),
+            }),
+            (0, 0, {
+                'sequence': 20,
+                'name': 'Commercial manager',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+
+    <record id="approval_rule_vo_large" model="construction.approval.rule">
+        <field name="name">Variations above 250,000</field>
+        <field name="model_id" ref="construction_change_order.model_construction_change_order"/>
+        <field name="amount_from">250000</field>
+        <field name="amount_to">0</field>
+        <field name="sequence">30</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Project manager',
+                'group_id': ref('construction_base.group_construction_pm'),
+            }),
+            (0, 0, {
+                'sequence': 20,
+                'name': 'Commercial manager',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+            (0, 0, {
+                'sequence': 30,
+                'name': 'Board',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+</odoo>

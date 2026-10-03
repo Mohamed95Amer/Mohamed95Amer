@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mat_issue_user,material issue user,model_construction_material_issue,construction_base.group_construction_user,1,1,1,0
+access_mat_issue_pm,material issue pm,model_construction_material_issue,construction_base.group_construction_pm,1,1,1,1
+access_mat_issue_line_user,material issue line user,model_construction_material_issue_line,construction_base.group_construction_user,1,1,1,1
+access_mat_summary_user,material summary user,model_construction_material_summary,construction_base.group_construction_user,1,0,0,0

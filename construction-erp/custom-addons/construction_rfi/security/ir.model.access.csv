@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rfi_user,construction.rfi user,model_construction_rfi,construction_base.group_construction_user,1,1,1,0
+access_rfi_pm,construction.rfi pm,model_construction_rfi,construction_base.group_construction_pm,1,1,1,1

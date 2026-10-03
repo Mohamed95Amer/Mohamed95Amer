@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_drawing_form_pin" model="ir.ui.view">
+        <field name="name">construction.drawing.form.pin</field>
+        <field name="model">construction.drawing</field>
+        <field name="inherit_id" ref="construction_drawing.view_drawing_form"/>
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <header>
+                    <button name="action_open_plan_viewer" type="object"
+                            string="Open Plan Viewer" class="btn-primary"
+                            icon="fa-map-pin"/>
+                </header>
+            </sheet>
+            <xpath expr="//field[@name='revision_ids']/list" position="inside">
+                <button name="action_open_plan_viewer" type="object"
+                        string="Plan Viewer" icon="fa-map-pin"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

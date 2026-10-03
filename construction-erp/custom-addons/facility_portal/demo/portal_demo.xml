@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_demo_occupant" model="res.partner">
+        <field name="name">Level 12 Tenant — Nadia Haddad</field>
+    </record>
+    <record id="user_demo_occupant" model="res.users">
+        <field name="name">Nadia Haddad (Occupant)</field>
+        <field name="login">occupant@demo.facilities</field>
+        <field name="partner_id" ref="partner_demo_occupant"/>
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_portal')])]"/>
+    </record>
+    <record id="request_demo_portal" model="maintenance.request">
+        <field name="name">Air conditioning not cooling — Level 12 east</field>
+        <field name="description">Unit runs but the office stays warm after midday.</field>
+        <field name="portal_reporter_id" ref="partner_demo_occupant"/>
+        <field name="maintenance_type">corrective</field>
+    </record>
+</odoo>

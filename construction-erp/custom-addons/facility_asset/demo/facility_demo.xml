@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Location hierarchy -->
+    <record id="loc_tower" model="facility.location">
+        <field name="name">Al Noor Tower</field>
+        <field name="code">ANT</field>
+        <field name="location_type">site</field>
+    </record>
+    <record id="loc_l3" model="facility.location">
+        <field name="name">Level 3</field>
+        <field name="location_type">floor</field>
+        <field name="parent_id" ref="loc_tower"/>
+    </record>
+    <record id="loc_l3_plantroom" model="facility.location">
+        <field name="name">Level 3 Plant Room</field>
+        <field name="code">L3-PR</field>
+        <field name="location_type">room</field>
+        <field name="parent_id" ref="loc_l3"/>
+    </record>
+
+    <!-- Failure codes -->
+    <record id="fc_no_cooling" model="facility.failure.code">
+        <field name="failure_type">problem</field>
+        <field name="code">P-COOL</field>
+        <field name="name">No cooling</field>
+    </record>
+    <record id="fc_low_refrig" model="facility.failure.code">
+        <field name="failure_type">cause</field>
+        <field name="code">C-REF</field>
+        <field name="name">Low refrigerant charge</field>
+    </record>
+    <record id="fc_recharge" model="facility.failure.code">
+        <field name="failure_type">remedy</field>
+        <field name="code">R-CHG</field>
+        <field name="name">Recharge and leak test</field>
+    </record>
+
+    <!-- Asset -->
+    <record id="asset_ahu1" model="maintenance.equipment">
+        <field name="name">AHU-01 Air Handling Unit</field>
+        <field name="facility_location_id" ref="loc_l3_plantroom"/>
+        <field name="criticality">high</field>
+        <field name="barcode">AHU-0001</field>
+        <field name="purchase_value">85000</field>
+        <field name="expected_life_years">15</field>
+        <field name="warranty_date" eval="(DateTime.today() + relativedelta(days=20)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <record id="meter_ahu1_hours" model="facility.asset.meter">
+        <field name="name">Running Hours</field>
+        <field name="equipment_id" ref="asset_ahu1"/>
+        <field name="uom">hours</field>
+    </record>
+    <record id="reading_1" model="facility.asset.meter.reading">
+        <field name="meter_id" ref="meter_ahu1_hours"/>
+        <field name="date" eval="(DateTime.today() - relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+        <field name="value">12200</field>
+    </record>
+    <record id="reading_2" model="facility.asset.meter.reading">
+        <field name="meter_id" ref="meter_ahu1_hours"/>
+        <field name="date" eval="DateTime.today().strftime('%Y-%m-%d')"/>
+        <field name="value">12920</field>
+    </record>
+</odoo>

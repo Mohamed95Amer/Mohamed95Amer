@@ -1,0 +1,302 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-25 12:24+0000\n"
+"PO-Revision-Date: 2026-07-25 12:24+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: facility_contract
+#: model_terms:ir.actions.act_window,help:facility_contract.action_facility_contract
+msgid ""
+"A maintenance contract covers a list of assets, carries the SLA\n"
+"                you sold, and shows whether the work being done under it still\n"
+"                costs less than the fee you charge for it."
+msgstr ""
+
+#. module: facility_contract
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Assets Covered"
+msgstr "الأصول المشمولة"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_maintenance_request__contract_chargeable
+msgid "Chargeable"
+msgstr "قابل للفوترة"
+
+#. module: facility_contract
+#: model:ir.actions.act_window,name:facility_contract.action_chargeable_work
+#: model:ir.ui.menu,name:facility_contract.menu_facility_chargeable
+msgid "Chargeable Work"
+msgstr "أعمال قابلة للفوترة"
+
+#. modules: facility_contract, facility_sla
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_maintenance_request_form_sla
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+msgid "Commitment"
+msgstr "الالتزام"
+
+#. modules: construction_dashboard, construction_report, facility_contract,
+#. facility_inventory
+#. odoo-javascript
+#: code:addons/construction_dashboard/static/src/dashboard/dashboard.xml:0
+#: model:ir.model,name:facility_inventory.model_contract_contract
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_list
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_maintenance_request_form_contract
+msgid "Contract"
+msgstr "العقد"
+
+#. module: facility_contract
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Contract Performance"
+msgstr "أداء العقد"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__sla_policy_id
+msgid "Contract SLA"
+msgstr "مستوى الخدمة التعاقدي"
+
+#. module: facility_contract
+#. odoo-python
+#: code:addons/facility_contract/models/facility_contract.py:0
+msgid ""
+"Contract ends in %(days)s day(s) — renewal decision due. Margin to date: "
+"%(margin)s."
+msgstr ""
+
+#. modules: construction_report, facility_contract
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Cost"
+msgstr "التكلفة"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__covered_cost
+msgid "Cost Absorbed"
+msgstr "التكلفة المستوعبة"
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__chargeable_cost
+msgid "Cost of work outside the scope of cover — billable on top."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__covered_cost
+msgid "Cost of work the fee has to pay for."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_maintenance_request__contract_covered
+msgid "Covered by Contract"
+msgstr "مشمول بالعقد"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__covers_corrective
+msgid "Covers Corrective"
+msgstr "يغطي الصيانة العلاجية"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__covers_preventive
+msgid "Covers Preventive"
+msgstr "يغطي الصيانة الوقائية"
+
+#. module: facility_contract
+#: model_terms:ir.actions.act_window,help:facility_contract.action_facility_contract
+msgid "Create a maintenance contract"
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__days_to_expiry
+msgid "Days To Expiry"
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.actions.server,name:facility_contract.cron_facility_contract_renewal_ir_actions_server
+msgid "Facilities: flag contracts due for renewal"
+msgstr "إدارة المرافق: flag contracts due for renewal"
+
+#. module: facility_contract
+#: model:product.template,name:facility_contract.product_amc_service_product_template
+msgid "HVAC Maintenance — monthly fee"
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__renewal_notice_days
+msgid ""
+"How long before the end date the contract should be flagged for renewal."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__invoiced_revenue
+msgid "Invoiced"
+msgstr "مفوتر"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__is_amc
+#: model:ir.model.fields,field_description:facility_contract.field_maintenance_request__facility_contract_id
+msgid "Maintenance Contract"
+msgstr "عقد صيانة"
+
+#. module: facility_contract
+#: model:ir.actions.act_window,name:facility_contract.action_facility_contract
+#: model:ir.ui.menu,name:facility_contract.menu_facility_contracts
+msgid "Maintenance Contracts"
+msgstr "عقود الصيانة"
+
+#. module: facility_contract
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Maintenance Cover"
+msgstr "تغطية الصيانة"
+
+#. modules: construction_report, facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__margin
+#: model_terms:ir.ui.view,arch_db:construction_report.report_cvr_document
+#: model_terms:ir.ui.view,arch_db:construction_report.view_project_cvr_form
+msgid "Margin"
+msgstr "الهامش"
+
+#. modules: construction_report, facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__margin_percent
+#: model_terms:ir.ui.view,arch_db:construction_report.view_section_cvr_list
+msgid "Margin %"
+msgstr "الهامش %"
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_maintenance_request__facility_contract_id
+msgid ""
+"Matched from the asset and the request date. Override it when work is "
+"carried out under a different agreement."
+msgstr ""
+
+#. module: facility_contract
+#: model_terms:ir.actions.act_window,help:facility_contract.action_chargeable_work
+msgid "Nothing outside contract scope"
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__pm_visits_included
+msgid "PM Visits Included"
+msgstr "زيارات وقائية مشمولة"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__pm_visits_remaining
+msgid "PM Visits Remaining"
+msgstr "زيارات وقائية متبقية"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__pm_visits_used
+msgid "PM Visits Used"
+msgstr "زيارات وقائية مستهلكة"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__covers_parts
+msgid "Parts Included"
+msgstr "قطع الغيار مشمولة"
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__pm_visits_included
+msgid ""
+"Planned visits the fee buys over the contract term. Leave at zero when the "
+"contract is not written that way."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__chargeable_cost
+msgid "Recoverable Cost"
+msgstr "تكلفة قابلة للتحصيل"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__renewal_notice_days
+msgid "Renewal Notice (days)"
+msgstr "إشعار التجديد (أيام)"
+
+#. module: facility_contract
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__renewal_notified
+msgid "Renewal Notified"
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__sla_policy_id
+msgid ""
+"Response and resolution times promised by this contract. It overrides the "
+"general SLA matrix for work on covered assets — what was sold beats what is "
+"standard."
+msgstr ""
+
+#. modules: construction_tender, facility_contract
+#: model_terms:ir.ui.view,arch_db:construction_tender.view_tender_form
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "Scope"
+msgstr "النطاق"
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_maintenance_request__contract_covered
+msgid ""
+"The contract's scope includes this kind of work, so its cost is absorbed by "
+"the fee."
+msgstr ""
+
+#. module: facility_contract
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "This maintenance contract expires in"
+msgstr ""
+
+#. module: facility_contract
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_maintenance_request_form_contract
+msgid ""
+"This work sits outside the scope of the contract —\n"
+"                        its cost is recoverable from the client."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__is_amc
+msgid ""
+"Treat this contract as a facilities maintenance agreement: it covers assets,"
+" carries an SLA and is measured for margin."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_contract_contract__covers_parts
+msgid ""
+"When off, parts consumed on covered work are recoverable from the client "
+"rather than absorbed by the fee."
+msgstr ""
+
+#. modules: facility_contract, facility_sla
+#. odoo-python
+#: code:addons/facility_contract/models/facility_contract.py:0
+#: code:addons/facility_sla/models/sla_policy.py:0
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__request_count
+#: model:ir.model.fields,field_description:facility_contract.field_contract_contract__request_ids
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_form
+#: model_terms:ir.ui.view,arch_db:facility_sla.view_sla_policy_list
+msgid "Work Orders"
+msgstr "أوامر العمل"
+
+#. module: facility_contract
+#: model_terms:ir.actions.act_window,help:facility_contract.action_chargeable_work
+msgid ""
+"Work carried out on contracted assets but outside what the fee\n"
+"                covers shows here — it is recoverable and easy to forget."
+msgstr ""
+
+#. module: facility_contract
+#: model:ir.model.fields,help:facility_contract.field_maintenance_request__contract_chargeable
+msgid ""
+"Work under a contract but outside its scope — recoverable from the client on"
+" top of the fee."
+msgstr ""
+
+#. module: facility_contract
+#: model_terms:ir.ui.view,arch_db:facility_contract.view_contract_form_facility
+msgid "day(s)."
+msgstr ""

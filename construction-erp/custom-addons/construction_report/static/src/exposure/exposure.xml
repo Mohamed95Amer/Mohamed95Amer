@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_report.Exposure">
+        <div class="o_exposure">
+            <header class="o_exposure_head">
+                <h1>Commercial exposure</h1>
+                <p t-if="state.data">
+                    <t t-esc="state.data.totals.projects"/> live projects
+                </p>
+            </header>
+
+            <div t-if="state.loading" class="o_exposure_loading">
+                <i class="fa fa-circle-o-notch fa-spin"/> Adding it up…
+            </div>
+
+            <t t-else="">
+                <!-- The four numbers a board asks for, in the order they ask. -->
+                <div class="o_exposure_tiles">
+                    <div class="o_exposure_tile">
+                        <span class="o_exposure_label">Contract value</span>
+                        <strong t-esc="money(state.data.totals.contract)"/>
+                    </div>
+                    <div class="o_exposure_tile">
+                        <span class="o_exposure_label">Approved variations</span>
+                        <strong t-esc="money(state.data.totals.variations)"/>
+                        <small>
+                            <t t-esc="percent(state.data.totals.variation_percent)"/>
+                            of contract
+                        </small>
+                    </div>
+                    <div class="o_exposure_tile">
+                        <span class="o_exposure_label">Retention held</span>
+                        <strong t-esc="money(state.data.totals.retention)"/>
+                        <small>cash sitting with the client</small>
+                    </div>
+                    <div class="o_exposure_tile">
+                        <span class="o_exposure_label">Certified, not invoiced</span>
+                        <strong t-esc="money(state.data.totals.uninvoiced)"/>
+                        <small>earned and not yet billed</small>
+                    </div>
+                </div>
+
+                <div t-if="state.data.totals.variations_pending"
+                     class="o_exposure_pending">
+                    A further
+                    <strong t-esc="money(state.data.totals.variations_pending)"/>
+                    of variations is submitted and not yet approved.
+                </div>
+
+                <!-- The one thing on this screen anybody can act on today. -->
+                <section t-if="state.data.awaiting.length" class="o_exposure_block">
+                    <div class="o_exposure_block_head">
+                        <h2>Waiting for a signature</h2>
+                        <button class="btn btn-sm btn-link" t-on-click="openApprovals">
+                            See all
+                        </button>
+                    </div>
+                    <table class="o_exposure_table">
+                        <thead>
+                            <tr>
+                                <th>Document</th>
+                                <th>Project</th>
+                                <th>Step</th>
+                                <th class="text-end">Value</th>
+                                <th class="text-end">Days</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data.awaiting" t-as="row"
+                                t-key="row.id"
+                                t-attf-class="{{ row.days > 7 ? 'o_exposure_high' : '' }}">
+                                <td t-esc="row.document"/>
+                                <td t-esc="row.project"/>
+                                <td t-esc="row.step"/>
+                                <td class="text-end" t-esc="money(row.amount)"/>
+                                <td class="text-end" t-esc="row.days"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="o_exposure_block">
+                    <div class="o_exposure_block_head">
+                        <h2>By project</h2>
+                        <small>Ordered by how far variations have moved the contract</small>
+                    </div>
+                    <table class="o_exposure_table">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th class="text-end">Contract</th>
+                                <th class="text-end">Variations</th>
+                                <th class="text-end">%</th>
+                                <th class="text-end">Certified</th>
+                                <th class="text-end">Retention</th>
+                                <th class="text-end">Uninvoiced</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data.projects" t-as="row"
+                                t-key="row.id" class="o_exposure_row"
+                                t-on-click="() => this.openProject(row)">
+                                <td t-esc="row.name"/>
+                                <td class="text-end" t-esc="money(row.contract)"/>
+                                <td class="text-end" t-esc="money(row.variations)"/>
+                                <td t-attf-class="text-end {{ variationClass(row) }}"
+                                    t-esc="percent(row.variation_percent)"/>
+                                <td class="text-end" t-esc="percent(row.certified_percent)"/>
+                                <td class="text-end" t-esc="money(row.retention)"/>
+                                <td class="text-end" t-esc="money(row.uninvoiced)"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </t>
+        </div>
+    </t>
+</templates>

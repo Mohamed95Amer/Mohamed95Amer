@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="jobplan_ahu" model="facility.job.plan">
+        <field name="name">AHU Quarterly Service</field>
+        <field name="estimated_duration">3.0</field>
+        <field name="task_ids" eval="[
+            (0, 0, {'sequence': 10, 'name': 'Inspect and clean filters'}),
+            (0, 0, {'sequence': 20, 'name': 'Check belt tension and bearings'}),
+            (0, 0, {'sequence': 30, 'name': 'Verify controls and setpoints'}),
+            (0, 0, {'sequence': 40, 'name': 'Record running hours meter'}),
+        ]"/>
+    </record>
+
+    <record id="pmplan_ahu_calendar" model="facility.pm.plan">
+        <field name="name">AHU-01 Quarterly PM</field>
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+        <field name="job_plan_id" ref="jobplan_ahu"/>
+        <field name="trigger_type">calendar</field>
+        <field name="interval_number">3</field>
+        <field name="interval_type">months</field>
+    </record>
+
+    <record id="pmplan_ahu_meter" model="facility.pm.plan">
+        <field name="name">AHU-01 Every 2000 running hours</field>
+        <field name="equipment_id" ref="facility_asset.asset_ahu1"/>
+        <field name="job_plan_id" ref="jobplan_ahu"/>
+        <field name="trigger_type">meter</field>
+        <field name="meter_id" ref="facility_asset.meter_ahu1_hours"/>
+        <field name="meter_interval">2000</field>
+    </record>
+</odoo>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="construction_dashboard.Dashboard">
+    <div class="o_cdash">
+        <div t-if="state.loading" class="o_cdash_placeholder">Loading portfolio…</div>
+        <div t-elif="state.error" class="o_cdash_placeholder o_bad">
+            The dashboard could not be loaded.
+        </div>
+        <div t-elif="!projects.length" class="o_cdash_placeholder">
+            No construction projects yet.
+        </div>
+
+        <t t-else="">
+            <!-- Portfolio headline -->
+            <section class="o_cdash_hero">
+                <div class="o_cdash_hero_title">
+                    <span class="o_cdash_eyebrow">PORTFOLIO</span>
+                    <h1>
+                        <t t-esc="portfolio.projects"/> projects ·
+                        <t t-esc="money(portfolio.contract_value)"/> under contract
+                    </h1>
+                    <p>
+                        <t t-esc="portfolio.percent_complete.toFixed(1)"/>% certified,
+                        forecast margin <t t-esc="money(portfolio.forecast_margin)"/>
+                        (<t t-esc="portfolio.forecast_margin_percent.toFixed(1)"/>%).
+                    </p>
+                </div>
+                <div class="o_cdash_hero_flags">
+                    <div class="o_cdash_flag" t-att-class="{ o_bad_bg: portfolio.at_risk }">
+                        <strong t-esc="portfolio.at_risk"/><small>Margin eroding</small>
+                    </div>
+                    <div class="o_cdash_flag" t-att-class="{ o_warn_bg: portfolio.slipping }">
+                        <strong t-esc="portfolio.slipping"/><small>Behind programme</small>
+                    </div>
+                    <div class="o_cdash_flag" t-att-class="{ o_bad_bg: portfolio.lti_count }">
+                        <strong t-esc="portfolio.lti_count"/><small>Lost time injuries</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio KPI strip -->
+            <section class="o_cdash_kpis">
+                <div class="o_cdash_kpi" t-on-click="() => this.openAction('construction_report.action_project_cvr')">
+                    <span class="o_cdash_kpi_val" t-esc="money(portfolio.certified_value)"/>
+                    <span class="o_cdash_kpi_lbl">Certified to date</span>
+                    <span class="o_cdash_kpi_sub">
+                        of <t t-esc="money(portfolio.contract_value)"/> contract
+                    </span>
+                </div>
+                <div class="o_cdash_kpi">
+                    <span class="o_cdash_kpi_val" t-esc="portfolio.worst_slip + 'd'"/>
+                    <span class="o_cdash_kpi_lbl">Worst slip</span>
+                    <span class="o_cdash_kpi_sub">
+                        <t t-esc="portfolio.slipping"/> projects behind baseline
+                    </span>
+                </div>
+                <div class="o_cdash_kpi" t-on-click="() => this.openAction('construction_defect.action_construction_defect')">
+                    <span class="o_cdash_kpi_val" t-esc="portfolio.open_defects"/>
+                    <span class="o_cdash_kpi_lbl">Open defects</span>
+                    <span class="o_cdash_kpi_sub">
+                        <t t-esc="portfolio.overdue_rfis"/> overdue RFIs
+                    </span>
+                </div>
+                <div class="o_cdash_kpi">
+                    <span class="o_cdash_kpi_val" t-esc="portfolio.ltifr.toFixed(2)"/>
+                    <span class="o_cdash_kpi_lbl">LTIFR</span>
+                    <span class="o_cdash_kpi_sub">
+                        <t t-esc="Math.round(portfolio.manhours)"/> manhours
+                    </span>
+                </div>
+                <div class="o_cdash_kpi" t-on-click="() => this.openAction('construction_material.action_material_summary')">
+                    <span class="o_cdash_kpi_val" t-esc="portfolio.waste_percent.toFixed(1) + '%'"/>
+                    <span class="o_cdash_kpi_lbl">Material waste</span>
+                    <span class="o_cdash_kpi_sub"><t t-esc="money(portfolio.material_waste)"/> lost</span>
+                </div>
+            </section>
+
+            <!-- Project selector -->
+            <section class="o_cdash_picker">
+                <span class="o_cdash_picker_lbl">Compare</span>
+                <button t-foreach="projects" t-as="project" t-key="project.id"
+                        type="button" class="o_cdash_chip"
+                        t-att-class="{ o_on: state.selected.includes(project.id) }"
+                        t-on-click="() => this.toggleProject(project.id)">
+                    <t t-esc="project.name"/>
+                </button>
+                <span class="o_cdash_picker_actions">
+                    <button type="button" class="btn btn-sm btn-link" t-on-click="selectAll">All</button>
+                    <button type="button" class="btn btn-sm btn-link" t-on-click="selectNone">None</button>
+                </span>
+            </section>
+
+            <div t-if="!compared.length" class="o_cdash_placeholder">
+                Pick at least one project to compare.
+            </div>
+
+            <t t-else="">
+                <div class="o_cdash_grid">
+                    <!-- Metric comparison -->
+                    <section class="o_cdash_card o_cdash_span2">
+                        <header>
+                            <h3>Compare projects</h3>
+                            <div class="o_cdash_metric_tabs">
+                                <button t-foreach="metrics" t-as="metric" t-key="metric.key"
+                                        type="button"
+                                        t-att-class="{ o_on: state.metric === metric.key }"
+                                        t-on-click="() => this.setMetric(metric.key)">
+                                    <t t-esc="metric.label"/>
+                                </button>
+                            </div>
+                        </header>
+                        <div class="o_cdash_bars">
+                            <div t-foreach="comparisonBars" t-as="bar" t-key="bar.id"
+                                 class="o_cdash_bar_row"
+                                 t-on-click="() => this.openProject(bar.id)">
+                                <span class="o_cdash_bar_name" t-esc="bar.name"/>
+                                <span class="o_cdash_bar_track">
+                                    <span class="o_cdash_bar_fill"
+                                          t-att-class="{ o_neg: bar.negative }"
+                                          t-attf-style="width:{{ bar.width }}%;background:{{ bar.colour }}"/>
+                                </span>
+                                <span class="o_cdash_bar_val" t-esc="bar.label"/>
+                            </div>
+                        </div>
+                        <p class="o_cdash_hint">
+                            Scaled against the largest value in the selection.
+                            Colour follows meaning, not series order.
+                        </p>
+                    </section>
+
+                    <!-- Watchlist -->
+                    <section class="o_cdash_card">
+                        <header><h3>Needs attention</h3></header>
+                        <div t-if="!hasWatchlist" class="o_cdash_clear">
+                            Nothing flagged across the selected projects.
+                        </div>
+                        <ul t-else="" class="o_cdash_watch">
+                            <li t-foreach="watchlist" t-as="item" t-key="item.project + item.label"
+                                t-att-class="item.tone === 'bad' ? 'o_bad' : 'o_warn'"
+                                t-on-click="() => this.openProject(item.id)">
+                                <span class="o_cdash_watch_dot"/>
+                                <span class="o_cdash_watch_body">
+                                    <strong t-esc="item.label"/>
+                                    <small t-esc="item.project"/>
+                                </span>
+                                <span class="o_cdash_watch_val" t-esc="item.detail"/>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <!-- Certified progress -->
+                    <section class="o_cdash_card">
+                        <header><h3>Certified against contract</h3></header>
+                        <div t-foreach="progressRows" t-as="row" t-key="row.id"
+                             class="o_cdash_progress"
+                             t-on-click="() => this.openProject(row.id)">
+                            <div class="o_cdash_progress_head">
+                                <span t-esc="row.name"/>
+                                <span>
+                                    <t t-esc="row.certified"/> / <t t-esc="row.contract"/>
+                                    <em t-if="row.slipping" class="o_warn">
+                                        · +<t t-esc="row.slip"/>d
+                                    </em>
+                                </span>
+                            </div>
+                            <div class="o_cdash_progress_track">
+                                <div class="o_cdash_progress_fill"
+                                     t-attf-style="width:{{ row.percent }}%"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cost structure -->
+                    <section class="o_cdash_card o_cdash_span2">
+                        <header>
+                            <h3>Value against cost</h3>
+                            <span class="o_cdash_legend">
+                                <i style="background:#173240"/>Contract
+                                <i style="background:#346d75"/>Certified
+                                <i style="background:#c59b52"/>Budget cost
+                                <i style="background:#c0483c"/>Committed
+                            </span>
+                        </header>
+                        <div t-foreach="costRows" t-as="row" t-key="row.id"
+                             class="o_cdash_cost" t-on-click="() => this.openProject(row.id)">
+                            <div class="o_cdash_cost_name">
+                                <t t-esc="row.name"/>
+                                <em t-if="row.overCommitted" class="o_bad">over-committed</em>
+                            </div>
+                            <div class="o_cdash_cost_bars">
+                                <div class="o_cdash_cost_bar" t-attf-style="width:{{ row.contractWidth }}%;background:#173240"
+                                     t-att-title="'Contract ' + row.contract"/>
+                                <div class="o_cdash_cost_bar" t-attf-style="width:{{ row.certifiedWidth }}%;background:#346d75"
+                                     t-att-title="'Certified ' + row.certified"/>
+                                <div class="o_cdash_cost_bar" t-attf-style="width:{{ row.budgetWidth }}%;background:#c59b52"
+                                     t-att-title="'Budget cost ' + row.budget"/>
+                                <div class="o_cdash_cost_bar" t-attf-style="width:{{ row.committedWidth }}%;background:#c0483c"
+                                     t-att-title="'Committed ' + row.committed"/>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Full comparison table -->
+                <section class="o_cdash_card">
+                    <header><h3>All metrics</h3></header>
+                    <div class="o_cdash_table_wrap">
+                        <table class="o_cdash_table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th t-foreach="compared" t-as="project" t-key="project.id"
+                                        t-esc="project.name"/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="metrics" t-as="metric" t-key="metric.key">
+                                    <td class="o_cdash_table_lbl"><t t-esc="metric.label"/></td>
+                                    <td t-foreach="compared" t-as="project" t-key="project.id"
+                                        t-esc="formatValue(project[metric.key], metric.unit)"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </t>
+        </t>
+    </div>
+</t>
+
+</templates>

@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bim_model_user,construction.bim.model user,model_construction_bim_model,construction_base.group_construction_site_engineer,1,0,0,0
+access_bim_model_pm,construction.bim.model pm,model_construction_bim_model,construction_base.group_construction_pm,1,1,1,1
+access_bim_element_user,construction.bim.element user,model_construction_bim_element,construction_base.group_construction_site_engineer,1,1,1,0
+access_bim_element_pm,construction.bim.element pm,model_construction_bim_element,construction_base.group_construction_pm,1,1,1,1
+access_bim_pin_user,construction.bim.pin user,model_construction_bim_pin,construction_base.group_construction_site_engineer,1,1,1,1
+access_bim_pin_pm,construction.bim.pin pm,model_construction_bim_pin,construction_base.group_construction_pm,1,1,1,1
+access_bim_property_user,construction.bim.property user,model_construction_bim_property,construction_base.group_construction_site_engineer,1,0,0,0
+access_bim_property_pm,construction.bim.property pm,model_construction_bim_property,construction_base.group_construction_pm,1,1,1,1
+access_bcf_import,construction.bim.bcf.import,model_construction_bim_bcf_import,construction_base.group_construction_pm,1,1,1,1
+access_bim_comparison,construction.bim.comparison,model_construction_bim_comparison,construction_base.group_construction_site_engineer,1,1,1,1
+access_bim_comparison_line,construction.bim.comparison.line,model_construction_bim_comparison_line,construction_base.group_construction_site_engineer,1,1,1,1
+access_clash_test_user,construction.bim.clash.test user,model_construction_bim_clash_test,construction_base.group_construction_site_engineer,1,1,1,0
+access_clash_test_pm,construction.bim.clash.test pm,model_construction_bim_clash_test,construction_base.group_construction_pm,1,1,1,1
+access_clash_user,construction.bim.clash user,model_construction_bim_clash,construction_base.group_construction_site_engineer,1,1,1,0
+access_clash_pm,construction.bim.clash pm,model_construction_bim_clash,construction_base.group_construction_pm,1,1,1,1

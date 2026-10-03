@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_facility_floorplan_list" model="ir.ui.view">
+        <field name="name">facility.floorplan.list</field>
+        <field name="model">facility.floorplan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="location_id"/>
+                <field name="has_sheet" string="PDF" widget="boolean_toggle"
+                       readonly="1"/>
+                <field name="pin_count" string="Pins"/>
+                <button name="action_open_floorplan" type="object"
+                        string="Open Plan Viewer" icon="fa-map-o"
+                        class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_facility_floorplan_form" model="ir.ui.view">
+        <field name="name">facility.floorplan.form</field>
+        <field name="model">facility.floorplan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_floorplan" type="object"
+                            string="Open Plan Viewer" class="btn-primary"
+                            icon="fa-map-o"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_floorplan" type="object"
+                                class="oe_stat_button" icon="fa-map-pin">
+                            <field name="pin_count" widget="statinfo"
+                                   string="Pins"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Level 3 — Office"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="location_id"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="sheet_file" widget="binary"
+                                   filename="sheet_filename" string="Floor Plan PDF"/>
+                            <field name="sheet_filename" column_invisible="1"/>
+                            <field name="has_sheet" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1" placeholder="Optional notes…"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_facility_floorplan_search" model="ir.ui.view">
+        <field name="name">facility.floorplan.search</field>
+        <field name="model">facility.floorplan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="location_id"/>
+                <filter name="has_pdf" string="Has PDF"
+                        domain="[('attachment_id', '!=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_location" string="Location"
+                            context="{'group_by': 'location_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_facility_floorplan" model="ir.actions.act_window">
+        <field name="name">Floor Plans</field>
+        <field name="res_model">facility.floorplan</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a floor plan</p>
+            <p>Upload a PDF floor plan, then open the plan viewer to pin
+               assets, maintenance requests and notes on it.</p>
+        </field>
+    </record>
+
+</odoo>

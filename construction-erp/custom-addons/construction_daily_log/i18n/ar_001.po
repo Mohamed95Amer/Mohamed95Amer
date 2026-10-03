@@ -1,0 +1,388 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid ""
+"<br/>\n"
+"                                <strong>Date:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>التاريخ:</strong>"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid ""
+"<br/>\n"
+"                                <strong>Delay hours:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>ساعات التأخير:</strong>"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid ""
+"<br/>\n"
+"                                <strong>Prepared by:</strong>"
+msgstr ""
+"<br/>\n"
+"                                <strong>أعده:</strong>"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "<strong>Weather:</strong>"
+msgstr "<strong>الطقس:</strong>"
+
+#. module: construction_daily_log
+#: model:ir.model.constraint,message:construction_daily_log.constraint_construction_daily_log_log_uniq
+msgid "A daily log already exists for this project and date."
+msgstr "يوجد سجل يومي بالفعل لهذا المشروع وهذا التاريخ."
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log_delay__category__access
+msgid "Access"
+msgstr "الوصول"
+
+#. modules: construction_daily_log, construction_planning
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__activity_ids
+#: model_terms:ir.ui.view,arch_db:construction_planning.view_task_form_planning
+msgid "Activity"
+msgstr "النشاط"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__boq_line_id
+msgid "BOQ Item"
+msgstr "بند جدول كميات"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__category
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Category"
+msgstr "الفئة"
+
+#. modules: construction_daily_log, facility_asset
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__cause
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_request__failure_cause_id
+#: model:ir.model.fields.selection,name:facility_asset.selection__facility_failure_code__failure_type__cause
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Cause"
+msgstr "السبب"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__weather__cloudy
+msgid "Cloudy"
+msgstr "غائم"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__contractor_id
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Contractor"
+msgstr "المتعاقد "
+
+#. module: construction_daily_log
+#: model:ir.model,name:construction_daily_log.model_construction_daily_log_delay
+msgid "Daily Log — Delay / Disruption"
+msgstr "السجل اليومي — تأخير / تعطيل"
+
+#. module: construction_daily_log
+#: model:ir.model,name:construction_daily_log.model_construction_daily_log_equipment
+msgid "Daily Log — Equipment"
+msgstr "Daily Log — المعدات"
+
+#. module: construction_daily_log
+#: model:ir.model,name:construction_daily_log.model_construction_daily_log_manpower
+msgid "Daily Log — Manpower"
+msgstr "Daily Log — العمالة"
+
+#. module: construction_daily_log
+#: model:ir.model,name:construction_daily_log.model_construction_daily_log_activity
+msgid "Daily Log — Work Activity"
+msgstr "السجل اليومي — نشاط عمل"
+
+#. module: construction_daily_log
+#: model:ir.actions.report,name:construction_daily_log.action_report_daily_log
+#: model:ir.model,name:construction_daily_log.model_construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Daily Site Log"
+msgstr "سجل الموقع اليومي"
+
+#. modules: construction_daily_log, construction_ui
+#. odoo-javascript
+#: model:ir.actions.act_window,name:construction_daily_log.action_construction_daily_log
+#: model:ir.actions.client,name:construction_ui.action_workspace_daily_logs
+#: model:ir.ui.menu,name:construction_daily_log.menu_construction_daily_log
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Daily Site Logs"
+msgstr "السجلات اليومية للموقع"
+
+#. modules: construction_change_order, construction_daily_log,
+#. construction_form, construction_subcontractor, facility_asset
+#: model:ir.model.fields,field_description:construction_change_order.field_construction_change_event__date
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__log_date
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract_payment__date
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__date
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_question__answer_type__date
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__delay_ids
+msgid "Delay"
+msgstr "التأخير "
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+msgid "Delays"
+msgstr "التأخيرات"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Delays / Disruptions"
+msgstr "التأخيرات / التعطيلات"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log_delay__category__design
+msgid "Design / Info"
+msgstr "تصميم / معلومات"
+
+#. modules: construction_daily_log, facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__equipment_ids
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter__equipment_id
+#: model:ir.model.fields,field_description:facility_asset.field_facility_spare_line__equipment_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__equipment_id
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+msgid "Equipment"
+msgstr "المعدات"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_search
+msgid "Had Delays"
+msgstr "توجد تأخيرات"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__headcount
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Headcount"
+msgstr "عدد العمال"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__weather__hot
+msgid "Hot"
+msgstr "حار"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Hours"
+msgstr "ساعات "
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__hours
+msgid "Hours / person"
+msgstr "ساعات / فرد"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__hours_lost
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Hours Lost"
+msgstr "الساعات المفقودة"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log_delay__category__labour
+msgid "Labour"
+msgstr "العمالة"
+
+#. modules: construction_daily_log, construction_defect, construction_form,
+#. facility_asset, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__location
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__location
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__location
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_floorplan__location_id
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__location_id
+#: model_terms:ir.ui.view,arch_db:construction_defect.report_defect_document
+#: model_terms:ir.ui.view,arch_db:facility_asset.view_facility_location_list
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_search
+msgid "Location"
+msgstr "الموقع"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_activity__log_id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_delay__log_id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__log_id
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__log_id
+msgid "Log"
+msgstr "سجل"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__manpower_ids
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+msgid "Manpower"
+msgstr "العمالة"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log_delay__category__material
+msgid "Material"
+msgstr "المادة "
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_search
+msgid "Month"
+msgstr "الشهر"
+
+#. modules: construction_daily_log, construction_form,
+#. construction_subcontractor, facility_floorplan
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__notes
+#: model:ir.model.fields,field_description:construction_form.field_construction_form_inspection__notes
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+#: model_terms:ir.ui.view,arch_db:construction_form.report_inspection_document
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_subcontract_form
+#: model_terms:ir.ui.view,arch_db:facility_floorplan.view_facility_floorplan_form
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_equipment__hours
+msgid "Operating Hours"
+msgstr "ساعات التشغيل"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__prepared_by_id
+msgid "Prepared By"
+msgstr "أعده"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__weather__rain
+msgid "Rain"
+msgstr "ممطر"
+
+#. modules: construction_daily_log, construction_ui
+#. odoo-javascript
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_drawing_revision_form_majal
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. modules: construction_daily_log, construction_ui
+#. odoo-javascript
+#: model:ir.ui.menu,name:construction_daily_log.menu_construction_site
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_project_form_majal_360
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Site Work"
+msgstr "أعمال الموقع"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__weather__storm
+msgid "Storm"
+msgstr "عاصفة"
+
+#. modules: construction_change_order, construction_daily_log,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_ui
+#: model_terms:ir.ui.view,arch_db:construction_change_order.view_change_order_form
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.view_daily_log_form
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:construction_progress_billing.view_progress_claim_form
+#: model_terms:ir.ui.view,arch_db:construction_rfi.view_rfi_form
+#: model_terms:ir.ui.view,arch_db:construction_subcontractor.view_sc_payment_form
+#: model_terms:ir.ui.view,arch_db:construction_ui.view_majal_project_document_form
+msgid "Submit"
+msgstr "إرسال"
+
+#. modules: construction_change_order, construction_daily_log,
+#. construction_form, construction_progress_billing, construction_rfi,
+#. construction_subcontractor, construction_ui
+#: model:ir.model.fields.selection,name:construction_change_order.selection__construction_change_order__state__submitted
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__state__submitted
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_inspection__state__submitted
+#: model:ir.model.fields.selection,name:construction_progress_billing.selection__construction_progress_claim__state__submitted
+#: model:ir.model.fields.selection,name:construction_rfi.selection__construction_rfi__state__submitted
+#: model:ir.model.fields.selection,name:construction_subcontractor.selection__construction_subcontract_payment__state__submitted
+#: model:ir.model.fields.selection,name:construction_ui.selection__majal_project_document__state__submitted
+msgid "Submitted"
+msgstr "مُرسل"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__weather__sunny
+msgid "Sunny"
+msgstr "مشمس"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__temperature
+msgid "Temp (°C)"
+msgstr "درجة الحرارة (°م)"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__total_delay_hours
+msgid "Total Delay Hours"
+msgstr "إجمالي ساعات التأخير"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__total_headcount
+msgid "Total Headcount"
+msgstr "إجمالي عدد العمال"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__total_labour_hours
+msgid "Total Labour Hours"
+msgstr "إجمالي ساعات العمل"
+
+#. modules: construction_daily_log, construction_defect,
+#. construction_subcontractor
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log_manpower__trade
+#: model:ir.model.fields,field_description:construction_defect.field_construction_defect__trade
+#: model:ir.model.fields,field_description:construction_subcontractor.field_construction_subcontract__trade
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Trade"
+msgstr "التخصص"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,field_description:construction_daily_log.field_construction_daily_log__weather
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log_delay__category__weather
+msgid "Weather"
+msgstr "الطقس"
+
+#. module: construction_daily_log
+#: model:ir.model.fields.selection,name:construction_daily_log.selection__construction_daily_log__weather__windy
+msgid "Windy"
+msgstr "عاصف"
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid "Work Activities"
+msgstr "أنشطة العمل"
+
+#. module: construction_daily_log
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log_manpower__trade
+msgid "e.g. Steel fixers, Carpenters."
+msgstr "مثال: حدادو تسليح، نجارون."
+
+#. module: construction_daily_log
+#: model:ir.model.fields,help:construction_daily_log.field_construction_daily_log_equipment__name
+msgid "e.g. Tower crane, Excavator."
+msgstr "مثال: رافعة برجية، حفار."
+
+#. module: construction_daily_log
+#: model_terms:ir.ui.view,arch_db:construction_daily_log.report_daily_log_document
+msgid ""
+"°C)<br/>\n"
+"                                <strong>Total headcount:</strong>"
+msgstr ""
+"°م)<br/>\n"
+"                                <strong>إجمالي عدد العمال:</strong>"

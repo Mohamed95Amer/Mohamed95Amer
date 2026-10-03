@@ -1,0 +1,5 @@
+# The repository root holds the Next.js app; construction-erp/ is a separate
+# Odoo project whose front-end is OWL, not React. Its useRef/useService are
+# OWL hooks, so React's rules-of-hooks reports hundreds of false positives on
+# it. The ERP has its own checks in .github/workflows/construction-erp-ci.yml.
+construction-erp/

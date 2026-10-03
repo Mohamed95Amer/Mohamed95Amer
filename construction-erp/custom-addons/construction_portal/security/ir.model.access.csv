@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_portal_rfi,portal rfi read,construction_rfi.model_construction_rfi,base.group_portal,1,0,0,0
+access_portal_defect,portal defect read,construction_defect.model_construction_defect,base.group_portal,1,0,0,0
+access_portal_subcontract,portal subcontract read,construction_subcontractor.model_construction_subcontract,base.group_portal,1,0,0,0
+access_portal_subcontract_line,portal subcontract line read,construction_subcontractor.model_construction_subcontract_line,base.group_portal,1,0,0,0
+access_portal_subcontract_payment,portal subcontract payment read,construction_subcontractor.model_construction_subcontract_payment,base.group_portal,1,0,0,0

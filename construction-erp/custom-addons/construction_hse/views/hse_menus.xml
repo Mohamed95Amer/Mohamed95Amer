@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hse_root" name="HSE"
+              parent="construction_base.menu_construction_root"
+              sequence="45"/>
+    <menuitem id="menu_hse_permits" name="Permits to Work"
+              parent="menu_hse_root" action="action_permit" sequence="10"/>
+    <menuitem id="menu_hse_incidents" name="Incidents &amp; Near Misses"
+              parent="menu_hse_root" action="action_incident" sequence="20"/>
+    <menuitem id="menu_hse_talks" name="Toolbox Talks"
+              parent="menu_hse_root" action="action_toolbox_talk" sequence="30"/>
+    <menuitem id="menu_hse_stats" name="Safety Statistics"
+              parent="menu_hse_root" action="action_project_safety" sequence="40"/>
+</odoo>

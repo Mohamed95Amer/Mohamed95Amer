@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Portal users only see documents where their company partner is the
+         responsible / assigned party. child_of covers portal contacts that
+         are children of the commercial (company) partner. -->
+
+    <record id="rule_portal_rfi" model="ir.rule">
+        <field name="name">Portal: own RFIs (ball in court)</field>
+        <field name="model_id" ref="construction_rfi.model_construction_rfi"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('ball_in_court_id', 'child_of', user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_portal_defect" model="ir.rule">
+        <field name="name">Portal: assigned defects</field>
+        <field name="model_id" ref="construction_defect.model_construction_defect"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('responsible_subcontractor_id', 'child_of', user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_portal_subcontract" model="ir.rule">
+        <field name="name">Portal: own subcontracts</field>
+        <field name="model_id" ref="construction_subcontractor.model_construction_subcontract"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('subcontractor_id', 'child_of', user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_portal_subcontract_payment" model="ir.rule">
+        <field name="name">Portal: own subcontract payments</field>
+        <field name="model_id" ref="construction_subcontractor.model_construction_subcontract_payment"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('subcontract_id.subcontractor_id', 'child_of', user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

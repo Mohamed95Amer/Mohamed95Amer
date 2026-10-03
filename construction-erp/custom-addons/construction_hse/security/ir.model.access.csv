@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_permit_user,permit user,model_construction_permit,construction_base.group_construction_user,1,1,1,0
+access_permit_officer,permit officer,model_construction_permit,group_hse_officer,1,1,1,1
+access_permit_prec_user,permit precaution user,model_construction_permit_precaution,construction_base.group_construction_user,1,1,1,1
+access_incident_user,incident user,model_construction_incident,construction_base.group_construction_user,1,1,1,0
+access_incident_officer,incident officer,model_construction_incident,group_hse_officer,1,1,1,1
+access_incident_action_user,incident action user,model_construction_incident_action,construction_base.group_construction_user,1,1,1,1
+access_talk_user,toolbox talk user,model_construction_toolbox_talk,construction_base.group_construction_user,1,1,1,0
+access_talk_officer,toolbox talk officer,model_construction_toolbox_talk,group_hse_officer,1,1,1,1
+access_attendee_user,toolbox attendee user,model_construction_toolbox_attendee,construction_base.group_construction_user,1,1,1,1

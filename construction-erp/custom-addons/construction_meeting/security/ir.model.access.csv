@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_meeting_user,meeting user,model_construction_meeting,construction_base.group_construction_user,1,1,1,0
+access_meeting_pm,meeting pm,model_construction_meeting,construction_base.group_construction_pm,1,1,1,1
+access_meeting_action_user,meeting action user,model_construction_meeting_action,construction_base.group_construction_user,1,1,1,1
+access_meeting_attendee_user,meeting attendee user,model_construction_meeting_attendee,construction_base.group_construction_user,1,1,1,1

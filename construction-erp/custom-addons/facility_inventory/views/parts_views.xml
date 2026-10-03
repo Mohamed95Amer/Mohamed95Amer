@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Parts on the work order -->
+    <record id="view_maintenance_request_form_parts" model="ir.ui.view">
+        <field name="name">maintenance.request.form.parts</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Parts" name="parts">
+                    <field name="parts_line_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id"
+                                   readonly="state == 'consumed'"/>
+                            <field name="qty_available" string="In Store"/>
+                            <field name="quantity"
+                                   readonly="state == 'consumed'"/>
+                            <field name="uom_id" readonly="state == 'consumed'"/>
+                            <field name="unit_cost"
+                                   readonly="state == 'consumed'"/>
+                            <field name="value" sum="Parts"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'consumed'"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                    <group>
+                        <group>
+                            <field name="parts_issued_value"/>
+                            <field name="parts_from_stock"/>
+                        </group>
+                        <group>
+                            <button name="action_consume_parts" type="object"
+                                    string="Take parts from store"
+                                    class="btn-primary"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" invisible="not parts_from_stock">
+                        Parts cost on this work order comes from stock that
+                        actually moved, so it is no longer typed by hand.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Parts position -->
+    <record id="view_parts_summary_list" model="ir.ui.view">
+        <field name="name">facility.parts.summary.list</field>
+        <field name="model">facility.parts.summary</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-danger="below_reorder">
+                <field name="facility_location_id"/>
+                <field name="product_id"/>
+                <field name="uom_id" string="UoM"/>
+                <field name="qty_on_hand" sum="In store"/>
+                <field name="min_qty"/>
+                <field name="qty_to_order" sum="To order"/>
+                <field name="qty_consumed" sum="Consumed"/>
+                <field name="on_hand_value" sum="Stock value" optional="show"/>
+                <field name="consumed_value" sum="Consumed value"/>
+                <field name="below_reorder" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <button name="action_open_quants" type="object"
+                        icon="fa-cubes" title="Stock"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_parts_summary_search" model="ir.ui.view">
+        <field name="name">facility.parts.summary.search</field>
+        <field name="model">facility.parts.summary</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="facility_location_id"/>
+                <filter name="below_reorder" string="Below Minimum"
+                        domain="[('below_reorder', '=', True)]"/>
+                <filter name="in_store" string="In Store"
+                        domain="[('qty_on_hand', '&gt;', 0)]"/>
+                <filter name="consumed" string="Consumed"
+                        domain="[('qty_consumed', '&gt;', 0)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_location" string="Facility"
+                            context="{'group_by': 'facility_location_id'}"/>
+                    <filter name="group_product" string="Part"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_parts_summary" model="ir.actions.act_window">
+        <field name="name">Parts Position</field>
+        <field name="res_model">facility.parts.summary</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No parts movement yet</p>
+            <p>
+                Once a work order takes spares out of a store, this shows what
+                each store holds, what it has consumed, and what has fallen
+                below the minimum on the asset's spare list.
+            </p>
+        </field>
+    </record>
+
+    <!-- Store on the facility location -->
+    <record id="view_facility_location_form_store" model="ir.ui.view">
+        <field name="name">facility.location.form.store</field>
+        <field name="model">facility.location</field>
+        <field name="inherit_id" ref="facility_asset.view_facility_location_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_stock" type="object"
+                        icon="fa-cubes" class="oe_stat_button">
+                    <field name="part_count" string="Parts" widget="statinfo"/>
+                </button>
+            </div>
+            <field name="complete_name" position="after">
+                <field name="stock_location_id"/>
+                <field name="on_hand_value"/>
+                <field name="currency_id" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Recoverable parts on a maintenance contract -->
+    <record id="view_contract_form_parts" model="ir.ui.view">
+        <field name="name">contract.contract.form.parts</field>
+        <field name="model">contract.contract</field>
+        <field name="inherit_id" ref="facility_contract.view_contract_form_facility"/>
+        <field name="arch" type="xml">
+            <field name="chargeable_cost" position="after">
+                <field name="recoverable_parts_value"
+                       invisible="covers_parts"/>
+            </field>
+        </field>
+    </record>
+</odoo>

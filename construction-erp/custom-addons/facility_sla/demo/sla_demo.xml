@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A typical two-tier FM matrix: sharp cover for critical plant, a
+         relaxed catch-all for everything else. -->
+    <record id="sla_critical" model="facility.sla.policy">
+        <field name="name">Critical assets — 1h response / 8h fix</field>
+        <field name="sequence">10</field>
+        <field name="criticality">critical</field>
+        <field name="response_hours">1</field>
+        <field name="resolution_hours">8</field>
+    </record>
+
+    <record id="sla_high_priority" model="facility.sla.policy">
+        <field name="name">High priority — 2h response / 24h fix</field>
+        <field name="sequence">20</field>
+        <field name="priority">3</field>
+        <field name="response_hours">2</field>
+        <field name="resolution_hours">24</field>
+    </record>
+
+    <record id="sla_standard" model="facility.sla.policy">
+        <field name="name">Standard cover — 8h response / 72h fix</field>
+        <field name="sequence">99</field>
+        <field name="response_hours">8</field>
+        <field name="resolution_hours">72</field>
+    </record>
+</odoo>

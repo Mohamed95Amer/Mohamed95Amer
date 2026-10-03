@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_facility_home" model="ir.actions.client">
+        <field name="name">Facilities Home</field>
+        <field name="tag">construction_ui.facility_home</field>
+    </record>
+
+    <record id="action_facility_my_dashboard" model="ir.actions.act_window">
+        <field name="name">My Dashboard</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="context">{"disable_toolbar": True}</field>
+    </record>
+
+    <record id="facility_asset.menu_facility_root" model="ir.ui.menu">
+        <field name="action" ref="action_facility_home"/>
+        <field name="web_icon">construction_ui,static/description/facility_icon.svg</field>
+    </record>
+
+    <menuitem id="menu_facility_home"
+              name="Overview"
+              parent="facility_asset.menu_facility_root"
+              action="action_facility_home"
+              sequence="1"/>
+
+    <menuitem id="menu_facility_my_dashboard"
+              name="My Dashboard"
+              parent="facility_asset.menu_facility_root"
+              action="action_facility_my_dashboard"
+              sequence="2"/>
+</odoo>

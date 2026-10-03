@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Certifying a claim writes certified quantities back onto the bill and
+         is what an invoice is raised from. Two signatures at any value, and a
+         third once it is large enough to matter to the month. -->
+    <record id="approval_rule_claim" model="construction.approval.rule">
+        <field name="name">Payment certificates up to 500,000</field>
+        <field name="model_id" ref="construction_progress_billing.model_construction_progress_claim"/>
+        <field name="amount_from">0</field>
+        <field name="amount_to">500000</field>
+        <field name="sequence">10</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Quantity surveyor',
+                'group_id': ref('construction_base.group_construction_commercial'),
+            }),
+            (0, 0, {
+                'sequence': 20,
+                'name': 'Project manager',
+                'group_id': ref('construction_base.group_construction_pm'),
+            }),
+        ]"/>
+    </record>
+
+    <record id="approval_rule_claim_large" model="construction.approval.rule">
+        <field name="name">Payment certificates above 500,000</field>
+        <field name="model_id" ref="construction_progress_billing.model_construction_progress_claim"/>
+        <field name="amount_from">500000</field>
+        <field name="amount_to">0</field>
+        <field name="sequence">20</field>
+        <field name="step_ids" eval="[
+            (0, 0, {
+                'sequence': 10,
+                'name': 'Quantity surveyor',
+                'group_id': ref('construction_base.group_construction_commercial'),
+            }),
+            (0, 0, {
+                'sequence': 20,
+                'name': 'Project manager',
+                'group_id': ref('construction_base.group_construction_pm'),
+            }),
+            (0, 0, {
+                'sequence': 30,
+                'name': 'Commercial manager',
+                'group_id': ref('construction_base.group_construction_manager'),
+            }),
+        ]"/>
+    </record>
+</odoo>

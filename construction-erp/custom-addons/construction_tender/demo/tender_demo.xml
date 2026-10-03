@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_bidder_a" model="res.partner">
+        <field name="name">Gulf MEP Contracting</field>
+        <field name="is_company" eval="True"/>
+    </record>
+    <record id="partner_bidder_b" model="res.partner">
+        <field name="name">Emirates Mechanical Works</field>
+        <field name="is_company" eval="True"/>
+    </record>
+
+    <record id="tender_hvac" model="construction.tender">
+        <field name="name">HVAC Installation Package</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="trade">HVAC</field>
+        <field name="description">Supply and install air handling units,
+            ductwork and controls to levels 1-12.</field>
+        <field name="closing_date" eval="(DateTime.now() + relativedelta(days=14)).strftime('%Y-%m-%d 17:00:00')"/>
+    </record>
+    <record id="tender_line_ahu" model="construction.tender.line">
+        <field name="tender_id" ref="tender_hvac"/>
+        <field name="sequence">10</field>
+        <field name="name">Air handling units — supply and install</field>
+        <field name="quantity">12</field>
+    </record>
+    <record id="tender_line_duct" model="construction.tender.line">
+        <field name="tender_id" ref="tender_hvac"/>
+        <field name="sequence">20</field>
+        <field name="name">Ductwork — galvanised, insulated</field>
+        <field name="quantity">2400</field>
+    </record>
+
+    <record id="bid_gulf" model="construction.tender.bid">
+        <field name="tender_id" ref="tender_hvac"/>
+        <field name="bidder_id" ref="partner_bidder_a"/>
+        <field name="lead_time_days">45</field>
+    </record>
+    <record id="bid_gulf_l1" model="construction.tender.bid.line">
+        <field name="bid_id" ref="bid_gulf"/>
+        <field name="tender_line_id" ref="tender_line_ahu"/>
+        <field name="unit_rate">18500</field>
+    </record>
+    <record id="bid_gulf_l2" model="construction.tender.bid.line">
+        <field name="bid_id" ref="bid_gulf"/>
+        <field name="tender_line_id" ref="tender_line_duct"/>
+        <field name="unit_rate">145</field>
+    </record>
+
+    <record id="bid_emirates" model="construction.tender.bid">
+        <field name="tender_id" ref="tender_hvac"/>
+        <field name="bidder_id" ref="partner_bidder_b"/>
+        <field name="lead_time_days">60</field>
+        <field name="notes">Controls integration excluded.</field>
+    </record>
+    <record id="bid_emirates_l1" model="construction.tender.bid.line">
+        <field name="bid_id" ref="bid_emirates"/>
+        <field name="tender_line_id" ref="tender_line_ahu"/>
+        <field name="unit_rate">17200</field>
+    </record>
+</odoo>

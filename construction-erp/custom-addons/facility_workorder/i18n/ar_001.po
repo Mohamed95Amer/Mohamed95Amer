@@ -1,0 +1,305 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260723\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-24 17:50+0000\n"
+"PO-Revision-Date: 2026-07-24 17:50+0000\n"
+"Last-Translator: Majal\n"
+"Language-Team: Majal\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: facility_workorder
+#. odoo-python
+#: code:addons/facility_workorder/models/pm_plan.py:0
+msgid "%(plan)s — %(asset)s"
+msgstr "%(plan)s — %(asset)s"
+
+#. modules: facility_floorplan, facility_workorder
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__equipment_id
+msgid "Asset"
+msgstr "أصل"
+
+#. module: facility_workorder
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__trigger_type__calendar
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Calendar"
+msgstr "التقويم"
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__checklist_ids
+#: model_terms:ir.ui.view,arch_db:construction_form.view_form_inspection_form
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_request_form_workorder_notebook
+msgid "Checklist"
+msgstr "قائمة مرجعية "
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__checklist_progress
+msgid "Checklist %"
+msgstr "نسبة قائمة التحقق"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__contractor_cost
+msgid "Contractor Cost"
+msgstr "تكلفة المقاول"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_request_form_workorder_notebook
+msgid "Costing"
+msgstr "التكاليف"
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__days
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__interval_type__days
+msgid "Days"
+msgstr "الأيام"
+
+#. module: facility_workorder
+#: model:ir.model.fields,help:facility_workorder.field_facility_job_plan__estimated_duration
+msgid "Default labour hours for requests generated from this plan."
+msgstr "ساعات العمل الافتراضية للطلبات الناتجة عن هذه الخطة."
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__done
+msgid "Done"
+msgstr "منجز"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__estimated_duration
+msgid "Estimated Duration (h)"
+msgstr "المدة التقديرية (ساعة)"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Every"
+msgstr "كل"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__meter_interval
+msgid "Every (units)"
+msgstr "كل (وحدات)"
+
+#. module: facility_workorder
+#: model:ir.actions.server,name:facility_workorder.cron_generate_pm_ir_actions_server
+msgid "Facility: generate preventive maintenance"
+msgstr "المرافق: إنشاء الصيانة الوقائية"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Generate Work Order Now"
+msgstr "إنشاء أمر عمل الآن"
+
+#. module: facility_workorder
+#: model:ir.model.fields,help:facility_workorder.field_facility_pm_plan__meter_interval
+msgid "Generate a request each time the meter advances by this many units."
+msgstr "أنشئ طلباً كلما تقدم العداد بهذا العدد من الوحدات."
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__interval_number
+msgid "Interval Number"
+msgstr "رقم الفترة"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__interval_type
+msgid "Interval Type"
+msgstr "نوع الفاصل"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__job_plan_id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__job_plan_id
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__job_plan_id
+msgid "Job Plan"
+msgstr "خطة عمل"
+
+#. module: facility_workorder
+#: model:ir.model,name:facility_workorder.model_facility_job_plan_task
+msgid "Job Plan Task"
+msgstr "مهمة خطة العمل"
+
+#. module: facility_workorder
+#: model:ir.actions.act_window,name:facility_workorder.action_job_plan
+#: model:ir.ui.menu,name:facility_workorder.menu_facility_job_plans
+msgid "Job Plans"
+msgstr "خطط العمل"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__labor_cost
+msgid "Labor Cost"
+msgstr "تكلفة العمالة"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__labor_hours
+msgid "Labor Hours"
+msgstr "ساعات العمالة"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__labor_rate
+msgid "Labor Rate"
+msgstr "سعر العمالة"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__last_triggered_value
+msgid "Last Triggered Value"
+msgstr "آخر قيمة تشغيل"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_request_form_workorder_notebook
+msgid "Load from Job Plan"
+msgstr "تحميل من خطة العمل"
+
+#. module: facility_workorder
+#: model:ir.model,name:facility_workorder.model_facility_job_plan
+msgid "Maintenance Job Plan"
+msgstr "خطة أعمال الصيانة"
+
+#. module: facility_workorder
+#: model:ir.model,name:facility_workorder.model_maintenance_request
+msgid "Maintenance Request"
+msgstr "طلب الصيانة"
+
+#. module: facility_workorder
+#: model:ir.model,name:facility_workorder.model_facility_request_task
+msgid "Maintenance Request Checklist Item"
+msgstr "بند قائمة تحقق طلب الصيانة"
+
+#. modules: facility_asset, facility_workorder
+#: model:ir.model.fields,field_description:facility_asset.field_facility_asset_meter_reading__meter_id
+#: model:ir.model.fields,field_description:facility_asset.field_maintenance_equipment__meter_ids
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__meter_id
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__trigger_type__meter
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Meter"
+msgstr "عداد"
+
+#. module: facility_workorder
+#. odoo-python
+#: code:addons/facility_workorder/models/pm_plan.py:0
+msgid "Meter at %s"
+msgstr "العداد عند %s"
+
+#. module: facility_workorder
+#. odoo-python
+#: code:addons/facility_workorder/models/pm_plan.py:0
+msgid "Meter plans need a meter and a positive interval."
+msgstr "تحتاج الخطط المبنية على العداد إلى عداد وفاصل موجب."
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__months
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__interval_type__months
+msgid "Months"
+msgstr "شهور"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__next_date
+msgid "Next Date"
+msgstr "التاريخ التالي"
+
+#. module: facility_workorder
+#: model:ir.actions.act_window,name:facility_workorder.action_pm_plan
+msgid "PM Plans"
+msgstr "خطط الصيانة الوقائية"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__parts_cost
+msgid "Parts Cost"
+msgstr "تكلفة القطع"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Plan name"
+msgstr "اسم المخطط"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__pm_plan_id
+msgid "Pm Plan"
+msgstr "خطة صيانة وقائية"
+
+#. modules: construction_ui, facility_workorder
+#. odoo-javascript
+#: model:ir.actions.client,name:construction_ui.action_workspace_pm_plans
+#: model:ir.ui.menu,name:facility_workorder.menu_facility_pm_plans
+#: code:addons/construction_ui/static/src/workspace_hub/workspace_hub.js:0
+msgid "Preventive Maintenance"
+msgstr "الصيانة الوقائية"
+
+#. module: facility_workorder
+#: model:ir.model,name:facility_workorder.model_facility_pm_plan
+msgid "Preventive Maintenance Plan"
+msgstr "خطة صيانة وقائية"
+
+#. modules: facility_floorplan, facility_workorder
+#. odoo-python
+#: code:addons/facility_floorplan/models/facility_pin.py:0
+#: model:ir.model.fields,field_description:facility_floorplan.field_facility_pin__request_id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__request_id
+msgid "Request"
+msgstr "طلب"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__request_count
+msgid "Request Count"
+msgstr "عدد الطلبات"
+
+#. module: facility_workorder
+#. odoo-python
+#: code:addons/facility_workorder/models/pm_plan.py:0
+msgid "Requests — %s"
+msgstr "الطلبات — %s"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan_task__name
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_request_task__name
+msgid "Step"
+msgstr "خطوة"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_job_plan_form
+msgid "Steps"
+msgstr "الخطوات"
+
+#. modules: construction_pin, construction_planning, facility_workorder
+#. odoo-python
+#: code:addons/construction_pin/models/construction_pin.py:0
+#: model:ir.model,name:construction_planning.model_project_task
+#: model:ir.model.fields,field_description:construction_pin.field_construction_pin__task_id
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_job_plan__task_ids
+msgid "Task"
+msgstr "المهمة"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__maintenance_team_id
+msgid "Team"
+msgstr "الفريق "
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_maintenance_request__total_cost
+msgid "Total Cost"
+msgstr "إجمالي التكلفة"
+
+#. module: facility_workorder
+#: model:ir.model.fields,field_description:facility_workorder.field_facility_pm_plan__trigger_type
+msgid "Trigger Type"
+msgstr "نوع المشغل "
+
+#. modules: construction_form, facility_workorder
+#: model:ir.model.fields.selection,name:construction_form.selection__construction_form_template__recurrence_unit__weeks
+#: model:ir.model.fields.selection,name:facility_workorder.selection__facility_pm_plan__interval_type__weeks
+msgid "Weeks"
+msgstr "أسابيع"
+
+#. modules: facility_asset, facility_workorder
+#: model:ir.ui.menu,name:facility_asset.menu_facility_requests
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_pm_plan_form
+msgid "Work Orders"
+msgstr "أوامر العمل"
+
+#. module: facility_workorder
+#: model_terms:ir.ui.view,arch_db:facility_workorder.view_job_plan_form
+msgid "e.g. AHU quarterly service"
+msgstr "مثال: صيانة ربع سنوية لوحدة مناولة الهواء"

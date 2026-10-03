@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Every template here is a "utility" message: it is about a transaction
+         the recipient is already party to. That is the cheapest category Meta
+         bills, and the one that does not need marketing opt-in. The wording
+         lives at Meta; what is stored is which fields fill the placeholders. -->
+
+    <record id="template_rfi_ball_in_court" model="whatsapp.template">
+        <field name="name">RFI — ball in your court</field>
+        <field name="template_name">rfi_ball_in_court</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="construction_rfi.model_construction_rfi"/>
+        <field name="body_params">reference,project_id.name,name,date_required</field>
+    </record>
+
+    <record id="template_defect_assigned" model="whatsapp.template">
+        <field name="name">Defect assigned to you</field>
+        <field name="template_name">defect_assigned</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="construction_defect.model_construction_defect"/>
+        <field name="body_params">reference,project_id.name,name,date_required</field>
+    </record>
+
+    <record id="template_permit_expiring" model="whatsapp.template">
+        <field name="name">Permit about to expire</field>
+        <field name="template_name">permit_expiring</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="construction_hse.model_construction_permit"/>
+        <field name="body_params">reference,project_id.name,valid_to</field>
+    </record>
+
+    <record id="template_sla_alert" model="whatsapp.template">
+        <field name="name">Work order SLA at risk or breached</field>
+        <field name="template_name">sla_alert</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="body_params">name,equipment_id.name,sla_resolution_deadline</field>
+    </record>
+
+    <record id="template_action_stuck" model="whatsapp.template">
+        <field name="name">Meeting action still open</field>
+        <field name="template_name">action_stuck</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="construction_meeting.model_construction_meeting_action"/>
+        <field name="body_params">name,meeting_id.project_id.name,deadline,carried_count</field>
+    </record>
+    <!-- An approval nobody sees is an approval nobody gives. This is the
+         message that turns a two-day cycle into a ten-minute one — and it
+         carries the value, because "please approve VO-0007" without a number
+         is a message somebody opens later. -->
+    <record id="template_approval_waiting" model="whatsapp.template">
+        <field name="name">Approval waiting for you</field>
+        <field name="template_name">approval_waiting</field>
+        <field name="category">utility</field>
+        <field name="model_id" ref="construction_base.model_construction_approval_step"/>
+        <field name="body_params">record_reference,name,amount,requested_by_id.name</field>
+    </record>
+</odoo>

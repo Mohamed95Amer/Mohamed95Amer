@@ -1,0 +1,73 @@
+# Fetch the BIM viewer's third-party libraries — Windows PowerShell.
+#
+# The same job as fetch-bim-libs.sh, which cannot run in PowerShell. Windows is
+# the likeliest place somebody meets the viewer's "3D libraries are not
+# installed" screen, because Docker Desktop is the easy way in and a .sh script
+# is not a thing you can double-click there.
+#
+# Run it from the construction-erp folder:
+#   powershell -ExecutionPolicy Bypass -File scripts\fetch-bim-libs.ps1
+#
+# On the HOST, not inside the container: docker-compose.yml mounts
+# custom-addons read-only, so the container cannot write these files.
+
+$ErrorActionPreference = "Stop"
+
+$WebIfcVersion = "0.0.77"   # MPL-2.0 - https://github.com/ThatOpen/engine_web-ifc
+$ThreeVersion  = "0.170.0"  # MIT     - https://github.com/mrdoob/three.js
+
+$Root = Split-Path -Parent $PSScriptRoot
+$Lib  = Join-Path $Root "custom-addons\construction_bim\static\lib"
+$Tmp  = Join-Path ([System.IO.Path]::GetTempPath()) ("bimlibs-" + [guid]::NewGuid())
+
+New-Item -ItemType Directory -Force -Path (Join-Path $Lib "web-ifc") | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $Lib "three")   | Out-Null
+New-Item -ItemType Directory -Force -Path $Tmp                       | Out-Null
+
+function Get-Package {
+    param($Name, $Version, $Out)
+    $url = "https://registry.npmjs.org/$Name/-/$Name-$Version.tgz"
+    Write-Host "==> $Name $Version"
+    # Progress rendering makes Invoke-WebRequest crawl on large files.
+    $previous = $ProgressPreference
+    $ProgressPreference = "SilentlyContinue"
+    try   { Invoke-WebRequest -Uri $url -OutFile $Out -UseBasicParsing }
+    finally { $ProgressPreference = $previous }
+    # tar ships with Windows 10 1803 and later; no extra tool needed.
+    tar -xzf $Out -C $Tmp
+    if ($LASTEXITCODE -ne 0) { throw "could not unpack $Name" }
+}
+
+try {
+    Get-Package "web-ifc" $WebIfcVersion (Join-Path $Tmp "web-ifc.tgz")
+    Copy-Item (Join-Path $Tmp "package\web-ifc-api-iife.js") (Join-Path $Lib "web-ifc") -Force
+    Copy-Item (Join-Path $Tmp "package\web-ifc.wasm")        (Join-Path $Lib "web-ifc") -Force
+    Copy-Item (Join-Path $Tmp "package\LICENSE.md")          (Join-Path $Lib "web-ifc") -Force
+    Remove-Item (Join-Path $Tmp "package") -Recurse -Force
+
+    Get-Package "three" $ThreeVersion (Join-Path $Tmp "three.tgz")
+    Copy-Item (Join-Path $Tmp "package\build\three.module.min.js") (Join-Path $Lib "three") -Force
+    Copy-Item (Join-Path $Tmp "package\LICENSE")                   (Join-Path $Lib "three") -Force
+    Remove-Item (Join-Path $Tmp "package") -Recurse -Force
+
+    @"
+# Vendored BIM libraries
+
+Fetched by ``scripts/fetch-bim-libs.ps1``. Not committed — see that script.
+
+| Library | Version | Licence | Source |
+|---|---|---|---|
+| web-ifc | $WebIfcVersion | MPL-2.0 | https://github.com/ThatOpen/engine_web-ifc |
+| three.js | $ThreeVersion | MIT | https://github.com/mrdoob/three.js |
+
+Both are loaded on demand by the BIM viewer, not through Odoo's asset
+bundles: a 6 MB library in ``web.assets_backend`` would be downloaded by every
+user on every page whether or not they ever open a model.
+"@ | Set-Content -Path (Join-Path $Lib "SOURCES.md") -Encoding UTF8
+
+    Write-Host ">> BIM libraries in $Lib"
+    Write-Host ">> Reload the model page in your browser. No restart needed."
+}
+finally {
+    if (Test-Path $Tmp) { Remove-Item $Tmp -Recurse -Force }
+}

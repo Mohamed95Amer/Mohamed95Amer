@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_progress_claim" model="ir.actions.report">
+        <field name="name">Payment Certificate</field>
+        <field name="model">construction.progress.claim</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_progress_billing.report_claim_document</field>
+        <field name="report_file">construction_progress_billing.report_claim_document</field>
+        <field name="binding_model_id" ref="model_construction_progress_claim"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_claim_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="claim">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>
+                            Interim Payment Certificate
+                            No. <span t-field="claim.sequence_no"/>
+                        </h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="claim.project_id"/><br/>
+                                <strong>Client:</strong>
+                                <span t-field="claim.project_id.client_id"/><br/>
+                                <strong>Reference:</strong>
+                                <span t-field="claim.reference"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Period to:</strong>
+                                <span t-field="claim.date_to"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-end">Contract Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Cumulative Qty</th>
+                                    <th class="text-end">%</th>
+                                    <th class="text-end">Cumulative Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="claim.line_ids" t-as="line">
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-end" t-field="line.qty_contract"/>
+                                    <td class="text-end"
+                                        t-field="line.unit_rate"/>
+                                    <td class="text-end" t-field="line.qty_cumulative"/>
+                                    <td class="text-end"
+                                        t-esc="'%.0f%%' % line.pct_complete"/>
+                                    <td class="text-end"
+                                        t-field="line.amount_cumulative"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row">
+                            <div class="col-6 offset-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Work done to date</td>
+                                        <td class="text-end"
+                                            t-field="claim.amount_work_done_cumulative"/>
+                                    </tr>
+                                    <tr>
+                                        <td>Less retention</td>
+                                        <td class="text-end"
+                                            t-field="claim.retention_cumulative"/>
+                                    </tr>
+                                    <tr>
+                                        <td>Less previously certified (net)</td>
+                                        <td class="text-end">
+                                            <span t-esc="claim.amount_net_cumulative - claim.amount_due"
+                                                  t-options="{'widget': 'monetary', 'display_currency': claim.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <td><strong>Net amount due this certificate</strong></td>
+                                        <td class="text-end">
+                                            <strong t-field="claim.amount_due"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="meeting_progress_13" model="construction.meeting">
+        <field name="name">Weekly progress meeting no. 13</field>
+        <field name="project_id" ref="construction_base.project_demo_alnoor"/>
+        <field name="meeting_type">progress</field>
+        <field name="series">Weekly Progress</field>
+        <field name="location">Site office, Al Noor Tower</field>
+        <field name="minutes">&lt;p&gt;Substructure complete to grid F. Concrete
+            supply confirmed for the coming pour. Consultant to confirm the
+            revised lap detail.&lt;/p&gt;</field>
+    </record>
+    <record id="meeting_att_1" model="construction.meeting.attendee">
+        <field name="meeting_id" ref="meeting_progress_13"/>
+        <field name="name">Site Manager</field>
+        <field name="organisation">Majal</field>
+    </record>
+    <record id="meeting_att_2" model="construction.meeting.attendee">
+        <field name="meeting_id" ref="meeting_progress_13"/>
+        <field name="name">Resident Engineer</field>
+        <field name="organisation">Horizon Engineering Consultants</field>
+    </record>
+    <record id="meeting_action_lap" model="construction.meeting.action">
+        <field name="meeting_id" ref="meeting_progress_13"/>
+        <field name="name">Confirm revised rebar lap detail at grid F</field>
+        <field name="deadline" eval="(DateTime.today() - relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+        <field name="carried_count">3</field>
+    </record>
+    <record id="meeting_action_access" model="construction.meeting.action">
+        <field name="meeting_id" ref="meeting_progress_13"/>
+        <field name="name">Provide crane access route for the tower crane base</field>
+        <field name="deadline" eval="(DateTime.today() + relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+    </record>
+</odoo>

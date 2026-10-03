@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_daily_log" model="ir.actions.report">
+        <field name="name">Daily Site Log</field>
+        <field name="model">construction.daily.log</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">construction_daily_log.report_daily_log_document</field>
+        <field name="report_file">construction_daily_log.report_daily_log_document</field>
+        <field name="binding_model_id" ref="model_construction_daily_log"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_daily_log_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="log">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Daily Site Log</h2>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Project:</strong>
+                                <span t-field="log.project_id"/><br/>
+                                <strong>Date:</strong>
+                                <span t-field="log.log_date"/><br/>
+                                <strong>Prepared by:</strong>
+                                <span t-field="log.prepared_by_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Weather:</strong>
+                                <span t-field="log.weather"/>
+                                (<span t-field="log.temperature"/> °C)<br/>
+                                <strong>Total headcount:</strong>
+                                <span t-field="log.total_headcount"/><br/>
+                                <strong>Delay hours:</strong>
+                                <span t-field="log.total_delay_hours"/>
+                            </div>
+                        </div>
+
+                        <h4>Manpower</h4>
+                        <table class="table table-sm">
+                            <thead><tr><th>Trade</th><th>Contractor</th>
+                                <th class="text-end">Headcount</th>
+                                <th class="text-end">Hours</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="log.manpower_ids" t-as="m">
+                                    <td t-field="m.trade"/>
+                                    <td t-field="m.contractor_id"/>
+                                    <td class="text-end" t-field="m.headcount"/>
+                                    <td class="text-end" t-field="m.hours"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 t-if="log.equipment_ids">Equipment</h4>
+                        <table class="table table-sm" t-if="log.equipment_ids">
+                            <thead><tr><th>Equipment</th>
+                                <th class="text-end">Qty</th>
+                                <th class="text-end">Hours</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="log.equipment_ids" t-as="e">
+                                    <td t-field="e.name"/>
+                                    <td class="text-end" t-field="e.quantity"/>
+                                    <td class="text-end" t-field="e.hours"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 t-if="log.activity_ids">Work Activities</h4>
+                        <ul t-if="log.activity_ids">
+                            <li t-foreach="log.activity_ids" t-as="a">
+                                <span t-field="a.description"/>
+                                <t t-if="a.location"> — <span t-field="a.location"/></t>
+                            </li>
+                        </ul>
+
+                        <h4 t-if="log.delay_ids">Delays / Disruptions</h4>
+                        <table class="table table-sm" t-if="log.delay_ids">
+                            <thead><tr><th>Cause</th><th>Category</th>
+                                <th class="text-end">Hours Lost</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="log.delay_ids" t-as="d">
+                                    <td t-field="d.cause"/>
+                                    <td t-field="d.category"/>
+                                    <td class="text-end" t-field="d.hours_lost"/>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div t-if="log.notes">
+                            <h4>Notes</h4>
+                            <p t-field="log.notes"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

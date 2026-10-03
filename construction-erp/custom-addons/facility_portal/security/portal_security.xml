@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- An occupant sees the requests they raised, and nothing else. Scoping is
+         on the reporting partner rather than the internal user, because a
+         portal user has no employee record to match against. -->
+    <record id="rule_portal_facility_request" model="ir.rule">
+        <field name="name">Portal: own facility requests</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('portal_reporter_id', 'child_of', user.partner_id.commercial_partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

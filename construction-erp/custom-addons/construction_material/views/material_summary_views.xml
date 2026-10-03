@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_material_summary_list" model="ir.ui.view">
+        <field name="name">construction.material.summary.list</field>
+        <field name="model">construction.material.summary</field>
+        <field name="arch" type="xml">
+            <list string="Material Position" create="false"
+                  decoration-danger="qty_budget &gt; 0 and variance_percent &gt; 5"
+                  decoration-warning="waste_percent &gt; 5">
+                <field name="project_id"/>
+                <field name="product_id"/>
+                <field name="uom_id" string="UoM"/>
+                <field name="qty_budget" sum="Budgeted"/>
+                <field name="qty_consumed" sum="Consumed"/>
+                <field name="qty_wasted" sum="Wasted"/>
+                <field name="qty_on_hand" sum="On Site"/>
+                <field name="qty_variance" sum="Variance"
+                       decoration-danger="qty_variance &gt; 0"
+                       decoration-success="qty_variance &lt; 0"/>
+                <field name="variance_percent" string="Var %"
+                       optional="show"/>
+                <field name="waste_percent" string="Waste %"/>
+                <field name="consumed_value" sum="Consumed value" optional="show"/>
+                <field name="waste_value" sum="Waste value"/>
+                <field name="on_hand_value" sum="On site value" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <button name="action_open_moves" type="object" icon="fa-truck"
+                        title="Issues behind this line"/>
+                <button name="action_open_waste" type="object"
+                        icon="fa-trash-o" title="Waste behind this line"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_material_summary_search" model="ir.ui.view">
+        <field name="name">construction.material.summary.search</field>
+        <field name="model">construction.material.summary</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="project_id"/>
+                <field name="product_id"/>
+                <filter name="over_budget" string="Over Budget"
+                        domain="[('qty_budget', '&gt;', 0), ('qty_variance', '&gt;', 0)]"/>
+                <filter name="has_waste" string="Has Waste"
+                        domain="[('qty_wasted', '&gt;', 0)]"/>
+                <filter name="in_store" string="Still On Site"
+                        domain="[('qty_on_hand', '&gt;', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_product" string="Product"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_material_summary" model="ir.actions.act_window">
+        <field name="name">Material Position</field>
+        <field name="res_model">construction.material.summary</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to reconcile yet</p>
+            <p>Once a BOQ names products and materials are issued from the site
+               store, this compares what was priced against what was actually
+               consumed and lost.</p>
+        </field>
+    </record>
+</odoo>

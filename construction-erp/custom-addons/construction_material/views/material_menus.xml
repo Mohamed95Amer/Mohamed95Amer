@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_material_root" name="Materials"
+              parent="construction_base.menu_construction_root" sequence="42"/>
+    <menuitem id="menu_material_issues" name="Material Issues"
+              parent="menu_material_root" action="action_material_issue" sequence="10"/>
+    <menuitem id="menu_site_deliveries" name="Site Deliveries"
+              parent="menu_material_root" action="action_site_deliveries" sequence="15"/>
+    <menuitem id="menu_material_position" name="Material Position"
+              parent="menu_material_root" action="action_material_summary" sequence="20"/>
+    <menuitem id="menu_material_control" name="Material Control"
+              parent="menu_material_root" action="action_project_material" sequence="25"/>
+    <menuitem id="menu_material_waste" name="Waste &amp; Scrap"
+              parent="menu_material_root" action="action_construction_scrap" sequence="30"/>
+</odoo>

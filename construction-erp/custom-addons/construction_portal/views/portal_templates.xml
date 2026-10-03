@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add construction cards to the portal home. -->
+    <template id="portal_my_home_construction"
+              name="Portal: construction entries"
+              inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">RFIs</t>
+                <t t-set="url" t-value="'/my/rfis'"/>
+                <t t-set="text">Requests for information awaiting you</t>
+                <t t-set="placeholder_count" t-value="'rfi_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Defects</t>
+                <t t-set="url" t-value="'/my/defects'"/>
+                <t t-set="text">Punch / snagging items assigned to you</t>
+                <t t-set="placeholder_count" t-value="'defect_count'"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Subcontracts</t>
+                <t t-set="url" t-value="'/my/subcontracts'"/>
+                <t t-set="text">Your subcontracts and payment certificates</t>
+                <t t-set="placeholder_count" t-value="'subcontract_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- RFI list -->
+    <template id="portal_my_rfis" name="My RFIs">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">RFIs</t>
+            </t>
+            <t t-if="not rfis">
+                <p class="alert alert-info">There are no RFIs for you yet.</p>
+            </t>
+            <t t-if="rfis" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Subject</th>
+                        <th>Project</th>
+                        <th>Due</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="rfis" t-as="rfi">
+                        <td>
+                            <a t-attf-href="/my/rfi/{{ rfi.id }}">
+                                <span class="o_majal_ref" t-field="rfi.reference"/>
+                            </a>
+                        </td>
+                        <td><span t-field="rfi.name"/></td>
+                        <td><span t-field="rfi.project_id.name"/></td>
+                        <td><span t-field="rfi.date_required"/></td>
+                        <td><span class="badge rounded-pill text-bg-info"
+                                  t-field="rfi.state"/></td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- RFI detail -->
+    <template id="portal_rfi_page" name="RFI">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span class="o_majal_ref" t-field="rfi.reference"/> —
+                        <span t-field="rfi.name"/>
+                    </h3>
+                    <dl class="row">
+                        <dt class="col-sm-3">Project</dt>
+                        <dd class="col-sm-9"><span t-field="rfi.project_id.name"/></dd>
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9"><span t-field="rfi.state"/></dd>
+                        <dt class="col-sm-3">Due</dt>
+                        <dd class="col-sm-9"><span t-field="rfi.date_required"/></dd>
+                    </dl>
+                    <h5>Question</h5>
+                    <p t-field="rfi.question"/>
+                    <t t-if="rfi.answer">
+                        <h5>Answer</h5>
+                        <p t-field="rfi.answer"/>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Defect list -->
+    <template id="portal_my_defects" name="My Defects">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Defects</t>
+            </t>
+            <t t-if="not defects">
+                <p class="alert alert-info">No defects assigned to you.</p>
+            </t>
+            <t t-if="defects" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="defects" t-as="defect">
+                        <td>
+                            <a t-attf-href="/my/defect/{{ defect.id }}">
+                                <span class="o_majal_ref" t-field="defect.reference"/>
+                            </a>
+                        </td>
+                        <td><span t-field="defect.name"/></td>
+                        <td><span t-field="defect.location"/></td>
+                        <td><span t-field="defect.severity"/></td>
+                        <td><span class="badge rounded-pill text-bg-secondary"
+                                  t-field="defect.state"/></td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- Defect detail -->
+    <template id="portal_defect_page" name="Defect">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span class="o_majal_ref" t-field="defect.reference"/> —
+                        <span t-field="defect.name"/>
+                    </h3>
+                    <dl class="row">
+                        <dt class="col-sm-3">Project</dt>
+                        <dd class="col-sm-9"><span t-field="defect.project_id.name"/></dd>
+                        <dt class="col-sm-3">Location</dt>
+                        <dd class="col-sm-9"><span t-field="defect.location"/></dd>
+                        <dt class="col-sm-3">Severity</dt>
+                        <dd class="col-sm-9"><span t-field="defect.severity"/></dd>
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9"><span t-field="defect.state"/></dd>
+                    </dl>
+                    <p t-field="defect.description"/>
+                    <t t-if="defect.state in ('open', 'in_progress', 'reopened')">
+                        <form t-attf-action="/my/defect/{{ defect.id }}/ready"
+                              method="post">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <button type="submit" class="btn btn-primary">
+                                Mark ready for inspection
+                            </button>
+                        </form>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Subcontract list -->
+    <template id="portal_my_subcontracts" name="My Subcontracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Subcontracts</t>
+            </t>
+            <t t-if="not subcontracts">
+                <p class="alert alert-info">You have no subcontracts.</p>
+            </t>
+            <t t-if="subcontracts" t-call="portal.portal_table">
+                <thead>
+                    <tr>
+                        <th>Subcontract</th>
+                        <th>Project</th>
+                        <th>Trade</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="subcontracts" t-as="sub">
+                        <td>
+                            <a t-attf-href="/my/subcontract/{{ sub.id }}">
+                                <span t-field="sub.name"/>
+                            </a>
+                        </td>
+                        <td><span t-field="sub.project_id.name"/></td>
+                        <td><span t-field="sub.trade"/></td>
+                        <td><span class="badge rounded-pill text-bg-secondary"
+                                  t-field="sub.state"/></td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- Subcontract detail -->
+    <template id="portal_subcontract_page" name="Subcontract">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-12">
+                    <h3><span t-field="subcontract.name"/></h3>
+                    <dl class="row">
+                        <dt class="col-sm-3">Project</dt>
+                        <dd class="col-sm-9"><span t-field="subcontract.project_id.name"/></dd>
+                        <dt class="col-sm-3">Trade</dt>
+                        <dd class="col-sm-9"><span t-field="subcontract.trade"/></dd>
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9"><span t-field="subcontract.state"/></dd>
+                    </dl>
+                    <p t-field="subcontract.description"/>
+                    <h5>Payment certificates</h5>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Cert</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="subcontract.payment_ids" t-as="pay">
+                                <td><span class="o_majal_ref" t-field="pay.reference"/></td>
+                                <td><span t-field="pay.date"/></td>
+                                <td><span t-field="pay.state"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

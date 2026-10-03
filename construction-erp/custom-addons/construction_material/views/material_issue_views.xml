@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_material_issue_form" model="ir.ui.view">
+        <field name="name">construction.material.issue.form</field>
+        <field name="model">construction.material.issue</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm Issue"
+                            class="btn-primary" invisible="state != 'draft'"
+                            confirm="Confirm this issue? The quantities will leave the site store."/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state != 'draft'"/>
+                    <button name="action_reset" type="object" string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Blockwork to level 5"/></h1>
+                        <h3 class="text-muted"><field name="reference" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="task_id"/>
+                            <field name="issued_to_id"/>
+                        </group>
+                        <group>
+                            <field name="issue_date"/>
+                            <field name="requested_by_id"/>
+                            <field name="total_value"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Materials" name="materials">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="boq_line_id"/>
+                                    <field name="qty_on_hand" string="On Site"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="unit_cost"/>
+                                    <field name="value" sum="Value"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <field name="note" placeholder="Docket notes..."/>
+                        </page>
+                        <page string="Stock Moves" name="moves"
+                              invisible="state != 'done'">
+                            <field name="move_ids" readonly="1">
+                                <list>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="location_id"/>
+                                    <field name="location_dest_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_material_issue_list" model="ir.ui.view">
+        <field name="name">construction.material.issue.list</field>
+        <field name="model">construction.material.issue</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'">
+                <field name="reference"/>
+                <field name="issue_date"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="task_id" optional="show"/>
+                <field name="issued_to_id" optional="show"/>
+                <field name="total_value" sum="Value"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_material_issue_search" model="ir.ui.view">
+        <field name="name">construction.material.issue.search</field>
+        <field name="model">construction.material.issue</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="project_id"/>
+                <field name="issued_to_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="done" string="Issued" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_project" string="Project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_date" string="Issue Date"
+                            context="{'group_by': 'issue_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_material_issue" model="ir.actions.act_window">
+        <field name="name">Material Issues</field>
+        <field name="res_model">construction.material.issue</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Record your first issue</p>
+            <p>A material issue takes stock out of the site store and into the
+               works, against a BOQ item so consumption can be measured against
+               what was priced.</p>
+        </field>
+    </record>
+</odoo>

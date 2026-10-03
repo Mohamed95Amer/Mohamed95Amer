@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The model's measurement against the bill's. Shown on the line rather
+         than in a report, because the moment it is worth knowing is while
+         somebody is looking at the item. Optional columns: a bill with no
+         model attached must not grow three empty columns. -->
+    <record id="view_boq_form_bim" model="ir.ui.view">
+        <field name="name">construction.boq.form.bim</field>
+        <field name="model">construction.boq</field>
+        <field name="inherit_id" ref="construction_boq.view_boq_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']/list/field[@name='quantity']"
+                   position="after">
+                <field name="bim_measure" optional="hide"/>
+                <field name="bim_quantity" string="Model Qty" optional="hide"/>
+                <field name="bim_variance" string="Variance" optional="hide"
+                       decoration-danger="bim_variance &lt; 0"
+                       decoration-success="bim_variance &gt; 0"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_boq_line_list_bim" model="ir.ui.view">
+        <field name="name">construction.boq.line.list.bim</field>
+        <field name="model">construction.boq.line</field>
+        <field name="inherit_id" ref="construction_boq.view_boq_line_list"/>
+        <field name="arch" type="xml">
+            <field name="quantity" position="after">
+                <field name="bim_quantity" string="Model Qty" optional="hide"/>
+                <field name="bim_variance" string="Variance" optional="hide"
+                       decoration-danger="bim_variance &lt; 0"
+                       decoration-success="bim_variance &gt; 0"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_boq_line_search_bim" model="ir.ui.view">
+        <field name="name">construction.boq.line.search.bim</field>
+        <field name="model">construction.boq.line</field>
+        <field name="inherit_id" ref="construction_boq.view_boq_line_search"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <filter name="bim_short" string="Model Under Bill"
+                        domain="[('bim_element_count', '&gt;', 0),
+                                 ('bim_variance', '&lt;', 0)]"
+                        help="Linked to a model that measures less than the bill."/>
+                <filter name="bim_over" string="Model Over Bill"
+                        domain="[('bim_element_count', '&gt;', 0),
+                                 ('bim_variance', '&gt;', 0)]"/>
+            </search>
+        </field>
+    </record>
+</odoo>

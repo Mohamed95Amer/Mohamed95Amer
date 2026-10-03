@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_boq_user,construction.boq user,model_construction_boq,construction_base.group_construction_user,1,0,0,0
+access_boq_commercial,construction.boq commercial,model_construction_boq,construction_base.group_construction_commercial,1,1,1,1
+access_boq_section_user,construction.boq.section user,model_construction_boq_section,construction_base.group_construction_user,1,0,0,0
+access_boq_section_commercial,construction.boq.section commercial,model_construction_boq_section,construction_base.group_construction_commercial,1,1,1,1
+access_boq_line_user,construction.boq.line user,model_construction_boq_line,construction_base.group_construction_user,1,0,0,0
+access_boq_line_commercial,construction.boq.line commercial,model_construction_boq_line,construction_base.group_construction_commercial,1,1,1,1
+access_boq_import,construction.boq.import,model_construction_boq_import,construction_base.group_construction_commercial,1,1,1,1

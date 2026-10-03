@@ -161,7 +161,16 @@ export const vendorOnboardingSchema = z
     }
   });
 
-export const productUpsertSchema = z
+/**
+ * The product fields themselves, without the cross-field rules.
+ *
+ * Split out so the bulk CSV importer can pick the subset a spreadsheet
+ * supplies (see bulkProductRowSchema) while keeping every bound stated once.
+ * A limit that disagreed between the form and the importer would be a limit
+ * the database rejects at insert time, after the vendor was told the file is
+ * fine.
+ */
+const productFields = z
   .object({
     id: z.string().uuid().optional(),
     name: z.string().min(2).max(200),
@@ -215,7 +224,9 @@ export const productUpsertSchema = z
     certificate_number: z.string().max(120).optional().nullable(),
     hallmark_info: z.string().max(200).optional().nullable(),
     submit_for_approval: z.boolean().optional().default(false),
-  })
+  });
+
+export const productUpsertSchema = productFields
   .superRefine((product, ctx) => {
     if (product.vat_rate_bps === 0 && !product.vat_choice_confirmed) {
       ctx.addIssue({
@@ -257,6 +268,57 @@ export const productUpsertSchema = z
       });
     }
   });
+
+/**
+ * One row of a bulk CSV import.
+ *
+ * A spreadsheet supplies only the columns below. Everything else is left to
+ * the database defaults on purpose:
+ *
+ *  - `images` — photos are added per product afterwards, not by URL from a
+ *    spreadsheet.
+ *  - `vat_rate_bps` — defaults to 500 (5%). Zero-rating requires an explicit
+ *    confirmation that it is appropriate for the business, which is a per
+ *    product judgement, not something to tick once for a whole file.
+ *  - `vendor_premium`, `vendor_rate_adjustment_per_gram`, `assay_fineness`,
+ *    `making_charge_offer_ends_at` — zero, none, or set per product later.
+ *
+ * There is no `submit_for_approval`: a product with no photograph and no
+ * description cannot pass the catalogue integrity gate, and the products
+ * table has a trigger that rejects a pending_approval row which fails it. So
+ * a CSV import always creates drafts.
+ */
+export const bulkProductRowSchema = productFields
+  .pick({
+    name: true,
+    description: true,
+    category: true,
+    karat: true,
+    weight_grams: true,
+    quantity: true,
+    making_charge: true,
+    making_charge_discount_percent: true,
+    certificate_fee: true,
+    stone_value: true,
+    certificate_number: true,
+    hallmark_info: true,
+  })
+  .superRefine((row, ctx) => {
+    // The same rule the form enforces, and the database repeats.
+    if (row.making_charge_discount_percent > 0 && row.making_charge <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["making_charge_discount_percent"],
+        message: "A making-charge discount requires a making charge above zero",
+      });
+    }
+  });
+
+export const bulkProductUploadSchema = z.object({
+  csv: z.string().min(1).max(1_000_000),
+  // A dry run reports what would happen and writes nothing.
+  commit: z.boolean().optional().default(false),
+});
 
 export const deliveryCompanyOnboardingSchema = z.object({
   company_name: z.string().trim().min(2).max(200),

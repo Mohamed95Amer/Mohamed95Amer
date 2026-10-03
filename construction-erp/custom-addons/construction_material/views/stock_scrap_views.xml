@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_scrap_form_construction" model="ir.ui.view">
+        <field name="name">stock.scrap.form.construction</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <field name="origin" position="after">
+                <field name="project_id"/>
+                <field name="waste_reason"/>
+                <field name="waste_note"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_scrap_list_construction" model="ir.ui.view">
+        <field name="name">stock.scrap.list.construction</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="project_id" optional="show"/>
+                <field name="waste_reason" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_construction_scrap" model="ir.actions.act_window">
+        <field name="name">Waste &amp; Scrap</field>
+        <field name="res_model">stock.scrap</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('project_id', '!=', False)]</field>
+        <field name="context">{'search_default_group_project': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No site waste recorded</p>
+            <p>Recording waste against a project and a reason turns a single
+               loss figure into something a site can act on.</p>
+        </field>
+    </record>
+
+    <record id="view_scrap_search_construction" model="ir.ui.view">
+        <field name="name">stock.scrap.search.construction</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_search_view"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="project_id"/>
+                <filter name="group_project" string="Project"
+                        context="{'group_by': 'project_id'}"/>
+                <filter name="group_reason" string="Waste Reason"
+                        context="{'group_by': 'waste_reason'}"/>
+            </field>
+        </field>
+    </record>
+</odoo>
