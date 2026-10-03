@@ -21,25 +21,23 @@ interface CheckResult {
 /** Mirrors BULK_MAX_BYTES on the server; checked here only to fail fast. */
 const MAX_BYTES = 1_000_000;
 
-const ERROR_TEXT: Record<string, string> = {
-  unauthorized: "Your session has expired. Sign in again.",
-  no_vendor: "Your vendor account could not be found.",
-  vendor_not_approved:
-    "Your vendor account is not approved yet, so products cannot be submitted for approval. " +
-    "Upload them as drafts for now.",
-  rate_limited: "Too many bulk uploads in the last hour. Try again later.",
-  invalid_json: "The upload could not be read. Try again.",
-  invalid_input: "The file is too large or empty.",
-  insert_failed: "The products could not be created. Nothing was saved.",
-};
 
-export function BulkUploadClient({
-  vendorApproved,
-  maxRows,
-}: {
-  vendorApproved: boolean;
-  maxRows: number;
-}) {
+export function BulkUploadClient({ maxRows, arabic = false }: { maxRows: number; arabic?: boolean }) {
+  const t = (en: string, ar: string) => (arabic ? ar : en);
+  const errorText: Record<string, string> = {
+    unauthorized: t("Your session has expired. Sign in again.", "انتهت صلاحية الجلسة. سجّل الدخول من جديد."),
+    no_vendor: t("Your vendor account could not be found.", "لم يتم العثور على حساب متجرك."),
+    rate_limited: t(
+      "Too many bulk uploads in the last hour. Try again later.",
+      "عدد كبير من عمليات الرفع خلال الساعة الماضية. حاول لاحقًا.",
+    ),
+    invalid_json: t("The upload could not be read. Try again.", "تعذّر قراءة الملف المرفوع. حاول مرة أخرى."),
+    invalid_input: t("The file is too large or empty.", "الملف كبير جدًا أو فارغ."),
+    insert_failed: t(
+      "The products could not be created. Nothing was saved.",
+      "تعذّر إنشاء المنتجات. لم يتم حفظ أي شيء.",
+    ),
+  };
   const router = useRouter();
   const fileInput = useRef<HTMLInputElement>(null);
 
@@ -47,7 +45,6 @@ export function BulkUploadClient({
   const [csv, setCsv] = useState<string | null>(null);
   const [result, setResult] = useState<CheckResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [submitForApproval, setSubmitForApproval] = useState(false);
   const [busy, setBusy] = useState<"check" | "commit" | null>(null);
   const [done, setDone] = useState<{ count: number; status: string } | null>(null);
 
@@ -72,7 +69,7 @@ export function BulkUploadClient({
     if (file.size > MAX_BYTES) {
       setCsv(null);
       setFileName(file.name);
-      setError(`That file is ${(file.size / 1_000_000).toFixed(1)} MB. The limit is 1 MB.`);
+      setError(t(`That file is ${(file.size / 1_000_000).toFixed(1)} MB. The limit is 1 MB.`, `حجم الملف ${(file.size / 1_000_000).toFixed(1)} ميجابايت. الحد الأقصى 1 ميجابايت.`));
       return;
     }
     const text = await file.text();
@@ -88,12 +85,12 @@ export function BulkUploadClient({
       const res = await fetch("/api/vendor/products/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ csv: text, commit, submit_for_approval: submitForApproval }),
+        body: JSON.stringify({ csv: text, commit }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) {
         const key = typeof body.error === "string" ? body.error : "";
-        setError(ERROR_TEXT[key] ?? (typeof body.message === "string" ? body.message : "The upload failed."));
+        setError(errorText[key] ?? (typeof body.message === "string" ? body.message : t("The upload failed.", "فشل الرفع.")));
         return;
       }
       if (body.committed) {
@@ -104,7 +101,7 @@ export function BulkUploadClient({
       }
       setResult(body as CheckResult);
     } catch {
-      setError("The upload could not be sent. Check your connection and try again.");
+      setError(t("The upload could not be sent. Check your connection and try again.", "تعذّر إرسال الملف. تحقق من الاتصال وحاول مرة أخرى."));
     } finally {
       setBusy(null);
     }
@@ -115,19 +112,20 @@ export function BulkUploadClient({
     return (
       <div className="card mt-8 p-6">
         <h2 className="font-serif text-xl">
-          {done.count} {done.count === 1 ? "product" : "products"} created
+          {t(`${done.count} ${done.count === 1 ? "product" : "products"} created`, `تم إنشاء ${done.count} منتج`)}
         </h2>
         <p className="text-sm text-ink-muted mt-1">
-          {done.status === "pending_approval"
-            ? "They have been submitted for admin approval."
-            : "They were saved as drafts. Open each one to add photos, then submit it for approval."}
+          {t(
+            "They were saved as drafts. Open each one to add photos and a description, then submit it for approval.",
+            "تم حفظها كمسودات. افتح كل منتج لإضافة الصور والوصف ثم أرسله للمراجعة.",
+          )}
         </p>
         <div className="mt-4 flex gap-3">
           <button type="button" className="btn-primary" onClick={() => router.push("/vendor/products")}>
-            View my products
+            {t("View my products", "عرض منتجاتي")}
           </button>
           <button type="button" className="btn-ghost" onClick={reset}>
-            Upload another file
+            {t("Upload another file", "رفع ملف آخر")}
           </button>
         </div>
       </div>
@@ -141,7 +139,7 @@ export function BulkUploadClient({
     <div className="card mt-8 p-6">
       <div className="flex flex-wrap items-end gap-4">
         <div className="grow">
-          <label className="label" htmlFor="bulk-file">CSV file</label>
+          <label className="label" htmlFor="bulk-file">{t("CSV file", "ملف CSV")}</label>
           <input
             id="bulk-file"
             ref={fileInput}
@@ -152,15 +150,18 @@ export function BulkUploadClient({
             onChange={(e) => onPick(e.target.files?.[0])}
           />
           <p className="text-xs text-ink-muted mt-1">
-            One row per product, up to {maxRows} rows. Checked before anything is created.
+            {t(
+              `One row per product, up to ${maxRows} rows. Checked before anything is created.`,
+              `صف واحد لكل منتج، حتى ${maxRows} صفًا. يتم التحقق قبل إنشاء أي منتج.`,
+            )}
           </p>
         </div>
         <a className="btn-ghost" href="/api/vendor/products/bulk" download>
-          Download template
+          {t("Download template", "تنزيل القالب")}
         </a>
       </div>
 
-      {busy === "check" && <p className="text-sm text-ink-muted mt-4">Checking {fileName}…</p>}
+      {busy === "check" && <p className="text-sm text-ink-muted mt-4">{t(`Checking ${fileName}…`, `جارٍ التحقق من ${fileName}…`)}</p>}
 
       {error && (
         <div className="mt-4 rounded-md border border-signal-err/30 bg-signal-err/5 p-4">
@@ -172,19 +173,24 @@ export function BulkUploadClient({
       {issues.length > 0 && (
         <div className="mt-6">
           <h3 className="font-medium text-signal-err">
-            {issues.length === 1 ? "1 problem" : `${issues.length} problems`} found — nothing was created
+            {t(
+              `${issues.length === 1 ? "1 problem" : `${issues.length} problems`} found — nothing was created`,
+              `تم العثور على ${issues.length} مشكلة — لم يتم إنشاء أي منتج`,
+            )}
           </h3>
           <p className="text-sm text-ink-muted mt-1">
-            Fix these rows in your spreadsheet, save it again, and upload it once more. Row numbers
-            match the rows in your file.
+            {t(
+              "Fix these rows in your spreadsheet, save it again, and upload it once more. Row numbers match the rows in your file.",
+              "صحّح هذه الصفوف في جدول البيانات، واحفظه مرة أخرى، ثم ارفعه من جديد. أرقام الصفوف مطابقة لصفوف ملفك.",
+            )}
           </p>
           <div className="card mt-3 overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-bone-soft text-ink-muted">
                 <tr>
-                  <th className="px-4 py-2 text-left w-20">Row</th>
-                  <th className="px-4 py-2 text-left w-40">Column</th>
-                  <th className="px-4 py-2 text-left">Problem</th>
+                  <th className="px-4 py-2 text-start w-20">{t("Row", "الصف")}</th>
+                  <th className="px-4 py-2 text-start w-40">{t("Column", "العمود")}</th>
+                  <th className="px-4 py-2 text-start">{t("Problem", "المشكلة")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,7 +206,10 @@ export function BulkUploadClient({
           </div>
           {issues.length > 100 && (
             <p className="text-sm text-ink-muted mt-2">
-              Showing the first 100 of {issues.length}. Fix these and upload again to see the rest.
+              {t(
+                `Showing the first 100 of ${issues.length}. Fix these and upload again to see the rest.`,
+                `يتم عرض أول 100 من ${issues.length}. صحّحها وارفع الملف مرة أخرى لرؤية الباقي.`,
+              )}
             </p>
           )}
         </div>
@@ -210,10 +219,16 @@ export function BulkUploadClient({
       {result?.ok && !result.committed && (
         <div className="mt-6">
           <h3 className="font-medium text-signal-ok">
-            {readyCount} {readyCount === 1 ? "product is" : "products are"} ready to create
+            {t(
+              `${readyCount} ${readyCount === 1 ? "product is" : "products are"} ready to create`,
+              `${readyCount} منتج جاهز للإنشاء`,
+            )}
           </h3>
           <p className="text-sm text-ink-muted mt-1">
-            No products have been created yet. Check the first few rows below, then confirm.
+            {t(
+              "No products have been created yet. Check the first few rows below, then confirm.",
+              "لم يتم إنشاء أي منتج بعد. راجع الصفوف الأولى أدناه ثم أكّد.",
+            )}
           </p>
 
           {result.preview && result.preview.length > 0 && (
@@ -221,12 +236,12 @@ export function BulkUploadClient({
               <table className="w-full text-sm">
                 <thead className="bg-bone-soft text-ink-muted">
                   <tr>
-                    <th className="px-4 py-2 text-left">Row</th>
-                    <th className="px-4 py-2 text-left">Name</th>
-                    <th className="px-4 py-2 text-left">Category</th>
-                    <th className="px-4 py-2 text-right">Karat</th>
-                    <th className="px-4 py-2 text-right">Weight (g)</th>
-                    <th className="px-4 py-2 text-right">Qty</th>
+                    <th className="px-4 py-2 text-start">{t("Row", "الصف")}</th>
+                    <th className="px-4 py-2 text-start">{t("Name", "الاسم")}</th>
+                    <th className="px-4 py-2 text-start">{t("Category", "الفئة")}</th>
+                    <th className="px-4 py-2 text-end">{t("Karat", "العيار")}</th>
+                    <th className="px-4 py-2 text-end">{t("Weight (g)", "الوزن (غ)")}</th>
+                    <th className="px-4 py-2 text-end">{t("Qty", "الكمية")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -246,32 +261,16 @@ export function BulkUploadClient({
           )}
           {result.preview && readyCount > result.preview.length && (
             <p className="text-sm text-ink-muted mt-2">
-              Showing {result.preview.length} of {readyCount} rows.
+              {t(`Showing ${result.preview.length} of ${readyCount} rows.`, `يتم عرض ${result.preview.length} من ${readyCount} صفًا.`)}
             </p>
           )}
 
-          <label className="mt-4 flex items-start gap-2 text-sm">
-            <input
-              type="checkbox"
-              className="mt-0.5"
-              checked={submitForApproval}
-              disabled={!vendorApproved}
-              onChange={(e) => setSubmitForApproval(e.target.checked)}
-            />
-            <span>
-              Submit all of them for admin approval straight away.
-              {!vendorApproved && (
-                <span className="block text-ink-muted">
-                  Available once your vendor account is approved. For now they will be saved as drafts.
-                </span>
-              )}
-              {vendorApproved && (
-                <span className="block text-ink-muted">
-                  Otherwise they are saved as drafts, so you can add photos first.
-                </span>
-              )}
-            </span>
-          </label>
+          <p className="mt-4 rounded-md border border-bone-deep bg-bone-soft p-3 text-sm text-ink-muted">
+            {t(
+              "These are created as drafts. A product needs at least one photograph and a description before it can be submitted for approval, so open each one to finish it and submit it there.",
+              "تُنشأ هذه المنتجات كمسودات. يحتاج المنتج إلى صورة واحدة على الأقل ووصف قبل إرساله للمراجعة، لذا افتح كل منتج لإكماله وإرساله من هناك.",
+            )}
+          </p>
 
           <div className="mt-4 flex gap-3">
             <button
@@ -281,11 +280,14 @@ export function BulkUploadClient({
               onClick={() => csv && send(csv, true)}
             >
               {busy === "commit"
-                ? "Creating…"
-                : `Create ${readyCount} ${readyCount === 1 ? "product" : "products"}`}
+                ? t("Creating…", "جارٍ الإنشاء…")
+                : t(
+                    `Create ${readyCount} ${readyCount === 1 ? "product" : "products"}`,
+                    `أنشئ ${readyCount} منتج`,
+                  )}
             </button>
             <button type="button" className="btn-ghost" disabled={busy !== null} onClick={reset}>
-              Choose a different file
+              {t("Choose a different file", "اختر ملفًا آخر")}
             </button>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export function AdminDocViewerClient({ path }: { path: string }) {
+export function AdminDocViewerClient({ path, arabic = false }: { path: string; arabic?: boolean }) {
   const [busy, setBusy] = useState(false);
   async function open() {
     setBusy(true);
@@ -17,6 +17,6 @@ export function AdminDocViewerClient({ path }: { path: string }) {
     window.open(j.url, "_blank", "noopener,noreferrer");
   }
   return (
-    <button className="btn-ghost text-xs" onClick={open} disabled={busy}>{busy ? "…" : "View"}</button>
+    <button className="btn-ghost text-xs" onClick={open} disabled={busy}>{busy ? "…" : arabic ? "عرض" : "View"}</button>
   );
 }

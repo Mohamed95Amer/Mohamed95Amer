@@ -42,7 +42,8 @@ on conflict (id) do nothing;
 -- Approved products
 insert into public.products (
   id, vendor_id, name, description, category, karat, weight_grams,
-  making_charge, stone_value, vendor_premium, quantity, images,
+  making_charge, making_charge_discount_percent, making_charge_offer_ends_at,
+  certificate_fee, stone_value, vendor_premium, quantity, images,
   certificate_number, hallmark_info, product_status
 ) values
   (
@@ -50,7 +51,7 @@ insert into public.products (
     '11111111-1111-1111-1111-111111111111',
     'Classic 22K Bangle',
     'Hand-finished classic bangle, hallmarked.',
-    'bangle', 22, 12.500, 250.00, 0, 50.00, 3,
+    'bangle', 22, 12.500, 250.00, 20, null, 0, 0, 50.00, 3,
     '[]'::jsonb, 'DGCX-22K-AAA-001', 'UAE Hallmark 22K', 'approved'
   ),
   (
@@ -58,7 +59,7 @@ insert into public.products (
     '11111111-1111-1111-1111-111111111111',
     '21K Twisted Chain 45cm',
     'Light twisted-link chain, 21 karat.',
-    'chain', 21, 7.200, 180.00, 0, 30.00, 5,
+    'chain', 21, 7.200, 180.00, 100, '2026-10-11 23:59:59+04', 0, 0, 30.00, 5,
     '[]'::jsonb, 'DGCX-21K-AAA-014', 'UAE Hallmark 21K', 'approved'
   ),
   (
@@ -66,7 +67,7 @@ insert into public.products (
     '22222222-2222-2222-2222-222222222222',
     'Pearl Solitaire 18K Ring',
     'Akoya pearl with 18K white gold band.',
-    'ring', 18, 3.400, 320.00, 450.00, 75.00, 2,
+    'ring', 18, 3.400, 320.00, 0, null, 0, 450.00, 75.00, 2,
     '[]'::jsonb, 'GIA-PEARL-2024-AB', 'UAE Hallmark 18K', 'approved'
   ),
   (
@@ -74,7 +75,7 @@ insert into public.products (
     '22222222-2222-2222-2222-222222222222',
     '1g 24K Gold Bar',
     'Investment-grade 1g 24K bar, sealed with assay.',
-    'bar', 24, 1.000, 25.00, 0, 0, 20,
+    'bar', 24, 1.000, 0, 0, null, 25.00, 0, 0, 20,
     '[]'::jsonb, 'PAMP-2024-001', '999.9 Fine', 'approved'
   )
 on conflict (id) do nothing;

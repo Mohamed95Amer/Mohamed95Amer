@@ -44,7 +44,7 @@ const CATEGORIES = [
   "ring", "necklace", "bracelet", "earring", "bangle", "chain", "pendant", "bar", "coin", "other",
 ] as const;
 
-const KARATS = [18, 21, 22, 24] as const;
+const KARATS = [12, 14, 16, 18, 21, 22, 24] as const;
 
 interface ColumnSpec {
   /** Header as written in the template. */
@@ -63,15 +63,24 @@ interface ColumnSpec {
 export const BULK_COLUMNS: ColumnSpec[] = [
   { key: "name", required: true, example: "22K Classic Bangle", hint: "2–200 characters" },
   { key: "category", required: true, example: "bangle", hint: CATEGORIES.join(", ") },
-  { key: "karat", required: true, example: "22", hint: "18, 21, 22 or 24" },
+  { key: "karat", required: true, example: "22", hint: KARATS.join(", ") },
   { key: "weight_grams", required: true, example: "12.500", hint: "grams, greater than 0" },
   { key: "quantity", required: false, example: "1", hint: "whole number, defaults to 1" },
-  { key: "making_charge", required: false, example: "150", hint: "AED, defaults to 0" },
+  { key: "making_charge", required: false, example: "150", hint: "AED per item, defaults to 0" },
+  {
+    key: "making_charge_discount_percent",
+    required: false,
+    example: "0",
+    hint: "0–100, defaults to 0; needs a making charge above 0",
+  },
+  { key: "certificate_fee", required: false, example: "0", hint: "AED, defaults to 0; needs a certificate number" },
   { key: "stone_value", required: false, example: "0", hint: "AED, defaults to 0" },
-  { key: "vendor_premium", required: false, example: "0", hint: "AED, defaults to 0" },
   { key: "certificate_number", required: false, example: "", hint: "optional, up to 120 characters" },
   { key: "hallmark_info", required: false, example: "", hint: "optional, up to 200 characters" },
-  { key: "description", required: false, example: "", hint: "optional, up to 2000 characters" },
+  // Not optional in practice: the catalogue integrity gate wants at least 20
+  // characters before a product can be submitted, so a blank description here
+  // means more work per product later.
+  { key: "description", required: false, example: "", hint: "up to 2000 characters; 20+ needed before submitting" },
 ];
 
 const COLUMN_KEYS = new Set(BULK_COLUMNS.map((c) => c.key));
@@ -80,8 +89,9 @@ const COLUMN_KEYS = new Set(BULK_COLUMNS.map((c) => c.key));
 const DEFAULTS: Record<string, string> = {
   quantity: "1",
   making_charge: "0",
+  making_charge_discount_percent: "0",
+  certificate_fee: "0",
   stone_value: "0",
-  vendor_premium: "0",
 };
 
 /** The file to hand a vendor as a starting point. */
@@ -128,7 +138,11 @@ const HEADER_ALIASES: Record<string, string> = {
   stone: "stone_value",
   stones: "stone_value",
   stone_charge: "stone_value",
-  premium: "vendor_premium",
+  discount: "making_charge_discount_percent",
+  making_discount: "making_charge_discount_percent",
+  making_charge_discount: "making_charge_discount_percent",
+  certificate_charge: "certificate_fee",
+  certification_fee: "certificate_fee",
   certificate: "certificate_number",
   certificate_no: "certificate_number",
   cert: "certificate_number",
@@ -316,7 +330,7 @@ export function parseBulkProducts(csvText: string): BulkParseResult {
     if (!weight.ok) push("weight_grams", `weight_grams ${weight.message}`);
 
     const numeric: Record<string, number> = {};
-    for (const key of ["making_charge", "stone_value", "vendor_premium"] as const) {
+    for (const key of ["making_charge", "certificate_fee", "stone_value"] as const) {
       const raw = cell(key).trim();
       // An omitted optional charge is zero; a mistyped one is an error.
       const parsed = raw === "" ? ({ ok: true, value: 0 } as const) : coerceNumber(raw);
@@ -327,6 +341,12 @@ export function parseBulkProducts(csvText: string): BulkParseResult {
     const qtyRaw = cell("quantity").trim();
     const quantity = qtyRaw === "" ? ({ ok: true, value: 1 } as const) : coerceInteger(qtyRaw);
     if (!quantity.ok) push("quantity", `quantity ${quantity.message}`);
+
+    const discountRaw = cell("making_charge_discount_percent").trim();
+    const discount = discountRaw === ""
+      ? ({ ok: true, value: 0 } as const)
+      : coerceInteger(discountRaw);
+    if (!discount.ok) push("making_charge_discount_percent", `making_charge_discount_percent ${discount.message}`);
 
     const optional = (key: string): string | null => {
       const v = cell(key).trim();
@@ -347,8 +367,9 @@ export function parseBulkProducts(csvText: string): BulkParseResult {
       karat: karat.ok ? karat.value : 0,
       weight_grams: weight.ok ? weight.value : 0,
       making_charge: numeric.making_charge,
+      making_charge_discount_percent: discount.ok ? discount.value : 0,
+      certificate_fee: numeric.certificate_fee,
       stone_value: numeric.stone_value,
-      vendor_premium: numeric.vendor_premium,
       quantity: quantity.ok ? quantity.value : 0,
       certificate_number: optional("certificate_number"),
       hallmark_info: optional("hallmark_info"),

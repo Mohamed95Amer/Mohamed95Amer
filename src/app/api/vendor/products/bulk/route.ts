@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
  * endpoint among them is the kind of inconsistency that later gets copied.
  */
 export async function GET() {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -44,7 +44,7 @@ export async function GET() {
  *  - A dry run writes nothing at all, so the vendor can check a file freely.
  */
 export async function POST(request: Request) {
-  const userClient = getServerSupabase();
+  const userClient = await getServerSupabase();
   const { data: auth } = await userClient.auth.getUser();
   if (!auth.user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid_input", details: parsed.error.flatten() }, { status: 400 });
   }
-  const { csv, commit, submit_for_approval } = parsed.data;
+  const { csv, commit } = parsed.data;
 
   // Keyed on the vendor rather than the IP: a shop behind one office NAT
   // should not lock out its neighbours, and the cost here is per-account.
@@ -89,16 +89,6 @@ export async function POST(request: Request) {
       },
       { status: 429 },
     );
-  }
-
-  // Checked before parsing: an unapproved vendor should be told why up front,
-  // not after fixing every row in the file.
-  let status: "draft" | "pending_approval" = "draft";
-  if (submit_for_approval) {
-    if (vendor.verification_status !== "approved") {
-      return NextResponse.json({ error: "vendor_not_approved" }, { status: 403 });
-    }
-    status = "pending_approval";
   }
 
   const result = parseBulkProducts(csv);
@@ -124,10 +114,19 @@ export async function POST(request: Request) {
 
   // One statement, so either every product is created or none is. Also the
   // reason BULK_MAX_ROWS exists: this bounds the statement, not a loop.
+  //
+  // Always a draft. A CSV carries no photograph, and the catalogue integrity
+  // gate requires one before a product may be submitted or approved — the
+  // products table has a trigger that raises on a pending_approval row which
+  // fails it. Since this is a single statement, offering "submit for approval"
+  // here would not merely be refused per row: it would abort the whole upload.
+  // So the vendor opens each product to add photos and a description, and
+  // submits it there.
   const toInsert = result.rows.slice(0, BULK_MAX_ROWS).map((r) => ({
     ...r.product,
     vendor_id: vendor.id,
-    product_status: status,
+    product_status: "draft" as const,
+    inventory_confirmed_at: new Date().toISOString(),
   }));
 
   const { data: inserted, error } = await admin
@@ -149,7 +148,7 @@ export async function POST(request: Request) {
       action: "product.created",
       entity_type: "product",
       entity_id: p.id,
-      new_value: { name: p.name, product_status: status, source: "bulk_csv" },
+      new_value: { name: p.name, product_status: "draft", source: "bulk_csv" },
       ip_address: ip,
     })),
   );
@@ -158,7 +157,7 @@ export async function POST(request: Request) {
     ok: true,
     committed: true,
     row_count: inserted.length,
-    status,
+    status: "draft",
     issues: [],
   });
 }

@@ -1,4 +1,3 @@
-import { env } from "@/lib/env";
 
 /**
  * Verify a request was made by an authorized cron caller. Accepts either:
@@ -6,7 +5,10 @@ import { env } from "@/lib/env";
  *   - A manual call with `x-cron-secret: ${CRON_SECRET}`
  */
 export function isAuthorizedCron(request: Request): boolean {
-  const secret = env.cronSecret();
+  // Read directly rather than via env.cronSecret(), which throws when unset —
+  // a missing secret must deny the request, not surface as a 500.
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return false;
   const auth = request.headers.get("authorization");
   if (auth && auth === `Bearer ${secret}`) return true;
   const header = request.headers.get("x-cron-secret");
