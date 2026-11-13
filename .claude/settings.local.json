@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Gmail__send_message",
+      "mcp__Gmail__label_thread"
+    ]
+  }
+}
