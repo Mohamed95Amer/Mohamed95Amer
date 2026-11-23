@@ -10,7 +10,7 @@ Nationality: Egyptian • Visa Status: UAE Employment Visa (Work Permit) • Lan
 
 ## PROFESSIONAL SUMMARY
 
-Senior Customer Success and Account Management professional with 5+ years in B2B SaaS and ERP, managing a 160+ key-account portfolio across the UAE and GCC at Odoo — owning retention, renewals, and account expansion, and reaching 178% of target in Q1. Progressed across the full commercial cycle (SDR → BDR → Account Manager → Senior Customer Success), pairing a sales-trained commercial instinct with consultative account management to drive ERP adoption, protect renewals, and turn satisfied clients into long-term advocates and referral sources. Arabic–English bilingual with strong regional fluency across Gulf markets.
+Senior Customer Success and Account Management professional with 5+ years in B2B SaaS and ERP, managing a 160+ key-account portfolio across the UAE and GCC at Odoo — owning retention, renewals, and account expansion, reaching 178% of target in Q1, and earning Star of the Month in October 2026 for 127% of target. Progressed across the full commercial cycle (SDR → BDR → Account Manager → Senior Customer Success), pairing a sales-trained commercial instinct with consultative account management to drive ERP adoption, protect renewals, and turn satisfied clients into long-term advocates and referral sources. Arabic–English bilingual with strong regional fluency across Gulf markets.
 
 ---
 
@@ -35,6 +35,7 @@ Senior Customer Success and Account Management professional with 5+ years in B2B
 ### Senior Customer Success Manager — Odoo Middle East
 *Dubai, UAE | 2024 – Present | ERP & Business Software (SaaS)*
 
+- Named **Star of the Month (October 2026)** for achieving **127% of target**, recognized for sustained overperformance in client retention and account growth.
 - Manage a portfolio of **160+ key accounts** across the UAE and GCC, exceeding quarterly targets — **reaching 178% of target in Q1** — while sustaining performance through organizational restructuring.
 - Own Key Account Management for high-value clients, driving the adoption, retention, and expansion of complex ERP implementations across multiple industries.
 - Lead renewal and upselling conversations, aligning the Odoo roadmap with each client's growth objectives to maximize account lifetime value.

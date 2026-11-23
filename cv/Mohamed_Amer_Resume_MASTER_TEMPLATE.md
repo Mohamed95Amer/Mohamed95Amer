@@ -35,7 +35,7 @@ Nationality: Egyptian • Visa: UAE Employment Visa (Work Permit) • Languages:
 ## PROFESSIONAL SUMMARY
 «Swap [TARGET TITLE] to mirror the ad. Lead with one tailored metric once you have it.»
 
-[TARGET TITLE] with 5+ years in B2B SaaS and ERP across the UAE and GCC. Manage a 160+ key-account portfolio at Odoo — owning retention, renewals, and expansion — and reached 178% of target in Q1. Progressed across the full commercial cycle (SDR → BDR → Account Manager → Senior CSM), pairing a sales-trained commercial instinct with consultative account management to drive adoption, protect renewals, and turn clients into long-term advocates. Arabic–English bilingual with deep Gulf-market fluency.
+[TARGET TITLE] with 5+ years in B2B SaaS and ERP across the UAE and GCC. Manage a 160+ key-account portfolio at Odoo — owning retention, renewals, and expansion — reached 178% of target in Q1, and was named Star of the Month in October 2026 for 127% of target. Progressed across the full commercial cycle (SDR → BDR → Account Manager → Senior CSM), pairing a sales-trained commercial instinct with consultative account management to drive adoption, protect renewals, and turn clients into long-term advocates. Arabic–English bilingual with deep Gulf-market fluency.
 
 ---
 
@@ -51,8 +51,9 @@ Key Account Management · Customer Retention · Renewal Management · Upselling 
 
 ### Senior Customer Success Manager — Odoo Middle East
 Dubai, UAE | 2024 – Present | ERP & Business Software (SaaS)
-«Keep 3–4 bullets. Locked facts are 178% in Q1 and 160+ accounts. Fill the rest.»
+«Keep 4–5 bullets. Locked facts are the Star of the Month award, 178% in Q1, and 160+ accounts. Fill the rest.»
 
+- Named **Star of the Month (October 2026)** for achieving **127% of target**, recognized for sustained overperformance in client retention and account growth.
 - Surpassed quarterly target — **178% of goal in Q1** — by running proactive account reviews and well-timed upsell conversations across a **160+ account** UAE/GCC portfolio.
 - Retained and grew a book of **160+ key accounts** to **[XX]% renewal rate** by building structured success plans and leading quarterly business reviews.
 - Reduced churn by **[XX]%** by flagging at-risk accounts early through health signals and deploying targeted save-plays.
@@ -124,6 +125,7 @@ MEDDIC/MEDDPICC · Challenger · Sandler · SPIN · Gainsight · Totango · Chur
 ============================================================================
 [ ] Odoo: renewal rate %, churn reduction %, expansion $ or %, pipeline sourced
 [ ] What does "178% in Q1" measure? (sales / renewal / expansion quota) + full-year #
+[ ] What does "127% of target" (Star of the Month) measure, and is it monthly/quarterly?
 [ ] Subsbase & PlanRadar: pipeline value, # deals, conversion %, quota %
 [ ] 2018–2021 gap: add the role/activity that fills it
 [ ] Certifications: add any you hold
